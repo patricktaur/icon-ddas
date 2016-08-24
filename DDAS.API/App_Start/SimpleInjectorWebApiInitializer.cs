@@ -8,6 +8,10 @@ using SimpleInjector.Integration.WebApi;
 using DDAS.Models;
 using DDAS.EF;
 using AutoMapper;
+using DDAS.Models.Interfaces;
+using WebScraping.Selenium.SearchEngine;
+using WebScraping.Selenium;
+using WebScraping.Selenium.Pages;
 
 namespace DDAS.API.App_Start
 {
@@ -50,7 +54,7 @@ namespace DDAS.API.App_Start
             });
 
             container.Register<IMapper>(() => config.CreateMapper(container.GetInstance));
-
+            container.RegisterWebApiRequest<ISearchEngine>(() => new SearchEngine());
             // >>>>>
         }
     }

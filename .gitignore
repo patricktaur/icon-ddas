@@ -10,3 +10,15 @@ UnitTestProject1/bin/
 UnitTestProject1/obj/
 packages/AutoMapper.5.0.2/AutoMapper.5.0.2.nupkg
 packages/
+DDAS.Selenium/UnitTestLibrary1/obj/
+DDAS.Selenium/Utilities/bin/
+DDAS.Selenium/Utilities/obj/
+DDAS.Selenium/WebScraping.Interfaces/obj/
+DDAS.Selenium/WebScraping.Selenium/bin/
+DDAS.Selenium/WebScraping.Selenium/obj/
+DDAS.Selenium/WebScraping.Tests/bin/
+DDAS.Selenium/WebScraping.Tests/obj/
+DDAS.Selenium/WebScraping/bin/
+DDAS.Selenium/WebScraping/obj/
+DDAS.Selenium/WebScraping.Interfaces/bin/
+DDAS.Selenium/UnitTestLibrary1/Images/
