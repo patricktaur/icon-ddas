@@ -149,6 +149,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="JS\HtmlPage1.html" />
+    <Content Include="JS\TestPDFMake.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
