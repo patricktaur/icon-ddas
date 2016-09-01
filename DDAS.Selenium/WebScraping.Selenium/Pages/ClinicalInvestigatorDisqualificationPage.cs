@@ -43,23 +43,26 @@ namespace WebScraping.Selenium.Pages
             {
                 var DisqualifiedClinicalInvestigator = new DisqualifiedInvestigator();
 
-                if (TR.FindElements(By.XPath("th")).Count > 0)
-                {
-                    continue;
-                }
+                //if (TR.FindElements(By.XPath("th")).Count > 0)
+                //{
+                //    continue;
+                //}
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
-                DisqualifiedClinicalInvestigator.Center = TDs[1].Text;
-                DisqualifiedClinicalInvestigator.Status = TDs[2].Text;
-                DisqualifiedClinicalInvestigator.DateOfStatus = TDs[3].Text;
-                DisqualifiedClinicalInvestigator.DateNIDPOEIssued = TDs[4].Text;
-                DisqualifiedClinicalInvestigator.DateNOOHIssued = TDs[5].Text;
-                DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
-                DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
+                if (TDs.Count > 0)
+                {
+                    DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
+                    DisqualifiedClinicalInvestigator.Center = TDs[1].Text;
+                    DisqualifiedClinicalInvestigator.Status = TDs[2].Text;
+                    DisqualifiedClinicalInvestigator.DateOfStatus = TDs[3].Text;
+                    DisqualifiedClinicalInvestigator.DateNIDPOEIssued = TDs[4].Text;
+                    DisqualifiedClinicalInvestigator.DateNOOHIssued = TDs[5].Text;
+                    DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
+                    DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
 
-                _disqulifiedInvestigotor.Add(DisqualifiedClinicalInvestigator);
+                    _disqulifiedInvestigotor.Add(DisqualifiedClinicalInvestigator);
+                }
             }
         }
 
@@ -71,14 +74,44 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             LoadDisqualificationProceedingsList();
         }
 
         public override ResultAtSite Search(string NameToSearch)
         {
-            throw new NotImplementedException();
+            ResultAtSite searchResult = new ResultAtSite();
+
+            searchResult.SiteName = SiteName.ToString();
+
+            foreach (DisqualifiedInvestigator person in _disqulifiedInvestigotor)
+            {
+                string WordFound = FindSubString(person.Name, NameToSearch);
+
+                if (WordFound != null)
+                {
+                    searchResult.SiteName = SiteName.ToString();
+
+                    searchResult.Results.Add(new MatchResult
+                    {
+                        MatchName = person.Name,
+                        MatchLocation = "Word(s) matched - " + WordFound
+                    });
+                }
+            }
+
+            if (searchResult.Results.Count == 0)
+            {
+                searchResult.Results.Add(new MatchResult
+                {
+                    MatchName = "None",
+                    MatchLocation = "None"
+                });
+                return searchResult;
+            }
+            else
+                return searchResult;
         }
 
         public class DisqualifiedInvestigator

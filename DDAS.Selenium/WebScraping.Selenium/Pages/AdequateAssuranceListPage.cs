@@ -48,40 +48,42 @@ namespace WebScraping.Selenium.Pages
                 AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")))
             {
                 var AdequateAssuranceInvestigator = new AdequateAssuranceList();
-                
-                if (TR.FindElements(By.XPath("th")).Count > 0)
-                {
-                    continue;
-                }
+
+                //if (TR.FindElements(By.XPath("th")).Count > 0)
+                //{
+                //    continue;
+                //}
+
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
+                if (TDs.Count > 0)
+                {
+                    AdequateAssuranceInvestigator.NameAndAddress = TDs[0].Text;
+                    AdequateAssuranceInvestigator.Center = TDs[1].Text;
+                    AdequateAssuranceInvestigator.Type = TDs[2].Text;
+                    AdequateAssuranceInvestigator.ActionDate = TDs[3].Text;
+                    AdequateAssuranceInvestigator.Comments = TDs[4].Text;
 
-                AdequateAssuranceInvestigator.NameAndAddress = TDs[0].Text;
-                AdequateAssuranceInvestigator.Center = TDs[1].Text;
-                AdequateAssuranceInvestigator.Type = TDs[2].Text;
-                AdequateAssuranceInvestigator.ActionDate = TDs[3].Text;
-                AdequateAssuranceInvestigator.Comments = TDs[4].Text;
-
-                _adequateAssuranceList.Add(AdequateAssuranceInvestigator);
+                    _adequateAssuranceList.Add(AdequateAssuranceInvestigator);
+                }
             }
         }
 
         public override ResultAtSite Search(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
-            //searchResult.Results = new List<MatchResult>();
 
             searchResult.SiteName = SiteName.ToString();
 
-            NameToSearch = NameToSearch.ToLower();
-
             foreach(AdequateAssuranceList AssuranceList in _adequateAssuranceList)
             {
-                if(AssuranceList.NameAndAddress.ToLower().Contains(NameToSearch))
+                string WordFound = FindSubString(AssuranceList.NameAndAddress, NameToSearch);
+
+                if (WordFound != null)
                 {
                     searchResult.Results.Add(new MatchResult
                     {
                         MatchName = AssuranceList.NameAndAddress,
-                        MatchLocation = "Word(s) matched - "
+                        MatchLocation = "Word(s) matched - " + WordFound
                     });
                 }
             }
@@ -99,7 +101,7 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             LoadAdequateAssuranceInvestigators();
         }

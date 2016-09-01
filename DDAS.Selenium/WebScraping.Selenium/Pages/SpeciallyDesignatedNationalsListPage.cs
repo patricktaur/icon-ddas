@@ -11,6 +11,7 @@ using iTextSharp.text.pdf.parser;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using System.Collections.Specialized;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -25,19 +26,15 @@ namespace WebScraping.Selenium.Pages
             SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
 
-        public override string Url
-        {
-            get
-            {
+        public override string Url {
+            get {
                 return 
                 @"http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx";
             }
         }
 
-        public override SiteEnum SiteName
-        {
-            get
-            {
+        public override SiteEnum SiteName {
+            get {
                 return SiteEnum.SpeciallyDesignedNationalsListPage;
             }
         }
@@ -54,41 +51,58 @@ namespace WebScraping.Selenium.Pages
             myWebClient.DownloadFile(myStringWebResource, fileName);
         }
 
-        public string[] GetTextFromPDF()
+        public List<NamesClass> GetTextFromPDF(string NameToSearch)
         {
-            StringBuilder text = new StringBuilder();
-            string[] PDFDataArray;
+            List<NamesClass> Names = new List<NamesClass>();
 
-            DateTime date;
+            StringBuilder text = new StringBuilder();
+            //string[] PDFDataArray;
 
             using (PdfReader reader = new PdfReader("c:\\development\\temp\\test.pdf"))
             {
-                string temp;
-                PDFDataArray = new string[reader.NumberOfPages];
+                string PageContent;
 
-                Console.WriteLine("Starting to extract PDF Data - {0}", DateTime.Now);
-
-                date = DateTime.Now;
+                //PDFDataArray = new string[reader.NumberOfPages];
 
                 for (int i = 1; i <= reader.NumberOfPages; i++)
                 {
-                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy(); 
-                    temp = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
-                    Console.WriteLine(temp.Length);
-                    PDFDataArray[i - 1] = temp;
+                    string WordsMatched = null;
 
-                    text.Append(temp);
+                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy(); 
+                    PageContent = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
+                    Console.WriteLine(PageContent.Length);
+                    //PDFDataArray[i - 1] = temp;
+
+                    //text.Append(temp);
+
+                    string[] SplitNames = PageContent.Split(']');
+
+                    for (int records = 0; records < SplitNames.Length; records++)
+                    {
+                        WordsMatched = null;
+
+                        string TempRecord = SplitNames[records].Replace(" ", "");
+
+                        WordsMatched = FindSubString(TempRecord, NameToSearch);
+
+                        if (WordsMatched != null)
+                        {
+                            NamesClass NamesFromPDF = new NamesClass();
+
+                            NamesFromPDF.Names = SplitNames[records];
+                            NamesFromPDF.PageNumbers = i;
+                            NamesFromPDF.WordsMatched = WordsMatched;
+                            Names.Add(NamesFromPDF);
+                        }
+                    }
                 }
             }
-            Console.WriteLine("Total Length of the PDF text is {0}", text.Length);
-            Console.WriteLine("Time taken to extract data from PDF file is {0}", DateTime.Now);
-            return PDFDataArray;
+            return Names;
         }
 
         public void SearchNames(string[] PDFDataArray, string SearchString)
         {
             int[] SearchHits = new int[PDFDataArray.Length];
-            //int[] PageNumber = new int[PDFDataArray.Length];
 
             for (int i=0; i < PDFDataArray.Length; i++)
             {
@@ -98,19 +112,63 @@ namespace WebScraping.Selenium.Pages
 
                 SearchHits[i] = (textToSearchLength - textToSearch.ToLower().Replace(SearchString.ToLower(), "").Length)
                     / SearchStringLength;
+
+                PDFDataArray[i].Replace(" ", "");
+
+                var SearchResults = PDFDataArray.Any();
+
             }
-            //Console.WriteLine("Search String {0} was found {1} time(s) in page number(s) {2}", SearchString, string.Join(", ",SearchHits));
+
         }
 
         public override ResultAtSite Search(string NameToSearch)
         {
-            throw new NotImplementedException();
+            ResultAtSite result = new ResultAtSite();
+
+            string[] SearchName = NameToSearch.Split(' ');
+
+            result.SiteName = SiteName.ToString();
+
+            List<NamesClass> NamesFromPDF = GetTextFromPDF(NameToSearch);
+
+            //List<NamesClass> TempNamesFromPDF = new List<NamesClass>();
+
+            //TempNamesFromPDF = NamesFromPDF;
+            
+            //for (int Names = 0; Names < SearchName.Length; Names++)
+            //{
+            //    var results = NamesFromPDF.Where(x => x.Names.ToLower().Contains
+            //    (SearchName[Names].ToLower()));
+
+            //    if (results != null)
+            //    {
+            //        var SecondWordMatch = results.Where(x => x.Names.ToLower().Contains
+            //        (SearchName[Names]));
+            //    }
+            //}
+
+            foreach (NamesClass Names in NamesFromPDF)
+            {
+                result.Results.Add(new MatchResult
+                {
+                    MatchLocation = Names.PageNumbers.ToString() + ", " + Names.WordsMatched,
+                    MatchName = Names.Names
+                });
+            }
+            return result;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             DownloadSDNList();
 
+        }
+
+        public class NamesClass
+        {
+            public string Names { get; set; }
+            public int PageNumbers { get; set; }
+            public string WordsMatched { get; set; }
         }
     }
 }

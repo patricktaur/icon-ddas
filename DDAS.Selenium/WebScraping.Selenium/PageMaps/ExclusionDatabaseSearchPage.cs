@@ -1,9 +1,5 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebScraping.Selenium.BaseClasses;
 
 namespace WebScraping.Selenium.Pages
@@ -14,6 +10,7 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
+                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                 IWebElement FirstName = driver.FindElement(By.Id("ctl00_cpExclusions_txtSPFirstName"));
                 return FirstName;
             }
@@ -41,8 +38,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Table = driver.FindElement(By.Id("ctl00_cpExclusions_gvEmployees"));
-                return Table;
+                try
+                {
+                    IWebElement Table = driver.FindElement(By.Id("ctl00_cpExclusions_gvEmployees"));
+                    return Table;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
             }
         }
     }

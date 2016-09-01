@@ -61,13 +61,13 @@ namespace WebScraping.Selenium.Pages
             {
                 var ClinicalInvestigatorCBER = new CBERClinicalInvestigator();
 
-                if (TR.FindElements(By.XPath("th")).Count > 0)
-                {
-                    continue;
-                }
+                //if (TR.FindElements(By.XPath("th")).Count > 0)
+                //{
+                //    continue;
+                //}
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
-                if (TDs.Count != 0)
+                if (TDs.Count > 0)
                 {
                     ClinicalInvestigatorCBER.Name = TDs[0].Text;
                     ClinicalInvestigatorCBER.Title = TDs[1].Text;
@@ -80,23 +80,52 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override SiteEnum SiteName
-        {
-            get
-            {
+        public override SiteEnum SiteName {
+            get {
                 return SiteEnum.CBERClinicalInvestigatorInspectionPage;
             }
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             LoadNextInspectionList();
         }
 
         public override ResultAtSite Search(string NameToSearch)
         {
-            throw new NotImplementedException();
+            ResultAtSite searchResult = new ResultAtSite();
+
+            searchResult.SiteName = SiteName.ToString();
+
+            foreach (CBERClinicalInvestigator person in _clinicalInvestigator)
+            {
+                string WordFound = base.FindSubString(person.Name, NameToSearch);
+
+                if (WordFound != null)
+                {
+                    searchResult.SiteName = SiteName.ToString();
+
+                    searchResult.Results.Add(new MatchResult
+                    {
+                        MatchName = person.Name,
+                        MatchLocation = "Word(s) matched - " + WordFound
+                    });
+                }
+            }
+
+            if (searchResult.Results.Count == 0)
+            {
+                searchResult.Results.Add(new MatchResult
+                {
+                    MatchName = "None",
+                    MatchLocation = "None"
+                });
+                return searchResult;
+            }
+            else
+                return searchResult;
         }
+
 
         public class CBERClinicalInvestigator
         {

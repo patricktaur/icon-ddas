@@ -1,9 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
@@ -29,29 +26,26 @@ namespace WebScraping.Selenium.Pages
 
         private List<ClinicalInvestigator> _clinicalInvestigatorList;
 
-        public List<ClinicalInvestigator> clinicalInvestigatorList
-        {
+        public List<ClinicalInvestigator> clinicalInvestigatorList {
             get { return _clinicalInvestigatorList; }
         }
 
-        public override SiteEnum SiteName
-        {
-            get
-            {
-                return SiteEnum.ClinicalInvestigatorInspectionPage;
-            }
-        }
-
-        public void SearchTerms(string Name)
+        public bool SearchTerms(string Name)
         {
             IWebElement InputTag = ClinicalInvestigatorInputTag;
             InputTag.SendKeys(Name);
 
             IWebElement SubmitButton = ClinicalInvestigatorSubmit;
-
             SubmitButton.Submit();
 
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
+            if (ClinicalInvestigatorNext != null)
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
         public void LoadClinicalInvestigatorList()
@@ -79,27 +73,92 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public bool GetNextList()
+        public int GetCountOfRecords()
         {
-            IWebElement element = ClinicalInvestigatorNext;
+            IWebElement element = ClinicalInvestigatorNextList;
 
-            if (!element.GetAttribute("ClassName").Contains("disabled"))
-            {
-                element.SendKeys(Keys.Enter);
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                return true;
+            IList<IWebElement> ANCHORs = element.FindElements(By.XPath("//span/a"));
+
+            int AnchorCount = ANCHORs.Count;
+
+            return Convert.ToInt32(ANCHORs[AnchorCount - 1].Text);
+        }
+
+
+        public override SiteEnum SiteName {
+            get {
+                return SiteEnum.ClinicalInvestigatorInspectionPage;
             }
-            return false;
         }
 
         public override ResultAtSite Search(string NameToSearch)
         {
-            throw new NotImplementedException();
+            ResultAtSite searchResult = new ResultAtSite();
+
+            searchResult.SiteName = SiteName.ToString();
+
+            foreach (ClinicalInvestigator person in _clinicalInvestigatorList)
+            {
+                string WordFound = FindSubString(person.Name, NameToSearch);
+
+                if (WordFound != null)
+                {
+                    searchResult.SiteName = SiteName.ToString();
+
+                    searchResult.Results.Add(new MatchResult
+                    {
+                        MatchName = person.Name,
+                        MatchLocation = "Word(s) matched - " + WordFound
+                    });
+                }
+            }
+
+            if (searchResult.Results.Count == 0)
+            {
+                searchResult.Results.Add(new MatchResult
+                {
+                    MatchName = "None",
+                    MatchLocation = "None"
+                });
+                return searchResult;
+            }
+            else
+                return searchResult;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
-            throw new NotImplementedException();
+            string[] Name = NameToSearch.Split(' ');
+            
+            for (int counter = 0; counter < Name.Length; counter++)
+            {
+                if (SearchTerms(Name[counter]))
+                {
+                    int totalRecords = GetCountOfRecords();
+
+                    for (int records = 0; records < totalRecords; records++)
+                    {
+                        LoadClinicalInvestigatorList();
+
+                        if (totalRecords > 1)
+                        {
+                            LoadNextRecord();
+                        }
+                    }
+                }
+                else
+                    continue;
+
+                driver.Url = "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
+            }
+        }
+
+        public void LoadNextRecord()
+        {
+            IWebElement element = ClinicalInvestigatorNext;
+
+            element.SendKeys(Keys.Enter);
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
         }
 
         public class ClinicalInvestigator

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WebScraping.Tests;
+using System.Collections.Specialized;
 
 namespace WebScraping
 {
@@ -17,7 +17,7 @@ namespace WebScraping
             //int needleCount = (mystring.Length - mystring.ToLower().Replace(searchterm.ToLower(), "").Length)
             //    / searchterm.Length;
 
-            var test = new FirstTest();
+            //var test = new FirstTest();
             //test.SetUp();
             //test.TestFDADebarPage(); //tested
             //test.TestProposalToDebarPage(); //Tested
@@ -28,7 +28,17 @@ namespace WebScraping
             //test.TestSDNListPage();
             //test.TestExclusionDatabaseSearchPage();//SearchBox
             //test.TestOpenXML();
-            test.TestSearchEngine();
+            //test.TestSearchEngine();
+
+            StringCollection myCollection = new StringCollection();
+
+            myCollection.Add("The cats are crazy!");
+            myCollection.Add("That is one huge tower");
+            myCollection.Add("Moives everywhere");
+            myCollection.Add("got to make it work");
+            myCollection.Add("at any cost");
+
+
         }
     }
 }

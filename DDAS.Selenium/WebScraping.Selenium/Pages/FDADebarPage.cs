@@ -71,7 +71,6 @@ namespace WebScraping.Selenium.Pages
         public override ResultAtSite Search(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
-            //searchResult.Results = new List<MatchResult>();
 
             searchResult.SiteName = SiteName.ToString();
 
@@ -102,29 +101,9 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             LoadDebarredPersonList();
-        }
-
-        public string FindSubString(string SearchString, string NameToSearch)
-        {
-            SearchString = SearchString.ToLower();
-
-            string[] FullName = NameToSearch.Split(' ');
-
-            int count = 0;
-            string WordMatched = null;
-
-            for (int i=0; i<FullName.Length; i++)
-            {
-                if (SearchString.Contains(FullName[i].ToLower()))
-                {
-                    count = count + 1;
-                    WordMatched = WordMatched + " " + FullName[i];
-                }
-            }
-            return WordMatched;
         }
 
         public class DebarredPerson

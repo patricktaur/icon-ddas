@@ -7,6 +7,7 @@ using OpenQA.Selenium.Edge;
 using WebScraping.Selenium.Pages;
 using WebScraping.Selenium.BaseClasses;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -23,7 +24,7 @@ namespace WebScraping.Selenium.SearchEngine
         {
             var PageObject = GetSearchPage(siteEnum);
 
-            PageObject.LoadContent();
+            PageObject.LoadContent(NameToSearch);
 
             var result = PageObject.Search(NameToSearch);
 
@@ -32,7 +33,11 @@ namespace WebScraping.Selenium.SearchEngine
 
         public SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums)
         {
+            Stopwatch stopwatch = new Stopwatch();
+
             List<ResultAtSite> Results = new List<ResultAtSite>();
+
+            ResultAtSite resultAtSite = new ResultAtSite();
 
             SearchResult searchResult = new SearchResult();
 
@@ -42,7 +47,12 @@ namespace WebScraping.Selenium.SearchEngine
             
             foreach (SiteEnum site in siteEnums)
             {
-                Results.Add(SearchName(NameToSearch, site));
+                stopwatch.Start();
+                resultAtSite = SearchName(NameToSearch, site);
+                stopwatch.Stop();
+                resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
+                Results.Add(resultAtSite);
+                stopwatch.Reset();
             }
 
             searchResult.resultAtSites = Results;
@@ -53,15 +63,21 @@ namespace WebScraping.Selenium.SearchEngine
         {
             List<SiteEnum> siteEnums = new List<SiteEnum>();
 
-            siteEnums.Add(SiteEnum.FDADebarPage);
-            siteEnums.Add(SiteEnum.ERRProposalToDebarPage);
-            siteEnums.Add(SiteEnum.AdequateAssuranceListPage);
+            //siteEnums.Add(SiteEnum.FDADebarPage);
+            //siteEnums.Add(SiteEnum.ERRProposalToDebarPage);
+            //siteEnums.Add(SiteEnum.AdequateAssuranceListPage);
+            //siteEnums.Add(SiteEnum.ClinicalInvestigatorInspectionPage);
+            //siteEnums.Add(SiteEnum.CBERClinicalInvestigatorInspectionPage);
+            //siteEnums.Add(SiteEnum.ClinicalInvestigatorDisqualificationPage);
+            //siteEnums.Add(SiteEnum.ExclusionDatabaseSearchPage);
+            siteEnums.Add(SiteEnum.SpeciallyDesignedNationalsListPage);
 
             SearchResult results = new SearchResult();
 
+            NameToSearch.Trim();
             results = SearchByName(NameToSearch, siteEnums);
 
-            return SearchByName(NameToSearch, siteEnums);
+            return results;
         }
         
         public BaseSearchPage GetSearchPage(SiteEnum siteEnum)
@@ -73,12 +89,16 @@ namespace WebScraping.Selenium.SearchEngine
                     return new ERRProposalToDebarPage(Driver);
                 case SiteEnum.AdequateAssuranceListPage:
                     return new AdequateAssuranceListPage(Driver);
-                //case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                //    return new ClinicalInvestigatorDisqualificationPage(Driver);
-                //case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                //    return new CBERClinicalInvestigatorInspectionPage(Driver);
-                //case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    //return new SpeciallyDesignatedNationalsListPage(Driver);
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    return new ClinicalInvestigatorDisqualificationPage(Driver);
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    return new CBERClinicalInvestigatorInspectionPage(Driver);
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    return new SpeciallyDesignatedNationalsListPage(Driver);
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    return new ExclusionDatabaseSearchPage(Driver);
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    return new ClinicalInvestigatorInspectionPage(Driver);
 
                 default: return null;
             }

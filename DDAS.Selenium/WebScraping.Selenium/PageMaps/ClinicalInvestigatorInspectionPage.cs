@@ -41,7 +41,28 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Element = driver.FindElement(By.Id("example_next"));
+                try
+                {
+                    if (driver.FindElement(By.Id("example_next")).Displayed)
+                    {
+                        IWebElement Element = driver.FindElement(By.Id("example_next"));
+                        return Element;
+                    }
+                    else
+                        return null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public IWebElement ClinicalInvestigatorNextList
+        {
+            get
+            {
+                IWebElement Element = driver.FindElement(By.Id("example_paginate"));
                 return Element;
             }
         }

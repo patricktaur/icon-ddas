@@ -14,6 +14,7 @@ namespace WebScraping.Selenium.Pages
     {
         public ExclusionDatabaseSearchPage(IWebDriver driver) : base(driver)
         {
+            _exclusionsList = new List<ExclusionDatabaseSearchList>();
             Open();
             SaveScreenShot("ExclusionDatabaseSearch.png");
         }
@@ -41,7 +42,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void SearchTerms(string FirstName, string LastName)
+        public bool SearchTerms(string FirstName, string LastName)
         {
             IWebElement FNameElement = ExclusionDatabaseSearchFirstName;
             FNameElement.SendKeys(FirstName);
@@ -54,24 +55,22 @@ namespace WebScraping.Selenium.Pages
             
             //wait for the page to load
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
+            if (ExclusionDatabaseSearchTable != null)
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
 
         public void LoadExclusionsDatabaseList()
         {
-            _exclusionsList = new List<ExclusionDatabaseSearchList>();
-
-            var date = DateTime.Now;
-
             foreach (IWebElement TR in 
                 ExclusionDatabaseSearchTable.FindElements(By.XPath("tbody/tr")))
             {
                 ExclusionDatabaseSearchList NewExclusionsList = new ExclusionDatabaseSearchList();
-
-                if (TR.FindElements(By.XPath("th")).Count > 0)
-                {
-                    continue;
-                }
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
@@ -87,21 +86,58 @@ namespace WebScraping.Selenium.Pages
                     NewExclusionsList.SSNorEIN = TDs[7].Text;
 
                     _exclusionsList.Add(NewExclusionsList);
-                    //Console.WriteLine("Completed Record No:{0}", NewExclusionsList.FirstName);
                 }
             }
-            //Console.WriteLine("Start Time: {0}", date);
-            //Console.WriteLine("End Time: {0}", DateTime.Now);
         }
 
         public override ResultAtSite Search(string NameToSearch)
         {
-            throw new NotImplementedException();
+            ResultAtSite searchResult = new ResultAtSite();
+
+            searchResult.SiteName = SiteName.ToString();
+
+            foreach (ExclusionDatabaseSearchList person in _exclusionsList)
+            {
+                string FullName = person.FirstName + " " + person.MiddleName + " " + person.LastName;
+
+                string WordFound = FindSubString(FullName, NameToSearch);
+
+                if (WordFound != null)
+                {
+                    searchResult.SiteName = SiteName.ToString();
+
+                    searchResult.Results.Add(new MatchResult
+                    {
+                        MatchName = FullName,
+                        MatchLocation = "Word(s) matched - " + WordFound
+                    });
+                }
+            }
+
+            if (searchResult.Results.Count == 0)
+            {
+                searchResult.Results.Add(new MatchResult
+                {
+                    MatchName = "None",
+                    MatchLocation = "None"
+                });
+                return searchResult;
+            }
+            else
+                return searchResult;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
-            throw new NotImplementedException();
+            string[] FullName = NameToSearch.Split(' ');
+
+            if (SearchTerms(FullName[0], FullName[1]))
+                LoadExclusionsDatabaseList();
+
+            driver.Url = "http://exclusions.oig.hhs.gov/";
+
+            if (SearchTerms(FullName[1], FullName[0]))
+                LoadExclusionsDatabaseList();
         }
 
         public class ExclusionDatabaseSearchList

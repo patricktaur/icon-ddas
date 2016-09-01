@@ -29,6 +29,7 @@ namespace DDAS.Models.Entities.Domain
         }
 
         public string SiteName { get; set; }
+        public string TimeTakenInMs { get; set; }
         public List<MatchResult> Results { get; set; }
     }
 
