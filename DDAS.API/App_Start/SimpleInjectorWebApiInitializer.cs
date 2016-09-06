@@ -54,7 +54,7 @@ namespace DDAS.API.App_Start
             });
 
             container.Register<IMapper>(() => config.CreateMapper(container.GetInstance));
-            container.RegisterWebApiRequest<ISearchEngine>(() => new SearchEngine());
+            //container.RegisterWebApiRequest<ISearchEngine>(() => new SearchEngine());
             // >>>>>
         }
     }

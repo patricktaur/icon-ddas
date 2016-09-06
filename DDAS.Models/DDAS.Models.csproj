@@ -68,6 +68,7 @@
     <Compile Include="Repository\IParamRepository.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="ViewModels\Artist\ArtistViewModelRequest.cs" />
+    <Compile Include="ViewModels\Search\SearchHistoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
