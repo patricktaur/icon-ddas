@@ -16960,3 +16960,7 @@ DDAS.WebSite/typings/globals/jasmine/index.d.ts
 DDAS.WebSite/typings/globals/jasmine/typings.json
 DDAS.WebSite/typings/globals/node/index.d.ts
 DDAS.WebSite/typings/globals/node/typings.json
+DDAS.WebSite/node_modules/
+*.js
+*.map
+DDAS.API/Downloads/

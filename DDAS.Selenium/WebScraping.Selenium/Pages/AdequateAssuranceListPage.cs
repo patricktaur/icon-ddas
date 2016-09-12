@@ -15,7 +15,7 @@ namespace WebScraping.Selenium.Pages
         public AdequateAssuranceListPage(IWebDriver driver) : base(driver)
         {
             Open();
-            SaveScreenShot("AdequateAssuranceListPage.png");
+            //SaveScreenShot("AdequateAssuranceListPage.png");
         }
 
         public override string Url
@@ -38,6 +38,12 @@ namespace WebScraping.Selenium.Pages
             get {
                 return SiteEnum.AdequateAssuranceListPage;
             }
+        }
+
+     
+        public override void LoadContent(string NameToSearch)
+        {
+            LoadAdequateAssuranceInvestigators();
         }
 
         public void LoadAdequateAssuranceInvestigators()
@@ -68,7 +74,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 
@@ -101,10 +107,7 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-        public override void LoadContent(string NameToSearch)
-        {
-            LoadAdequateAssuranceInvestigators();
-        }
+      
 
         public class AdequateAssuranceList
         {

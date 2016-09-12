@@ -13,7 +13,7 @@ namespace WebScraping.Selenium.Pages
         {
             _clinicalInvestigatorList = new List<ClinicalInvestigator>();
             Open();
-            SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
+            //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
 
         public override string Url
@@ -23,6 +23,7 @@ namespace WebScraping.Selenium.Pages
                 return @"http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
             }
         }
+
 
         private List<ClinicalInvestigator> _clinicalInvestigatorList;
 
@@ -91,7 +92,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 

@@ -12,28 +12,32 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using System.Collections.Specialized;
-
+using  DDAS.Models.Interfaces;
 namespace WebScraping.Selenium.Pages
 {
-    public class SpeciallyDesignatedNationalsListPage : BaseSearchPage //BaseClasses.BasePage
-    {
+    public class SpeciallyDesignatedNationalsListPage: ISearchPage
+    { //: BaseSearchPage 
+
+        private string _folderPath;
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL, string szFileName, long dwReserved, long lpfnCB);
 
-        public SpeciallyDesignatedNationalsListPage(IWebDriver driver) : base(driver)
+        //public SpeciallyDesignatedNationalsListPage(IWebDriver driver) : base(driver)
+        public SpeciallyDesignatedNationalsListPage(string folderPath) 
         {
-            Open();
-            SaveScreenShot("SpeciallyDesignatedNationalsList.png");
+            _folderPath = folderPath;
+            //Open();
+            //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
 
-        public override string Url {
+        public  string Url {
             get {
                 return 
                 @"http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx";
             }
         }
 
-        public override SiteEnum SiteName {
+        public  SiteEnum SiteName {
             get {
                 return SiteEnum.SpeciallyDesignedNationalsListPage;
             }
@@ -41,7 +45,7 @@ namespace WebScraping.Selenium.Pages
 
         public void DownloadSDNList()
         {
-            string fileName = "c:\\development\\temp\\test.pdf";
+            string fileName = _folderPath + @"\test.pdf"; // "c:\\development\\temp\\test.pdf";
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.
@@ -58,7 +62,7 @@ namespace WebScraping.Selenium.Pages
             StringBuilder text = new StringBuilder();
             //string[] PDFDataArray;
 
-            using (PdfReader reader = new PdfReader("c:\\development\\temp\\test.pdf"))
+            using (PdfReader reader = new PdfReader(_folderPath + @"\test.pdf"))
             {
                 string PageContent;
 
@@ -121,7 +125,7 @@ namespace WebScraping.Selenium.Pages
 
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+        public  ResultAtSite Search(string NameToSearch)
         {
             ResultAtSite result = new ResultAtSite();
 
@@ -158,10 +162,46 @@ namespace WebScraping.Selenium.Pages
             return result;
         }
 
-        public override void LoadContent(string NameToSearch)
+        //public  void LoadContent(string NameToSearch)
+        //{
+        //    DownloadSDNList();
+
+        //}
+
+        public string FindSubString(string SearchString, string NameToSearch)
+        {
+            SearchString = SearchString.ToLower();
+
+            string[] FullName = NameToSearch.Trim().Split(' ');
+
+            int count = 0;
+            string WordMatched = null;
+
+            for (int i = 0; i < FullName.Length; i++)
+            {
+                if (SearchString.Contains(FullName[i].ToLower()))
+                {
+                    count = count + 1;
+                    WordMatched = WordMatched + " " + FullName[i].Trim();
+                }
+            }
+            return WordMatched;
+        }
+
+        public void LoadContent()
         {
             DownloadSDNList();
+        }
 
+        public ResultAtSite GetResultAtSite(string NameToSearch)
+        {
+            //refactor: remove Search
+            return Search(NameToSearch);
+        }
+
+        public void LoadContent(string NameToSearch)
+        {
+            DownloadSDNList(); 
         }
 
         public class NamesClass

@@ -1,0 +1,22 @@
+12Sep2016
+Parick
+1. Web site : Angular -upgrade to rc6
+2. Generating PDF with Angular ?
+3. Search Page enhancements
+4. Routing - Page not found
+5. Routing erros
+6. Angular - moving to production site
+
+Pradeep
+1. Explore PhantomJs With Selenium as replacement to FireFox/Edge driver
+2. LIST OF SPECIALLY DESIGNATED NATIONALS - Download PDF
+	a. read document date
+	b. store content  
+	c. Index content
+3. Match Location: improve - page no, line required.
+3. 
+Divya - Web Site
+1. Angular Accordion
+2. Login Page
+3. Reports
+4. Previous Searches - view

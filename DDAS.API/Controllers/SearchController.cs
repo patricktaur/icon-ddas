@@ -13,19 +13,43 @@ namespace DDAS.API.Controllers
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
-        //private ISearchEngine _SearchEngine;
+        private ISearchEngine _SearchEngine;
 
-        //public SearchController(ISearchEngine search)
-        //{
-        //    _SearchEngine = search; 
-        //}
+        public SearchController(ISearchEngine search)
+        {
+            _SearchEngine = search;
+        }
 
-        //[HttpGet]
-        //public IHttpActionResult Search([FromUri] SearchName searchName)
-        //{
-        //    string Name = searchName.FirstName + " " + searchName.LastName;
-        //    return Ok(_SearchEngine.SearchByName(Name));
-        //}
+        [Route("SearchResult")]
+        [HttpPost]
+        public IHttpActionResult SearchResult(SearchQuery query)
+        {
+            //return Ok(query.NameToSearch);
+            var searchResults = _SearchEngine.SearchByName(query);
+            return Ok(searchResults);
+
+        }
+
+        [Route("SearchResultAtSite")]
+        [HttpPost]
+        public IHttpActionResult SearchResultAtSite(SearchQueryAtSite query)
+        {
+ 
+            var searchResults = _SearchEngine.SearchByName(query.NameToSearch, query.SiteEnum);
+            return Ok(searchResults);
+
+ 
+
+        }
+
+        [Route("getNewSearchQuery")]
+        [HttpGet]
+        public IHttpActionResult newSearchQuery()
+        {
+            var query = _SearchEngine.GetNewSearchQuery();
+             return Ok(query);
+        }
+
         [Route("SearchHistory")]
         [HttpGet]
         public IHttpActionResult SearchHistory()

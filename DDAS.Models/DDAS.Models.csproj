@@ -53,7 +53,6 @@
     <Compile Include="Entities\AuditEntity.cs" />
     <Compile Include="Entities\Domain\Artist.cs" />
     <Compile Include="Entities\Domain\Painting.cs" />
-    <Compile Include="Entities\Domain\SearchName.cs" />
     <Compile Include="Entities\Domain\SearchResult.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Param.cs" />
@@ -61,6 +60,7 @@
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\ISearchEngine.cs" />
+    <Compile Include="Interfaces\ISearchPage.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="PriceComputation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -15,7 +15,7 @@ namespace WebScraping.Selenium.Pages
         public ClinicalInvestigatorDisqualificationPage(IWebDriver driver) : base(driver)
         {
             Open();
-            SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
+            //SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
         }
 
         public override string Url
@@ -79,7 +79,8 @@ namespace WebScraping.Selenium.Pages
             LoadDisqualificationProceedingsList();
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+     
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 

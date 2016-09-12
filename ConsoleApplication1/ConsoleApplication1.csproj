@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ConsoleApplication1</RootNamespace>
     <AssemblyName>ConsoleApplication1</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,13 +51,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
-      <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
-      <Name>DDAS.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnitTestProject1\UnitTestProject1.csproj">
-      <Project>{72C5E127-27C0-4016-8505-C30BE221D03D}</Project>
-      <Name>UnitTestProject1</Name>
+    <ProjectReference Include="..\DDAS.Selenium\WebScraping.Tests\WebScraping.Tests.csproj">
+      <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
+      <Name>WebScraping.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

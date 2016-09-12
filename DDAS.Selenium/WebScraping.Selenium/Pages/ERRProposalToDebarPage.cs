@@ -16,7 +16,7 @@ namespace WebScraping.Selenium.Pages
         public ERRProposalToDebarPage(IWebDriver driver) : base(driver)
         {
             Open();
-            SaveScreenShot("ProposalToDebarPage.png");
+            //SaveScreenShot("ProposalToDebarPage.png");
         }
 
         public override string Url
@@ -61,7 +61,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 

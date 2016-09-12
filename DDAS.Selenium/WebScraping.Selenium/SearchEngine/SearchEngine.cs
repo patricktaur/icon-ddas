@@ -4,6 +4,8 @@ using DDAS.Models.Interfaces;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Firefox;
+
 using WebScraping.Selenium.Pages;
 using WebScraping.Selenium.BaseClasses;
 using System.Collections.Generic;
@@ -13,24 +15,54 @@ namespace WebScraping.Selenium.SearchEngine
 {
     public class SearchEngine : ISearchEngine, IDisposable
     {
-        private IWebDriver Driver;
-
-        public SearchEngine()
+        private IWebDriver _Driver;
+        private string _DownloadFolder;
+        public SearchEngine(IWebDriver webDriver, string downloadFolder)
         {
-            Driver = new EdgeDriver();
+            //Driver = new EdgeDriver();
+            _Driver =  new FirefoxDriver();
+            _DownloadFolder = downloadFolder;
         }
 
-        public ResultAtSite SearchName(string NameToSearch, SiteEnum siteEnum)
+        public ResultAtSite SearchByName(string NameToSearch, SiteEnum siteEnum)
         {
+           
             var PageObject = GetSearchPage(siteEnum);
 
+            
             PageObject.LoadContent(NameToSearch);
 
-            var result = PageObject.Search(NameToSearch);
-
+            var result = PageObject.GetResultAtSite(NameToSearch);
+            result.SiteEnum = siteEnum;            
             return result;
         }
+        
+        //refactor: remove other related functins.
+        public SearchResult SearchByName(SearchQuery searchQuery)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+           
+            SearchResult searchResult = new SearchResult();
+            searchResult.NameToSearch = searchQuery.NameToSearch;
+            searchResult.SearchedBy = "Pradeep";
+            searchResult.SearchedOn = DateTime.Now.ToString();
+            foreach (SearhQuerySite site in searchQuery.SearchSites)
+            {
+               // if (site.Selected == true)
+               // {
+                    ResultAtSite resultAtSite = new ResultAtSite();
+                    stopwatch.Start();
+                    resultAtSite = SearchByName(searchQuery.NameToSearch, site.SiteEnum);
+                    stopwatch.Stop();
+                    resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
 
+                    searchResult.resultAtSites.Add(resultAtSite);
+                    stopwatch.Reset();
+               // }
+
+            }
+            return searchResult;
+        }
         public SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums)
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -48,7 +80,7 @@ namespace WebScraping.Selenium.SearchEngine
             foreach (SiteEnum site in siteEnums)
             {
                 stopwatch.Start();
-                resultAtSite = SearchName(NameToSearch, site);
+                resultAtSite = SearchByName(NameToSearch, site);
                 stopwatch.Stop();
                 resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
                 Results.Add(resultAtSite);
@@ -80,33 +112,72 @@ namespace WebScraping.Selenium.SearchEngine
             return results;
         }
         
-        public BaseSearchPage GetSearchPage(SiteEnum siteEnum)
+        //public BaseSearchPage GetSearchPage(SiteEnum siteEnum)
+            public ISearchPage GetSearchPage(SiteEnum siteEnum)
         {
             switch (siteEnum)
             {
-                case SiteEnum.FDADebarPage: return new FDADebarPage(Driver);
-                case SiteEnum.ERRProposalToDebarPage:
-                    return new ERRProposalToDebarPage(Driver);
+                case SiteEnum.FDADebarPage:
+                    return new FDADebarPage(_Driver);
                 case SiteEnum.AdequateAssuranceListPage:
-                    return new AdequateAssuranceListPage(Driver);
+                    return new AdequateAssuranceListPage(_Driver);
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    return new ClinicalInvestigatorDisqualificationPage(Driver);
-                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                    return new CBERClinicalInvestigatorInspectionPage(Driver);
-                case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    return new SpeciallyDesignatedNationalsListPage(Driver);
-                case SiteEnum.ExclusionDatabaseSearchPage:
-                    return new ExclusionDatabaseSearchPage(Driver);
+                    return new ClinicalInvestigatorDisqualificationPage(_Driver);
+                case SiteEnum.ERRProposalToDebarPage:
+                    return new ERRProposalToDebarPage(_Driver);
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return new ClinicalInvestigatorInspectionPage(Driver);
-
+                    return new ClinicalInvestigatorInspectionPage(_Driver);
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    return new CBERClinicalInvestigatorInspectionPage(_Driver);
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    return new ExclusionDatabaseSearchPage(_Driver);
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    return new SpeciallyDesignatedNationalsListPage(_DownloadFolder);
                 default: return null;
             }
         }
 
+        public SearchQuery GetNewSearchQuery()
+        {
+            return new SearchQuery
+            {
+                NameToSearch = "Anthony, James Michael",
+                SearchSites = new List<SearhQuerySite>
+                {
+                    new SearhQuerySite {Selected = true, SiteName="FDA Debarment List", SiteShortName="FDA Debarment List", SiteEnum = SiteEnum.FDADebarPage, SiteUrl="XXX" },
+
+                    //not ready:
+                    //new SearhQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CLIL)(CDER", SiteShortName="Clinical Investigator Insp...", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+                    
+                    //not ready:
+                    //new SearhQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+
+                    //not ready:
+                    //new SearhQuerySite {Selected = false, SiteName="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar", SiteShortName="NOOH – Proposal to Debar", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+                    
+                    new SearhQuerySite {Selected = true, SiteName="Adequate Assurances List for Clinical Investigators", SiteShortName="Adequate Assurances List ...", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+                    new SearhQuerySite {Selected = true, SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="XXX" },
+                    //error: element not found:
+                    //new SearhQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CBER)", SiteShortName="Inspection List", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="XXX" },
+                    //?
+                    //new SearhQuerySite {Selected = true, SiteName="PHS Administrative Actions Listing ", SiteShortName="PHS Administrative Actions", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+                    new SearhQuerySite {Selected = true, SiteName="HHS/OIG/ EXCLUSIONS DATABASE SEARCH/ FRAUD", SiteShortName="HHS/OIG/ EXCLUSIONS ...", SiteEnum = SiteEnum.ExclusionDatabaseSearchPage, SiteUrl="XXX" },
+                    //not ready:
+                    //new SearhQuerySite {Selected = true, SiteName="HHS/OIG Corporate Integrity Agreements/Watch List", SiteShortName="HHS/OIG Corporate Integrity", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+                    
+                    //new SearhQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.XXX, SiteUrl="XXX" },
+
+                    //new SearhQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
+                    
+         }
+
+            };
+           
+        }
+
         public void Dispose()
         {
-            Driver.Quit();
+            _Driver.Quit();
         }
     }
 }

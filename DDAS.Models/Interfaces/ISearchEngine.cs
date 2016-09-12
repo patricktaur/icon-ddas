@@ -8,6 +8,8 @@ namespace DDAS.Models.Interfaces
     {
         SearchResult SearchByName(string NameToSearch);
         SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums);
-        ResultAtSite SearchName(string NameToSearch, SiteEnum siteEnums);
+        ResultAtSite SearchByName(string NameToSearch, SiteEnum siteEnum);
+        SearchResult SearchByName(SearchQuery searchQuery);
+        SearchQuery GetNewSearchQuery();
     }
 }

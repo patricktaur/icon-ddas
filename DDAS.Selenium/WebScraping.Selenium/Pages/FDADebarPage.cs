@@ -17,7 +17,7 @@ namespace WebScraping.Selenium.Pages
        public FDADebarPage(IWebDriver driver) : base(driver)
         {
             Open();
-            SaveScreenShot("abc.png");
+            //SaveScreenShot("abc.png");
         }
 
         public override string Url
@@ -68,7 +68,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 

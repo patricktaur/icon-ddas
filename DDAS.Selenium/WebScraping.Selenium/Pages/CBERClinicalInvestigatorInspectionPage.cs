@@ -16,7 +16,7 @@ namespace WebScraping.Selenium.Pages
         {
             _clinicalInvestigator = new List<CBERClinicalInvestigator>();
             Open();
-            SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
+            //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
 
         public override string Url
@@ -91,7 +91,9 @@ namespace WebScraping.Selenium.Pages
             LoadNextInspectionList();
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+     
+
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 

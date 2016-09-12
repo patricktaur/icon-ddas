@@ -7,9 +7,40 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain
 {
+    #region SearchQuery
+
+   
+    public class SearchQuery
+    {
+        public string NameToSearch { get; set; }
+        public List<SearhQuerySite> SearchSites { get; set; }
+    }
+
+    public class SearhQuerySite
+    {
+        public string SiteName { get; set; }
+        public string SiteShortName { get; set; }
+        public bool Selected { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        public string SiteUrl { get; set; }
+        public string SearchTimeTakenInMs { get; set; }
+        public List<MatchResult> Results { get; set; }
+
+    }
+    
+    public class SearchQueryAtSite
+    {
+        public string NameToSearch { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        
+    }
+    #endregion
+
+    #region SearchResult
 
     public class SearchResult
     {
+
         public SearchResult()
         {
             resultAtSites = new List<ResultAtSite>();
@@ -27,7 +58,7 @@ namespace DDAS.Models.Entities.Domain
         {
             Results = new List<MatchResult>();
         }
-
+        public SiteEnum SiteEnum { get; set; }
         public string SiteName { get; set; }
         public string TimeTakenInMs { get; set; }
         public List<MatchResult> Results { get; set; }
@@ -39,5 +70,5 @@ namespace DDAS.Models.Entities.Domain
         public string MatchLocation { get; set; }
     }
 
-    
+    #endregion
 }

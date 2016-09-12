@@ -16,7 +16,7 @@ namespace WebScraping.Selenium.Pages
         {
             _exclusionsList = new List<ExclusionDatabaseSearchList>();
             Open();
-            SaveScreenShot("ExclusionDatabaseSearch.png");
+            //SaveScreenShot("ExclusionDatabaseSearch.png");
         }
 
         public override string Url
@@ -90,7 +90,9 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override ResultAtSite Search(string NameToSearch)
+      
+
+        public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
 
