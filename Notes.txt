@@ -20,3 +20,10 @@ Divya - Web Site
 2. Login Page
 3. Reports
 4. Previous Searches - view
+
+---------------------------------------------------------------------------------------------------------
+Entry on 13 Sep 2016
+1. Issues while installing Chrome driver -> Exception 'ChromeDriverServiceNotFound' was thrown for the line
+ -- Driver = new ChromeDriver();
+ Solution: Need to provide the filepath where the chromedriver.exe is saved as an argument   
+ Driver = new ChromeDriver(@"filepath where the chromedriver.exe is saved")

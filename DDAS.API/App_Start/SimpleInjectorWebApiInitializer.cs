@@ -13,7 +13,6 @@ using WebScraping.Selenium.SearchEngine;
 using WebScraping.Selenium;
 using WebScraping.Selenium.Pages;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
 
 namespace DDAS.API.App_Start
 {
@@ -58,8 +57,8 @@ namespace DDAS.API.App_Start
             container.Register<IMapper>(() => config.CreateMapper(container.GetInstance));
             string downloadFolder = HttpContext.Current.Request.PhysicalApplicationPath + @"Downloads";
 
-            IWebDriver driver = new FirefoxDriver();
-            container.RegisterWebApiRequest<ISearchEngine>(() => new SearchEngine(driver, downloadFolder));
+            //IWebDriver driver = new EdgeDriver();
+            container.RegisterWebApiRequest<ISearchEngine>(() => new SearchEngine(downloadFolder));
 
             //c.Register<ICheckRepo<Customer>>(() => new CheckRepository<Customer>(constr, "cust_sp"));
 
