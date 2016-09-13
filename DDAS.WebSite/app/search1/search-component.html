@@ -20,7 +20,7 @@
                                 <option *ngFor="let StudyNumber of StudyNumbers">{{StudyNumber.StudyNumber}}</option>
                             </select>
                             </div>
-                            <button type="submit" class="btn btn-default">Start</button>
+                            <button type="button" class="btn btn-default" (click)="SearchResultsAllSites()">Start</button>
 
                         </div>
                         <div class="col-md-8">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="well">
-                    {{diagnostic}}
+                   
                     <h2>Sites to serarch:</h2>
                     <div class="panel panel-primary" *ngFor="let site of searchQuery.SearchSites">
                         <div class="panel-heading">

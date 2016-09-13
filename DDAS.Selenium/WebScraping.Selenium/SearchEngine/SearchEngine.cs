@@ -4,7 +4,7 @@ using DDAS.Models.Interfaces;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.PhantomJS;
 
 using WebScraping.Selenium.Pages;
 using WebScraping.Selenium.BaseClasses;
@@ -19,8 +19,8 @@ namespace WebScraping.Selenium.SearchEngine
         private string _DownloadFolder;
         public SearchEngine(IWebDriver webDriver, string downloadFolder)
         {
-            //Driver = new EdgeDriver();
-            _Driver =  new FirefoxDriver();
+           _Driver = new PhantomJSDriver();
+            //_Driver = webDriver;
             _DownloadFolder = downloadFolder;
         }
 
@@ -161,7 +161,7 @@ namespace WebScraping.Selenium.SearchEngine
                     //new SearhQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CBER)", SiteShortName="Inspection List", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="XXX" },
                     //?
                     //new SearhQuerySite {Selected = true, SiteName="PHS Administrative Actions Listing ", SiteShortName="PHS Administrative Actions", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
-                    new SearhQuerySite {Selected = true, SiteName="HHS/OIG/ EXCLUSIONS DATABASE SEARCH/ FRAUD", SiteShortName="HHS/OIG/ EXCLUSIONS ...", SiteEnum = SiteEnum.ExclusionDatabaseSearchPage, SiteUrl="XXX" },
+                    //new SearhQuerySite {Selected = true, SiteName="HHS/OIG/ EXCLUSIONS DATABASE SEARCH/ FRAUD", SiteShortName="HHS/OIG/ EXCLUSIONS ...", SiteEnum = SiteEnum.ExclusionDatabaseSearchPage, SiteUrl="XXX" },
                     //not ready:
                     //new SearhQuerySite {Selected = true, SiteName="HHS/OIG Corporate Integrity Agreements/Watch List", SiteShortName="HHS/OIG Corporate Integrity", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
                     
