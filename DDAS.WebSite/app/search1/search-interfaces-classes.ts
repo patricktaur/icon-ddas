@@ -25,6 +25,7 @@ export class SearhQuerySite
           //public List<MatchResult> Results { get; set; }
           Results: MatchResult[] = new Array<MatchResult>();
           //Result: ResultAtSite;
+           Processing: boolean;
     }
 
 export class SearchQueryAtSite{

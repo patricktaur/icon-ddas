@@ -13,7 +13,7 @@ import {IStudyNumber, SearchResult, SearchQuery, SearchQueryAtSite, ResultAtSite
 @Component({
     moduleId: module.id,
     //selector: 'searchPage',
-    templateUrl: 'search-component.html'
+    templateUrl: 'search.component.html'
 
 
 })
@@ -62,13 +62,23 @@ export class SearchComponent
             });
     }
 
+    ClearAllSearchResults(){
+        this.searchQuery.SearchSites.forEach(site => {
+            this.ClearSearchResultsAtSite(site);
+        });
+    }
+    ClearSearchResultsAtSite(site: SearhQuerySite){
+        site.Processing = false;
+        site.Results = [];
+    }
+    
     SearchResultsAllSites() {
 
         this.searchQuery.SearchSites.forEach(site => {
-            this.SearchResultAtSite(site.SiteEnum);
-            
-        });
-
+            if (site.Selected){
+                this.SearchResultAtSite(site.SiteEnum);
+            }
+         });
     }
 
     SearchResultAtSite(siteEnum: number) {
@@ -82,6 +92,7 @@ export class SearchComponent
             throw new TypeError("site object not found");
         }
         site.Results = [];
+        site.Processing = true;
         this.service.SearchResultsAtSite(query)
             .subscribe((item: ResultAtSite) => {
 
@@ -95,6 +106,7 @@ export class SearchComponent
                 item.Results.forEach(element => {
                     site.Results.push(element);
                 });
+                site.Processing = false;
                 this.slimLoader.complete();
             },
             error => {
@@ -103,6 +115,7 @@ export class SearchComponent
             });
 
     }
+   
 
     get diagnostic() { return JSON.stringify(this.searchQuery); }
 

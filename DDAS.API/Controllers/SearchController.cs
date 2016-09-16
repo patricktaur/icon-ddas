@@ -54,7 +54,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult SearchHistory()
         {
-
+            
             SearchHistoryViewModel[] result = new SearchHistoryViewModel[] {
                 new SearchHistoryViewModel {searchedBy="Ravi", searchedOn="25-Mar-2016", searchName="Tom Jerry", searchCount=9 },
                 new SearchHistoryViewModel {searchedBy="Shyam", searchedOn="18-Feb-2016", searchName="Venkatesh Verma", searchCount=8},
@@ -71,8 +71,8 @@ namespace DDAS.API.Controllers
                  new SearchHistoryViewModel {searchedBy="Ravi", searchedOn="05-Mar-2016", searchName="Sathya Muth", searchCount=9 },
 
             };
-
-            return Ok(result);
+            
+            return Ok();
         }
 
         [Route("StudyNumbers")]

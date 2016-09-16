@@ -16964,5 +16964,11 @@ DDAS.WebSite/node_modules/
 *.js
 *.map
 DDAS.API/Downloads/
+<<<<<<< HEAD
 DDAS.API/phantomjs-license.txt
 DDAS.Selenium/WebScraping.Selenium/phantomjs-license.txt
+=======
+Libraries/PhantomJS/phantomjs.exe
+DDAS.Selenium/WebScraping.Selenium/phantomjs-license.txt
+Libraries/ChromeDriver/chromedriver.exe
+>>>>>>> 32ad08b6c513bf0c281c27e8809f6dcad8fcb8f9

@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
 using WebScraping.Selenium.BaseClasses;
 
 namespace WebScraping.Selenium.Pages
@@ -11,8 +12,17 @@ namespace WebScraping.Selenium.Pages
             get
             {
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                IWebElement FirstName = driver.FindElement(By.Id("ctl00_cpExclusions_txtSPFirstName"));
-                return FirstName;
+                
+                IList<IWebElement> FirstName = driver.FindElements(By.XPath("//input[@type='text']"));
+
+                foreach (IWebElement element in FirstName)
+                {
+                    if (element.GetAttribute("Id") == "ctl00_cpExclusions_txtSPFirstName")
+                    {
+                        return element;
+                    }
+                }
+                return null;
             }
         }
 
@@ -20,8 +30,16 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement LastName = driver.FindElement(By.Id("ctl00_cpExclusions_txtSPLastName"));
-                return LastName;
+                IList<IWebElement> LastName = driver.FindElements(By.XPath("//input"));
+
+                foreach (IWebElement element in LastName)
+                {
+                    if (element.GetAttribute("Id") == "ctl00_cpExclusions_txtSPLastName")
+                    {
+                        return element;
+                    }
+                }
+                return null;
             }
         }
 
