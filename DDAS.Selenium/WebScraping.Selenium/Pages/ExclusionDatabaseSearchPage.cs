@@ -23,7 +23,7 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                return @"http://exclusions.oig.hhs.gov/";
+                return @"http://exclusions.oig.hhs.gov";
             }
         }
 
@@ -44,6 +44,8 @@ namespace WebScraping.Selenium.Pages
 
         public bool SearchTerms(string FirstName, string LastName)
         {
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
             IWebElement FNameElement = ExclusionDatabaseSearchFirstName;
             FNameElement.SendKeys(FirstName);
 
@@ -135,8 +137,6 @@ namespace WebScraping.Selenium.Pages
 
             if (SearchTerms(FullName[0], FullName[1]))
                 LoadExclusionsDatabaseList();
-
-            driver.Url = "http://exclusions.oig.hhs.gov/";
 
             if (SearchTerms(FullName[1], FullName[0]))
                 LoadExclusionsDatabaseList();

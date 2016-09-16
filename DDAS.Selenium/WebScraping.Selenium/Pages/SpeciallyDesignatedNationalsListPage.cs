@@ -135,22 +135,6 @@ namespace WebScraping.Selenium.Pages
 
             List<NamesClass> NamesFromPDF = GetTextFromPDF(NameToSearch);
 
-            //List<NamesClass> TempNamesFromPDF = new List<NamesClass>();
-
-            //TempNamesFromPDF = NamesFromPDF;
-            
-            //for (int Names = 0; Names < SearchName.Length; Names++)
-            //{
-            //    var results = NamesFromPDF.Where(x => x.Names.ToLower().Contains
-            //    (SearchName[Names].ToLower()));
-
-            //    if (results != null)
-            //    {
-            //        var SecondWordMatch = results.Where(x => x.Names.ToLower().Contains
-            //        (SearchName[Names]));
-            //    }
-            //}
-
             foreach (NamesClass Names in NamesFromPDF)
             {
                 result.Results.Add(new MatchResult
@@ -161,12 +145,6 @@ namespace WebScraping.Selenium.Pages
             }
             return result;
         }
-
-        //public  void LoadContent(string NameToSearch)
-        //{
-        //    DownloadSDNList();
-
-        //}
 
         public string FindSubString(string SearchString, string NameToSearch)
         {

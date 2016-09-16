@@ -23,12 +23,13 @@ Divya - Web Site
 <<<<<<< HEAD
 =======
 
----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
 Entry on 13 Sep 2016
 1. Issues while installing Chrome driver -> Exception 'ChromeDriverServiceNotFound' was thrown for the line
  -- Driver = new ChromeDriver();
  Solution: Need to provide the filepath where the chromedriver.exe is saved as an argument   
  Driver = new ChromeDriver(@"filepath where the chromedriver.exe is saved")
+<<<<<<< HEAD
 >>>>>>> 32ad08b6c513bf0c281c27e8809f6dcad8fcb8f9
 
 
@@ -37,3 +38,41 @@ Download:
 https://sites.google.com/a/chromium.org/chromedriver/downloads
 Windows 32 version
 to : C:\Development\p926-ddas\Libraries\ChromeDriver
+=======
+
+-----------------------------------------------------------------------------------------------------------
+ Entry on 14 Sep 2016
+ 1. Able to test all sites using PhantomJS webdriver. Following was the issue while testing the page
+ 'Exclusions Database Search - http://exclusions.oig.hhs.gov'
+
+ Error: 
+ 'InvalidOperationException' - along with this error, the driver url, title and page source 
+ were also empty! which shouldn't be.
+
+ Solution: 
+ Setting up SslProtocol property of the PhantomJSDriverService to "any" solved the problem.
+ 
+ PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+ service.SslProtocol = "any";
+ _Driver =  new PhantomJSDriver(service);
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 15 Sep 2016
+1. Completed coding and testing for -
+   FDA Warning Letters and Responses and
+   PHS Administrative Actions Listing
+
+   FDA Warning Letters and Responses - Currently unable to test this site using PhantomJS.
+   Exception: StaleElementReferenceException is thrown after clicking on 'search' button, trying to access
+   the table that contains the data.
+   
+   Solution: Yet to find a solution
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 16 Sep 2016
+1. Completed coding and testing for -
+   Corporate Integrity Agreements
+
+   SAM - System for Award Management: Is in progress.
+   Commiting the code to GitHub. 
+>>>>>>> c6207d6ae49f9d0e6d9770dd33eecd3d2b8e2f13

@@ -20,7 +20,7 @@ namespace WebScraping.Selenium.BaseClasses
 
         public virtual void Open(string part = "")
         {
-            this.driver.Navigate().GoToUrl(string.Concat(this.Url, part)); //string.Concat(this.Url, part)
+            driver.Navigate().GoToUrl(string.Concat(Url, part)); //string.Concat(this.Url, part)
         }
 
        
