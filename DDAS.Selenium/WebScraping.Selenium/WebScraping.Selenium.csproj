@@ -67,17 +67,25 @@
     <Compile Include="PageMaps\CBERClinicalInvestigatorInspectionPage.cs" />
     <Compile Include="PageMaps\ClinicalInvestigatorDisqualificationPage.cs" />
     <Compile Include="PageMaps\ClinicalInvestigatorInspectionPage.cs" />
+    <Compile Include="PageMaps\CorporateIntegrityAgreementsListPage.cs" />
     <Compile Include="PageMaps\ERRProposalToDebarPage.cs" />
     <Compile Include="PageMaps\ExclusionDatabaseSearchPage.cs" />
     <Compile Include="PageMaps\FDADebarPage.cs" />
+    <Compile Include="PageMaps\FDAWarningLettersPage.cs" />
+    <Compile Include="PageMaps\PHSAdministrativeActionListingPage.cs" />
+    <Compile Include="PageMaps\SystemForAwardManagementPage.cs" />
     <Compile Include="Pages\AdequateAssuranceListPage.cs" />
     <Compile Include="Pages\CBERClinicalInvestigatorInspectionPage.cs" />
     <Compile Include="Pages\ClinicalInvestigatorDisqualificationPage.cs" />
     <Compile Include="Pages\ClinicalInvestigatorInspectionPage.cs" />
+    <Compile Include="Pages\CorporateIntegrityAgreementsListPage.cs" />
     <Compile Include="Pages\ERRProposalToDebarPage.cs" />
     <Compile Include="Pages\ExclusionDatabaseSearchPage.cs" />
     <Compile Include="Pages\FDADebarPage.cs" />
+    <Compile Include="Pages\FDAWarningLettersPage.cs" />
+    <Compile Include="Pages\PHSAdministrativeActionListingPage.cs" />
     <Compile Include="Pages\SpeciallyDesignatedNationalsListPage.cs" />
+    <Compile Include="Pages\SystemForAwardManagementPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchEngine\SearchEngine.cs" />
   </ItemGroup>

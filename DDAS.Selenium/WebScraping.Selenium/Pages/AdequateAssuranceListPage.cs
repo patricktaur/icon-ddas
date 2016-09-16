@@ -55,11 +55,6 @@ namespace WebScraping.Selenium.Pages
             {
                 var AdequateAssuranceInvestigator = new AdequateAssuranceList();
 
-                //if (TR.FindElements(By.XPath("th")).Count > 0)
-                //{
-                //    continue;
-                //}
-
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
                 if (TDs.Count > 0)
                 {

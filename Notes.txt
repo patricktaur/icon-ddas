@@ -21,9 +21,45 @@ Divya - Web Site
 3. Reports
 4. Previous Searches - view
 
----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
 Entry on 13 Sep 2016
 1. Issues while installing Chrome driver -> Exception 'ChromeDriverServiceNotFound' was thrown for the line
  -- Driver = new ChromeDriver();
  Solution: Need to provide the filepath where the chromedriver.exe is saved as an argument   
  Driver = new ChromeDriver(@"filepath where the chromedriver.exe is saved")
+
+-----------------------------------------------------------------------------------------------------------
+ Entry on 14 Sep 2016
+ 1. Able to test all sites using PhantomJS webdriver. Following was the issue while testing the page
+ 'Exclusions Database Search - http://exclusions.oig.hhs.gov'
+
+ Error: 
+ 'InvalidOperationException' - along with this error, the driver url, title and page source 
+ were also empty! which shouldn't be.
+
+ Solution: 
+ Setting up SslProtocol property of the PhantomJSDriverService to "any" solved the problem.
+ 
+ PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+ service.SslProtocol = "any";
+ _Driver =  new PhantomJSDriver(service);
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 15 Sep 2016
+1. Completed coding and testing for -
+   FDA Warning Letters and Responses and
+   PHS Administrative Actions Listing
+
+   FDA Warning Letters and Responses - Currently unable to test this site using PhantomJS.
+   Exception: StaleElementReferenceException is thrown after clicking on 'search' button, trying to access
+   the table that contains the data.
+   
+   Solution: Yet to find a solution
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 16 Sep 2016
+1. Completed coding and testing for -
+   Corporate Integrity Agreements
+
+   SAM - System for Award Management: Is in progress.
+   Commiting the code to GitHub. 

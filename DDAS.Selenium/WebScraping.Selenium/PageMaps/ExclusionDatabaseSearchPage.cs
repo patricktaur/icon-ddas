@@ -9,37 +9,19 @@ namespace WebScraping.Selenium.Pages
     {
         public IWebElement ExclusionDatabaseSearchFirstName
         {
-            get
-            {
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+            get {
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
                 
-                IList<IWebElement> FirstName = driver.FindElements(By.XPath("//input[@type='text']"));
-
-                foreach (IWebElement element in FirstName)
-                {
-                    if (element.GetAttribute("Id") == "ctl00_cpExclusions_txtSPFirstName")
-                    {
-                        return element;
-                    }
-                }
-                return null;
+                IWebElement FirstName = driver.FindElement(By.Id("ctl00_cpExclusions_txtSPFirstName"));
+                return FirstName;
             }
         }
 
         public IWebElement ExclusionDatabaseSearchLastName
         {
-            get
-            {
-                IList<IWebElement> LastName = driver.FindElements(By.XPath("//input"));
-
-                foreach (IWebElement element in LastName)
-                {
-                    if (element.GetAttribute("Id") == "ctl00_cpExclusions_txtSPLastName")
-                    {
-                        return element;
-                    }
-                }
-                return null;
+            get {
+                IWebElement LastName = driver.FindElement(By.Id("ctl00_cpExclusions_txtSPLastName"));
+                return LastName;
             }
         }
 

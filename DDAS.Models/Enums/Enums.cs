@@ -9,6 +9,10 @@
         ClinicalInvestigatorInspectionPage,
         CBERClinicalInvestigatorInspectionPage,
         ExclusionDatabaseSearchPage,
-        SpeciallyDesignedNationalsListPage
+        SpeciallyDesignedNationalsListPage,
+        FDAWarningLettersPage,
+        PHSAdministrativeActionListingPage,
+        CorporateIntegrityAgreementsListPage,
+        SystemForAwardManagementPage
     };
 }
