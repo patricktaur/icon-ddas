@@ -9,13 +9,15 @@ namespace DDAS.Models.Entities.Domain
 {
     #region SearchQuery
 
-   
+
     public class SearchQuery
     {
+        
         public string NameToSearch { get; set; }
         public List<SearhQuerySite> SearchSites { get; set; }
     }
 
+    //For multiple sites request
     public class SearhQuerySite
     {
         public string SiteName { get; set; }
@@ -24,19 +26,24 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public string SearchTimeTakenInMs { get; set; }
+        public bool HasErrors { get; set; } = false;
+        public string ErrorDescription { get; set; }
         public List<MatchResult> Results { get; set; }
 
     }
-    
+
+    //for Single site query:
     public class SearchQueryAtSite
     {
         public string NameToSearch { get; set; }
         public SiteEnum SiteEnum { get; set; }
-        
+
     }
+
     #endregion
 
     #region SearchResult
+
 
     public class SearchResult
     {
@@ -62,8 +69,10 @@ namespace DDAS.Models.Entities.Domain
         public string SiteName { get; set; }
         public string TimeTakenInMs { get; set; }
         public List<MatchResult> Results { get; set; }
+        public bool HasErrors { get; set; } = false;
+        public string ErrorDescription { get; set; }
     }
-
+    
     public class MatchResult
     {
         public string MatchName { get; set; }

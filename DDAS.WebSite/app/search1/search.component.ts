@@ -69,11 +69,14 @@ export class SearchComponent
     }
     ClearSearchResultsAtSite(site: SearhQuerySite){
         site.Processing = false;
+        site.ErrorDescription = "";
+        site.HasErrors = false;
+        
         site.Results = [];
     }
     
     SearchResultsAllSites() {
-
+        this.ClearAllSearchResults();
         this.searchQuery.SearchSites.forEach(site => {
             if (site.Selected){
                 this.SearchResultAtSite(site.SiteEnum);
@@ -93,6 +96,7 @@ export class SearchComponent
         }
         site.Results = [];
         site.Processing = true;
+        site.Processed = false;
         this.service.SearchResultsAtSite(query)
             .subscribe((item: ResultAtSite) => {
 
@@ -101,12 +105,14 @@ export class SearchComponent
                     throw new TypeError("Incorrect SiteEnum received");
                 }              
                 */
-
+                site.HasErrors = item.HasErrors;
+                site.ErrorDescription = item.ErrorDescription;
 
                 item.Results.forEach(element => {
                     site.Results.push(element);
                 });
                 site.Processing = false;
+                site.Processed = true;
                 this.slimLoader.complete();
             },
             error => {
@@ -116,7 +122,15 @@ export class SearchComponent
 
     }
    
-
+    checkAll(element: HTMLInputElement): void{
+        var value: boolean = element.checked;
+        this.searchQuery.SearchSites.forEach(site => site.Selected = value);
+    }
+/*
+private logCheckbox(element: HTMLInputElement): void {
+        this.log += `Checkbox ${element.value} was ${element.checked ? '' : 'un'}checked\n`
+    }
+    */
     get diagnostic() { return JSON.stringify(this.searchQuery); }
 
     ngOnDestroy() {

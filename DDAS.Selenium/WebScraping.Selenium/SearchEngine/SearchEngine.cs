@@ -21,34 +21,13 @@ namespace WebScraping.Selenium.SearchEngine
         public SearchEngine(string downloadFolder)
         {
 
-            _Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
-
-
-            //PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
-            //service.IgnoreSslErrors = true;
-            //service.SslProtocol = "any";
-
-            //_Driver = new PhantomJSDriver(service);
-
-            //_Driver = new EdgeDriver();
-
-
-            _DownloadFolder = downloadFolder;
+                    _DownloadFolder = downloadFolder;
         }
 
-        public ResultAtSite SearchByName(string NameToSearch, SiteEnum siteEnum)
-        {
-           
-            var PageObject = GetSearchPage(siteEnum);
-            
-            PageObject.LoadContent(NameToSearch);
+       
 
-            var result = PageObject.GetResultAtSite(NameToSearch);
-            result.SiteEnum = siteEnum;            
-            return result;
-        }
+      
         
-        //refactor: remove other related functins.
         public SearchResult SearchByName(SearchQuery searchQuery)
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -75,88 +54,132 @@ namespace WebScraping.Selenium.SearchEngine
             return searchResult;
         }
 
-        public SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums)
+        public ResultAtSite SearchByName(string NameToSearch, SiteEnum siteEnum)
         {
-            Stopwatch stopwatch = new Stopwatch();
 
-            List<ResultAtSite> Results = new List<ResultAtSite>();
-
-            ResultAtSite resultAtSite = new ResultAtSite();
-
-            SearchResult searchResult = new SearchResult();
-
-            searchResult.NameToSearch = NameToSearch;
-            searchResult.SearchedBy = "Pradeep";
-            searchResult.SearchedOn = DateTime.Now.ToString();
-            
-            foreach (SiteEnum site in siteEnums)
+            try
             {
-                stopwatch.Start();
-                resultAtSite = SearchByName(NameToSearch, site);
-                stopwatch.Stop();
-                resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
-                Results.Add(resultAtSite);
-                stopwatch.Reset();
+                var PageObject = GetSearchPage(siteEnum);
+
+                PageObject.LoadContent(NameToSearch);
+
+                var result = PageObject.GetResultAtSite(NameToSearch);
+                result.SiteEnum = siteEnum;
+                result.HasErrors = false;
+                return result;
+            }
+            catch (Exception Ex)
+            {
+
+                return new ResultAtSite { HasErrors = true, ErrorDescription = "Error while reading the site" + Ex.Message };
             }
 
-            searchResult.resultAtSites = Results;
-            return searchResult;
         }
 
-        public SearchResult SearchByName(string NameToSearch)
+        /*
+    public SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums)
+    {
+        Stopwatch stopwatch = new Stopwatch();
+
+        List<ResultAtSite> Results = new List<ResultAtSite>();
+
+        ResultAtSite resultAtSite = new ResultAtSite();
+
+        SearchResult searchResult = new SearchResult();
+
+        searchResult.NameToSearch = NameToSearch;
+        searchResult.SearchedBy = "Pradeep";
+        searchResult.SearchedOn = DateTime.Now.ToString();
+
+        foreach (SiteEnum site in siteEnums)
         {
-            List<SiteEnum> siteEnums = new List<SiteEnum>();
-
-            siteEnums.Add(SiteEnum.FDADebarPage);
-            //siteEnums.Add(SiteEnum.ERRProposalToDebarPage);
-            //siteEnums.Add(SiteEnum.AdequateAssuranceListPage);
-            //siteEnums.Add(SiteEnum.ClinicalInvestigatorInspectionPage);
-            //siteEnums.Add(SiteEnum.CBERClinicalInvestigatorInspectionPage);
-            //siteEnums.Add(SiteEnum.ClinicalInvestigatorDisqualificationPage);
-            //siteEnums.Add(SiteEnum.ExclusionDatabaseSearchPage);
-            //siteEnums.Add(SiteEnum.SpeciallyDesignedNationalsListPage);
-
-            SearchResult results = new SearchResult();
-
-            NameToSearch.Trim();
-            results = SearchByName(NameToSearch, siteEnums);
-
-            return results;
+            stopwatch.Start();
+            resultAtSite = SearchByName(NameToSearch, site);
+            stopwatch.Stop();
+            resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
+            Results.Add(resultAtSite);
+            stopwatch.Reset();
         }
-        
-        //public BaseSearchPage GetSearchPage(SiteEnum siteEnum)
-            public ISearchPage GetSearchPage(SiteEnum siteEnum)
+
+        searchResult.resultAtSites = Results;
+        return searchResult;
+    }
+    */
+
+        /*
+    public SearchResult SearchByName(string NameToSearch)
+    {
+        List<SiteEnum> siteEnums = new List<SiteEnum>();
+
+        siteEnums.Add(SiteEnum.FDADebarPage);
+
+        SearchResult results = new SearchResult();
+
+        NameToSearch.Trim();
+        results = SearchByName(NameToSearch, siteEnums);
+
+        return results;
+    }
+    */
+
+        private ISearchPage GetSearchPage(SiteEnum siteEnum)
         {
             switch (siteEnum)
             {
                 case SiteEnum.FDADebarPage:
-                    return new FDADebarPage(_Driver);
+                    return new FDADebarPage(Driver);
                 case SiteEnum.AdequateAssuranceListPage:
-                    return new AdequateAssuranceListPage(_Driver);
+                    return new AdequateAssuranceListPage(Driver);
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    return new ClinicalInvestigatorDisqualificationPage(_Driver);
+                    return new ClinicalInvestigatorDisqualificationPage(Driver);
                 case SiteEnum.ERRProposalToDebarPage:
-                    return new ERRProposalToDebarPage(_Driver);
+                    return new ERRProposalToDebarPage(Driver);
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return new ClinicalInvestigatorInspectionPage(_Driver);
+                    return new ClinicalInvestigatorInspectionPage(Driver);
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                    return new CBERClinicalInvestigatorInspectionPage(_Driver);
+                    return new CBERClinicalInvestigatorInspectionPage(Driver);
                 case SiteEnum.ExclusionDatabaseSearchPage:
-                    return new ExclusionDatabaseSearchPage(_Driver);
+                    return new ExclusionDatabaseSearchPage(Driver);
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return new SpeciallyDesignatedNationalsListPage(_DownloadFolder);
                 case SiteEnum.FDAWarningLettersPage:
-                    return new FDAWarningLettersPage(_Driver);
+                    return new FDAWarningLettersPage(Driver);
                 case SiteEnum.PHSAdministrativeActionListingPage:
-                    return new PHSAdministrativeActionListingPage(_Driver);
+                    return new PHSAdministrativeActionListingPage(Driver);
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
-                    return new CorporateIntegrityAgreementsListPage(_Driver);
+                    return new CorporateIntegrityAgreementsListPage(Driver);
                 case SiteEnum.SystemForAwardManagementPage:
-                    return new SystemForAwardManagementPage(_Driver);
+                    return new SystemForAwardManagementPage(Driver);
                         
                 default: return null;
             }
         }
+
+         public IWebDriver Driver {
+            get { 
+                if (_Driver == null)
+                {
+                    /*
+                    PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+                    service.IgnoreSslErrors = true;
+                    service.SslProtocol = "any";
+
+                    _Driver = new PhantomJSDriver(service);
+                    _Driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                    */
+                   
+                    _Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
+
+                    return _Driver;
+                }
+                else
+                {
+                    return _Driver;
+                }
+            }
+        }
+
+       
 
         public SearchQuery GetNewSearchQuery()
         {
@@ -172,7 +195,7 @@ namespace WebScraping.Selenium.SearchEngine
                     
                     new SearhQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="XXX" },
                     
-                    new SearhQuerySite {Selected = false, SiteName="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar", SiteShortName="NOOH – Proposal to Debar", SiteEnum = SiteEnum.ERRProposalToDebarPage, SiteUrl="XXX" },
+                    new SearhQuerySite {Selected = true, SiteName="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar", SiteShortName="NOOH – Proposal to Debar", SiteEnum = SiteEnum.ERRProposalToDebarPage, SiteUrl="XXX" },
                     
                     new SearhQuerySite {Selected = true, SiteName="Adequate Assurances List for Clinical Investigators", SiteShortName="Adequate Assurances List ...", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
 
@@ -201,7 +224,11 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Dispose()
         {
-            _Driver.Quit();
+            if (_Driver != null)
+            {
+                _Driver.Quit();
+            }
+            
         }
     }
 }

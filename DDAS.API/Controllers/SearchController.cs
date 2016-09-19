@@ -24,7 +24,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SearchResult(SearchQuery query)
         {
-            //return Ok(query.NameToSearch);
+            
             var searchResults = _SearchEngine.SearchByName(query);
             return Ok(searchResults);
 

@@ -48,9 +48,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DDAS.EF\DDAS.EF.csproj">
+      <Project>{da8b8909-e002-4e18-9223-bc95f2b6b2cd}</Project>
+      <Name>DDAS.EF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DDAS.Selenium\WebScraping.Tests\WebScraping.Tests.csproj">
       <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
       <Name>WebScraping.Tests</Name>
