@@ -39,15 +39,77 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        //need to refactor
         public void LoadSAMList()
         {
             IList<IWebElement> Tables =
-                SAMSearchResult.FindElements(By.XPath("//table"));
+                SAMCheckResult.FindElements
+                (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table/tbody/tr/td/table"));
 
             foreach (IWebElement Table in Tables)
             {
+                IList<IWebElement> TRs = Table.FindElements(By.XPath("tbody/tr"));
+
                 var SAMDataList = new SystemForAwardManagement();
-                Debug.WriteLine(Table.Text);
+
+                IList<IWebElement> OuterTDs = TRs[0].FindElements(By.XPath("td"));
+
+                //condtion is for Duns, Expiration date, HasActiveExlcusion, purposeOfRegistration etc..
+                if(IsElementPresent(OuterTDs[0], By.XPath("table/tbody/tr")))
+                {
+                    IList<IWebElement> TRows = OuterTDs[0].FindElements(By.XPath("table/tbody/tr"));
+
+                    foreach(IWebElement Tr in TRows)
+                    {
+                        IList<IWebElement> InnerTDs = Tr.FindElements(By.XPath("td"));
+
+                        if (IsElementPresent(InnerTDs[0], By.XPath("span")))
+                        {
+                            IList<IWebElement> Spans = InnerTDs[0].FindElements(By.XPath("span"));
+
+                            if (Spans[0].Text.ToLower().Contains("duns"))
+                                SAMDataList.Duns = Spans[1].Text;
+
+                            else if (Spans[0].Text.ToLower().Contains("has active exclsion"))
+                                SAMDataList.HasActiveExclusion = Spans[1].Text;
+
+                            else if (Spans[0].Text.ToLower().Contains("expiration date"))
+                                SAMDataList.ExpirationDate = Spans[1].Text;
+
+                            else if (Spans[0].Text.ToLower().Contains("purpose of registration"))
+                                SAMDataList.PurposeOfRegistration = Spans[1].Text;
+                        }
+
+                        else if(IsElementPresent(InnerTDs[1], By.XPath("span")))
+                        {
+                            IList<IWebElement> Spans = OuterTDs[1].FindElements(By.XPath("span"));
+                            if(Spans[0].Text.ToLower().Contains("doddac"))
+                                SAMDataList.DoDAAC = Spans[1].Text;
+
+                            else if (Spans[0].Text.ToLower().Contains("delinquent federal debt"))
+                                SAMDataList.DelinquentFederalDebt = Spans[1].Text;
+                        }
+
+                        else if (IsElementPresent(InnerTDs[2], By.XPath("span")))
+                        {
+                            IList<IWebElement> Spans = OuterTDs[2].FindElements(By.XPath("span"));
+                            SAMDataList.CAGECode = Spans[1].Text;
+                        }
+                    }
+                }
+                //for Entity and Status
+                else if (IsElementPresent(OuterTDs[1], By.XPath("span")))
+                {
+                    IList<IWebElement> Spans = OuterTDs[1].FindElements(By.XPath("span"));
+                    SAMDataList.Entity = Spans[0].Text;
+
+                    if(IsElementPresent(OuterTDs[2], By.XPath("div/span")))
+                    {
+                        IList<IWebElement> Span = OuterTDs[2].FindElements(By.XPath("div/span"));
+                        SAMDataList.Status = Span[1].Text;
+                    }   
+                }
+                _samList.Add(SAMDataList);
             }
         }
 
@@ -58,8 +120,10 @@ namespace WebScraping.Selenium.Pages
 
         public bool SearchTerms(string NameToSearch)
         {
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
             IWebElement Anchor = SAMAnchorTag;
-            Anchor.SendKeys(Keys.Enter);
+            Anchor.Click();
 
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 

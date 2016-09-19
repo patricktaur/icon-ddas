@@ -13,7 +13,13 @@ namespace WebScraping.Selenium.Pages
         public IWebElement SAMAnchorTag {
             get {
                 IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
-                return Anchors[2];
+                
+                foreach(IWebElement Anchor in Anchors)
+                {
+                    if (Anchor.Text.ToLower() == "search records")
+                        return Anchor;
+                }
+                return null;
             }
         }
 
