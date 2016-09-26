@@ -171,6 +171,8 @@ namespace WebScraping.Selenium.Pages
             DownloadSDNList();
         }
 
+       
+
         public ResultAtSite GetResultAtSite(string NameToSearch)
         {
             //refactor: remove Search
@@ -179,7 +181,19 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadContent(string NameToSearch)
         {
-            DownloadSDNList(); 
+           
+        }
+
+      
+
+        public void SavePageImage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveData()
+        {
+            throw new NotImplementedException();
         }
 
         public class NamesClass

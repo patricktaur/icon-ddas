@@ -105,6 +105,11 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
+        public override void LoadContent()
+        {
+           
+        }
+
         public override void LoadContent(string NameToSearch)
         {
             NameToSearch.Replace(",", "");
@@ -112,6 +117,9 @@ namespace WebScraping.Selenium.Pages
             LoadAdministrativeActionLists();
         }
 
+        public override void SaveData() {
+
+        }
         public class PHSAdministrativeAction
         {
             public string LastName { get; set; }

@@ -131,8 +131,12 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
+        public override void LoadContent()
+        { }
+
         public override void LoadContent(string NameToSearch)
         {
+             
             string[] FullName = NameToSearch.Split(' ');
 
             if (SearchTerms(FullName[0], FullName[1]))
@@ -140,8 +144,13 @@ namespace WebScraping.Selenium.Pages
 
             if (SearchTerms(FullName[1], FullName[0]))
                 LoadExclusionsDatabaseList();
+                
         }
 
+        public override void SaveData()
+        {
+
+        }
         public class ExclusionDatabaseSearchList
         {
             public string LastName { get; set; }

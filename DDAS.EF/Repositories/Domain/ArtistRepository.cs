@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace DDAS.EF.Repositories.Domain
 {
-    internal class ArtistRepository : Repository<Artist>, IArtistRepository
+    internal class ArtistRepository : Repository<Artist>, IFDADebarPageRepository
 
     {
         private ApplicationIdentityDBContext _ctx;

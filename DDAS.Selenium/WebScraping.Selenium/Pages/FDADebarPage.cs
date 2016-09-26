@@ -8,15 +8,19 @@ using System.Threading.Tasks;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models;
+using DDAS.Models.Entities.Domain.SiteData;
 
 namespace WebScraping.Selenium.Pages
 {
    public partial class FDADebarPage : BaseSearchPage //BaseClasses.BasePage
     {
-       
-       public FDADebarPage(IWebDriver driver) : base(driver)
+
+        IUnitOfWork _UOW;
+        public FDADebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
             Open();
+            _UOW = uow;
             //SaveScreenShot("abc.png");
         }
 
@@ -27,6 +31,8 @@ namespace WebScraping.Selenium.Pages
                 return @"http://www.fda.gov/ora/compliance_ref/debar/default.htm";
             }
         }
+
+
 
         private List<DebarredPerson> _DebarredPersonList;
         public List<DebarredPerson> DebarredPersons
@@ -59,6 +65,41 @@ namespace WebScraping.Selenium.Pages
                 }
 
                 _DebarredPersonList.Add(debarredPerson);
+            }
+        }
+
+        private FDADebarPageSiteData _FDADebarPageSiteData;
+
+        public void LoadDebarredPersonListAlt()
+        {
+            _FDADebarPageSiteData = new FDADebarPageSiteData();
+
+            _FDADebarPageSiteData.CreatedBy = "pat";
+            _FDADebarPageSiteData.SiteLastUpdatedOn = DateTime.Now;
+
+           
+
+            foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
+            {
+                var debarredPerson = new DebarredPerson(); //new DebarredPerson();
+
+                IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
+
+                debarredPerson.NameOfPerson = TDs[0].Text;
+                debarredPerson.EffectiveDate = TDs[1].Text;
+                debarredPerson.EndOfTermOfDebarment = TDs[2].Text;
+                debarredPerson.FrDateText = TDs[3].Text;
+                debarredPerson.VolumePage = TDs[4].Text;
+
+                if (IsElementPresent(TDs[4], By.XPath("a")))
+                {
+                    IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
+                    debarredPerson.DocumentLink = anchor.GetAttribute("href");
+                }
+
+                _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
+
+                //_DebarredPersonList.Add(debarredPerson);
             }
         }
 
@@ -101,20 +142,31 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
-            LoadDebarredPersonList();
+            //LoadDebarredPersonList();
+            LoadDebarredPersonListAlt();
         }
 
-        public class DebarredPerson
+        public override void LoadContent(string NameToSearch)
         {
-            public string NameOfPerson { get; set; }
-            public string EffectiveDate { get; set; }
-            public string EndOfTermOfDebarment { get; set; }
-            public string FrDateText { get; set; }
-            public string VolumePage { get; set; }
-            public string DocumentLink { get; set; }
+            LoadDebarredPersonListAlt();
         }
+        public override void SaveData()
+        {
+            _UOW.FDADebarPageRepository.Add(_FDADebarPageSiteData);
+        }
+
+
+        //public class DebarredPerson
+        //{
+        //    public string NameOfPerson { get; set; }
+        //    public string EffectiveDate { get; set; }
+        //    public string EndOfTermOfDebarment { get; set; }
+        //    public string FrDateText { get; set; }
+        //    public string VolumePage { get; set; }
+        //    public string DocumentLink { get; set; }
+        //}
 
     }
 }

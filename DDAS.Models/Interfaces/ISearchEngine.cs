@@ -11,5 +11,8 @@ namespace DDAS.Models.Interfaces
         ResultAtSite SearchByName(string NameToSearch, SiteEnum siteEnum);
         SearchResult SearchByName(SearchQuery searchQuery);
         SearchQuery GetNewSearchQuery();
+        void Load();
+        void Load(SearchQuery query);
+        void Load(SiteEnum siteEnum);
     }
 }

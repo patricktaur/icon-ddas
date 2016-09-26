@@ -61,8 +61,6 @@
   <ItemGroup>
     <Compile Include="BaseClasses\BasePage.cs" />
     <Compile Include="BaseClasses\BaseSearchPage.cs" />
-    <Compile Include="Class1.cs" />
-    <Compile Include="ISearch.cs" />
     <Compile Include="PageMaps\AdequateAssuranceListPage.cs" />
     <Compile Include="PageMaps\CBERClinicalInvestigatorInspectionPage.cs" />
     <Compile Include="PageMaps\ClinicalInvestigatorDisqualificationPage.cs" />
@@ -93,6 +91,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95F621B2-EFA7-4329-A232-5EA1EFE44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DDAS.Models\DDAS.Models.csproj">
       <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
       <Name>DDAS.Models</Name>

@@ -1,0 +1,8 @@
+﻿24Sept2016:
+2012-01-09 modified 2012-01-10 | by KORY BECKER
+http://www.primaryobjects.com/2012/01/09/mongodb-enterprise-design-with-c-net-the-repository-pattern-and-nosql/
+
+The Driver
+The NoRM driver differs from the MongoDB-CSharp driver we looked at last time in that it uses C# classes directly rather than the Document class. It automatically serializes and deserializes your classes to and from JSON. Using it is very similar to using NHibernate or another ORM…hence the name…NoRM.
+
+You can get the driver at: http://github.com/atheken/NoRM

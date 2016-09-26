@@ -53,13 +53,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DDAS.EF\DDAS.EF.csproj">
-      <Project>{da8b8909-e002-4e18-9223-bc95f2b6b2cd}</Project>
-      <Name>DDAS.EF</Name>
+    <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95f621b2-efa7-4329-a232-5ea1efe44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DDAS.Selenium\WebScraping.Tests\WebScraping.Tests.csproj">
-      <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
-      <Name>WebScraping.Tests</Name>
+    <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
+      <Project>{D441E38F-0564-4688-872B-25127A7B3EC5}</Project>
+      <Name>DDAS.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

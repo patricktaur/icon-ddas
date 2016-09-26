@@ -17,7 +17,7 @@ namespace DDAS.EF
     {
 
         private readonly ApplicationIdentityDBContext _context;
-        private IArtistRepository _ArtistRepository;
+        private IFDADebarPageRepository _ArtistRepository;
 
         #region Constructor
         public UnitOfWork(string nameOrConnectionString)
@@ -29,7 +29,7 @@ namespace DDAS.EF
 
         #region IUnitOfWork Members
 
-        public IArtistRepository ArtistRepository
+        public IFDADebarPageRepository FDADebarPageRepository
         {
             get
             {

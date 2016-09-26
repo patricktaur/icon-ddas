@@ -94,11 +94,18 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadProposalToDebarList();
         }
 
+        public override void LoadContent(string NameToSearch)
+        { }
+
+        public override void SaveData()
+        {
+
+        }
         public class ProposalToDebar
         {
             public string name { get; set; }

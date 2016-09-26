@@ -128,33 +128,39 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
+        public override void LoadContent()
+        {
+           
+    }
+
         public override void LoadContent(string NameToSearch)
         {
-            string[] Name = NameToSearch.Split(' ');
-            
-            for (int counter = 0; counter < Name.Length; counter++)
-            {
-                Name[counter] = Name[counter].Replace(",", "");
+           
+           string[] Name = NameToSearch.Split(' ');
 
-                if (SearchTerms(Name[counter]))
-                {
-                    int totalRecords = GetCountOfRecords();
+           for (int counter = 0; counter < Name.Length; counter++)
+           {
+               Name[counter] = Name[counter].Replace(",", "");
 
-                    for (int records = 0; records < totalRecords; records++)
-                    {
-                        LoadClinicalInvestigatorList();
+               if (SearchTerms(Name[counter]))
+               {
+                   int totalRecords = GetCountOfRecords();
 
-                        if (totalRecords > 1)
-                        {
-                            LoadNextRecord();
-                        }
-                    }
-                }
-                else
-                    continue;
+                   for (int records = 0; records < totalRecords; records++)
+                   {
+                       LoadClinicalInvestigatorList();
 
-                driver.Url = "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
-            }
+                       if (totalRecords > 1)
+                       {
+                           LoadNextRecord();
+                       }
+                   }
+               }
+               else
+                   continue;
+                   driver.Url = "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
+           }
+          
         }
 
         public void LoadNextRecord()
@@ -163,6 +169,11 @@ namespace WebScraping.Selenium.Pages
 
             element.SendKeys(Keys.Enter);
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+        }
+
+        public override void SaveData()
+        {
+
         }
 
         public class ClinicalInvestigator

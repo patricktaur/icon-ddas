@@ -75,6 +75,7 @@ namespace DDAS.Models.Entities.Domain
     
     public class MatchResult
     {
+        public Guid ID { get; set; }
         public string MatchName { get; set; }
         public string MatchLocation { get; set; }
     }

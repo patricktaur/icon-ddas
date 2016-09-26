@@ -86,6 +86,11 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override void LoadContent()
+        {
+            
+        }
+
         public override void LoadContent(string NameToSearch)
         {
             string[] Name = NameToSearch.Split(' ');
@@ -101,18 +106,22 @@ namespace WebScraping.Selenium.Pages
 
                     //for (int records = 0; records < totalRecords; records++)
                     //{
-                        //Load();
+                    //Load();
 
-                        //if (totalRecords > 1)
-                        //{
-                        //    LoadNextRecord();
-                        //}
-                    }
+                    //if (totalRecords > 1)
+                    //{
+                    //    LoadNextRecord();
+                    //}
+                }
                 else
                     continue;
             }
         }
 
+        public override void SaveData()
+        {
+
+        }
         public class SystemForAwardManagement
         {
             public string Entity { get; set; }

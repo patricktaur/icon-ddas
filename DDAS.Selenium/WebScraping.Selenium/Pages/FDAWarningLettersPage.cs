@@ -129,6 +129,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override void LoadContent()
+        { }
         public override void LoadContent(string NameToSearch)
         {
             string[] Name = NameToSearch.Split(' ');
@@ -143,7 +145,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        
+        public override void SaveData()
+        {
+
+        }
 
 
         public class FDAWarningLetter

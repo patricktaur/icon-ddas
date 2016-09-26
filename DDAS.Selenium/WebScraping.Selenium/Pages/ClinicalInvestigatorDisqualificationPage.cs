@@ -74,12 +74,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadDisqualificationProceedingsList();
         }
+        public override void LoadContent(string NameToSearch)
+        {
 
-     
+        }
+
         public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
             ResultAtSite searchResult = new ResultAtSite();
@@ -113,6 +116,10 @@ namespace WebScraping.Selenium.Pages
             }
             else
                 return searchResult;
+        }
+        public override void SaveData()
+        {
+
         }
 
         public class DisqualifiedInvestigator

@@ -7,14 +7,19 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Repository;
+using DDAS.Models.Entities.Domain.SiteData;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class AdequateAssuranceListPage : BaseSearchPage //BaseClasses.BasePage
     {
+       
         public AdequateAssuranceListPage(IWebDriver driver) : base(driver)
         {
+           
             Open();
+            SavePageImage();
             //SaveScreenShot("AdequateAssuranceListPage.png");
         }
 
@@ -41,9 +46,14 @@ namespace WebScraping.Selenium.Pages
         }
 
      
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadAdequateAssuranceInvestigators();
+        }
+
+        public override void LoadContent(string NameToSearch)
+        {
+            
         }
 
         public void LoadAdequateAssuranceInvestigators()
@@ -102,7 +112,9 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-      
+        public override void SaveData() {
+
+        }
 
         public class AdequateAssuranceList
         {

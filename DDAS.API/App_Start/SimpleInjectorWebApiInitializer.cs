@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using System.Linq;
-using System.Web;
+
 using System.Web.Http;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using DDAS.Models;
-using DDAS.EF;
+
 using AutoMapper;
 using DDAS.Models.Interfaces;
 using WebScraping.Selenium.SearchEngine;
-using WebScraping.Selenium;
-using WebScraping.Selenium.Pages;
-using OpenQA.Selenium;
-using OpenQA.Selenium.PhantomJS;
 
+using Utilities;
+using DDAS.Data.Mongo;
 
 namespace DDAS.API.App_Start
 {
@@ -35,7 +33,6 @@ namespace DDAS.API.App_Start
 
             config.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
         }
-
         private static void InitializeContainer(Container container)
         {
             container.RegisterWebApiRequest<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
@@ -57,24 +54,22 @@ namespace DDAS.API.App_Start
             });
 
             container.Register<IMapper>(() => config.CreateMapper(container.GetInstance));
-            string downloadFolder = HttpContext.Current.Request.PhysicalApplicationPath + @"Downloads";
-
-
            
-            container.RegisterWebApiRequest<ISearchEngine>(() => new SearchEngine(downloadFolder));
+            //Patrick: 23Sept2016:  http context is not available when running on self host mode:
+            //get from config file:
+            // string downloadFolder = HttpContext.Current.Request.PhysicalApplicationPath + @"Downloads";
+            string downloadFolder = @"C:\Development\p926-ddas\DDAS.API\Downloads\"; //HttpContext.Current.Request.PhysicalApplicationPath + @"Downloads";
 
+            string logFile = @"C:\Development\p926-ddas\DDAS.API\Logs\testlog.log";
+            //var log = new LogText(logFile);
+
+            
+            container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
+
+            
            
-/*
-            //container.RegisterWebApiRequest<IWebDriver>(() => new PhantomJSDriver());
+            container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
-            PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
-            service.IgnoreSslErrors = true;
-            service.SslProtocol = "any";
-
-            //_Driver = new PhantomJSDriver(service);
-            IWebDriver driver = new PhantomJSDriver(service);
-            container.RegisterWebApiRequest<IWebDriver>(() => driver);
-            */
         }
     }
 }

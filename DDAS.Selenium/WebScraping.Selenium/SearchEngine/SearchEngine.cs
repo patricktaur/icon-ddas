@@ -10,6 +10,9 @@ using System.Diagnostics;
 using OpenQA.Selenium.PhantomJS;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
+using DDAS.Models.Repository;
+using DDAS.Data.Mongo.Repositories;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -17,16 +20,15 @@ namespace WebScraping.Selenium.SearchEngine
     {
         private IWebDriver _Driver;
         private string _DownloadFolder;
+        private ILog _log;
+        private IUnitOfWork _uow;
 
-        public SearchEngine(string downloadFolder)
+        public SearchEngine( ILog log, IUnitOfWork uow)
         {
-
-                    _DownloadFolder = downloadFolder;
+             //_DownloadFolder = downloadFolder;
+            _log = log;
+            _uow = uow;
         }
-
-       
-
-      
         
         public SearchResult SearchByName(SearchQuery searchQuery)
         {
@@ -62,6 +64,7 @@ namespace WebScraping.Selenium.SearchEngine
                 var PageObject = GetSearchPage(siteEnum);
 
                 PageObject.LoadContent(NameToSearch);
+                PageObject.SaveData(); 
 
                 var result = PageObject.GetResultAtSite(NameToSearch);
                 result.SiteEnum = siteEnum;
@@ -76,58 +79,43 @@ namespace WebScraping.Selenium.SearchEngine
 
         }
 
-        /*
-    public SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums)
-    {
-        Stopwatch stopwatch = new Stopwatch();
-
-        List<ResultAtSite> Results = new List<ResultAtSite>();
-
-        ResultAtSite resultAtSite = new ResultAtSite();
-
-        SearchResult searchResult = new SearchResult();
-
-        searchResult.NameToSearch = NameToSearch;
-        searchResult.SearchedBy = "Pradeep";
-        searchResult.SearchedOn = DateTime.Now.ToString();
-
-        foreach (SiteEnum site in siteEnums)
+        #region Load
+       
+        public void Load() //LoadAll
         {
-            stopwatch.Start();
-            resultAtSite = SearchByName(NameToSearch, site);
-            stopwatch.Stop();
-            resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
-            Results.Add(resultAtSite);
-            stopwatch.Reset();
+            var query = GetNewSearchQuery();
+            _log.WriteLog( "Processing:" + query.SearchSites.Count + " sites");
+            foreach (SearhQuerySite site in query.SearchSites)
+            {
+                Load(site.SiteEnum);
+            }
         }
 
-        searchResult.resultAtSites = Results;
-        return searchResult;
-    }
-    */
+        public void Load(SearchQuery query)  //Load some
+        {
+            _log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+            foreach (SearhQuerySite site in query.SearchSites)
+            {
+                Load(site.SiteEnum);
+            }
+        }
+        public void Load(SiteEnum siteEnum)  //Load one
+        {
+            _log.WriteLog(System.DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
+            //var page = GetSearchPage(siteEnum);
+            //page.LoadContent();
+            _log.WriteLog(System.DateTime.Now.ToString(), "End extracting from:" + siteEnum);
+            //page.SaveData();
+            _log.WriteLog( "Data Saved" );
 
-        /*
-    public SearchResult SearchByName(string NameToSearch)
-    {
-        List<SiteEnum> siteEnums = new List<SiteEnum>();
-
-        siteEnums.Add(SiteEnum.FDADebarPage);
-
-        SearchResult results = new SearchResult();
-
-        NameToSearch.Trim();
-        results = SearchByName(NameToSearch, siteEnums);
-
-        return results;
-    }
-    */
-
+        }
+        #endregion
         private ISearchPage GetSearchPage(SiteEnum siteEnum)
         {
             switch (siteEnum)
             {
                 case SiteEnum.FDADebarPage:
-                    return new FDADebarPage(Driver);
+                    return new FDADebarPage(Driver, _uow);
                 case SiteEnum.AdequateAssuranceListPage:
                     return new AdequateAssuranceListPage(Driver);
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
@@ -190,9 +178,10 @@ namespace WebScraping.Selenium.SearchEngine
                 {
                     new SearhQuerySite {Selected = true, SiteName="FDA Debarment List", SiteShortName="FDA Debarment List", SiteEnum = SiteEnum.FDADebarPage, SiteUrl="XXX" },
 
-
+ /*
                     new SearhQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CLIL)(CDER", SiteShortName="Clinical Investigator Insp...", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="XXX" },
-                    
+
+                   
                     new SearhQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="XXX" },
                     
                     new SearhQuerySite {Selected = true, SiteName="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar", SiteShortName="NOOH – Proposal to Debar", SiteEnum = SiteEnum.ERRProposalToDebarPage, SiteUrl="XXX" },
@@ -215,8 +204,9 @@ namespace WebScraping.Selenium.SearchEngine
                     //new SearhQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" },
 
                     //new SearhQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
-                    
-         }
+                    */
+         
+                    }
 
             };
            
@@ -230,5 +220,7 @@ namespace WebScraping.Selenium.SearchEngine
             }
             
         }
+
+    
     }
 }

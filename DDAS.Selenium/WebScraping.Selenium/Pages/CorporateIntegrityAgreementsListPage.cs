@@ -97,11 +97,18 @@ namespace WebScraping.Selenium.Pages
                 return searchResult;
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
-            NameToSearch.Replace(",", "");
+            // ??? NameToSearch.Replace(",", "");
 
             LoadCIAList();
+        }
+        public override void LoadContent(string NameToSearch)
+        { }
+
+        public override void SaveData()
+        {
+
         }
 
         public class CIAList

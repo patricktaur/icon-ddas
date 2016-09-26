@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Repository.Domain;
+using DDAS.Models.Repository.Domain.SiteData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,18 @@ namespace DDAS.Models
     {
         #region Properties
 
-            IArtistRepository ArtistRepository { get; }
+        #region SiteData
+        IFDADebarPageRepository FDADebarPageRepository { get; }
+        IAdequateAssuranceListRepository AdequateAssuranceListRepository { get; }
+
+        #endregion
+
 
         #endregion
 
         #region Methods
 
-            int SaveChanges();
+        int SaveChanges();
             Task<int> SaveChangesAsync();
             Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 

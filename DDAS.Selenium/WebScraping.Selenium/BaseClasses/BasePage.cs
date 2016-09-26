@@ -23,8 +23,6 @@ namespace WebScraping.Selenium.BaseClasses
             driver.Navigate().GoToUrl(string.Concat(Url, part)); //string.Concat(this.Url, part)
         }
 
-       
-
         public bool IsElementPresent(IWebElement elem, By by)
         {
             try

@@ -44,8 +44,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=5.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.5.0.2\lib\net45\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=5.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.1.1\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -170,7 +170,6 @@
     <Compile Include="App_Start\AutoMapperProfileConfiguration.cs" />
     <Compile Include="App_Start\SimpleInjectorWebApiInitializer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\ArtistController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\TestOneController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -188,15 +187,20 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Downloads\" />
+    <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DDAS.EF\DDAS.EF.csproj">
-      <Project>{da8b8909-e002-4e18-9223-bc95f2b6b2cd}</Project>
-      <Name>DDAS.EF</Name>
+    <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95F621B2-EFA7-4329-A232-5EA1EFE44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
     </ProjectReference>
     <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
       <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
       <Name>DDAS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DDAS.Selenium\Utilities\Utilities.csproj">
+      <Project>{E284F28D-9482-4DEA-9CC2-872BB86A3D9C}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\DDAS.Selenium\WebScraping.Selenium\WebScraping.Selenium.csproj">
       <Project>{90b7c01c-1eaa-441e-909a-6949bc6ed08c}</Project>

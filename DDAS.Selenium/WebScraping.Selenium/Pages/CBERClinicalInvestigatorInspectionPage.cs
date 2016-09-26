@@ -86,12 +86,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadNextInspectionList();
         }
 
-     
+        public override void LoadContent(string NameToSearch)
+        {
+
+        }
 
         public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
@@ -127,7 +130,10 @@ namespace WebScraping.Selenium.Pages
             else
                 return searchResult;
         }
+        public override void SaveData()
+        {
 
+        }
 
         public class CBERClinicalInvestigator
         {
