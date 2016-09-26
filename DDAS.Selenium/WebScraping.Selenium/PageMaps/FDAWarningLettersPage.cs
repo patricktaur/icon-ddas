@@ -22,8 +22,14 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement SearchButton = driver.FindElement(By.Name("Search"));
-                return SearchButton;
+                IList<IWebElement> SearchButtons = driver.FindElements(By.TagName("input"));
+                
+                foreach(IWebElement element in SearchButtons)
+                {
+                    if (element.GetAttribute("value").ToLower() == "search")
+                        return element;
+                }
+                return null;
             }
         }
 

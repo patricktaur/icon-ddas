@@ -51,6 +51,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebScraping.Tests\WebScraping.Tests.csproj">
+      <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
+      <Name>WebScraping.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

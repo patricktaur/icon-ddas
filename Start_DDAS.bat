@@ -1,0 +1,1 @@
+devenv /build release "C:\Development\p926-ddas\DDAS.sln"

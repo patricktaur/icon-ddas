@@ -42,98 +42,140 @@ namespace WebScraping.Selenium.Pages
         //need to refactor
         public void LoadSAMList()
         {
-            IList<IWebElement> Tables =
+            IList<IWebElement> TableThatContainsRecords =
                 SAMCheckResult.FindElements
-                (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table/tbody/tr/td/table"));
+                (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table"));
 
-            foreach (IWebElement Table in Tables)
+            foreach (IWebElement RecordsTable in TableThatContainsRecords)
             {
-                IList<IWebElement> TRs = Table.FindElements(By.XPath("tbody/tr"));
+                Debug.Print(RecordsTable.Text);
 
                 var SAMDataList = new SystemForAwardManagement();
 
-                IList<IWebElement> OuterTDs = TRs[0].FindElements(By.XPath("td"));
+                string TempContent = RecordsTable.Text.Replace("\n", "");
+                string[] ContentOfEachRecord = TempContent.Split('\r');
 
-                //condtion is for Duns, Expiration date, HasActiveExlcusion, purposeOfRegistration etc..
-                if(IsElementPresent(OuterTDs[0], By.XPath("table/tbody/tr")))
+                SAMDataList.Entity = ContentOfEachRecord[1];
+
+                for (int counter = 2; counter < ContentOfEachRecord.Length; counter++)
                 {
-                    IList<IWebElement> TRows = OuterTDs[0].FindElements(By.XPath("table/tbody/tr"));
+                    string Content = ContentOfEachRecord[counter];
 
-                    foreach(IWebElement Tr in TRows)
+                    string[] tempFieldValue = new string[0];
+
+                    if (Content.Contains(":"))
+                        tempFieldValue = Content.Split(':');
+                    else if (Content.Contains("Entity") || Content.Contains("Exclusion"))
                     {
-                        IList<IWebElement> InnerTDs = Tr.FindElements(By.XPath("td"));
+                        SAMDataList.Entity = ContentOfEachRecord[counter + 2];
+                        continue;
+                    }
 
-                        if (IsElementPresent(InnerTDs[0], By.XPath("span")))
+                    if (tempFieldValue.Length >= 1)
+                    {
+                        switch (tempFieldValue[0])
                         {
-                            IList<IWebElement> Spans = InnerTDs[0].FindElements(By.XPath("span"));
+                            case "Status": SAMDataList.Status = tempFieldValue[1]; break;
 
-                            if (Spans[0].Text.ToLower().Contains("duns"))
-                                SAMDataList.Duns = Spans[1].Text;
+                            case "DUNS":
+                                SAMDataList.Duns = tempFieldValue[1].Replace("CAGE Code", "").Trim();
+                                if (tempFieldValue.Length > 2)
+                                    SAMDataList.CAGECode = tempFieldValue[2];
+                                break;
 
-                            else if (Spans[0].Text.ToLower().Contains("has active exclsion"))
-                                SAMDataList.HasActiveExclusion = Spans[1].Text;
+                            case "Has Active Exclusion?":
+                                SAMDataList.HasActiveExclusion =
+                                tempFieldValue[1].Replace("DoDAAC", "").Trim();
+                                if (tempFieldValue.Length > 2)
+                                    SAMDataList.DoDAAC = tempFieldValue[2];
+                                break;
 
-                            else if (Spans[0].Text.ToLower().Contains("expiration date"))
-                                SAMDataList.ExpirationDate = Spans[1].Text;
+                            case "Expiration Date":
+                                string[] temp =
+                                    tempFieldValue[1].Replace("Delinquent Federal Debt?", "?").Split('?');
 
-                            else if (Spans[0].Text.ToLower().Contains("purpose of registration"))
-                                SAMDataList.PurposeOfRegistration = Spans[1].Text;
-                        }
+                                SAMDataList.ExpirationDate =
+                                    temp[0].Trim();
+                                if (temp.Length > 1)
+                                    SAMDataList.DelinquentFederalDebt =
+                                    tempFieldValue[1].Split('?')[1].Trim();
+                                break;
 
-                        else if(IsElementPresent(InnerTDs[1], By.XPath("span")))
-                        {
-                            IList<IWebElement> Spans = OuterTDs[1].FindElements(By.XPath("span"));
-                            if(Spans[0].Text.ToLower().Contains("doddac"))
-                                SAMDataList.DoDAAC = Spans[1].Text;
+                            case "Purpose of Registration":
+                                if (tempFieldValue.Length > 1)
+                                    SAMDataList.PurposeOfRegistration = tempFieldValue[1].Trim();
+                                break;
 
-                            else if (Spans[0].Text.ToLower().Contains("delinquent federal debt"))
-                                SAMDataList.DelinquentFederalDebt = Spans[1].Text;
-                        }
+                            case "Classification":
+                                if (tempFieldValue.Length > 1)
+                                    SAMDataList.Classification = tempFieldValue[1].Trim();
+                                break;
 
-                        else if (IsElementPresent(InnerTDs[2], By.XPath("span")))
-                        {
-                            IList<IWebElement> Spans = OuterTDs[2].FindElements(By.XPath("span"));
-                            SAMDataList.CAGECode = Spans[1].Text;
+                            case "Activation Date":
+                                SAMDataList.ActivationDate =
+                                    tempFieldValue[1].Replace("Termination Date", "").Trim();
+                                if (tempFieldValue.Length > 2)
+                                    SAMDataList.TerminationDate = tempFieldValue[2].Trim();
+                                break;
                         }
                     }
-                }
-                //for Entity and Status
-                else if (IsElementPresent(OuterTDs[1], By.XPath("span")))
-                {
-                    IList<IWebElement> Spans = OuterTDs[1].FindElements(By.XPath("span"));
-                    SAMDataList.Entity = Spans[0].Text;
-
-                    if(IsElementPresent(OuterTDs[2], By.XPath("div/span")))
-                    {
-                        IList<IWebElement> Span = OuterTDs[2].FindElements(By.XPath("div/span"));
-                        SAMDataList.Status = Span[1].Text;
-                    }   
                 }
                 _samList.Add(SAMDataList);
             }
         }
 
+
         public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
-            throw new NotImplementedException();
+            ResultAtSite searchResult = new ResultAtSite();
+
+            searchResult.SiteName = SiteName.ToString();
+
+            foreach (SystemForAwardManagement SAM in _samList)
+            {
+                string WordFound = FindSubString(SAM.Entity, NameToSearch);
+
+                if (WordFound != null)
+                {
+                    searchResult.SiteName = SiteName.ToString();
+
+                    searchResult.Results.Add(new MatchResult
+                    {
+                        MatchName = SAM.Entity,
+                        MatchLocation = "Word(s) matched - " + WordFound
+                    });
+                }
+            }
+
+            if (searchResult.Results.Count == 0)
+            {
+                searchResult.Results.Add(new MatchResult
+                {
+                    MatchName = "None",
+                    MatchLocation = "None"
+                });
+                return searchResult;
+            }
+            else
+                return searchResult;
         }
 
         public bool SearchTerms(string NameToSearch)
         {
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
             IWebElement Anchor = SAMAnchorTag;
             Anchor.Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
             IWebElement TextBox = SAMInputTag;
             TextBox.SendKeys(NameToSearch);
 
             IWebElement Submit = SAMSubmitButton;
-            Submit.SendKeys(Keys.Enter);
+            Submit.Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
             if (SAMCheckResult != null)
             {
@@ -142,9 +184,9 @@ namespace WebScraping.Selenium.Pages
             else
             {
                 IWebElement ClearSearch = SAMClearSearch;
-                ClearSearch.SendKeys(Keys.Enter);
+                ClearSearch.Click();
 
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
                 return false;
             }
@@ -156,25 +198,46 @@ namespace WebScraping.Selenium.Pages
 
             for (int counter = 0; counter < Name.Length; counter++)
             {
-                Name[counter] = Name[counter].Replace(",", " ");
-
                 if (SearchTerms(Name[counter]))
                 {
-                    LoadSAMList();
-                    //int totalRecords = GetCountOfRecords();
+                    while (CheckForAnchorTagNext())
+                    {
+                        LoadSAMList();
 
-                    //for (int records = 0; records < totalRecords; records++)
-                    //{
-                        //Load();
-
-                        //if (totalRecords > 1)
-                        //{
-                        //    LoadNextRecord();
-                        //}
+                        LoadNextRecord();
                     }
+                    LoadSAMList();
+                }
                 else
                     continue;
             }
+        }
+
+        public bool CheckForAnchorTagNext()
+        {
+            if (IsElementPresent(SAMPaginationElement, By.XPath("table/tbody/tr/td/a")))
+            {
+                IList<IWebElement> AnchorsInPagination =
+                    SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));
+
+                IWebElement LastAnchorTagInPagination = AnchorsInPagination[AnchorsInPagination.Count - 1];
+
+                return
+                    (LastAnchorTagInPagination.Text.ToLower() == "next") ?
+                    true : false;
+            }
+            else
+                return false;
+        }
+
+        public void LoadNextRecord()
+        {
+            IList<IWebElement> AnchorsInPagination = 
+                SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));
+
+            AnchorsInPagination[AnchorsInPagination.Count - 1].Click();
+
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
         }
 
         public class SystemForAwardManagement
@@ -188,6 +251,9 @@ namespace WebScraping.Selenium.Pages
             public string CAGECode { get; set; }
             public string DoDAAC { get; set; }
             public string DelinquentFederalDebt { get; set; }
+            public string Classification { get; set; }
+            public string ActivationDate { get; set; }
+            public string TerminationDate { get; set; }
         }
     }
 }

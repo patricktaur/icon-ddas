@@ -44,13 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MongoDBRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95f621b2-efa7-4329-a232-5ea1efe44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
+      <Project>{D441E38F-0564-4688-872B-25127A7B3EC5}</Project>
+      <Name>DDAS.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DDAS.Selenium\WebScraping.Tests\WebScraping.Tests.csproj">
       <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
       <Name>WebScraping.Tests</Name>

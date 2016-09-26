@@ -22,9 +22,15 @@ export class SearhQuerySite
           Selected : boolean;
           SiteEnum : number ;
           SiteUrl:string;
-          //public List<MatchResult> Results { get; set; }
+          HasErrors: boolean;
+          ErrorDescription: string;
+
           Results: MatchResult[] = new Array<MatchResult>();
-          //Result: ResultAtSite;
+
+          
+           Processing: boolean;
+           Processed: boolean;
+
     }
 
 export class SearchQueryAtSite{
@@ -47,6 +53,8 @@ export class ResultAtSite
         SiteName:string;
         SiteEnum : number ;
         TimeTakenInMs:string;
+         HasErrors: boolean;
+          ErrorDescription: string;
         Results: MatchResult[] = new Array<MatchResult>();
     }
 
@@ -55,7 +63,6 @@ export class MatchResult
         MatchName: string;
         MatchLocation: string;
     }
-
 
 
  

@@ -16964,7 +16964,22 @@ DDAS.WebSite/node_modules/
 *.js
 *.map
 DDAS.API/Downloads/
+<<<<<<< HEAD
+DDAS.API/phantomjs-license.txt
+DDAS.Selenium/WebScraping.Selenium/phantomjs-license.txt
+=======
 Libraries/PhantomJS/phantomjs.exe
 DDAS.Selenium/WebScraping.Selenium/phantomjs-license.txt
 Libraries/ChromeDriver/chromedriver.exe
+<<<<<<< HEAD
+>>>>>>> 32ad08b6c513bf0c281c27e8809f6dcad8fcb8f9
+=======
 DDAS.Selenium/~$Testing_Results.xlsx
+>>>>>>> c6207d6ae49f9d0e6d9770dd33eecd3d2b8e2f13
+DDAS.Data.Mongo/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+DDAS.Data.Mongo/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+.vs/restore.dg
+DDAS.Data.Mongo/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+DDAS.Data.Mongo/obj/
+DDAS.Data.Mongo/bin/
+DDAS.WebSite.zip

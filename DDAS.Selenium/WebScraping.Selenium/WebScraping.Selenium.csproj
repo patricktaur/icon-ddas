@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="BaseClasses\BasePage.cs" />
     <Compile Include="BaseClasses\BaseSearchPage.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="ISearch.cs" />
     <Compile Include="PageMaps\AdequateAssuranceListPage.cs" />
     <Compile Include="PageMaps\CBERClinicalInvestigatorInspectionPage.cs" />

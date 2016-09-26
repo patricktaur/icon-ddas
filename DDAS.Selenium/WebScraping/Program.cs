@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using WebScraping.Tests;
 
 namespace WebScraping
 {
@@ -30,13 +29,9 @@ namespace WebScraping
             //test.TestOpenXML();
             //test.TestSearchEngine();
 
-            StringCollection myCollection = new StringCollection();
+            var test = new TestSites();
 
-            myCollection.Add("The cats are crazy!");
-            myCollection.Add("That is one huge tower");
-            myCollection.Add("Moives everywhere");
-            myCollection.Add("got to make it work");
-            myCollection.Add("at any cost");
+            test.TestDDASSites();
 
 
         }

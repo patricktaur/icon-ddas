@@ -14,12 +14,14 @@ Pradeep
 	b. store content  
 	c. Index content
 3. Match Location: improve - page no, line required.
-3. 
+
 Divya - Web Site
 1. Angular Accordion
 2. Login Page
 3. Reports
 4. Previous Searches - view
+<<<<<<< HEAD
+=======
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 13 Sep 2016
@@ -27,6 +29,16 @@ Entry on 13 Sep 2016
  -- Driver = new ChromeDriver();
  Solution: Need to provide the filepath where the chromedriver.exe is saved as an argument   
  Driver = new ChromeDriver(@"filepath where the chromedriver.exe is saved")
+<<<<<<< HEAD
+>>>>>>> 32ad08b6c513bf0c281c27e8809f6dcad8fcb8f9
+
+
+Setting up Chrome Driver:
+Download:
+https://sites.google.com/a/chromium.org/chromedriver/downloads
+Windows 32 version
+to : C:\Development\p926-ddas\Libraries\ChromeDriver
+=======
 
 -----------------------------------------------------------------------------------------------------------
  Entry on 14 Sep 2016
@@ -63,3 +75,36 @@ Entry on 16 Sep 2016
 
    SAM - System for Award Management: Is in progress.
    Commiting the code to GitHub. 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 19 Sep 2016
+1. Still working on SAM site, able to get the XPath in place to get required details.
+2. As discussed with johnly and patrick, need to find a way to download all the search results into CSV
+   from the SAM site.
+3. As per the updated version (pulled from Git), Error handling has been included in the project by patrick.
+4. Three sites are not working as expected. Clinical Investigator Inspection, FDA Warning letters and
+   Exclusion database search sites. Need to find the cause of these errors. 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 20 Sep 2016
+1. Error in the sites: FDA Warning letters and Exclusion Database search was, element not found which has 
+   been resolved.
+2. Could not find the error for the site: Clinical Ivestigator Inspection page.
+3. Able to loop through all the records for the site: System for Award Management
+4. New fields were found while searching with the name: Hari in SAM site. Namely -
+   Classification and activation date
+   Property: DoDAAC was not found.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 21 Sep 2016
+1. Able to extract the new fields from SAM site. Output is as expected.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 22 Sep 2016
+1. Going through AngluarJS 2 documentation to understand component.ts, module.ts, main.ts and index.html
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 23 Sep 2016
+1. Going through MongoDB documentation to understand CRUD operations. 
+2. Trying to add data into MongoDB.
+3. Need to have the API connected to mongoDB to save downloaded records.

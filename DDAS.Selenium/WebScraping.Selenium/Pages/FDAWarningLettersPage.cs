@@ -81,7 +81,7 @@ namespace WebScraping.Selenium.Pages
             Input.SendKeys(Name);
 
             IWebElement Search = FDASearchButton;
-            Search.SendKeys(Keys.Enter);
+            Search.Click();
 
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(120));
 
@@ -99,7 +99,8 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> AnchorTags = TD.FindElements(By.XPath("a"));
 
-                AnchorTags[AnchorTags.Count - 1].SendKeys(Keys.Enter);
+                if (AnchorTags.Count > 0)
+                    AnchorTags[AnchorTags.Count - 1].Click();
 
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
@@ -135,7 +136,6 @@ namespace WebScraping.Selenium.Pages
 
             for (int counter = 0; counter < Name.Length; counter++)
             {
-                Name[counter].Replace(",", "");
                 if(SearchTerms(Name[counter]))
                 {
                     LoadFDAWarningLetters();

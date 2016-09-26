@@ -134,8 +134,6 @@ namespace WebScraping.Selenium.Pages
             
             for (int counter = 0; counter < Name.Length; counter++)
             {
-                Name[counter] = Name[counter].Replace(",", "");
-
                 if (SearchTerms(Name[counter]))
                 {
                     int totalRecords = GetCountOfRecords();

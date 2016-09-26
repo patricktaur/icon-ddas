@@ -99,8 +99,6 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch)
         {
-            NameToSearch.Replace(",", "");
-
             LoadCIAList();
         }
 

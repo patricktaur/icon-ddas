@@ -63,6 +63,7 @@ namespace WebScraping.Selenium.Pages
                 return true;
             }
             else
+                ExclusionDatabaseSearchAgain.Click(); //back to search page
                 return false;
         }
 
@@ -91,8 +92,6 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
-
-      
 
         public override ResultAtSite GetResultAtSite(string NameToSearch)
         {
@@ -134,6 +133,14 @@ namespace WebScraping.Selenium.Pages
         public override void LoadContent(string NameToSearch)
         {
             string[] FullName = NameToSearch.Split(' ');
+
+            //for(int counter = 0; counter < FullName.Length; counter++)
+            //{
+            //    if (FullName.Length == 2)
+            //    {
+                    
+            //    }
+            //}
 
             if (SearchTerms(FullName[0], FullName[1]))
                 LoadExclusionsDatabaseList();

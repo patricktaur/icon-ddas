@@ -49,5 +49,14 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
+
+        public IWebElement ExclusionDatabaseSearchAgain
+        {
+            get
+            {
+                IWebElement SearchAgain = driver.FindElement(By.Id("ctl00_cpExclusions_lbGridBackToSearch"));
+                return SearchAgain;
+            }
+        }
     }
 }

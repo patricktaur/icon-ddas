@@ -12,6 +12,8 @@ namespace WebScraping.Selenium.Pages
     {
         public IWebElement SAMAnchorTag {
             get {
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
                 IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
                 
                 foreach(IWebElement Anchor in Anchors)
@@ -60,10 +62,19 @@ namespace WebScraping.Selenium.Pages
             get {
                 IList<IWebElement> ClearSearchElement = 
                     driver.FindElements(By.CssSelector("input[type='submit']"));
+                return ClearSearchElement[0];
+            }
+        }
 
-                foreach (IWebElement element in ClearSearchElement)
+        public IWebElement SAMPaginationElement
+        {
+            get
+            {
+                IList<IWebElement> PaginationElement = driver.FindElements(By.ClassName("pagination"));
+
+                foreach(IWebElement element in PaginationElement)
                 {
-                    if (element.GetAttribute("title").ToLower() == "clear search")
+                    if(element.TagName.ToLower() == "div")
                     {
                         return element;
                     }

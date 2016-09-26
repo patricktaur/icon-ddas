@@ -1,12 +1,5 @@
 ﻿
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebScraping.Tests;
+using DDAS.Data.Mongo;
 
 namespace ConsoleApplication1
 {
@@ -14,10 +7,9 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-
-            PageTests sut = new PageTests();
-            sut.SetUp();
-            sut.TestFDADebarPage();
+            var test = new TestOne();
+           test.AddTest();
+           test.ReadTest();
         }
     }
 }
