@@ -7,13 +7,19 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class PHSAdministrativeActionListingPage : BaseSearchPage
     {
-        public PHSAdministrativeActionListingPage(IWebDriver driver) : base(driver)
+        private IUnitOfWork _UOW;
+
+        public PHSAdministrativeActionListingPage(IWebDriver driver, IUnitOfWork uow)
+            : base(driver)
         {
+            _UOW = uow;
             Open();
         }
 
@@ -37,9 +43,14 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private PHSAdministrativeActionListingSiteData _PHSAdministrativeSiteData;
+
         public void LoadAdministrativeActionLists()
         {
-            _administrativeActionList = new List<PHSAdministrativeAction>();
+            _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
+
+            _PHSAdministrativeSiteData.CreatedBy = "Patrick";
+            _PHSAdministrativeSiteData.SiteLastUpdatedOn = DateTime.Now;
 
             IList<IWebElement> TRs = PHSTable.FindElements(By.XPath("//tbody/tr"));
 
@@ -62,47 +73,15 @@ namespace WebScraping.Selenium.Pages
                     AdministrativeActionListing.CorrectionOfArticle = TDs[8].Text;
                     AdministrativeActionListing.Memo = TDs[9].Text;
 
-                    _administrativeActionList.Add(AdministrativeActionListing);
+                    _PHSAdministrativeSiteData.PHSAdministrativeSiteData.Add
+                        (AdministrativeActionListing);
                 }
             }
         }
 
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
+        public override void LoadContent()
         {
-            ResultAtSite searchResult = new ResultAtSite();
-
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (PHSAdministrativeAction AdminAction in _administrativeActionList)
-            {
-                string FullName = AdminAction.FirstName + " " + AdminAction.MiddleName + " " +
-                        AdminAction.LastName;
-
-                string WordFound = FindSubString(FullName, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = FullName,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
+            LoadAdministrativeActionLists();
         }
 
         public override void LoadContent(string NameToSearch)
@@ -112,18 +91,9 @@ namespace WebScraping.Selenium.Pages
             LoadAdministrativeActionLists();
         }
 
-        public class PHSAdministrativeAction
+        public override void SaveData()
         {
-            public string LastName { get; set; }
-            public string FirstName { get; set; }
-            public string MiddleName { get; set; }
-            public string DebarmentUntil { get; set; }
-            public string NoPHSAdvisoryUntil { get; set; }
-            public string CertificationOfWorkUntil { get; set; }
-            public string SupervisionUntil { get; set; }
-            public string RetractionOfArticle { get; set; }
-            public string CorrectionOfArticle { get; set; }
-            public string Memo { get; set; }
+            _UOW.PHSAdministrativeActionListingRepository.Add(_PHSAdministrativeSiteData);
         }
     }
 }

@@ -83,7 +83,6 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="No-SQL-DB\TestOne.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\Domain\ArtistRepository.cs" />
     <Compile Include="Repositories\ParamRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="UnitOfWork.cs" />
@@ -104,6 +103,9 @@
     <EmbeddedResource Include="Migrations\201607211251587_initial.resx">
       <DependentUpon>201607211251587_initial.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\Domain\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

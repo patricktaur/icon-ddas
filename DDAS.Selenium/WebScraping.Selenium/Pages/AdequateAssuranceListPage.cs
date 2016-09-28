@@ -7,14 +7,20 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Repository;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class AdequateAssuranceListPage : BaseSearchPage //BaseClasses.BasePage
+    public partial class AdequateAssuranceListPage : BaseSearchPage
     {
-        public AdequateAssuranceListPage(IWebDriver driver) : base(driver)
+       
+        public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
+            _UOW = uow;
             Open();
+            SavePageImage();
             //SaveScreenShot("AdequateAssuranceListPage.png");
         }
 
@@ -27,6 +33,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         private List<AdequateAssuranceList> _adequateAssuranceList;
+        private IUnitOfWork _UOW;
 
         public List<AdequateAssuranceList> AdequateAssuranceIvestigatorList {
             get {
@@ -41,14 +48,21 @@ namespace WebScraping.Selenium.Pages
         }
 
      
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadAdequateAssuranceInvestigators();
         }
 
+        public override void LoadContent(string NameToSearch)
+        {
+            
+        }
+
+        private AdequateAssuranceListSiteData _adequateAssuranceListSiteData;
+
         public void LoadAdequateAssuranceInvestigators()
         {
-            _adequateAssuranceList = new List<AdequateAssuranceList>();
+            _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
 
             foreach(IWebElement TR in 
                 AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")))
@@ -64,53 +78,14 @@ namespace WebScraping.Selenium.Pages
                     AdequateAssuranceInvestigator.ActionDate = TDs[3].Text;
                     AdequateAssuranceInvestigator.Comments = TDs[4].Text;
 
-                    _adequateAssuranceList.Add(AdequateAssuranceInvestigator);
+                    _adequateAssuranceListSiteData.AdequateAssurances.Add
+                        (AdequateAssuranceInvestigator);
                 }
             }
         }
 
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
-        {
-            ResultAtSite searchResult = new ResultAtSite();
+        public override void SaveData() {
 
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach(AdequateAssuranceList AssuranceList in _adequateAssuranceList)
-            {
-                string WordFound = FindSubString(AssuranceList.NameAndAddress, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = AssuranceList.NameAndAddress,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
-        }
-
-      
-
-        public class AdequateAssuranceList
-        {
-            public string NameAndAddress { get; set; }
-            public string Center { get; set; }
-            public string Type { get; set; }
-            public string ActionDate { get; set; }
-            public string Comments { get; set; }
         }
     }
 }

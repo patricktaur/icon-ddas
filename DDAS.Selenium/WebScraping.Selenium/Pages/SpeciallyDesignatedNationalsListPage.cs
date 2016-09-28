@@ -2,29 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium;
 using System.Runtime.InteropServices;
 using System.Net;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
-using System.Collections.Specialized;
-using  DDAS.Models.Interfaces;
+using DDAS.Models.Interfaces;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
+
 namespace WebScraping.Selenium.Pages
 {
     public class SpeciallyDesignatedNationalsListPage: ISearchPage
-    { //: BaseSearchPage 
-
+    {
+        private IUnitOfWork _UOW;
         private string _folderPath;
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL, string szFileName, long dwReserved, long lpfnCB);
 
         //public SpeciallyDesignatedNationalsListPage(IWebDriver driver) : base(driver)
-        public SpeciallyDesignatedNationalsListPage(string folderPath) 
+        public SpeciallyDesignatedNationalsListPage(string folderPath, IUnitOfWork uow) 
         {
+            _UOW = uow;
             _folderPath = folderPath;
             //Open();
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
@@ -55,9 +55,9 @@ namespace WebScraping.Selenium.Pages
             myWebClient.DownloadFile(myStringWebResource, fileName);
         }
 
-        public List<NamesClass> GetTextFromPDF(string NameToSearch)
+        public List<SDNList> GetTextFromPDF(string NameToSearch)
         {
-            List<NamesClass> Names = new List<NamesClass>();
+            List<SDNList> Names = new List<SDNList>();
 
             StringBuilder text = new StringBuilder();
             //string[] PDFDataArray;
@@ -91,7 +91,7 @@ namespace WebScraping.Selenium.Pages
 
                         if (WordsMatched != null)
                         {
-                            NamesClass NamesFromPDF = new NamesClass();
+                            SDNList NamesFromPDF = new SDNList();
 
                             NamesFromPDF.Names = SplitNames[records];
                             NamesFromPDF.PageNumbers = i;
@@ -133,9 +133,9 @@ namespace WebScraping.Selenium.Pages
 
             result.SiteName = SiteName.ToString();
 
-            List<NamesClass> NamesFromPDF = GetTextFromPDF(NameToSearch);
+            List<SDNList> NamesFromPDF = GetTextFromPDF(NameToSearch);
 
-            foreach (NamesClass Names in NamesFromPDF)
+            foreach (SDNList Names in NamesFromPDF)
             {
                 result.Results.Add(new MatchResult
                 {
@@ -171,6 +171,8 @@ namespace WebScraping.Selenium.Pages
             DownloadSDNList();
         }
 
+       
+
         public ResultAtSite GetResultAtSite(string NameToSearch)
         {
             //refactor: remove Search
@@ -179,14 +181,19 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadContent(string NameToSearch)
         {
-            DownloadSDNList(); 
+           
         }
 
-        public class NamesClass
+      
+
+        public void SavePageImage()
         {
-            public string Names { get; set; }
-            public int PageNumbers { get; set; }
-            public string WordsMatched { get; set; }
+            throw new NotImplementedException();
+        }
+
+        public void SaveData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using DDAS.Services.Search;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,20 +16,22 @@ namespace DDAS.API.Controllers
     {
         private ISearchEngine _SearchEngine;
 
-        public SearchController(ISearchEngine search)
+        private ISearchSummary _SearchSummary;
+
+        public SearchController(ISearchEngine search, ISearchSummary SearchSummary)
         {
             _SearchEngine = search;
+            _SearchSummary = SearchSummary;
         }
 
         [Route("SearchResult")]
         [HttpPost]
         public IHttpActionResult SearchResult(SearchQuery query)
         {
-            
             var searchResults = _SearchEngine.SearchByName(query);
             return Ok(searchResults);
-
         }
+
 
         [Route("SearchResultAtSite")]
         [HttpPost]
@@ -36,9 +39,15 @@ namespace DDAS.API.Controllers
         {
             var searchResults = _SearchEngine.SearchByName(query.NameToSearch, query.SiteEnum);
             return Ok(searchResults);
+        }
 
- 
 
+        [Route("GetSearchSummaryResult")]
+        [HttpPost]
+        public IHttpActionResult GetSearchSummaryResult(SearchQuery query)
+        {
+            var SearchResults = _SearchSummary.GetSearchSummary(query);
+            return Ok();
         }
 
         [Route("getNewSearchQuery")]

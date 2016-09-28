@@ -1,20 +1,20 @@
-﻿using DDAS.Models.Entities.Domain;
-using DDAS.Models.Enums;
+﻿using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
-        public FDAWarningLettersPage(IWebDriver driver) : base(driver)
+        private IUnitOfWork _UOW;
+
+        public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
-            _warningLetterList = new List<FDAWarningLetter>();
+            _UOW = uow;
             Open();
         }
 
@@ -36,42 +36,6 @@ namespace WebScraping.Selenium.Pages
             get {
                 return _warningLetterList;
             }
-        }
-
-
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
-        {
-            ResultAtSite searchResult = new ResultAtSite();
-
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach(FDAWarningLetter WarningLetter in _warningLetterList)
-            {
-                string WordFound = FindSubString(WarningLetter.Company, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = WarningLetter.Company,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
         }
 
         public bool SearchTerms(string Name)
@@ -108,9 +72,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private FDAWarningLettersSiteData _FDAWarningSiteData;
 
         public void LoadFDAWarningLetters()
         {
+            _FDAWarningSiteData = new FDAWarningLettersSiteData();
+
+            _FDAWarningSiteData.CreatedBy = "Patrick";
+            _FDAWarningSiteData.SiteLastUpdatedOn = DateTime.Now;
+
             IList<IWebElement> TR = FDASortTable.FindElements(By.XPath("//tbody/tr"));
 
             for (int tableRow = 12; tableRow < TR.Count - 1; tableRow++)
@@ -126,10 +96,12 @@ namespace WebScraping.Selenium.Pages
                 FDAWarningList.ResponseLetterPosted = TDs[4].Text;
                 FDAWarningList.CloseoutDate = TDs[5].Text;
 
-                _warningLetterList.Add(FDAWarningList);
+                _FDAWarningSiteData.FDAWarningLetterList.Add(FDAWarningList);
             }
         }
 
+        public override void LoadContent()
+        { }
         public override void LoadContent(string NameToSearch)
         {
             string[] Name = NameToSearch.Split(' ');
@@ -143,17 +115,9 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        
-
-
-        public class FDAWarningLetter
+        public override void SaveData()
         {
-            public string Company { get; set; }
-            public string LetterIssued { get; set; }
-            public string IssuingOffice { get; set; }
-            public string Subject { get; set; }
-            public string ResponseLetterPosted { get; set; }
-            public string CloseoutDate { get; set; }
+
         }
     }
 }

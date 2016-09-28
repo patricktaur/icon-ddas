@@ -25,15 +25,14 @@ namespace DDAS.API
            
             SimpleInjectorWebApiInitializer.Initialize(config);
 
-
             WebApiConfig.Register(config);
 
             //Enable CORS
+            
             var cors = new EnableCorsAttribute("*", "*", "*");
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             app.UseWebApi(config);
-
            
         }
     }

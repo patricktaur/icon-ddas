@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
-using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class CBERClinicalInvestigatorInspectionPage : BaseSearchPage //BaseClasses.BasePage
+    public partial class CBERClinicalInvestigatorInspectionPage : BaseSearchPage
     {
-        public CBERClinicalInvestigatorInspectionPage(IWebDriver driver) : base(driver)
+        private IUnitOfWork _UOW;
+
+        public CBERClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow) :
+            base(driver)
         {
-            _clinicalInvestigator = new List<CBERClinicalInvestigator>();
+            _UOW = uow;
             Open();
             //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
@@ -54,17 +55,19 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private CBERClinicalInvestigatorInspectionSiteData _CBERSiteData;
+
         public void LoadCBERClinicalInvestigators()
         {
+            _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
+
+            _CBERSiteData.CreatedBy = "patrick";
+            _CBERSiteData.SiteLastUpdatedOn = DateTime.Now;
+
             foreach (IWebElement TR in 
                 CBERClinicalInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
                 var ClinicalInvestigatorCBER = new CBERClinicalInvestigator();
-
-                //if (TR.FindElements(By.XPath("th")).Count > 0)
-                //{
-                //    continue;
-                //}
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
                 if (TDs.Count > 0)
@@ -75,7 +78,7 @@ namespace WebScraping.Selenium.Pages
                     ClinicalInvestigatorCBER.InspectionStartAndEndDate = TDs[3].Text;
                     ClinicalInvestigatorCBER.Classification = TDs[4].Text;
 
-                    _clinicalInvestigator.Add(ClinicalInvestigatorCBER);
+                    _CBERSiteData.ClinicalInvestigator.Add(ClinicalInvestigatorCBER);
                 }
             }
         }
@@ -86,56 +89,19 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadNextInspectionList();
         }
 
-     
-
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
+        public override void LoadContent(string NameToSearch)
         {
-            ResultAtSite searchResult = new ResultAtSite();
 
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (CBERClinicalInvestigator person in _clinicalInvestigator)
-            {
-                string WordFound = base.FindSubString(person.Name, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = person.Name,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
         }
 
-
-        public class CBERClinicalInvestigator
+        public override void SaveData()
         {
-            public string Name { get; set; }
-            public string Title { get; set; }
-            public string InstituteAndAddress { get; set; }
-            public string InspectionStartAndEndDate { get; set; }
-            public string Classification { get; set; }
+
         }
     }
 }

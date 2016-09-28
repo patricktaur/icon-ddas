@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Enums;
-using DDAS.Models.Entities.Domain;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class ClinicalInvestigatorDisqualificationPage : BaseSearchPage //BaseClasses.BasePage
+    public partial class ClinicalInvestigatorDisqualificationPage : BaseSearchPage
     {
-        public ClinicalInvestigatorDisqualificationPage(IWebDriver driver) : base(driver)
+        private IUnitOfWork _UOW;
+        public ClinicalInvestigatorDisqualificationPage(IWebDriver driver, IUnitOfWork uow)
+            : base(driver)
         {
+            _UOW = uow;
             Open();
             //SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
         }
@@ -26,27 +27,27 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<DisqualifiedInvestigator> _disqulifiedInvestigotor;
+        private List<DisqualifiedInvestigator> _disqualifiedInvestigotor;
 
         public List<DisqualifiedInvestigator> DisqualifiedInvestigatorList {
             get {
-                return _disqulifiedInvestigotor;
+                return _disqualifiedInvestigotor;
             }
         }
 
+        private ClinicalInvestigatorDisqualificationSiteData _DisqualificationSiteData;
+
         public void LoadDisqualificationProceedingsList()
         {
-            _disqulifiedInvestigotor = new List<DisqualifiedInvestigator>();
+            _DisqualificationSiteData = new ClinicalInvestigatorDisqualificationSiteData();
+
+            _DisqualificationSiteData.CreatedBy = "Patrick";
+            _DisqualificationSiteData.SiteLastUpdatedOn = DateTime.Now;
 
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
                 var DisqualifiedClinicalInvestigator = new DisqualifiedInvestigator();
-
-                //if (TR.FindElements(By.XPath("th")).Count > 0)
-                //{
-                //    continue;
-                //}
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
@@ -61,70 +62,31 @@ namespace WebScraping.Selenium.Pages
                     DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
                     DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
 
-                    _disqulifiedInvestigotor.Add(DisqualifiedClinicalInvestigator);
+                    _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
+                        DisqualifiedClinicalInvestigator);
                 }
             }
         }
 
-        public override SiteEnum SiteName
-        {
-            get
-            {
+        public override SiteEnum SiteName {
+            get {
                 return SiteEnum.ClinicalInvestigatorDisqualificationPage;
             }
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadDisqualificationProceedingsList();
         }
 
-     
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
+        public override void LoadContent(string NameToSearch)
         {
-            ResultAtSite searchResult = new ResultAtSite();
 
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (DisqualifiedInvestigator person in _disqulifiedInvestigotor)
-            {
-                string WordFound = FindSubString(person.Name, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = person.Name,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
         }
 
-        public class DisqualifiedInvestigator
+        public override void SaveData()
         {
-            public string Name { get; set; }
-            public string Center { get; set; }
-            public string Status { get; set; }
-            public string DateOfStatus { get; set; }
-            public string DateNIDPOEIssued { get; set; }
-            public string DateNOOHIssued { get; set; }
-            public string LinkToNIDPOELetter { get; set; }
-            public string LinkToNOOHLetter { get; set; }
+            
         }
     }
 }

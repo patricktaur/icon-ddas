@@ -62,10 +62,6 @@
       <Project>{D441E38F-0564-4688-872B-25127A7B3EC5}</Project>
       <Name>DDAS.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DDAS.Selenium\WebScraping.Tests\WebScraping.Tests.csproj">
-      <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
-      <Name>WebScraping.Tests</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

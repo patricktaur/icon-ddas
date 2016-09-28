@@ -1,4 +1,5 @@
-﻿using DDAS.Models.Enums;
+﻿using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,11 @@ namespace DDAS.Models.Entities.Domain
     {
         
         public string NameToSearch { get; set; }
-        public List<SearhQuerySite> SearchSites { get; set; }
+        public List<SearchQuerySite> SearchSites { get; set; }
     }
 
     //For multiple sites request
-    public class SearhQuerySite
+    public class SearchQuerySite
     {
         public string SiteName { get; set; }
         public string SiteShortName { get; set; }
@@ -75,9 +76,39 @@ namespace DDAS.Models.Entities.Domain
     
     public class MatchResult
     {
+        public Guid ID { get; set; }
         public string MatchName { get; set; }
         public string MatchLocation { get; set; }
     }
 
+    #endregion
+
+    #region Revised
+    public class SearchSummary
+    {
+        public SearchSummary()
+        {
+            SearchSummaryItems = new List<SearchSummaryItem>();
+        }
+        public string NameToSearch { get; set; }
+        public List<SearchSummaryItem> SearchSummaryItems { get; set; }
+    }
+    public class SearchSummaryItem
+    {
+        public string SiteName { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        public string SiteUrl { get; set; }
+        public string MatchStatus { get; set; }
+    }
+
+    public class AdequateAssuranceListResult: AdequateAssuranceList
+    {
+        public int MatchWeightage { get; set; }
+    }
+
+    public class FDADebarPageResult: DebarredPerson
+    {
+        public int MatchWeightage { get; set; }
+    }
     #endregion
 }

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class ERRProposalToDebarPage : BaseSearchPage //BaseClasses.BasePage
+    public partial class ERRProposalToDebarPage : BaseSearchPage
     {
+        private IUnitOfWork _UOW;
 
-        public ERRProposalToDebarPage(IWebDriver driver) : base(driver)
+        public ERRProposalToDebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
+            _UOW = uow;
             Open();
             //SaveScreenShot("ProposalToDebarPage.png");
         }
@@ -43,9 +43,14 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private ERRProposalToDebarPageSiteData _proposalToDebarSiteData;
+
         public void LoadProposalToDebarList()
         {
-            _ProposalToDebarList = new List<ProposalToDebar>();
+            _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
+
+            _proposalToDebarSiteData.CreatedBy = "";
+            _proposalToDebarSiteData.SiteLastUpdatedOn = DateTime.Now;
 
             foreach (IWebElement TR in ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")))
             {
@@ -57,54 +62,21 @@ namespace WebScraping.Selenium.Pages
                 proposalToDebarList.date = TDs[2].Text;
                 proposalToDebarList.IssuingOffice = TDs[3].Text;
 
-                _ProposalToDebarList.Add(proposalToDebarList);
+                _proposalToDebarSiteData.ProposalToDebar.Add(proposalToDebarList);
             }
         }
 
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
-        {
-            ResultAtSite searchResult = new ResultAtSite();
-
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (ProposalToDebar proposalToDebar in propToDebar)
-            {
-                string WordFound = FindSubString(proposalToDebar.name, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = proposalToDebar.name,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
-        }
-
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadProposalToDebarList();
         }
 
-        public class ProposalToDebar
+        public override void LoadContent(string NameToSearch)
+        { }
+
+        public override void SaveData()
         {
-            public string name { get; set; }
-            public string center { get; set; }
-            public string date { get; set; }
-            public string IssuingOffice { get; set; }
+            _UOW.ERRProposalToDebarRepository.Add(_proposalToDebarSiteData);
         }
     }
 }

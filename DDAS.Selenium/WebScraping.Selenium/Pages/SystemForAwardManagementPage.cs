@@ -8,14 +8,18 @@ using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using System.Diagnostics;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class SystemForAwardManagementPage : BaseSearchPage
     {
-        public SystemForAwardManagementPage(IWebDriver driver) : base(driver)
+        private IUnitOfWork _UOW;
+
+        public SystemForAwardManagementPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
-            _samList = new List<SystemForAwardManagement>();
+            _UOW = uow;
             Open();
         }
 
@@ -39,9 +43,16 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private SystemForAwardManagementPageSiteData _SAMSiteData;
+
         //need to refactor
         public void LoadSAMList()
         {
+            _SAMSiteData = new SystemForAwardManagementPageSiteData();
+
+            _SAMSiteData.CreatedBy = "Patrick";
+            _SAMSiteData.SiteLastUpdatedOn = DateTime.Now;
+
             IList<IWebElement> TableThatContainsRecords =
                 SAMCheckResult.FindElements
                 (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table"));
@@ -120,44 +131,8 @@ namespace WebScraping.Selenium.Pages
                         }
                     }
                 }
-                _samList.Add(SAMDataList);
+                _SAMSiteData.SAMSiteData.Add(SAMDataList);
             }
-        }
-
-
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
-        {
-            ResultAtSite searchResult = new ResultAtSite();
-
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (SystemForAwardManagement SAM in _samList)
-            {
-                string WordFound = FindSubString(SAM.Entity, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = SAM.Entity,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
         }
 
         public bool SearchTerms(string NameToSearch)
@@ -190,6 +165,11 @@ namespace WebScraping.Selenium.Pages
 
                 return false;
             }
+        }
+
+        public override void LoadContent()
+        {
+            
         }
 
         public override void LoadContent(string NameToSearch)
@@ -240,20 +220,9 @@ namespace WebScraping.Selenium.Pages
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
         }
 
-        public class SystemForAwardManagement
+        public override void SaveData()
         {
-            public string Entity { get; set; }
-            public string Status { get; set; }
-            public string Duns { get; set; }
-            public string HasActiveExclusion { get; set; }
-            public string ExpirationDate { get; set; }
-            public string PurposeOfRegistration { get; set; }
-            public string CAGECode { get; set; }
-            public string DoDAAC { get; set; }
-            public string DelinquentFederalDebt { get; set; }
-            public string Classification { get; set; }
-            public string ActivationDate { get; set; }
-            public string TerminationDate { get; set; }
+
         }
     }
 }

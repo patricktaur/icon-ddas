@@ -52,6 +52,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95F621B2-EFA7-4329-A232-5EA1EFE44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DDAS.Models\DDAS.Models.csproj">
+      <Project>{D441E38F-0564-4688-872B-25127A7B3EC5}</Project>
+      <Name>DDAS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DDAS.Services\DDAS.Services.csproj">
+      <Project>{b9fc373c-8e1b-49ba-a170-cf34e23cef60}</Project>
+      <Name>DDAS.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebScraping.Tests\WebScraping.Tests.csproj">
       <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
       <Name>WebScraping.Tests</Name>

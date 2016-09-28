@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class CorporateIntegrityAgreementsListPage : BaseSearchPage
     {
-        public CorporateIntegrityAgreementsListPage(IWebDriver driver) : base(driver)
+
+        private IUnitOfWork _UOW;
+
+        public CorporateIntegrityAgreementsListPage(IWebDriver driver, IUnitOfWork uow)
+            : base(driver)
         {
+            _UOW = uow;
             Open();
         }
 
@@ -38,9 +41,14 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private CorporateIntegrityAgreementsListSiteData _CIASiteData;
+
         public void LoadCIAList()
         {
-            _ciaList = new List<CIAList>();
+            _CIASiteData = new CorporateIntegrityAgreementsListSiteData();
+
+            _CIASiteData.CreatedBy = "patrick";
+            _CIASiteData.SiteLastUpdatedOn = DateTime.Now;
 
             IList<IWebElement> TRs = CIAListTable.FindElements(By.XPath("//tbody/tr"));
 
@@ -57,58 +65,23 @@ namespace WebScraping.Selenium.Pages
                     CiaList.State = TDs[2].Text;
                     CiaList.Effective = TDs[3].Text;
 
-                    _ciaList.Add(CiaList);
+                    _CIASiteData.CIAListSiteData.Add(CiaList);
                 }
             }
         }
 
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
-        {
-            ResultAtSite searchResult = new ResultAtSite();
-
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (CIAList CiaList in _ciaList)
-            {
-                string WordFound = FindSubString(CiaList.Provider, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = CiaList.Provider,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
-        }
-
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent()
         {
             LoadCIAList();
         }
-
-        public class CIAList
+        public override void LoadContent(string NameToSearch)
         {
-            public string Provider { get; set; }
-            public string City { get; set; }
-            public string State { get; set; }
-            public string Effective { get; set; }
+
         }
 
+        public override void SaveData()
+        {
+
+        }
     }
 }

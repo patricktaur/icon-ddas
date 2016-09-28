@@ -108,3 +108,20 @@ Entry on 23 Sep 2016
 1. Going through MongoDB documentation to understand CRUD operations. 
 2. Trying to add data into MongoDB.
 3. Need to have the API connected to mongoDB to save downloaded records.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 26 Sep 2016
+1. Interfaces and classes of UnitOfWork and Repository for FDADebarpage are created by patrick.
+2. Understanding the flow, how the MongoDB is connected with the models and pages.
+3. Able to save data into mongoDB with using UnitOfWork and Repositories for ERRProposalToDebar page.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 27 Sep 2016
+1. Able to save/add data for FDADebarPage and PHSAdministrativeActionListingPage into mongoDB.
+2. Removed the Search method from the BaseSearchPage of return type ResultAtSite which is no longer valid
+   as searching the names will be a seperate component. Currently the selenium component will only
+   extract the data from the sites and save into mongoDB.
+3. Required Changes made in the SearchEngine, ISearchEngine and ISearchPage to exclued the search
+   method.
+4. Added a new project, DDAS.Services, which will be containing the logic to search matching records
+   from all sites and return the matching percentage along with the records.

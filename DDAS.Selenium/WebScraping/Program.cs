@@ -1,4 +1,10 @@
-﻿using WebScraping.Tests;
+﻿using DDAS.Data.Mongo;
+using DDAS.Models;
+using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
+using DDAS.Services.Search;
+using System.Collections.Generic;
+using WebScraping.Tests;
 
 namespace WebScraping
 {
@@ -6,34 +12,20 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            //string mystring = "clarityit";
-            //string searchterm = "it";
+            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+            var test = new Search(uow);
+            List<SearchQuerySite> SearchList = new List<SearchQuerySite>();
 
-            //int n = mystring.ToLower().Replace(searchterm.ToLower(), "").Length;
+            SearchQuerySite search = new SearchQuerySite { SiteEnum = SiteEnum.FDADebarPage,
+            SiteName = "FDADebarPage",
+            SiteShortName = "FDA Debar",
+            SiteUrl = "ABC"};
 
-            //int count = (mystring.Length - n) / searchterm.Length;
+            SearchList.Add(search);
 
-            //int needleCount = (mystring.Length - mystring.ToLower().Replace(searchterm.ToLower(), "").Length)
-            //    / searchterm.Length;
+            var query = new SearchQuery { NameToSearch = "", SearchSites = SearchList };
 
-            //var test = new FirstTest();
-            //test.SetUp();
-            //test.TestFDADebarPage(); //tested
-            //test.TestProposalToDebarPage(); //Tested
-            //test.TestClinicalInvestigatorInspectionPage();//SearchBox
-            //test.TestAdequateAssuranceListPage(); //tested
-            //test.TestDisqualifiedInvestigators(); //tested
-            //test.TestCBERClinicalInvestigators(); //tested
-            //test.TestSDNListPage();
-            //test.TestExclusionDatabaseSearchPage();//SearchBox
-            //test.TestOpenXML();
-            //test.TestSearchEngine();
-
-            var test = new TestSites();
-
-            test.TestDDASSites();
-
-
+            test.GetSearchSummary(query);
         }
     }
 }

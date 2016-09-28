@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebScraping.Selenium
+namespace DDAS.Services
 {
-    public interface ISearch
+    public class Class1
     {
-        string Search(string Name);
     }
 }

@@ -45,7 +45,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WebDriver">
-      <HintPath>..\..\Libraries\WebDriver.dll</HintPath>
+      <HintPath>..\..\Libraries\Edge driver\WebDriver.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class ExclusionDatabaseSearchPage : BaseSearchPage //BaseClasses.BasePage
+    public partial class ExclusionDatabaseSearchPage : BaseSearchPage 
     {
-        public ExclusionDatabaseSearchPage(IWebDriver driver) : base(driver)
+
+        private IUnitOfWork _UOW;
+
+        public ExclusionDatabaseSearchPage(IWebDriver driver, IUnitOfWork uow) 
+            : base(driver)
         {
-            _exclusionsList = new List<ExclusionDatabaseSearchList>();
+            _UOW = uow;
             Open();
             //SaveScreenShot("ExclusionDatabaseSearch.png");
         }
@@ -67,9 +69,15 @@ namespace WebScraping.Selenium.Pages
                 return false;
         }
 
+        private ExclusionDatabaseSearchPageSiteData _exclusionSearchSiteData;
 
         public void LoadExclusionsDatabaseList()
         {
+            _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
+
+            _exclusionSearchSiteData.CreatedBy = "Patrick";
+            _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
+
             foreach (IWebElement TR in 
                 ExclusionDatabaseSearchTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -88,50 +96,20 @@ namespace WebScraping.Selenium.Pages
                     NewExclusionsList.Waiver = TDs[6].Text;
                     NewExclusionsList.SSNorEIN = TDs[7].Text;
 
-                    _exclusionsList.Add(NewExclusionsList);
+                    _exclusionSearchSiteData.ExclusionSearchList.Add
+                        (NewExclusionsList);
                 }
             }
         }
 
-        public override ResultAtSite GetResultAtSite(string NameToSearch)
+        public override void LoadContent()
         {
-            ResultAtSite searchResult = new ResultAtSite();
 
-            searchResult.SiteName = SiteName.ToString();
-
-            foreach (ExclusionDatabaseSearchList person in _exclusionsList)
-            {
-                string FullName = person.FirstName + " " + person.MiddleName + " " + person.LastName;
-
-                string WordFound = FindSubString(FullName, NameToSearch);
-
-                if (WordFound != null)
-                {
-                    searchResult.SiteName = SiteName.ToString();
-
-                    searchResult.Results.Add(new MatchResult
-                    {
-                        MatchName = FullName,
-                        MatchLocation = "Word(s) matched - " + WordFound
-                    });
-                }
-            }
-
-            if (searchResult.Results.Count == 0)
-            {
-                searchResult.Results.Add(new MatchResult
-                {
-                    MatchName = "None",
-                    MatchLocation = "None"
-                });
-                return searchResult;
-            }
-            else
-                return searchResult;
         }
 
         public override void LoadContent(string NameToSearch)
         {
+             
             string[] FullName = NameToSearch.Split(' ');
 
             //for(int counter = 0; counter < FullName.Length; counter++)
@@ -147,18 +125,12 @@ namespace WebScraping.Selenium.Pages
 
             if (SearchTerms(FullName[1], FullName[0]))
                 LoadExclusionsDatabaseList();
+                
         }
 
-        public class ExclusionDatabaseSearchList
+        public override void SaveData()
         {
-            public string LastName { get; set; }
-            public string FirstName { get; set; }
-            public string MiddleName { get; set; }
-            public string General { get; set; }
-            public string Specialty { get; set; }
-            public string Exclusion { get; set; }
-            public string Waiver { get; set; }
-            public string SSNorEIN { get; set; }
+
         }
     }
 }
