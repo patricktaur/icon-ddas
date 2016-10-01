@@ -6,6 +6,7 @@ using Owin;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using AutoMapper;
+using DDAS.Data.Mongo.Maps;
 
 [assembly: OwinStartup(typeof(DDAS.API.Startup))]
 
@@ -33,6 +34,7 @@ namespace DDAS.API
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             app.UseWebApi(config);
+            MongoMaps.Initialize();
            
         }
     }

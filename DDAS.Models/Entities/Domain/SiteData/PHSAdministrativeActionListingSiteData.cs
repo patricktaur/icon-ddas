@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class PHSAdministrativeActionListingSiteData : AuditEntity<long?>
+    public class PHSAdministrativeActionListingSiteData //: AuditEntity<long?>
     {
         public PHSAdministrativeActionListingSiteData()
         {
             PHSAdministrativeSiteData = new List<PHSAdministrativeAction>();
         }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
+        public long RecId { get; set; }
 
         public DateTime SiteLastUpdatedOn { get; set; }
         public string Source { get; set; }
@@ -20,6 +25,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class PHSAdministrativeAction
     {
+        public int Matched { get; set; }
         public int RowNumber { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }

@@ -85,7 +85,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void SaveData() {
-
+            _UOW.AdequateAssuranceListRepository.Add(_adequateAssuranceListSiteData);
         }
     }
 }

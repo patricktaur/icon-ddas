@@ -8,6 +8,10 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
 using DDAS.Models.ViewModels.Search;
+using DDAS.Models;
+using Utilities;
+using DDAS.Data.Mongo;
+using WebScraping.Selenium.SearchEngine;
 
 namespace DDAS.API.Controllers
 {
@@ -32,7 +36,6 @@ namespace DDAS.API.Controllers
             return Ok(searchResults);
         }
 
-
         [Route("SearchResultAtSite")]
         [HttpPost]
         public IHttpActionResult SearchResultAtSite(SearchQueryAtSite query)
@@ -47,7 +50,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetSearchSummaryResult(SearchQuery query)
         {
             var SearchResults = _SearchSummary.GetSearchSummary(query);
-            return Ok();
+            return Ok(SearchResults);
         }
 
         [Route("getNewSearchQuery")]
@@ -99,5 +102,25 @@ namespace DDAS.API.Controllers
 
             return Ok(result);
         }
+
+        [Route("TestExtract")]
+        [HttpGet]
+        public IHttpActionResult Test()
+        {
+            string DataExtractionLogFile = System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+            string DownLoadFileFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            ILog log = new LogText(DataExtractionLogFile, true);
+            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+            log.LogStart();
+            log.WriteLog(System.DateTime.Now.ToString(), "Extract Data starts");
+            ISearchEngine searchEngine = new SearchEngine(log, uow);
+            searchEngine.Load();
+            log.WriteLog(System.DateTime.Now.ToString(), "Extract Data ends");
+            log.WriteLog("=================================================================================");
+            log.LogEnd();
+
+            return Ok();
+        }
+
     }
 }

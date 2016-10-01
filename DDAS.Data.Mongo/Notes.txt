@@ -6,3 +6,5 @@ The Driver
 The NoRM driver differs from the MongoDB-CSharp driver we looked at last time in that it uses C# classes directly rather than the Document class. It automatically serializes and deserializes your classes to and from JSON. Using it is very similar to using NHibernate or another ORM…hence the name…NoRM.
 
 You can get the driver at: http://github.com/atheken/NoRM
+
+http://mongodb.github.io/mongo-csharp-driver/2.0/reference/bson/mapping/

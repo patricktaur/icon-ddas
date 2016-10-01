@@ -41,11 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\SearchQuery.cs" />
+    <Compile Include="Search\SiteScanData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95f621b2-efa7-4329-a232-5ea1efe44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
       <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
       <Name>DDAS.Models</Name>

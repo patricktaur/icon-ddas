@@ -6,19 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using DDAS.Models.Repository.Domain;
 using System.Threading;
-using Norm;
 using Norm.Configuration;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Repository.Domain.SiteData;
 using DDAS.Data.Mongo.Repositories.SiteData;
+using MongoDB.Bson.Serialization;
+using DDAS.Models.Entities.Domain.SiteData;
+using MongoDB.Driver;
 
 namespace DDAS.Data.Mongo
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IMongo _provider;
-        private IMongoDatabase _db { get { return _provider.Database; } }
-
+        //private IMongo _provider;
+        //private IMongoDatabase _db { get { return _provider.Database; } }
+        private IMongoDatabase _db;
         #region PrivateRepositoryMemebers
         private IFDADebarPageRepository _FDADebarPageRepository;
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
@@ -26,12 +28,19 @@ namespace DDAS.Data.Mongo
         private IPHSAdministrativeActionListingRepository 
             _PHSAdministrativeActionListingRepository;
         #endregion
+        /*
+         * var client = new MongoClient("mongodb://127.0.0.1");
+            var DB = client.GetDatabase("DDAS");
+         * */
 
         #region Constructor
         public UnitOfWork(string nameOrConnectionString)
         {
-            InitializeMaps();
-            _provider = Norm.Mongo.Create(nameOrConnectionString);
+            //InitializeMaps();
+            //_provider = Norm.Mongo.Create(nameOrConnectionString);
+
+            var mongo = new MongoClient("mongodb://127.0.0.1");
+             _db = mongo.GetDatabase("DDAS");
         }
         #endregion
 
@@ -77,21 +86,26 @@ namespace DDAS.Data.Mongo
         #endregion
         private void InitializeMaps()
         {
-            MongoConfiguration.Initialize(config => 
-            config.AddMap<FDADebarPageSiteDataMap>());
+            MongoMaps.Initialize();
+            //BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
+            //{
+            //    map.MapIdProperty(u => u.RecId);
+            //});
+            //MongoConfiguration.Initialize(config =>
+            //config.AddMap<FDADebarPageSiteDataMap>());
 
-            MongoConfiguration.Initialize(config =>
-            config.AddMap<ERRProposalToDebarPageSiteDataMap>());
+            //MongoConfiguration.Initialize(config =>
+            //config.AddMap<ERRProposalToDebarPageSiteDataMap>());
 
-            MongoConfiguration.Initialize(config =>
-            config.AddMap<PHSAdministrativeActionListingSiteDataMap>());
+            //MongoConfiguration.Initialize(config =>
+            //config.AddMap<PHSAdministrativeActionListingSiteDataMap>());
 
         }
 
 
-        #region Methods
+    #region Methods
 
-        public int SaveChanges()
+    public int SaveChanges()
         {
             throw new NotImplementedException();
         }
@@ -109,7 +123,9 @@ namespace DDAS.Data.Mongo
 
         public void Dispose()
         {
-            _provider.Dispose();
+
+            
+            //_provider.Dispose();
            
         }
     }

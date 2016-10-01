@@ -17,8 +17,10 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string Source { get; set; }
         public ICollection<ProposalToDebar> ProposalToDebar { get; set; }
     }
+
     public class ProposalToDebar
     {
+        public int Matched { get; set; }
         public int RowNumber { get; set; }
         public string name { get; set; }
         public string center { get; set; }

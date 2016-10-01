@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DDAS.Models.Repository;
-using Norm;
-using System.Configuration;
-using DDAS.Data.Mongo.Maps;
-using System.Linq;
-using Norm.Configuration;
-using DDAS.Models.Entities.Domain.SiteData;
+//using Norm;
+using MongoDB.Bson;
+using MongoDB.Driver.Linq;
+using MongoDB.Driver;
 
 namespace DDAS.Data.Mongo.Repositories
 {
-   
+
     internal class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private IMongo _provider;
+        //private IMongo _provider;
         private IMongoDatabase _db;
         //private IMongoDatabase _db { get { return this._provider.Database; } }
 
@@ -33,14 +31,24 @@ namespace DDAS.Data.Mongo.Repositories
 
         public void Add(TEntity entity)
         {
-            _db.GetCollection<TEntity>().Save(entity);
+            //_db.GetCollection<TEntity>().Save(entity);
+            _db.GetCollection<TEntity>(typeof(TEntity).Name).InsertOne(entity);
         }
 
         public TEntity FindById(object id)
         {
             //Can this return more than one item? 
-            return _db.GetCollection<TEntity>().FindOne(new { _id = id }); ;
-           
+            //var filter = Builders<TEntity>.Filter.Eq("id", ObjectId.Parse(id.ToString()));
+
+            var filter = Builders<TEntity>.Filter.Eq("_id", id);
+            var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
+            var entity = collection.Find(filter).FirstOrDefault();
+
+
+            //_db.GetCollection<TEntity>(typeof(TEntity).Name).Find(new { _id = id });
+
+            //return _db.GetCollection<TEntity>().FindOne(new { _id = id }); ;
+            return entity;
         }
 
         public Task<TEntity> FindByIdAsync(object id)
@@ -55,13 +63,21 @@ namespace DDAS.Data.Mongo.Repositories
 
         public List<TEntity> GetAll()
         {
+            /*
+            var collection = _db.GetCollection<TEntity>();
             
             var obj = _db.GetCollection<TEntity>().AsQueryable();
+            var obj1 = obj.ToList();
+
             foreach(TEntity xyz  in obj){
                 //Console.WriteLine(xyz.CreatedBy);
 
             }
             return _db.GetCollection<TEntity>().AsQueryable().ToList();
+            */
+            var collections = _db.GetCollection<TEntity>(typeof(TEntity).Name);
+            var documents = collections.Find(_ => true).ToList();
+            return documents;
         }
 
         public Task<List<TEntity>> GetAllAsync()
@@ -91,14 +107,14 @@ namespace DDAS.Data.Mongo.Repositories
 
         public void Remove(TEntity entity)
         {
-            _db.GetCollection<TEntity>().Delete(entity);
+            //_db.GetCollection<TEntity>().Delete(entity);
         }
 
         public void Update(TEntity entity)
         {
             //same as Add:
             //??entity, entity ?
-            _db.GetCollection<TEntity>().UpdateOne(entity, entity);
+           // _db.GetCollection<TEntity>().UpdateOne(entity, entity);
         }
     }
 }

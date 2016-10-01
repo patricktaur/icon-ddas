@@ -125,3 +125,23 @@ Entry on 27 Sep 2016
    method.
 4. Added a new project, DDAS.Services, which will be containing the logic to search matching records
    from all sites and return the matching percentage along with the records.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 28 Sep 2016
+1. In the DDAS.Services, as discussed with patrick, added GetSearchSummary method to retrieve records from
+   mongoDB and calculate the percentage/count of match for NameToSearch.
+2. Unable to pull data from mongoDB, Error: Cannot create instance of an interface. 
+   Need to understand the GetAll() function of mongoDB to pull the data.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 29 Sep 2016
+1. The Norm driver was used to perform CRUD operations with MongoDB. The Add function in the repository was
+   working but the GetAll function wasn't working. It was found that Norm driver was causing the problem.
+2. Replaced the Norm driver with MongoDB driver and related queries or functions to add and read data from
+   Mongo database. Able to add collections and read the same.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 30 Sep 2016
+1. Able to read records from MongoDB and calculate the MatchSummary for the given Name to search.
+2. For every collection added to the database for the same page/site, RecId is added as 0 and is not being
+   incremented. Need to fix this.

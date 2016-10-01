@@ -30,7 +30,7 @@ namespace DDAS.API.App_Start
             InitializeContainer(container);
 
             container.RegisterWebApiControllers(config);
-            container.Verify();
+            //container.Verify();
 
             config.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
         }

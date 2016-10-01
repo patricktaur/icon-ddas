@@ -13,7 +13,6 @@ namespace DDAS.Models.Entities.Domain
 
     public class SearchQuery
     {
-        
         public string NameToSearch { get; set; }
         public List<SearchQuerySite> SearchSites { get; set; }
     }
@@ -31,6 +30,13 @@ namespace DDAS.Models.Entities.Domain
         public string ErrorDescription { get; set; }
         public List<MatchResult> Results { get; set; }
 
+    }
+
+    public class SiteScan : SearchQuerySite
+    {
+        public Guid? DataId { get; set; }
+        public DateTime DataExtractedOn { get; set; }
+        public DateTime SiteLastUpdatedOn { get; set; }
     }
 
     //for Single site query:
@@ -99,16 +105,6 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public string MatchStatus { get; set; }
-    }
-
-    public class AdequateAssuranceListResult: AdequateAssuranceList
-    {
-        public int MatchWeightage { get; set; }
-    }
-
-    public class FDADebarPageResult: DebarredPerson
-    {
-        public int MatchWeightage { get; set; }
     }
     #endregion
 }

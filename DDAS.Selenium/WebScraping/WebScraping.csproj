@@ -64,10 +64,6 @@
       <Project>{b9fc373c-8e1b-49ba-a170-cf34e23cef60}</Project>
       <Name>DDAS.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebScraping.Tests\WebScraping.Tests.csproj">
-      <Project>{908981d6-0471-4aef-a5aa-7af3f59fcbaf}</Project>
-      <Name>WebScraping.Tests</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

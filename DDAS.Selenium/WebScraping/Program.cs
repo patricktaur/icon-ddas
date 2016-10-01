@@ -4,7 +4,6 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using DDAS.Services.Search;
 using System.Collections.Generic;
-using WebScraping.Tests;
 
 namespace WebScraping
 {
@@ -12,20 +11,22 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
-            var test = new Search(uow);
-            List<SearchQuerySite> SearchList = new List<SearchQuerySite>();
+            test t = new test();
+            t.TestConnection();
+            //IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+            //var test = new Search(uow);
+            //List<SearchQuerySite> SearchList = new List<SearchQuerySite>();
 
-            SearchQuerySite search = new SearchQuerySite { SiteEnum = SiteEnum.FDADebarPage,
-            SiteName = "FDADebarPage",
-            SiteShortName = "FDA Debar",
-            SiteUrl = "ABC"};
+            //SearchQuerySite search = new SearchQuerySite { SiteEnum = SiteEnum.FDADebarPage,
+            //SiteName = "FDADebarPage",
+            //SiteShortName = "FDA Debar",
+            //SiteUrl = "ABC"};
 
-            SearchList.Add(search);
+            //SearchList.Add(search);
 
-            var query = new SearchQuery { NameToSearch = "", SearchSites = SearchList };
+            //var query = new SearchQuery { NameToSearch = "", SearchSites = SearchList };
 
-            test.GetSearchSummary(query);
+            //test.GetSearchSummary(query);
         }
     }
 }

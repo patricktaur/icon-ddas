@@ -1,5 +1,6 @@
 ﻿
 using DDAS.Data.Mongo;
+using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
 using System.Configuration;
@@ -21,6 +22,7 @@ namespace DDAS.DataExtractor
         static void ExtractData()
         {
             //ILog log, IUnitOfWork uow
+            MongoMaps.Initialize();
 
             string DataExtractionLogFile = System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
             string DownLoadFileFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
