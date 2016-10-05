@@ -1,17 +1,9 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
-using DDAS.Services.Search;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
-using System.Web.Http.Results;
 using DDAS.Models.ViewModels.Search;
-using DDAS.Models;
-using Utilities;
-using DDAS.Data.Mongo;
-using WebScraping.Selenium.SearchEngine;
+using DDAS.Models.Enums;
+using System;
 
 namespace DDAS.API.Controllers
 {
@@ -44,15 +36,56 @@ namespace DDAS.API.Controllers
             return Ok(searchResults);
         }
 
-
         [Route("GetSearchSummaryResult")]
         [HttpPost]
-        public IHttpActionResult GetSearchSummaryResult(SearchQuery query)
+        public IHttpActionResult GetSearchSummaryResult(NameToSearchQuery query)
         {
             var SearchResults = _SearchSummary.GetSearchSummary(query);
             return Ok(SearchResults);
         }
+        
+        
+        [Route("GetSearchSummaryDetails")]
+        [HttpPost]
+        public IHttpActionResult GetSearchSummaryDetailsXXX(SearchDetailsQuery query)
+        {
 
+            switch (query.siteEnum) { 
+                case SiteEnum.FDADebarPage:
+                    //return Ok(_SearchSummary.GetFDADebarPageMatch(query));
+
+                    var SearchDetails = _SearchSummary.GetFDADebarPageMatch(
+                    query.NameToSearch,
+                    query.RecId);
+                    return null;
+                    break;
+            case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    return null;
+                    break;
+            case SiteEnum.FDAWarningLettersPage:
+                    return null;
+                    break;
+            default:
+                    return null;
+                    throw new Exception("wrong enum");
+            }
+
+
+            
+        }
+       
+        /*
+        [Route("GetSearchSummaryDetails")]
+        [HttpPost]
+        public IHttpActionResult GetSearchSummaryDetails(SearchDetailsQuery query)
+        {
+            var SearchDetails = _SearchSummary.GetFDADebarPageMatch(
+                query.NameToSearch,
+                query.RecId);
+
+            return Ok(SearchDetails);
+        }
+        */
         [Route("getNewSearchQuery")]
         [HttpGet]
         public IHttpActionResult newSearchQuery()
@@ -101,25 +134,6 @@ namespace DDAS.API.Controllers
             };
 
             return Ok(result);
-        }
-
-        [Route("TestExtract")]
-        [HttpGet]
-        public IHttpActionResult Test()
-        {
-            string DataExtractionLogFile = System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
-            string DownLoadFileFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
-            ILog log = new LogText(DataExtractionLogFile, true);
-            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
-            log.LogStart();
-            log.WriteLog(System.DateTime.Now.ToString(), "Extract Data starts");
-            ISearchEngine searchEngine = new SearchEngine(log, uow);
-            searchEngine.Load();
-            log.WriteLog(System.DateTime.Now.ToString(), "Extract Data ends");
-            log.WriteLog("=================================================================================");
-            log.LogEnd();
-
-            return Ok();
         }
 
     }

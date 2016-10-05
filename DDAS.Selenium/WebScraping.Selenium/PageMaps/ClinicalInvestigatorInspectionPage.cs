@@ -66,5 +66,41 @@ namespace WebScraping.Selenium.Pages
                 return Element;
             }
         }
+
+        public IWebElement ClinicalInvestigatorAdvancedSearch
+        {
+            get
+            {
+                IList<IWebElement> Anchors =
+                    driver.FindElements(By.XPath("//a"));
+
+                foreach(IWebElement Anchor in Anchors)
+                {
+                    if (Anchor.Text.ToLower() == "advanced search")
+                        return Anchor;
+                }
+                throw new NoSuchElementException("Advanced Search Anchor tag not found!");
+            }
+        }
+
+        public IWebElement ClinicalInvestigatorFirstNameDropDown
+        {
+            get
+            {
+                IWebElement FirstNameDropDown =
+                    driver.FindElement(By.Name("SearchFieldCriterion_2"));
+                return FirstNameDropDown;
+            }
+        }
+
+        public IWebElement ClinicalInvestigatorFirstNameTextField
+        {
+            get
+            {
+                IWebElement FirstName = 
+                    driver.FindElement(By.Name("SearchFieldValue_2"));
+                return FirstName;
+            }
+        }
     }
 }

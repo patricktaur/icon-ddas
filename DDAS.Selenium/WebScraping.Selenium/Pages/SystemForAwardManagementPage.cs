@@ -17,7 +17,8 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
 
-        public SystemForAwardManagementPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
+        public SystemForAwardManagementPage(IWebDriver driver, IUnitOfWork uow) 
+            : base(driver)
         {
             _UOW = uow;
             Open();

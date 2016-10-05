@@ -30,6 +30,9 @@ namespace DDAS.Services.Search
             foreach (SearchQuerySite Site in NewSearchQuery.SearchSites)
             {
                 var scanData = GetSiteScanData(Site.SiteEnum);
+                scanData.SiteName = Site.SiteName;
+                scanData.SiteUrl = Site.SiteUrl;
+                scanData.SiteEnum = Site.SiteEnum;
                 ScanData.Add(scanData);
             }
             return ScanData;
@@ -39,23 +42,40 @@ namespace DDAS.Services.Search
         {
             switch(Enum)
             {
-                case 0 : return GetScanDetails();
+                case SiteEnum.FDADebarPage : return GetFDADebarSiteScanDetails();
+                case SiteEnum.PHSAdministrativeActionListingPage :
+                    return GetPHSSiteScanDetails(); 
             }
 
             return null;
         }
 
-        public SiteScan GetScanDetails()
+        public SiteScan GetFDADebarSiteScanDetails()
         {
-            var SiteData = _UOW.FDADebarPageRepository.GetAll().OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            var SiteData = _UOW.FDADebarPageRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             SiteScan scan = new SiteScan();
-           
+            
             scan.DataExtractedOn = SiteData.CreatedOn;
             scan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
             scan.DataId = SiteData.RecId;
 
             return scan;
+        }
+
+        public SiteScan GetPHSSiteScanDetails()
+        {
+            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            SiteScan siteScan = new SiteScan();
+
+            siteScan.DataExtractedOn = SiteData.CreatedOn;
+            siteScan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+            siteScan.DataId = SiteData.RecId;
+
+            return siteScan;
         }
     }
 }

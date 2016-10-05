@@ -64,6 +64,7 @@ namespace WebScraping.Selenium.Pages
         {
             _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
 
+            int RowCount = 1;
             foreach(IWebElement TR in 
                 AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")))
             {
@@ -72,6 +73,7 @@ namespace WebScraping.Selenium.Pages
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
                 if (TDs.Count > 0)
                 {
+                    AdequateAssuranceInvestigator.RowNumber = RowCount;
                     AdequateAssuranceInvestigator.NameAndAddress = TDs[0].Text;
                     AdequateAssuranceInvestigator.Center = TDs[1].Text;
                     AdequateAssuranceInvestigator.Type = TDs[2].Text;
@@ -80,6 +82,7 @@ namespace WebScraping.Selenium.Pages
 
                     _adequateAssuranceListSiteData.AdequateAssurances.Add
                         (AdequateAssuranceInvestigator);
+                    RowCount = RowCount + 1;
                 }
             }
         }

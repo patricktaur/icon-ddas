@@ -45,15 +45,17 @@ namespace WebScraping.Selenium.Pages
 
         private PHSAdministrativeActionListingSiteData _PHSAdministrativeSiteData;
 
-        public void LoadAdministrativeActionLists()
+        public void LoadAdministrativeActionList()
         {
             _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
 
             _PHSAdministrativeSiteData.CreatedBy = "Patrick";
             _PHSAdministrativeSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
 
             IList<IWebElement> TRs = PHSTable.FindElements(By.XPath("//tbody/tr"));
 
+            int RowCount = 1;
             foreach (IWebElement TR in TRs)
             {
                 var AdministrativeActionListing = new PHSAdministrativeAction();
@@ -62,6 +64,7 @@ namespace WebScraping.Selenium.Pages
 
                 if (TDs.Count > 0)
                 {
+                    AdministrativeActionListing.RowNumber = RowCount;
                     AdministrativeActionListing.LastName = TDs[0].Text;
                     AdministrativeActionListing.FirstName = TDs[1].Text;
                     AdministrativeActionListing.MiddleName = TDs[2].Text;
@@ -75,20 +78,21 @@ namespace WebScraping.Selenium.Pages
 
                     _PHSAdministrativeSiteData.PHSAdministrativeSiteData.Add
                         (AdministrativeActionListing);
+                    RowCount = RowCount + 1;
                 }
             }
         }
 
         public override void LoadContent()
         {
-            LoadAdministrativeActionLists();
+            LoadAdministrativeActionList();
         }
 
         public override void LoadContent(string NameToSearch)
         {
             NameToSearch.Replace(",", "");
 
-            LoadAdministrativeActionLists();
+            LoadAdministrativeActionList();
         }
 
         public override void SaveData()

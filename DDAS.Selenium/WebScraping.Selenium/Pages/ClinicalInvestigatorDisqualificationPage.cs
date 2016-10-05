@@ -44,6 +44,7 @@ namespace WebScraping.Selenium.Pages
             _DisqualificationSiteData.CreatedBy = "Patrick";
             _DisqualificationSiteData.SiteLastUpdatedOn = DateTime.Now;
 
+            int RowCount = 1;
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -53,6 +54,7 @@ namespace WebScraping.Selenium.Pages
 
                 if (TDs.Count > 0)
                 {
+                    DisqualifiedClinicalInvestigator.RowNumber = RowCount;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
                     DisqualifiedClinicalInvestigator.Center = TDs[1].Text;
                     DisqualifiedClinicalInvestigator.Status = TDs[2].Text;
@@ -64,6 +66,7 @@ namespace WebScraping.Selenium.Pages
 
                     _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
                         DisqualifiedClinicalInvestigator);
+                    RowCount = RowCount + 1;
                 }
             }
         }

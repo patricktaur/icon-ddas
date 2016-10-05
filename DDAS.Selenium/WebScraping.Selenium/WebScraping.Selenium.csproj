@@ -71,6 +71,7 @@
     <Compile Include="PageMaps\FDADebarPage.cs" />
     <Compile Include="PageMaps\FDAWarningLettersPage.cs" />
     <Compile Include="PageMaps\PHSAdministrativeActionListingPage.cs" />
+    <Compile Include="PageMaps\SpeciallyDesignatedNationalsListPage.cs" />
     <Compile Include="PageMaps\SystemForAwardManagementPage.cs" />
     <Compile Include="Pages\AdequateAssuranceListPage.cs" />
     <Compile Include="Pages\CBERClinicalInvestigatorInspectionPage.cs" />

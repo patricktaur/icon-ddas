@@ -8,3 +8,14 @@ The NoRM driver differs from the MongoDB-CSharp driver we looked at last time in
 You can get the driver at: http://github.com/atheken/NoRM
 
 http://mongodb.github.io/mongo-csharp-driver/2.0/reference/bson/mapping/
+
+The GUIDs can be stored as strings into MongoDB. => http://mikaelkoskinen.net/post/mongodb-aggregation-framework-examples-in-c
+
+using => 
+BsonClassMap.RegisterClassMap<MyClass>(cm => 
+{ 
+    cm.AutoMap(); 
+    cm.GetMemberMap(c => c.Id) 
+      .SetRepresentation( 
+          BsonType.String); 
+});

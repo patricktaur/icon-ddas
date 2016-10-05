@@ -196,3 +196,57 @@ Processing:1 sites
 Data Saved
 01-10-2016 13:51:08, Extract Data ends
 =================================================================================
+03-10-2016 12:07:04, Extract Data starts
+Processing:2 sites
+03-10-2016 12:07:04, Start extracting from:FDADebarPage
+03-10-2016 12:08:07, End extracting from:FDADebarPage
+Data Saved
+03-10-2016 12:08:07, Start extracting from:PHSAdministrativeActionListingPage
+03-10-2016 12:08:32, End extracting from:PHSAdministrativeActionListingPage
+Data Saved
+03-10-2016 12:08:32, Extract Data ends
+=================================================================================
+03-10-2016 12:14:37, Extract Data starts
+Processing:2 sites
+03-10-2016 12:14:37, Start extracting from:FDADebarPage
+03-10-2016 12:15:41, End extracting from:FDADebarPage
+Data Saved
+03-10-2016 12:15:41, Start extracting from:PHSAdministrativeActionListingPage
+03-10-2016 12:16:08, End extracting from:PHSAdministrativeActionListingPage
+Data Saved
+03-10-2016 12:16:08, Extract Data ends
+=================================================================================
+03-10-2016 12:43:08, Extract Data starts
+Processing:2 sites
+03-10-2016 12:43:08, Start extracting from:FDADebarPage
+03-10-2016 12:44:11, End extracting from:FDADebarPage
+Data Saved
+03-10-2016 12:44:11, Start extracting from:PHSAdministrativeActionListingPage
+03-10-2016 12:44:36, End extracting from:PHSAdministrativeActionListingPage
+Data Saved
+03-10-2016 12:44:36, Extract Data ends
+=================================================================================
+03-10-2016 12:49:12, Extract Data starts
+Processing:2 sites
+03-10-2016 12:49:12, Start extracting from:FDADebarPage
+03-10-2016 12:50:12, End extracting from:FDADebarPage
+Data Saved
+03-10-2016 12:50:12, Start extracting from:PHSAdministrativeActionListingPage
+03-10-2016 12:50:42, End extracting from:PHSAdministrativeActionListingPage
+Data Saved
+03-10-2016 12:50:42, Extract Data ends
+=================================================================================
+05-10-2016 19:08:45, Extract Data starts
+Processing:1 sites
+05-10-2016 19:08:45, Start extracting from:ClinicalInvestigatorInspectionPage
+05-10-2016 19:11:31, End extracting from:ClinicalInvestigatorInspectionPage
+Data Saved
+05-10-2016 19:11:32, Extract Data ends
+=================================================================================
+05-10-2016 19:18:35, Extract Data starts
+Processing:1 sites
+05-10-2016 19:18:35, Start extracting from:ClinicalInvestigatorInspectionPage
+05-10-2016 19:21:19, End extracting from:ClinicalInvestigatorInspectionPage
+Data Saved
+05-10-2016 19:21:19, Extract Data ends
+=================================================================================

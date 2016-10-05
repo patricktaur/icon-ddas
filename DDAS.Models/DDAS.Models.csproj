@@ -66,6 +66,7 @@
     <Compile Include="Entities\Domain\SiteData\FDADebarPageSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\FDAWarningLettersSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\PHSAdministrativeActionListingSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SiteDataItemBase.cs" />
     <Compile Include="Entities\Domain\SiteData\SpeciallyDesignatedNationalsListSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementPageSiteData.cs" />
     <Compile Include="Entities\Entity.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Domain\IRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionListRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IERRProposalToDebarRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IFDADebarPageRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IAdequateAssuranceListRepository.cs" />

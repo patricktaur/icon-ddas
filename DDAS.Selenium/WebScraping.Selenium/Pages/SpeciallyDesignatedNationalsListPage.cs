@@ -11,10 +11,11 @@ using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using OpenQA.Selenium;
 
 namespace WebScraping.Selenium.Pages
 {
-    public class SpeciallyDesignatedNationalsListPage: ISearchPage
+    public partial class SpeciallyDesignatedNationalsListPage: ISearchPage
     {
         private IUnitOfWork _UOW;
         private string _folderPath;
@@ -22,15 +23,17 @@ namespace WebScraping.Selenium.Pages
         public static extern long URLDownloadToFile(long pCaller, string szURL, string szFileName, long dwReserved, long lpfnCB);
 
         //public SpeciallyDesignatedNationalsListPage(IWebDriver driver) : base(driver)
-        public SpeciallyDesignatedNationalsListPage(string folderPath, IUnitOfWork uow) 
+        public SpeciallyDesignatedNationalsListPage(
+            string folderPath, IUnitOfWork uow, IWebDriver driver)
+            :  base(driver)
         {
             _UOW = uow;
             _folderPath = folderPath;
-            //Open();
+            Open();
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
 
-        public  string Url {
+        public override string Url {
             get {
                 return 
                 @"http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx";
@@ -168,10 +171,27 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadContent()
         {
+            CheckSiteUpdatedDate();
             DownloadSDNList();
         }
 
-       
+        public bool CheckSiteUpdatedDate()
+        {
+            var SDNSiteData = _UOW.FDADebarPageRepository.GetAll().
+                OrderByDescending(t => t.SiteLastUpdatedOn).FirstOrDefault();
+
+            DateTime time;
+
+            Console.WriteLine(SDNSiteUpdatedDate.Text.Replace("Last Updated: ", ""));
+
+            string temp = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "");
+
+            string[] tempTime = temp.Split(' ');
+
+            time = DateTime.Parse(tempTime[0]);
+
+            return SDNSiteData.SiteLastUpdatedOn != time ? false : true;
+        }
 
         public ResultAtSite GetResultAtSite(string NameToSearch)
         {

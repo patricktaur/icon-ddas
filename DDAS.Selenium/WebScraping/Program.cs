@@ -1,9 +1,15 @@
 ﻿using DDAS.Data.Mongo;
+using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Utilities;
+using WebScraping.Selenium.SearchEngine;
 
 namespace WebScraping
 {
@@ -11,22 +17,39 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            test t = new test();
-            t.TestConnection();
-            //IUnitOfWork uow = new UnitOfWork("DefaultConnection");
-            //var test = new Search(uow);
-            //List<SearchQuerySite> SearchList = new List<SearchQuerySite>();
+            //test t = new test();
+            //t.TestConnection();
+            Program p = new Program();
 
-            //SearchQuerySite search = new SearchQuerySite { SiteEnum = SiteEnum.FDADebarPage,
-            //SiteName = "FDADebarPage",
-            //SiteShortName = "FDA Debar",
-            //SiteUrl = "ABC"};
+            p.TestClinicalInvestigator();
 
-            //SearchList.Add(search);
+            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+            ILog log = new LogText("", true);
+            ISearchEngine searchEngine = new SearchEngine(log, uow);
 
-            //var query = new SearchQuery { NameToSearch = "", SearchSites = SearchList };
+            var test = new Search(uow, searchEngine);
 
-            //test.GetSearchSummary(query);
+            MongoMaps.Initialize();
+
+            var FDASiteData = 
+                uow.FDADebarPageRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var result = test.GetFDADebarPageMatch("Cullinane Andrew R", FDASiteData.RecId);
+            Console.WriteLine("Records matching single word:");
+            Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 1).Count());
+            Console.WriteLine("Records matching two word:");
+            Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 2).Count());
+            Console.WriteLine("Records matching three words:");
+            Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 3).Count());
+            Console.WriteLine("All Records:");
+            Console.WriteLine(result.DebarredPersons.ToList());
+            Console.ReadLine();
+        }
+
+        public void TestClinicalInvestigator()
+        {
+
         }
     }
 }

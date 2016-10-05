@@ -19,6 +19,8 @@ namespace DDAS.Models
         IERRProposalToDebarRepository ERRProposalToDebarRepository { get; }
         IPHSAdministrativeActionListingRepository 
             PHSAdministrativeActionListingRepository { get; }
+        IClinicalInvestigatorInspectionListRepository
+            ClinicalInvestigatorInspectionListRepository { get; }
         #endregion
 
 

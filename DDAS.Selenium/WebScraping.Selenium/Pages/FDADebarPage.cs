@@ -27,8 +27,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-
-
         private List<DebarredPerson> _DebarredPersonList;
         public List<DebarredPerson> DebarredPersons
         {
@@ -71,13 +69,15 @@ namespace WebScraping.Selenium.Pages
 
             _FDADebarPageSiteData.CreatedBy = "pat";
             _FDADebarPageSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _FDADebarPageSiteData.CreatedOn = DateTime.Now;
 
+            int RowCount = 1;
             foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
             {
                 var debarredPerson = new DebarredPerson();
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
-
+                debarredPerson.RowNumber = RowCount;
                 debarredPerson.NameOfPerson = TDs[0].Text;
                 debarredPerson.EffectiveDate = TDs[1].Text;
                 debarredPerson.EndOfTermOfDebarment = TDs[2].Text;
@@ -91,6 +91,7 @@ namespace WebScraping.Selenium.Pages
                 }
 
                 _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
+                RowCount = RowCount + 1;
             }
         }
 

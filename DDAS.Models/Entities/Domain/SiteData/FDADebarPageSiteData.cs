@@ -20,21 +20,24 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
         
-
         public DateTime SiteLastUpdatedOn { get; set; }
         public ICollection<DebarredPerson> DebarredPersons  { get; set; }
         public string Source { get; set; }
     }
 
-    public class DebarredPerson
+    public class DebarredPerson : SiteDataItemBase
     {
-        public int Matched { get; set; }
-        public int RowNumber { get; set; }
         public string NameOfPerson { get; set; }
         public string EffectiveDate { get; set; }
         public string EndOfTermOfDebarment { get; set; }
         public string FrDateText { get; set; }
         public string VolumePage { get; set; }
         public string DocumentLink { get; set; }
+
+        public override string FullName {
+            get {
+                return NameOfPerson;
+            }
+        }
     }
 }

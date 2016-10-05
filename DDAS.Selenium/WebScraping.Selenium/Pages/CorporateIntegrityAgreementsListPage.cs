@@ -52,6 +52,7 @@ namespace WebScraping.Selenium.Pages
 
             IList<IWebElement> TRs = CIAListTable.FindElements(By.XPath("//tbody/tr"));
 
+            int RowCount = 1;
             for (int TableRow = 9; TableRow < TRs.Count; TableRow++)
             {
                 var CiaList = new CIAList();
@@ -60,12 +61,14 @@ namespace WebScraping.Selenium.Pages
 
                 if(TDs.Count > 0)
                 {
+                    CiaList.RowNumber = RowCount;
                     CiaList.Provider = TDs[0].Text;
                     CiaList.City = TDs[1].Text;
                     CiaList.State = TDs[2].Text;
                     CiaList.Effective = TDs[3].Text;
 
                     _CIASiteData.CIAListSiteData.Add(CiaList);
+                    RowCount = RowCount + 1;
                 }
             }
         }

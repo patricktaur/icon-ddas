@@ -135,7 +135,7 @@ namespace WebScraping.Selenium.SearchEngine
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     return new ExclusionDatabaseSearchPage(Driver, _uow);
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    return new SpeciallyDesignatedNationalsListPage(_DownloadFolder, _uow);
+                    return new SpeciallyDesignatedNationalsListPage(_DownloadFolder, _uow, Driver);
                 case SiteEnum.FDAWarningLettersPage:
                     return new FDAWarningLettersPage(Driver, _uow);
                 case SiteEnum.PHSAdministrativeActionListingPage:
@@ -181,10 +181,9 @@ namespace WebScraping.Selenium.SearchEngine
                 NameToSearch = "Anthony, James Michael",
                 SearchSites = new List<SearchQuerySite>
                 {
+                    //new SearchQuerySite {Selected = true, SiteName="FDA Debarment List", SiteShortName="FDA Debarment List", SiteEnum = SiteEnum.FDADebarPage, SiteUrl="XXX" },
 
-                    new SearchQuerySite {Selected = true, SiteName="FDA Debarment List", SiteShortName="FDA Debarment List", SiteEnum = SiteEnum.FDADebarPage, SiteUrl="XXX" },
-
-                    //new SearhQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CLIL)(CDER", SiteShortName="Clinical Investigator Insp...", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="XXX" },
+                    new SearchQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CLIL)(CDER", SiteShortName="Clinical Investigator Insp...", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="XXX" },
                    
                     //new SearhQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="XXX" },
                     
@@ -204,7 +203,7 @@ namespace WebScraping.Selenium.SearchEngine
 
                     //new SearhQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" },
 
-                    //new SearhQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
+                    //new SearchQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
                              
                 }
 

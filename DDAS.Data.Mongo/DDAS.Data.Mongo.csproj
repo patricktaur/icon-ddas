@@ -58,13 +58,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Maps\AdequateAssuranceListSiteDataMap.cs" />
-    <Compile Include="Maps\ERRProposalToDebarPageSiteDataMap.cs" />
     <Compile Include="Maps\MongoMap.cs" />
-    <Compile Include="Maps\PHSAdministrativeActionListingSiteDataMap.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\SiteData\AdequateAssuranceListRepository.cs" />
+    <Compile Include="Repositories\SiteData\ClinicalInvestigatorInspectionListRepository.cs" />
     <Compile Include="Repositories\SiteData\ERRProposalToDebarRepository.cs" />
     <Compile Include="Repositories\SiteData\FDADebarPageRepository.cs" />
     <Compile Include="Repositories\SiteData\PHSAdministrativeActionListingRepository.cs" />

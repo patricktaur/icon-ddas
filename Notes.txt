@@ -145,3 +145,17 @@ Entry on 30 Sep 2016
 1. Able to read records from MongoDB and calculate the MatchSummary for the given Name to search.
 2. For every collection added to the database for the same page/site, RecId is added as 0 and is not being
    incremented. Need to fix this.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 1 Oct 2016
+1. Able to read documents using ObjectId. Using Guid as ObjectID for mongoDB.
+2. Able to provide SearchSummary as output using postman.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 3 Oct 2016
+1. One API call will be made to return the MatchStatus of all sites.
+2. Currently, the API is returning match status for FDADebarPage.
+3. Function to return the records matched has been updated and tested in a console application.
+4. Need to genaralize functions in Search class and SiteScan class rather than having multiple functions
+   for each page/site.
+5. Identity to be integrated from Lakshmikanth into this project tomorrow.

@@ -28,6 +28,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private int RowCount = 1;
         private List<CBERClinicalInvestigator> _clinicalInvestigator;
         public List<CBERClinicalInvestigator> ClinicalInvestigator
         {
@@ -72,6 +73,7 @@ namespace WebScraping.Selenium.Pages
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
                 if (TDs.Count > 0)
                 {
+                    ClinicalInvestigatorCBER.RowNumber = RowCount;
                     ClinicalInvestigatorCBER.Name = TDs[0].Text;
                     ClinicalInvestigatorCBER.Title = TDs[1].Text;
                     ClinicalInvestigatorCBER.InstituteAndAddress = TDs[2].Text;
@@ -79,6 +81,7 @@ namespace WebScraping.Selenium.Pages
                     ClinicalInvestigatorCBER.Classification = TDs[4].Text;
 
                     _CBERSiteData.ClinicalInvestigator.Add(ClinicalInvestigatorCBER);
+                    RowCount = RowCount + 1;
                 }
             }
         }

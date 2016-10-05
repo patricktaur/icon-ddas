@@ -23,13 +23,13 @@ namespace DDAS.Services.Search
             _SearchEngine = SearchEngine;
         }
 
-        public SearchSummary GetSearchSummary(SearchQuery query)
+        public SearchSummary GetSearchSummary(NameToSearchQuery query)
         {
             SearchSummary searchSummary = new SearchSummary();
 
-            var searchSummaryItem = new List<SearchSummaryItem>();
+            var searchSummaryItems = new List<SearchSummaryItem>();
 
-            string NameToSearch = query.NameToSearch.Replace(".,", "");
+            string NameToSearch = query.NameToSearch.Replace(",", "");
 
             SiteScanData ScanData = new SiteScanData(_SearchEngine, _UOW);
 
@@ -41,59 +41,47 @@ namespace DDAS.Services.Search
             {
                 var SummaryItem = new SearchSummaryItem();
 
-                SummaryItem.MatchStatus = GetMatchStatus(Site.SiteEnum, NameToSearch, Site.DataId);
+                SummaryItem.MatchStatus = GetMatchStatus(
+                    Site.SiteEnum, 
+                    NameToSearch, 
+                    Site.DataId);
+                //???
                 SummaryItem.SiteEnum = Site.SiteEnum;
                 SummaryItem.SiteName = Site.SiteName;
                 SummaryItem.SiteUrl = Site.SiteUrl;
+                SummaryItem.RecId = Site.DataId;
 
-                searchSummaryItem.Add(SummaryItem);
+                searchSummaryItems.Add(SummaryItem);
             }
 
-            searchSummary.SearchSummaryItems = searchSummaryItem;
+            searchSummary.SearchSummaryItems = searchSummaryItems;
 
             return searchSummary;
         }
 
-        public string GetMatchStatus(SiteEnum Enum, string NameToSearch, Guid? DataId)
+        public string GetMatchStatus(SiteEnum Enum, string NameToSearch, Guid DataId)
         {
             switch(Enum)
             {
                 case SiteEnum.FDADebarPage:
                     return GetFDADebarPageMatchCount(NameToSearch, DataId);
+                //case SiteEnum.PHSAdministrativeActionListingPage:
+                //    return GetPHSAdministrativeMatchCount(NameToSearch, DataId);
             }
             return null;
         }
 
-        public string GetFDADebarPageMatchCount(string NameToSearch, Guid? DataId)
+        public string GetFDADebarPageMatchCount(string NameToSearch, Guid DataId)
         {
-            FDADebarPageSiteData FDASearchResult = _UOW.FDADebarPageRepository.FindById(DataId);
+            var FDASearchResult = GetFDADebarPageMatch(NameToSearch, DataId);
 
-            return GetFDADebarPageMatch(NameToSearch, FDASearchResult);
+            //List<ISiteDataItemBase> items = FDASearchResult.DebarredPersons;
 
-            //var DList = FDASearchResult.SelectMany(x => x.DebarredPersons).Where(
-            //    y => y.NameOfPerson.Contains(NameToSearch));
-        }
-
-        public string GetFDADebarPageMatch(string NameToSearch, 
-            FDADebarPageSiteData FDASearchResult)
-        {
-            string[] Name = NameToSearch.Split(' ');
-
-            foreach (DebarredPerson debarredPerson in FDASearchResult.DebarredPersons)
-            {
-                int Count = 0;
-                foreach (string SearchName in Name)
-                {
-                    if (debarredPerson.NameOfPerson.ToLower().Contains(SearchName.ToLower()))
-                    {
-                        Count += 1;
-                    }
-                }
-                if (Count != 0)
-                    debarredPerson.Matched = Count;
-            }
+            //var x = GetMatchStatus(FDASearchResult.DebarredPersons);
 
             string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
 
             for (int counter = 1; counter <= Name.Length; counter++)
             {
@@ -105,56 +93,107 @@ namespace DDAS.Services.Search
                     MatchStatus = MatchesFound + ":" + counter;
             }
 
-
-            //var Found = FDASearchResult[0].DebarredPersons.GroupBy(x => x.Matched).Select(
-            //    g => new { g.Key = Matched, g.Value });
-
-            //var Found = from FDASite in FDASearchResult[0].DebarredPersons
-            //            group FDASite by FDASite.Matched into Matches
-            //            select new
-            //            {
-            //                Matched = Matches.Key,
-            //                Values = Matches
-            //            };
-
             return MatchStatus;
         }
 
-        public string GetPHSAdministrativeMatchCount(string NameToSearch)
+        public string GetMatchStatus(List<SiteDataItemBase> items)
         {
-            List<PHSAdministrativeActionListingSiteData> PHSSiteData =
-                _UOW.PHSAdministrativeActionListingRepository.GetAll();
-
             return null;
         }
 
-        public string GetPHSAdministrativeSiteMatch(string NameToSearch, 
-            List<PHSAdministrativeActionListingSiteData> PHSSiteData)
+        public FDADebarPageSiteData GetFDADebarPageMatch(string NameToSearch, 
+            Guid? DataId)
         {
             string[] Name = NameToSearch.Split(' ');
 
-            foreach(PHSAdministrativeActionListingSiteData SiteData in PHSSiteData)
-            {
-                foreach(PHSAdministrativeAction PHSAction in SiteData.PHSAdministrativeSiteData)
-                {
-                    int Count = 0;
-                    string FullName = PHSAction.FirstName + " " +
-                                        PHSAction.MiddleName + " " + 
-                                        PHSAction.LastName;
+            FDADebarPageSiteData FDASearchResult = 
+                _UOW.FDADebarPageRepository.FindById(DataId);
 
-                    foreach (string SearchName in Name)
+            foreach (DebarredPerson debarredPerson in 
+                FDASearchResult.DebarredPersons)
+            {
+                int Count = 0;
+                foreach (string SearchName in Name)
+                {
+                    if (debarredPerson.NameOfPerson.ToLower().
+                        Contains(SearchName.ToLower()))
                     {
-                        if(FullName.ToLower().Contains(SearchName.ToLower()))
-                        {
-                            Count += 1;
-                        }
-                        if (Count != 0)
-                            PHSAction.Matched = Count;
+                        Count += 1;
                     }
+                }
+                if (Count != 0)
+                    debarredPerson.Matched = Count;
+            }
+
+            var DebarList = FDASearchResult.DebarredPersons.Where(
+               debarredList => debarredList.Matched > 0).ToList();
+
+            FDASearchResult.DebarredPersons = DebarList;
+
+            return FDASearchResult;
+        }
+
+        /*
+        public string GetPHSAdministrativeMatchCount(string NameToSearch, Guid? DataId)
+        {
+            PHSAdministrativeActionListingSiteData PHSSiteData =
+                _UOW.PHSAdministrativeActionListingRepository.FindById(DataId);
+
+            return GetPHSAdministrativeSiteMatch(NameToSearch, PHSSiteData);
+        }
+
+        public string GetPHSAdministrativeSiteMatch(string NameToSearch, 
+            PHSAdministrativeActionListingSiteData PHSSiteData)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            foreach(PHSAdministrativeAction PHSAction in 
+            PHSSiteData.PHSAdministrativeSiteData)
+            {
+                int Count = 0;
+                string FullName = PHSAction.FirstName + " " +
+                                    PHSAction.MiddleName + " " + 
+                                    PHSAction.LastName;
+
+                foreach (string SearchName in Name)
+                {
+                    if(FullName.ToLower().Contains(SearchName.ToLower()))
+                    {
+                        Count += 1;
+                    }
+                    if (Count != 0)
+                        PHSAction.Matched = Count;
                 }
             }
 
-            return null;
+            string MatchStatus = null;
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = PHSSiteData.PHSAdministrativeSiteData.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+
+            return MatchStatus;
         }
+        */
+
+        /*
+        public void TestCall()
+        {
+            List<Test> x = new List<Services.Search.Test>();
+            TestXYz(x);
+
+        }
+
+        public void TestXYz(List<SiteDataItemBase> items)
+        {
+            Console.Write(items.Count);
+        }
+        */
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Entities.Domain.SiteData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchSummary
     {
-        SearchSummary GetSearchSummary(SearchQuery query);
+        SearchSummary GetSearchSummary(NameToSearchQuery query);
+        FDADebarPageSiteData GetFDADebarPageMatch(string NameToSearch, Guid? DataId);
+
     }
 }

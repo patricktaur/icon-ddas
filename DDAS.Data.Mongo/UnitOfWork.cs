@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using DDAS.Models.Repository.Domain;
 using System.Threading;
-using Norm.Configuration;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Repository.Domain.SiteData;
 using DDAS.Data.Mongo.Repositories.SiteData;
@@ -27,6 +26,8 @@ namespace DDAS.Data.Mongo
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
         private IPHSAdministrativeActionListingRepository 
             _PHSAdministrativeActionListingRepository;
+        private IClinicalInvestigatorInspectionListRepository
+            _ClinicalInvestigatorInspectionListRepository;
         #endregion
         /*
          * var client = new MongoClient("mongodb://127.0.0.1");
@@ -80,6 +81,16 @@ namespace DDAS.Data.Mongo
                 return _PHSAdministrativeActionListingRepository ??
                     (_PHSAdministrativeActionListingRepository =
                     new PHSAdministrativeActionListingRepository(_db));
+            }
+        }
+
+        public IClinicalInvestigatorInspectionListRepository ClinicalInvestigatorInspectionListRepository
+        {
+            get
+            {
+                return _ClinicalInvestigatorInspectionListRepository ??
+                    (_ClinicalInvestigatorInspectionListRepository =
+                    new ClinicalInvestigatorInspectionListRepository(_db));
             }
         }
 

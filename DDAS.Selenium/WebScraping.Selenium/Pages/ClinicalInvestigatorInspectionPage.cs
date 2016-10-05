@@ -17,6 +17,7 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
             //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
 
@@ -58,10 +59,11 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadClinicalInvestigatorList()
         {
-            _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
+            //_clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
 
             _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
             _clinicalSiteData.CreatedBy = "Patrick";
+            _clinicalSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in
                 ClinicalInvestigatorTable.FindElements(By.XPath("//tbody/tr")))
@@ -107,50 +109,85 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent()
         {
+            if (SearchTerms())
+            {
+                int totalRecords = GetCountOfRecords();
 
+                for (int records = 0; records < totalRecords; records++)
+                {
+                    LoadClinicalInvestigatorList();
+
+                    if (totalRecords > 1)
+                    {
+                        LoadNextRecord();
+                    }
+                }
+            }
+            else
+                driver.Url = 
+                    "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
         }
 
         public override void LoadContent(string NameToSearch)
         {
-           
-           string[] Name = NameToSearch.Split(' ');
+            string[] Name = NameToSearch.Split(' ');
+            
+            for (int counter = 0; counter < Name.Length; counter++)
+            {
+                Name[counter] = Name[counter].Replace(",", "");
 
-           for (int counter = 0; counter < Name.Length; counter++)
-           {
-               Name[counter] = Name[counter].Replace(",", "");
+                if (SearchTerms())
+                {
+                    int totalRecords = GetCountOfRecords();
 
-               if (SearchTerms(Name[counter]))
-               {
-                   int totalRecords = GetCountOfRecords();
+                    for (int records = 0; records < totalRecords; records++)
+                    {
+                        LoadClinicalInvestigatorList();
 
-                   for (int records = 0; records < totalRecords; records++)
-                   {
-                       LoadClinicalInvestigatorList();
-
-                       if (totalRecords > 1)
-                       {
-                           LoadNextRecord();
-                       }
-                   }
-               }
-               else
-                   continue;
-                   driver.Url = "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
-           }
-          
+                        if (totalRecords > 1)
+                        {
+                            LoadNextRecord();
+                        }
+                    }
+                }
+                else
+                    continue;
+                    driver.Url = "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
+            }
         }
 
         public void LoadNextRecord()
         {
             IWebElement element = ClinicalInvestigatorNext;
+            element.Click();
 
-            element.SendKeys(Keys.Enter);
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
         }
 
+        public bool SearchTerms()
+        {
+            IWebElement AdvancedSearchElement = ClinicalInvestigatorAdvancedSearch;
+            AdvancedSearchElement.Click();
+
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
+            IWebElement FirstNameDropDown = ClinicalInvestigatorFirstNameDropDown;
+            FirstNameDropDown.SendKeys("not equal to");
+
+            IWebElement FirstNameTextField = ClinicalInvestigatorFirstNameTextField;
+            FirstNameTextField.SendKeys("zzzzzz");
+
+            ClinicalInvestigatorSubmit.Submit();
+
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
+            return true;
+        }
+        
         public override void SaveData()
         {
-
+            _UOW.ClinicalInvestigatorInspectionListRepository.Add(
+                _clinicalSiteData);
         }
     }
 }

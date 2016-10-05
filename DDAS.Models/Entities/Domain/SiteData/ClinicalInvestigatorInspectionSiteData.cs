@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class ClinicalInvestigatorInspectionSiteData : AuditEntity<long?>
+    public class ClinicalInvestigatorInspectionSiteData //: AuditEntity<long?>
     {
         public ClinicalInvestigatorInspectionSiteData()
         {
             ClinicalInvestigatorInspectionList = new List<ClinicalInvestigator>();
         }
+        public Guid? RecId { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
+
         public DateTime SiteLastUpdatedOn { get; set; }
         public string Source { get; set; }
         public List<ClinicalInvestigator> ClinicalInvestigatorInspectionList { get; set; }
@@ -19,7 +25,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ClinicalInvestigator
     {
-        public string SiteQuery { get; set; }
         public int RowNumber { get; set; }
         public string IdNumber { get; set; }
         public string Name { get; set; }

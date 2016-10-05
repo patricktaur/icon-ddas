@@ -10,18 +10,24 @@ namespace DDAS.Data.Mongo.Maps
 
         public static void Initialize()
         {
-            BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
+            //BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
+            //{
+            //    map.AutoMap();
+            //    map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            //});
+
+            BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>
+                (map =>
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-                //cm.MapIdMember(c => c.Id).SetIdGenerator(GuidGenerator.Instance);
             });
 
-            BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
-            {
-                map.AutoMap();
-                map.MapIdProperty(u => u.RecId);
-            });
+            //BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
+            //{
+            //    map.AutoMap();
+            //    map.MapIdProperty(u => u.RecId);
+            //});
 
             //BsonClassMap.RegisterClassMap<ERRProposalToDebarPageSiteData>(map =>
             //{
@@ -32,7 +38,7 @@ namespace DDAS.Data.Mongo.Maps
             //BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
             //{
             //    map.AutoMap();
-            //    map.MapIdProperty(u => u.RecId);
+            //    map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance); ;
             //});
         }
 
