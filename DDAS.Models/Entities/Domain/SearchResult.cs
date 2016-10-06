@@ -34,7 +34,7 @@ namespace DDAS.Models.Entities.Domain
 
     public class SiteScan : SearchQuerySite
     {
-        public Guid DataId { get; set; }
+        public Guid? DataId { get; set; }
         public DateTime DataExtractedOn { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
     }
@@ -93,7 +93,7 @@ namespace DDAS.Models.Entities.Domain
 
     public class SearchDetailsQuery
     {
-        public Guid RecId { get; set; }
+        public Guid? RecId { get; set; }
         public string NameToSearch { get; set; }
         public SiteEnum siteEnum { get; set; }
     }
@@ -117,6 +117,27 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public string MatchStatus { get; set; }
+    }
+    #endregion
+
+    #region Save Results
+    
+    public class SaveSearchResult
+    {
+        public string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string NameToSearch { get; set; }
+        public SiteEnum siteEnum { get; set; }
+        public Guid? RecId { get; set; }
+        public Guid? DataId { get; set; }
+        public DateTime HistoryOn { get; set; }
+        public List<SaveSearchDetails> saveSearchDetails { get; set; }
+    }
+
+    public class SaveSearchDetails
+    {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
     }
     #endregion
 }

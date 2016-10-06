@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities;
+using DDAS.Models.Entities.Domain;
 using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -10,11 +11,11 @@ namespace DDAS.Data.Mongo.Maps
 
         public static void Initialize()
         {
-            //BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
-            //{
-            //    map.AutoMap();
-            //    map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-            //});
+            BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
 
             BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>
                 (map =>
@@ -35,11 +36,18 @@ namespace DDAS.Data.Mongo.Maps
             //    map.MapIdProperty(u => u.RecId);
             //});
 
-            //BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
-            //{
-            //    map.AutoMap();
-            //    map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance); ;
-            //});
+            BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<SaveSearchResult>
+                (map =>
+                {
+                    map.AutoMap();
+                    map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                });
         }
 
     }

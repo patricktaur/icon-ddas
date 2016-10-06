@@ -52,6 +52,7 @@ namespace WebScraping.Selenium.Pages
             _PHSAdministrativeSiteData.CreatedBy = "Patrick";
             _PHSAdministrativeSiteData.SiteLastUpdatedOn = DateTime.Now;
             _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
+            _PHSAdministrativeSiteData.Source = driver.Url;
 
             IList<IWebElement> TRs = PHSTable.FindElements(By.XPath("//tbody/tr"));
 
@@ -97,7 +98,8 @@ namespace WebScraping.Selenium.Pages
 
         public override void SaveData()
         {
-            _UOW.PHSAdministrativeActionListingRepository.Add(_PHSAdministrativeSiteData);
+            _UOW.PHSAdministrativeActionListingRepository.
+                Add(_PHSAdministrativeSiteData);
         }
     }
 }

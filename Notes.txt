@@ -149,7 +149,7 @@ Entry on 30 Sep 2016
 -----------------------------------------------------------------------------------------------------------
 Entry on 1 Oct 2016
 1. Able to read documents using ObjectId. Using Guid as ObjectID for mongoDB.
-2. Able to provide SearchSummary as output using postman.
+2. Able to provide search summary MatchStatus as output using postman.
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 3 Oct 2016
@@ -159,3 +159,18 @@ Entry on 3 Oct 2016
 4. Need to genaralize functions in Search class and SiteScan class rather than having multiple functions
    for each page/site.
 5. Identity to be integrated from Lakshmikanth into this project tomorrow.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 4 Oct 2016
+1. API is now returning the fields or properties of FDADebarPage which match the NameToSearch.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 5 Oct 2016
+1. ClinicalInvestigatorInspectionPage has been included into the serives, to return match status and the
+   fields/properties that match the NameToSearch.
+2. Observation: This site (CII) is providing only 200 records max. when follwed the method
+   Advanced Search --> Select First Name drop down value "nto equal to" --> enter the first name "zzzzz".
+   Site gives 200 records when searched for the name "James" without using advanced search.
+   Need to cross check this with clients.
+3. Need to explore SAM site to find a way to download all records. 'Document Access' tab has some
+   files which need to be invetigated/looked into.

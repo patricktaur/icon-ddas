@@ -66,6 +66,7 @@
     <Compile Include="Repositories\SiteData\ERRProposalToDebarRepository.cs" />
     <Compile Include="Repositories\SiteData\FDADebarPageRepository.cs" />
     <Compile Include="Repositories\SiteData\PHSAdministrativeActionListingRepository.cs" />
+    <Compile Include="Repositories\SiteData\SaveSearchResultRepository.cs" />
     <Compile Include="test.cs" />
     <Compile Include="TestingMongoDb.cs" />
     <Compile Include="UnitOfWork.cs" />

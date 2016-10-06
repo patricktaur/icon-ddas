@@ -25,19 +25,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string Source { get; set; }
     }
 
-    public class DebarredPerson : SiteDataItemBase
+    public class DebarredPerson //: SiteDataItemBase
     {
+        public string Status { get; set; }
+        public int RowNumber { get; set; }
+        public int Matched { get; set; }
         public string NameOfPerson { get; set; }
         public string EffectiveDate { get; set; }
         public string EndOfTermOfDebarment { get; set; }
         public string FrDateText { get; set; }
         public string VolumePage { get; set; }
         public string DocumentLink { get; set; }
-
-        public override string FullName {
-            get {
-                return NameOfPerson;
-            }
-        }
     }
 }

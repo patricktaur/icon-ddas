@@ -25,6 +25,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ClinicalInvestigator
     {
+        public string Status { get; set; }
+        public int Matched { get; set; }
         public int RowNumber { get; set; }
         public string IdNumber { get; set; }
         public string Name { get; set; }

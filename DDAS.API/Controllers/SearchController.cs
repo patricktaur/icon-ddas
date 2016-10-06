@@ -44,36 +44,40 @@ namespace DDAS.API.Controllers
             return Ok(SearchResults);
         }
         
-        
         [Route("GetSearchSummaryDetails")]
         [HttpPost]
         public IHttpActionResult GetSearchSummaryDetailsXXX(SearchDetailsQuery query)
         {
+            switch (query.siteEnum) {
 
-            switch (query.siteEnum) { 
                 case SiteEnum.FDADebarPage:
-                    //return Ok(_SearchSummary.GetFDADebarPageMatch(query));
-
                     var SearchDetails = _SearchSummary.GetFDADebarPageMatch(
                     query.NameToSearch,
                     query.RecId);
-                    return null;
-                    break;
-            case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return null;
-                    break;
-            case SiteEnum.FDAWarningLettersPage:
-                    return null;
-                    break;
-            default:
-                    return null;
+                    return Ok(
+                        _SearchSummary.GetStatusOfFDASiteDataRecords(SearchDetails));
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    return Ok(_SearchSummary.GetClinicalInvestigatorSiteMatch(
+                    query.NameToSearch,
+                    query.RecId));
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    return Ok(_SearchSummary.GetPHSAdministrativeSiteMatch(
+                    query.NameToSearch,
+                    query.RecId));
+                default:
                     throw new Exception("wrong enum");
             }
-
-
-            
         }
-       
+        
+        [Route("SaveSearchResult")]
+        [HttpPost]
+        public IHttpActionResult SaveSearchResults(SaveSearchResult result)
+        {
+            return Ok(_SearchSummary.SaveRecordStatus(result));
+        }
+
         /*
         [Route("GetSearchSummaryDetails")]
         [HttpPost]

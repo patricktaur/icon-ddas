@@ -28,6 +28,9 @@ namespace DDAS.Data.Mongo
             _PHSAdministrativeActionListingRepository;
         private IClinicalInvestigatorInspectionListRepository
             _ClinicalInvestigatorInspectionListRepository;
+        private ISaveSearchResultRepository
+            _SaveSearchResultRepository;
+
         #endregion
         /*
          * var client = new MongoClient("mongodb://127.0.0.1");
@@ -91,6 +94,15 @@ namespace DDAS.Data.Mongo
                 return _ClinicalInvestigatorInspectionListRepository ??
                     (_ClinicalInvestigatorInspectionListRepository =
                     new ClinicalInvestigatorInspectionListRepository(_db));
+            }
+        }
+
+        public ISaveSearchResultRepository SaveSearchResultRepository
+        {
+            get
+            {
+                return _SaveSearchResultRepository ??
+                    (_SaveSearchResultRepository = new SaveSearchResultRepository(_db));
             }
         }
 
