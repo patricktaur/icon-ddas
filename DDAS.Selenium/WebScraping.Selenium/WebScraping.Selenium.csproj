@@ -100,6 +100,10 @@
       <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
       <Name>DDAS.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\DDAS.Services\DDAS.Services.csproj">
+      <Project>{B9FC373C-8E1B-49BA-A170-CF34E23CEF60}</Project>
+      <Name>DDAS.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\packages\PhantomJS.1.9.2\tools\phantomjs\phantomjs.exe">

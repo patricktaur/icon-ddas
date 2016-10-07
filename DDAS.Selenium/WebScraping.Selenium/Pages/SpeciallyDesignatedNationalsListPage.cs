@@ -20,9 +20,9 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private string _folderPath;
         [DllImport("urlmon.dll")]
-        public static extern long URLDownloadToFile(long pCaller, string szURL, string szFileName, long dwReserved, long lpfnCB);
+        public static extern long URLDownloadToFile(long pCaller, string szURL, 
+            string szFileName, long dwReserved, long lpfnCB);
 
-        //public SpeciallyDesignatedNationalsListPage(IWebDriver driver) : base(driver)
         public SpeciallyDesignatedNationalsListPage(
             string folderPath, IUnitOfWork uow, IWebDriver driver)
             :  base(driver)

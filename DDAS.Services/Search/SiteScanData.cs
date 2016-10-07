@@ -10,12 +10,10 @@ namespace DDAS.Services.Search
 {
     public class SiteScanData
     {
-        ISearchEngine _SearchEngine;
         private IUnitOfWork _UOW;
 
-        public SiteScanData(ISearchEngine SearchEngine, IUnitOfWork uow)
+        public SiteScanData( IUnitOfWork uow)
         {
-            _SearchEngine = SearchEngine;
             _UOW = uow;
         }
 
@@ -23,7 +21,7 @@ namespace DDAS.Services.Search
         {
             List<SiteScan> ScanData = new List<SiteScan>();
 
-            SearchQuery NewSearchQuery = _SearchEngine.GetNewSearchQuery();
+            SearchQuery NewSearchQuery = GetNewSearchQuery();
 
             foreach (SearchQuerySite Site in NewSearchQuery.SearchSites)
             {
@@ -92,5 +90,43 @@ namespace DDAS.Services.Search
 
             return siteScan;
         }
+
+        public SearchQuery GetNewSearchQuery()
+        {
+            return new SearchQuery
+            {
+                NameToSearch = "Anthony, James Michael",
+                SearchSites = new List<SearchQuerySite>
+                {
+                    new SearchQuerySite {Selected = true, SiteName="FDA Debarment List", SiteShortName="FDA Debarment List", SiteEnum = SiteEnum.FDADebarPage, SiteUrl="http://www.fda.gov/ora/compliance_ref/debar/default.htm" },
+
+                    new SearchQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CLIL)(CDER", SiteShortName="Clinical Investigator Insp...", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm" },
+                   
+                    //new SearhQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="XXX" },
+                    
+                    //new SearchQuerySite {Selected = true, SiteName="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar", SiteShortName="NOOH – Proposal to Debar", SiteEnum = SiteEnum.ERRProposalToDebarPage, SiteUrl="XXX" },
+                    
+                    //new SearchQuerySite {Selected = true, SiteName="Adequate Assurances List for Clinical Investigators", SiteShortName="Adequate Assurances List ...", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="XXX" },
+
+                    //new SearhQuerySite {Selected = true, SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="XXX" },
+                    
+                    //new SearhQuerySite {Selected = true, SiteName="Clinical Investigator Inspection List (CBER)", SiteShortName="Inspection List", SiteEnum = SiteEnum.CBERClinicalInvestigatorInspectionPage, SiteUrl="XXX" },
+
+                    new SearchQuerySite {Selected = true, SiteName="PHS Administrative Actions Listing ", SiteShortName="PHS Administrative Actions", SiteEnum = SiteEnum.PHSAdministrativeActionListingPage, SiteUrl="http://ori.hhs.gov/misconduct/AdminBulletinBoard.shtml" },
+
+                    //new SearhQuerySite {Selected = true, SiteName="HHS/OIG/ EXCLUSIONS DATABASE SEARCH/ FRAUD", SiteShortName="HHS/OIG/ EXCLUSIONS ...", SiteEnum = SiteEnum.ExclusionDatabaseSearchPage, SiteUrl="XXX" },
+                    
+                    //new SearhQuerySite {Selected = true, SiteName="HHS/OIG Corporate Integrity Agreements/Watch List", SiteShortName="HHS/OIG Corporate Integrity", SiteEnum = SiteEnum.CorporateIntegrityAgreementsListPage, SiteUrl="XXX" },
+
+                    //new SearhQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" },
+
+                    //new SearchQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
+                             
+                }
+
+            };
+
+        }
+
     }
 }

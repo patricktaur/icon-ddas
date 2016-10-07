@@ -66,12 +66,14 @@ namespace WebScraping.Selenium.Pages
             _clinicalSiteData.CreatedOn = DateTime.Now;
             _clinicalSiteData.Source = driver.Url;
 
+            int RowNumber = 1;
             foreach (IWebElement TR in
                 ClinicalInvestigatorTable.FindElements(By.XPath("//tbody/tr")))
             {
                 var InvestigatorList = new ClinicalInvestigator();
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
+                InvestigatorList.RowNumber = RowNumber;
                 InvestigatorList.IdNumber = TDs[0].Text;
                 InvestigatorList.Name = TDs[1].Text;
                 InvestigatorList.Location = TDs[2].Text;
@@ -87,6 +89,7 @@ namespace WebScraping.Selenium.Pages
 
                 _clinicalSiteData.ClinicalInvestigatorInspectionList.Add
                     (InvestigatorList);
+                RowNumber += 1;
             }
         }
 

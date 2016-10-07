@@ -5,6 +5,7 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Enums;
 using DDAS.Models;
 using DDAS.Models.Entities.Domain.SiteData;
+using System.IO;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -39,7 +40,7 @@ namespace WebScraping.Selenium.Pages
         public void LoadDebarredPersonList()
         {
             _DebarredPersonList = new List<DebarredPerson>();
-
+            
             foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
             {
                 var debarredPerson = new DebarredPerson();
@@ -66,7 +67,7 @@ namespace WebScraping.Selenium.Pages
         public void LoadDebarredPersonListAlt()
         {
             _FDADebarPageSiteData = new FDADebarPageSiteData();
-
+            
             _FDADebarPageSiteData.CreatedBy = "pat";
             _FDADebarPageSiteData.SiteLastUpdatedOn = DateTime.Now;
             _FDADebarPageSiteData.CreatedOn = DateTime.Now;
@@ -89,6 +90,8 @@ namespace WebScraping.Selenium.Pages
                 {
                     IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
                     debarredPerson.DocumentLink = anchor.GetAttribute("href");
+                    debarredPerson.DocumentName = 
+                        Path.GetFileName(debarredPerson.DocumentLink);
                 }
 
                 _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);

@@ -24,11 +24,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public List<PHSAdministrativeAction> PHSAdministrativeSiteData { get; set; }
     }
 
-    public class PHSAdministrativeAction
+    public class PHSAdministrativeAction : SiteDataItemBase
     {
-        public string Status { get; set; }
-        public int Matched { get; set; }
-        public int RowNumber { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -39,5 +36,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string RetractionOfArticle { get; set; }
         public string CorrectionOfArticle { get; set; }
         public string Memo { get; set; }
+
+        public override string FullName {
+            get {
+                return FirstName + " " + MiddleName + " " + LastName;
+            }
+        }
     }
 }

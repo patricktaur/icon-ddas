@@ -32,7 +32,10 @@ namespace DDAS.Data.Mongo.Repositories
         public void Add(TEntity entity)
         {
             //_db.GetCollection<TEntity>().Save(entity);
-            _db.GetCollection<TEntity>(typeof(TEntity).Name).InsertOne(entity);
+            if (entity == null) //pradeep
+                _db.GetCollection<TEntity>(typeof(TEntity).Name);//pradeep
+            else
+                _db.GetCollection<TEntity>(typeof(TEntity).Name).InsertOne(entity);
         }
 
         public TEntity FindById(object id)

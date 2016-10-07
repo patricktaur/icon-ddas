@@ -41,11 +41,10 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string FrDateText { get; set; }
         public string VolumePage { get; set; }
         public string DocumentLink { get; set; }
+        public string DocumentName { get; set; }
 
-        public override string FullName
-        {
-            get
-            {
+        public override string FullName {
+            get {
                 return NameOfPerson; 
             }
         }
