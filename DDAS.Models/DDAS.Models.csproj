@@ -85,6 +85,7 @@
     <Compile Include="Repository\Domain\SiteData\IFDADebarPageRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IAdequateAssuranceListRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IPHSAdministrativeActionListingRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISaveSearchResultRepository.cs" />
     <Compile Include="ViewModels\Search\SearchHistoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

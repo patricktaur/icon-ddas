@@ -8,7 +8,7 @@ using WebScraping.Selenium.BaseClasses;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class ClinicalInvestigatorInspectionPage : BaseSearchPage //BaseClasses.BasePage
+    public partial class ClinicalInvestigatorInspectionPage : BaseSearchPage
     {
         public IWebElement ClinicalInvestigatorTable
         {
@@ -23,7 +23,8 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> InputTags = driver.FindElements(By.Name("Keywords"));
+                IList<IWebElement> InputTags = driver.FindElements(
+                    By.Name("Keywords"));
                 return InputTags[1];
             }
         }
@@ -45,7 +46,8 @@ namespace WebScraping.Selenium.Pages
                 {
                     if (driver.FindElement(By.Id("example_next")).Displayed)
                     {
-                        IWebElement Element = driver.FindElement(By.Id("example_next"));
+                        IWebElement Element = driver.FindElement(
+                            By.Id("example_next"));
                         return Element;
                     }
                     else
@@ -79,7 +81,8 @@ namespace WebScraping.Selenium.Pages
                     if (Anchor.Text.ToLower() == "advanced search")
                         return Anchor;
                 }
-                throw new NoSuchElementException("Advanced Search Anchor tag not found!");
+                throw new NoSuchElementException(
+                    "Advanced Search Anchor tag not found!");
             }
         }
 

@@ -11,6 +11,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public int Matched { get; set; }
         public int RowNumber { get; set; }
         public abstract string FullName { get;  }
+
+        public string Status { get; set; }
+     
     }
 
     public interface ISiteDataItemBase

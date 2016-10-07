@@ -1,10 +1,12 @@
 ﻿
 using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
-using DDAS.Data.Mongo.Repositories;
+using DDAS.Models;
 using DDAS.Models.Entities.Domain;
-using DDAS.Models.Entities.Domain.SiteData;
-using System;
+using DDAS.Models.Interfaces;
+using DDAS.Services.Search;
+using Utilities;
+using WebScraping.Selenium.SearchEngine;
 
 namespace ConsoleApplication1
 {
@@ -12,21 +14,33 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-           // var test = new TestOne();
-           //test.AddTest();
-           //test.ReadTest();
-
-
-            // getRecord(22);
-            //Add();
-           // Read();
-            //RecId = { 2b8fc573 - 5b04 - 4e04 - a77b - af2d9be4b1c1}
-            //+		item.RecId	{444a7e54-c8da-426c-9a09-3f0cb630e4b4}	System.Guid
-            //+		item.RecId	{51050049-8a23-44f6-bc40-937bb0d482a7}	System.Guid
+            GetSearchSummaryTest();
 
 
         }
-        /*
+        
+        static void GetSearchSummaryTest()
+        {
+            //references Services
+            //
+
+            MongoMaps.Initialize();
+            string DataExtractionLogFile = System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+           
+            ILog log = new LogText(DataExtractionLogFile, true);
+            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+
+            ISearchEngine engine = new SearchEngine(log, uow );
+            var sut = new SearchService(uow, engine);
+
+
+            var query = new NameToSearchQuery();
+            query.NameToSearch = "Patrick";
+            sut.GetSearchSummary(query);
+
+        }
+
+         /*
 
         static void getRecord(Int64? id)
         {

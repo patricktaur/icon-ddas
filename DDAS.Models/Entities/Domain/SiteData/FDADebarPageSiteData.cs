@@ -21,12 +21,20 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string UpdatedBy { get; set; }
         
         public DateTime SiteLastUpdatedOn { get; set; }
-        public ICollection<DebarredPerson> DebarredPersons  { get; set; }
+        //Patrick-1 - 4 CHANGES
+        //public ICollection<DebarredPerson> DebarredPersons  { get; set; }
+        public List<DebarredPerson> DebarredPersons { get; set; }
         public string Source { get; set; }
     }
 
-    public class DebarredPerson : SiteDataItemBase
+    public class DebarredPerson : SiteDataItemBase  ////Patrick-2
     {
+        //Patrick-3
+          /*
+        public string Status { get; set; }
+        public int RowNumber { get; set; }
+        public int Matched { get; set; }
+        */
         public string NameOfPerson { get; set; }
         public string EffectiveDate { get; set; }
         public string EndOfTermOfDebarment { get; set; }
@@ -34,9 +42,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string VolumePage { get; set; }
         public string DocumentLink { get; set; }
 
-        public override string FullName {
-            get {
-                return NameOfPerson;
+        public override string FullName
+        {
+            get
+            {
+                return NameOfPerson; 
             }
         }
     }

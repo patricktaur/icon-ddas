@@ -21,6 +21,9 @@ namespace DDAS.Models
             PHSAdministrativeActionListingRepository { get; }
         IClinicalInvestigatorInspectionListRepository
             ClinicalInvestigatorInspectionListRepository { get; }
+        ISaveSearchResultRepository
+            SaveSearchResultRepository { get; }
+
         #endregion
 
 

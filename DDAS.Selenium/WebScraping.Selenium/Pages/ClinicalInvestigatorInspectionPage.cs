@@ -63,6 +63,7 @@ namespace WebScraping.Selenium.Pages
 
             _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
             _clinicalSiteData.CreatedBy = "Patrick";
+            _clinicalSiteData.CreatedOn = DateTime.Now;
             _clinicalSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in

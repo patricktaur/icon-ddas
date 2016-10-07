@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Search\SearchQuery.cs" />
+    <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SiteScanData.cs" />
     <Compile Include="Search\Test.cs" />
   </ItemGroup>

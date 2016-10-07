@@ -5,8 +5,6 @@ using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDAS.Services.Search
 {
@@ -44,10 +42,12 @@ namespace DDAS.Services.Search
             {
                 case SiteEnum.FDADebarPage : return GetFDADebarSiteScanDetails();
                 case SiteEnum.PHSAdministrativeActionListingPage :
-                    return GetPHSSiteScanDetails(); 
+                    return GetPHSSiteScanDetails();
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    return GetClinicalInevstigatorInspectionDetails();
+                default:
+                    throw new Exception("Invalid Enum");
             }
-
-            return null;
         }
 
         public SiteScan GetFDADebarSiteScanDetails()
@@ -67,6 +67,21 @@ namespace DDAS.Services.Search
         public SiteScan GetPHSSiteScanDetails()
         {
             var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            SiteScan siteScan = new SiteScan();
+
+            siteScan.DataExtractedOn = SiteData.CreatedOn;
+            siteScan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+            siteScan.DataId = SiteData.RecId;
+
+            return siteScan;
+        }
+
+        public SiteScan GetClinicalInevstigatorInspectionDetails()
+        {
+            var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.
+                GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             SiteScan siteScan = new SiteScan();

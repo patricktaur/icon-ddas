@@ -26,6 +26,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class PHSAdministrativeAction
     {
+        public string Status { get; set; }
         public int Matched { get; set; }
         public int RowNumber { get; set; }
         public string LastName { get; set; }

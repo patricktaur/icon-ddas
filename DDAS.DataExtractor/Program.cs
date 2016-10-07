@@ -25,7 +25,7 @@ namespace DDAS.DataExtractor
             MongoMaps.Initialize();
 
             string DataExtractionLogFile = System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
-            string DownLoadFileFolder = System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            
             ILog log = new LogText(DataExtractionLogFile, true);
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             log.LogStart();
@@ -35,6 +35,7 @@ namespace DDAS.DataExtractor
             log.WriteLog(System.DateTime.Now.ToString(), "Extract Data ends");
             log.WriteLog("=================================================================================");
             log.LogEnd();
+           
         }
     }
 }
