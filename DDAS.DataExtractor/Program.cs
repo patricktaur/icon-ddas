@@ -3,6 +3,7 @@ using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
+using System;
 using System.Configuration;
 using System.util;
 using Utilities;
@@ -35,7 +36,8 @@ namespace DDAS.DataExtractor
             log.WriteLog(System.DateTime.Now.ToString(), "Extract Data ends");
             log.WriteLog("=================================================================================");
             log.LogEnd();
-           
+            Environment.Exit(0);
+
         }
     }
 }
