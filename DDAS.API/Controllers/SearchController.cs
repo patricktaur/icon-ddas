@@ -50,21 +50,32 @@ namespace DDAS.API.Controllers
             switch (query.siteEnum) {
 
                 case SiteEnum.FDADebarPage:
-                    var SearchDetails = _SearchSummary.GetFDADebarPageMatch(
-                    query.NameToSearch,
-                    query.RecId);
+                    var SearchDetails = _SearchSummary.
+                        GetFDADebarPageMatch(
+                        query.NameToSearch, query.RecId);
+
                     return Ok(
-                        _SearchSummary.GetStatusOfFDASiteDataRecords(SearchDetails));
+                        _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
+                        query.NameToSearch));
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return Ok(_SearchSummary.GetClinicalInvestigatorSiteMatch(
-                    query.NameToSearch,
-                    query.RecId));
+                    var ClinicalSearchDetails = _SearchSummary.
+                        GetClinicalInvestigatorSiteMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
+                        query.NameToSearch));
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
-                    return Ok(_SearchSummary.GetPHSAdministrativeSiteMatch(
-                    query.NameToSearch,
-                    query.RecId));
+                    var PHSSearchDetails = _SearchSummary.
+                        GetPHSAdministrativeSiteMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfPHSSiteRecords(PHSSearchDetails, 
+                        query.NameToSearch));
+
                 default:
                     throw new Exception("wrong enum");
             }
@@ -89,13 +100,14 @@ namespace DDAS.API.Controllers
             return Ok(SearchDetails);
         }
         */
-        [Route("getNewSearchQuery")]
-        [HttpGet]
-        public IHttpActionResult newSearchQuery()
-        {
-            var query = _SearchEngine.GetNewSearchQuery();
-             return Ok(query);
-        }
+
+        //[Route("getNewSearchQuery")]
+        //[HttpGet]
+        //public IHttpActionResult newSearchQuery()
+        //{
+        //    var query = _SearchEngine.GetNewSearchQuery();
+        //     return Ok(query);
+        //}
 
       
 

@@ -23,11 +23,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public List<ClinicalInvestigator> ClinicalInvestigatorInspectionList { get; set; }
     }
 
-    public class ClinicalInvestigator
-    {
-        public string Status { get; set; }
-        public int Matched { get; set; }
-        public int RowNumber { get; set; }
+    public class ClinicalInvestigator : SiteDataItemBase
+    { 
         public string IdNumber { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
@@ -40,5 +37,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string Type { get; set; }
         public string Class { get; set; }
         public string DefTypes { get; set; }
+
+        public override string FullName {
+            get {
+                return Name;
+            }
+        }
     }
 }

@@ -11,17 +11,42 @@ namespace DDAS.Data.Mongo.Maps
 
         public static void Initialize()
         {
+
+            BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
+            {
+                map.AutoMap();
+                //Patrick 08Oct2016:
+                map.SetIgnoreExtraElements(true);
+
+            });
+
+
             BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                //Patrick 08Oct2016:
+                BsonClassMap.RegisterClassMap<DebarredPerson>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                  });
+
             });
 
             BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>
                 (map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<ClinicalInvestigator>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             //BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
@@ -39,13 +64,20 @@ namespace DDAS.Data.Mongo.Maps
             BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<PHSAdministrativeAction>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<SaveSearchResult>
                 (map =>
                 {
                     map.AutoMap();
+                    map.SetIgnoreExtraElements(true);
                     map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
                 });
         }
