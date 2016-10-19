@@ -28,40 +28,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<DebarredPerson> _DebarredPersonList;
-        public List<DebarredPerson> DebarredPersons
-        {
-            get
-            {
-                return _DebarredPersonList;
-            }
-        }
-
-        public void LoadDebarredPersonList()
-        {
-            _DebarredPersonList = new List<DebarredPerson>();
-            
-            foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
-            {
-                var debarredPerson = new DebarredPerson();
-                IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
-
-                debarredPerson.NameOfPerson = TDs[0].Text;
-                debarredPerson.EffectiveDate =TDs[1].Text;
-                debarredPerson.EndOfTermOfDebarment = TDs[2].Text;
-                debarredPerson.FrDateText = TDs[3].Text;
-                debarredPerson.VolumePage = TDs[4].Text;
-
-                if (IsElementPresent(TDs[4], By.XPath("a")))
-                {
-                    IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
-                    debarredPerson.DocumentLink = anchor.GetAttribute("href");
-                }
-
-                _DebarredPersonList.Add(debarredPerson);
-            }
-        }
-
         private FDADebarPageSiteData _FDADebarPageSiteData;
 
         public void LoadDebarredPersonListAlt()
@@ -107,14 +73,9 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent()
         {
-            //LoadDebarredPersonList();
             LoadDebarredPersonListAlt();
         }
 
-        public override void LoadContent(string NameToSearch)
-        {
-            LoadDebarredPersonListAlt();
-        }
         public override void SaveData()
         {
             _UOW.FDADebarPageRepository.Add(_FDADebarPageSiteData);

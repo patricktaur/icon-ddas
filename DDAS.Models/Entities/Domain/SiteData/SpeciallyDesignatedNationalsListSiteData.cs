@@ -12,17 +12,27 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             SDNListSiteData = new List<SDNList>();
         }
-
+        public Guid? RecId { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
         public string Source { get; set; }
-        public ICollection<SDNList> SDNListSiteData { get; set; }
+        public List<SDNList> SDNListSiteData { get; set; }
     }
 
-    public class SDNList
+    public class SDNList : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
-        public string Names { get; set; }
-        public int PageNumbers { get; set; }
+        public int RecordNumber { get; set; }
+        public string Name { get; set; }
+        public int PageNumber { get; set; }
         public string WordsMatched { get; set; }
+        
+        public override string FullName {
+            get {
+                return Name;
+            }
+        }
     }
 }

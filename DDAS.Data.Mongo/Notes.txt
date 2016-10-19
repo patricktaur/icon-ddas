@@ -19,3 +19,6 @@ BsonClassMap.RegisterClassMap<MyClass>(cm =>
       .SetRepresentation( 
           BsonType.String); 
 });
+
+Mongo Full Text Search:
+Indexing the documents in a collection is possible => https://code.tutsplus.com/tutorials/full-text-search-in-mongodb--cms-24835

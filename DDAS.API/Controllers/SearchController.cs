@@ -3,20 +3,78 @@ using DDAS.Models.Interfaces;
 using System.Web.Http;
 using DDAS.Models.Enums;
 using System;
+using DDAS.Models;
+using DDAS.API.Identity;
+using Microsoft.AspNet.Identity;
 
 namespace DDAS.API.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
         private ISearchEngine _SearchEngine;
-
         private ISearchSummary _SearchSummary;
+        private IUnitOfWork _UOW;
 
-        public SearchController(ISearchEngine search, ISearchSummary SearchSummary)
+        public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
+            IUnitOfWork uow)
         {
             _SearchEngine = search;
             _SearchSummary = SearchSummary;
+            _UOW = uow;
+        }
+
+        //[Authorize (Roles = "User,Admin")]
+        [Route("AddUser")]
+        [HttpPost]
+        public IHttpActionResult GetUser(UserDetails user)
+        {
+            UserStore userStore = new UserStore(_UOW);
+            var um = new UserManager<IdentityUser, Guid>(userStore);
+
+            RoleStore roleStore = new RoleStore(_UOW);
+            var rm = new RoleManager<IdentityRole, Guid>(roleStore);
+
+            var IdUser = new IdentityUser();
+            IdUser.UserName = user.UserName;
+            IdUser.SecurityStamp = Guid.NewGuid().ToString();
+
+            try
+            {
+                IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
+                if (IdUsertemp == null)
+                {
+                    um.Create(IdUser, user.pwd);
+                    um.AddToRole(IdUser.Id, user.RoleName);
+                }
+                else
+                {
+                  
+                        um.AddToRole(IdUser.Id, user.RoleName);
+                    
+                }
+
+            }
+            catch (Exception)
+            {
+            }
+            
+            return Ok();
+        }
+
+        //[Authorize (Roles="User")]
+        [Route("AddRole")]
+        [HttpPost]
+        public IHttpActionResult AddRole(Role role)
+        {
+            RoleStore roleStore = new RoleStore(_UOW);
+            IdentityRole irole = new IdentityRole();
+            irole.Name = role.Name;
+            var rm = new RoleManager<IdentityRole, Guid>(roleStore);
+            rm.Create(irole);
+
+            return Ok();
         }
 
         [Route("SearchResult")]
@@ -35,18 +93,27 @@ namespace DDAS.API.Controllers
             return Ok(searchResults);
         }
 
+        //[Authorize]
         [Route("GetSearchSummaryResult")]
-        [HttpPost]
-        public IHttpActionResult GetSearchSummaryResult(NameToSearchQuery query)
+        [HttpGet]
+        public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
         {
+            var query = new NameToSearchQuery();
+            query.NameToSearch = NameToSearch;
             var SearchResults = _SearchSummary.GetSearchSummary(query);
             return Ok(SearchResults);
         }
-        
+
+        //[Authorize]
         [Route("GetSearchSummaryDetails")]
-        [HttpPost]
-        public IHttpActionResult GetSearchSummaryDetailsXXX(SearchDetailsQuery query)
+        [HttpGet]
+        public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch, string RecId,
+            SiteEnum siteEnum)
         {
+            var query = new SearchDetailsQuery();
+            query.NameToSearch = NameToSearch;
+            query.RecId = Guid.Parse(RecId);
+
             switch (query.siteEnum) {
 
                 case SiteEnum.FDADebarPage:
@@ -76,13 +143,21 @@ namespace DDAS.API.Controllers
                         GetStatusOfPHSSiteRecords(PHSSearchDetails, 
                         query.NameToSearch));
 
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    var SDNSearchDetails = _SearchSummary.GetSpeciallyDesignatedNationsMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.GetStatusOfSDNSiteRecords(SDNSearchDetails,
+                        query.NameToSearch));
+
                 default:
                     throw new Exception("wrong enum");
             }
         }
         
+        //[Authorize]
         [Route("SaveSearchResult")]
-        [HttpPost]
+        [HttpGet]
         public IHttpActionResult SaveSearchResults(SaveSearchResult result)
         {
             return Ok(_SearchSummary.SaveRecordStatus(result));
@@ -108,7 +183,13 @@ namespace DDAS.API.Controllers
         //    var query = _SearchEngine.GetNewSearchQuery();
         //     return Ok(query);
         //}
+        public class UserDetails
+        {
+            public string  UserName{get;set;}
+            public string pwd { get; set; }
+            public string RoleName { get; set; }
 
+        }
       
 
     }

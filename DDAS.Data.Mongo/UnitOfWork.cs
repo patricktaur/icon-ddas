@@ -30,7 +30,11 @@ namespace DDAS.Data.Mongo
             _ClinicalInvestigatorInspectionListRepository;
         private ISaveSearchResultRepository
             _SaveSearchResultRepository;
-
+        private ISpeciallyDesignatedNationalsRepository
+            _SpeciallyDesignatedNationalsRepository;
+        private IRoleRepository _RoleRepository;
+        private IUserRepository _UserRepository;
+        private IUserRoleRepository _UserRoleRepository;
         #endregion
         /*
          * var client = new MongoClient("mongodb://127.0.0.1");
@@ -103,6 +107,43 @@ namespace DDAS.Data.Mongo
             {
                 return _SaveSearchResultRepository ??
                     (_SaveSearchResultRepository = new SaveSearchResultRepository(_db));
+            }
+        }
+
+        public ISpeciallyDesignatedNationalsRepository SpeciallyDesignatedNationalsRepository
+        {
+            get
+            {
+                return _SpeciallyDesignatedNationalsRepository ??
+                    (_SpeciallyDesignatedNationalsRepository = 
+                    new SpeciallyDesignatedNationalsRepository(_db));
+            }
+        }
+
+        public IRoleRepository RoleRepository
+        {
+            get
+            {
+                return _RoleRepository ??
+                    (_RoleRepository = new RoleRepository(_db));
+            }
+        }
+
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                return _UserRepository ??
+                    (_UserRepository = new UserRepository(_db));
+            }
+        }
+
+        public IUserRoleRepository UserRoleRepository
+        {
+            get
+            {
+                return _UserRoleRepository ??
+                    (_UserRoleRepository = new UserRoleRepository(_db));
             }
         }
 

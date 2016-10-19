@@ -105,5 +105,22 @@ namespace WebScraping.Selenium.Pages
                 return FirstName;
             }
         }
+
+        public IWebElement ClinicalInvestigatorZipAnchor
+        {
+            get
+            {
+                IList<IWebElement> Anchors =
+                    driver.FindElements(By.XPath("//a"));
+
+                foreach(IWebElement Anchor in Anchors)
+                {
+                    if (Anchor.Text.ToLower().Contains(
+                        "clinical investigator inspection list zip file"))
+                        return Anchor;
+                }
+                throw new Exception("Could not download ciil list!");
+            }
+        }
     }
 }
