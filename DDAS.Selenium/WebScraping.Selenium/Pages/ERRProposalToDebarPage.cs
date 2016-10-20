@@ -48,7 +48,7 @@ namespace WebScraping.Selenium.Pages
                 var proposalToDebarList = new ProposalToDebar();
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                proposalToDebarList.name = TDs[0].Text;
+                proposalToDebarList.Name = TDs[0].Text;
                 proposalToDebarList.center = TDs[1].Text;
                 proposalToDebarList.date = TDs[2].Text;
                 proposalToDebarList.IssuingOffice = TDs[3].Text;

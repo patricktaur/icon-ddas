@@ -24,17 +24,17 @@ namespace DDAS.Data.Mongo.Maps
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
-            //BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
-            //{
-            //    map.AutoMap();
-            //    map.MapIdProperty(u => u.RecId);
-            //});
+            BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
 
-            //BsonClassMap.RegisterClassMap<ERRProposalToDebarPageSiteData>(map =>
-            //{
-            //    map.AutoMap();
-            //    map.MapIdProperty(u => u.RecId);
-            //});
+            BsonClassMap.RegisterClassMap<ERRProposalToDebarPageSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
 
             BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
             {

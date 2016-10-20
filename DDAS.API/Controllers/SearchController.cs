@@ -113,6 +113,7 @@ namespace DDAS.API.Controllers
             var query = new SearchDetailsQuery();
             query.NameToSearch = NameToSearch;
             query.RecId = Guid.Parse(RecId);
+            query.siteEnum = siteEnum;
 
             switch (query.siteEnum) {
 
@@ -157,7 +158,7 @@ namespace DDAS.API.Controllers
         
         //[Authorize]
         [Route("SaveSearchResult")]
-        [HttpGet]
+        [HttpPost]
         public IHttpActionResult SaveSearchResults(SaveSearchResult result)
         {
             return Ok(_SearchSummary.SaveRecordStatus(result));
