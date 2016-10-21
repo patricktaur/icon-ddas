@@ -21,11 +21,17 @@ namespace WebScraping.Selenium.Pages
             //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
 
-        public override string Url
+        public override string Url {
+            get {
+                return @"http://www.fda.gov/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/ComplianceActivities/ucm195364.htm";
+            }
+        }
+
+        public override SiteEnum SiteName
         {
             get
             {
-                return @"http://www.fda.gov/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/ComplianceActivities/ucm195364.htm";
+                return SiteEnum.CBERClinicalInvestigatorInspectionPage;
             }
         }
 
@@ -80,12 +86,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override SiteEnum SiteName {
-            get {
-                return SiteEnum.CBERClinicalInvestigatorInspectionPage;
-            }
-        }
-
         public override void LoadContent()
         {
             LoadNextInspectionList();
@@ -93,7 +93,7 @@ namespace WebScraping.Selenium.Pages
 
         public override void SaveData()
         {
-            
+            _UOW.CBERClinicalInvestigatorRepository.Add(_CBERSiteData);
         }
     }
 }

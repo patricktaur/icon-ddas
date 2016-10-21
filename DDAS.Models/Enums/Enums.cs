@@ -3,16 +3,16 @@
     public enum SiteEnum
     {
         FDADebarPage,
+        ClinicalInvestigatorInspectionPage,
+        FDAWarningLettersPage,
         ERRProposalToDebarPage,
         AdequateAssuranceListPage,
         ClinicalInvestigatorDisqualificationPage,
-        ClinicalInvestigatorInspectionPage,
         CBERClinicalInvestigatorInspectionPage,
-        ExclusionDatabaseSearchPage,
-        SpeciallyDesignedNationalsListPage,
-        FDAWarningLettersPage,
         PHSAdministrativeActionListingPage,
+        ExclusionDatabaseSearchPage,
         CorporateIntegrityAgreementsListPage,
-        SystemForAwardManagementPage
+        SystemForAwardManagementPage,
+        SpeciallyDesignedNationalsListPage
     };
 }

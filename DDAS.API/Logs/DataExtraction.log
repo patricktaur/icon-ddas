@@ -40,3 +40,23 @@ Processing:1 sites
 Data Saved
 13-10-2016 19:47:25, Extract Data ends
 =================================================================================
+21-10-2016 11:16:12, Extract Data starts
+Processing:2 sites
+21-10-2016 11:16:12, Start extracting from:ERRProposalToDebarPage
+21-10-2016 11:18:20, End extracting from:ERRProposalToDebarPage
+Data Saved
+21-10-2016 11:18:21, Start extracting from:AdequateAssuranceListPage
+21-10-2016 11:18:27, End extracting from:AdequateAssuranceListPage
+Data Saved
+21-10-2016 11:18:27, Extract Data ends
+=================================================================================
+21-10-2016 17:03:20, Extract Data starts
+Processing:2 sites
+21-10-2016 17:03:21, Start extracting from:ExclusionDatabaseSearchPage
+21-10-2016 17:04:01, End extracting from:ExclusionDatabaseSearchPage
+Data Saved
+21-10-2016 17:05:41, Start extracting from:CorporateIntegrityAgreementsListPage
+21-10-2016 17:15:16, End extracting from:CorporateIntegrityAgreementsListPage
+Data Saved
+21-10-2016 17:15:16, Extract Data ends
+=================================================================================

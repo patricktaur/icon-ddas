@@ -169,8 +169,9 @@ Entry on 5 Oct 2016
 1. ClinicalInvestigatorInspectionPage has been included into the serives, to return match status and the
    fields/properties that match the NameToSearch.
 2. Observation: This site (CII) is providing only 200 records max. when follwed the method
-   Advanced Search --> Select First Name drop down value "nto equal to" --> enter the first name "zzzzz".
+   Advanced Search --> Select First Name drop down value "not equal to" --> enter the first name "zzzzz".
    Site gives 200 records when searched for the name "James" without using advanced search.
    Need to cross check this with clients.
 3. Need to explore SAM site to find a way to download all records. 'Document Access' tab has some
-   files which need to be invetigated/looked into.
+   files which need to be investigated/looked into.
+

@@ -36,7 +36,25 @@ namespace DDAS.Data.Mongo.Maps
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
+            BsonClassMap.RegisterClassMap<CBERClinicalInvestigatorInspectionSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<ExclusionDatabaseSearchPageSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<CorporateIntegrityAgreementListSiteData>(map =>
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
@@ -54,16 +72,20 @@ namespace DDAS.Data.Mongo.Maps
                     map.AutoMap();
                     map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
                 });
+
+            #region Identity
             BsonClassMap.RegisterClassMap<User>(map =>
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.UserId).SetIdGenerator(GuidGenerator.Instance);
             });
+
             BsonClassMap.RegisterClassMap<Role>(map =>
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.RoleId).SetIdGenerator(GuidGenerator.Instance);
             });
+            #endregion
         }
 
     }

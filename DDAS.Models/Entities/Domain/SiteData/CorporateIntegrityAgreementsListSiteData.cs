@@ -6,24 +6,34 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class CorporateIntegrityAgreementsListSiteData : AuditEntity<long?>
+    public class CorporateIntegrityAgreementListSiteData //: AuditEntity<long?>
     {
-        public CorporateIntegrityAgreementsListSiteData()
+        public CorporateIntegrityAgreementListSiteData()
         {
             CIAListSiteData = new List<CIAList>();
         }
+        public Guid? RecId { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
 
         public DateTime SiteLastUpdatedOn { get; set; }
         public string Source { get; set; }
         public List<CIAList> CIAListSiteData { get; set; }
 
     }
-    public class CIAList
+    public class CIAList : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
         public string Provider { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Effective { get; set; }
+
+        public override string FullName {
+            get {
+                return Provider;
+            }
+        }
     }
 }

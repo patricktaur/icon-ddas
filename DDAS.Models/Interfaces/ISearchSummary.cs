@@ -19,6 +19,16 @@ namespace DDAS.Models.Interfaces
             GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId);
         SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationsMatch(
             string NameToSearch, Guid? DataId);
+        ERRProposalToDebarPageSiteData GetProposalToDebarPageMatch(
+            string NameToSearch, Guid? DataId);
+        AdequateAssuranceListSiteData GetAdequateAssuranceListPageMatch(
+            string NameToSearch, Guid? DataId);
+        CBERClinicalInvestigatorInspectionSiteData
+            GetCBERClinicalInvestigatorPageMatch(string NameToSearch, Guid? DataId);
+        ExclusionDatabaseSearchPageSiteData GetExclusionDatabaseSearchPageMatch(
+            string NameToSearch, Guid? DataId);
+        CorporateIntegrityAgreementListSiteData GetCIAPageMatch(
+            string NameToSearch, Guid? DataId);
 
         bool SaveRecordStatus(SaveSearchResult Result);
 
@@ -33,5 +43,20 @@ namespace DDAS.Models.Interfaces
         
         SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(
             SpeciallyDesignatedNationalsListSiteData SDNSiteData, string NameToSearch);
+
+        ERRProposalToDebarPageSiteData GetStatusOfProposalToDebarSiteRecords(
+            ERRProposalToDebarPageSiteData ProposalToDebarSiteData, string NameToSearch);
+
+        AdequateAssuranceListSiteData GetStatusOfAssuranceSiteRecords(
+            AdequateAssuranceListSiteData AssuranceSiteData, string NameToSearch);
+
+        CBERClinicalInvestigatorInspectionSiteData GetStatusOfCBERSiteRecords(
+            CBERClinicalInvestigatorInspectionSiteData CBERSiteData, string NameToSearch);
+
+        ExclusionDatabaseSearchPageSiteData GetStatusOfExclusionSiteRecords(
+            ExclusionDatabaseSearchPageSiteData ExclusionSiteData, string NameToSearch);
+
+        CorporateIntegrityAgreementListSiteData GetStatusOfCIASiteRecords(
+            CorporateIntegrityAgreementListSiteData CIASiteData, string NameToSearch);
     }
 }

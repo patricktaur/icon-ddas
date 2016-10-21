@@ -28,6 +28,12 @@ namespace DDAS.Models
         IRoleRepository RoleRepository { get; }
         IUserRepository UserRepository { get; }
         IUserRoleRepository UserRoleRepository { get; }
+        ICBERClinicalInvestigatorInspectionRepository 
+            CBERClinicalInvestigatorRepository { get; }
+        IExclusionDatabaseSearchRepository 
+            ExclusionDatabaseSearchRepository { get; }
+        ICorporateIntegrityAgreementRepository 
+            CorporateIntegrityAgreementRepository { get; }
         #endregion
 
 

@@ -32,9 +32,17 @@ namespace DDAS.Data.Mongo
             _SaveSearchResultRepository;
         private ISpeciallyDesignatedNationalsRepository
             _SpeciallyDesignatedNationalsRepository;
+        private ICBERClinicalInvestigatorInspectionRepository
+            _CBERClinicalInvestigatorRepository;
+        private IExclusionDatabaseSearchRepository
+            _ExclusionDatabaseSearchRepository;
+        private ICorporateIntegrityAgreementRepository
+            _CorporateIntegrityAgreemnetRepository;
+
         private IRoleRepository _RoleRepository;
         private IUserRepository _UserRepository;
         private IUserRoleRepository _UserRoleRepository;
+
         #endregion
         /*
          * var client = new MongoClient("mongodb://127.0.0.1");
@@ -144,6 +152,38 @@ namespace DDAS.Data.Mongo
             {
                 return _UserRoleRepository ??
                     (_UserRoleRepository = new UserRoleRepository(_db));
+            }
+        }
+
+        public ICBERClinicalInvestigatorInspectionRepository 
+            CBERClinicalInvestigatorRepository
+        {
+            get
+            {
+                return _CBERClinicalInvestigatorRepository ??
+                    (_CBERClinicalInvestigatorRepository = 
+                    new CBERClinicalInvestigatorRepository(_db));
+            }
+        }
+
+        public IExclusionDatabaseSearchRepository ExclusionDatabaseSearchRepository
+        {
+            get
+            {
+                return _ExclusionDatabaseSearchRepository ??
+                    (_ExclusionDatabaseSearchRepository = 
+                    new ExclusionDatabaseSearchRepository(_db));
+            }
+        }
+
+        public ICorporateIntegrityAgreementRepository 
+            CorporateIntegrityAgreementRepository
+        {
+            get
+            {
+                return _CorporateIntegrityAgreemnetRepository ??
+                    (_CorporateIntegrityAgreemnetRepository =
+                    new CorporateIntegrityAgreementRepository(_db));
             }
         }
 

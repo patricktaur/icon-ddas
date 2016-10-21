@@ -57,13 +57,32 @@ namespace DDAS.Services.Search
             {
                 case SiteEnum.FDADebarPage:
                     return GetFDADebarPageMatchCount(NameToSearch, DataId);
-                case SiteEnum.PHSAdministrativeActionListingPage:
-                    return GetPHSAdministrativeMatchCount(NameToSearch, DataId);
+
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInvestigatorMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.ERRProposalToDebarPage:
+                    return GetProposalToDebarPageMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    return GetAdequateAssuranceListPageMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    return GetCBERClinicalInvestigatorPageMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    return GetPHSAdministrativeMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    return GetExclusionDatabaseSearchPageMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    return GetCIAPageMatchCount(NameToSearch, DataId);
+
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return GetSpeciallyDesignatedNationalsMatchCount(NameToSearch, 
                         DataId);
+
                 default : throw new Exception("Invalid Enum");
             }
         }
@@ -86,7 +105,6 @@ namespace DDAS.Services.Search
                 else if (MatchesFound != 0)
                     MatchStatus = MatchesFound + ":" + counter;
             }
-
             return MatchStatus;
         }
 
@@ -107,6 +125,180 @@ namespace DDAS.Services.Search
             FDASearchResult.DebarredPersons = DebarList;
 
             return FDASearchResult;
+        }
+        #endregion
+
+        #region ClinicalInvestigatorInspectionSite
+
+        public string GetClinicalInvestigatorMatchCount(string NameToSearch,
+            Guid? DataId)
+        {
+            var ClinicalSiteData = GetClinicalInvestigatorSiteMatch(NameToSearch,
+                DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound =
+                    ClinicalSiteData.ClinicalInvestigatorInspectionList
+                    .Where(x => x.Matched == counter).Count();
+
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+
+        public ClinicalInvestigatorInspectionSiteData
+            GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId)
+        {
+            var ClinicalSiteData =
+                _UOW.ClinicalInvestigatorInspectionListRepository.FindById(DataId);
+
+            string[] Name = NameToSearch.Split(' ');
+
+            UpdateMatchStatus(ClinicalSiteData.ClinicalInvestigatorInspectionList,
+                NameToSearch);
+
+            var CIISiteData = ClinicalSiteData.ClinicalInvestigatorInspectionList.
+                Where(CIIData => CIIData.Matched > 0).ToList();
+
+            ClinicalSiteData.ClinicalInvestigatorInspectionList = CIISiteData;
+
+            return ClinicalSiteData;
+        }
+
+        #endregion
+
+        #region ProposalToDebar
+        public string GetProposalToDebarPageMatchCount(string NameToSearch, Guid? DataId)
+        {
+            var ProposalToDebarSearchResult = 
+                GetProposalToDebarPageMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = ProposalToDebarSearchResult.ProposalToDebar.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+
+        public ERRProposalToDebarPageSiteData GetProposalToDebarPageMatch(
+            string NameToSearch, Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            ERRProposalToDebarPageSiteData ProposalToDebarSearchResult =
+                _UOW.ERRProposalToDebarRepository.FindById(DataId);
+
+            UpdateMatchStatus(ProposalToDebarSearchResult.ProposalToDebar, NameToSearch);
+
+            var DebarList = ProposalToDebarSearchResult.ProposalToDebar.Where(
+               ProposalToDebarList => ProposalToDebarList.Matched > 0).ToList();
+
+            ProposalToDebarSearchResult.ProposalToDebar = DebarList;
+
+            return ProposalToDebarSearchResult;
+        }
+        #endregion
+
+        #region AdequateAssuranceList
+        
+        public string GetAdequateAssuranceListPageMatchCount(string NameToSearch,
+            Guid? DataId)
+        {
+            var AdequateAssuranceSearchResult = 
+                GetAdequateAssuranceListPageMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = AdequateAssuranceSearchResult.AdequateAssurances.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+
+        public AdequateAssuranceListSiteData GetAdequateAssuranceListPageMatch(
+            string NameToSearch, Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            AdequateAssuranceListSiteData AdequateAssuranceList =
+                _UOW.AdequateAssuranceListRepository.FindById(DataId);
+
+            UpdateMatchStatus(AdequateAssuranceList.AdequateAssurances, NameToSearch);
+
+            var AssuranceList = AdequateAssuranceList.AdequateAssurances.Where(
+               debarredList => debarredList.Matched > 0).ToList();
+
+            AdequateAssuranceList.AdequateAssurances = AssuranceList;
+
+            return AdequateAssuranceList;
+        }
+        #endregion
+
+        #region CBERClinicalInvestigator
+        
+        public string GetCBERClinicalInvestigatorPageMatchCount(string NameToSearch,
+            Guid? DataId)
+        {
+            var CBERSearchResult = 
+                GetCBERClinicalInvestigatorPageMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = CBERSearchResult.ClinicalInvestigator.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+        
+        public CBERClinicalInvestigatorInspectionSiteData 
+            GetCBERClinicalInvestigatorPageMatch(string NameToSearch, Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            CBERClinicalInvestigatorInspectionSiteData CBERSearchResult =
+                _UOW.CBERClinicalInvestigatorRepository.FindById(DataId);
+
+            UpdateMatchStatus(CBERSearchResult.ClinicalInvestigator, NameToSearch);
+
+            var CBERList = CBERSearchResult.ClinicalInvestigator.Where(
+               CBERClinicalList => CBERClinicalList.Matched > 0).ToList();
+
+            CBERSearchResult.ClinicalInvestigator = CBERList;
+
+            return CBERSearchResult;
         }
         #endregion
 
@@ -153,13 +345,12 @@ namespace DDAS.Services.Search
         }
         #endregion
 
-        #region ClinicalInvestigatorInspectionSite
-        
-        public string GetClinicalInvestigatorMatchCount(string NameToSearch,
+        #region ExclusionDatabaseSearch
+
+        public string GetExclusionDatabaseSearchPageMatchCount(string NameToSearch,
             Guid? DataId)
         {
-            var ClinicalSiteData = GetClinicalInvestigatorSiteMatch(NameToSearch,
-                DataId);
+            var ExclusionSearchResult = GetExclusionDatabaseSearchPageMatch(NameToSearch, DataId);
 
             string MatchStatus = null;
 
@@ -167,10 +358,8 @@ namespace DDAS.Services.Search
 
             for (int counter = 1; counter <= Name.Length; counter++)
             {
-                int MatchesFound = 
-                    ClinicalSiteData.ClinicalInvestigatorInspectionList
-                    .Where(x => x.Matched == counter).Count();
-
+                int MatchesFound = ExclusionSearchResult.ExclusionSearchList.Where(
+                    x => x.Matched == counter).Count();
                 if (MatchesFound != 0 && MatchStatus != null)
                     MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
                 else if (MatchesFound != 0)
@@ -179,23 +368,63 @@ namespace DDAS.Services.Search
             return MatchStatus;
         }
 
-        public ClinicalInvestigatorInspectionSiteData 
-            GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId)
+        public ExclusionDatabaseSearchPageSiteData GetExclusionDatabaseSearchPageMatch(
+            string NameToSearch, Guid? DataId)
         {
-            var ClinicalSiteData =
-                _UOW.ClinicalInvestigatorInspectionListRepository.FindById(DataId);
+            string[] Name = NameToSearch.Split(' ');
+
+            ExclusionDatabaseSearchPageSiteData ExclusionSearchResult =
+                _UOW.ExclusionDatabaseSearchRepository.FindById(DataId);
+
+            UpdateMatchStatus(ExclusionSearchResult.ExclusionSearchList, NameToSearch);
+
+            var ExclusionSearchList = ExclusionSearchResult.ExclusionSearchList.Where(
+               ExclusionList => ExclusionList.Matched > 0).ToList();
+
+            ExclusionSearchResult.ExclusionSearchList = ExclusionSearchList;
+
+            return ExclusionSearchResult;
+        }
+        #endregion
+
+        #region CorporateIntegrityAgreement
+
+        public string GetCIAPageMatchCount(string NameToSearch, Guid? DataId)
+        {
+            var CIASearchResult = GetCIAPageMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
 
             string[] Name = NameToSearch.Split(' ');
 
-            UpdateMatchStatus(ClinicalSiteData.ClinicalInvestigatorInspectionList,
-                NameToSearch);
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = CIASearchResult.CIAListSiteData.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
 
-            var CIISiteData = ClinicalSiteData.ClinicalInvestigatorInspectionList.
-                Where(CIIData => CIIData.Matched > 0).ToList();
+        public CorporateIntegrityAgreementListSiteData GetCIAPageMatch(
+            string NameToSearch, Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
 
-            ClinicalSiteData.ClinicalInvestigatorInspectionList = CIISiteData;
+            CorporateIntegrityAgreementListSiteData CIASearchResult =
+                _UOW.CorporateIntegrityAgreementRepository.FindById(DataId);
 
-            return ClinicalSiteData;
+            UpdateMatchStatus(CIASearchResult.CIAListSiteData, NameToSearch);
+
+            var DebarList = CIASearchResult.CIAListSiteData.Where(
+               debarredList => debarredList.Matched > 0).ToList();
+
+            CIASearchResult.CIAListSiteData = DebarList;
+
+            return CIASearchResult;
         }
 
         #endregion
@@ -318,6 +547,81 @@ namespace DDAS.Services.Search
             return ClinicalSiteData;
         }
 
+        public ERRProposalToDebarPageSiteData GetStatusOfProposalToDebarSiteRecords(
+            ERRProposalToDebarPageSiteData ProposalToDebarSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.ERRProposalToDebarPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return ProposalToDebarSiteData;
+
+            foreach (ProposalToDebar proposalToDebar in 
+                ProposalToDebarSiteData.ProposalToDebar)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (proposalToDebar.RowNumber == SearchDetails.RowNumber)
+                        proposalToDebar.Status = SearchDetails.Status;
+                }
+            }
+            return ProposalToDebarSiteData;
+        }
+
+        public AdequateAssuranceListSiteData GetStatusOfAssuranceSiteRecords(
+            AdequateAssuranceListSiteData AssuranceSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.AdequateAssuranceListPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return AssuranceSiteData;
+
+            foreach (AdequateAssuranceList AssuranceList in
+                AssuranceSiteData.AdequateAssurances)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (AssuranceList.RowNumber == SearchDetails.RowNumber)
+                        AssuranceList.Status = SearchDetails.Status;
+                }
+            }
+            return AssuranceSiteData;
+        }
+
+        public CBERClinicalInvestigatorInspectionSiteData GetStatusOfCBERSiteRecords(
+            CBERClinicalInvestigatorInspectionSiteData CBERSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.CBERClinicalInvestigatorInspectionPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return CBERSiteData;
+
+            foreach (CBERClinicalInvestigator CBERList in
+                CBERSiteData.ClinicalInvestigator)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (CBERList.RowNumber == SearchDetails.RowNumber)
+                        CBERList.Status = SearchDetails.Status;
+                }
+            }
+            return CBERSiteData;
+        }
+
         public PHSAdministrativeActionListingSiteData GetStatusOfPHSSiteRecords(
             PHSAdministrativeActionListingSiteData PHSSiteData, string NameToSearch)
         {
@@ -341,6 +645,56 @@ namespace DDAS.Services.Search
                 }
             }
             return PHSSiteData;
+        }
+
+        public ExclusionDatabaseSearchPageSiteData GetStatusOfExclusionSiteRecords(
+            ExclusionDatabaseSearchPageSiteData ExclusionSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.ExclusionDatabaseSearchPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return ExclusionSiteData;
+
+            foreach (ExclusionDatabaseSearchList ExclusionList in
+                ExclusionSiteData.ExclusionSearchList)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (ExclusionList.RowNumber == SearchDetails.RowNumber)
+                        ExclusionList.Status = SearchDetails.Status;
+                }
+            }
+            return ExclusionSiteData;
+        }
+
+        public CorporateIntegrityAgreementListSiteData GetStatusOfCIASiteRecords(
+            CorporateIntegrityAgreementListSiteData CIASiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.CorporateIntegrityAgreementsListPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return CIASiteData;
+
+            foreach (CIAList CIADataList in
+                CIASiteData.CIAListSiteData)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (CIADataList.RowNumber == SearchDetails.RowNumber)
+                        CIADataList.Status = SearchDetails.Status;
+                }
+            }
+            return CIASiteData;
         }
 
         public SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(

@@ -135,6 +135,33 @@ namespace DDAS.API.Controllers
                         GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
                         query.NameToSearch));
 
+                case SiteEnum.ERRProposalToDebarPage:
+                    var ProposalToDebarDetails = _SearchSummary.
+                        GetProposalToDebarPageMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfProposalToDebarSiteRecords(ProposalToDebarDetails,
+                        query.NameToSearch));
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    var AssuranceDetails = _SearchSummary.
+                        GetAdequateAssuranceListPageMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfAssuranceSiteRecords(AssuranceDetails,
+                        query.NameToSearch));
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    var CBERDetails = _SearchSummary.
+                        GetCBERClinicalInvestigatorPageMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfCBERSiteRecords(CBERDetails,
+                        query.NameToSearch));
+
                 case SiteEnum.PHSAdministrativeActionListingPage:
                     var PHSSearchDetails = _SearchSummary.
                         GetPHSAdministrativeSiteMatch(
@@ -142,6 +169,24 @@ namespace DDAS.API.Controllers
 
                     return Ok(_SearchSummary.
                         GetStatusOfPHSSiteRecords(PHSSearchDetails, 
+                        query.NameToSearch));
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    var ExclusionDetails = _SearchSummary.
+                        GetExclusionDatabaseSearchPageMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfExclusionSiteRecords(ExclusionDetails,
+                        query.NameToSearch));
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    var CIADetails = _SearchSummary.
+                        GetCIAPageMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfCIASiteRecords(CIADetails,
                         query.NameToSearch));
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
