@@ -140,4 +140,59 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
     }
     #endregion
+
+    #region Indentity
+
+    public class User
+    {
+        private ICollection<Role> _roles;
+        #region Scalar Properties
+        //[BsonId]
+        //public MongoDB.Bson.ObjectId _id { get; set; }
+        public Guid UserId { get; set; }
+        public string UserName { get; set; }
+        public virtual string PasswordHash { get; set; }
+        public virtual string SecurityStamp { get; set; }
+        public string EmailId { get; set; }
+        public string UserFullName { get; set; }
+        public bool Active { get; set; }
+        public bool Enterprise { get; set; }
+        #endregion
+
+        public virtual ICollection<Role> Roles
+        {
+            get { return _roles ?? (_roles = new List<Role>()); }
+            set { _roles = value; }
+        }
+
+    }
+
+    public class Role
+    {
+        private ICollection<User> _users;
+
+        #region Scalar Properties
+
+        //public MongoDB.Bson.ObjectId _id { get; set; }
+
+        //[BsonId]
+        public Guid RoleId { get; set; }
+        public string Name { get; set; }
+        #endregion
+
+        public ICollection<User> Users
+        {
+            get { return _users ?? (_users = new List<User>()); }
+            set { _users = value; }
+        }
+    }
+
+    
+    public class UserRole
+    {
+        public Guid RoleId { get; set; }
+        public Guid UserId { get; set; }
+    }
+    #endregion
+
 }

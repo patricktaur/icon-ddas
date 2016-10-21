@@ -34,9 +34,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string Country { get; set; }
         public string Zipcode { get; set; }
         public string InspectionDate { get; set; }
-        public string Type { get; set; }
-        public string Class { get; set; }
-        public string DefTypes { get; set; }
+        public string ClassificationType { get; set; }
+        public string ClassificationCode { get; set; }
+        public string DeficiencyCode { get; set; }
 
         public override string FullName {
             get {

@@ -53,11 +53,6 @@ namespace WebScraping.Selenium.Pages
             LoadAdequateAssuranceInvestigators();
         }
 
-        public override void LoadContent(string NameToSearch)
-        {
-            
-        }
-
         private AdequateAssuranceListSiteData _adequateAssuranceListSiteData;
 
         public void LoadAdequateAssuranceInvestigators()
@@ -88,7 +83,8 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void SaveData() {
-            _UOW.AdequateAssuranceListRepository.Add(_adequateAssuranceListSiteData);
+            _UOW.AdequateAssuranceListRepository.
+                Add(_adequateAssuranceListSiteData);
         }
     }
 }

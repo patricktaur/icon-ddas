@@ -17,7 +17,11 @@ namespace DDAS.Models.Interfaces
             GetPHSAdministrativeSiteMatch(string NameToSearch, Guid? DataId);
         ClinicalInvestigatorInspectionSiteData
             GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId);
+        SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationsMatch(
+            string NameToSearch, Guid? DataId);
+
         bool SaveRecordStatus(SaveSearchResult Result);
+
         FDADebarPageSiteData 
             GetStatusOfFDASiteRecords(FDADebarPageSiteData FDASiteData,
             string NameToSeach);
@@ -26,5 +30,8 @@ namespace DDAS.Models.Interfaces
             string NameToSearch);
         PHSAdministrativeActionListingSiteData GetStatusOfPHSSiteRecords(
             PHSAdministrativeActionListingSiteData PHSSiteData, string NameToSearch);
+        
+        SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(
+            SpeciallyDesignatedNationalsListSiteData SDNSiteData, string NameToSearch);
     }
 }

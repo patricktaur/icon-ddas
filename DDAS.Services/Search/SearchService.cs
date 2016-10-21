@@ -61,8 +61,11 @@ namespace DDAS.Services.Search
                     return GetPHSAdministrativeMatchCount(NameToSearch, DataId);
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInvestigatorMatchCount(NameToSearch, DataId);
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    return GetSpeciallyDesignatedNationalsMatchCount(NameToSearch, 
+                        DataId);
+                default : throw new Exception("Invalid Enum");
             }
-            return null;
         }
 
         #region FDADebarSite
@@ -179,7 +182,7 @@ namespace DDAS.Services.Search
         public ClinicalInvestigatorInspectionSiteData 
             GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId)
         {
-            ClinicalInvestigatorInspectionSiteData ClinicalSiteData =
+            var ClinicalSiteData =
                 _UOW.ClinicalInvestigatorInspectionListRepository.FindById(DataId);
 
             string[] Name = NameToSearch.Split(' ');
@@ -197,9 +200,53 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string nameToSearch)
+        #region SpeciallyDesignatedNations
+
+        public string GetSpeciallyDesignatedNationalsMatchCount(string NameToSearch,
+            Guid? DataId)
         {
-            string[] namesInNameToSearch = nameToSearch.Split(' ');
+            var SDNSiteData = GetSpeciallyDesignatedNationsMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound =
+                    SDNSiteData.SDNListSiteData.
+                    Where(x => x.Matched == counter).Count();
+
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+
+        public SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationsMatch(
+            string NameToSearch, Guid? DataId)
+        {
+            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.FindById(DataId);
+
+            string[] Name = NameToSearch.Split(' ');
+
+            UpdateMatchStatus(SDNSiteData.SDNListSiteData,
+                NameToSearch);
+
+            var CIISiteData = SDNSiteData.SDNListSiteData.
+                Where(CIIData => CIIData.Matched > 0).ToList();
+
+            SDNSiteData.SDNListSiteData = CIISiteData;
+
+            return SDNSiteData;
+        }
+        #endregion
+
+        void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string NameToSearch)
+        {
+            string[] namesInNameToSearch = NameToSearch.Split(' ');
             foreach (SiteDataItemBase item in items)
             {
                 int Count = 0;
@@ -214,7 +261,6 @@ namespace DDAS.Services.Search
             }
         }
         
-
         #region Save and Update Approved/Rejected records
         public bool SaveRecordStatus(SaveSearchResult Result)
         {
@@ -232,10 +278,8 @@ namespace DDAS.Services.Search
                 OrderByDescending(y => y.CreatedOn).
                 FirstOrDefault();
 
-            if (SavedSearchResult == null) {
-                _UOW.SaveSearchResultRepository.Add(null);
+            if (SavedSearchResult == null) 
                 return FDASiteData;
-            }
 
             foreach (DebarredPerson debarredPerson in FDASiteData.DebarredPersons)
             {
@@ -258,10 +302,8 @@ namespace DDAS.Services.Search
                 OrderByDescending(y => y.CreatedOn).
                 FirstOrDefault();
 
-            if (SavedSearchResult == null) {
-                _UOW.SaveSearchResultRepository.Add(null);
+            if (SavedSearchResult == null)
                 return ClinicalSiteData;
-            }
 
             foreach (ClinicalInvestigator Investigator in 
                 ClinicalSiteData.ClinicalInvestigatorInspectionList)
@@ -285,10 +327,8 @@ namespace DDAS.Services.Search
                 OrderByDescending(y => y.CreatedOn).
                 FirstOrDefault();
 
-            if (SavedSearchResult == null) {
-                _UOW.SaveSearchResultRepository.Add(null);
+            if (SavedSearchResult == null)
                 return PHSSiteData;
-            }
 
             foreach (PHSAdministrativeAction PHSData in 
                 PHSSiteData.PHSAdministrativeSiteData)
@@ -301,6 +341,30 @@ namespace DDAS.Services.Search
                 }
             }
             return PHSSiteData;
+        }
+
+        public SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(
+            SpeciallyDesignatedNationalsListSiteData SDNSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.SpeciallyDesignedNationalsListPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return SDNSiteData;
+
+            foreach(SDNList SDNListData in SDNSiteData.SDNListSiteData)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (SDNListData.RowNumber == SearchDetails.RowNumber)
+                        SDNListData.Status = SearchDetails.Status;
+                }
+            }
+            return SDNSiteData;
         }
         #endregion
     }

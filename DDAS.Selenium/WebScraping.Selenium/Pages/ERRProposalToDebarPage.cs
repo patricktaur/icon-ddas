@@ -19,26 +19,15 @@ namespace WebScraping.Selenium.Pages
             //SaveScreenShot("ProposalToDebarPage.png");
         }
 
-        public override string Url
-        {
-            get
-            {
+        public override string Url {
+            get {
                 return 
                 @"http://www.fda.gov/RegulatoryInformation/FOI/ElectronicReadingRoom/ucm143240.htm";
             }
         }
 
-        private List<ProposalToDebar> _ProposalToDebarList;
-
-        public List<ProposalToDebar> propToDebar
-        {
-            get { return _ProposalToDebarList; }
-        }
-
-        public override SiteEnum SiteName
-        {
-            get
-            {
+        public override SiteEnum SiteName {
+            get {
                 return SiteEnum.ERRProposalToDebarPage;
             }
         }
@@ -49,8 +38,10 @@ namespace WebScraping.Selenium.Pages
         {
             _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
 
-            _proposalToDebarSiteData.CreatedBy = "";
+            _proposalToDebarSiteData.CreatedBy = "Patrick";
             _proposalToDebarSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _proposalToDebarSiteData.CreatedOn = DateTime.Now;
+            _proposalToDebarSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")))
             {
@@ -70,9 +61,6 @@ namespace WebScraping.Selenium.Pages
         {
             LoadProposalToDebarList();
         }
-
-        public override void LoadContent(string NameToSearch)
-        { }
 
         public override void SaveData()
         {

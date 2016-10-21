@@ -29,13 +29,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<ExclusionDatabaseSearchList> _exclusionsList;
-
-        public List<ExclusionDatabaseSearchList> ExclusionDatabaseList {
-            get {
-                return _exclusionsList; }
-        }
-
         public override SiteEnum SiteName
         {
             get
@@ -104,28 +97,8 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent()
         {
-
-        }
-
-        public override void LoadContent(string NameToSearch)
-        {
-             
-            string[] FullName = NameToSearch.Split(' ');
-
-            //for(int counter = 0; counter < FullName.Length; counter++)
-            //{
-            //    if (FullName.Length == 2)
-            //    {
-                    
-            //    }
-            //}
-
-            if (SearchTerms(FullName[0], FullName[1]))
-                LoadExclusionsDatabaseList();
-
-            if (SearchTerms(FullName[1], FullName[0]))
-                LoadExclusionsDatabaseList();
-                
+            //refactor, add code to enter search names
+            //LoadExclusionsDatabaseList();
         }
 
         public override void SaveData()

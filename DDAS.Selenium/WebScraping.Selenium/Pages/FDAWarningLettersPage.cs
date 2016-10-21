@@ -30,14 +30,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<FDAWarningLetter> _warningLetterList;
-
-        public List<FDAWarningLetter> FDAWarningLetters {
-            get {
-                return _warningLetterList;
-            }
-        }
-
         public bool SearchTerms(string Name)
         {
             IWebElement Input = FDASearchTextBox;
@@ -47,7 +39,7 @@ namespace WebScraping.Selenium.Pages
             IWebElement Search = FDASearchButton;
             Search.Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(120));
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
             IWebElement Table = FDASortTable;
 
@@ -80,15 +72,19 @@ namespace WebScraping.Selenium.Pages
 
             _FDAWarningSiteData.CreatedBy = "Patrick";
             _FDAWarningSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _FDAWarningSiteData.CreatedOn = DateTime.Now;
+            _FDAWarningSiteData.Source = driver.Url;
 
             IList<IWebElement> TR = FDASortTable.FindElements(By.XPath("//tbody/tr"));
 
+            int RowNumber = 1;
             for (int tableRow = 12; tableRow < TR.Count - 1; tableRow++)
             {
                 var FDAWarningList = new FDAWarningLetter();
 
                 IList<IWebElement> TDs = TR[tableRow].FindElements(By.XPath("td"));
 
+                FDAWarningList.RowNumber = RowNumber;
                 FDAWarningList.Company = TDs[0].Text;
                 FDAWarningList.LetterIssued = TDs[1].Text;
                 FDAWarningList.IssuingOffice = TDs[2].Text;
@@ -97,22 +93,14 @@ namespace WebScraping.Selenium.Pages
                 FDAWarningList.CloseoutDate = TDs[5].Text;
 
                 _FDAWarningSiteData.FDAWarningLetterList.Add(FDAWarningList);
+                RowNumber += 1;
             }
         }
 
         public override void LoadContent()
-        { }
-        public override void LoadContent(string NameToSearch)
         {
-            string[] Name = NameToSearch.Split(' ');
-
-            for (int counter = 0; counter < Name.Length; counter++)
-            {
-                if(SearchTerms(Name[counter]))
-                {
-                    LoadFDAWarningLetters();
-                }
-            }
+            //refactor to enter search names
+            //LoadFDAWarningLetters();
         }
 
         public override void SaveData()

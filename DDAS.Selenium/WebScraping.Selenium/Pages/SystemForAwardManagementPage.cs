@@ -36,13 +36,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<SystemForAwardManagement> _samList;
-
-        public List<SystemForAwardManagement> SAMList {
-            get {
-                return _samList;
-            }
-        }
 
         private SystemForAwardManagementPageSiteData _SAMSiteData;
 
@@ -173,7 +166,7 @@ namespace WebScraping.Selenium.Pages
             
         }
 
-        public override void LoadContent(string NameToSearch)
+        public void LoadContent(string NameToSearch)
         {
             string[] Name = NameToSearch.Split(' ');
 

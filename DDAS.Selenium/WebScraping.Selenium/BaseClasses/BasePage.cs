@@ -13,14 +13,13 @@ namespace WebScraping.Selenium.BaseClasses
         public BasePage(IWebDriver driver)
         {
             this.driver = driver;
-            
         }
 
         public abstract string Url { get; }
 
         public virtual void Open(string part = "")
         {
-            driver.Navigate().GoToUrl(string.Concat(Url, part)); //string.Concat(this.Url, part)
+            driver.Navigate().GoToUrl(string.Concat(Url, part));
         }
 
         public bool IsElementPresent(IWebElement elem, By by)
@@ -44,7 +43,7 @@ namespace WebScraping.Selenium.BaseClasses
 
         public void Dispose()
         {
-            this.driver.Quit();
+            driver.Quit();
         }
     }
 }

@@ -35,14 +35,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<PHSAdministrativeAction> _administrativeActionList;
-
-        public List<PHSAdministrativeAction> AdministrativeActionList {
-            get {
-                return _administrativeActionList;
-            }
-        }
-
         private PHSAdministrativeActionListingSiteData _PHSAdministrativeSiteData;
 
         public void LoadAdministrativeActionList()
@@ -86,13 +78,6 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent()
         {
-            LoadAdministrativeActionList();
-        }
-
-        public override void LoadContent(string NameToSearch)
-        {
-            NameToSearch.Replace(",", "");
-
             LoadAdministrativeActionList();
         }
 

@@ -73,6 +73,12 @@ namespace DDAS.Data.Mongo.Maps
                 });
             });
 
+            BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             BsonClassMap.RegisterClassMap<SaveSearchResult>
                 (map =>
                 {
@@ -80,6 +86,16 @@ namespace DDAS.Data.Mongo.Maps
                     map.SetIgnoreExtraElements(true);
                     map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
                 });
+            BsonClassMap.RegisterClassMap<User>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.UserId).SetIdGenerator(GuidGenerator.Instance);
+            });
+            BsonClassMap.RegisterClassMap<Role>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RoleId).SetIdGenerator(GuidGenerator.Instance);
+            });
         }
 
     }

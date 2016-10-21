@@ -27,14 +27,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<DisqualifiedInvestigator> _disqualifiedInvestigotor;
-
-        public List<DisqualifiedInvestigator> DisqualifiedInvestigatorList {
-            get {
-                return _disqualifiedInvestigotor;
-            }
-        }
-
         private ClinicalInvestigatorDisqualificationSiteData _DisqualificationSiteData;
 
         public void LoadDisqualificationProceedingsList()
@@ -43,6 +35,8 @@ namespace WebScraping.Selenium.Pages
 
             _DisqualificationSiteData.CreatedBy = "Patrick";
             _DisqualificationSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _DisqualificationSiteData.CreatedOn = DateTime.Now;
+            _DisqualificationSiteData.Source = driver.Url;
 
             int RowCount = 1;
             foreach (IWebElement TR in
@@ -80,11 +74,6 @@ namespace WebScraping.Selenium.Pages
         public override void LoadContent()
         {
             LoadDisqualificationProceedingsList();
-        }
-
-        public override void LoadContent(string NameToSearch)
-        {
-
         }
 
         public override void SaveData()

@@ -23,7 +23,11 @@ namespace DDAS.Models
             ClinicalInvestigatorInspectionListRepository { get; }
         ISaveSearchResultRepository
             SaveSearchResultRepository { get; }
-
+        ISpeciallyDesignatedNationalsRepository
+            SpeciallyDesignatedNationalsRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IUserRepository UserRepository { get; }
+        IUserRoleRepository UserRoleRepository { get; }
         #endregion
 
 

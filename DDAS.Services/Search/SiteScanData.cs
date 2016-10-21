@@ -43,6 +43,8 @@ namespace DDAS.Services.Search
                     return GetPHSSiteScanDetails();
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInevstigatorInspectionDetails();
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    return GetSpeciallyDesignatedNationsDetails();
                 default:
                     throw new Exception("Invalid Enum");
             }
@@ -91,6 +93,21 @@ namespace DDAS.Services.Search
             return siteScan;
         }
 
+        public SiteScan GetSpeciallyDesignatedNationsDetails()
+        {
+            var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.
+                GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            SiteScan siteScan = new SiteScan();
+
+            siteScan.DataExtractedOn = SiteData.CreatedOn;
+            siteScan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+            siteScan.DataId = SiteData.RecId;
+
+            return siteScan;
+        }
+
         public SearchQuery GetNewSearchQuery()
         {
             return new SearchQuery
@@ -120,7 +137,7 @@ namespace DDAS.Services.Search
 
                     //new SearhQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" },
 
-                    //new SearchQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
+                    new SearchQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="XXX" },
                              
                 }
 

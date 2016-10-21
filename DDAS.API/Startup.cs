@@ -7,12 +7,12 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using AutoMapper;
 using DDAS.Data.Mongo.Maps;
-
+[assembly: OwinStartupAttribute(typeof(DDAS.API.Startup))]
 [assembly: OwinStartup(typeof(DDAS.API.Startup))]
 
 namespace DDAS.API
 {
-    public class Startup
+    public partial class Startup
     {
         public void Configuration(IAppBuilder app)
         {
@@ -32,7 +32,7 @@ namespace DDAS.API
             
             var cors = new EnableCorsAttribute("*", "*", "*");
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-
+            ConfigureAuth(app);
             app.UseWebApi(config);
             MongoMaps.Initialize();
            

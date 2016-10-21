@@ -17,6 +17,7 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
             //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
 
@@ -29,13 +30,6 @@ namespace WebScraping.Selenium.Pages
         }
 
         private int RowCount = 1;
-        private List<CBERClinicalInvestigator> _clinicalInvestigator;
-        public List<CBERClinicalInvestigator> ClinicalInvestigator
-        {
-            get {
-                return _clinicalInvestigator;
-            }
-        }
 
         public void LoadNextInspectionList()
         {
@@ -60,10 +54,10 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadCBERClinicalInvestigators()
         {
-            _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
-
             _CBERSiteData.CreatedBy = "patrick";
             _CBERSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _CBERSiteData.CreatedOn = DateTime.Now;
+            _CBERSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in 
                 CBERClinicalInvestigatorTable.FindElements(By.XPath("tbody/tr")))
@@ -97,14 +91,9 @@ namespace WebScraping.Selenium.Pages
             LoadNextInspectionList();
         }
 
-        public override void LoadContent(string NameToSearch)
-        {
-
-        }
-
         public override void SaveData()
         {
-
+            
         }
     }
 }

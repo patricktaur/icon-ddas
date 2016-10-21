@@ -32,15 +32,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-
-        private List<CIAList> _ciaList;
-
-        public List<CIAList> CorporateIntegrityAgreementList {
-            get {
-                return _ciaList;
-            }
-        }
-
         private CorporateIntegrityAgreementsListSiteData _CIASiteData;
 
         public void LoadCIAList()
@@ -49,6 +40,8 @@ namespace WebScraping.Selenium.Pages
 
             _CIASiteData.CreatedBy = "patrick";
             _CIASiteData.SiteLastUpdatedOn = DateTime.Now;
+            _CIASiteData.CreatedOn = DateTime.Now;
+            _CIASiteData.Source = driver.Url;
 
             IList<IWebElement> TRs = CIAListTable.FindElements(By.XPath("//tbody/tr"));
 
@@ -76,10 +69,6 @@ namespace WebScraping.Selenium.Pages
         public override void LoadContent()
         {
             LoadCIAList();
-        }
-        public override void LoadContent(string NameToSearch)
-        {
-
         }
 
         public override void SaveData()
