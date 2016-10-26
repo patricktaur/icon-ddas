@@ -76,7 +76,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             LoadAdministrativeActionList();
         }

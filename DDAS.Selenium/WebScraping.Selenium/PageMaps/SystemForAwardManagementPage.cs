@@ -45,8 +45,9 @@ namespace WebScraping.Selenium.Pages
                     IWebElement Result = driver.FindElement(By.Id("its_docs"));
                     return Result;
                 }
-                catch (NoSuchElementException) {
-                    return null;
+                catch(Exception)
+                {
+                    throw new Exception("Unable to get count of search result!");
                 }
             }
         }

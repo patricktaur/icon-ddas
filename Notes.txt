@@ -175,3 +175,14 @@ Entry on 5 Oct 2016
 3. Need to explore SAM site to find a way to download all records. 'Document Access' tab has some
    files which need to be investigated/looked into.
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 6 Oct 2016
+1. ClinicalInvestigatorInspectionPage: There's a downloadable zip file at http://www.fda.gov/Drugs/InformationOnDrugs/ucm135198.htm which has
+   19 thousand records and date when the records were updated.
+2. Able to download, extract the details from the text file and save into Mongo collection.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 7 Oct 2016
+1. 
+
+

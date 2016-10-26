@@ -6,26 +6,31 @@ using System;
 using DDAS.Models;
 using DDAS.API.Identity;
 using Microsoft.AspNet.Identity;
+using Utilities;
 
 namespace DDAS.API.Controllers
 {
-    [Authorize]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
         private ISearchEngine _SearchEngine;
         private ISearchSummary _SearchSummary;
         private IUnitOfWork _UOW;
+        private ILog _log;
+
+        private string DataExtractionLogFile = 
+            System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
-            IUnitOfWork uow)
+            IUnitOfWork uow, ILog log)
         {
             _SearchEngine = search;
             _SearchSummary = SearchSummary;
             _UOW = uow;
+            _log = log;
         }
 
-        //[Authorize (Roles = "User,Admin")]
+        [Authorize] //(Roles = "")]
         [Route("AddUser")]
         [HttpPost]
         public IHttpActionResult GetUser(UserDetails user)
@@ -50,20 +55,16 @@ namespace DDAS.API.Controllers
                 }
                 else
                 {
-                  
-                        um.AddToRole(IdUser.Id, user.RoleName);
-                    
+                    um.AddToRole(IdUser.Id, user.RoleName);
                 }
-
             }
             catch (Exception)
             {
             }
-            
             return Ok();
         }
 
-        //[Authorize (Roles="User")]
+        [Authorize] //(Roles="User")]
         [Route("AddRole")]
         [HttpPost]
         public IHttpActionResult AddRole(Role role)
@@ -93,18 +94,29 @@ namespace DDAS.API.Controllers
             return Ok(searchResults);
         }
 
-        //[Authorize]
+        [Authorize]
         [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
         {
             var query = new NameToSearchQuery();
             query.NameToSearch = NameToSearch;
+
+            //_log = new LogText(DataExtractionLogFile, true);
+            _log.LogStart();
+            _log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+
+            _SearchEngine.Load(query.NameToSearch);
+
+            _log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+            _log.WriteLog("=================================================================================");
+            _log.LogEnd();
+
             var SearchResults = _SearchSummary.GetSearchSummary(query);
             return Ok(SearchResults);
         }
 
-        //[Authorize]
+        [Authorize]
         [Route("GetSearchSummaryDetails")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch, string RecId,
@@ -135,6 +147,15 @@ namespace DDAS.API.Controllers
                         GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
                         query.NameToSearch));
 
+                case SiteEnum.FDAWarningLettersPage:
+                    var FDAWarningLetterDetails = _SearchSummary.
+                        GetFDAWarningLettersMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
+                        query.NameToSearch));
+
                 case SiteEnum.ERRProposalToDebarPage:
                     var ProposalToDebarDetails = _SearchSummary.
                         GetProposalToDebarPageMatch(
@@ -151,6 +172,15 @@ namespace DDAS.API.Controllers
 
                     return Ok(_SearchSummary.
                         GetStatusOfAssuranceSiteRecords(AssuranceDetails,
+                        query.NameToSearch));
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    var DisqualificationDetails = _SearchSummary.
+                        GetDisqualificationProceedingsMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfDisqualificationSiteRecords(DisqualificationDetails,
                         query.NameToSearch));
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
@@ -189,6 +219,15 @@ namespace DDAS.API.Controllers
                         GetStatusOfCIASiteRecords(CIADetails,
                         query.NameToSearch));
 
+                case SiteEnum.SystemForAwardManagementPage:
+                    var SAMDetails = _SearchSummary.
+                        GetSAMMatch(
+                        query.NameToSearch, query.RecId);
+
+                    return Ok(_SearchSummary.
+                        GetStatusOfSAMSiteRecords(SAMDetails,
+                        query.NameToSearch));
+
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     var SDNSearchDetails = _SearchSummary.GetSpeciallyDesignatedNationsMatch(
                         query.NameToSearch, query.RecId);
@@ -201,7 +240,7 @@ namespace DDAS.API.Controllers
             }
         }
         
-        //[Authorize]
+        [Authorize]
         [Route("SaveSearchResult")]
         [HttpPost]
         public IHttpActionResult SaveSearchResults(SaveSearchResult result)
@@ -234,9 +273,6 @@ namespace DDAS.API.Controllers
             public string  UserName{get;set;}
             public string pwd { get; set; }
             public string RoleName { get; set; }
-
         }
-      
-
     }
 }

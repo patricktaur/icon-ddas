@@ -73,6 +73,10 @@
       <Project>{90B7C01C-1EAA-441E-909A-6949BC6ED08C}</Project>
       <Name>WebScraping.Selenium</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DDAS.Services\DDAS.Services.csproj">
+      <Project>{B9FC373C-8E1B-49BA-A170-CF34E23CEF60}</Project>
+      <Name>DDAS.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -119,7 +119,7 @@ namespace WebScraping.Selenium.Pages
             return Names;
         }
 
-        public void LoadContent()
+        public void LoadContent(string NameToSearch)
         {
             if (!CheckSiteUpdatedDate())
             {

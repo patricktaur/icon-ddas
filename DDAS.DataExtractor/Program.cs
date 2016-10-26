@@ -1,8 +1,8 @@
-﻿
-using DDAS.Data.Mongo;
+﻿using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
+using DDAS.Services.Search;
 using System.Configuration;
 using System.util;
 using Utilities;
@@ -31,7 +31,12 @@ namespace DDAS.DataExtractor
             log.LogStart();
             log.WriteLog(System.DateTime.Now.ToString(), "Extract Data starts");
             ISearchEngine searchEngine = new SearchEngine(log, uow);
-            searchEngine.Load();
+
+            var SiteScan = new SiteScanData(uow);
+            var query = SiteScan.GetNewSearchQuery();
+             
+            searchEngine.Load(query);
+
             log.WriteLog(System.DateTime.Now.ToString(), "Extract Data ends");
             log.WriteLog("=================================================================================");
             log.LogEnd();

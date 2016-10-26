@@ -174,7 +174,7 @@ namespace WebScraping.Selenium.Pages
             return Convert.ToInt32(ANCHORs[AnchorCount - 1].Text);
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
             DownloadSDNList();
             LoadClinicalInvestigatorListAlt();

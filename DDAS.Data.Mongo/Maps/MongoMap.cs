@@ -24,7 +24,21 @@ namespace DDAS.Data.Mongo.Maps
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
+            BsonClassMap.RegisterClassMap<FDAWarningLettersSiteData>
+                (map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<ClinicalInvestigatorDisqualificationSiteData>
+                (map =>
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
@@ -60,7 +74,15 @@ namespace DDAS.Data.Mongo.Maps
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
-            BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>(map =>
+            BsonClassMap.RegisterClassMap<SystemForAwardManagementPageSiteData>
+            (map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>
+                (map =>
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);

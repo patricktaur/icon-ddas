@@ -16,6 +16,8 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _DisqualificationSiteData = 
+                new ClinicalInvestigatorDisqualificationSiteData();
             //SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
         }
 
@@ -31,14 +33,12 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadDisqualificationProceedingsList()
         {
-            _DisqualificationSiteData = new ClinicalInvestigatorDisqualificationSiteData();
-
             _DisqualificationSiteData.CreatedBy = "Patrick";
             _DisqualificationSiteData.SiteLastUpdatedOn = DateTime.Now;
             _DisqualificationSiteData.CreatedOn = DateTime.Now;
             _DisqualificationSiteData.Source = driver.Url;
 
-            int RowCount = 1;
+            int RowNumber = 1;
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -48,7 +48,7 @@ namespace WebScraping.Selenium.Pages
 
                 if (TDs.Count > 0)
                 {
-                    DisqualifiedClinicalInvestigator.RowNumber = RowCount;
+                    DisqualifiedClinicalInvestigator.RowNumber = RowNumber;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
                     DisqualifiedClinicalInvestigator.Center = TDs[1].Text;
                     DisqualifiedClinicalInvestigator.Status = TDs[2].Text;
@@ -60,7 +60,7 @@ namespace WebScraping.Selenium.Pages
 
                     _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
                         DisqualifiedClinicalInvestigator);
-                    RowCount = RowCount + 1;
+                    RowNumber += 1;
                 }
             }
         }
@@ -71,14 +71,46 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent()
+        public bool SearchTerms(string NameToSearch)
         {
-            LoadDisqualificationProceedingsList();
+            IWebElement SearchTextBox = DisqualifiedInvestigatorSearchTextBox;
+            SearchTextBox.Clear();
+            SearchTextBox.SendKeys(NameToSearch);
+
+            IWebElement SubmitButton = DisqualifiedInvestigatorSubmitButton;
+            SubmitButton.Click();
+
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
+            IWebElement Table = DisqualifiedInvestigatorCountTable;
+
+            IList<IWebElement> TRs = Table.FindElements(By.XPath("tbody/tr"));
+
+            string[] TextInLastRow = TRs[TRs.Count - 1].Text.Split(':');
+
+            if (TextInLastRow[TextInLastRow.Length - 1].Trim() == "0")
+                return false;
+
+            return true;
+        }
+
+        public override void LoadContent(string NameToSearch)
+        {
+            string [] WordsInNameToSearch = NameToSearch.Split(' ');
+
+            string Name = WordsInNameToSearch[1] + ", " + WordsInNameToSearch[0];
+
+            //for (int counter = 0; counter <= WordsInNameToSearch.Length; counter++)
+            //{
+                if (SearchTerms(Name))
+                    LoadDisqualificationProceedingsList();
+            //}
         }
 
         public override void SaveData()
         {
-            
+            _UOW.ClinicalInvestigatorDisqualificationRepository.Add
+                (_DisqualificationSiteData);   
         }
     }
 }

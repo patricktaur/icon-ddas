@@ -34,6 +34,11 @@ namespace DDAS.Models
             ExclusionDatabaseSearchRepository { get; }
         ICorporateIntegrityAgreementRepository 
             CorporateIntegrityAgreementRepository { get; }
+        IFDAWarningLettersRepository FDAWarningLettersRepository { get; }
+        IClinicalInvestigatorDisqualificationRepository
+            ClinicalInvestigatorDisqualificationRepository { get; }
+        ISystemForAwardManagementRepository 
+            SystemForAwardManagementRepository { get; }
         #endregion
 
 

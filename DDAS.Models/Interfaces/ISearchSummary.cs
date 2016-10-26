@@ -13,6 +13,8 @@ namespace DDAS.Models.Interfaces
         SearchSummary GetSearchSummary(NameToSearchQuery query);
         FDADebarPageSiteData 
             GetFDADebarPageMatch(string NameToSearch, Guid? DataId);
+        FDAWarningLettersSiteData GetFDAWarningLettersMatch(
+            string NameToSearch, Guid? DataId);
         PHSAdministrativeActionListingSiteData
             GetPHSAdministrativeSiteMatch(string NameToSearch, Guid? DataId);
         ClinicalInvestigatorInspectionSiteData
@@ -23,11 +25,15 @@ namespace DDAS.Models.Interfaces
             string NameToSearch, Guid? DataId);
         AdequateAssuranceListSiteData GetAdequateAssuranceListPageMatch(
             string NameToSearch, Guid? DataId);
+        ClinicalInvestigatorDisqualificationSiteData
+            GetDisqualificationProceedingsMatch(string NameToSearch, Guid? DataId);
         CBERClinicalInvestigatorInspectionSiteData
             GetCBERClinicalInvestigatorPageMatch(string NameToSearch, Guid? DataId);
         ExclusionDatabaseSearchPageSiteData GetExclusionDatabaseSearchPageMatch(
             string NameToSearch, Guid? DataId);
         CorporateIntegrityAgreementListSiteData GetCIAPageMatch(
+            string NameToSearch, Guid? DataId);
+        SystemForAwardManagementPageSiteData GetSAMMatch(
             string NameToSearch, Guid? DataId);
 
         bool SaveRecordStatus(SaveSearchResult Result);
@@ -38,6 +44,8 @@ namespace DDAS.Models.Interfaces
         ClinicalInvestigatorInspectionSiteData GetStatusOfClinicalSiteRecords(
             ClinicalInvestigatorInspectionSiteData ClinicalSiteData, 
             string NameToSearch);
+        FDAWarningLettersSiteData GetStatusOfFDAWarningSiteRecords(
+            FDAWarningLettersSiteData FDAWarningLetterSiteData, string NameToSearch);
         PHSAdministrativeActionListingSiteData GetStatusOfPHSSiteRecords(
             PHSAdministrativeActionListingSiteData PHSSiteData, string NameToSearch);
         
@@ -50,6 +58,11 @@ namespace DDAS.Models.Interfaces
         AdequateAssuranceListSiteData GetStatusOfAssuranceSiteRecords(
             AdequateAssuranceListSiteData AssuranceSiteData, string NameToSearch);
 
+        ClinicalInvestigatorDisqualificationSiteData
+            GetStatusOfDisqualificationSiteRecords(
+            ClinicalInvestigatorDisqualificationSiteData DisqualificationSiteData,
+            string NameToSearch);
+
         CBERClinicalInvestigatorInspectionSiteData GetStatusOfCBERSiteRecords(
             CBERClinicalInvestigatorInspectionSiteData CBERSiteData, string NameToSearch);
 
@@ -58,5 +71,8 @@ namespace DDAS.Models.Interfaces
 
         CorporateIntegrityAgreementListSiteData GetStatusOfCIASiteRecords(
             CorporateIntegrityAgreementListSiteData CIASiteData, string NameToSearch);
+
+        SystemForAwardManagementPageSiteData GetStatusOfSAMSiteRecords(
+            SystemForAwardManagementPageSiteData SAMSiteData, string NameToSearch);
     }
 }

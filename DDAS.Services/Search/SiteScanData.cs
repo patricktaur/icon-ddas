@@ -18,11 +18,20 @@ namespace DDAS.Services.Search
 
         public List<SiteScan> GetSiteScanSummary()
         {
+            //need to refactor
+
             List<SiteScan> ScanData = new List<SiteScan>();
 
             SearchQuery NewSearchQuery = GetNewSearchQuery();
 
-            foreach (SearchQuerySite Site in NewSearchQuery.SearchSites)
+            SearchQuery NewLiveSiteSearchQuery = GetNewLiveSiteSearchQuery();
+
+            List<SearchQuerySite> Sites = new List<SearchQuerySite>();
+
+            Sites.AddRange(NewSearchQuery.SearchSites);
+            Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
+
+            foreach (SearchQuerySite Site in Sites) //NewSearchQuery.SearchSites)
             {
                 var scanData = GetSiteScanData(Site.SiteEnum);
                 scanData.SiteName = Site.SiteName;
@@ -40,13 +49,20 @@ namespace DDAS.Services.Search
                 case SiteEnum.FDADebarPage : return GetFDADebarSiteScanDetails();
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return GetClinicalInevstigatorInspectionDetails();
+                    //return GetClinicalInevstigatorInspectionDetails();
+                    return GetClinicalInvestigatorSiteScanDetails();
+
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningLettersSiteScanDetails();
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarSiteScanDetails();
 
                 case SiteEnum.AdequateAssuranceListPage:
                     return GetAdequateAssuranceSiteScanDetails();
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    return GetClinicalInvestigatorDisqualificationSiteScanDetails();
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorSiteScanDetails();
@@ -59,6 +75,9 @@ namespace DDAS.Services.Search
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     return GetCorporateIntegrityAgreementSiteScanDetails();
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    return GetSystemForAwardManagementSiteScanDetails();
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return GetSpeciallyDesignatedNationsDetails();
@@ -84,8 +103,21 @@ namespace DDAS.Services.Search
 
         public SiteScan GetClinicalInvestigatorSiteScanDetails()
         {
-
             var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            SiteScan scan = new SiteScan();
+
+            scan.DataExtractedOn = SiteData.CreatedOn;
+            scan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+            scan.DataId = SiteData.RecId;
+
+            return scan;
+        }
+
+        public SiteScan GetFDAWarningLettersSiteScanDetails()
+        {
+            var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             SiteScan scan = new SiteScan();
@@ -114,6 +146,20 @@ namespace DDAS.Services.Search
         public SiteScan GetAdequateAssuranceSiteScanDetails()
         {
             var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            SiteScan scan = new SiteScan();
+
+            scan.DataExtractedOn = SiteData.CreatedOn;
+            scan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+            scan.DataId = SiteData.RecId;
+
+            return scan;
+        }
+
+        public SiteScan GetClinicalInvestigatorDisqualificationSiteScanDetails()
+        {
+            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             SiteScan scan = new SiteScan();
@@ -181,19 +227,18 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetClinicalInevstigatorInspectionDetails()
+        public SiteScan GetSystemForAwardManagementSiteScanDetails()
         {
-            var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.
-                GetAll().
+            var SiteData = _UOW.SystemForAwardManagementRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
-            SiteScan siteScan = new SiteScan();
+            SiteScan scan = new SiteScan();
 
-            siteScan.DataExtractedOn = SiteData.CreatedOn;
-            siteScan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
-            siteScan.DataId = SiteData.RecId;
+            scan.DataExtractedOn = SiteData.CreatedOn;
+            scan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+            scan.DataId = SiteData.RecId;
 
-            return siteScan;
+            return scan;
         }
 
         public SiteScan GetSpeciallyDesignatedNationsDetails()
@@ -242,9 +287,23 @@ namespace DDAS.Services.Search
 
                     new SearchQuerySite {Selected = true, SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx" },
                 }
-
             };
+        }
 
+        public SearchQuery GetNewLiveSiteSearchQuery()
+        {
+            return new SearchQuery
+            {
+                NameToSearch = "Anthony, James Michael",
+                SearchSites = new List<SearchQuerySite>
+                {
+                    new SearchQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="XXX" },
+
+                    new SearchQuerySite {Selected = true, SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="XXX" },
+
+                    new SearchQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" }
+                }
+            };
         }
 
     }

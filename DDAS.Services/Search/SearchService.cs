@@ -61,11 +61,17 @@ namespace DDAS.Services.Search
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInvestigatorMatchCount(NameToSearch, DataId);
 
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningLettersMatchCount(NameToSearch, DataId);
+
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarPageMatchCount(NameToSearch, DataId);
 
                 case SiteEnum.AdequateAssuranceListPage:
                     return GetAdequateAssuranceListPageMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    return GetDisqualifionProceedingsMatchCount(NameToSearch, DataId);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorPageMatchCount(NameToSearch, DataId);
@@ -78,6 +84,9 @@ namespace DDAS.Services.Search
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     return GetCIAPageMatchCount(NameToSearch, DataId);
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    return GetSAMMatchCount(NameToSearch, DataId);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return GetSpeciallyDesignatedNationalsMatchCount(NameToSearch, 
@@ -175,6 +184,47 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        #region FDAWarningLetters
+        
+        public string GetFDAWarningLettersMatchCount(string NameToSearch, Guid? DataId)
+        {
+            var FDASearchResult = GetFDAWarningLettersMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = FDASearchResult.FDAWarningLetterList.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+
+        public FDAWarningLettersSiteData GetFDAWarningLettersMatch(string NameToSearch,
+            Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            FDAWarningLettersSiteData FDASearchResult =
+                _UOW.FDAWarningLettersRepository.FindById(DataId);
+
+            UpdateMatchStatus(FDASearchResult.FDAWarningLetterList, NameToSearch);
+
+            var WarningLetterList = FDASearchResult.FDAWarningLetterList.Where(
+               FDAWarningList => FDAWarningList.Matched > 0).ToList();
+
+            FDASearchResult.FDAWarningLetterList = WarningLetterList;
+
+            return FDASearchResult;
+        }
+        #endregion
+
         #region ProposalToDebar
         public string GetProposalToDebarPageMatchCount(string NameToSearch, Guid? DataId)
         {
@@ -259,8 +309,55 @@ namespace DDAS.Services.Search
         }
         #endregion
 
-        #region CBERClinicalInvestigator
+        #region ClinicalInvestigatorDisqualificationProceedings
         
+        public string GetDisqualifionProceedingsMatchCount(string NameToSearch,
+            Guid? DataId)
+        {
+            var DisqualificationSearchResult = 
+                GetDisqualificationProceedingsMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = DisqualificationSearchResult.DisqualifiedInvestigatorList.
+                    Where(
+                    x => x.Matched == counter).Count();
+
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+        
+        public ClinicalInvestigatorDisqualificationSiteData
+            GetDisqualificationProceedingsMatch(string NameToSearch, Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            ClinicalInvestigatorDisqualificationSiteData DisqualificationSearchResult =
+                _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(DataId);
+
+            UpdateMatchStatus(DisqualificationSearchResult.DisqualifiedInvestigatorList,
+                NameToSearch);
+
+            var DisqualifiedList = DisqualificationSearchResult.DisqualifiedInvestigatorList.
+                Where(
+               Dlist => Dlist.Matched > 0).ToList();
+
+            DisqualificationSearchResult.DisqualifiedInvestigatorList = DisqualifiedList;
+
+            return DisqualificationSearchResult;
+        }
+        #endregion
+
+        #region CBERClinicalInvestigator
+
         public string GetCBERClinicalInvestigatorPageMatchCount(string NameToSearch,
             Guid? DataId)
         {
@@ -429,6 +526,47 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        #region SystemForAwardManagement
+
+        public string GetSAMMatchCount(string NameToSearch, Guid? DataId)
+        {
+            var SAMSearchResult = GetSAMMatch(NameToSearch, DataId);
+
+            string MatchStatus = null;
+
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = SAMSearchResult.SAMSiteData.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound != 0 && MatchStatus != null)
+                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
+                else if (MatchesFound != 0)
+                    MatchStatus = MatchesFound + ":" + counter;
+            }
+            return MatchStatus;
+        }
+
+        public SystemForAwardManagementPageSiteData GetSAMMatch(string NameToSearch,
+            Guid? DataId)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            SystemForAwardManagementPageSiteData SAMSiteSearchResult =
+                _UOW.SystemForAwardManagementRepository.FindById(DataId);
+
+            UpdateMatchStatus(SAMSiteSearchResult.SAMSiteData, NameToSearch);
+
+            var SAMList = SAMSiteSearchResult.SAMSiteData.Where(
+               SAMDataList => SAMDataList.Matched > 0).ToList();
+
+            SAMSiteSearchResult.SAMSiteData = SAMList;
+
+            return SAMSiteSearchResult;
+        }
+        #endregion
+
         #region SpeciallyDesignatedNations
 
         public string GetSpeciallyDesignatedNationalsMatchCount(string NameToSearch,
@@ -547,6 +685,31 @@ namespace DDAS.Services.Search
             return ClinicalSiteData;
         }
 
+        public FDAWarningLettersSiteData GetStatusOfFDAWarningSiteRecords(
+            FDAWarningLettersSiteData FDAWarningLetterSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.ERRProposalToDebarPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return FDAWarningLetterSiteData;
+
+            foreach (FDAWarningLetter FDAWarningLetterData in
+                FDAWarningLetterSiteData.FDAWarningLetterList)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (FDAWarningLetterData.RowNumber == SearchDetails.RowNumber)
+                        FDAWarningLetterData.Status = SearchDetails.Status;
+                }
+            }
+            return FDAWarningLetterSiteData;
+        }
+
         public ERRProposalToDebarPageSiteData GetStatusOfProposalToDebarSiteRecords(
             ERRProposalToDebarPageSiteData ProposalToDebarSiteData, string NameToSearch)
         {
@@ -595,6 +758,33 @@ namespace DDAS.Services.Search
                 }
             }
             return AssuranceSiteData;
+        }
+
+        public ClinicalInvestigatorDisqualificationSiteData 
+            GetStatusOfDisqualificationSiteRecords(
+            ClinicalInvestigatorDisqualificationSiteData DisqualificationSiteData,
+            string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.AdequateAssuranceListPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return DisqualificationSiteData;
+
+            foreach (DisqualifiedInvestigator DisqualifiedList 
+                in DisqualificationSiteData.DisqualifiedInvestigatorList)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (DisqualifiedList.RowNumber == SearchDetails.RowNumber)
+                        DisqualifiedList.Status = SearchDetails.Status;
+                }
+            }
+            return DisqualificationSiteData;
         }
 
         public CBERClinicalInvestigatorInspectionSiteData GetStatusOfCBERSiteRecords(
@@ -695,6 +885,30 @@ namespace DDAS.Services.Search
                 }
             }
             return CIASiteData;
+        }
+
+        public SystemForAwardManagementPageSiteData GetStatusOfSAMSiteRecords(
+            SystemForAwardManagementPageSiteData SAMSiteData, string NameToSearch)
+        {
+            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
+                Where(x => x.siteEnum == SiteEnum.SystemForAwardManagementPage
+                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
+                OrderByDescending(y => y.CreatedOn).
+                FirstOrDefault();
+
+            if (SavedSearchResult == null)
+                return SAMSiteData;
+
+            foreach (SystemForAwardManagement SAMData in SAMSiteData.SAMSiteData)
+            {
+                foreach (SaveSearchDetails SearchDetails in
+                    SavedSearchResult.saveSearchDetails)
+                {
+                    if (SAMData.RowNumber == SearchDetails.RowNumber)
+                        SAMData.Status = SearchDetails.Status;
+                }
+            }
+            return SAMSiteData;
         }
 
         public SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(

@@ -97,15 +97,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
-            //refactor to enter search names
-            //LoadFDAWarningLetters();
+            if (SearchTerms(NameToSearch))
+                LoadFDAWarningLetters();
         }
 
         public override void SaveData()
         {
-
+            _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
         }
     }
 }

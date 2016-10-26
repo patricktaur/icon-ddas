@@ -22,6 +22,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             //_db.GetCollection<TEntity>().Save(entity);
             return _db.GetCollection<User>(typeof(User).Name).InsertOneAsync(entity);
         }
+
         public User FindByUserName(string UserName)
         {
             var filter = Builders<User>.Filter.Eq("UserName", UserName);

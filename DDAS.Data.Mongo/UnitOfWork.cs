@@ -38,6 +38,11 @@ namespace DDAS.Data.Mongo
             _ExclusionDatabaseSearchRepository;
         private ICorporateIntegrityAgreementRepository
             _CorporateIntegrityAgreemnetRepository;
+        private IFDAWarningLettersRepository _FDAWarningLettersRepository;
+        private IClinicalInvestigatorDisqualificationRepository
+            _ClinicalInvestigatorDisqualificationRepository;
+        private ISystemForAwardManagementRepository
+            _SystemForAwardManagementRepository;
 
         private IRoleRepository _RoleRepository;
         private IUserRepository _UserRepository;
@@ -184,6 +189,36 @@ namespace DDAS.Data.Mongo
                 return _CorporateIntegrityAgreemnetRepository ??
                     (_CorporateIntegrityAgreemnetRepository =
                     new CorporateIntegrityAgreementRepository(_db));
+            }
+        }
+
+        public IFDAWarningLettersRepository FDAWarningLettersRepository
+        {
+            get
+            {
+                return _FDAWarningLettersRepository ??
+                    (_FDAWarningLettersRepository = new FDAWarningLettersRepository(_db));
+            }
+        }
+
+        public IClinicalInvestigatorDisqualificationRepository 
+            ClinicalInvestigatorDisqualificationRepository
+        {
+            get
+            {
+                return _ClinicalInvestigatorDisqualificationRepository ??
+                    (_ClinicalInvestigatorDisqualificationRepository = 
+                    new ClinicalInvestigatorDisqualificationRepository(_db));
+            }
+        }
+
+        public ISystemForAwardManagementRepository SystemForAwardManagementRepository
+        {
+            get
+            {
+                return _SystemForAwardManagementRepository ??
+                    (_SystemForAwardManagementRepository = new 
+                    SystemForAwardManagementRepository(_db));
             }
         }
 

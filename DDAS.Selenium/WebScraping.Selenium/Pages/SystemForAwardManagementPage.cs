@@ -45,7 +45,11 @@ namespace WebScraping.Selenium.Pages
             _SAMSiteData = new SystemForAwardManagementPageSiteData();
 
             _SAMSiteData.CreatedBy = "Patrick";
+            _SAMSiteData.CreatedOn = DateTime.Now;
             _SAMSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _SAMSiteData.Source = driver.Url;
+
+            int RowNumber = 1;
 
             IList<IWebElement> TableThatContainsRecords =
                 SAMCheckResult.FindElements
@@ -60,6 +64,7 @@ namespace WebScraping.Selenium.Pages
                 string TempContent = RecordsTable.Text.Replace("\n", "");
                 string[] ContentOfEachRecord = TempContent.Split('\r');
 
+                SAMDataList.RowNumber = RowNumber;
                 SAMDataList.Entity = ContentOfEachRecord[1];
 
                 for (int counter = 2; counter < ContentOfEachRecord.Length; counter++)
@@ -126,6 +131,7 @@ namespace WebScraping.Selenium.Pages
                     }
                 }
                 _SAMSiteData.SAMSiteData.Add(SAMDataList);
+                RowNumber += 1;
             }
         }
 
@@ -161,18 +167,13 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent()
+        public override void LoadContent(string NameToSearch)
         {
-            
-        }
+            //string[] Name = NameToSearch.Split(' ');
 
-        public void LoadContent(string NameToSearch)
-        {
-            string[] Name = NameToSearch.Split(' ');
-
-            for (int counter = 0; counter < Name.Length; counter++)
-            {
-                if (SearchTerms(Name[counter]))
+            //for (int counter = 0; counter < Name.Length; counter++)
+            //{
+                if (SearchTerms(NameToSearch))
                 {
                     while (CheckForAnchorTagNext())
                     {
@@ -182,9 +183,9 @@ namespace WebScraping.Selenium.Pages
                     }
                     LoadSAMList();
                 }
-                else
-                    continue;
-            }
+                //else
+                //    continue;
+            //}
         }
 
         public bool CheckForAnchorTagNext()
@@ -216,7 +217,7 @@ namespace WebScraping.Selenium.Pages
 
         public override void SaveData()
         {
-
+            _UOW.SystemForAwardManagementRepository.Add(_SAMSiteData);
         }
     }
 }
