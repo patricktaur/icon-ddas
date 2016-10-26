@@ -1,0 +1,54 @@
+<div>
+    <search-detail 
+    [ListItems]="DebarredPersonsList"
+    [(isChecked)]="isChecked"
+    [SiteData] = "siteData"
+    >
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+
+                        <th>
+                            <input type="checkbox" [(ngModel)]="isChecked" />
+                        </th>
+                        <th>Status</th>
+                        <th>Matched</th>
+                        <th>Row Number</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Middle Name </th>
+                        <th>Debarment Until</th>
+                        <th>No PHS Advisory Until</th>
+                        <th>Certification Of Work Until</th>
+                        <th>Supervision Until </th>
+                        <th>Retraction Of Article</th>
+                        <th>Correction Of Article</th>
+                        <th>Memo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let DebarredPerson of DebarredPersonsList">
+                        <td>
+                            <div align="center"><input type="checkbox" [(ngModel)]="DebarredPerson.Selected">
+                            </div>
+                        </td>
+                        <td>{{DebarredPerson.Status}}</td>
+                        <td>{{DebarredPerson.Matched}}</td>
+                        <td>{{DebarredPerson.RowNumber}}</td>
+                        <td>{{DebarredPerson.LastName}}</td>
+                        <td>{{DebarredPerson.FirstName}}</td>
+                        <td>{{DebarredPerson.MiddleName}}</td>
+                        <td>{{DebarredPerson.DebarmentUntil}}</td>
+                        <td>{{DebarredPerson.NoPHSAdvisoryUntil}}</td>
+                        <td>{{DebarredPerson.CertificationOfWorkUntil}}</td>
+                        <td>{{DebarredPerson.SupervisionUntil}}</td>
+                        <td>{{DebarredPerson.RetractionOfArticle}}</td>
+                        <td>{{DebarredPerson.CorrectionOfArticle}}</td>
+                        <td>{{DebarredPerson.Memo}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </search-detail>
+</div>

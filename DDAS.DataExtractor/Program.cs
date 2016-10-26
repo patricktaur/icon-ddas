@@ -3,8 +3,7 @@ using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
-using System.Configuration;
-using System.util;
+using System;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
 
@@ -29,7 +28,7 @@ namespace DDAS.DataExtractor
             ILog log = new LogText(DataExtractionLogFile, true);
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             log.LogStart();
-            log.WriteLog(System.DateTime.Now.ToString(), "Extract Data starts");
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
             ISearchEngine searchEngine = new SearchEngine(log, uow);
 
             var SiteScan = new SiteScanData(uow);
@@ -37,10 +36,11 @@ namespace DDAS.DataExtractor
              
             searchEngine.Load(query);
 
-            log.WriteLog(System.DateTime.Now.ToString(), "Extract Data ends");
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             log.WriteLog("=================================================================================");
             log.LogEnd();
-           
+            Environment.Exit(0);
+
         }
     }
 }

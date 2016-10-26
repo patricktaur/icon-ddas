@@ -1,9 +1,15 @@
 12Sep2016
 Parick
-1. Web site : Angular -upgrade to rc6
+1. Mapping base class in Mongo
+2. Angular
+	Display Error Messages
+	Details Module under Search
+3. Move html from FDAPage to .html
+4. Routing - Page not found
+
 2. Generating PDF with Angular ?
 3. Search Page enhancements
-4. Routing - Page not found
+
 5. Routing erros
 6. Angular - moving to production site
 
@@ -14,14 +20,24 @@ Pradeep
 	b. store content  
 	c. Index content
 3. Match Location: improve - page no, line required.
+4. Selenium - Dot Net Core
+5. SiteLastUpdatedOn - logic while reading site data
+
+22Oct2016
+1.Extractor:
+Folder: Development/Temp - ??  move foder path to web.config, create foder if not available.
+
+2. API
+	Accounts Controller - move all user code from SearchController
 
 Divya - Web Site
+======================
 1. Angular Accordion
 2. Login Page
 3. Reports
 4. Previous Searches - view
-<<<<<<< HEAD
-=======
+
+5. Use Enum values: this.siteData.SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage;
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 13 Sep 2016

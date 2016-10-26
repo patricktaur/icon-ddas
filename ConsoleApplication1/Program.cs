@@ -31,7 +31,7 @@ namespace ConsoleApplication1
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
 
             ISearchEngine engine = new SearchEngine(log, uow );
-            var sut = new SearchService(uow, engine);
+            var sut = new SearchService(uow);
 
 
             var query = new NameToSearchQuery();

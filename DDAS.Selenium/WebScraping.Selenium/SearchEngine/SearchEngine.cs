@@ -13,7 +13,7 @@ using DDAS.Services.Search;
 
 namespace WebScraping.Selenium.SearchEngine
 {
-    public class SearchEngine : ISearchEngine, IDisposable
+    public class SearchEngine  : ISearchEngine, IDisposable
     {
         private IWebDriver _Driver;
         private string _DownloadFolder;

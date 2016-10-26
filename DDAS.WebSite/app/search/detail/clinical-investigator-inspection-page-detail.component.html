@@ -1,0 +1,58 @@
+<div>
+    <search-detail 
+    [ListItems]="DebarredPersonsList"
+    [(isChecked)]="isChecked"
+    [SiteData] = "siteData"
+    >
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+
+                        <th>
+                            <input type="checkbox" [(ngModel)]="isChecked" />
+                        </th>
+                        <th>Status</th> 
+                        <th>Matched</th>
+                        <th>Row Number</th>
+                        <th>Id Number</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Country </th>
+                        <th>Zipcode</th>
+                        <th>InspectionDate</th>
+                        <th>Type</th>
+                        <th>Class</th>
+                        <th>DefTypes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let DebarredPerson of DebarredPersonsList">
+                        <td>
+                            <div align="center"><input type="checkbox" [(ngModel)]="DebarredPerson.Selected">
+                            </div>
+                        </td>
+                        <td>{{DebarredPerson.Status}}</td> 
+                        <td>{{DebarredPerson.Matched}}</td>
+                        <td>{{DebarredPerson.RowNumber}}</td>
+                        <td>{{DebarredPerson.IdNumber}}</td>
+                        <td>{{DebarredPerson.Name}}</td>
+                        <td>{{DebarredPerson.Location}}</td>
+                        <td>{{DebarredPerson.Address}}</td>
+                        <td>{{DebarredPerson.City}}</td>
+                        <td>{{DebarredPerson.State}}</td>
+                        <td>{{DebarredPerson.Country}}</td>
+                        <td>{{DebarredPerson.Zipcode}}</td>
+                        <td>{{DebarredPerson.InspectionDate}}</td>
+                        <td>{{DebarredPerson.Type}}</td>
+                        <td>{{DebarredPerson.Class}}</td>
+                        <td>{{DebarredPerson.DefTypes}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </search-detail>
+</div>

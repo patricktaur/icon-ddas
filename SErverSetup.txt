@@ -1,0 +1,9 @@
+Files/Project Path: \\192.168.137.1\DDAS
+
+ 
+
+In Clarity (using ClarityTech Network):  URL:  http://192.168.137.1/demoddas
+
+ 
+
+Outside Clarity (or using ClarityACT):  URL:  https://server.claritytechnologies.com/demoddas
