@@ -17,21 +17,25 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string CreatedBy { get; set; }
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
-        public Guid RecId { get; set; }
+        public Guid? RecId { get; set; }
 
         public DateTime SiteLastUpdatedOn { get; set; }
-        public ICollection<AdequateAssuranceList> AdequateAssurances { get; set; }
+        public List<AdequateAssuranceList> AdequateAssurances { get; set; }
     }
 
-    public class AdequateAssuranceList
+    public class AdequateAssuranceList : SiteDataItemBase
     {
-        public int Matched { get; set; }
-        public int RowNumber { get; set; }
         public string NameAndAddress { get; set; }
         public string Center { get; set; }
         public string Type { get; set; }
         public string ActionDate { get; set; }
         public string Comments { get; set; }
+
+        public override string FullName {
+            get {
+                return NameAndAddress;
+            }
+        }
     }
 
 

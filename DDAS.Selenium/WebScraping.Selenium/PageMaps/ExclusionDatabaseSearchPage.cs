@@ -54,8 +54,25 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement SearchAgain = driver.FindElement(By.Id("ctl00_cpExclusions_lbGridBackToSearch"));
+                IWebElement SearchAgain = driver.FindElement(
+                    By.Id("ctl00_cpExclusions_lbGridBackToSearch"));
                 return SearchAgain;
+            }
+        }
+
+        public IWebElement ExclusionDatabaseAnchorToDownloadCSV
+        {
+            get
+            {
+                IList<IWebElement> Anchors = driver.FindElements(By.XPath("//a"));
+
+                foreach(IWebElement Anchor in Anchors)
+                {
+                    if (Anchor.Text.ToLower().Contains(
+                        "updated leie database"))
+                        return Anchor;
+                }
+                throw new Exception("Could not download LEIE database file!");
             }
         }
     }

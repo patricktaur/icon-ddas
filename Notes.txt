@@ -23,14 +23,21 @@ Pradeep
 4. Selenium - Dot Net Core
 5. SiteLastUpdatedOn - logic while reading site data
 
+22Oct2016
+1.Extractor:
+Folder: Development/Temp - ??  move foder path to web.config, create foder if not available.
+
+2. API
+	Accounts Controller - move all user code from SearchController
 
 Divya - Web Site
+======================
 1. Angular Accordion
 2. Login Page
 3. Reports
 4. Previous Searches - view
-<<<<<<< HEAD
-=======
+
+5. Use Enum values: this.siteData.SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage;
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 13 Sep 2016
@@ -178,8 +185,9 @@ Entry on 5 Oct 2016
 1. ClinicalInvestigatorInspectionPage has been included into the serives, to return match status and the
    fields/properties that match the NameToSearch.
 2. Observation: This site (CII) is providing only 200 records max. when follwed the method
-   Advanced Search --> Select First Name drop down value "nto equal to" --> enter the first name "zzzzz".
+   Advanced Search --> Select First Name drop down value "not equal to" --> enter the first name "zzzzz".
    Site gives 200 records when searched for the name "James" without using advanced search.
    Need to cross check this with clients.
 3. Need to explore SAM site to find a way to download all records. 'Document Access' tab has some
-   files which need to be invetigated/looked into.
+   files which need to be investigated/looked into.
+

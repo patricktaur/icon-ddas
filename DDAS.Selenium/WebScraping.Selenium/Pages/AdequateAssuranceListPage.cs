@@ -15,7 +15,8 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class AdequateAssuranceListPage : BaseSearchPage
     {
-       
+        private IUnitOfWork _UOW;
+
         public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
             _UOW = uow;
@@ -32,22 +33,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private List<AdequateAssuranceList> _adequateAssuranceList;
-        private IUnitOfWork _UOW;
-
-        public List<AdequateAssuranceList> AdequateAssuranceIvestigatorList {
-            get {
-                return _adequateAssuranceList;
-            }
-        }
-
         public override SiteEnum SiteName {
             get {
                 return SiteEnum.AdequateAssuranceListPage;
             }
         }
 
-     
         public override void LoadContent()
         {
             LoadAdequateAssuranceInvestigators();

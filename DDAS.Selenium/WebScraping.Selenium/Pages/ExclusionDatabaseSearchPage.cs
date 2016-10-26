@@ -5,6 +5,8 @@ using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using System.Net;
+using System.IO;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -25,14 +27,12 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                return @"http://exclusions.oig.hhs.gov";
+                return @"https://oig.hhs.gov/exclusions/exclusions_list.asp";
             }
         }
 
-        public override SiteEnum SiteName
-        {
-            get
-            {
+        public override SiteEnum SiteName {
+            get {
                 return SiteEnum.ExclusionDatabaseSearchPage;
             }
         }
@@ -70,6 +70,8 @@ namespace WebScraping.Selenium.Pages
 
             _exclusionSearchSiteData.CreatedBy = "Patrick";
             _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _exclusionSearchSiteData.CreatedOn = DateTime.Now;
+            _exclusionSearchSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in 
                 ExclusionDatabaseSearchTable.FindElements(By.XPath("tbody/tr")))
@@ -85,9 +87,9 @@ namespace WebScraping.Selenium.Pages
                     NewExclusionsList.MiddleName = TDs[2].Text;
                     NewExclusionsList.General = TDs[3].Text;
                     NewExclusionsList.Specialty = TDs[4].Text;
-                    NewExclusionsList.Exclusion = TDs[5].Text;
-                    NewExclusionsList.Waiver = TDs[6].Text;
-                    NewExclusionsList.SSNorEIN = TDs[7].Text;
+                    NewExclusionsList.ExclusionType = TDs[5].Text;
+                    //NewExclusionsList.WaiverDate = TDs[6].Text;
+                    //NewExclusionsList.SSNorEIN = TDs[7].Text;
 
                     _exclusionSearchSiteData.ExclusionSearchList.Add
                         (NewExclusionsList);
@@ -99,11 +101,84 @@ namespace WebScraping.Selenium.Pages
         {
             //refactor, add code to enter search names
             //LoadExclusionsDatabaseList();
+
+            string FilePath = DownloadExclusionList();
+            LoadExclusionDatabaseListFromCSV(FilePath);
+        }
+
+        public void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
+        {
+            string[] AllRecords = File.ReadAllLines(CSVFilePath);
+
+            _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
+
+            _exclusionSearchSiteData.CreatedBy = "Patrick";
+            _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
+            _exclusionSearchSiteData.CreatedOn = DateTime.Now;
+            _exclusionSearchSiteData.Source = driver.Url;
+
+            int RowNumber = 1;
+            foreach (string Record in AllRecords)
+            {
+                string CurrentRecord = Record.Replace("\\", "").Replace("\"", "");
+
+                string[] RecordDetails = CurrentRecord.Split(',');
+
+                if (RecordDetails[0] == null && RecordDetails[1] == null ||
+                    RecordDetails[0].ToLower().Contains("lastname"))
+                    continue;
+
+                if (RecordDetails[0].Length > 1)
+                {
+                    var ExclusionList = new ExclusionDatabaseSearchList();
+
+                    ExclusionList.RowNumber = RowNumber;
+                    ExclusionList.LastName = RecordDetails[0];
+                    ExclusionList.FirstName = RecordDetails[1];
+                    ExclusionList.MiddleName = RecordDetails[2];
+                    //ExclusionList.BusinessName = RecordDetails[3];
+                    ExclusionList.General = RecordDetails[4];
+                    ExclusionList.Specialty = RecordDetails[5];
+                    //ExclusionList.UPIN = RecordDetails[6];
+                    //ExclusionList.NPI = RecordDetails[7];
+                    //ExclusionList.DOB = RecordDetails[8];
+                    //ExclusionList.Address = RecordDetails[9];
+                    //ExclusionList.City = RecordDetails[10];
+                    //ExclusionList.State = RecordDetails[11];
+                    //ExclusionList.Zip = RecordDetails[12];
+                    ExclusionList.ExclusionType = RecordDetails[13];
+                    //ExclusionList.ExclusionDate = RecordDetails[14];
+                    //ExclusionList.WaiverDate = RecordDetails[16];
+                    //ExclusionList.WaiverState = RecordDetails[17];
+
+                    _exclusionSearchSiteData.ExclusionSearchList.Add(
+                        ExclusionList);
+                    RowNumber += 1;
+                }
+            }
+        }
+
+        public string DownloadExclusionList()
+        {
+            string fileName = "c:\\development\\temp\\ExclusionDatabaseList.csv";
+            // Create a new WebClient instance.
+            WebClient myWebClient = new WebClient();
+            // Concatenate the domain with the Web resource filename.
+            string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
+                GetAttribute("href");
+
+            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n",
+                fileName, myStringWebResource);
+            // Download the Web resource and save it into the current filesystem folder.
+            myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            return fileName;
         }
 
         public override void SaveData()
         {
-
+            _UOW.ExclusionDatabaseSearchRepository.Add(
+                _exclusionSearchSiteData);
         }
     }
 }

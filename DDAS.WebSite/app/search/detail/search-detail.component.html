@@ -1,0 +1,41 @@
+ <div class="">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="container-fluid panel-container">
+                <div class="row">
+                    <div class="col-md-8 text-left">
+                        <h3 class="panel-title">
+                            <div class="checkbox" style="display:inline">
+                                <label>
+                                    {{_SiteData.SiteName}} :{{_SiteData.NameToSearch}}
+                                       </label>
+                 
+                            </div>
+                            
+                        </h3>
+                    </div>
+                    <div class="col-md-4 panel-title pull-right text-right"><h3 class="panel-title">Last saved at: {{_SiteData.CreatedOn}} </h3></div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+           
+            <ng-content></ng-content>
+
+            <div align="center">
+                <button type="button" class="btn btn-primary" (click)="markApproved()">Approve</button>
+                <button type="button" class="btn btn-danger" (click)="markRejected()">Reject</button>
+                <button type="button" class="btn btn-danger" (click)="clearSelected()">Clear</button>
+                <button type="button" class="btn btn-success" (click)="saveMarkedResults()">Save</button>
+                <button type="button" class="btn btn-default" (click)="goBack()">Back</button>
+            </div>
+        </div>
+        <div class="panel-footer">
+                <br/>
+               
+        </div>
+         <br/>
+    </div>
+     <br/>
+  </div>

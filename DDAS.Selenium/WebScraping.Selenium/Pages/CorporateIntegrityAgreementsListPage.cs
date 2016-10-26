@@ -10,7 +10,6 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class CorporateIntegrityAgreementsListPage : BaseSearchPage
     {
-
         private IUnitOfWork _UOW;
 
         public CorporateIntegrityAgreementsListPage(IWebDriver driver, IUnitOfWork uow)
@@ -32,11 +31,11 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private CorporateIntegrityAgreementsListSiteData _CIASiteData;
+        private CorporateIntegrityAgreementListSiteData _CIASiteData;
 
         public void LoadCIAList()
         {
-            _CIASiteData = new CorporateIntegrityAgreementsListSiteData();
+            _CIASiteData = new CorporateIntegrityAgreementListSiteData();
 
             _CIASiteData.CreatedBy = "patrick";
             _CIASiteData.SiteLastUpdatedOn = DateTime.Now;
@@ -73,7 +72,7 @@ namespace WebScraping.Selenium.Pages
 
         public override void SaveData()
         {
-
+            _UOW.CorporateIntegrityAgreementRepository.Add(_CIASiteData);
         }
     }
 }
