@@ -153,11 +153,11 @@ namespace WebScraping.Selenium.SearchEngine
                 if (_Driver == null)
                 {
                     
-                    PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
-                    service.IgnoreSslErrors = true;
-                    service.SslProtocol = "any";
+                    //PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+                    //service.IgnoreSslErrors = true;
+                    //service.SslProtocol = "any";
 
-                    _Driver = new PhantomJSDriver(service);
+                    _Driver = new PhantomJSDriver();
 
                     //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
 

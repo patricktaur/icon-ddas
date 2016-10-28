@@ -107,8 +107,10 @@ namespace DDAS.Services.Search
 
             for (int counter = 1; counter <= Name.Length; counter++)
             {
-                int MatchesFound = FDASearchResult.DebarredPersons.Where(
+                int MatchesFound = FDASearchResult.Where(
                     x => x.Matched == counter).Count();
+                //if (MatchesFound == Name.Length && counter == Name.Length)
+                //    MatchStatus = MatchesFound + "";
                 if (MatchesFound != 0 && MatchStatus != null)
                     MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
                 else if (MatchesFound != 0)
@@ -117,23 +119,30 @@ namespace DDAS.Services.Search
             return MatchStatus;
         }
 
-        public FDADebarPageSiteData GetFDADebarPageMatch(string NameToSearch, 
+        public List<DebarredPerson> GetFDADebarPageMatch(string NameToSearch, 
             Guid? DataId)
         {
             string[] Name = NameToSearch.Split(' ');
 
             FDADebarPageSiteData FDASearchResult = 
                 _UOW.FDADebarPageRepository.FindById(DataId);
-
-            ////Patrick-4       
+    
             UpdateMatchStatus(FDASearchResult.DebarredPersons, NameToSearch);
 
             var DebarList = FDASearchResult.DebarredPersons.Where(
                debarredList => debarredList.Matched > 0).ToList();
 
-            FDASearchResult.DebarredPersons = DebarList;
+            FDADebarPageMatchRecords FDAMatchRecords = new FDADebarPageMatchRecords();
+            FDAMatchRecords.FDADebarMatchedRecords = DebarList;
 
-            return FDASearchResult;
+            var ComplianceFormData = new ComplianceFormService(_UOW);
+            ComplianceFormData.CreateComplianceForm(NameToSearch, "India", "abc11",
+                "111/22A", "Bangalore");
+
+            FDAMatchRecords.ComplianceFormId = 
+                ComplianceFormData.GetComplianceFormId(NameToSearch);
+
+            return FDAMatchRecords.FDADebarMatchedRecords;
         }
         #endregion
 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
@@ -11,14 +7,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public int Matched { get; set; }
         public int RowNumber { get; set; }
         public abstract string FullName { get;  }
-        //public bool Selected { get; set; }
         public string Status { get; set; }
-    }
-
-    public interface ISiteDataItemBase
-    {
-         int Matched { get; set; }
-         int RowNumber { get; set; }
-         string FullName { get; }
+        public string Issues { get; set; }
+        public DateTime VerifiedOn { get; set; }
+        public int IssueNumber { get; set; }
+        public int FullMatchCount { get; set; }
+        public int PartialMatchCount { get; set; }
+        public bool IssuesIdentified { get; set; }
+        public Guid? ComplianceFormId { get; set; }
     }
 }

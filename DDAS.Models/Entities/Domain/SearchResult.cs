@@ -120,8 +120,35 @@ namespace DDAS.Models.Entities.Domain
     }
     #endregion
 
-    #region Save Results
+    #region ComplianceFormDetails
     
+    public class ComplianceForm
+    {
+        public Guid? RecId { get; set; }
+        public string SponsorProtocolNumber { get; set; }
+        public string Country { get; set; }
+        public string NameToSearch { get; set; }
+        public string Address { get; set; }
+        public string ProjectNumber { get; set; }
+        public DateTime SearchStartedOn { get; set; }
+        public DateTime SearchClosedOn { get; set; }
+        //public List<SitesIncludedInSearch> SiteDetails { get; set; }
+    }
+
+    public class SitesIncludedInSearch
+    {
+        public string SiteName { get; set; }
+        public string SiteUrl { get; set; }
+        public DateTime ScannedOn { get; set; }
+        public int FullMatchCount { get; set; }
+        public int PartialMatchCount { get; set; }
+        public bool IssuesIdentified { get; set; }
+    }
+    #endregion
+
+
+    #region Save Results
+
     public class SaveSearchResult
     {
         public string CreatedBy { get; set; }

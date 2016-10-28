@@ -35,16 +35,16 @@ namespace WebScraping
                 uow.FDADebarPageRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
-            var result = test.GetFDADebarPageMatch("Cullinane Andrew R", FDASiteData.RecId);
-            Console.WriteLine("Records matching single word:");
-            Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 1).Count());
-            Console.WriteLine("Records matching two word:");
-            Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 2).Count());
-            Console.WriteLine("Records matching three words:");
-            Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 3).Count());
-            Console.WriteLine("All Records:");
-            Console.WriteLine(result.DebarredPersons.ToList());
-            Console.ReadLine();
+            //var result = test.GetFDADebarPageMatch("Cullinane Andrew R", FDASiteData.RecId);
+            //Console.WriteLine("Records matching single word:");
+            //Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 1).Count());
+            //Console.WriteLine("Records matching two word:");
+            //Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 2).Count());
+            //Console.WriteLine("Records matching three words:");
+            //Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 3).Count());
+            //Console.WriteLine("All Records:");
+            //Console.WriteLine(result.DebarredPersons.ToList());
+            //Console.ReadLine();
         }
 
         public void TestClinicalInvestigator()

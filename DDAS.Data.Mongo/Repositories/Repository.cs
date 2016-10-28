@@ -44,10 +44,6 @@ namespace DDAS.Data.Mongo.Repositories
             var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
             var entity = collection.Find(filter).FirstOrDefault();
 
-
-            //_db.GetCollection<TEntity>(typeof(TEntity).Name).Find(new { _id = id });
-
-            //return _db.GetCollection<TEntity>().FindOne(new { _id = id }); ;
             return entity;
         }
 
@@ -63,18 +59,6 @@ namespace DDAS.Data.Mongo.Repositories
 
         public List<TEntity> GetAll()
         {
-            /*
-            var collection = _db.GetCollection<TEntity>();
-            
-            var obj = _db.GetCollection<TEntity>().AsQueryable();
-            var obj1 = obj.ToList();
-
-            foreach(TEntity xyz  in obj){
-                //Console.WriteLine(xyz.CreatedBy);
-
-            }
-            return _db.GetCollection<TEntity>().AsQueryable().ToList();
-            */
             var collections = _db.GetCollection<TEntity>(typeof(TEntity).Name);
             var documents = collections.Find(_ => true).ToList();
             return documents;

@@ -83,6 +83,7 @@
     <Compile Include="Repository\Domain\SiteData\ICBERClinicalInvestigatorInspectionRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorDisqualificationRespository.cs" />
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionListRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IComplianceForm.cs" />
     <Compile Include="Repository\Domain\SiteData\ICorporateIntegrityAgreementRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IERRProposalToDebarRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IExclusionDatabaseSearchRepository.cs" />

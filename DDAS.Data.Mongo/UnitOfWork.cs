@@ -12,6 +12,7 @@ using DDAS.Data.Mongo.Repositories.SiteData;
 using MongoDB.Bson.Serialization;
 using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Driver;
+using DDAS.Data.Mongo.Repositories;
 
 namespace DDAS.Data.Mongo
 {
@@ -43,6 +44,7 @@ namespace DDAS.Data.Mongo
             _ClinicalInvestigatorDisqualificationRepository;
         private ISystemForAwardManagementRepository
             _SystemForAwardManagementRepository;
+        private IComplianceFormRepository _ComplianceFormRepository;
 
         private IRoleRepository _RoleRepository;
         private IUserRepository _UserRepository;
@@ -219,6 +221,15 @@ namespace DDAS.Data.Mongo
                 return _SystemForAwardManagementRepository ??
                     (_SystemForAwardManagementRepository = new 
                     SystemForAwardManagementRepository(_db));
+            }
+        }
+
+        public IComplianceFormRepository ComplianceFormRepository
+        {
+            get
+            {
+                return _ComplianceFormRepository ??
+                    (_ComplianceFormRepository = new ComplianceFormRepository(_db));
             }
         }
 

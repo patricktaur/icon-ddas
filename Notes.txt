@@ -198,7 +198,15 @@ Entry on 6 Oct 2016
 2. Able to download, extract the details from the text file and save into Mongo collection.
 
 -----------------------------------------------------------------------------------------------------------
-Entry on 7 Oct 2016
-1. 
+Entry on 24 Oct 2016
+1. Working on FDAWarningLetters, which is a live site, to extract data and save into mongo.
+2. Needed to call the load function from the API rather than the extractor which is the case for all
+   the database/scannned sites.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 25 Oct 2016
+1. Live Site Search is completed for three site - FDAWarningLetters, Disqualificationproceedings and
+   SAM site.
+2. Need to have proper error handling machanism.
 
 

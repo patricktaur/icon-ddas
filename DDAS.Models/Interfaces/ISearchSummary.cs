@@ -11,8 +11,8 @@ namespace DDAS.Models.Interfaces
     public interface ISearchSummary
     {
         SearchSummary GetSearchSummary(NameToSearchQuery query);
-        FDADebarPageSiteData 
-            GetFDADebarPageMatch(string NameToSearch, Guid? DataId);
+        //FDADebarPageSiteData 
+        List<DebarredPerson> GetFDADebarPageMatch(string NameToSearch, Guid? DataId);
         FDAWarningLettersSiteData GetFDAWarningLettersMatch(
             string NameToSearch, Guid? DataId);
         PHSAdministrativeActionListingSiteData

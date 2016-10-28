@@ -103,14 +103,14 @@ namespace DDAS.API.Controllers
             query.NameToSearch = NameToSearch;
 
             //_log = new LogText(DataExtractionLogFile, true);
-            _log.LogStart();
-            _log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+            //_log.LogStart();
+            //_log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 
-            _SearchEngine.Load(query.NameToSearch);
+            //_SearchEngine.Load(query.NameToSearch);
 
-            _log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-            _log.WriteLog("=================================================================================");
-            _log.LogEnd();
+            //_log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+            //_log.WriteLog("=================================================================================");
+            //_log.LogEnd();
 
             var SearchResults = _SearchSummary.GetSearchSummary(query);
             return Ok(SearchResults);
@@ -134,9 +134,12 @@ namespace DDAS.API.Controllers
                         GetFDADebarPageMatch(
                         query.NameToSearch, query.RecId);
 
-                    return Ok(
-                        _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
-                        query.NameToSearch));
+                    return Ok(SearchDetails);
+
+                    //refactor GetStatusOfFDASiteRecords as per the new design
+                    //return Ok(
+                    //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
+                    //    query.NameToSearch));
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var ClinicalSearchDetails = _SearchSummary.

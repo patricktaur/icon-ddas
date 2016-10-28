@@ -39,6 +39,7 @@ namespace DDAS.Models
             ClinicalInvestigatorDisqualificationRepository { get; }
         ISystemForAwardManagementRepository 
             SystemForAwardManagementRepository { get; }
+        IComplianceFormRepository ComplianceFormRepository { get; }
         #endregion
 
 

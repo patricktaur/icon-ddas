@@ -21,6 +21,13 @@ namespace DDAS.Data.Mongo.Maps
             });
 
 
+            BsonClassMap.RegisterClassMap<ComplianceForm>(map =>
+            {
+                map.AutoMap();
+                //map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
             {
                 map.AutoMap();
