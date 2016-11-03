@@ -37,6 +37,8 @@ namespace DDAS.Models.Entities.Domain
         public Guid? DataId { get; set; }
         public DateTime DataExtractedOn { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
+        public int FullMatch { get; set; }
+        public int PartialMatch { get; set; }
     }
 
     //for Single site query:
@@ -107,6 +109,7 @@ namespace DDAS.Models.Entities.Domain
         {
             SearchSummaryItems = new List<SearchSummaryItem>();
         }
+        public Guid? ComplianceFormId { get; set; }
         public string NameToSearch { get; set; }
         public List<SearchSummaryItem> SearchSummaryItems { get; set; }
     }
@@ -117,6 +120,8 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public string MatchStatus { get; set; }
+        public int FullMatch { get; set; }
+        public int PartialMatch { get; set; }
     }
     #endregion
 
@@ -132,17 +137,28 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public DateTime SearchClosedOn { get; set; }
-        //public List<SitesIncludedInSearch> SiteDetails { get; set; }
+        public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
 
     public class SitesIncludedInSearch
     {
         public string SiteName { get; set; }
+        public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public DateTime ScannedOn { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
         public bool IssuesIdentified { get; set; }
+        public string Findings { get; set; }
+        public string Issues { get; set; }
+        public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
+    }
+
+    public class MatchedRecordsPerSite
+    {
+        public int IssueNumber { get; set; }
+        public string RecordDetails { get; set; }
+        public string Status { get; set; }
     }
     #endregion
 

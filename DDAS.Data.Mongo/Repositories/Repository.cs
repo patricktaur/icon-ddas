@@ -10,7 +10,6 @@ using MongoDB.Driver;
 
 namespace DDAS.Data.Mongo.Repositories
 {
-
     internal class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         //private IMongo _provider;

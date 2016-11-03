@@ -10,8 +10,6 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class FDADebarPage : BaseSearchPage // BaseClasses.BasePage
     {
-       
-
         public IWebElement PersonsTable
         {
             get

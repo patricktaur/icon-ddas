@@ -25,6 +25,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class AdequateAssuranceList : SiteDataItemBase
     {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
         public string NameAndAddress { get; set; }
         public string Center { get; set; }
         public string Type { get; set; }

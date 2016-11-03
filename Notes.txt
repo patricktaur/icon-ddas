@@ -193,9 +193,63 @@ Entry on 5 Oct 2016
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 6 Oct 2016
-1. ClinicalInvestigatorInspectionPage: There's a downloadable zip file at http://www.fda.gov/Drugs/InformationOnDrugs/ucm135198.htm which has
-   19 thousand records and date when the records were updated.
+1. ClinicalInvestigatorInspectionPage: There's a downloadable zip file at 
+   http://www.fda.gov/Drugs/InformationOnDrugs/ucm135198.htm which has 19 thousand records and date when 
+   the records were updated.
 2. Able to download, extract the details from the text file and save into Mongo collection.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 7 Oct 2016
+1. Able to read data from API for ClinicalInvestigatorInspectionPage, Save the approved/rejected records.
+  
+-----------------------------------------------------------------------------------------------------------
+Entry on 11 Oct 2016
+1. Trying to find downloadable files for sites that have a Search Text box. 
+2. Database exclusions list has a downloadable file which has about 60k+ records. Need to check with clients
+   whether this data will be same to that of online search available.
+3. Working on extracting this data from exlcusions site.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 12 Oct 2016
+1. Including PHSAdministrativeAction Site into the services. Able to store and retrieve data.
+   
+-----------------------------------------------------------------------------------------------------------
+Entry on 13 Oct 2016
+1. Trying to find ways of downloading data for all sites.
+2. SAM Site has public extracts, under which there are extracts available in CSV format.
+3. These extracts have about 1.4L records. Need to check with clients whether this information can be used
+   instead of online search.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 14 Oct 2016   
+1. All the sites have been checked for downloadable data. Information has been collected into a speardsheet.
+   Details will be discussed with clients on 17th.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 17 Oct 2016
+1. As per the discussion with clients - CIIL, FDAWarningLetters, Disqualified proceedings, database 
+   exclusion list and SAM site will be live search sites. Others will be scanned every 24 hours.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 18 Oct 2016
+1. FDAWarningLetters and DisqualificationProceedings have 500 and 225 records respectively. But when
+   when searched for a specific name, they show same number of records which should not be the case.
+   hence live search to be carried out for these two.
+2. CIIL has downloadable database but the date when database is updated is older(available on the download page)
+   to that of database updated date available on the CIIL page. Currently using downloadable file and storing
+   data into mongo.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 19 Oct 2016 
+1. Included the ProposalToDebar page to save and retrieve data.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 20 Oct 2016
+1. Included the PHSAdministrativeActionListing page to save and retrieve data.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 21 Oct 2016
+1. Able to save the rejected/approved records for FDAWarningLetters, ProposalToDebar and PHS sites.
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 24 Oct 2016
@@ -205,8 +259,27 @@ Entry on 24 Oct 2016
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 25 Oct 2016
-1. Live Site Search is completed for three site - FDAWarningLetters, Disqualificationproceedings and
+1. Live Site Search is completed for three site - FDAWarningLetters, DisqualificationProceedings and
    SAM site.
 2. Need to have proper error handling machanism.
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 26 Oct 2016
+1. Re-designing the database structure so that the pattern is same for live and non-live sites.
+2. For the non-live sites, the data will be scanned/downloaded and saved into mongoDB. When searched for a 
+   name, the records matching the NameToSearch will be saved into another collection and fetched.
+3. For the live sites, data will directly be downloaded for matching records and saved into database.
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 27 Oct 2016
+1. Discussion on Re-structuring the database design. Method 2 is to save matched records from the live sites
+   in the same structure to that of non live sites. 
+2. Going with the Method 1, to save matched records of non live sites into different collection.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 28 Oct 2016 
+1. Creating repository, interfaces and classes for FDADebarPage to return the matching records.
+2. Database is structured such that, Compliance form details will be provided from the front end.
+   For each name, a compliance form is to be generated.
+3. Need to use OpenXml to create word document (compliance form) on the server for each Search name.
+  

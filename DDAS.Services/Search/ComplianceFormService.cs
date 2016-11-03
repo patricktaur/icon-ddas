@@ -16,19 +16,18 @@ namespace DDAS.Services.Search
             _UOW = uow;
         }
 
-        public void CreateComplianceForm(string NameToSearch,string Country, 
-            string SponsorProtocolNumber,string ProjectNumber, string Address)
+        public void CreateComplianceForm(ComplianceForm form)
         {
-            ComplianceForm complianceForm = new ComplianceForm();
+            form.SearchStartedOn = DateTime.Now;
 
             //complianceForm.Address = Address;
-            complianceForm.NameToSearch = NameToSearch;
+            //complianceForm.NameToSearch = NameToSearch;
             //complianceForm.Country = Country;
             //complianceForm.SponsorProtocolNumber = SponsorProtocolNumber;
-            complianceForm.ProjectNumber = ProjectNumber;
-            complianceForm.SearchStartedOn = DateTime.Now;
+            //complianceForm.ProjectNumber = ProjectNumber;
+            //complianceForm.SearchStartedOn = DateTime.Now;
 
-            _UOW.ComplianceFormRepository.Add(complianceForm);
+            _UOW.ComplianceFormRepository.Add(form);
         }
 
         public Guid? GetComplianceFormId(string NameToSearch)

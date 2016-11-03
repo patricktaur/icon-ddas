@@ -27,6 +27,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class DebarredPerson : SiteDataItemBase
     {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
         public string NameOfPerson { get; set; }
         public string EffectiveDate { get; set; }
         public string EndOfTermOfDebarment { get; set; }

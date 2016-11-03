@@ -26,6 +26,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class SystemForAwardManagement : SiteDataItemBase
     {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
         public string Entity { get; set; }
         public string Duns { get; set; }
         public string HasActiveExclusion { get; set; }
