@@ -40,7 +40,10 @@ namespace DDAS.API.Identity
         }
         public Task UpdateAsync(IdentityUser user)
         {
+
             return _UOW.UserRepository.UpdateUserAsync(user.UserName);
+            
+
 
         }
         public Task<IdentityUser> FindByIdAsync(Guid userId)
@@ -85,9 +88,17 @@ namespace DDAS.API.Identity
             return Task.FromResult<bool>(!string.IsNullOrWhiteSpace(user.PasswordHash));
         }
 
+        //Patrick -- review code:
         public Task SetPasswordHashAsync(IdentityUser user, string passwordHash)
         {
-            user.PasswordHash = passwordHash;
+
+            User updateUser = _UOW.UserRepository.FindById(user.Id);
+            if (updateUser != null)
+            {
+                updateUser.PasswordHash = passwordHash;
+                _UOW.UserRepository.UpdateUser(updateUser);
+            }
+
             return Task.FromResult(0);
         }
        #endregion
@@ -122,6 +133,10 @@ namespace DDAS.API.Identity
 
         public Task<IList<string>> GetRolesAsync(IdentityUser user)
         {
+
+            return Task.FromResult < IList < string >>(_UOW.UserRoleRepository.GetRoles(user.Id));
+            /*
+
             IList<string> rolenames = new List<string>();
             rolenames.Add("Admin");
             //IdentityContext Set = new IdentityContext();
@@ -136,14 +151,21 @@ namespace DDAS.API.Identity
             return Task.FromResult<IList<string>>(rolenames);
 
             //throw new NotImplementedException();
+            */
         }
 
         public Task<bool> IsInRoleAsync(IdentityUser user, string roleName)
         {
-            //IdentityContext Set = new IdentityContext();
-            //var u = Set.Users.FirstOrDefault(x => x.UserId == user.Id);
-            //return Task.FromResult<bool>(u.Roles.Any(x => x.Name == roleName));
-            throw new NotImplementedException();
+             var roles = GetRolesAsync(user).Result;
+            if (roles.Contains(roleName) == true)
+            {
+                return Task.FromResult(true);
+            }
+            else
+            {
+                return Task.FromResult(false);
+            }
+
         }
 
         public Task RemoveFromRoleAsync(IdentityUser user, string roleName)

@@ -17000,3 +17000,8 @@ DDAS.Services/obj/
 ~$Testing_Results.xlsx
 DDAS.API/Logs/testlog.log
 ProjectPlan.xlsx
+Prod1/
+DDAS.Setup/bin/
+Prod/bin/
+DDAS.Setup/obj/
+Prod/

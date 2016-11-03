@@ -16,5 +16,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
         Task<User> FindByUserNameAsync(string UserName);
         Task<User> FindByUserNameAsync(CancellationToken cancellationToken,
             string UserName);
+        //Patrick 30Oct2016
+        Task UpdateUser(User entity);
     }
 }

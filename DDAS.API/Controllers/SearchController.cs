@@ -30,7 +30,18 @@ namespace DDAS.API.Controllers
             _log = log;
         }
 
-        [Authorize] //(Roles = "")]
+        [Route("AddNewRole")]
+        [HttpPost]
+        public IHttpActionResult CreateRole(IdentityRole role)
+        {
+            //IdentityRole role = new IdentityRole(roleName);
+            RoleStore roleStore = new RoleStore(_UOW);
+            roleStore.CreateAsync(role);
+            return Ok();
+        }
+
+
+        //[Authorize] //(Roles = "")]
         [Route("AddUser")]
         [HttpPost]
         public IHttpActionResult GetUser(UserDetails user)
@@ -44,13 +55,18 @@ namespace DDAS.API.Controllers
             var IdUser = new IdentityUser();
             IdUser.UserName = user.UserName;
             IdUser.SecurityStamp = Guid.NewGuid().ToString();
-
+            
             try
             {
                 IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
                 if (IdUsertemp == null)
                 {
-                    um.Create(IdUser, user.pwd);
+                    um.CreateAsync(IdUser,  user.pwd);
+
+                   
+                 
+                    
+                    
                     um.AddToRole(IdUser.Id, user.RoleName);
                 }
                 else
@@ -58,13 +74,14 @@ namespace DDAS.API.Controllers
                     um.AddToRole(IdUser.Id, user.RoleName);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.Write(ex.Message);
             }
             return Ok();
         }
 
-        [Authorize] //(Roles="User")]
+        //[Authorize] //(Roles="User")]
         [Route("AddRole")]
         [HttpPost]
         public IHttpActionResult AddRole(Role role)
@@ -77,6 +94,8 @@ namespace DDAS.API.Controllers
 
             return Ok();
         }
+
+
 
         [Route("SearchResult")]
         [HttpPost]
@@ -94,7 +113,6 @@ namespace DDAS.API.Controllers
             return Ok(searchResults);
         }
 
-        [Authorize]
         [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
@@ -116,7 +134,7 @@ namespace DDAS.API.Controllers
             return Ok(SearchResults);
         }
 
-        [Authorize]
+       
         [Route("GetSearchSummaryDetails")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch, string RecId,

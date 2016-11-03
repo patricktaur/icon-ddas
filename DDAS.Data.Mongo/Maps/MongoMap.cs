@@ -146,6 +146,12 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.MapIdProperty(u => u.RoleId).SetIdGenerator(GuidGenerator.Instance);
             });
+
+            BsonClassMap.RegisterClassMap<UserRole>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.Id).SetIdGenerator(GuidGenerator.Instance);
+            });
             #endregion
         }
 

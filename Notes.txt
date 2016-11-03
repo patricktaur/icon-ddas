@@ -1,3 +1,11 @@
+Priority:
+1. Demo Site
+	a. API - publish
+	b. Angular app - prod
+2. Authentication, Accounts controller
+3. New UI
+4. Tests
+
 12Sep2016
 Parick
 1. Mapping base class in Mongo
@@ -12,6 +20,8 @@ Parick
 
 5. Routing erros
 6. Angular - moving to production site
+7. Authentication
+
 
 Pradeep
 1. Explore PhantomJs With Selenium as replacement to FireFox/Edge driver

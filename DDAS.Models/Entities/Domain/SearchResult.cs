@@ -200,12 +200,15 @@ namespace DDAS.Models.Entities.Domain
 
         #region Scalar Properties
 
-        //public MongoDB.Bson.ObjectId _id { get; set; }
-
-        //[BsonId]
         public Guid RoleId { get; set; }
         public string Name { get; set; }
         #endregion
+
+        public Role(){}
+        public Role(string roleName)
+        {
+            Name = roleName;
+        }
 
         public ICollection<User> Users
         {
@@ -217,6 +220,7 @@ namespace DDAS.Models.Entities.Domain
     
     public class UserRole
     {
+        public Guid Id { get; set; } //for Mongo mapping
         public Guid RoleId { get; set; }
         public Guid UserId { get; set; }
     }
