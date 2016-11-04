@@ -248,9 +248,11 @@ namespace DDAS.API.Controllers
         [Authorize]
         [Route("SaveSearchResult")]
         [HttpPost]
-        public IHttpActionResult SaveSearchResults(SaveSearchResult result)
+        public IHttpActionResult SaveSearchResults(SitesIncludedInSearch result,
+            Guid? ComplianceFormId)
         {
-            return Ok(_SearchSummary.SaveRecordStatus(result));
+            return Ok(_SearchSummary.SaveRecordStatus(
+                result, ComplianceFormId));
         }
 
         /*

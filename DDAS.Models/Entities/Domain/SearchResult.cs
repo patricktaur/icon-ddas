@@ -150,13 +150,15 @@ namespace DDAS.Models.Entities.Domain
         public int PartialMatchCount { get; set; }
         public bool IssuesIdentified { get; set; }
         public string Findings { get; set; }
-        public string Issues { get; set; }
+        //public string Issues { get; set; }
         public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
     }
 
     public class MatchedRecordsPerSite
     {
+        public string Issues { get; set; }
         public int IssueNumber { get; set; }
+        public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
         public string Status { get; set; }
     }

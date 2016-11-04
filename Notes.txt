@@ -283,3 +283,16 @@ Entry on 28 Oct 2016
    For each name, a compliance form is to be generated.
 3. Need to use OpenXml to create word document (compliance form) on the server for each Search name.
   
+-----------------------------------------------------------------------------------------------------------
+Entry on 2 Nov 2016
+1. Able to Create the Compliance From structure
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 3 Nov 2016
+1. Able to put the new design in place which is to save the matching records for a name into a collection
+   and retrieve the same for two sites - FDADebar and ClinicalInvestigatorInspectionList
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 4 Nov 2016
+1. Able to get the details of the matching records, save the status of the records and retrieve the same
+   for FDADebarSite
