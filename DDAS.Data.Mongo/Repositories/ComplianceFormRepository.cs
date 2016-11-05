@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Repository.Domain.SiteData;
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace DDAS.Data.Mongo.Repositories
 {
@@ -21,6 +23,12 @@ namespace DDAS.Data.Mongo.Repositories
             var entity = collection.Find(filter).FirstOrDefault();
 
             return entity;
+        }
+
+        public Task UpdateCollection(ComplianceForm form)
+        {
+            return _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name).
+                ReplaceOneAsync(Site => Site.RecId == form.RecId, form);
         }
     }
 }

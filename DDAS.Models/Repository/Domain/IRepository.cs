@@ -18,6 +18,7 @@ namespace DDAS.Models.Repository
         Task<TEntity> FindByIdAsync(object id);
         Task<TEntity> FindByIdAsync(CancellationToken cancellationToken, object id);
 
+
         void Add(TEntity entity);
         void Update(TEntity entity);
         void Remove(TEntity entity);

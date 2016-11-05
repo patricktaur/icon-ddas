@@ -50,7 +50,7 @@ namespace DDAS.Models.Interfaces
         SystemForAwardManagementPageSiteData GetSAMMatch(
             string NameToSearch, Guid? DataId);
 
-        bool SaveRecordStatus(SaveSearchResult Result);
+        bool SaveRecordStatus(SitesIncludedInSearch Result, Guid? ComplianceFormId);
 
         FDADebarPageSiteData 
             GetStatusOfFDASiteRecords(FDADebarPageSiteData FDASiteData,

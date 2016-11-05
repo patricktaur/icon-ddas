@@ -151,8 +151,10 @@ namespace DDAS.Services.Search
             foreach (DebarredPerson person in DebarList)
             {
                 var MatchedRecord = new MatchedRecordsPerSite();
+                MatchedRecord.RowNumber = person.RowNumber;
                 MatchedRecord.RecordDetails =
-                    "RowNumber: " + person.RowNumber + "~" +
+                    //"RowNumber: " + person.RowNumber + "~" +
+                    "FullName: " + person.FullName + "~" +
                     "NameOfPerson: " + person.FullName + "~" +
                     "EffectiveDate: " + person.EffectiveDate + "~" +
                     "EndOfTermOfDebarment: " + person.EndOfTermOfDebarment + "~" +
@@ -172,6 +174,7 @@ namespace DDAS.Services.Search
         {
             string[] Name = NameToSearch.Split(' ');
 
+            //Error handling: if FDASearchResult is null
             var FDASearchResult = 
                 _UOW.ComplianceFormRepository.FindById(DataId);
 
@@ -220,8 +223,10 @@ namespace DDAS.Services.Search
             foreach (ClinicalInvestigator Investigator in ClinicalMatchedList)
             {
                 var MatchedRecord = new MatchedRecordsPerSite();
+
+                MatchedRecord.RowNumber = Investigator.RowNumber;
                 MatchedRecord.RecordDetails =
-                    "RowNumber: " + Investigator.RowNumber + "~" +
+                    //"RowNumber: " + Investigator.RowNumber + "~" +
                     "FullName: " + Investigator.FullName + "~" +
                     "Name: " + Investigator.Name + "~" +
                     "Location: " + Investigator.Location + "~" +
@@ -701,10 +706,39 @@ namespace DDAS.Services.Search
         }
         
         #region Save and Update Approved/Rejected records
-        public bool SaveRecordStatus(SaveSearchResult Result)
+        public bool SaveRecordStatus(SitesIncludedInSearch Site,
+            Guid? ComplianceFormId)
         {
-            Result.CreatedOn = DateTime.Now;
-            _UOW.SaveSearchResultRepository.Add(Result);
+            var ComplianceFormDetails = 
+                _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (ComplianceFormDetails == null)
+                return false;
+
+            var ExistingSiteDetails = ComplianceFormDetails.SiteDetails.Where(
+                x => x.SiteEnum == Site.SiteEnum).FirstOrDefault();
+
+            var ExistingRecords = ExistingSiteDetails.MatchedRecords;
+
+            //var UpdatedRecords = Site.MatchedRecords.Where(r => r.RowNumber);
+
+            foreach(MatchedRecordsPerSite Updatedrecord in Site.MatchedRecords)
+            {
+                foreach(MatchedRecordsPerSite ExistingRecord in ExistingRecords)
+                {
+                    if (Updatedrecord.RowNumber == ExistingRecord.RowNumber &&
+                        Updatedrecord.Status != ExistingRecord.Status)
+                    {
+                        ExistingRecord.Issues = Updatedrecord.Issues;
+                        ExistingRecord.Status = Updatedrecord.Status;
+                    }
+                }
+            }
+            //ExistingSiteDetails.Findings = Site.Findings;
+            //ComplianceFormDetails.SiteDetails.Add(ExistingSiteDetails);
+
+            _UOW.ComplianceFormRepository.UpdateCollection(ComplianceFormDetails);
+
             return true;
         }
         

@@ -134,7 +134,9 @@ namespace DDAS.API.Controllers
             return Ok(SearchResults);
         }
 
-       
+
+
+
         [Route("GetSearchSummaryDetails")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch, string RecId,
@@ -263,12 +265,14 @@ namespace DDAS.API.Controllers
             }
         }
         
-        [Authorize]
+       
         [Route("SaveSearchResult")]
         [HttpPost]
-        public IHttpActionResult SaveSearchResults(SaveSearchResult result)
+        public IHttpActionResult SaveSearchResults(SitesIncludedInSearch result,
+            Guid? ComplianceFormId)
         {
-            return Ok(_SearchSummary.SaveRecordStatus(result));
+            return Ok(_SearchSummary.SaveRecordStatus(
+                result, ComplianceFormId));
         }
 
         /*

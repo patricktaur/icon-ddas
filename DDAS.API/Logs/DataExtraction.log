@@ -5,3 +5,13 @@ Processing:1 sites
 Data Saved
 11/2/2016 7:18:11 PM, Extract Data ends
 =================================================================================
+11/5/2016 11:27:25 AM, Extract Data starts
+Processing:2 sites
+11/5/2016 11:27:25 AM, Start extracting from:FDADebarPage
+11/5/2016 11:28:21 AM, End extracting from:FDADebarPage
+Data Saved
+11/5/2016 11:28:21 AM, Start extracting from:ClinicalInvestigatorInspectionPage
+11/5/2016 11:28:25 AM, End extracting from:ClinicalInvestigatorInspectionPage
+Data Saved
+11/5/2016 11:28:26 AM, Extract Data ends
+=================================================================================
