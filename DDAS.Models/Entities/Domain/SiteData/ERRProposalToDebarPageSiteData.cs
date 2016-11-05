@@ -25,6 +25,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ProposalToDebar : SiteDataItemBase
     {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
         public string Name { get; set; }
         public string center { get; set; }
         public string date { get; set; }

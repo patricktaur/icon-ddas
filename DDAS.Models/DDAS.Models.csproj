@@ -80,6 +80,7 @@
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Domain\IRepository.cs" />
+    <Compile Include="Repository\Domain\MatchedSiteData\IFDADebarMatchedRecordsRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ICBERClinicalInvestigatorInspectionRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorDisqualificationRespository.cs" />
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionListRepository.cs" />

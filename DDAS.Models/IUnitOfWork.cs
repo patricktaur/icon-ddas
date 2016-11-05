@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Repository.Domain;
+using DDAS.Models.Repository.Domain.MatchedSiteData;
 using DDAS.Models.Repository.Domain.SiteData;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,10 @@ namespace DDAS.Models
         IComplianceFormRepository ComplianceFormRepository { get; }
         #endregion
 
+        #region MatchedRecordsSiteData
+        IFDADebarMatchedRecordsRepository 
+            FDADebarMatchedRecordsRepository { get; } 
+        #endregion
 
         #endregion
 

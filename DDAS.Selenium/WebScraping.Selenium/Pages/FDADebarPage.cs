@@ -29,7 +29,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         private FDADebarPageSiteData _FDADebarPageSiteData;
-
+        
         public void LoadDebarredPersonListAlt()
         {
             _FDADebarPageSiteData = new FDADebarPageSiteData();

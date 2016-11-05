@@ -27,6 +27,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class DisqualifiedInvestigator : SiteDataItemBase
     {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
         public string Name { get; set; }
         public string Center { get; set; }
         public string DateOfStatus { get; set; }

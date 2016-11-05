@@ -13,6 +13,8 @@ using MongoDB.Bson.Serialization;
 using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Driver;
 using DDAS.Data.Mongo.Repositories;
+using DDAS.Models.Repository.Domain.MatchedSiteData;
+using DDAS.Data.Mongo.Repositories.MathedRecordsSiteData;
 
 namespace DDAS.Data.Mongo
 {
@@ -21,7 +23,7 @@ namespace DDAS.Data.Mongo
         //private IMongo _provider;
         //private IMongoDatabase _db { get { return _provider.Database; } }
         private IMongoDatabase _db;
-        #region PrivateRepositoryMemebers
+        #region PrivateRepositoryMembers
         private IFDADebarPageRepository _FDADebarPageRepository;
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
@@ -51,6 +53,12 @@ namespace DDAS.Data.Mongo
         private IUserRoleRepository _UserRoleRepository;
 
         #endregion
+
+        #region PrivateMatchedRecordsRepositoryMembers
+        private IFDADebarMatchedRecordsRepository
+            _FDADebarMatchedRecordsRepository;
+        #endregion
+
         /*
          * var client = new MongoClient("mongodb://127.0.0.1");
             var DB = client.GetDatabase("DDAS");
@@ -136,7 +144,8 @@ namespace DDAS.Data.Mongo
             }
         }
 
-        public ISpeciallyDesignatedNationalsRepository SpeciallyDesignatedNationalsRepository
+        public ISpeciallyDesignatedNationalsRepository 
+            SpeciallyDesignatedNationalsRepository
         {
             get
             {
@@ -245,6 +254,23 @@ namespace DDAS.Data.Mongo
         }
 
         #endregion
+
+
+        #region MatchedRecordsProperties
+
+        public IFDADebarMatchedRecordsRepository 
+            FDADebarMatchedRecordsRepository
+        {
+            get
+            {
+                return _FDADebarMatchedRecordsRepository ??
+                    (_FDADebarMatchedRecordsRepository = 
+                    new FDADebarMatchedRecordsRepository(_db));
+            }
+        }
+
+        #endregion
+
         private void InitializeMaps()
         {
             MongoMaps.Initialize();
@@ -284,8 +310,6 @@ namespace DDAS.Data.Mongo
 
         public void Dispose()
         {
-
-            
             //_provider.Dispose();
            
         }

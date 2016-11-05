@@ -117,8 +117,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
         {
-            var query = new NameToSearchQuery();
-            query.NameToSearch = NameToSearch;
+            //var query = new NameToSearchQuery();
+            //query.NameToSearch = NameToSearch;
 
             //_log = new LogText(DataExtractionLogFile, true);
             //_log.LogStart();
@@ -130,7 +130,7 @@ namespace DDAS.API.Controllers
             //_log.WriteLog("=================================================================================");
             //_log.LogEnd();
 
-            var SearchResults = _SearchSummary.GetSearchSummary(query);
+            var SearchResults = _SearchSummary.GetSearchSummary(NameToSearch);
             return Ok(SearchResults);
         }
 
@@ -150,10 +150,10 @@ namespace DDAS.API.Controllers
                 case SiteEnum.FDADebarPage:
                     var SearchDetails = _SearchSummary.
                         GetFDADebarPageMatch(
-                        query.NameToSearch, query.RecId);
+                        query.NameToSearch, query.RecId, siteEnum);
 
                     return Ok(SearchDetails);
-
+                     
                     //refactor GetStatusOfFDASiteRecords as per the new design
                     //return Ok(
                     //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
@@ -162,11 +162,13 @@ namespace DDAS.API.Controllers
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var ClinicalSearchDetails = _SearchSummary.
                         GetClinicalInvestigatorSiteMatch(
-                        query.NameToSearch, query.RecId);
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
-                        query.NameToSearch));
+                    return Ok(ClinicalSearchDetails);
+                    //Refactor this as per new design
+                    //return Ok(_SearchSummary.
+                    //    GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
+                    //    query.NameToSearch));
 
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningLetterDetails = _SearchSummary.

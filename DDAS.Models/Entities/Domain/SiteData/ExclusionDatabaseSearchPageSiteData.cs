@@ -25,6 +25,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ExclusionDatabaseSearchList : SiteDataItemBase
     {
+        public int RowNumber { get; set; }
+        public string Status { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
