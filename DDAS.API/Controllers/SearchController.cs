@@ -7,6 +7,8 @@ using DDAS.Models;
 using DDAS.API.Identity;
 using Microsoft.AspNet.Identity;
 using Utilities;
+using System.Web;
+using System.Net.Http;
 
 namespace DDAS.API.Controllers
 {
@@ -95,6 +97,19 @@ namespace DDAS.API.Controllers
         }
 
         [Authorize]
+        [Route("GetBulkSearchSummaryResult")]
+        [HttpPost]
+        public IHttpActionResult GetMultipleSearchSummaryResult()
+        {
+            string root = HttpContext.Current.Server.MapPath("~/App_Data/");
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            var task = Request.Content.ReadAsMultipartAsync(provider);
+
+            return Ok();
+        }
+
+        [Authorize]
         [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
@@ -155,11 +170,12 @@ namespace DDAS.API.Controllers
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningLetterDetails = _SearchSummary.
                         GetFDAWarningLettersMatch(
-                        query.NameToSearch, query.RecId);
+                        query.NameToSearch, query.RecId, query.siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
-                        query.NameToSearch));
+                    return Ok(FDAWarningLetterDetails);
+                    //return Ok(_SearchSummary.
+                    //    GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
+                    //    query.NameToSearch));
 
                 case SiteEnum.ERRProposalToDebarPage:
                     var ProposalToDebarDetails = _SearchSummary.
@@ -255,26 +271,6 @@ namespace DDAS.API.Controllers
                 result, ComplianceFormId));
         }
 
-        /*
-        [Route("GetSearchSummaryDetails")]
-        [HttpPost]
-        public IHttpActionResult GetSearchSummaryDetails(SearchDetailsQuery query)
-        {
-            var SearchDetails = _SearchSummary.GetFDADebarPageMatch(
-                query.NameToSearch,
-                query.RecId);
-
-            return Ok(SearchDetails);
-        }
-        */
-
-        //[Route("getNewSearchQuery")]
-        //[HttpGet]
-        //public IHttpActionResult newSearchQuery()
-        //{
-        //    var query = _SearchEngine.GetNewSearchQuery();
-        //     return Ok(query);
-        //}
         public class UserDetails
         {
             public string  UserName{get;set;}

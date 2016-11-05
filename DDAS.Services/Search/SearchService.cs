@@ -6,16 +6,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DDAS.Models.Entities.Domain.SiteData;
+using Utilities;
 
 namespace DDAS.Services.Search
 {
     public class SearchService : ISearchSummary
     {
         private IUnitOfWork _UOW;
-        
-        public SearchService(IUnitOfWork uow)
+        private ILog _log;
+        private ISearchEngine _SearchEngine;
+
+        public SearchService(IUnitOfWork uow, ILog log, 
+            ISearchEngine SearchEngine)
         {
             _UOW = uow;
+            _log = log;
+            _SearchEngine = SearchEngine;
         }
 
         public SearchSummary GetSearchSummary(string NameToSearch)
@@ -25,8 +31,8 @@ namespace DDAS.Services.Search
 
             NameToSearch = NameToSearch.Replace(",", "");
 
-            SiteScanData ScanData = new SiteScanData(_UOW);
-            List<SiteScan> SiteScanList = ScanData.GetSiteScanSummary();
+            SiteScanData ScanData = new SiteScanData(_UOW, _log, _SearchEngine);
+            List<SiteScan> SiteScanList = ScanData.GetSiteScanSummary(NameToSearch);
 
             searchSummary.NameToSearch = NameToSearch;
 
@@ -81,8 +87,8 @@ namespace DDAS.Services.Search
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInvestigatorMatchCount(NameToSearch, DataId, Site);
 
-                //case SiteEnum.FDAWarningLettersPage:
-                //    return GetFDAWarningLettersMatchCount(NameToSearch, DataId);
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningLettersMatchCount(NameToSearch, DataId, Site);
 
                 //case SiteEnum.ERRProposalToDebarPage:
                 //    return GetProposalToDebarPageMatchCount(NameToSearch, DataId);
@@ -112,7 +118,7 @@ namespace DDAS.Services.Search
                 //    return GetSpeciallyDesignatedNationalsMatchCount(NameToSearch, 
                 //        DataId);
 
-                default : throw new Exception("Invalid Enum");
+                default: throw new Exception("Invalid Enum");
             }
         }
 
@@ -140,9 +146,9 @@ namespace DDAS.Services.Search
                 int MatchesFound = DebarList.Where(
                     x => x.Matched == counter).Count();
                 if (MatchesFound > 0 && counter == Name.Length)
-                    Site.FullMatchCount = MatchesFound;
+                    Site.FullMatchCount += MatchesFound;
                 else
-                    Site.PartialMatchCount = MatchesFound;
+                    Site.PartialMatchCount += MatchesFound;
             }
 
             List<MatchedRecordsPerSite> MatchedRecords =
@@ -152,6 +158,7 @@ namespace DDAS.Services.Search
             {
                 var MatchedRecord = new MatchedRecordsPerSite();
                 MatchedRecord.RowNumber = person.RowNumber;
+                MatchedRecord.Matched = person.Matched;
                 MatchedRecord.RecordDetails =
                     //"RowNumber: " + person.RowNumber + "~" +
                     "FullName: " + person.FullName + "~" +
@@ -166,6 +173,8 @@ namespace DDAS.Services.Search
                 MatchedRecords.Add(MatchedRecord);
             }
             Site.MatchedRecords = MatchedRecords;
+            Site.CreatedOn = DateTime.Now;
+
             return Site;
         }
 
@@ -179,8 +188,6 @@ namespace DDAS.Services.Search
 
             var DebarList = FDASearchResult.SiteDetails.Where(
                 site => site.SiteEnum == Enum).FirstOrDefault();
-
-            //UpdateMatchStatus(FDASearchResult.DebarredPersons, NameToSearch);
              
             return DebarList;
         }
@@ -211,7 +218,7 @@ namespace DDAS.Services.Search
                 int MatchesFound = ClinicalMatchedList.Where(
                     x => x.Matched == counter).Count();
                 if (MatchesFound > 0 && counter == Name.Length)
-                    Site.FullMatchCount = MatchesFound;
+                    Site.FullMatchCount += MatchesFound;
                 else if(MatchesFound != 0)
                     Site.PartialMatchCount += MatchesFound;
             }
@@ -224,6 +231,7 @@ namespace DDAS.Services.Search
                 var MatchedRecord = new MatchedRecordsPerSite();
 
                 MatchedRecord.RowNumber = Investigator.RowNumber;
+                MatchedRecord.Matched = Investigator.Matched;
                 MatchedRecord.RecordDetails =
                     //"RowNumber: " + Investigator.RowNumber + "~" +
                     "FullName: " + Investigator.FullName + "~" +
@@ -242,6 +250,8 @@ namespace DDAS.Services.Search
                 MatchedRecords.Add(MatchedRecord);
             }
             Site.MatchedRecords = MatchedRecords;
+            Site.CreatedOn = DateTime.Now;
+
             return Site;
         }
 
@@ -262,42 +272,70 @@ namespace DDAS.Services.Search
 
         #region FDAWarningLetters
         
-        public string GetFDAWarningLettersMatchCount(string NameToSearch, Guid? DataId)
+        public SitesIncludedInSearch GetFDAWarningLettersMatchCount(string NameToSearch, 
+            Guid? DataId, SitesIncludedInSearch Site)
         {
-            var FDASearchResult = GetFDAWarningLettersMatch(NameToSearch, DataId);
-
-            string MatchStatus = null;
-
-            string[] Name = NameToSearch.Split(' ');
-
-            for (int counter = 1; counter <= Name.Length; counter++)
-            {
-                int MatchesFound = FDASearchResult.FDAWarningLetterList.Where(
-                    x => x.Matched == counter).Count();
-                if (MatchesFound != 0 && MatchStatus != null)
-                    MatchStatus = MatchStatus + ", " + MatchesFound + ":" + counter;
-                else if (MatchesFound != 0)
-                    MatchStatus = MatchesFound + ":" + counter;
-            }
-            return MatchStatus;
-        }
-
-        public FDAWarningLettersSiteData GetFDAWarningLettersMatch(string NameToSearch,
-            Guid? DataId)
-        {
-            string[] Name = NameToSearch.Split(' ');
-
             FDAWarningLettersSiteData FDASearchResult =
                 _UOW.FDAWarningLettersRepository.FindById(DataId);
 
             UpdateMatchStatus(FDASearchResult.FDAWarningLetterList, NameToSearch);
 
-            var WarningLetterList = FDASearchResult.FDAWarningLetterList.Where(
-               FDAWarningList => FDAWarningList.Matched > 0).ToList();
+            var WarningLettersList = FDASearchResult.FDAWarningLetterList.Where(
+               debarredList => debarredList.Matched > 0).ToList();
 
-            FDASearchResult.FDAWarningLetterList = WarningLetterList;
+            if (WarningLettersList == null)
+                return Site;
 
-            return FDASearchResult;
+            string[] Name = NameToSearch.Split(' ');
+
+            for (int counter = 1; counter <= Name.Length; counter++)
+            {
+                int MatchesFound = WarningLettersList.Where(
+                    x => x.Matched == counter).Count();
+                if (MatchesFound > 0 && counter == Name.Length)
+                    Site.FullMatchCount += MatchesFound;
+                else
+                    Site.PartialMatchCount += MatchesFound;
+            }
+
+            List<MatchedRecordsPerSite> MatchedRecords =
+                new List<MatchedRecordsPerSite>();
+
+            foreach (FDAWarningLetter WarningLetter in WarningLettersList)
+            {
+                var MatchedRecord = new MatchedRecordsPerSite();
+                MatchedRecord.RowNumber = WarningLetter.RowNumber;
+                MatchedRecord.Matched = WarningLetter.Matched;
+                MatchedRecord.RecordDetails =
+                    //"Matched: " + WarningLetter.Matched + "~" +
+                    "FullName: " + WarningLetter.FullName + "~" +
+                    "Company: " + WarningLetter.Company + "~" +
+                    "LetterIssued: " + WarningLetter.LetterIssued + "~" +
+                    "IssuingOffice: " + WarningLetter.IssuingOffice + "~" +
+                    "Subject: " + WarningLetter.Subject + "~" +
+                    "ResponseLetterPosted: " + WarningLetter.ResponseLetterPosted + "~" +
+                    "CloseOutDate: " + WarningLetter.CloseOutDate;
+
+                MatchedRecords.Add(MatchedRecord);
+            }
+            Site.MatchedRecords = MatchedRecords;
+            Site.CreatedOn = DateTime.Now;
+
+            return Site;
+        }
+
+        public SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch,
+            Guid? DataId, SiteEnum Enum)
+        {
+            string[] Name = NameToSearch.Split(' ');
+
+            var FDASearchResult =
+                _UOW.ComplianceFormRepository.FindById(DataId);
+
+            var WarningLetters = FDASearchResult.SiteDetails.Where(
+                site => site.SiteEnum == Enum).FirstOrDefault();
+
+            return WarningLetters;
         }
         #endregion
 
@@ -717,6 +755,8 @@ namespace DDAS.Services.Search
             var ExistingSiteDetails = ComplianceFormDetails.SiteDetails.Where(
                 x => x.SiteEnum == Site.SiteEnum).FirstOrDefault();
 
+            ExistingSiteDetails.LastUpdatedOn = DateTime.Now;
+
             var ExistingRecords = ExistingSiteDetails.MatchedRecords;
 
             //var UpdatedRecords = Site.MatchedRecords.Where(r => r.RowNumber);
@@ -730,11 +770,12 @@ namespace DDAS.Services.Search
                     {
                         ExistingRecord.Issues = Updatedrecord.Issues;
                         ExistingRecord.Status = Updatedrecord.Status;
+                        ExistingRecord.IssueNumber = Updatedrecord.IssueNumber;
+                        ExistingRecord.Matched = Updatedrecord.Matched;
                     }
                 }
             }
             //ExistingSiteDetails.Findings = Site.Findings;
-            //ComplianceFormDetails.SiteDetails.Add(ExistingSiteDetails);
 
             _UOW.ComplianceFormRepository.UpdateCollection(ComplianceFormDetails);
 

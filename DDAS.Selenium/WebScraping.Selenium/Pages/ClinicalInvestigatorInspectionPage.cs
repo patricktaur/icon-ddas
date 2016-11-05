@@ -15,7 +15,6 @@ namespace WebScraping.Selenium.Pages
     public partial class ClinicalInvestigatorInspectionPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
-        private string _folderPath;
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL,
             string szFileName, long dwReserved, long lpfnCB);

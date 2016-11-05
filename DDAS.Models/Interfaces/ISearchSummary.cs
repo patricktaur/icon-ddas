@@ -20,8 +20,8 @@ namespace DDAS.Models.Interfaces
             GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId,
             SiteEnum Enum);
 
-        FDAWarningLettersSiteData GetFDAWarningLettersMatch(
-            string NameToSearch, Guid? DataId);
+        SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch,
+            Guid? DataId, SiteEnum Enum);
 
         PHSAdministrativeActionListingSiteData
             GetPHSAdministrativeSiteMatch(string NameToSearch, Guid? DataId);

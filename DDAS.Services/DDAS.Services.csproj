@@ -45,7 +45,6 @@
     <Compile Include="Search\ComplianceFormService.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SiteScanData.cs" />
-    <Compile Include="Search\Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
@@ -55,6 +54,10 @@
     <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
       <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
       <Name>DDAS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DDAS.Selenium\Utilities\Utilities.csproj">
+      <Project>{E284F28D-9482-4DEA-9CC2-872BB86A3D9C}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
