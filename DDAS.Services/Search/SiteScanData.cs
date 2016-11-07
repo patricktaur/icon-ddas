@@ -1,22 +1,29 @@
 ﻿using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utilities;
 
 namespace DDAS.Services.Search
 {
     public class SiteScanData
     {
         private IUnitOfWork _UOW;
+        private ILog _log;
+        private ISearchEngine _SearchEngine;
 
-        public SiteScanData( IUnitOfWork uow)
+        public SiteScanData( IUnitOfWork uow, ILog log, ISearchEngine 
+            SearchEngine)
         {
             _UOW = uow;
+            _log = log;
+            _SearchEngine = SearchEngine;
         }
 
-        public List<SiteScan> GetSiteScanSummary()
+        public List<SiteScan> GetSiteScanSummary(string NameToSearch)
         {
             //need to refactor
 
@@ -24,16 +31,16 @@ namespace DDAS.Services.Search
 
             SearchQuery NewSearchQuery = GetNewSearchQuery();
 
-            //SearchQuery NewLiveSiteSearchQuery = GetNewLiveSiteSearchQuery();
+            SearchQuery NewLiveSiteSearchQuery = GetNewLiveSiteSearchQuery();
 
             List<SearchQuerySite> Sites = new List<SearchQuerySite>();
 
             Sites.AddRange(NewSearchQuery.SearchSites);
-            //Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
+            Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
 
             foreach (SearchQuerySite Site in Sites) //NewSearchQuery.SearchSites)
             {
-                var scanData = GetSiteScanData(Site.SiteEnum);
+                var scanData = GetSiteScanData(Site.SiteEnum, NameToSearch);
                 scanData.SiteName = Site.SiteName;
                 scanData.SiteUrl = Site.SiteUrl;
                 scanData.SiteEnum = Site.SiteEnum;
@@ -42,7 +49,7 @@ namespace DDAS.Services.Search
             return ScanData;
         }
 
-        public SiteScan GetSiteScanData(SiteEnum Enum)
+        public SiteScan GetSiteScanData(SiteEnum Enum, string NameToSearch)
         {
             switch(Enum)
             {
@@ -53,7 +60,7 @@ namespace DDAS.Services.Search
                     return GetClinicalInvestigatorSiteScanDetails();
 
                 case SiteEnum.FDAWarningLettersPage:
-                    return GetFDAWarningLettersSiteScanDetails();
+                    return GetFDAWarningLettersSiteScanDetails(NameToSearch);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarSiteScanDetails();
@@ -115,11 +122,22 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetFDAWarningLettersSiteScanDetails()
+        public SiteScan GetFDAWarningLettersSiteScanDetails(string NameToSearch)
         {
+            _log = new LogText(@"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log", true);
+
+            _log.LogStart();
+            _log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+
+            _SearchEngine.Load(NameToSearch);
+
+            _log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+            _log.WriteLog("=================================================================================");
+            _log.LogEnd();
+
             var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
-
+            
             SiteScan scan = new SiteScan();
 
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -299,9 +317,9 @@ namespace DDAS.Services.Search
                 {
                     new SearchQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="XXX" },
 
-                    new SearchQuerySite {Selected = true, SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="XXX" },
+                    //new SearchQuerySite {Selected = true, SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="XXX" },
 
-                    new SearchQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" }
+                    //new SearchQuerySite {Selected = true, SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" }
                 }
             };
         }

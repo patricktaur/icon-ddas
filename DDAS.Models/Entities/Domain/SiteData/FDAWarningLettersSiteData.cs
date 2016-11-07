@@ -33,7 +33,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string IssuingOffice { get; set; }
         public string Subject { get; set; }
         public string ResponseLetterPosted { get; set; }
-        public string CloseoutDate { get; set; }
+        public string CloseOutDate { get; set; }
 
         public override string FullName {
             get {

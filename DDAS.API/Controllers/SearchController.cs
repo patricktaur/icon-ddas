@@ -7,6 +7,12 @@ using DDAS.Models;
 using DDAS.API.Identity;
 using Microsoft.AspNet.Identity;
 using Utilities;
+using System.Web;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace DDAS.API.Controllers
 {
@@ -18,7 +24,7 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         private ILog _log;
 
-        private string DataExtractionLogFile = 
+        private string DataExtractionLogFile =
             System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
@@ -55,18 +61,18 @@ namespace DDAS.API.Controllers
             var IdUser = new IdentityUser();
             IdUser.UserName = user.UserName;
             IdUser.SecurityStamp = Guid.NewGuid().ToString();
-            
+
             try
             {
                 IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
                 if (IdUsertemp == null)
                 {
-                    um.CreateAsync(IdUser,  user.pwd);
+                    um.CreateAsync(IdUser, user.pwd);
 
-                   
-                 
-                    
-                    
+
+
+
+
                     um.AddToRole(IdUser.Id, user.RoleName);
                 }
                 else
@@ -113,6 +119,21 @@ namespace DDAS.API.Controllers
             return Ok(searchResults);
         }
 
+
+        [Authorize]
+        [Route("GetBulkSearchSummaryResult")]
+        [HttpPost]
+        public IHttpActionResult GetMultipleSearchSummaryResult()
+        {
+            string root = HttpContext.Current.Server.MapPath("~/App_Data/");
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            var task = Request.Content.ReadAsMultipartAsync(provider);
+
+            return Ok();
+        }
+
+
         [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
@@ -147,7 +168,8 @@ namespace DDAS.API.Controllers
             query.RecId = Guid.Parse(RecId);
             query.siteEnum = siteEnum;
 
-            switch (query.siteEnum) {
+            switch (query.siteEnum)
+            {
 
                 case SiteEnum.FDADebarPage:
                     var SearchDetails = _SearchSummary.
@@ -155,11 +177,11 @@ namespace DDAS.API.Controllers
                         query.NameToSearch, query.RecId, siteEnum);
 
                     return Ok(SearchDetails);
-                     
-                    //refactor GetStatusOfFDASiteRecords as per the new design
-                    //return Ok(
-                    //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
-                    //    query.NameToSearch));
+
+                //refactor GetStatusOfFDASiteRecords as per the new design
+                //return Ok(
+                //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
+                //    query.NameToSearch));
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var ClinicalSearchDetails = _SearchSummary.
@@ -167,19 +189,20 @@ namespace DDAS.API.Controllers
                         query.NameToSearch, query.RecId, siteEnum);
 
                     return Ok(ClinicalSearchDetails);
-                    //Refactor this as per new design
-                    //return Ok(_SearchSummary.
-                    //    GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
-                    //    query.NameToSearch));
+                //Refactor this as per new design
+                //return Ok(_SearchSummary.
+                //    GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
+                //    query.NameToSearch));
 
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningLetterDetails = _SearchSummary.
                         GetFDAWarningLettersMatch(
-                        query.NameToSearch, query.RecId);
+                        query.NameToSearch, query.RecId, query.siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
-                        query.NameToSearch));
+                    return Ok(FDAWarningLetterDetails);
+                //return Ok(_SearchSummary.
+                //    GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
+                //    query.NameToSearch));
 
                 case SiteEnum.ERRProposalToDebarPage:
                     var ProposalToDebarDetails = _SearchSummary.
@@ -223,7 +246,7 @@ namespace DDAS.API.Controllers
                         query.NameToSearch, query.RecId);
 
                     return Ok(_SearchSummary.
-                        GetStatusOfPHSSiteRecords(PHSSearchDetails, 
+                        GetStatusOfPHSSiteRecords(PHSSearchDetails,
                         query.NameToSearch));
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
@@ -264,8 +287,8 @@ namespace DDAS.API.Controllers
                     throw new Exception("wrong enum");
             }
         }
-        
-       
+
+
         [Route("SaveSearchResult")]
         [HttpPost]
         public IHttpActionResult SaveSearchResults(SitesIncludedInSearch result,
@@ -275,26 +298,39 @@ namespace DDAS.API.Controllers
                 result, ComplianceFormId));
         }
 
-        /*
-        [Route("GetSearchSummaryDetails")]
+        [Route("Upload")]
         [HttpPost]
-        public IHttpActionResult GetSearchSummaryDetails(SearchDetailsQuery query)
+        public async Task<HttpResponseMessage> PostFormData()
         {
-            var SearchDetails = _SearchSummary.GetFDADebarPageMatch(
-                query.NameToSearch,
-                query.RecId);
+            // Check if the request contains multipart/form-data.
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
 
-            return Ok(SearchDetails);
+            string root = HttpContext.Current.Server.MapPath("~/App_Data");
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            try
+            {
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the file names.
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
+                    Trace.WriteLine("Server file path: " + file.LocalFileName);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (System.Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
         }
-        */
+    }
 
-        //[Route("getNewSearchQuery")]
-        //[HttpGet]
-        //public IHttpActionResult newSearchQuery()
-        //{
-        //    var query = _SearchEngine.GetNewSearchQuery();
-        //     return Ok(query);
-        //}
         public class UserDetails
         {
             public string  UserName{get;set;}
@@ -302,4 +338,3 @@ namespace DDAS.API.Controllers
             public string RoleName { get; set; }
         }
     }
-}

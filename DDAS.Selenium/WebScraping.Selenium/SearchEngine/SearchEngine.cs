@@ -81,10 +81,11 @@ namespace WebScraping.Selenium.SearchEngine
         
         public void Load(string NameToSearch) //LoadAll
         {
-            SiteScanData ScanData = new SiteScanData(_uow);
+            ISearchEngine SearchEngine = new SearchEngine(_log, _uow);
+            SiteScanData ScanData = new SiteScanData(_uow, _log, SearchEngine);
             var query = ScanData.GetNewLiveSiteSearchQuery();
 
-            _log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+            //_log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
                 Load(site.SiteEnum, NameToSearch);
@@ -102,15 +103,15 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Load(SiteEnum siteEnum, string NameToSearch)  //Load one
         {
-            _log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
+            //_log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
 
             var page = GetSearchPage(siteEnum);
             page.LoadContent(NameToSearch);
 
-            _log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
+            //_log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
 
             page.SaveData();
-            _log.WriteLog( "Data Saved" );
+            //_log.WriteLog( "Data Saved" );
 
         }
         #endregion

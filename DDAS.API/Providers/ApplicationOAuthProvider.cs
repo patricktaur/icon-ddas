@@ -59,7 +59,7 @@ namespace DDAS.API.Providers
                     context.Validated(ticket);
                     context.Request.Context.Authentication.SignIn(cookiesIdentity);
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {
 
                 }

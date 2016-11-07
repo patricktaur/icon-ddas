@@ -90,7 +90,7 @@ namespace WebScraping.Selenium.Pages
                 FDAWarningList.IssuingOffice = TDs[2].Text;
                 FDAWarningList.Subject = TDs[3].Text;
                 FDAWarningList.ResponseLetterPosted = TDs[4].Text;
-                FDAWarningList.CloseoutDate = TDs[5].Text;
+                FDAWarningList.CloseOutDate = TDs[5].Text;
 
                 _FDAWarningSiteData.FDAWarningLetterList.Add(FDAWarningList);
                 RowNumber += 1;

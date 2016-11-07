@@ -143,8 +143,10 @@ namespace DDAS.Models.Entities.Domain
     public class SitesIncludedInSearch
     {
         public string SiteName { get; set; }
+        public DateTime CreatedOn { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
+        public DateTime LastUpdatedOn { get; set; }
         public DateTime ScannedOn { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
@@ -156,9 +158,10 @@ namespace DDAS.Models.Entities.Domain
 
     public class MatchedRecordsPerSite
     {
-        public string Issues { get; set; }
+        public int Matched { get; set; }
         public int IssueNumber { get; set; }
         public int RowNumber { get; set; }
+        public string Issues { get; set; }
         public string RecordDetails { get; set; }
         public string Status { get; set; }
     }

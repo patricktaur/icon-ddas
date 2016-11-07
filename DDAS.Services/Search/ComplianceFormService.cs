@@ -19,14 +19,6 @@ namespace DDAS.Services.Search
         public void CreateComplianceForm(ComplianceForm form)
         {
             form.SearchStartedOn = DateTime.Now;
-
-            //complianceForm.Address = Address;
-            //complianceForm.NameToSearch = NameToSearch;
-            //complianceForm.Country = Country;
-            //complianceForm.SponsorProtocolNumber = SponsorProtocolNumber;
-            //complianceForm.ProjectNumber = ProjectNumber;
-            //complianceForm.SearchStartedOn = DateTime.Now;
-
             _UOW.ComplianceFormRepository.Add(form);
         }
 

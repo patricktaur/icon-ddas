@@ -9,9 +9,10 @@ Priority:
 7. Login Page
   a. Password incorrect - message does not appear, app get stuck
   b. Field validations
+  c. disable submit button when not vaidated.
   c. Logout
 8. Detail page
-	a. sort record desc matched
+	a. sort record desc on matched
 	b. last saved on
 
 
