@@ -23,6 +23,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
                 InsertOneAsync(userRole);
         }
 
+        //??
         public IList<Guid> GetRoleId(User user)
         {
             var filter = Builders<UserRole>.Filter.Eq("UserId", user.UserId);
@@ -30,6 +31,31 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             var entity = collection.Find(filter);
 
             return null;
+        }
+
+        //Patrick:
+        public IList<string> GetRoles(User user)
+        {
+            return GetRoles(user.UserId);
+        }
+        public IList<string> GetRoles(Guid UserId)
+        {
+        
+            
+            IList<string> roles = new List<string>();
+
+            IList<UserRole> userRoles = GetAll();
+            foreach (UserRole ur  in userRoles.Where(x => x.UserId == UserId))
+            {
+
+                var filter = Builders<Role>.Filter.Eq("RoleId", ur.RoleId);
+                var collection = _db.GetCollection<Role>(typeof(Role).Name);
+                Role role = collection.Find(filter).FirstOrDefault();
+
+                roles.Add(role.Name);
+            }
+            
+            return roles;
         }
     }
 }

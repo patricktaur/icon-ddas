@@ -91,6 +91,7 @@ namespace DDAS.Models.Entities.Domain
     public class NameToSearchQuery
     {
         public string NameToSearch { get; set; }
+        public Guid? ComplianceFormId { get; set; }
     }
 
     public class SearchDetailsQuery
@@ -137,6 +138,9 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public DateTime SearchClosedOn { get; set; }
+        public int Sites_FullMatchCount { get; set; }
+        public int Sites_PartialMatchCount { get; set; }
+        public bool SitesProcessed { get; set; }
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
 
@@ -221,12 +225,15 @@ namespace DDAS.Models.Entities.Domain
 
         #region Scalar Properties
 
-        //public MongoDB.Bson.ObjectId _id { get; set; }
-
-        //[BsonId]
         public Guid RoleId { get; set; }
         public string Name { get; set; }
         #endregion
+
+        public Role(){}
+        public Role(string roleName)
+        {
+            Name = roleName;
+        }
 
         public ICollection<User> Users
         {
@@ -238,6 +245,7 @@ namespace DDAS.Models.Entities.Domain
     
     public class UserRole
     {
+        public Guid Id { get; set; } //for Mongo mapping
         public Guid RoleId { get; set; }
         public Guid UserId { get; set; }
     }

@@ -1,3 +1,29 @@
+Priority:
+5Nov 2016
+1. Live Search - 1 site - completed.
+2. Excel Upload - Patrick 
+3. DBRecords - Logic based on last record - pull only the last records - Pradeep
+4. Input page - remove study nu drop down Patrick
+5. Pop up page for editing observations - Patrick
+6. Links inside record Details - Pradeep
+7. Login Page
+  a. Password incorrect - message does not appear, app get stuck
+  b. Field validations
+  c. disable submit button when not vaidated.
+  c. Logout
+8. Detail page
+	a. sort record desc on matched
+	b. last saved on
+
+
+
+
+	
+	
+2. Authentication, Accounts controller
+3. New UI
+4. Tests
+
 12Sep2016
 Parick
 1. Mapping base class in Mongo
@@ -12,6 +38,8 @@ Parick
 
 5. Routing erros
 6. Angular - moving to production site
+7. Authentication
+
 
 Pradeep
 1. Explore PhantomJs With Selenium as replacement to FireFox/Edge driver
@@ -283,6 +311,8 @@ Entry on 28 Oct 2016
    For each name, a compliance form is to be generated.
 3. Need to use OpenXml to create word document (compliance form) on the server for each Search name.
   
+<<<<<<< HEAD
+=======
 -----------------------------------------------------------------------------------------------------------
 Entry on 2 Nov 2016
 1. Able to Create the Compliance From structure
@@ -296,3 +326,4 @@ Entry on 3 Nov 2016
 Entry on 4 Nov 2016
 1. Able to get the details of the matching records, save the status of the records and retrieve the same
    for FDADebarSite
+>>>>>>> 67cd3cfd43196d6afec3fcb39485221aedac191f

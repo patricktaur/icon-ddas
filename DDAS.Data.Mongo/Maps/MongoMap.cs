@@ -8,18 +8,14 @@ namespace DDAS.Data.Mongo.Maps
 {
     public static class MongoMaps //MongoConfigurationMap
     {
-
         public static void Initialize()
         {
-
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
                 map.AutoMap();
                 //Patrick 08Oct2016:
                 map.SetIgnoreExtraElements(true);
-
             });
-
 
             BsonClassMap.RegisterClassMap<ComplianceForm>(map =>
             {
@@ -145,6 +141,12 @@ namespace DDAS.Data.Mongo.Maps
             {
                 map.AutoMap();
                 map.MapIdProperty(u => u.RoleId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<UserRole>(map =>
+            {
+                map.AutoMap();
+                map.MapIdProperty(u => u.Id).SetIdGenerator(GuidGenerator.Instance);
             });
             #endregion
         }

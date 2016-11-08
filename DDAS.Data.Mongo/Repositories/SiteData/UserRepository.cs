@@ -38,6 +38,8 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             return collection.UpdateOneAsync(filter,update);
         }
 
+        
+
         public Task<User> FindByUserNameAsync(string UserName)
         {
             throw new NotImplementedException();
@@ -47,5 +49,15 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         {
             throw new NotImplementedException();
         }
+
+        //Patrick:
+        public Task UpdateUser(User entity)
+        {
+            return _db.GetCollection<User>(typeof(User).Name).ReplaceOneAsync(item => item.UserId == entity.UserId, entity );
+  
+        }
+
+      
+
     }
 }

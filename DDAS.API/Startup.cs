@@ -9,7 +9,6 @@ using AutoMapper;
 using DDAS.Data.Mongo.Maps;
 [assembly: OwinStartupAttribute(typeof(DDAS.API.Startup))]
 [assembly: OwinStartup(typeof(DDAS.API.Startup))]
-
 namespace DDAS.API
 {
     public partial class Startup

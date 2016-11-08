@@ -27,7 +27,7 @@ namespace WebScraping
             ILog log = new LogText("", true);
             ISearchEngine searchEngine = new SearchEngine(log, uow);
 
-            var test = new SearchService(uow);
+            var test = new SearchService(uow, log, searchEngine);
 
             MongoMaps.Initialize();
 

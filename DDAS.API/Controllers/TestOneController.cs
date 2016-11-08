@@ -18,8 +18,7 @@ namespace DDAS.API.Controllers
     {
         [Route("get")]
         [HttpGet]
-        [Authorize]
-        public IHttpActionResult Get()
+         public IHttpActionResult Get()
         {
             return Ok("Get");
         }

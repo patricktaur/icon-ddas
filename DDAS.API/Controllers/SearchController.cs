@@ -9,6 +9,11 @@ using Microsoft.AspNet.Identity;
 using Utilities;
 using System.Web;
 using System.Net.Http;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 
 namespace DDAS.API.Controllers
 {
@@ -17,22 +22,35 @@ namespace DDAS.API.Controllers
     {
         private ISearchEngine _SearchEngine;
         private ISearchSummary _SearchSummary;
+        private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
         private ILog _log;
 
-        private string DataExtractionLogFile = 
+        private string DataExtractionLogFile =
             System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
-            IUnitOfWork uow, ILog log)
+            IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
         {
             _SearchEngine = search;
             _SearchSummary = SearchSummary;
             _UOW = uow;
             _log = log;
+            _SiteSummary = SiteSummary;
         }
 
-        [Authorize] //(Roles = "")]
+        [Route("AddNewRole")]
+        [HttpPost]
+        public IHttpActionResult CreateRole(IdentityRole role)
+        {
+            //IdentityRole role = new IdentityRole(roleName);
+            RoleStore roleStore = new RoleStore(_UOW);
+            roleStore.CreateAsync(role);
+            return Ok();
+        }
+
+
+        //[Authorize] //(Roles = "")]
         [Route("AddUser")]
         [HttpPost]
         public IHttpActionResult GetUser(UserDetails user)
@@ -52,7 +70,8 @@ namespace DDAS.API.Controllers
                 IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
                 if (IdUsertemp == null)
                 {
-                    um.Create(IdUser, user.pwd);
+                    um.CreateAsync(IdUser, user.pwd);
+
                     um.AddToRole(IdUser.Id, user.RoleName);
                 }
                 else
@@ -60,13 +79,14 @@ namespace DDAS.API.Controllers
                     um.AddToRole(IdUser.Id, user.RoleName);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.Write(ex.Message);
             }
             return Ok();
         }
 
-        [Authorize] //(Roles="User")]
+        //[Authorize] //(Roles="User")]
         [Route("AddRole")]
         [HttpPost]
         public IHttpActionResult AddRole(Role role)
@@ -80,58 +100,33 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
-        [Route("SearchResult")]
-        [HttpPost]
-        public IHttpActionResult SearchResult(SearchQuery query)
-        {
-            var searchResults = _SearchEngine.SearchByName(query);
-            return Ok(searchResults);
-        }
-
-        [Route("SearchResultAtSite")]
-        [HttpPost]
-        public IHttpActionResult SearchResultAtSite(SearchQueryAtSite query)
-        {
-            var searchResults = _SearchEngine.SearchByName(query.NameToSearch, query.SiteEnum);
-            return Ok(searchResults);
-        }
-
-        [Authorize]
-        [Route("GetBulkSearchSummaryResult")]
-        [HttpPost]
-        public IHttpActionResult GetMultipleSearchSummaryResult()
-        {
-            string root = HttpContext.Current.Server.MapPath("~/App_Data/");
-            var provider = new MultipartFormDataStreamProvider(root);
-
-            var task = Request.Content.ReadAsMultipartAsync(provider);
-
-            return Ok();
-        }
-
-        [Authorize]
         [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
         {
-            //var query = new NameToSearchQuery();
-            //query.NameToSearch = NameToSearch;
-
-            //_log = new LogText(DataExtractionLogFile, true);
-            //_log.LogStart();
-            //_log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
-
-            //_SearchEngine.Load(query.NameToSearch);
-
-            //_log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-            //_log.WriteLog("=================================================================================");
-            //_log.LogEnd();
-
-            var SearchResults = _SearchSummary.GetSearchSummary(NameToSearch);
+            var SearchResults = GetSearchSummaryDetailsForSingleName(NameToSearch);
             return Ok(SearchResults);
         }
 
-        [Authorize]
+        [Route("GetSearchSummary")]
+        [HttpGet]
+        public IHttpActionResult GetSearchSummary(string NameToSearch, string ComplianceFormId)
+        {
+            var Query = new NameToSearchQuery();
+            Query.NameToSearch = NameToSearch;
+            Query.ComplianceFormId = Guid.Parse(ComplianceFormId);
+
+            return Ok(
+                _SiteSummary.GetSearchSummaryStatus(
+                    Query.NameToSearch, Query.ComplianceFormId));
+        }
+
+        public ComplianceForm GetSearchSummaryDetailsForSingleName(
+            string NameToSearch)
+        {
+            return _SearchSummary.GetSearchSummary(NameToSearch);
+        }
+
         [Route("GetSearchSummaryDetails")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch, string RecId,
@@ -142,126 +137,114 @@ namespace DDAS.API.Controllers
             query.RecId = Guid.Parse(RecId);
             query.siteEnum = siteEnum;
 
-            switch (query.siteEnum) {
+            switch (query.siteEnum)
+            {
 
                 case SiteEnum.FDADebarPage:
                     var SearchDetails = _SearchSummary.
-                        GetFDADebarPageMatch(
+                        GetMatchedRecords(
                         query.NameToSearch, query.RecId, siteEnum);
 
                     return Ok(SearchDetails);
-                     
-                    //refactor GetStatusOfFDASiteRecords as per the new design
-                    //return Ok(
-                    //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
-                    //    query.NameToSearch));
+
+                //refactor GetStatusOfFDASiteRecords as per the new design
+                //return Ok(
+                //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
+                //    query.NameToSearch));
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var ClinicalSearchDetails = _SearchSummary.
-                        GetClinicalInvestigatorSiteMatch(
+                        GetMatchedRecords(
                         query.NameToSearch, query.RecId, siteEnum);
 
                     return Ok(ClinicalSearchDetails);
-                    //Refactor this as per new design
-                    //return Ok(_SearchSummary.
-                    //    GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
-                    //    query.NameToSearch));
+                //Refactor this as per new design
+                //return Ok(_SearchSummary.
+                //    GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
+                //    query.NameToSearch));
 
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningLetterDetails = _SearchSummary.
-                        GetFDAWarningLettersMatch(
-                        query.NameToSearch, query.RecId, query.siteEnum);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
                     return Ok(FDAWarningLetterDetails);
-                    //return Ok(_SearchSummary.
-                    //    GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
-                    //    query.NameToSearch));
+                //return Ok(_SearchSummary.
+                //    GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
+                //    query.NameToSearch));
 
                 case SiteEnum.ERRProposalToDebarPage:
                     var ProposalToDebarDetails = _SearchSummary.
-                        GetProposalToDebarPageMatch(
-                        query.NameToSearch, query.RecId);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfProposalToDebarSiteRecords(ProposalToDebarDetails,
-                        query.NameToSearch));
+                    return Ok(ProposalToDebarDetails);
 
                 case SiteEnum.AdequateAssuranceListPage:
                     var AssuranceDetails = _SearchSummary.
-                        GetAdequateAssuranceListPageMatch(
-                        query.NameToSearch, query.RecId);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfAssuranceSiteRecords(AssuranceDetails,
-                        query.NameToSearch));
+                    return Ok(AssuranceDetails);
 
-                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    var DisqualificationDetails = _SearchSummary.
-                        GetDisqualificationProceedingsMatch(
-                        query.NameToSearch, query.RecId);
+                //case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                //    var DisqualificationDetails = _SearchSummary.
+                //        GetDisqualificationProceedingsMatch(
+                //        query.NameToSearch, query.RecId);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfDisqualificationSiteRecords(DisqualificationDetails,
-                        query.NameToSearch));
+                //    return Ok(_SearchSummary.
+                //        GetStatusOfDisqualificationSiteRecords(DisqualificationDetails,
+                //        query.NameToSearch));
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     var CBERDetails = _SearchSummary.
-                        GetCBERClinicalInvestigatorPageMatch(
-                        query.NameToSearch, query.RecId);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfCBERSiteRecords(CBERDetails,
-                        query.NameToSearch));
+                    return Ok(CBERDetails);
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
                     var PHSSearchDetails = _SearchSummary.
-                        GetPHSAdministrativeSiteMatch(
-                        query.NameToSearch, query.RecId);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfPHSSiteRecords(PHSSearchDetails, 
-                        query.NameToSearch));
+                    return Ok(PHSSearchDetails);
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     var ExclusionDetails = _SearchSummary.
-                        GetExclusionDatabaseSearchPageMatch(
-                        query.NameToSearch, query.RecId);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfExclusionSiteRecords(ExclusionDetails,
-                        query.NameToSearch));
+                    return Ok(ExclusionDetails);
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     var CIADetails = _SearchSummary.
-                        GetCIAPageMatch(
-                        query.NameToSearch, query.RecId);
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfCIASiteRecords(CIADetails,
-                        query.NameToSearch));
+                    return Ok(CIADetails);
 
-                case SiteEnum.SystemForAwardManagementPage:
-                    var SAMDetails = _SearchSummary.
-                        GetSAMMatch(
-                        query.NameToSearch, query.RecId);
+                //case SiteEnum.SystemForAwardManagementPage:
+                //    var SAMDetails = _SearchSummary.
+                //        GetSAMMatch(
+                //        query.NameToSearch, query.RecId);
 
-                    return Ok(_SearchSummary.
-                        GetStatusOfSAMSiteRecords(SAMDetails,
-                        query.NameToSearch));
+                //    return Ok(_SearchSummary.
+                //        GetStatusOfSAMSiteRecords(SAMDetails,
+                //        query.NameToSearch));
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    var SDNSearchDetails = _SearchSummary.GetSpeciallyDesignatedNationsMatch(
-                        query.NameToSearch, query.RecId);
+                    var SDNSearchDetails = _SearchSummary.
+                        GetMatchedRecords(
+                        query.NameToSearch, query.RecId, siteEnum);
 
-                    return Ok(_SearchSummary.GetStatusOfSDNSiteRecords(SDNSearchDetails,
-                        query.NameToSearch));
+                    return Ok(SDNSearchDetails);
 
                 default:
                     throw new Exception("wrong enum");
             }
         }
-        
-        [Authorize]
+
         [Route("SaveSearchResult")]
         [HttpPost]
         public IHttpActionResult SaveSearchResults(SitesIncludedInSearch result,
@@ -271,6 +254,46 @@ namespace DDAS.API.Controllers
                 result, ComplianceFormId));
         }
 
+        [Route("Upload")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostFormData()
+        {
+            // Check if the request contains multipart/form-data.
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            string root = HttpContext.Current.Server.MapPath("~/App_Data");
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            try
+            {
+                string[] FileContent = null;
+                // Read the form data.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the file names.
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
+                    Trace.WriteLine("Server file path: " + file.LocalFileName.Trim('\"'));
+
+                    FileContent = File.ReadAllLines(file.LocalFileName);
+                    for(int Counter = 1; Counter <=FileContent.Length; Counter++)
+                    {
+                        GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
+                    }
+                }
+                return FileContent != null ? Request.CreateResponse(FileContent) : null;
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+    }
+
         public class UserDetails
         {
             public string  UserName{get;set;}
@@ -278,4 +301,3 @@ namespace DDAS.API.Controllers
             public string RoleName { get; set; }
         }
     }
-}

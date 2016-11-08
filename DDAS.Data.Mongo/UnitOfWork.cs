@@ -72,6 +72,17 @@ namespace DDAS.Data.Mongo
 
             var mongo = new MongoClient("mongodb://127.0.0.1");
              _db = mongo.GetDatabase("DDAS");
+
+            //Forcing exception if Mongo is not running.
+            try
+            {
+                var x = _db.ListCollections();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("MongoDB is not running",  ex);
+            }
+    
         }
         #endregion
 

@@ -32,7 +32,7 @@ namespace DDAS.DataExtractor
             ISearchEngine searchEngine = new SearchEngine(log, uow);
 
             var SiteScan = new SiteScanData(uow, log, searchEngine);
-            var query = SiteScan.GetNewSearchQuery();
+            var query = SearchSites.GetNewSearchQuery();
              
             searchEngine.Load(query);
 
