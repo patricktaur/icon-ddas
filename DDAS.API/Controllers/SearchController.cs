@@ -256,7 +256,7 @@ namespace DDAS.API.Controllers
 
         [Route("Upload")]
         [HttpPost]
-        public async Task<HttpResponseMessage> PostFormData()
+        public Task<ComplianceForm> PostFormData()
         {
             // Check if the request contains multipart/form-data.
             if (!Request.Content.IsMimeMultipartContent())
@@ -264,33 +264,67 @@ namespace DDAS.API.Controllers
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
-            string root = HttpContext.Current.Server.MapPath("~/App_Data");
-            var provider = new MultipartFormDataStreamProvider(root);
+            //string root = HttpContext.Current.Server.MapPath("~/App_Data");
+            //var provider = new MultipartFormDataStreamProvider(root);
 
-            try
-            {
-                string[] FileContent = null;
-                // Read the form data.
-                await Request.Content.ReadAsMultipartAsync(provider);
+            ////try
+            ////{
+            //    string[] FileContent = null;
+            //    var form = new List<ComplianceForm>();
+            //    // Read the form data.
+            //    await Request.Content.ReadAsMultipartAsync(provider);
 
-                // This illustrates how to get the file names.
-                foreach (MultipartFileData file in provider.FileData)
-                {
-                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
-                    Trace.WriteLine("Server file path: " + file.LocalFileName.Trim('\"'));
+            //    // This illustrates how to get the file names.
+            //    foreach (MultipartFileData file in provider.FileData)
+            //    {
+            //        Trace.WriteLine(file.Headers.ContentDisposition.FileName);
+            //        Trace.WriteLine("Server file path: " + file.LocalFileName.Trim('\"'));
 
-                    FileContent = File.ReadAllLines(file.LocalFileName);
-                    for(int Counter = 1; Counter <=FileContent.Length; Counter++)
-                    {
-                        GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
-                    }
-                }
-                return FileContent != null ? Request.CreateResponse(FileContent) : null;
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
-            }
+            //        FileContent = File.ReadAllLines(file.LocalFileName);
+            //        for(int Counter = 1; Counter <=FileContent.Length; Counter++)
+            //        {
+            var complianceForm = new ComplianceForm();
+            var Sites = new List<SitesIncludedInSearch>();
+            var Site = new SitesIncludedInSearch();
+
+            Site.SiteEnum = 0;
+            Site.SiteName = "FDA Debar Page";
+            Site.SiteUrl = "http://www.fda.gov/ICECI/EnforcementActions/FDADebarmentList/default.htm";
+            Site.FullMatchCount = 1;
+            Site.PartialMatchCount = 0;
+            Site.ScannedOn = DateTime.Now;
+            Site.LastUpdatedOn = DateTime.Now;
+            Site.CreatedOn = DateTime.Now;
+            Site.Findings = "";
+            Site.IssuesIdentified = false;
+            Sites.Add(Site);
+            
+            complianceForm.NameToSearch = "Martin Luther King";
+            complianceForm.ProjectNumber = "AA113";
+            complianceForm.Country = "UK";
+            complianceForm.Address = "#221B Baker Street";
+            complianceForm.SearchStartedOn = DateTime.Now;
+            complianceForm.Sites_FullMatchCount = 1;
+            complianceForm.Sites_PartialMatchCount = 0;
+            complianceForm.SponsorProtocolNumber = "ED12C";
+            
+            complianceForm.SiteDetails = Sites;
+                        //complianceForm = 
+                        //    GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
+                //        form.Add(complianceForm);
+                //    }
+                //}
+                //return FileContent != null ? Request.CreateResponse(FileContent) : null;
+                return Task.FromResult(complianceForm);
+            //}
+            //catch (Exception e)
+            //{
+            //    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            //}
+        }
+        public int GetMeANumberAsync()
+        {
+            return 10 * 10;
         }
     }
 

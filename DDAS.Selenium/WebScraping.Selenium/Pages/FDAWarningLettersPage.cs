@@ -33,9 +33,13 @@ namespace WebScraping.Selenium.Pages
 
         public bool SearchTerms(string Name)
         {
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
             IWebElement Input = FDASearchTextBox;
             Input.Clear();
             Input.SendKeys(Name);
+
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
             IWebElement Search = FDASearchButton;
             Search.Click();
