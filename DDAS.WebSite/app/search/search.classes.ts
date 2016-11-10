@@ -10,8 +10,11 @@ export class NameSearch{
         NameToSearch:string;
     }
 
+//revised: 05Nov2016:
 export class SearchSummary
     {
+        
+        ComplianceFormId:string;
         NameToSearch:string;
         SearchSummaryItems : SearchSummaryItem[];
     }  
@@ -79,27 +82,71 @@ export class SiteDataItemBase{
 }
 
 
+//added 05Nov2016:
+//to be converted to typescript classes
+//  public class ComplianceForm
+//     {
+//         public Guid? RecId { get; set; }
+//         public string SponsorProtocolNumber { get; set; }
+//         public string Country { get; set; }
+//         public string NameToSearch { get; set; }
+//         public string Address { get; set; }
+//         public string ProjectNumber { get; set; }
+//         public DateTime SearchStartedOn { get; set; }
+//         public DateTime SearchClosedOn { get; set; }
+//         public List<SitesIncludedInSearch> SiteDetails { get; set; }
+//     }
 
-//tokenDetails
-export class TokenDetails{
-    access_token:string;
-    token_type:string;
-    expires_in: number;
-    userName: string;
-    
-  }
+//     public class SitesIncludedInSearch
+//     {
+//         public string SiteName { get; set; }
+//         public SiteEnum SiteEnum { get; set; }
+//         public string SiteUrl { get; set; }
+//         public DateTime ScannedOn { get; set; }
+//         public int FullMatchCount { get; set; }
+//         public int PartialMatchCount { get; set; }
+//         public bool IssuesIdentified { get; set; }
+//         public string Findings { get; set; }
+//         //public string Issues { get; set; }
+//         public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
+//     }
 
-export const enum SiteEnum{
-    FDADebarPage,
-    ClinicalInvestigatorInspectionPage,
-    FDAWarningLettersPage,
-    ERRProposalToDebarPage,
-    AdequateAssuranceListPage,
-    ClinicalInvestigatorDisqualificationPage,
-    CBERClinicalInvestigatorInspectionPage,
-    PHSAdministrativeActionListingPage,
-    ExclusionDatabaseSearchPage,
-    CorporateIntegrityAgreementsListPage,
-    SystemForAwardManagementPage,
-    SpeciallyDesignedNationalsListPage
+//     public class MatchedRecordsPerSite
+//     {
+//         public string Issues { get; set; }
+//         public int IssueNumber { get; set; }
+//         public int RowNumber { get; set; }
+//         public string RecordDetails { get; set; }
+//         public string Status { get; set; }
+//     }
+
+export class SitesIncludedInSearch{
+  
+    SiteName: string = "";
+    SiteEnum :number = 0;
+    SiteUrl :number = 0;
+    ScannedOn: Date;
+    FullMatchCount :number = 0;
+    PartialMatchCount :number = 0;
+    IssuesIdentified:string;
+    Findings:string;
+    Issues:string;
+    MatchedRecords:MatchedRecordsPerSite[] = [] ;
+   }
+
+
+export class MatchedRecordsPerSite{
+    Issues: string = "";
+    IssueNumber :number = 0;
+    RowNumber :number;
+    RecordDetails :string = "";
+    Status :string = ""; 
+    Selected:boolean;  //this prop is not declared on server side
 }
+
+export class SearchList{
+    NameToSearch: string = "";
+     SearchDate: string = "";
+      MatchSummary: string = "";
+    ProcessedSummary: string = "";
+    }

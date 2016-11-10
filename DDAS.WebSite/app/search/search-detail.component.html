@@ -1,0 +1,74 @@
+ <div class="">
+    {{diagnostic}}
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="container-fluid panel-container">
+                <div class="row">
+                    <div class="col-md-8 text-left">
+                        <h3 class="panel-title">
+                            <div class="checkbox" style="display:inline">
+                                <label>
+                                    {{_SiteData.SiteName}} :{{_SiteData.NameToSearch}}
+                                       </label>
+                 
+                            </div>
+                            
+                        </h3>
+                    </div>
+                    <div class="col-md-4 panel-title pull-right text-right"><h3 class="panel-title">Last saved at: {{_SiteData.CreatedOn}} </h3></div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+ 
+             <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    
+                    <th>Issue No</th>
+                     <th>Status</th> 
+                    <th>Observations</th>
+                    <th>Record Details</th>
+                    <th>Record Location (Row Number)</th>
+   
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let matchedRecord of matchedRecords" >
+                    
+                      <td>
+                          
+                         
+                          <input type="text" [(ngModel)]="matchedRecord.IssueNumber" placeholder="Status">
+                          </td> 
+                     <td>
+
+                         <input type="text" [(ngModel)]="matchedRecord.Status" placeholder="Status">
+
+                     </td>
+                    <td>
+                            <textarea [(ngModel)]="matchedRecord.Issues"    rows="3" cols="30"
+                                        required placeholder="Observations"></textarea>
+
+                    </td>
+
+                    <td>{{matchedRecord.RecordDetails | slice:0 : 150}} ...</td>
+                    <td>{{matchedRecord.RowNumber}}</td>
+                
+                 </tr>
+                
+                </tbody>
+            </table>
+          </div>
+
+          <div align="center">
+             <button type="button" class="btn btn-success" (click)="saveSiteDetails()">Save</button>
+            <button type="button" class="btn btn-default" (click)="goBack()">Back</button>
+          </div>
+        </div>
+    </div>
+  </div>
+ 

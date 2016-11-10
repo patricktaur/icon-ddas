@@ -1,4 +1,5 @@
 <div class="well">
+    <!--{{diagnostic}}-->
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="container-fluid panel-container">
@@ -31,28 +32,21 @@
                         <th>Site Name</th>
                         <!--<th>RecId</th>-->
                         <th>URL </th>
-                        <th>Match Status </th>
-                        <th>Enumerator Value </th>
+                        <th>Full Match </th>
+                        <th>Partial Match </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let searchS of SearchSummaryItems"  >
-                        <td>{{searchS.SiteEnum+1}}.{{searchS.SiteName}}</td>
-                        <!--<td>{{searchS.SiteRecId}}</td>-->
+                        <td>{{searchS.SiteName}}</td>
+ 
                         <td><a target="_blank" [href]="searchS.SiteUrl">{{searchS.SiteUrl}}</a></td> 
-                        <td><a (click)="onSelectedSite(searchS)">{{searchS.MatchStatus}}</a></td>
-                        <td>{{searchS.SiteEnum}}</td>
-                    </tr>
+                        <td><a (click)="onSelectedSite(searchS)">{{searchS.FullMatch}}</a></td>
+                        <td><a (click)="onSelectedSite(searchS)">{{searchS.PartialMatch}}</a></td>
+                     </tr>
                 </tbody>
             </table>
-            <div>
-               
-                <!--<a target="_blank" [href]="'http://www.w3schools.com'">no link here**** {{w3site}}</a>-->
-                 <!--<a target="_blank" [href]="w3site"> {{w3site}}</a>-->
-                 <!--{{searchSummaryTest}}-->
-
-
-            </div>       
+  
             <div align="center">
                 <button type="button"  class="btn btn-default" (click)="gotoSearch()">Back To Search Page</button>
             </div>

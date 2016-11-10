@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace DDAS.API.Controllers
 {
@@ -301,6 +303,7 @@ namespace DDAS.API.Controllers
         [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
+        
         {
             // Check if the request contains multipart/form-data.
             if (!Request.Content.IsMimeMultipartContent())
@@ -321,11 +324,38 @@ namespace DDAS.API.Controllers
                 {
                     Trace.WriteLine(file.Headers.ContentDisposition.FileName);
                     Trace.WriteLine("Server file path: " + file.LocalFileName);
+                  
                 }
-                return Request.CreateResponse(HttpStatusCode.OK);
+
+                List<TestClass> tests = new List<TestClass>();
+                //tests.Add(new TestClass {MatchSummary = "AAA", NameToSearch="BBB", ProcessedSummary="CCC", SearchDate="DDD" });
+                TestClass test1 = new TestClass();
+                test1.MatchSummary = "AAA";
+                test1.NameToSearch = "NNNNN";
+                test1.ProcessedSummary = "PPPP";
+                test1.SearchDate = "1 Jan 2016";
+                tests.Add(test1);
+
+                TestClass test2 = new TestClass();
+                test2.MatchSummary = "AAA";
+                test2.NameToSearch = "NNNNN";
+                test2.ProcessedSummary = "PPPP";
+                test2.SearchDate = "1 Jan 2016";
+                tests.Add(test2);
+
+                //return Request.CreateResponse(HttpStatusCode.OK(tests));
+
+                //return Request.CreateResponse<Employee>(HttpStatusCode.OK, emp);  
+                var response = Request.CreateResponse(HttpStatusCode.OK);
+               
+                response.Content = new StringContent(JArray.FromObject(tests).ToString(), Encoding.UTF8, "application/json");
+
+                return response;
+                //return Request.CreateResponse(response);
             }
             catch (System.Exception e)
             {
+                
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
         }
@@ -337,4 +367,14 @@ namespace DDAS.API.Controllers
             public string pwd { get; set; }
             public string RoleName { get; set; }
         }
+
+        class TestClass
+    {
+        public string NameToSearch { get; set; }
+        public string SearchDate { get; set; }
+        public string MatchSummary { get; set; }
+        public string ProcessedSummary { get; set; }
+   
+    }
+
     }

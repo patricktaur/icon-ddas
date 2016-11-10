@@ -42,6 +42,10 @@ Parick
 
 
 Pradeep
+7Nov2016
+SiteScanData line 143: null item must be handled.
+
+
 1. Explore PhantomJs With Selenium as replacement to FireFox/Edge driver
 2. LIST OF SPECIALLY DESIGNATED NATIONALS - Download PDF
 	a. read document date

@@ -4,7 +4,6 @@ import {SiteInfo,SearchSummaryItem,SearchSummary,NameSearch} from './search.clas
 import {Location} from '@angular/common';
 import {SearchService} from './search-service';
 
-import { AuthService }      from '../auth/auth.service';
 
 @Component({
   moduleId: module.id,
@@ -13,13 +12,12 @@ import { AuthService }      from '../auth/auth.service';
 })
 export class SearchResultSummaryComponent { 
   
-   private  NameToSearch:string = "";
+   public  NameToSearch:string;
    private SearchName :NameSearch;
   
-   private SearchSummaryItems :  SearchSummaryItem[];
-
-   private Token:string;
-
+   public SearchSummary : SearchSummary;
+   public SearchSummaryItems : SearchSummaryItem[];
+   
    SiteName : string;
    SiteEnum : number;
 
@@ -27,39 +25,31 @@ export class SearchResultSummaryComponent {
    
    processing: boolean;
 
+
    constructor(private service: SearchService,
        private route: ActivatedRoute,
        private _location: Location,
-       private router: Router,
-        private authservice: AuthService
-
+       private router: Router
   ) {}
   
 
   ngOnInit() {
+      
       this.route.params.forEach((params: Params) => {
-         
-            this.NameToSearch = params['name'];
-            this.LoadSearchSummary();
-        
-          
+        this.NameToSearch = params['name'];
+        this.LoadSearchSummary();
       });
-        this.Token=this.authservice.getToken();
-        console.log('Token in Search Summery List : ' + this.Token);
-        
+    
   }
 
   LoadSearchSummary(){
         
-      if (this.SearchSummaryItems){
-        return;
-      }
-
         this.SearchName={'NameToSearch' : this.NameToSearch};
         this.processing = true;
         this.service.getSearchSummary(this.NameToSearch)
         .subscribe((item) => {
             this.processing = false;
+            this.SearchSummary = item;
             this.SearchSummaryItems=item.SearchSummaryItems
          },
         error => {
@@ -81,9 +71,10 @@ export class SearchResultSummaryComponent {
  }
    
  onSelectedSite(summary: SearchSummaryItem) {
-      console.log(summary.SiteName);
-       this.router.navigate([summary.SiteName,this.NameToSearch, summary.RecId], { relativeTo: this.route.parent });
+       //this.router.navigate([summary.SiteName,this.NameToSearch, summary.RecId], { relativeTo: this.route.parent });
+       //'details/:siteEnum/:name/:id',
+       this.router.navigate(["details", summary.SiteEnum,this.NameToSearch,  this.SearchSummary.ComplianceFormId], { relativeTo: this.route.parent });
  }
 
- get diagnostic() { return JSON.stringify(this.SearchSummaryItems); }
+ get diagnostic() { return JSON.stringify(this.SearchSummary); }
 }

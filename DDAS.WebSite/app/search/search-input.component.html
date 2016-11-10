@@ -1,40 +1,100 @@
 <div class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                
-               
-                    
-                    <form #searchForm="ngForm" >
-                        <div class="">
-                            
-                            <div class="col-md-4">
-                                <h2>Search for {{NameToSearch}}</h2>
-                                <p>Search Websites for ...</p>
-                                <div class="form-group">
-                                    <label class="control-label" for="exampleInputEmail1">Name to search:</label>
-                                    <textarea [(ngModel)]="NameToSearch" name="NameToSearch" class="form-control" id="TextArea1" rows="3" cols="30"
-                                       ngcontroll="NameToSearch" (ngModelChange)="NameToSearch = $event" required placeholder="Enter a name to search, example:Ramesh Krishnan Venkat Narayan, first name, middle name, last name order is not important. "></textarea>
-                                        <div [hidden]="!NameToSearch==''" class="alert alert-danger">
-                                            Name is required
-                                        </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label" for="exampleInputEmail1">Search applies to Study:</label>
-                                    <br>
-                                    <select id="Select1" class="form-control">
-                                    <option *ngFor="let StudyNumber of StudyNumbers" >{{StudyNumber}}</option>
-                                    <!--<option *ngFor="let StudyNumber of StudyNumbers" [value]="StudyNumber.Id">{{StudyNumber.Name}}</option>-->
-                                </select>
-                                </div>
-                                <button type="button" [disabled]="!searchForm.form.valid" class="btn btn-primary" (click)="goToSearch()">Search</button>
-                            </div>
-                            <div class="col-md-8">
-                            </div>
-                        </div>
-                    </form>
-               
-            </div>
-        </div>
-    </div>
-</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="well">
+
+					<h3>Add names to search</h3>
+
+					<div class="row">
+						<div class="col-md-6">
+							<form #searchForm="ngForm">
+								<!--#searchForm="ngForm"-->
+								<div class="form-group">
+
+									<label class="control-label" for="exampleInputEmail1">Add a name to search:</label>
+									<textarea [(ngModel)]="NameToSearch" name="NameToSearch" class="form-control" id="TextArea1" rows="3" cols="30" ngcontroll="NameToSearch"
+										(ngModelChange)="NameToSearch = $event" required placeholder="Enter a name to search, example:Ramesh Krishnan Venkat Narayan, first name, middle name, last name order is not important. "></textarea>
+								</div>
+								<button type="button" [disabled]="!searchForm.form.valid" class="btn btn-primary" (click)="goToSearch()">Add</button>
+							</form>
+						</div>
+						<div class="col-md-6">
+							<!--<form #uploadForm="ngForm" action="{{uploadUrl}}" enctype="multipart/form-data" method="post">
+								<div class="form-group">
+
+									<label for="fileupload" class="control-label"> Select a file to upload - (.csv file with list of names to search):</label>
+									<input type="file" name="fileupload" value="fileupload" id="fileupload" class="form-control"   >
+
+								</div>
+								<input type="submit" value="Add a " class="btn btn-primary">
+							</form>-->
+							<!--ng2-uploader:-->
+							
+							<div class="form-group">
+											
+									<label for="fileupload" class="control-label">Select a file to upload - (.csv file with list of names to search):</label>
+									<input type="file" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"/>
+
+								</div>
+							
+							
+							<div>
+								Response: {{ response | json }}
+							</div>
+
+							<div>
+								Progress: {{ progress }}%
+							</div>
+
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-md-12">
+							aaa:XXXXXXXXX: {{diagnostic}}
+							<h3>Search Pending:</h3>
+							<div class="table-responsive">
+
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>Name to search</th>
+											<th>SearchDate</th>
+											<th>MatchSummary</th>
+											<th>ProcessedSummary</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let item of ComplianceFormSummaryList">
+
+											<td>
+												{{item.NameToSearch}}
+											</td>
+											<td>
+												{{item.SearchDate}}
+											</td>
+											<td>
+												{{item.MatchSummary}}
+											</td>
+											<td>
+												{{item.ProcessedSummary}}
+											</td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+
+
+
+							<div>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>

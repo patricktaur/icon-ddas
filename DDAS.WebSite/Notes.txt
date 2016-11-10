@@ -1,9 +1,0 @@
-components:
-https://github.com/michaelbromley/ng2-pagination
-
-
-Sorting:
-String:
-return this.DebarredPersonsList.sort(function(b, a) {return (a.Matched > b.Matched) ? 1 : ((b.Matched > a.Matched) ? -1 : 0);});
-Number:        
-return this.DebarredPersonsList.sort((a, b) => b.Matched - a.Matched);
