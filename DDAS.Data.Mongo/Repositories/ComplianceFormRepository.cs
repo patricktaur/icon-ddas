@@ -21,7 +21,14 @@ namespace DDAS.Data.Mongo.Repositories
             var filter = Builders<ComplianceForm>.Filter.Eq("NameToSearch", NameToSearch);
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var entity = collection.Find(filter).FirstOrDefault();
+            return entity;
+        }
 
+        public List<ComplianceForm> FindActiveComplianceForms(bool value)
+        {
+            var Filter = Builders<ComplianceForm>.Filter.Eq("Active", value);
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.Find(Filter).ToList();
             return entity;
         }
 

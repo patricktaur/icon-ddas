@@ -329,7 +329,7 @@ Entry on 4 Nov 2016
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 7 Nov 2016
-1. 
+1. Working on ClinicalInvestigator and FDAWarningLetter Site(live site), for the new design
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 8 Nov 2016
@@ -337,4 +337,8 @@ Entry on 8 Nov 2016
 2. New design will provide the list of sites with total match count (full and partial)
 3. Next level will provide the match status of each site.Then the matched details and saving the updated 
    records
-    
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 9 Nov 2016
+1. Changed the Upload function in controller to return a dummy ComplianceForm object
+2. 

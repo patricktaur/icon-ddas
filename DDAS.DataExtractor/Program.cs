@@ -40,7 +40,6 @@ namespace DDAS.DataExtractor
             log.WriteLog("=================================================================================");
             log.LogEnd();
             Environment.Exit(0);
-
         }
     }
 }

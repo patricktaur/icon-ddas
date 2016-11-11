@@ -6,14 +6,12 @@ using System;
 using DDAS.Models;
 using DDAS.API.Identity;
 using Microsoft.AspNet.Identity;
-using Utilities;
-using System.Web;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
+using Utilities;
 
 namespace DDAS.API.Controllers
 {
@@ -28,6 +26,9 @@ namespace DDAS.API.Controllers
 
         private string DataExtractionLogFile =
             System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+
+        private string UploadFolder =
+            System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
@@ -100,6 +101,61 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
+        [Route("Upload")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> PostFormData()
+        {
+            //_log.LogStart();
+            // Check if the request contains multipart/form-data.
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            try
+            {
+                // Read the form data
+                //string root = HttpContext.Current.Server.MapPath("~/App_Data");
+                var provider = new MultipartFormDataStreamProvider(UploadFolder);
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                string[] FileContent = null;
+
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
+                    Trace.WriteLine("Server file path: " + file.LocalFileName);
+
+                    FileContent = File.ReadAllLines(file.LocalFileName);
+                    for (int Counter = 1; Counter < FileContent.Length; Counter++)
+                    {
+                        GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
+                    }
+                }
+                //_log.WriteLog("=================================================================================");
+                //_log.LogEnd();
+                //Environment.Exit(0);
+                return Request.CreateResponse(HttpStatusCode.OK, "Completed");
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        [Route("GetNamesFromOpenComplianceForms")]
+        [HttpGet]
+        public IHttpActionResult GetNamesFromOpenComplianceForm()
+        {
+            var ComplianceForms =
+                _UOW.ComplianceFormRepository.FindActiveComplianceForms(true);
+
+            foreach (ComplianceForm form in ComplianceForms)
+                form.SiteDetails = null;
+
+            return Ok(ComplianceForms);
+        }
+
         [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
@@ -108,82 +164,67 @@ namespace DDAS.API.Controllers
             return Ok(SearchResults);
         }
 
-        [Route("GetSearchSummary")]
-        [HttpGet]
-        public IHttpActionResult GetSearchSummary(string NameToSearch, string ComplianceFormId)
-        {
-            var Query = new NameToSearchQuery();
-            Query.NameToSearch = NameToSearch;
-            Query.ComplianceFormId = Guid.Parse(ComplianceFormId);
-
-            return Ok(
-                _SiteSummary.GetSearchSummaryStatus(
-                    Query.NameToSearch, Query.ComplianceFormId));
-        }
-
         public ComplianceForm GetSearchSummaryDetailsForSingleName(
             string NameToSearch)
         {
-            return _SearchSummary.GetSearchSummary(NameToSearch);
+            _log.LogStart();
+            var form = _SearchSummary.GetSearchSummary(NameToSearch, _log);
+            _log.WriteLog("=================================================================================");
+            _log.LogEnd();
+            return form;
+        }
+
+        [Route("GetSearchSummary")]
+        [HttpGet]
+        public IHttpActionResult GetSearchSummary(string ComplianceFormId)
+        {
+            var Query = new NameToSearchQuery();
+            Query.ComplianceFormId = Guid.Parse(ComplianceFormId);
+
+            return Ok(
+                _SiteSummary.GetSearchSummaryStatus(Query.ComplianceFormId));
         }
 
         [Route("GetSearchSummaryDetails")]
         [HttpGet]
-        public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch, string RecId,
+        public IHttpActionResult GetSearchSummaryDetailsXXX(string RecId,
             SiteEnum siteEnum)
         {
             var query = new SearchDetailsQuery();
-            query.NameToSearch = NameToSearch;
+            //query.NameToSearch = NameToSearch;
             query.RecId = Guid.Parse(RecId);
             query.siteEnum = siteEnum;
 
             switch (query.siteEnum)
             {
-
                 case SiteEnum.FDADebarPage:
                     var SearchDetails = _SearchSummary.
                         GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        query.RecId, siteEnum);
 
                     return Ok(SearchDetails);
 
-                //refactor GetStatusOfFDASiteRecords as per the new design
-                //return Ok(
-                //    _SearchSummary.GetStatusOfFDASiteRecords(SearchDetails,
-                //    query.NameToSearch));
-
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var ClinicalSearchDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(ClinicalSearchDetails);
-                //Refactor this as per new design
-                //return Ok(_SearchSummary.
-                //    GetStatusOfClinicalSiteRecords(ClinicalSearchDetails,
-                //    query.NameToSearch));
 
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningLetterDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(FDAWarningLetterDetails);
-                //return Ok(_SearchSummary.
-                //    GetStatusOfFDAWarningSiteRecords(FDAWarningLetterDetails,
-                //    query.NameToSearch));
 
                 case SiteEnum.ERRProposalToDebarPage:
                     var ProposalToDebarDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(ProposalToDebarDetails);
 
                 case SiteEnum.AdequateAssuranceListPage:
                     var AssuranceDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(AssuranceDetails);
 
@@ -192,35 +233,27 @@ namespace DDAS.API.Controllers
                 //        GetDisqualificationProceedingsMatch(
                 //        query.NameToSearch, query.RecId);
 
-                //    return Ok(_SearchSummary.
-                //        GetStatusOfDisqualificationSiteRecords(DisqualificationDetails,
-                //        query.NameToSearch));
-
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     var CBERDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(CBERDetails);
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
                     var PHSSearchDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(PHSSearchDetails);
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     var ExclusionDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(ExclusionDetails);
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     var CIADetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(CIADetails);
 
@@ -229,14 +262,9 @@ namespace DDAS.API.Controllers
                 //        GetSAMMatch(
                 //        query.NameToSearch, query.RecId);
 
-                //    return Ok(_SearchSummary.
-                //        GetStatusOfSAMSiteRecords(SAMDetails,
-                //        query.NameToSearch));
-
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     var SDNSearchDetails = _SearchSummary.
-                        GetMatchedRecords(
-                        query.NameToSearch, query.RecId, siteEnum);
+                        GetMatchedRecords(query.RecId, siteEnum);
 
                     return Ok(SDNSearchDetails);
 
@@ -253,85 +281,39 @@ namespace DDAS.API.Controllers
             return Ok(_SearchSummary.SaveRecordStatus(
                 result, ComplianceFormId));
         }
-
-        [Route("Upload")]
-        [HttpPost]
-        public Task<ComplianceForm> PostFormData()
-        {
-            // Check if the request contains multipart/form-data.
-            if (!Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
-
-            //string root = HttpContext.Current.Server.MapPath("~/App_Data");
-            //var provider = new MultipartFormDataStreamProvider(root);
-
-            ////try
-            ////{
-            //    string[] FileContent = null;
-            //    var form = new List<ComplianceForm>();
-            //    // Read the form data.
-            //    await Request.Content.ReadAsMultipartAsync(provider);
-
-            //    // This illustrates how to get the file names.
-            //    foreach (MultipartFileData file in provider.FileData)
-            //    {
-            //        Trace.WriteLine(file.Headers.ContentDisposition.FileName);
-            //        Trace.WriteLine("Server file path: " + file.LocalFileName.Trim('\"'));
-
-            //        FileContent = File.ReadAllLines(file.LocalFileName);
-            //        for(int Counter = 1; Counter <=FileContent.Length; Counter++)
-            //        {
-            var complianceForm = new ComplianceForm();
-            var Sites = new List<SitesIncludedInSearch>();
-            var Site = new SitesIncludedInSearch();
-
-            Site.SiteEnum = 0;
-            Site.SiteName = "FDA Debar Page";
-            Site.SiteUrl = "http://www.fda.gov/ICECI/EnforcementActions/FDADebarmentList/default.htm";
-            Site.FullMatchCount = 1;
-            Site.PartialMatchCount = 0;
-            Site.ScannedOn = DateTime.Now;
-            Site.LastUpdatedOn = DateTime.Now;
-            Site.CreatedOn = DateTime.Now;
-            Site.Findings = "";
-            Site.IssuesIdentified = false;
-            Sites.Add(Site);
-            
-            complianceForm.NameToSearch = "Martin Luther King";
-            complianceForm.ProjectNumber = "AA113";
-            complianceForm.Country = "UK";
-            complianceForm.Address = "#221B Baker Street";
-            complianceForm.SearchStartedOn = DateTime.Now;
-            complianceForm.Sites_FullMatchCount = 1;
-            complianceForm.Sites_PartialMatchCount = 0;
-            complianceForm.SponsorProtocolNumber = "ED12C";
-            
-            complianceForm.SiteDetails = Sites;
-                        //complianceForm = 
-                        //    GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
-                //        form.Add(complianceForm);
-                //    }
-                //}
-                //return FileContent != null ? Request.CreateResponse(FileContent) : null;
-                return Task.FromResult(complianceForm);
-            //}
-            //catch (Exception e)
-            //{
-            //    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
-            //}
-        }
-        public int GetMeANumberAsync()
-        {
-            return 10 * 10;
-        }
     }
 
-        public class UserDetails
-        {
-            public string  UserName{get;set;}
-            public string pwd { get; set; }
-            public string RoleName { get; set; }
-        }
+    public class UserDetails
+    {
+        public string  UserName{get;set;}
+        public string pwd { get; set; }
+        public string RoleName { get; set; }
     }
+}
+//var AnotherComplianceForm = new ComplianceForm();
+//var ComplianceFormList = new List<ComplianceForm>();
+
+//complianceForm.NameToSearch = "Martin Luther King";
+//complianceForm.ProjectNumber = "AA113";
+//complianceForm.Country = "UK";
+//complianceForm.Address = "#221B Baker Street";
+//complianceForm.SearchStartedOn = DateTime.Now;
+//complianceForm.Sites_FullMatchCount = 1;
+//complianceForm.Sites_PartialMatchCount = 0;
+//complianceForm.SponsorProtocolNumber = "ED12C";
+
+//complianceForm.SiteDetails = null;
+//ComplianceFormList.Add(complianceForm);
+
+//AnotherComplianceForm.NameToSearch = "James Bond";
+//AnotherComplianceForm.ProjectNumber = "007";
+//AnotherComplianceForm.Country = "UK";
+//AnotherComplianceForm.Address = "MI5";
+//AnotherComplianceForm.SearchStartedOn = DateTime.Now;
+//AnotherComplianceForm.Sites_FullMatchCount = 1;
+//AnotherComplianceForm.Sites_PartialMatchCount = 10;
+//AnotherComplianceForm.SponsorProtocolNumber = "MI5";
+
+//AnotherComplianceForm.SiteDetails = null;
+
+//ComplianceFormList.Add(AnotherComplianceForm);

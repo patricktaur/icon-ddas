@@ -18,22 +18,19 @@ namespace DDAS.Services.Search
             _UOW = uow;
         }
 
-        public SearchSummary GetSearchSummaryStatus(string NameToSearch, Guid? ComplianceFormId)
+        public SearchSummary GetSearchSummaryStatus(Guid? ComplianceFormId)
         {
             SearchSummary searchSummary = new SearchSummary();
             var searchSummaryItems = new List<SearchSummaryItem>();
 
             searchSummary.ComplianceFormId = ComplianceFormId;
-            searchSummary.NameToSearch = NameToSearch;
 
-            searchSummary.SearchSummaryItems = GetSiteMatchStatus(NameToSearch,
-                ComplianceFormId);
+            searchSummary.SearchSummaryItems = GetSiteMatchStatus(ComplianceFormId);
 
             return searchSummary;
         }
 
-        public List<SearchSummaryItem> GetSiteMatchStatus(string NameToSearch, 
-            Guid? ComplianceFormId)
+        public List<SearchSummaryItem> GetSiteMatchStatus(Guid? ComplianceFormId)
         {
             var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 

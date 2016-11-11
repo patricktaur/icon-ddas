@@ -131,6 +131,7 @@ namespace DDAS.Models.Entities.Domain
     public class ComplianceForm
     {
         public Guid? RecId { get; set; }
+        public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public string Country { get; set; }
         public string NameToSearch { get; set; }

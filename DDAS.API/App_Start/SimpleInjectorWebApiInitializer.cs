@@ -61,7 +61,7 @@ namespace DDAS.API.App_Start
             // string downloadFolder = HttpContext.Current.Request.PhysicalApplicationPath + @"Downloads";
             //string downloadFolder = @"C:\Development\p926-ddas\DDAS.API\Downloads\"; //HttpContext.Current.Request.PhysicalApplicationPath + @"Downloads";
 
-            string logFile = @"C:\Development\p926-ddas\DDAS.API\Logs\testlog.log";
+            string logFile = @"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log";
             //var log = new LogText(logFile);
 
             container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();

@@ -5,28 +5,24 @@ using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Utilities;
 
 namespace DDAS.Services.Search
 {
     public class SiteScanData
     {
         private IUnitOfWork _UOW;
-        private ILog _log;
         private ISearchEngine _SearchEngine;
 
-        public SiteScanData( IUnitOfWork uow, ILog log, ISearchEngine 
+        public SiteScanData( IUnitOfWork uow, ISearchEngine 
             SearchEngine)
         {
             _UOW = uow;
-            _log = log;
             _SearchEngine = SearchEngine;
         }
 
-        public List<SiteScan> GetSiteScanSummary(string NameToSearch)
+        public List<SiteScan> GetSiteScanSummary(string NameToSearch, ILog log)
         {
             //need to refactor
-
             List<SiteScan> ScanData = new List<SiteScan>();
 
             SearchQuery NewSearchQuery = SearchSites.GetNewSearchQuery();
@@ -40,16 +36,24 @@ namespace DDAS.Services.Search
 
             foreach (SearchQuerySite Site in Sites) //NewSearchQuery.SearchSites)
             {
-                var scanData = GetSiteScanData(Site.SiteEnum, NameToSearch);
-                scanData.SiteName = Site.SiteName;
-                scanData.SiteUrl = Site.SiteUrl;
-                scanData.SiteEnum = Site.SiteEnum;
-                ScanData.Add(scanData);
+                try
+                {
+                    var scanData = GetSiteScanData(Site.SiteEnum, NameToSearch, log);
+                    scanData.SiteName = Site.SiteName;
+                    scanData.SiteUrl = Site.SiteUrl;
+                    scanData.SiteEnum = Site.SiteEnum;
+                    ScanData.Add(scanData);
+                }
+                catch (Exception e)
+                {
+                    log.WriteLog("Error occured while processing the Site:" + Site.SiteEnum
+                        + " Error Description:" + e.ToString());
+                }
             }
             return ScanData;
         }
 
-        public SiteScan GetSiteScanData(SiteEnum Enum, string NameToSearch)
+        public SiteScan GetSiteScanData(SiteEnum Enum, string NameToSearch, ILog log)
         {
             switch(Enum)
             {
@@ -60,7 +64,7 @@ namespace DDAS.Services.Search
                     return GetClinicalInvestigatorSiteScanDetails();
 
                 case SiteEnum.FDAWarningLettersPage:
-                    return GetFDAWarningLettersSiteScanDetails(NameToSearch);
+                    return GetFDAWarningLettersSiteScanDetails(NameToSearch, log);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarSiteScanDetails();
@@ -122,18 +126,14 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetFDAWarningLettersSiteScanDetails(string NameToSearch)
+        public SiteScan GetFDAWarningLettersSiteScanDetails(string NameToSearch, ILog log)
         {
-            //_log = new LogText(@"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log", true);
-
-            _log.LogStart();
-            _log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 
             _SearchEngine.Load(NameToSearch);
 
-            _log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-            _log.WriteLog("=================================================================================");
-            _log.LogEnd();
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+            log.WriteLog("=================================================================================");
 
             var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
