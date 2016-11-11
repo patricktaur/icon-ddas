@@ -8,23 +8,19 @@ namespace DDAS.Data.Mongo.Maps
 {
     public static class MongoMaps //MongoConfigurationMap
     {
-
         public static void Initialize()
         {
-
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
                 map.AutoMap();
                 //Patrick 08Oct2016:
                 map.SetIgnoreExtraElements(true);
-
             });
-
 
             BsonClassMap.RegisterClassMap<ComplianceForm>(map =>
             {
                 map.AutoMap();
-                //map.SetIgnoreExtraElements(true);
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
@@ -60,12 +56,14 @@ namespace DDAS.Data.Mongo.Maps
                 (map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
@@ -73,18 +71,21 @@ namespace DDAS.Data.Mongo.Maps
                 (map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<ERRProposalToDebarPageSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<CBERClinicalInvestigatorInspectionSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
@@ -103,12 +104,14 @@ namespace DDAS.Data.Mongo.Maps
             BsonClassMap.RegisterClassMap<ExclusionDatabaseSearchPageSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<CorporateIntegrityAgreementListSiteData>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
@@ -116,6 +119,7 @@ namespace DDAS.Data.Mongo.Maps
             (map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
@@ -123,6 +127,7 @@ namespace DDAS.Data.Mongo.Maps
                 (map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
@@ -138,18 +143,21 @@ namespace DDAS.Data.Mongo.Maps
             BsonClassMap.RegisterClassMap<User>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.UserId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<Role>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RoleId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<UserRole>(map =>
             {
                 map.AutoMap();
+                map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.Id).SetIdGenerator(GuidGenerator.Instance);
             });
             #endregion

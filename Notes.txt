@@ -330,4 +330,15 @@ Entry on 3 Nov 2016
 Entry on 4 Nov 2016
 1. Able to get the details of the matching records, save the status of the records and retrieve the same
    for FDADebarSite
->>>>>>> 67cd3cfd43196d6afec3fcb39485221aedac191f
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 7 Nov 2016
+1. 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 8 Nov 2016
+1. 9 sites have been added (8 are database sites and 1 live site), Not tested yet
+2. New design will provide the list of sites with total match count (full and partial)
+3. Next level will provide the match status of each site.Then the matched details and saving the updated 
+   records
+    

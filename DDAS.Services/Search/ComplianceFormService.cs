@@ -19,15 +19,20 @@ namespace DDAS.Services.Search
         public void CreateComplianceForm(ComplianceForm form)
         {
             form.SearchStartedOn = DateTime.Now;
+            foreach(SitesIncludedInSearch site in form.SiteDetails)
+            {
+                form.Sites_FullMatchCount += site.FullMatchCount;
+                form.Sites_PartialMatchCount += site.PartialMatchCount;
+            }
             _UOW.ComplianceFormRepository.Add(form);
         }
 
-        public Guid? GetComplianceFormId(string NameToSearch)
+        public ComplianceForm GetComplianceFormId(string NameToSearch)
         {
             var complianceForm = _UOW.ComplianceFormRepository.
                 FindComplianceFormIdByNameToSearch(NameToSearch);
 
-            return complianceForm.RecId;
+            return complianceForm;
         }
     }
 }

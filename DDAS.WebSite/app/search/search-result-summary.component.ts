@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import {SiteInfo,SearchSummaryItem,SearchSummary,NameSearch} from './search.classes';
+import {SiteInfo,SearchSummaryItem,SearchSummary,NameSearch, MatchedRecordsPerSite} from './search.classes';
 import {Location} from '@angular/common';
 import {SearchService} from './search-service';
 
@@ -14,6 +14,7 @@ export class SearchResultSummaryComponent {
   
    public  NameToSearch:string;
    private SearchName :NameSearch;
+   private ComplianceFormId: number;
   
    public SearchSummary : SearchSummary;
    public SearchSummaryItems : SearchSummaryItem[];
@@ -36,7 +37,8 @@ export class SearchResultSummaryComponent {
   ngOnInit() {
       
       this.route.params.forEach((params: Params) => {
-        this.NameToSearch = params['name'];
+        this.ComplianceFormId = +params['formid'];
+        console.log("Comp Form Id:" + this.ComplianceFormId)
         this.LoadSearchSummary();
       });
     
@@ -46,20 +48,24 @@ export class SearchResultSummaryComponent {
         
         this.SearchName={'NameToSearch' : this.NameToSearch};
         this.processing = true;
-        this.service.getSearchSummary(this.NameToSearch)
-        .subscribe((item) => {
-            this.processing = false;
-            this.SearchSummary = item;
-            this.SearchSummaryItems=item.SearchSummaryItems
-         },
-        error => {
-            this.processing = false;
-            //this.slimLoader.complete();
-            //this.notificationService.printErrorMessage('Failed to load users. ' + error);
-        });
+        
+        this.loadMockSearchSummary();
+        //required:
+        // this.service.getSearchSummary(this.NameToSearch)
+        // .subscribe((item) => {
+        //     this.processing = false;
+        //     this.SearchSummary = item;
+        //     this.SearchSummaryItems=item.SearchSummaryItems
+        //  },
+        // error => {
+        //     this.processing = false;
+        //     //this.slimLoader.complete();
+        //     //this.notificationService.printErrorMessage('Failed to load users. ' + error);
+        // });
         
  }
 
+ 
  gotoSearch() {
    
     this.router.navigate(['/search']);
@@ -70,10 +76,20 @@ export class SearchResultSummaryComponent {
         this.router.navigate([summary.Component, summary.SiteId], { relativeTo: this.route.parent });
  }
    
- onSelectedSite(summary: SearchSummaryItem) {
-       //this.router.navigate([summary.SiteName,this.NameToSearch, summary.RecId], { relativeTo: this.route.parent });
-       //'details/:siteEnum/:name/:id',
-       this.router.navigate(["details", summary.SiteEnum,this.NameToSearch,  this.SearchSummary.ComplianceFormId], { relativeTo: this.route.parent });
+ onSelectedSite(item: SearchSummaryItem) {
+       console.log(item.SiteName);
+       this.router.navigate(["details", item.SiteEnum, this.ComplianceFormId], { relativeTo: this.route.parent });
+ }
+
+ loadMockSearchSummary(){
+
+  
+     this.SearchSummaryItems = [
+     {RecId: "1", SiteName: "Site 1", SiteUrl: "Site URL", MatchStatus : "No match", SiteEnum:1},
+      {RecId: "1",SiteName: "Site 1", SiteUrl: "Site URL", MatchStatus : "No match", SiteEnum:1},
+       {RecId: "1",SiteName: "Site 1", SiteUrl: "Site URL", MatchStatus : "No match", SiteEnum:1},
+       ]
+    ; 
  }
 
  get diagnostic() { return JSON.stringify(this.SearchSummary); }

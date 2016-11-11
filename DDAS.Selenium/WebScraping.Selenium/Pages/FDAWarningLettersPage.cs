@@ -16,6 +16,7 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _FDAWarningSiteData = new FDAWarningLettersSiteData();
         }
 
         public override string Url {
@@ -32,9 +33,13 @@ namespace WebScraping.Selenium.Pages
 
         public bool SearchTerms(string Name)
         {
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+
             IWebElement Input = FDASearchTextBox;
             Input.Clear();
             Input.SendKeys(Name);
+
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
             IWebElement Search = FDASearchButton;
             Search.Click();
@@ -68,8 +73,6 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadFDAWarningLetters()
         {
-            _FDAWarningSiteData = new FDAWarningLettersSiteData();
-
             _FDAWarningSiteData.CreatedBy = "Patrick";
             _FDAWarningSiteData.SiteLastUpdatedOn = DateTime.Now;
             _FDAWarningSiteData.CreatedOn = DateTime.Now;
@@ -99,13 +102,23 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch)
         {
+            string[] FullName = NameToSearch.Split(' ');
             if (SearchTerms(NameToSearch))
                 LoadFDAWarningLetters();
+            else
+            {
+                for (int Counter = 0; Counter < FullName.Length; Counter++)
+                {
+                    if (FullName[Counter].Length > 1 && SearchTerms(FullName[Counter]))
+                        LoadFDAWarningLetters();
+                }
+            }
         }
 
         public override void SaveData()
         {
-            _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
+            if(_FDAWarningSiteData != null)
+                _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
         }
     }
 }

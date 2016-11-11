@@ -91,6 +91,7 @@ namespace DDAS.Models.Entities.Domain
     public class NameToSearchQuery
     {
         public string NameToSearch { get; set; }
+        public Guid? ComplianceFormId { get; set; }
     }
 
     public class SearchDetailsQuery
@@ -137,6 +138,9 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public DateTime SearchClosedOn { get; set; }
+        public int Sites_FullMatchCount { get; set; }
+        public int Sites_PartialMatchCount { get; set; }
+        public bool SitesProcessed { get; set; }
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
 

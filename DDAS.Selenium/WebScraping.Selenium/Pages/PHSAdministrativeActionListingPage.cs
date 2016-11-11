@@ -19,8 +19,8 @@ namespace WebScraping.Selenium.Pages
         public PHSAdministrativeActionListingPage(IWebDriver driver, IUnitOfWork uow)
             : base(driver)
         {
-            _UOW = uow;
             Open();
+            _UOW = uow;
         }
 
         public override SiteEnum SiteName {

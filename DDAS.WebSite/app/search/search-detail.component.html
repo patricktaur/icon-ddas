@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="panel-body">
- 
+            <ng2-popup #popup></ng2-popup>                 
              <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
@@ -67,6 +67,7 @@
           <div align="center">
              <button type="button" class="btn btn-success" (click)="saveSiteDetails()">Save</button>
             <button type="button" class="btn btn-default" (click)="goBack()">Back</button>
+             <button type="button" class="btn btn-default" (click)="openPopup()">Popup</button>
           </div>
         </div>
     </div>

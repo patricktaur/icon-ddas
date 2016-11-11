@@ -81,11 +81,11 @@ namespace WebScraping.Selenium.SearchEngine
         
         public void Load(string NameToSearch) //LoadAll
         {
-            ISearchEngine SearchEngine = new SearchEngine(_log, _uow);
-            SiteScanData ScanData = new SiteScanData(_uow, _log, SearchEngine);
-            var query = ScanData.GetNewLiveSiteSearchQuery();
+            //ISearchEngine SearchEngine = new SearchEngine(_log, _uow);
+            //SiteScanData ScanData = new SiteScanData(_uow, _log, SearchEngine);
+            var query = SearchSites.GetNewLiveSiteSearchQuery();
 
-            //_log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+            _log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
                 Load(site.SiteEnum, NameToSearch);
@@ -103,15 +103,15 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Load(SiteEnum siteEnum, string NameToSearch)  //Load one
         {
-            //_log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
+            _log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
 
             var page = GetSearchPage(siteEnum);
             page.LoadContent(NameToSearch);
 
-            //_log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
+            _log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
 
             page.SaveData();
-            //_log.WriteLog( "Data Saved" );
+            _log.WriteLog( "Data Saved" );
 
         }
         #endregion
@@ -153,12 +153,12 @@ namespace WebScraping.Selenium.SearchEngine
             get { 
                 if (_Driver == null)
                 {
-                    
-                    //PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
-                    //service.IgnoreSslErrors = true;
-                    //service.SslProtocol = "any";
 
-                    _Driver = new PhantomJSDriver();
+                    PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+                    service.IgnoreSslErrors = true;
+                    service.SslProtocol = "any";
+
+                    _Driver = new PhantomJSDriver(service);
 
                     //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
 

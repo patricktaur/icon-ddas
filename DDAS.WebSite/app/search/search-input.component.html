@@ -35,24 +35,16 @@
 											
 									<label for="fileupload" class="control-label">Select a file to upload - (.csv file with list of names to search):</label>
 									<input type="file" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"/>
-
+										
 								</div>
-							
-							
-							<div>
-								Response: {{ response | json }}
-							</div>
-
-							<div>
-								Progress: {{ progress }}%
-							</div>
+	
 
 						</div>
 					</div>
 					<br>
 					<div class="row">
 						<div class="col-md-12">
-							aaa:XXXXXXXXX: {{diagnostic}}
+	
 							<h3>Search Pending:</h3>
 							<div class="table-responsive">
 
@@ -60,26 +52,41 @@
 									<thead>
 										<tr>
 											<th>Name to search</th>
-											<th>SearchDate</th>
-											<th>MatchSummary</th>
-											<th>ProcessedSummary</th>
+											<th>Study</th>
+											<th>Protocol</th>
+											<th>Country</th>
+											
+											<th>Date</th>
+											<th>Sites matched - full</th>
+											<th>Sites matched - partial</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr *ngFor="let item of ComplianceFormSummaryList">
+										<tr *ngFor="let item of ComplianceFormSummaryList" (click)="gotoSummaryResult(item.ComplianceFormId);" class='clickable-row'>
 
 											<td>
+												
 												{{item.NameToSearch}}
 											</td>
 											<td>
-												{{item.SearchDate}}
+												{{item.ProjectNumber}}
 											</td>
 											<td>
-												{{item.MatchSummary}}
+												{{item.SponsorProtocolNumber}}
 											</td>
 											<td>
-												{{item.ProcessedSummary}}
+												{{item.Country}}
 											</td>
+											<td>
+												{{item.SearchStartedOn}}
+											</td>
+											<td>
+												{{item.Sites_FullMatchCount}}
+											</td>
+											<td>
+												{{item.Sites_PartialMatchCount}}
+											</td>
+											
 										</tr>
 
 									</tbody>

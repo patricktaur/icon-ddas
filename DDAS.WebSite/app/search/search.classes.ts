@@ -144,9 +144,28 @@ export class MatchedRecordsPerSite{
     Selected:boolean;  //this prop is not declared on server side
 }
 
+
+ 
 export class SearchList{
     NameToSearch: string = "";
      SearchDate: string = "";
       MatchSummary: string = "";
     ProcessedSummary: string = "";
     }
+
+    export class ComplianceForm{
+      RecId : string = "";
+      SponsorProtocolNumber : string = "";
+      Country : string = "";
+      NameToSearch : string = "";
+      Address : string = "";
+      ProjectNumber : string = "";
+      SearchStartedOn : Date ;
+      SearchClosedOn : Date ;
+      Sites_FullMatchCount : number = 0;
+      Sites_PartialMatchCount : number = 0;
+      SitesProcessed : string = "";
+     //List<SitesIncludedInSearch> SiteDetails : string = "";
+    }
+    
+    

@@ -1,10 +1,9 @@
 import { Component, OnInit, NgZone} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import {StudyNumbers, SearchList} from './search.classes';
+import {StudyNumbers, SearchList, ComplianceForm} from './search.classes';
 import { ConfigService } from '../shared/utils/config.service';
 import { Http, Response, Headers , RequestOptions } from '@angular/http';
-
-
+import {SearchService} from './search-service';
 
 @Component({
    moduleId: module.id,
@@ -16,6 +15,8 @@ export class SearchInputComponent implements OnInit{
   private active:boolean;
   //private StudyNumbers:StudyNumbers[];
   public StudyNumbers:string[];
+  private CompForms: ComplianceForm[];
+
 
 private zone: NgZone;
   public basicOptions: Object;
@@ -30,13 +31,14 @@ private zone: NgZone;
   
   constructor(
        private route: ActivatedRoute,
-    private router: Router, private configService: ConfigService
+    private router: Router, 
+    private configService: ConfigService,
+    private service: SearchService
   ) {
     this.NameToSearch="Fiddes, Robert A.";
     this.active=false;
  
   }
-
 
   ngOnInit() {
     this.uploadUrl = this.configService.getApiURI() + "search/Upload";
@@ -57,14 +59,7 @@ private zone: NgZone;
 
   LoadStudyNumber(){
 
-  this.StudyNumbers =  ['0000','1111','22222','4444444'
-         /* {StudyNumber:'dffdfdfdf'},
-          {StudyNumber:'dffdfdfdf'},
-          {StudyNumber:'dffdfdfdf'}*/
-      /* {StudyNumber:{Name:'Hai',Id:1222}},
-        {StudyNumber:{Name:'Hai',Id:1222}},
-         {StudyNumber:{Name:'Hai',Id:1222}},*/
-  ]
+  this.StudyNumbers =  ['0000','1111','22222','4444444']
 
 }
 
@@ -72,52 +67,22 @@ private zone: NgZone;
     console.log("handleUpload");
     this.zone.run(() => {
       this.response = data.response;
+        // this.service.getNamesFromOpenComplianceForm()
+        //     .subscribe((item: any) => {
+        //         this.CompForms = item;
+        //           },
+        //     error => {
+
+        //     });
+
    
-     
-    //    if (data){
-    //       data
-    //       .map((resp => resp.json().items) 
-    //       .subscribe(
-    //   data => this.SearchQue = data,
-    //   error => console.log(error)
-    // );
-          
-     
-  
-      
-      // return this.http.get(this._baseUrl + 'StudyNumbers')
-      //       .map((res: Response) => {
-      //           return res.json();
-      //       })
-      //       .catch(this.handleError);
-      
-      // data.map(res => {
-      //   // If request fails, throw an Error that will be caught
-      //   if (res.status < 200 || res.status >= 300) {
-      //     throw new Error('This request has failed ' + res.status);
-      //   }
-      //   // If everything went fine, return the response
-      //   else {
-      //     this.response = res.json();
-      //   }
-      // })
-      //   .subscribe(
-      //   (data) => this.response = data, // Reach here if res.status >= 200 && <= 299
-      //   (err) => this.error = err); // Reach here if fails
       this.progress = data.progress.percent / 100;
     });
-  }
-  
-  hack(val) {
-    if (val == undefined){
-      return null;
-    }
-    else{
-       return val.json();
-        //return Array.from(val);
-    }
+
     
   }
+  
+  
   
   
   goToSearch() {
@@ -127,18 +92,21 @@ private zone: NgZone;
   
  
  get ComplianceFormSummaryList() { 
-    //return null;
     
-    return this.hack(this.response );
-   
-  
-  //  return [
-  //    {NameToSearch: "Aiache, Adrien E.", SearchDate: "1-Jan-2016", MatchSummary : "No match", ProcessedSummary: "2 sites processed"},
-  //    {NameToSearch: "Berman, David E.", SearchDate: "12-Jan-2016", MatchSummary : "1 Match found", ProcessedSummary: "8 sites processed"},
-  //    {NameToSearch: "Copanos, John D.", SearchDate: "15-Jan-2016", MatchSummary : "1 Match found", ProcessedSummary: "8 sites processed"},
-  //  ]
-  //   ; 
+ 
+   return [
+     {NameToSearch: "Aiache, Adrien E.", SearchStartedOn: "1-Jan-2016", ProjectNumber : "No match", Country: "2 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "1"},
+     {NameToSearch: "Berman, David E.", SearchStartedOn: "12-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "2"}, 
+     {NameToSearch: "Copanos, John D.", SearchStartedOn: "15-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "3"},
+   ]
+    ; 
   }
 
-get diagnostic() { return this.ComplianceFormSummaryList; }
+gotoSummaryResult(CompFormId: string){
+  
+   this.router.navigate(['summary', CompFormId], { relativeTo: this.route });
+ 
+}
+
+get diagnostic() { return this.CompForms; }
 }

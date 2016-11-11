@@ -1,10 +1,13 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild} from '@angular/core';
 
 import {Location} from '@angular/common';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { SiteDataItemBase, SearchResultSaveData, SiteData, saveSearchDetails,SitesIncludedInSearch,  MatchedRecordsPerSite} from './search.classes';
 import {SearchService} from './search-service';
+import {  Ng2PopupComponent } from 'ng2-popup';
+
+
 @Component({
     moduleId: module.id,
     selector: 'search-detail',
@@ -13,6 +16,10 @@ import {SearchService} from './search-service';
      
 })
 export class SearchDetailComponent {
+    
+    @ViewChild(Ng2PopupComponent) popup: Ng2PopupComponent;
+
+
     private displayTitle:string;
     private displayName:string;
     private detailItems:SiteDataItemBase[];
@@ -22,23 +29,25 @@ export class SearchDetailComponent {
 
     private siteDetails: SitesIncludedInSearch;
     
-    public matchedRecords: MatchedRecordsPerSite;
+    public matchedRecords: MatchedRecordsPerSite[];
 
     constructor(private service: SearchService, private _location: Location, private route: ActivatedRoute) { }
 
    ngOnInit() {
         this.route.params.forEach((params: Params) => {
   
-            this._SiteData.RecId = params['id'];  //RecId = compid
-            this._SiteData.NameToSearch = params['name'];
+            this._SiteData.RecId = params['formid'];  //RecId = compid
             this._SiteData.SiteEnum = params['siteEnum']; 
             this._SiteData.SiteName ="FDA Debarred Person List";
             
-            this.LoadSiteResultDetails();
+            //this.LoadSiteResultDetails();
+            this.LoadMatchedRecords();
         });
     }
 
   LoadSiteResultDetails() {
+          
+          
           this.service.getSearchSummaryDetails(this._SiteData.NameToSearch, this._SiteData.RecId, this._SiteData.SiteEnum)
             .subscribe((item: any) => {
                 this.siteDetails = item;
@@ -50,7 +59,8 @@ export class SearchDetailComponent {
             error => {
 
             });
-    }
+    
+}
     
   
    markApproved() {
@@ -127,6 +137,22 @@ export class SearchDetailComponent {
 
             });
      }
+
+    LoadMatchedRecords(){
+   
+   
+    this.matchedRecords = [
+     { Issues: "Site 1", IssueNumber: 1, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true},
+      {Issues: "Site 2",IssueNumber: 2, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true},
+       { Issues: "Site 3", IssueNumber: 3, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true},
+       ]
+    ; 
+    
+  
+
+    }
+    
+    
 
     goBack() {
         this._location.back();
