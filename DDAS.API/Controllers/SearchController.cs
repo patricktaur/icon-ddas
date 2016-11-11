@@ -28,8 +28,8 @@ namespace DDAS.API.Controllers
         private string DataExtractionLogFile =
             System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-        private string UploadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
+        //private string UploadFolder =
+        //    System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
@@ -120,7 +120,7 @@ namespace DDAS.API.Controllers
                 //var provider = new MultipartFormDataStreamProvider(UploadFolder);
 
                 CustomMultipartFormDataStreamProvider provider = 
-                    new CustomMultipartFormDataStreamProvider(UploadFolder);
+                    new CustomMultipartFormDataStreamProvider(@"C:\Development\DDAS_Uploads");
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
