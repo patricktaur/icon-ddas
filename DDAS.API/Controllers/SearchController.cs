@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Utilities;
+using System.Net.Http.Headers;
 
 namespace DDAS.API.Controllers
 {
@@ -116,7 +117,11 @@ namespace DDAS.API.Controllers
             {
                 // Read the form data
                 //string root = HttpContext.Current.Server.MapPath("~/App_Data");
-                var provider = new MultipartFormDataStreamProvider(UploadFolder);
+                //var provider = new MultipartFormDataStreamProvider(UploadFolder);
+
+                CustomMultipartFormDataStreamProvider provider = 
+                    new CustomMultipartFormDataStreamProvider(UploadFolder);
+
                 await Request.Content.ReadAsMultipartAsync(provider);
 
                 string[] FileContent = null;
@@ -140,6 +145,16 @@ namespace DDAS.API.Controllers
             catch (Exception e)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        public class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
+        {
+            public CustomMultipartFormDataStreamProvider(string path) : base(path) { }
+
+            public override string GetLocalFileName(HttpContentHeaders headers)
+            {
+                return headers.ContentDisposition.FileName.Replace("\"", string.Empty);
             }
         }
 
