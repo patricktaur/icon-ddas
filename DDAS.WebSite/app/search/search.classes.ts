@@ -142,6 +142,7 @@ export class MatchedRecordsPerSite{
     RecordDetails :string = "";
     Status :string = ""; 
     Selected:boolean;  //this prop is not declared on server side
+    HiddenStatus: string = "";
 }
 
 
@@ -165,7 +166,10 @@ export class SearchList{
       Sites_FullMatchCount : number = 0;
       Sites_PartialMatchCount : number = 0;
       SitesProcessed : string = "";
+      Active: boolean;
      //List<SitesIncludedInSearch> SiteDetails : string = "";
     }
+
+    
     
     

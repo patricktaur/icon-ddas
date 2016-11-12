@@ -48,7 +48,8 @@ private zone: NgZone;
       url: this.uploadUrl
     };
 
-
+    this.LoadNamesFromOpenComplianceForm(); 
+    
     this.route.params.forEach((params: Params) => {
         this.NameToSearch = params['name'];
         this.StudyNumbers=[];
@@ -63,17 +64,22 @@ private zone: NgZone;
 
 }
 
+LoadNamesFromOpenComplianceForm()
+{
+  this.service.getNamesFromOpenComplianceForm()
+            .subscribe((item: any) => {
+                this.CompForms = item;
+                  },
+            error => {
+
+            });
+}
+  
   handleUpload(data: any): void {
     console.log("handleUpload");
     this.zone.run(() => {
       this.response = data.response;
-        // this.service.getNamesFromOpenComplianceForm()
-        //     .subscribe((item: any) => {
-        //         this.CompForms = item;
-        //           },
-        //     error => {
-
-        //     });
+       this.LoadNamesFromOpenComplianceForm(); 
 
    
       this.progress = data.progress.percent / 100;
@@ -82,9 +88,7 @@ private zone: NgZone;
     
   }
   
-  
-  
-  
+    
   goToSearch() {
        //this.router.navigate(['summary', this.NameToSearch], { relativeTo: this.route });
        this.router.navigate(['summary', this.NameToSearch], { relativeTo: this.route });
@@ -92,21 +96,21 @@ private zone: NgZone;
   
  
  get ComplianceFormSummaryList() { 
-    
+    return this.CompForms;
  
-   return [
-     {NameToSearch: "Aiache, Adrien E.", SearchStartedOn: "1-Jan-2016", ProjectNumber : "No match", Country: "2 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "1"},
-     {NameToSearch: "Berman, David E.", SearchStartedOn: "12-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "2"}, 
-     {NameToSearch: "Copanos, John D.", SearchStartedOn: "15-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "3"},
-   ]
-    ; 
+  //  return [
+  //    {NameToSearch: "Aiache, Adrien E.", SearchStartedOn: "1-Jan-2016", ProjectNumber : "No match", Country: "2 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "1"},
+  //    {NameToSearch: "Berman, David E.", SearchStartedOn: "12-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "2"}, 
+  //    {NameToSearch: "Copanos, John D.", SearchStartedOn: "15-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "3"},
+  //  ]
+  //   ; 
   }
 
 gotoSummaryResult(CompFormId: string){
-  
+   
    this.router.navigate(['summary', CompFormId], { relativeTo: this.route });
  
 }
 
-get diagnostic() { return this.CompForms; }
+get diagnostic() {return JSON.stringify(this.CompForms);  }
 }

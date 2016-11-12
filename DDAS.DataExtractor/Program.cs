@@ -31,7 +31,7 @@ namespace DDAS.DataExtractor
             log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
             ISearchEngine searchEngine = new SearchEngine(log, uow);
 
-            var SiteScan = new SiteScanData(uow, log, searchEngine);
+            var SiteScan = new SiteScanData(uow, searchEngine);
             var query = SearchSites.GetNewSearchQuery();
              
             searchEngine.Load(query);
@@ -40,7 +40,6 @@ namespace DDAS.DataExtractor
             log.WriteLog("=================================================================================");
             log.LogEnd();
             Environment.Exit(0);
-
         }
     }
 }

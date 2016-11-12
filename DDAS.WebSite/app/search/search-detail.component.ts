@@ -5,7 +5,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { SiteDataItemBase, SearchResultSaveData, SiteData, saveSearchDetails,SitesIncludedInSearch,  MatchedRecordsPerSite} from './search.classes';
 import {SearchService} from './search-service';
-import {  Ng2PopupComponent } from 'ng2-popup';
+
 
 
 @Component({
@@ -16,9 +16,6 @@ import {  Ng2PopupComponent } from 'ng2-popup';
      
 })
 export class SearchDetailComponent {
-    
-    @ViewChild(Ng2PopupComponent) popup: Ng2PopupComponent;
-
 
     private displayTitle:string;
     private displayName:string;
@@ -40,12 +37,12 @@ export class SearchDetailComponent {
             this._SiteData.SiteEnum = params['siteEnum']; 
             this._SiteData.SiteName ="FDA Debarred Person List";
             
-            //this.LoadSiteResultDetails();
             this.LoadMatchedRecords();
+            //this.LoadMockMatchedRecords();
         });
     }
 
-  LoadSiteResultDetails() {
+  LoadMatchedRecords() {
           
           
           this.service.getSearchSummaryDetails(this._SiteData.NameToSearch, this._SiteData.RecId, this._SiteData.SiteEnum)
@@ -138,25 +135,50 @@ export class SearchDetailComponent {
             });
      }
 
-    LoadMatchedRecords(){
-   
-   
-    this.matchedRecords = [
-     { Issues: "Site 1", IssueNumber: 1, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true},
-      {Issues: "Site 2",IssueNumber: 2, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true},
-       { Issues: "Site 3", IssueNumber: 3, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true},
-       ]
-    ; 
-    
-  
-
+    LoadMockMatchedRecords(){
+        this.matchedRecords = [
+        { Issues: "Site 1", IssueNumber: 1, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
+        {Issues: "Site 2",IssueNumber: 2, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
+        { Issues: "Site 3", IssueNumber: 3, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
+        ]
+        ; 
     }
     
-    
+    get SelectedRecords(){
+        if (this.matchedRecords==undefined){
+            return null;    
+        }
+        else
+        {
+            return this.matchedRecords.filter((a) =>
+                    //a.Selected == true is not working, hence a workaround
+                    a.HiddenStatus
+            );
+        }
+    }
 
+     get NotSelectedRecords(){
+        if (this.matchedRecords==undefined){
+            return null;    
+        }
+        else
+        {
+            return this.matchedRecords.filter((a) =>
+                      !a.HiddenStatus
+            );
+        }
+    }
+
+    MoveToSelected(matchedRecord: MatchedRecordsPerSite){
+        matchedRecord.HiddenStatus = "selected";
+    }
+    
+     RemoveFromSelected(matchedRecord: MatchedRecordsPerSite){
+        matchedRecord.HiddenStatus = "";
+    }
     goBack() {
         this._location.back();
     }
-    get diagnostic() { return JSON.stringify(this.siteDetails); }
+    get diagnostic() { return JSON.stringify(this.matchedRecords); }
 
 }

@@ -26,3 +26,176 @@ Processing:2 sites
 Processing:2 sites
 11/7/2016 7:02:18 PM, Extract Data ends
 =================================================================================
+11/11/2016 2:59:05 PM, Extract Data starts
+Processing:7 sites
+11/11/2016 2:59:05 PM, Start extracting from:FDADebarPage
+11/11/2016 3:00:00 PM, End extracting from:FDADebarPage
+Data Saved
+11/11/2016 3:00:00 PM, Start extracting from:ClinicalInvestigatorInspectionPage
+11/11/2016 3:00:22 PM, End extracting from:ClinicalInvestigatorInspectionPage
+Data Saved
+11/11/2016 3:00:22 PM, Start extracting from:ERRProposalToDebarPage
+11/11/2016 3:00:34 PM, End extracting from:ERRProposalToDebarPage
+Data Saved
+11/11/2016 3:00:34 PM, Start extracting from:AdequateAssuranceListPage
+11/11/2016 3:00:37 PM, End extracting from:AdequateAssuranceListPage
+Data Saved
+11/11/2016 3:00:37 PM, Start extracting from:PHSAdministrativeActionListingPage
+11/11/2016 3:00:46 PM, End extracting from:PHSAdministrativeActionListingPage
+Data Saved
+11/11/2016 3:00:46 PM, Start extracting from:ExclusionDatabaseSearchPage
+11/11/2016 3:01:09 PM, End extracting from:ExclusionDatabaseSearchPage
+Data Saved
+11/11/2016 3:01:10 PM, Start extracting from:CorporateIntegrityAgreementsListPage
+11/11/2016 3:10:05 PM, End extracting from:CorporateIntegrityAgreementsListPage
+Data Saved
+11/11/2016 3:10:05 PM, Extract Data ends
+=================================================================================
+11/11/2016 3:59:23 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 3:59:23 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 3:59:48 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 3:59:49 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:03:47 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:03:47 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:04:29 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:04:29 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:04:35 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:04:35 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:04:51 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:04:51 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:04:58 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:04:58 PM, Start extracting from:FDAWarningLettersPage
+Error occured while processing the Site:FDAWarningLettersPage Error Description:OpenQA.Selenium.WebDriverTimeoutException: Error Message => 'Click failed: timeout'
+ caused by Request => {"headers":{"Accept":"application/json, image/png","Connection":"Close","Content-Length":"2","Content-Type":"application/json;charset=utf-8","Host":"localhost:11788"},"httpVersion":"1.1","method":"POST","post":"{}","url":"/click","urlParsed":{"anchor":"","query":"","file":"click","directory":"/","path":"/click","relative":"/click","port":"","host":"","password":"","user":"","userInfo":"","authority":"","protocol":"","source":"/click","queryKey":{},"chunks":["click"]},"urlOriginal":"/session/54aee730-a7fa-11e6-97c1-35aad3f831a2/element/%3Awdc%3A1478860500285/click"}
+   at OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.InternalExecute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebElement.Execute(String commandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebElement.Click()
+   at WebScraping.Selenium.Pages.FDAWarningLettersPage.SearchTerms(String Name) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\Pages\FDAWarningLettersPage.cs:line 45
+   at WebScraping.Selenium.Pages.FDAWarningLettersPage.LoadContent(String NameToSearch) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\Pages\FDAWarningLettersPage.cs:line 112
+   at WebScraping.Selenium.SearchEngine.SearchEngine.Load(SiteEnum siteEnum, String NameToSearch) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\SearchEngine\SearchEngine.cs:line 109
+   at WebScraping.Selenium.SearchEngine.SearchEngine.Load(String NameToSearch) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\SearchEngine\SearchEngine.cs:line 91
+   at DDAS.Services.Search.SiteScanData.GetFDAWarningLettersSiteScanDetails(String NameToSearch, ILog log) in C:\Development\p926-ddas\DDAS.Services\Search\SiteScanData.cs:line 133
+   at DDAS.Services.Search.SiteScanData.GetSiteScanData(SiteEnum Enum, String NameToSearch, ILog log) in C:\Development\p926-ddas\DDAS.Services\Search\SiteScanData.cs:line 67
+   at DDAS.Services.Search.SiteScanData.GetSiteScanSummary(String NameToSearch, ILog log) in C:\Development\p926-ddas\DDAS.Services\Search\SiteScanData.cs:line 41
+=================================================================================
+11/11/2016 4:05:27 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:05:27 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:05:50 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:05:50 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:05:57 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:05:57 PM, Start extracting from:FDAWarningLettersPage
+Error occured while processing the Site:FDAWarningLettersPage Error Description:OpenQA.Selenium.WebDriverTimeoutException: Error Message => 'Click failed: timeout'
+ caused by Request => {"headers":{"Accept":"application/json, image/png","Connection":"Close","Content-Length":"2","Content-Type":"application/json;charset=utf-8","Host":"localhost:11788"},"httpVersion":"1.1","method":"POST","post":"{}","url":"/click","urlParsed":{"anchor":"","query":"","file":"click","directory":"/","path":"/click","relative":"/click","port":"","host":"","password":"","user":"","userInfo":"","authority":"","protocol":"","source":"/click","queryKey":{},"chunks":["click"]},"urlOriginal":"/session/54aee730-a7fa-11e6-97c1-35aad3f831a2/element/%3Awdc%3A1478860570668/click"}
+   at OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.InternalExecute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebElement.Execute(String commandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebElement.Click()
+   at WebScraping.Selenium.Pages.FDAWarningLettersPage.SearchTerms(String Name) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\Pages\FDAWarningLettersPage.cs:line 45
+   at WebScraping.Selenium.Pages.FDAWarningLettersPage.LoadContent(String NameToSearch) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\Pages\FDAWarningLettersPage.cs:line 112
+   at WebScraping.Selenium.SearchEngine.SearchEngine.Load(SiteEnum siteEnum, String NameToSearch) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\SearchEngine\SearchEngine.cs:line 109
+   at WebScraping.Selenium.SearchEngine.SearchEngine.Load(String NameToSearch) in C:\Development\p926-ddas\DDAS.Selenium\WebScraping.Selenium\SearchEngine\SearchEngine.cs:line 91
+   at DDAS.Services.Search.SiteScanData.GetFDAWarningLettersSiteScanDetails(String NameToSearch, ILog log) in C:\Development\p926-ddas\DDAS.Services\Search\SiteScanData.cs:line 133
+   at DDAS.Services.Search.SiteScanData.GetSiteScanData(SiteEnum Enum, String NameToSearch, ILog log) in C:\Development\p926-ddas\DDAS.Services\Search\SiteScanData.cs:line 67
+   at DDAS.Services.Search.SiteScanData.GetSiteScanSummary(String NameToSearch, ILog log) in C:\Development\p926-ddas\DDAS.Services\Search\SiteScanData.cs:line 41
+=================================================================================
+11/11/2016 4:06:38 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:06:38 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:07:07 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:07:07 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:07:13 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:07:13 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:07:16 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:07:16 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:07:24 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:07:24 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:07:47 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:07:47 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:07:54 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:07:54 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:07:57 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:07:57 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:08:04 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:08:04 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:08:27 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:08:27 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:11:12 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:11:12 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:11:28 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:11:28 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:15:31 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:15:31 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:15:47 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:15:47 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:21:04 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:21:04 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:21:20 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:21:20 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:22:25 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:22:25 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:22:41 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:22:41 PM, Extract Data ends
+=================================================================================
+=================================================================================
+11/11/2016 4:24:58 PM, Extract Data starts
+Processing:1 sites
+11/11/2016 4:24:58 PM, Start extracting from:FDAWarningLettersPage
+11/11/2016 4:25:14 PM, End extracting from:FDAWarningLettersPage
+Data Saved
+11/11/2016 4:25:14 PM, Extract Data ends
+=================================================================================
+=================================================================================

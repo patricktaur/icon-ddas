@@ -7,16 +7,15 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchSummary
     {
-        ComplianceForm GetSearchSummary(string query);
+        ComplianceForm GetSearchSummary(string NameToSearch, ILog log);
         //FDADebarPageSiteData 
-        SitesIncludedInSearch GetMatchedRecords(string NameToSearch,
-            Guid? DataId, SiteEnum Enum);
+        SitesIncludedInSearch GetMatchedRecords(Guid? DataId, SiteEnum Enum);
 
         SitesIncludedInSearch
             GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId,
             SiteEnum Enum);
 
-        SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch,
+        SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch, 
             Guid? DataId, SiteEnum Enum);
 
         SitesIncludedInSearch GetPHSAdministrativeMatchCount(string NameToSearch,
@@ -26,23 +25,25 @@ namespace DDAS.Models.Interfaces
             Guid? DataId, SitesIncludedInSearch Site);
 
         SitesIncludedInSearch GetProposalToDebarPageMatchCount(string NameToSearch,
-                    Guid? DataId, SitesIncludedInSearch Site);
+            Guid? DataId, SitesIncludedInSearch Site);
 
         SitesIncludedInSearch GetAdequateAssuranceListPageMatchCount(string NameToSearch,
-                    Guid? DataId, SitesIncludedInSearch Site);
+            Guid? DataId, SitesIncludedInSearch Site);
 
         //refactor
         ClinicalInvestigatorDisqualificationSiteData
             GetDisqualificationProceedingsMatch(string NameToSearch, Guid? DataId);
 
-        SitesIncludedInSearch GetCBERClinicalInvestigatorPageMatchCount(string NameToSearch,
-                    Guid? DataId, SitesIncludedInSearch Site);
+        SitesIncludedInSearch GetCBERClinicalInvestigatorPageMatchCount(
+            string NameToSearch,
+            Guid? DataId, SitesIncludedInSearch Site);
 
-        SitesIncludedInSearch GetExclusionDatabaseSearchPageMatchCount(string NameToSearch,
-                    Guid? DataId, SitesIncludedInSearch Site);
+        SitesIncludedInSearch GetExclusionDatabaseSearchPageMatchCount(
+            string NameToSearch,
+            Guid? DataId, SitesIncludedInSearch Site);
 
         SitesIncludedInSearch GetCIAPageMatchCount(string NameToSearch,
-                    Guid? DataId, SitesIncludedInSearch Site);
+            Guid? DataId, SitesIncludedInSearch Site);
 
         SystemForAwardManagementPageSiteData GetSAMMatch(
             string NameToSearch, Guid? DataId);

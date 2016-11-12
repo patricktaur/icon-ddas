@@ -12,26 +12,24 @@ namespace DDAS.Services.Search
     public class SearchService : ISearchSummary
     {
         private IUnitOfWork _UOW;
-        private ILog _log;
         private ISearchEngine _SearchEngine;
 
         public SearchService(IUnitOfWork uow, ILog log, 
             ISearchEngine SearchEngine)
         {
             _UOW = uow;
-            _log = log;
             _SearchEngine = SearchEngine;
         }
 
-        public ComplianceForm GetSearchSummary(string NameToSearch)
+        public ComplianceForm GetSearchSummary(string NameToSearch, ILog log)
         {
             SearchSummary searchSummary = new SearchSummary();
             var searchSummaryItems = new List<SearchSummaryItem>();
 
             NameToSearch = NameToSearch.Replace(",", "");
 
-            SiteScanData ScanData = new SiteScanData(_UOW, _log, _SearchEngine);
-            List<SiteScan> SiteScanList = ScanData.GetSiteScanSummary(NameToSearch);
+            SiteScanData ScanData = new SiteScanData(_UOW, _SearchEngine);
+            List<SiteScan> SiteScanList = ScanData.GetSiteScanSummary(NameToSearch, log);
 
             searchSummary.NameToSearch = NameToSearch;
 
@@ -60,11 +58,14 @@ namespace DDAS.Services.Search
                 searchSummaryItems.Add(SummaryItem);
 
                 SiteForNameToSearch.SiteUrl = Site.SiteUrl;
+                SiteForNameToSearch.SiteName = Site.SiteName;
                 SitesForNameToSearch.Add(SiteForNameToSearch);
             }
             searchSummary.SearchSummaryItems = searchSummaryItems;
 
             complianceForm.SiteDetails = SitesForNameToSearch;
+
+            complianceForm.Active = true;
 
             ComplianceFormService service = new ComplianceFormService(_UOW);
             service.CreateComplianceForm(complianceForm);
@@ -174,21 +175,6 @@ namespace DDAS.Services.Search
             Site.CreatedOn = DateTime.Now;
 
             return Site;
-        }
-
-        public SitesIncludedInSearch GetMatchedRecords(string NameToSearch, 
-            Guid? ComplianceFormId, SiteEnum Enum)
-        {
-            string[] Name = NameToSearch.Split(' ');
-
-            //Error handling: if FDASearchResult is null
-            var complainceForm = 
-                _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-
-            var MatchingRecordDetails = complainceForm.SiteDetails.Where(
-                site => site.SiteEnum == Enum).FirstOrDefault();
-             
-            return MatchingRecordDetails;
         }
         #endregion
 
@@ -958,7 +944,22 @@ namespace DDAS.Services.Search
                 item.Matched = Count;
             }
         }
-        
+
+        #region GetMatchedRecords for a given site
+
+        public SitesIncludedInSearch GetMatchedRecords(Guid? ComplianceFormId, SiteEnum Enum)
+        {
+            var complainceForm =
+                _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var MatchingRecordDetails = complainceForm.SiteDetails.Where(
+                site => site.SiteEnum == Enum).FirstOrDefault();
+
+            return MatchingRecordDetails;
+        }
+
+        #endregion
+
         #region Save and Update Approved/Rejected records
         public bool SaveRecordStatus(SitesIncludedInSearch Site,
             Guid? ComplianceFormId)
@@ -998,7 +999,10 @@ namespace DDAS.Services.Search
 
             return true;
         }
-        
+
+        #endregion
+
+        #region Old Code, Not in Use
         public FDADebarPageSiteData GetStatusOfFDASiteRecords(
             FDADebarPageSiteData FDASiteData, string NameToSearch)
         {

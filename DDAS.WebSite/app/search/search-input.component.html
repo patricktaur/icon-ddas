@@ -32,7 +32,7 @@
 							<!--ng2-uploader:-->
 							
 							<div class="form-group">
-											
+										
 									<label for="fileupload" class="control-label">Select a file to upload - (.csv file with list of names to search):</label>
 									<input type="file" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"/>
 										
@@ -44,7 +44,7 @@
 					<br>
 					<div class="row">
 						<div class="col-md-12">
-	
+
 							<h3>Search Pending:</h3>
 							<div class="table-responsive">
 
@@ -62,7 +62,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr *ngFor="let item of ComplianceFormSummaryList" (click)="gotoSummaryResult(item.ComplianceFormId);" class='clickable-row'>
+										<tr *ngFor="let item of ComplianceFormSummaryList" (click)="gotoSummaryResult(item.RecId);" class='clickable-row'>
 
 											<td>
 												

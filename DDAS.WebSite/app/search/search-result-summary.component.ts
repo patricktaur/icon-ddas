@@ -14,7 +14,7 @@ export class SearchResultSummaryComponent {
   
    public  NameToSearch:string;
    private SearchName :NameSearch;
-   private ComplianceFormId: number;
+   private ComplianceFormId: string;
   
    public SearchSummary : SearchSummary;
    public SearchSummaryItems : SearchSummaryItem[];
@@ -37,8 +37,8 @@ export class SearchResultSummaryComponent {
   ngOnInit() {
       
       this.route.params.forEach((params: Params) => {
-        this.ComplianceFormId = +params['formid'];
-        console.log("Comp Form Id:" + this.ComplianceFormId)
+        this.ComplianceFormId = params['formid'];
+        
         this.LoadSearchSummary();
       });
     
@@ -49,19 +49,19 @@ export class SearchResultSummaryComponent {
         this.SearchName={'NameToSearch' : this.NameToSearch};
         this.processing = true;
         
-        this.loadMockSearchSummary();
+        //this.loadMockSearchSummary();
         //required:
-        // this.service.getSearchSummary(this.NameToSearch)
-        // .subscribe((item) => {
-        //     this.processing = false;
-        //     this.SearchSummary = item;
-        //     this.SearchSummaryItems=item.SearchSummaryItems
-        //  },
-        // error => {
-        //     this.processing = false;
-        //     //this.slimLoader.complete();
-        //     //this.notificationService.printErrorMessage('Failed to load users. ' + error);
-        // });
+        this.service.getSearchSummary(this.ComplianceFormId)
+        .subscribe((item) => {
+            this.processing = false;
+            this.SearchSummary = item;
+            this.SearchSummaryItems=item.SearchSummaryItems
+         },
+        error => {
+            this.processing = false;
+            //this.slimLoader.complete();
+            //this.notificationService.printErrorMessage('Failed to load users. ' + error);
+        });
         
  }
 
