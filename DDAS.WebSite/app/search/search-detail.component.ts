@@ -37,8 +37,8 @@ export class SearchDetailComponent {
             this._SiteData.SiteEnum = params['siteEnum']; 
             this._SiteData.SiteName ="FDA Debarred Person List";
             
-            this.LoadMatchedRecords();
-            //this.LoadMockMatchedRecords();
+            //this.LoadMatchedRecords();
+            this.LoadMockMatchedRecords();
         });
     }
 
@@ -52,6 +52,7 @@ export class SearchDetailComponent {
                 this._SiteData.Source = item.Source;
                 this._SiteData.CreatedOn = item.CreatedOn;
                 this.matchedRecords = item.MatchedRecords;
+                this.FormatTheContent();
             },
             error => {
 
@@ -59,7 +60,21 @@ export class SearchDetailComponent {
     
 }
     
+  FormatTheContent(){
+      for (let item of this.matchedRecords) {
+               // item.RecordDetails=item.RecordDetails.replace('~','<br/>');
+                //item.RecordDetails=item.RecordDetails.split('~');
+        }
+  }
+
+saveContact = (RecordDetails) => {
+    var middleNames : string[] = RecordDetails.split("~");
+    console.log(middleNames);
+    return middleNames;
+}
+
   
+
    markApproved() {
         
         for (let item of this.detailItems) {
@@ -150,9 +165,12 @@ export class SearchDetailComponent {
         }
         else
         {
+            //return this.matchedRecords;
+            
             return this.matchedRecords.filter((a) =>
-                    //a.Selected == true is not working, hence a workaround
-                    a.HiddenStatus
+                    a.HiddenStatus == "selected"
+                    //a.Selected == true //is not working, hence a workaround
+                    //a.IssueNumber > 0
             );
         }
     }
@@ -163,8 +181,10 @@ export class SearchDetailComponent {
         }
         else
         {
+           // return this.matchedRecords;
             return this.matchedRecords.filter((a) =>
-                      !a.HiddenStatus
+                      //a.Selected != true 
+                      a.HiddenStatus != "selected"
             );
         }
     }

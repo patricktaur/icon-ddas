@@ -38,10 +38,10 @@
 
 
                 <tbody>
-                    <tr *ngFor="let item of SearchSummaryItems"  (click)="onSelectedSite(item);">
-                        <td>{{item.SiteName}}</td>
-                        <td>{{item.SiteUrl}}</td> 
-                        <td>{{item.MatchStatus}}</td>
+                    <tr *ngFor="let item of SearchSummaryItems"  >
+                        <td>{{item.SiteEnum+1}}.{{item.SiteName}}</td>
+                        <td><a target="_blank" [href]="item.SiteUrl">{{item.SiteUrl}}</a></td> 
+                        <td><a (click)="onSelectedSite(item);">{{item.MatchStatus}} Click</a></td>
                      </tr>
                 </tbody>
             </table>

@@ -7,7 +7,8 @@ import {SearchService} from './search-service';
 
 @Component({
    moduleId: module.id,
-  templateUrl: 'search-input.component.html'  
+  templateUrl: 'search-input.component.html',
+  styleUrls: ['./stylesTable.css']  
 })
 export class SearchInputComponent implements OnInit{ 
   
@@ -30,7 +31,7 @@ private zone: NgZone;
   
   
   constructor(
-       private route: ActivatedRoute,
+    private route: ActivatedRoute,
     private router: Router, 
     private configService: ConfigService,
     private service: SearchService
@@ -66,34 +67,40 @@ private zone: NgZone;
 
 LoadNamesFromOpenComplianceForm()
 {
+  console.log("LoadNamesFromOpenComplianceForm called");
   this.service.getNamesFromOpenComplianceForm()
             .subscribe((item: any) => {
                 this.CompForms = item;
                   },
             error => {
-
             });
 }
-  
-  handleUpload(data: any): void {
+
+ handleUpload(data: any): void {
     console.log("handleUpload");
     this.zone.run(() => {
       this.response = data.response;
-       this.LoadNamesFromOpenComplianceForm(); 
-
+       
+        console.log(data);
    
       this.progress = data.progress.percent / 100;
     });
-
+    this.LoadNamesFromOpenComplianceForm(); 
     
   }
   
+  goRefreshList(){
+
+
+  }
     
   goToSearch() {
        //this.router.navigate(['summary', this.NameToSearch], { relativeTo: this.route });
        this.router.navigate(['summary', this.NameToSearch], { relativeTo: this.route });
   }
   
+ 
+ 
  
  get ComplianceFormSummaryList() { 
     return this.CompForms;
@@ -104,6 +111,9 @@ LoadNamesFromOpenComplianceForm()
   //    {NameToSearch: "Copanos, John D.", SearchStartedOn: "15-Jan-2016", ProjectNumber : "1 Match found", Country: "8 sites processed", Sites_FullMatchCount : "1", Sites_PartialMatchCount : "2", ComplianceFormId: "3"},
   //  ]
   //   ; 
+  }
+  goToSearchAdd(){
+    this.router.navigate(['/search']);
   }
 
 gotoSummaryResult(CompFormId: string){

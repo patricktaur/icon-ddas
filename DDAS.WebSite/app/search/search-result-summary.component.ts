@@ -8,7 +8,7 @@ import {SearchService} from './search-service';
 @Component({
   moduleId: module.id,
   templateUrl: 'search-result-summary.component.html',
-  //styleUrls: ['./app/search/styles.css'],  
+  styleUrls: ['./stylesTable.css']
 })
 export class SearchResultSummaryComponent { 
   
@@ -39,7 +39,8 @@ export class SearchResultSummaryComponent {
       this.route.params.forEach((params: Params) => {
         this.ComplianceFormId = params['formid'];
         
-        this.LoadSearchSummary();
+        this.loadMockSearchSummary();
+        //this.LoadSearchSummary();
       });
     
   }
