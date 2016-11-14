@@ -103,6 +103,8 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.FDADebarPageRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: FDADebarPage");
             SiteScan scan = new SiteScan();
             
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -117,6 +119,9 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: ClinicalInvestigatorInspectionPage");
+
             SiteScan scan = new SiteScan();
 
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -130,14 +135,17 @@ namespace DDAS.Services.Search
         {
             log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 
-            _SearchEngine.Load(NameToSearch);
+            _SearchEngine.Load(NameToSearch, "", log);
 
             log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             log.WriteLog("=================================================================================");
 
             var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
-            
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: FDAWarningLettersPage");
+
             SiteScan scan = new SiteScan();
 
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -151,6 +159,9 @@ namespace DDAS.Services.Search
         {
             var SiteData = _UOW.ERRProposalToDebarRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: ERRProposalToDebarPage");
 
             SiteScan scan = new SiteScan();
 
@@ -166,6 +177,9 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: AdequateAssuranceListPage");
+
             SiteScan scan = new SiteScan();
 
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -179,6 +193,9 @@ namespace DDAS.Services.Search
         {
             var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: DisqualificationProceedings");
 
             SiteScan scan = new SiteScan();
 
@@ -194,6 +211,9 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: CBERClinicalInvestigatorPage");
+
             SiteScan scan = new SiteScan();
 
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -207,6 +227,9 @@ namespace DDAS.Services.Search
         {
             var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: PHSSitePage");
 
             SiteScan siteScan = new SiteScan();
 
@@ -222,6 +245,9 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: ExclusionDatabaseSearchPage");
+
             SiteScan scan = new SiteScan();
 
             scan.DataExtractedOn = SiteData.CreatedOn;
@@ -235,6 +261,9 @@ namespace DDAS.Services.Search
         {
             var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: CorporateIntegrityAgreementListPage");
 
             SiteScan scan = new SiteScan();
 

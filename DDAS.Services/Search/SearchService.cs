@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DDAS.Models.Entities.Domain.SiteData;
+using System.Text.RegularExpressions;
 
 namespace DDAS.Services.Search
 {
@@ -14,7 +15,7 @@ namespace DDAS.Services.Search
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
 
-        public SearchService(IUnitOfWork uow, ILog log, 
+        public SearchService(IUnitOfWork uow, 
             ISearchEngine SearchEngine)
         {
             _UOW = uow;
@@ -27,6 +28,7 @@ namespace DDAS.Services.Search
             var searchSummaryItems = new List<SearchSummaryItem>();
 
             NameToSearch = NameToSearch.Replace(",", "");
+            NameToSearch.Trim();
 
             SiteScanData ScanData = new SiteScanData(_UOW, _SearchEngine);
             List<SiteScan> SiteScanList = ScanData.GetSiteScanSummary(NameToSearch, log);
@@ -50,6 +52,9 @@ namespace DDAS.Services.Search
                 //???
                 SummaryItem.FullMatch = TempSite.FullMatchCount;
                 SummaryItem.PartialMatch = TempSite.PartialMatchCount;
+                SummaryItem.MatchStatus = 
+                    SummaryItem.FullMatch + " full matches and " +
+                    SummaryItem.PartialMatch + " partial matches";
                 SummaryItem.SiteEnum = Site.SiteEnum;
                 SummaryItem.SiteName = Site.SiteName;
                 SummaryItem.SiteUrl = Site.SiteUrl;
@@ -70,7 +75,6 @@ namespace DDAS.Services.Search
             ComplianceFormService service = new ComplianceFormService(_UOW);
             service.CreateComplianceForm(complianceForm);
 
-            complianceForm = service.GetComplianceFormId(NameToSearch);
             complianceForm.SiteDetails = null;
             return complianceForm;
         }
@@ -924,26 +928,43 @@ namespace DDAS.Services.Search
 
         void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string NameToSearch)
         {
-            string[] Name = NameToSearch.Split(' ');
+            //0020 - 007E,
+            var name = Regex.Replace(NameToSearch, @"[^\u0020-\u007E]+", string.Empty);
+            string[] Names = name.Split(' ');
             foreach (SiteDataItemBase item in items)
             {
-                int Count = 0;
-                string[] TempName = item.FullName.Split(' ');
-
-                for (int Index = 0; Index < Name.Length; Index++)
+                if (item.FullName != null)
                 {
-                    for (int Counter = 0; Counter < TempName.Length; Counter++)
+                    if (item.FullName.Trim().Length > 3)
                     {
-                        if (TempName[Counter].ToLower().Equals(Name[Index].ToLower()))
-                            //TempName[Counter].ToLower().StartsWith(Name[Index].ToLower()))
+                        int Count = 0;
+                        string[] TempName = item.FullName.Split(' ');
+
+                        for (int Index = 0; Index < Names.Length; Index++)
                         {
-                            Count += 1;
+                            var temp = Names[Index];
+                            if (temp != null)
+                            {
+                                if (temp != "")
+                                {
+                                    for (int Counter = 0; Counter < TempName.Length; Counter++)
+                                    {
+                                        if (TempName[Counter].ToLower().Equals(Names[Index].ToLower()) &&
+                                            TempName[Counter] != null)
+                                        //TempName[Counter].ToLower().StartsWith(Name[Index].ToLower()))
+                                        {
+                                            Count += 1;
+                                        }
+                                    }
+                                }
+                            }
                         }
+                        item.Matched = Count;
+                    }
+                    
                     }
                 }
-                item.Matched = Count;
             }
-        }
 
         #region GetMatchedRecords for a given site
 
@@ -983,13 +1004,13 @@ namespace DDAS.Services.Search
             {
                 foreach(MatchedRecordsPerSite ExistingRecord in ExistingRecords)
                 {
-                    if (Updatedrecord.RowNumber == ExistingRecord.RowNumber &&
-                        Updatedrecord.Status != ExistingRecord.Status)
+                    if (Updatedrecord.RowNumber == ExistingRecord.RowNumber)
                     {
-                        ExistingRecord.Issues = Updatedrecord.Issues;
+                        ExistingRecord.Observation = Updatedrecord.Observation;
                         ExistingRecord.Status = Updatedrecord.Status;
                         ExistingRecord.IssueNumber = Updatedrecord.IssueNumber;
                         ExistingRecord.Matched = Updatedrecord.Matched;
+                        ExistingRecord.HiddenStatus = Updatedrecord.HiddenStatus;
                     }
                 }
             }

@@ -341,4 +341,20 @@ Entry on 8 Nov 2016
 -----------------------------------------------------------------------------------------------------------
 Entry on 9 Nov 2016
 1. Changed the Upload function in controller to return a dummy ComplianceForm object
-2. 
+
+
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 11 Nov 2016
+1. Able to test 8 sites in the local machine. 
+   Extractor was run on the server.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 12 Nov 2016
+1. Log File error was solved but the full and partial match count was incorrect when tested over the server.
+   Unable to figure out the problem with incorrect match counts
+2. few of the sites are throwing 'WebDriverTimeOut Exception' while extracting the data. Need to have a
+   mechanism of handling this exception and tyring to extract the data from the sites which throw this 
+   excetion
+
+

@@ -25,9 +25,9 @@ namespace WebScraping
 
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             ILog log = new LogText("", true);
-            ISearchEngine searchEngine = new SearchEngine(log, uow);
+            ISearchEngine searchEngine = new SearchEngine(uow);
 
-            var test = new SearchService(uow, log, searchEngine);
+            var test = new SearchService(uow, searchEngine);
 
             MongoMaps.Initialize();
 

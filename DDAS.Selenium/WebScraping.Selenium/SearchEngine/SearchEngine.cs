@@ -16,14 +16,10 @@ namespace WebScraping.Selenium.SearchEngine
     public class SearchEngine  : ISearchEngine, IDisposable
     {
         private IWebDriver _Driver;
-        private string _DownloadFolder;
-        private ILog _log;
         private IUnitOfWork _uow;
 
-        public SearchEngine( ILog log, IUnitOfWork uow)
+        public SearchEngine( IUnitOfWork uow)
         {
-             //_DownloadFolder = downloadFolder;
-            _log = log;
             _uow = uow;
         }
         
@@ -39,80 +35,65 @@ namespace WebScraping.Selenium.SearchEngine
             searchResult.SearchedOn = DateTime.Now.ToString();
             foreach (SearchQuerySite site in searchQuery.SearchSites)
             {
-               // if (site.Selected == true)
-               // {
-                    //ResultAtSite resultAtSite = new ResultAtSite();
-                    stopwatch.Start();
-                    var LoadContent = SearchByName(NameToSearch, site.SiteEnum);
-                    stopwatch.Stop();
-                    //resultAtSite.TimeTakenInMs = stopwatch.ElapsedMilliseconds.ToString();
-
-                    //searchResult.resultAtSites.Add(resultAtSite);
-                    stopwatch.Reset();
-               // }
+                stopwatch.Start();
+                var LoadContent = SearchByName(NameToSearch, site.SiteEnum);
+                stopwatch.Stop();
+                stopwatch.Reset();
             }
             return searchResult;
         }
 
         public bool SearchByName(string NameToSearch, SiteEnum siteEnum)
         {
-            //try
-            //{
                 NameToSearch = NameToSearch.Replace(",", "");
                 var PageObject = GetSearchPage(siteEnum);
-                PageObject.LoadContent(NameToSearch);
+                PageObject.LoadContent(NameToSearch, "");
                 PageObject.SaveData();
                 return true;
-            //var result = PageObject.GetResultAtSite(NameToSearch);
-            //    result.SiteEnum = siteEnum;
-            //    result.HasErrors = false;
-            //    return result;
-            //}
-
-            //catch (Exception Ex)
-            //{
-
-            //    return new ResultAtSite { HasErrors = true, ErrorDescription = "Error while reading the site" + Ex.Message };
-            //}
-
         }
 
         #region Load
         
-        public void Load(string NameToSearch) //LoadAll
+        public void Load(string NameToSearch, string DownloadFolder, ILog log) //LoadAll
         {
-            //ISearchEngine SearchEngine = new SearchEngine(_log, _uow);
-            //SiteScanData ScanData = new SiteScanData(_uow, _log, SearchEngine);
             var query = SearchSites.GetNewLiveSiteSearchQuery();
 
-            _log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+            log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
-                Load(site.SiteEnum, NameToSearch);
+                Load(site.SiteEnum, NameToSearch, DownloadFolder, log);
             }
         }
 
-        public void Load(SearchQuery query)  //Load some
+        public void Load(SearchQuery query, string DownloadFolder, ILog log)  //Load some
         {
-            _log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+            log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
-                Load(site.SiteEnum, query.NameToSearch);
+                try
+                {
+                    Load(site.SiteEnum, query.NameToSearch, DownloadFolder, log);
+                }
+                catch (Exception e)
+                {
+                    log.WriteLog("Error while extracting data from site: " + site.SiteEnum +
+                        " Error Details: " + e.ToString());
+                }
             }
         }
 
-        public void Load(SiteEnum siteEnum, string NameToSearch)  //Load one
+        public void Load(SiteEnum siteEnum, string NameToSearch, 
+            string DownloadFolder, ILog log)  //Load one
         {
-            _log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
+            log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
 
             var page = GetSearchPage(siteEnum);
-            page.LoadContent(NameToSearch);
+            page.LoadContent(NameToSearch, DownloadFolder);
 
-            _log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
+            log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
 
             page.SaveData();
-            _log.WriteLog( "Data Saved" );
-
+            log.WriteLog( "Data Saved" );
         }
         #endregion
 
@@ -135,7 +116,7 @@ namespace WebScraping.Selenium.SearchEngine
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     return new ExclusionDatabaseSearchPage(Driver, _uow);
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    return new SpeciallyDesignatedNationalsListPage(_DownloadFolder, _uow, Driver);
+                    return new SpeciallyDesignatedNationalsListPage(_uow, Driver);
                 case SiteEnum.FDAWarningLettersPage:
                     return new FDAWarningLettersPage(Driver, _uow);
                 case SiteEnum.PHSAdministrativeActionListingPage:

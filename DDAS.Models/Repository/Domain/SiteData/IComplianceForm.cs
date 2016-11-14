@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,5 +10,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
         ComplianceForm FindComplianceFormIdByNameToSearch(string NameToSearch);
         List<ComplianceForm> FindActiveComplianceForms(bool value);
         Task UpdateCollection(ComplianceForm form);
+        bool DropComplianceForm(object ComplianceFormId);
     }
 }

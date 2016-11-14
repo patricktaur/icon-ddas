@@ -23,18 +23,22 @@ namespace DDAS.DataExtractor
             //ILog log, IUnitOfWork uow
             MongoMaps.Initialize();
 
-            string DataExtractionLogFile = System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
-            
+            string DataExtractionLogFile = 
+                System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+
+            string DownloadFolder = 
+                System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+
             ILog log = new LogText(DataExtractionLogFile, true);
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             log.LogStart();
             log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
-            ISearchEngine searchEngine = new SearchEngine(log, uow);
+            ISearchEngine searchEngine = new SearchEngine(uow);
 
             var SiteScan = new SiteScanData(uow, searchEngine);
             var query = SearchSites.GetNewSearchQuery();
              
-            searchEngine.Load(query);
+            searchEngine.Load(query, DownloadFolder, log);
 
             log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             log.WriteLog("=================================================================================");
