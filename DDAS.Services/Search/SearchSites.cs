@@ -47,7 +47,7 @@ namespace DDAS.Services.Search
                 NameToSearch = "Anthony, James Michael",
                 SearchSites = new List<SearchQuerySite>
                 {
-                    //new SearchQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="http://www.fda.gov/ICECI/EnforcementActions/WarningLetters/default.htm" },
+                    new SearchQuerySite {Selected = true, SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="http://www.fda.gov/ICECI/EnforcementActions/WarningLetters/default.htm" },
 
                     //new SearchQuerySite {Selected = true, SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="XXX" },
 

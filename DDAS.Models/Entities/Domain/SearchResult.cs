@@ -141,6 +141,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime SearchClosedOn { get; set; }
         public int Sites_FullMatchCount { get; set; }
         public int Sites_PartialMatchCount { get; set; }
+        public string Sites_MatchStatus { get; set; }
         public bool SitesProcessed { get; set; }
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
@@ -155,6 +156,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime ScannedOn { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
+        public string MatchStatus { get; set; }
         public bool IssuesIdentified { get; set; }
         public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
     }

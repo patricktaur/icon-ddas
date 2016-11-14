@@ -40,30 +40,32 @@ namespace DDAS.Services.Search
 
             complianceForm.NameToSearch = NameToSearch;
 
-            foreach (SiteScan Site in SiteScanList)
+            //foreach (SiteScan Site in SiteScanList)
+            for(int Counter = 0; Counter < SiteScanList.Count; Counter++)
             {
                 var SiteForNameToSearch = new SitesIncludedInSearch();
-                SiteForNameToSearch.SiteEnum = Site.SiteEnum;
+                SiteForNameToSearch.SiteEnum = SiteScanList[Counter].SiteEnum;
 
                 var SummaryItem = new SearchSummaryItem();
 
-                var TempSite = GetMatchStatus(Site.SiteEnum, 
-                    NameToSearch, Site.DataId, SiteForNameToSearch);
+                var TempSite = GetMatchStatus(SiteScanList[Counter].SiteEnum, 
+                    NameToSearch, SiteScanList[Counter].DataId, SiteForNameToSearch);
                 //???
                 SummaryItem.FullMatch = TempSite.FullMatchCount;
                 SummaryItem.PartialMatch = TempSite.PartialMatchCount;
-                SummaryItem.MatchStatus = 
-                    SummaryItem.FullMatch + " full matches and " +
-                    SummaryItem.PartialMatch + " partial matches";
-                SummaryItem.SiteEnum = Site.SiteEnum;
-                SummaryItem.SiteName = Site.SiteName;
-                SummaryItem.SiteUrl = Site.SiteUrl;
-                SummaryItem.RecId = Site.DataId;
+                SummaryItem.SiteEnum = SiteScanList[Counter].SiteEnum;
+                SummaryItem.SiteName = SiteScanList[Counter].SiteName;
+                SummaryItem.SiteUrl = SiteScanList[Counter].SiteUrl;
+                SummaryItem.RecId = SiteScanList[Counter].DataId;
 
                 searchSummaryItems.Add(SummaryItem);
 
-                SiteForNameToSearch.SiteUrl = Site.SiteUrl;
-                SiteForNameToSearch.SiteName = Site.SiteName;
+                SiteForNameToSearch.MatchStatus =
+                    SummaryItem.FullMatch + " full matches and " +
+                    SummaryItem.PartialMatch + " partial matches";
+
+                SiteForNameToSearch.SiteUrl = SiteScanList[Counter].SiteUrl;
+                SiteForNameToSearch.SiteName = SiteScanList[Counter].SiteName;
                 SitesForNameToSearch.Add(SiteForNameToSearch);
             }
             searchSummary.SearchSummaryItems = searchSummaryItems;
@@ -959,7 +961,8 @@ namespace DDAS.Services.Search
                                 }
                             }
                         }
-                        item.Matched = Count;
+                        if (Count > 1)
+                            item.Matched = Count;
                     }
                     
                     }

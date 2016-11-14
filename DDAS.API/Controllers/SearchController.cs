@@ -15,6 +15,7 @@ using Utilities;
 using System.Net.Http.Headers;
 using DDAS.Services.Search;
 using System.Web;
+using System.Collections.Generic;
 
 namespace DDAS.API.Controllers
 {
@@ -30,8 +31,8 @@ namespace DDAS.API.Controllers
         private string DataExtractionLogFile =
             System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-        //private string UploadFolder =
-        //    System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
+        private string UploadFolder =
+            System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
@@ -118,9 +119,9 @@ namespace DDAS.API.Controllers
             {
                 // Read the form data
                 //string root = HttpContext.Current.Server.MapPath("~/App_Data");
-                string root = "C:\\Development\\DDAS_Uploads";
+                //string root = "C:\\Development\\DDAS_Uploads";
                 CustomMultipartFormDataStreamProvider provider = 
-                    new CustomMultipartFormDataStreamProvider(root);
+                    new CustomMultipartFormDataStreamProvider(UploadFolder);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -165,7 +166,7 @@ namespace DDAS.API.Controllers
 
         [Route("GetNamesFromOpenComplianceForms")]
         [HttpGet]
-        public IHttpActionResult GetNamesFromOpenComplianceForm()
+        public List<ComplianceForm> GetNamesFromOpenComplianceForm()
         {
             var ComplianceForms =
                 _UOW.ComplianceFormRepository.FindActiveComplianceForms(true);
@@ -173,7 +174,7 @@ namespace DDAS.API.Controllers
             foreach (ComplianceForm form in ComplianceForms)
                 form.SiteDetails = null;
 
-            return Ok(ComplianceForms);
+            return ComplianceForms;
         }
 
         [Route("GetComplianceForm")]
@@ -343,7 +344,8 @@ namespace DDAS.API.Controllers
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
             _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
-            return Ok();
+            var Forms = GetNamesFromOpenComplianceForm();
+            return Ok(Forms);
         }
     }
 

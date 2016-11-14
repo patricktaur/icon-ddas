@@ -74,7 +74,7 @@ namespace WebScraping.Selenium.SearchEngine
                 {
                     Load(site.SiteEnum, query.NameToSearch, DownloadFolder, log);
                 }
-                catch (Exception e)
+                catch (WebDriverTimeoutException e)
                 {
                     log.WriteLog("Error while extracting data from site: " + site.SiteEnum +
                         " Error Details: " + e.ToString());

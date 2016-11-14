@@ -31,6 +31,14 @@ namespace DDAS.Services.Search
                 form.Sites_PartialMatchCount += FullMatchedList.Count;
                 site.MatchedRecords = MatchedList;
             }
+
+            form.Sites_MatchStatus = form.Sites_FullMatchCount +
+                " full matches and " +
+                form.Sites_PartialMatchCount +
+                " partial matches in " + 
+                form.SiteDetails.Count + 
+                " sites";
+
             _UOW.ComplianceFormRepository.Add(form);
         }
 
