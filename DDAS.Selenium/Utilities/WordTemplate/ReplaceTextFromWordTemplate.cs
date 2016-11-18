@@ -38,6 +38,7 @@ namespace Utilities.WordTemplate
             Paragraph paragraph = Cell.Elements<Paragraph>().First();
             //ParagraphProperties pr = paragraph.Elements<ParagraphProperties>().First();
             Run run = paragraph.Elements<Run>().First();
+            
             Text text = run.Elements<Text>().First();
             text.Text = replaceWith;
         }

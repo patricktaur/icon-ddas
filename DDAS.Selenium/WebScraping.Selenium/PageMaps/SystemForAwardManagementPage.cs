@@ -18,7 +18,7 @@ namespace WebScraping.Selenium.Pages
                 
                 foreach(IWebElement Anchor in Anchors)
                 {
-                    if (Anchor.Text.ToLower() == "search records")
+                    if (Anchor.GetAttribute("title").ToLower() == "search records")
                         return Anchor;
                 }
                 return null;
@@ -41,6 +41,7 @@ namespace WebScraping.Selenium.Pages
 
         public IWebElement SAMCheckResult {
             get {
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
                 try {
                     IWebElement Result = driver.FindElement(By.Id("its_docs"));
                     return Result;

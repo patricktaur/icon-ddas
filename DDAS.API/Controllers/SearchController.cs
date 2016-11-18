@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using Utilities;
 using System.Net.Http.Headers;
 using DDAS.Services.Search;
-using System.Web;
 using System.Collections.Generic;
 
 namespace DDAS.API.Controllers
@@ -44,6 +43,19 @@ namespace DDAS.API.Controllers
             _SiteSummary = SiteSummary;
         }
 
+        [Route("GetAllUsers")]
+        [HttpGet]
+        public IHttpActionResult GetUser(string UserName)
+        {
+            var User = _UOW.UserRepository.GetAllUsers();
+            if (User != null)
+            {
+                return Ok(User);
+            }
+            else
+                return Ok("no users found!");
+        }
+
         [Route("AddNewRole")]
         [HttpPost]
         public IHttpActionResult CreateRole(IdentityRole role)
@@ -71,23 +83,25 @@ namespace DDAS.API.Controllers
 
             try
             {
+                var role = new List<IdentityRole>();
+                role = user.Role;
                 IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
                 if (IdUsertemp == null)
                 {
                     um.CreateAsync(IdUser, user.pwd);
 
-                    um.AddToRole(IdUser.Id, user.RoleName);
+                    um.AddToRole(IdUser.Id, role[0].Name);
                 }
                 else
                 {
-                    um.AddToRole(IdUser.Id, user.RoleName);
+                    um.AddToRole(IdUser.Id, role[0].Name);
                 }
             }
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
             }
-            return Ok();
+            return Ok("User: " + user.UserName + " has been added");
         }
 
         //[Authorize] //(Roles="User")]
@@ -261,10 +275,11 @@ namespace DDAS.API.Controllers
 
                     return Ok(AssuranceDetails);
 
-                //case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                //    var DisqualificationDetails = _SearchSummary.
-                //        GetDisqualificationProceedingsMatch(
-                //        query.NameToSearch, query.RecId);
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    var DisqualificationDetails = _SearchSummary.
+                        GetMatchedRecords(query.RecId, siteEnum);
+
+                    return Ok(DisqualificationDetails);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     var CBERDetails = _SearchSummary.
@@ -290,10 +305,11 @@ namespace DDAS.API.Controllers
 
                     return Ok(CIADetails);
 
-                //case SiteEnum.SystemForAwardManagementPage:
-                //    var SAMDetails = _SearchSummary.
-                //        GetSAMMatch(
-                //        query.NameToSearch, query.RecId);
+                case SiteEnum.SystemForAwardManagementPage:
+                    var SAMDetails = _SearchSummary.
+                        GetMatchedRecords(query.RecId, siteEnum);
+
+                    return Ok(SAMDetails);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     var SDNSearchDetails = _SearchSummary.
@@ -353,7 +369,7 @@ namespace DDAS.API.Controllers
     {
         public string  UserName{get;set;}
         public string pwd { get; set; }
-        public string RoleName { get; set; }
+        public List<IdentityRole> Role { get; set; }
     }
 }
 //var AnotherComplianceForm = new ComplianceForm();
