@@ -24,11 +24,10 @@ namespace WebScraping.Selenium.Pages
             string szFileName, long dwReserved, long lpfnCB);
 
         public SpeciallyDesignatedNationalsListPage(
-            string folderPath, IUnitOfWork uow, IWebDriver driver)
+            IUnitOfWork uow, IWebDriver driver)
             :  base(driver)
         {
             _UOW = uow;
-            _folderPath = folderPath;
             Open();
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
@@ -46,11 +45,11 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void DownloadSDNList()
+        public void DownloadSDNList(string DownloadFolder)
         {
             //string fileName = _folderPath + @"\test.pdf"; // "c:\\development\\temp\\test.pdf";
 
-            string fileName = "c:\\development\\temp\\test.pdf";
+            string fileName = DownloadFolder + "\\SDNList.pdf";
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
@@ -63,7 +62,7 @@ namespace WebScraping.Selenium.Pages
 
         private SpeciallyDesignatedNationalsListSiteData _SDNSiteData;
 
-        public List<SDNList> GetTextFromPDF(string NameToSearch)
+        public List<SDNList> GetTextFromPDF(string NameToSearch, string DownloadFolder)
         {
             string tempSiteDate = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "");
 
@@ -81,7 +80,7 @@ namespace WebScraping.Selenium.Pages
 
             StringBuilder text = new StringBuilder();
 
-            using (PdfReader reader = new PdfReader("c:\\development\\temp\\test.pdf"))
+            using (PdfReader reader = new PdfReader(DownloadFolder + "\\SDNList.pdf"))
             {
                 string PageContent;
 
@@ -119,12 +118,12 @@ namespace WebScraping.Selenium.Pages
             return Names;
         }
 
-        public void LoadContent(string NameToSearch)
+        public void LoadContent(string NameToSearch, string DownloadFolder)
         {
             if (!CheckSiteUpdatedDate())
             {
-                DownloadSDNList();
-                GetTextFromPDF("");
+                DownloadSDNList(DownloadFolder);
+                GetTextFromPDF("", DownloadFolder);
             }
         }
 

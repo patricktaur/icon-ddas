@@ -12,7 +12,7 @@ import {SearchService} from './search-service';
     moduleId: module.id,
     selector: 'search-detail',
     templateUrl: 'search-detail.component.html',
-    styleUrls: ['./stylesTable.css']
+    //styleUrls: ['./stylesTable.css']
      
 })
 export class SearchDetailComponent {
@@ -21,7 +21,10 @@ export class SearchDetailComponent {
     private displayName:string;
     private detailItems:SiteDataItemBase[];
     private _isChecked: boolean = false;
-
+    public ObservationCount :number = 0;
+    public MatchFoundCount : number = 0;
+    public _isObservationCount :boolean = false;
+    public _isMatchFoundCount : boolean = false;
     public _SiteData: SiteData = new SiteData;
 
     private siteDetails: SitesIncludedInSearch;
@@ -35,10 +38,11 @@ export class SearchDetailComponent {
   
             this._SiteData.RecId = params['formid'];  //RecId = compid
             this._SiteData.SiteEnum = params['siteEnum']; 
-            this._SiteData.SiteName ="FDA Debarred Person List";
+            this._SiteData.NameToSearch = params['NameToSearch'];
             
-            //this.LoadMatchedRecords();
-            this.LoadMockMatchedRecords();
+            
+            this.LoadMatchedRecords();
+            //this.LoadMockMatchedRecords();
         });
     }
 
@@ -50,9 +54,10 @@ export class SearchDetailComponent {
                 this.siteDetails = item;
                 this._SiteData.SiteLastUpdatedOn = item.SiteLastUpdatedOn;
                 this._SiteData.Source = item.Source;
+                this._SiteData.SiteName = item.SiteName;
                 this._SiteData.CreatedOn = item.CreatedOn;
                 this.matchedRecords = item.MatchedRecords;
-                this.FormatTheContent();
+                this.GetObservation_MatchFoundCount();
             },
             error => {
 
@@ -60,14 +65,33 @@ export class SearchDetailComponent {
     
 }
     
-  FormatTheContent(){
+  GetObservation_MatchFoundCount(){
       for (let item of this.matchedRecords) {
                // item.RecordDetails=item.RecordDetails.replace('~','<br/>');
                 //item.RecordDetails=item.RecordDetails.split('~');
+                if (item.HiddenStatus=="selected"){
+                    this.ObservationCount += 1;
+                }
+               else{
+                    this.MatchFoundCount += 1;
+                }
+        }
+        //Adder because == will not work in server
+        if (this.ObservationCount==0){
+            this._isObservationCount=true;
+        }
+        else{
+            this._isObservationCount=false;
+        }
+        if (this.MatchFoundCount==0){
+            this._isMatchFoundCount=true;
+        }
+        else{
+            this._isMatchFoundCount=false;
         }
   }
 
-saveContact = (RecordDetails) => {
+saveContact = (RecordDetails: string) => {
     var middleNames : string[] = RecordDetails.split("~");
     console.log(middleNames);
     return middleNames;
@@ -151,12 +175,12 @@ saveContact = (RecordDetails) => {
      }
 
     LoadMockMatchedRecords(){
-        this.matchedRecords = [
-        { Issues: "Site 1", IssueNumber: 1, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
-        {Issues: "Site 2",IssueNumber: 2, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
-        { Issues: "Site 3", IssueNumber: 3, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
-        ]
-        ; 
+        // this.matchedRecords = [
+        // { Issues: "Site 1", IssueNumber: 1, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
+        // {Issues: "Site 2",IssueNumber: 2, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
+        // { Issues: "Site 3", IssueNumber: 3, RecordDetails: "Site URL",  RowNumber:1, Status:"", Selected : true, HiddenStatus:""},
+        // ]
+        // ; 
     }
     
     get SelectedRecords(){
@@ -191,14 +215,33 @@ saveContact = (RecordDetails) => {
 
     MoveToSelected(matchedRecord: MatchedRecordsPerSite){
         matchedRecord.HiddenStatus = "selected";
+        this.ObservationCount=0;
+        this.MatchFoundCount = 0;
+        this.GetObservation_MatchFoundCount();
     }
     
      RemoveFromSelected(matchedRecord: MatchedRecordsPerSite){
         matchedRecord.HiddenStatus = "";
+        this.ObservationCount=0;
+        this.MatchFoundCount = 0;
+        this.GetObservation_MatchFoundCount();
     }
     goBack() {
         this._location.back();
     }
+
+
+dividerGeneration(indexVal : number){
+    if ((indexVal+1) % 2 == 0){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
+    
     get diagnostic() { return JSON.stringify(this.matchedRecords); }
 
 }

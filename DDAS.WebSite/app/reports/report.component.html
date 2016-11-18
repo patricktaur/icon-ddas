@@ -1,30 +1,49 @@
 <div class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="well">
-                    
-                    <h2>Search for {{NameToSearch}}</h2>
-                    
-                    
-                    <form #searchForm="ngForm">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="exampleInputEmail1">Name to search:</label>
-                                    <textarea [(ngModel)]="NameToSearch" name="NameToSearch" class="form-control" id="TextArea1" rows="3" cols="30"
-                                       ngcontroll="NameToSearch" (ngModelChange)="NameToSearch = $event" required placeholder="Enter a name to search, example:Ramesh Krishnan Venkat Narayan, first name, middle name, last name order is not important. "></textarea>
-   
-                                </div>
- 
-                                <button type="button" [disabled]="!searchForm.form.valid" class="btn btn-primary" (click)="goToSearch()">Search</button>
-                            </div>
-                            <div class="col-md-8">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="well">
+
+					<!--<h2>Active:{{diagnostic1}}</h2>-->
+					<div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Activate</th>
+									<th>Delete</th>
+									<th>Name</th>
+                                    <th>SearchStartedOn</th> 
+                                    <th>TotalIssuesFound</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let item of CompForms">
+									<td>
+										<button  class="btn btn-primary" (click)="OnActivate(item.RecId)">Activate</button>
+									</td>
+									<td>
+										<!--<button  class="btn btn-primary" (click)="OnDelete(item.RecId)">Delete</button>-->
+										<a  (click)="OnDelete(item.RecId)" data-toggle="modal" data-target="#myModalOutput">
+											<i class='glyphicon glyphicon-trash'></i>
+										</a>
+									</td>
+									<td>
+										{{item.NameToSearch}}
+									</td>
+                                    <td>
+										{{item.SearchStartedOn}}
+									</td>
+                                    <td>
+										{{item.TotalIssuesFound}}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

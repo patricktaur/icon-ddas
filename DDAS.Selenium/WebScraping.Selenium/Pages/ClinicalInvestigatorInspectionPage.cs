@@ -43,12 +43,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void DownloadSDNList()
+        public void DownloadSDNList(string DownloadFolder)
         {
             //string fileName = _folderPath + @"\test.pdf"; // "c:\\development\\temp\\test.pdf";
 
-            string fileName = "c:\\development\\temp\\cliil.zip";
-            string UnZipPath = "c:\\development\\temp\\";
+            string fileName = DownloadFolder  + "cliil.zip";
+            string UnZipPath = DownloadFolder;
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.
@@ -85,7 +85,7 @@ namespace WebScraping.Selenium.Pages
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        public void LoadClinicalInvestigatorListAlt()
+        public void LoadClinicalInvestigatorListAlt(string DownloadFolder)
         {
             _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
             _clinicalSiteData.CreatedBy = "Patrick";
@@ -94,7 +94,7 @@ namespace WebScraping.Selenium.Pages
 
             int RowNumber = 1;
 
-            string[] LinesFromTextFile = File.ReadAllLines("c:\\development\\temp\\cliil.txt");
+            string[] LinesFromTextFile = File.ReadAllLines(DownloadFolder + "cliil.txt");
 
             foreach (string line in LinesFromTextFile)
             {
@@ -173,10 +173,10 @@ namespace WebScraping.Selenium.Pages
             return Convert.ToInt32(ANCHORs[AnchorCount - 1].Text);
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            DownloadSDNList();
-            LoadClinicalInvestigatorListAlt();
+            DownloadSDNList(DownloadFolder);
+            LoadClinicalInvestigatorListAlt(DownloadFolder);
             //if (SearchTerms())
             //{
             //    int totalRecords = GetCountOfRecords();

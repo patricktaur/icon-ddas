@@ -97,12 +97,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             //refactor, add code to enter search names
             //LoadExclusionsDatabaseList();
 
-            string FilePath = DownloadExclusionList();
+            string FilePath = DownloadExclusionList(DownloadFolder);
             LoadExclusionDatabaseListFromCSV(FilePath);
         }
 
@@ -158,9 +158,9 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public string DownloadExclusionList()
+        public string DownloadExclusionList(string DownloadFolder)
         {
-            string fileName = "c:\\development\\temp\\ExclusionDatabaseList.csv";
+            string fileName = DownloadFolder + "ExclusionDatabaseList.csv";
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.

@@ -8,17 +8,22 @@ import {SearchService} from './search-service';
 @Component({
   moduleId: module.id,
   templateUrl: 'search-result-summary.component.html',
-  styleUrls: ['./stylesTable.css']
+  //styleUrls: ['./stylesTable.css']
 })
 export class SearchResultSummaryComponent { 
   
    public  NameToSearch:string;
+   public FullMatchCount : number;
+   public PartialMatchCount : number;
+   public TotalIssuesFound: number;
    private SearchName :NameSearch;
    private ComplianceFormId: string;
-  
+   
    public SearchSummary : SearchSummary;
    public SearchSummaryItems : SearchSummaryItem[];
    
+   public OpenClose :string = "Open";
+
    SiteName : string;
    SiteEnum : number;
 
@@ -38,11 +43,22 @@ export class SearchResultSummaryComponent {
       
       this.route.params.forEach((params: Params) => {
         this.ComplianceFormId = params['formid'];
-        
-        this.loadMockSearchSummary();
-        //this.LoadSearchSummary();
+        this.NameToSearch = params['NameToSearch'];
+        this.FullMatchCount = params['FullMatchCount'];
+        this.PartialMatchCount = params['PartialMatchCount'];
+        //this.loadMockSearchSummary();
+        this.LoadSearchSummary();
       });
     
+  }
+  OpenCloseValueChange(value:string){
+      if (value=="Open"){
+          this.OpenClose="Close";
+      }
+      else{
+          this.OpenClose="Open";
+      }
+      
   }
 
   LoadSearchSummary(){
@@ -56,7 +72,12 @@ export class SearchResultSummaryComponent {
         .subscribe((item) => {
             this.processing = false;
             this.SearchSummary = item;
-            this.SearchSummaryItems=item.SearchSummaryItems
+            this.SearchSummaryItems=item.SearchSummaryItems;
+            this.FullMatchCount = item.Sites_FullMatchCount;
+            this.PartialMatchCount = item.Sites_PartialMatchCount;
+            this.TotalIssuesFound = item.TotalIssuesFound;
+            console.log('In Summery :  ' + this.SearchSummary);
+             console.log('In Summery Data :  ' + item.SearchSummaryItems);
          },
         error => {
             this.processing = false;
@@ -79,7 +100,7 @@ export class SearchResultSummaryComponent {
    
  onSelectedSite(item: SearchSummaryItem) {
        console.log(item.SiteName);
-       this.router.navigate(["details", item.SiteEnum, this.ComplianceFormId], { relativeTo: this.route.parent });
+       this.router.navigate(["details", item.SiteEnum, this.ComplianceFormId,this.NameToSearch], { relativeTo: this.route.parent });
  }
 
  loadMockSearchSummary(){
@@ -92,6 +113,24 @@ export class SearchResultSummaryComponent {
        ]
     ; 
  }
+
+ MatchCountHighlight(MatchCount:number){
+    if (MatchCount==0){
+      return true;
+    }
+    else{
+      return false;
+    }
+}
+
+dividerGeneration(indexVal : number){
+    if ((indexVal+1) % 3 == 0){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
  get diagnostic() { return JSON.stringify(this.SearchSummary); }
 }

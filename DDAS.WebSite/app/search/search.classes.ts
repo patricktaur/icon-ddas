@@ -16,6 +16,9 @@ export class SearchSummary
         
         ComplianceFormId:string;
         NameToSearch:string;
+        Sites_FullMatchCount :number;
+        Sites_PartialMatchCount:number;
+        TotalIssuesFound:number;
         SearchSummaryItems : SearchSummaryItem[];
     }  
 export class SearchSummaryItem
@@ -136,7 +139,7 @@ export class SitesIncludedInSearch{
 
 
 export class MatchedRecordsPerSite{
-    Issues: string = "";
+    Observation: string = "";
     IssueNumber :number = 0;
     RowNumber :number;
     RecordDetails :string = "";
@@ -165,8 +168,12 @@ export class SearchList{
       SearchClosedOn : Date ;
       Sites_FullMatchCount : number = 0;
       Sites_PartialMatchCount : number = 0;
+      Sites_MatchStatus:string="";
       SitesProcessed : string = "";
       Active: boolean;
+      TotalIssuesFound:number=0;
+      IssueStatus:string="";
+      SiteDetails:string="";
      //List<SitesIncludedInSearch> SiteDetails : string = "";
     }
 

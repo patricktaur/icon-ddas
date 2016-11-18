@@ -94,7 +94,7 @@ namespace WebScraping.Selenium.Pages
             return true;
         }
 
-        public override void LoadContent(string NameToSearch)
+        public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');
 

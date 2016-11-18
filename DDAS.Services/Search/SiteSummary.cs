@@ -48,6 +48,7 @@ namespace DDAS.Services.Search
                 SummaryItem.SiteEnum = Site.SiteEnum;
                 SummaryItem.SiteUrl = Site.SiteUrl;
                 SummaryItem.SiteName = Site.SiteName;
+                SummaryItem.MatchStatus = Site.MatchStatus;
 
                 SiteSummaryItems.Add(SummaryItem);
             }

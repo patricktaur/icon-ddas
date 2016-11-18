@@ -37,5 +37,13 @@ namespace DDAS.Data.Mongo.Repositories
             return _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name).
                 ReplaceOneAsync(Site => Site.RecId == form.RecId, form);
         }
+
+        public bool DropComplianceForm(object ComplianceFormId)
+        {
+            var filter = Builders<ComplianceForm>.Filter.Eq("_id", ComplianceFormId);
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.DeleteOne(filter);
+            return true;
+        }
     }
 }

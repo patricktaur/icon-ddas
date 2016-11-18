@@ -1,106 +1,140 @@
-<div class="section">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="well">
 
-					<h3>Add names to search</h3>
+<div class="row">
+	<div class="col-lg-4">
+		<div class="well">
+			<h2 class="no-margin-top">Single Name</h2>
+			<br>
+			<form>
+				<div class="form-group">
+					<label for="NameToSearch">Name</label>
+					<!--<input type="text" class="form-control" id="exampleInputEmail1" >-->
+					<textarea [(ngModel)]="NameToSearch" name="NameToSearch" class="form-control" 
+					id="NameToSearch" rows="3" cols="30" ngcontroll="NameToSearch"	(ngModelChange)="NameToSearch = $event" required 
+					placeholder="Enter a name to search, example:Ramesh Krishnan Venkat Narayan, first name, middle name, last name order is not important. "></textarea>
+				</div>
+				<button type="button" [disabled]="NameToSearch=='' || NameToSearch==undefined || Processing" class="btn btn-success btn-lg" (click)="goToSearchAdd(NameToSearch)">ADD</button>
+				<label [hidden]="!Processing">Processing.....</label>
+			</form>
+		</div>
+	</div>
+	<div class="col-lg-8">
+		<div class="well">
+			<h2 class="no-margin-top">Multiple Names</h2>
+			<br>
+			<form>
+				<div class="form-group">
+					<label for="fileupload">Upload a file - (.csv file with list of names to search)</label>
+					<input type="file" id="fileupload" ngFileSelect [options]="basicOptions" 
+					(onUpload)="handleUpload($event)" class="form-control" name="Upload">
+					<label [hidden]="!Loading">Loading.....</label>
 
-					<div class="row">
-						<div class="col-md-6">
-							<!--<form #searchForm="ngForm">-->
-								<!--#searchForm="ngForm"-->
-								<div class="form-group">
+					<p class="help-block">Only .xls, .xlsx and .csv files are accepted.
+						<!--<br/>(.csv file with list of names to search)-->
+					</p>
+				</div>
+				<!--<button type="submit" class="btn btn-success btn-lg">SEARCH</button>-->
+			</form>
+		</div>
+	</div>
+</div>
 
-									<label class="control-label" for="exampleInputEmail1">Add a name to search:</label>
-									<textarea [(ngModel)]="NameToSearch" name="NameToSearch" class="form-control" id="TextArea1" rows="3" cols="30" ngcontroll="NameToSearch"
-										(ngModelChange)="NameToSearch = $event" required placeholder="Enter a name to search, example:Ramesh Krishnan Venkat Narayan, first name, middle name, last name order is not important. "></textarea>
-								</div>
-								<button type="button" [disabled]="NameToSearch=='' || NameToSearch==undefined" class="btn btn-primary" (click)="goToSearchAdd()">Add</button>
-							<!--</form>-->
-						</div>
-						<div class="col-md-6">
-							<!--<form #uploadForm="ngForm" action="{{uploadUrl}}" enctype="multipart/form-data" method="post">
-								<div class="form-group">
-
-									<label for="fileupload" class="control-label"> Select a file to upload - (.csv file with list of names to search):</label>
-									<input type="file" name="fileupload" value="fileupload" id="fileupload" class="form-control"   >
-
-								</div>
-								<input type="submit" value="Add a " class="btn btn-primary">
-							</form>-->
-							<!--ng2-uploader:-->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well">
+			<h3>Review Pending:</h3>
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+							<th>Delete</th>
+							<th>Name to search</th>
+							<!--<th>Study</th>-->
+							<!--<th>Protocol</th>-->
+							<!--<th>Country</th>-->
 							
-							<div class="form-group">
-											
-									<label for="fileupload" class="control-label">Select a file to upload - (.csv file with list of names to search):</label>
-									<input type="file" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"/>
-									<button type="button" class="btn btn-primary" (click)="goRefreshList()">Refresh List</button>	
-								</div>
-	
+							<th>Date</th>
+							<th>Sites matched - full</th>
+							<th>Sites matched - partial</th>
+							<!--<th>Sites Match Status</th>-->
+							<th>Issues Identified</th>
+							<th>Review</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of ComplianceFormSummaryList"  class="active">	<!--class='clickable-row'-->
+							<td align='center'>
+								<a  (click)="ToDelete(item.RecId)" data-toggle="modal" data-target="#myModalOutput">
+										<i class='glyphicon glyphicon-trash'></i>
+								</a>
+							
+							</td>
+							<td >
+								<a (click)="gotoSummaryResult(item);">{{item.NameToSearch}}</a>
+							</td>
+							<!--<td>
+								{{item.ProjectNumber}}
+							</td>
+							<td>
+								{{item.SponsorProtocolNumber}}
+							</td>
+							<td>
+								{{item.Country}}
+							</td>-->
+							<td>
+								{{item.SearchStartedOn | date: 'dd/MMM/yyyy'}}
+							</td>
+							<td [ngClass]="{'Red' : !MatchCountHighlight(item.Sites_FullMatchCount), 'Green': MatchCountHighlight(item.Sites_FullMatchCount)}">
+								{{item.Sites_FullMatchCount}}
+							</td>
+							<td [ngClass]="{'Red' : !MatchCountHighlight(item.Sites_PartialMatchCount), 'Green': MatchCountHighlight(item.Sites_PartialMatchCount)}">
+								{{item.Sites_PartialMatchCount}}
+							</td>
+							
+							<!--<td>
+								{{item.Sites_MatchStatus}}
+							</td>-->
+							<td  [ngClass]="{'Red' : !MatchCountHighlight(item.TotalIssuesFound), 'Green': MatchCountHighlight(item.TotalIssuesFound)}">
+								{{item.TotalIssuesFound}}
+							</td>
+							<td>
+								<button type="button" class="btn btn-danger" (click)="CloseReviewCompForm(item.RecId)">Close Review</button>
+							</td>
+							
+						</tr>
 
-						</div>
-					</div>
-					<br>
-					<div class="row">
-						<div class="col-md-12">
+					</tbody>
+				</table>
+			</div>
 
-							<h3>Search Pending:</h3>
-							<div class="table-responsive">
 
-								<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>Name to search</th>
-											<th>Study</th>
-											<th>Protocol</th>
-											<th>Country</th>
-											
-											<th>Date</th>
-											<th>Sites matched - full</th>
-											<th>Sites matched - partial</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr *ngFor="let item of ComplianceFormSummaryList"  >	<!--class='clickable-row'-->
 
-											<td >
-												<a (click)="gotoSummaryResult(item.RecId);">{{item.NameToSearch}}</a>
-											</td>
-											<td>
-												{{item.ProjectNumber}}
-											</td>
-											<td>
-												{{item.SponsorProtocolNumber}}
-											</td>
-											<td>
-												{{item.Country}}
-											</td>
-											<td>
-												{{item.SearchStartedOn}}
-											</td>
-											<td>
-												{{item.Sites_FullMatchCount}}
-											</td>
-											<td>
-												{{item.Sites_PartialMatchCount}}
-											</td>
-											
-										</tr>
-
-									</tbody>
-								</table>
+			<div>
+				<div class="modal fade" id="myModalOutput">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title">
+									Please Confirm...</h4>
 							</div>
-
-
-
-							<div>
-
-
+							<div class="modal-body">
+								<p>
+									Are you sure you want to delete task: <b>{{TodeleteRecID}}</b>?&hellip;</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="RemoveTask(TodeleteRecID)">
+									Yes</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">
+									No</button>
 							</div>
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
+	</div>
+</div>
+	
+
+			

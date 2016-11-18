@@ -42,17 +42,24 @@ Parick
 
 
 Pradeep
+17Nov2016
+1. Live Site: Record Scan Request time (datetime), Scan Start time, get last time of scan and if less than 30 seconds, delay start of scan.  
+2. Store Source Date on for Live Site - for each Live Scan
+3. Log Live Site Scan failure in ComplianceForm - Site
+4. Store Scan Mode: Live-Scan / Database
+15Nov2016
+Extractor - log number of records extracted.
+Log: n sites successful, n sites failed.
 7Nov2016
 SiteScanData line 143: null item must be handled.
 
 
-1. Explore PhantomJs With Selenium as replacement to FireFox/Edge driver
+
 2. LIST OF SPECIALLY DESIGNATED NATIONALS - Download PDF
 	a. read document date
 	b. store content  
 	c. Index content
-3. Match Location: improve - page no, line required.
-4. Selenium - Dot Net Core
+
 5. SiteLastUpdatedOn - logic while reading site data
 
 22Oct2016
@@ -345,4 +352,20 @@ Entry on 8 Nov 2016
 -----------------------------------------------------------------------------------------------------------
 Entry on 9 Nov 2016
 1. Changed the Upload function in controller to return a dummy ComplianceForm object
-2. 
+
+
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 11 Nov 2016
+1. Able to test 8 sites in the local machine. 
+   Extractor was run on the server.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 12 Nov 2016
+1. Log File error was solved but the full and partial match count was incorrect when tested over the server.
+   Unable to figure out the problem with incorrect match counts
+2. few of the sites are throwing 'WebDriverTimeOut Exception' while extracting the data. Need to have a
+   mechanism of handling this exception and tyring to extract the data from the sites which throw this 
+   excetion
+
+

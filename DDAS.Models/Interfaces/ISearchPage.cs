@@ -9,7 +9,7 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchPage
     {
-        void LoadContent(string NameToSearch);
+        void LoadContent(string NameToSearch, string DownloadFolder);
         void SaveData();
        
         //ResultAtSite GetResultAtSite(string NameToSearch);

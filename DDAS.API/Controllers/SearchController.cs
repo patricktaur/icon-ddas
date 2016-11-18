@@ -14,7 +14,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Utilities;
 using System.Net.Http.Headers;
+
+using DDAS.Services.Search;
 using System.Web;
+using System.Collections.Generic;
+
 
 namespace DDAS.API.Controllers
 {
@@ -30,8 +34,8 @@ namespace DDAS.API.Controllers
         private string DataExtractionLogFile =
             System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-        //private string UploadFolder =
-        //    System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
+        private string UploadFolder =
+            System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
@@ -39,7 +43,7 @@ namespace DDAS.API.Controllers
             _SearchEngine = search;
             _SearchSummary = SearchSummary;
             _UOW = uow;
-            _log = log;
+            _log = new LogText(DataExtractionLogFile);
             _SiteSummary = SiteSummary;
         }
 
@@ -52,7 +56,6 @@ namespace DDAS.API.Controllers
             roleStore.CreateAsync(role);
             return Ok();
         }
-
 
         //[Authorize] //(Roles = "")]
         [Route("AddUser")]
@@ -108,7 +111,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
         {
-            //_log.LogStart();
+            _log.LogStart();
             // Check if the request contains multipart/form-data.
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -117,36 +120,41 @@ namespace DDAS.API.Controllers
 
             try
             {
-                // Read the form data
-                string root = HttpContext.Current.Server.MapPath("~/App_Data");
-                var provider = new MultipartFormDataStreamProvider(root);
 
-                //CustomMultipartFormDataStreamProvider provider = 
-                //    new CustomMultipartFormDataStreamProvider(@"C:\Development\DDAS_Uploads");
+                //string root = HttpContext.Current.Server.MapPath("~/App_Data");
+                //string root = "C:\\Development\\DDAS_Uploads";
+                CustomMultipartFormDataStreamProvider provider =
+                    new CustomMultipartFormDataStreamProvider(UploadFolder);
+
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
                 string[] FileContent = null;
-
                 foreach (MultipartFileData file in provider.FileData)
                 {
                     Trace.WriteLine(file.Headers.ContentDisposition.FileName);
                     Trace.WriteLine("Server file path: " + file.LocalFileName);
 
                     FileContent = File.ReadAllLines(file.LocalFileName);
+                    _log.WriteLog("FileContent Length: " + FileContent.Length);
                     for (int Counter = 1; Counter < FileContent.Length; Counter++)
                     {
+                        _log.WriteLog(" Name: " + FileContent[Counter]);
                         GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
                     }
                 }
-                //_log.WriteLog("=================================================================================");
-                //_log.LogEnd();
-                //Environment.Exit(0);
                 return Request.CreateResponse(HttpStatusCode.OK, "Completed");
             }
             catch (Exception e)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                _log.WriteLog("ErrorMessage: " + e.ToString());
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                    "Error Details: " + e.Message);
+            }
+            finally
+            {
+                _log.WriteLog("=================================================================================");
+                _log.LogEnd();
             }
         }
 
@@ -162,7 +170,7 @@ namespace DDAS.API.Controllers
 
         [Route("GetNamesFromOpenComplianceForms")]
         [HttpGet]
-        public IHttpActionResult GetNamesFromOpenComplianceForm()
+        public List<ComplianceForm> GetNamesFromOpenComplianceForm()
         {
             var ComplianceForms =
                 _UOW.ComplianceFormRepository.FindActiveComplianceForms(true);
@@ -170,28 +178,40 @@ namespace DDAS.API.Controllers
             foreach (ComplianceForm form in ComplianceForms)
                 form.SiteDetails = null;
 
-            return Ok(ComplianceForms);
+            return ComplianceForms;
         }
 
-        [Route("GetSearchSummaryResult")]
+        [Route("GetComplianceForm")]
         [HttpGet]
         public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
         {
-            var SearchResults = GetSearchSummaryDetailsForSingleName(NameToSearch);
-            return Ok(SearchResults);
+            _log.LogStart();
+            try
+            {
+                var SearchResults = GetSearchSummaryDetailsForSingleName(NameToSearch);
+                return Ok(SearchResults);
+            }
+            catch (Exception e)
+            {
+                _log.WriteLog("ErrorMessage: " + e.ToString());
+                return InternalServerError(e);
+            }
+            finally
+            {
+                _log.WriteLog("=================================================================================");
+                _log.LogEnd();
+            }
         }
 
         public ComplianceForm GetSearchSummaryDetailsForSingleName(
             string NameToSearch)
         {
-            _log.LogStart();
+
             var form = _SearchSummary.GetSearchSummary(NameToSearch, _log);
-            _log.WriteLog("=================================================================================");
-            _log.LogEnd();
             return form;
         }
 
-        [Route("GetSearchSummary")]
+        [Route("GetSearchSummaryResult")]
         [HttpGet]
         public IHttpActionResult GetSearchSummary(string ComplianceFormId)
         {
@@ -299,26 +319,48 @@ namespace DDAS.API.Controllers
                 result, ComplianceFormId));
         }
 
-    
 
-      
-    }
-
-        public class UserDetails
+        [Route("GenerateComplianceForm")]
+        [HttpGet]
+        public IHttpActionResult GetComplianceForm(string ComplianceFormId)
         {
-            public string  UserName{get;set;}
-            public string pwd { get; set; }
-            public string RoleName { get; set; }
+            Guid? RecId = Guid.Parse(ComplianceFormId);
+            var form = new GenerateComplianceForm(_UOW);
+            form.GetComplianceForm(RecId);
+            return Ok();
         }
 
-   
+        [Route("CloseComplianceForm")]
+        [HttpGet]
+        public IHttpActionResult CloseComplianceForm(string ComplianceFormId)
+        {
+            Guid? RecId = Guid.Parse(ComplianceFormId);
+            ComplianceForm form = _UOW.ComplianceFormRepository.FindById(RecId);
+
+            form.Active = false;
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+            return Ok(true);
+        }
+
+        [Route("DeleteComplianceForm")]
+        [HttpGet]
+        public IHttpActionResult DeleteComplianceForm(string ComplianceFormId)
+        {
+            Guid? RecId = Guid.Parse(ComplianceFormId);
+            _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
+            var Forms = GetNamesFromOpenComplianceForm();
+            return Ok(Forms);
+        }
+
     }
 
     public class UserDetails
     {
-        public string  UserName{get;set;}
+        public string UserName { get; set; }
         public string pwd { get; set; }
         public string RoleName { get; set; }
 
     }
 
+}

@@ -1,13 +1,15 @@
 ﻿//using DocumentFormat.OpenXml.Drawing;
+using DDAS.Models.Entities.Domain;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Linq;
 
 namespace Utilities.WordTemplate
 {
     public class ReplaceTextFromWordTemplate
     {
-        public void ReplaceTextFromWord(string Name, string CompanyName)
+        public void ReplaceTextFromWord(ComplianceForm form,string Name, string CompanyName)
         {
             using (WordprocessingDocument doc =
                    WordprocessingDocument.Open(@"C:\Development\Temp\SITE LIST REQUEST FORM_Updated.docx", true))
@@ -15,15 +17,15 @@ namespace Utilities.WordTemplate
                 var body = doc.MainDocumentPart.Document.Body;
 
                 var Table = body.Descendants<Table>().ElementAt(0);
-                UpdateTable(Table, 0, 1, "11");
-                UpdateTable(Table, 1, 1, "Some Investigator Name");
-                UpdateTable(Table, 2, 1, "Some Sub Investigator Name");
+                UpdateTable(Table, 0, 1, form.ProjectNumber);
+                UpdateTable(Table, 1, 1, form.NameToSearch);
+                //UpdateTable(Table, 2, 1, "Some Sub Investigator Name");
 
                 Table = body.Descendants<Table>().ElementAt(2);
 
                 for(int i=0; i<=12; i++)
                 {
-                    UpdateTable(Table, i, 2, "my date here");
+                    UpdateTable(Table, i, 2, DateTime.Now.ToString());
                 }
             }
         }

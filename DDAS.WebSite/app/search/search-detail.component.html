@@ -1,185 +1,153 @@
-<div class="">
-	<div class="panel panel-primary">
-		<div class="panel-heading">
-			<div class="container-fluid panel-container">
-				<div class="row">
-					<div class="col-md-8 text-left">
-						<h3 class="panel-title">
-							<div class="checkbox" style="display:inline">
-								<label>
-                                    {{_SiteData.SiteName}} :{{_SiteData.NameToSearch}}
-                                </label>
-							</div>
-						</h3>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="well">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h4 class="align-left no-margin-top">
+                        Gathering Results in site <mark>{{_SiteData.SiteName}}</mark>
+						 for <strong>{{_SiteData.NameToSearch}}</strong>
+                    </h4>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="align-right no-margin-top">
+                       Last saved at: {{_SiteData.CreatedOn | date:'medium' }}
+                    </h4>
+					<!--<h5>{{_SiteData.CreatedOn | date:'medium'}}
+						{{_SiteData.CreatedOn | date:'yyyy-MM-dd HH:mm:ss Z'}}
+						{{_SiteData.CreatedOn | date:'MM/dd/yyyy @ h:mma'}}
+						{{_SiteData.CreatedOn | date:"MM/dd/yyyy 'at' h:mma"}}</h5>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<h3 class="" [hidden]="_isObservationCount">Observations: {{ObservationCount}}</h3>
+<!--ObservationCount==0-->
+
+<div class="row">
+	<div *ngFor="let matchedRecord of SelectedRecords; let indexVal = index">
+		<form role='form'>
+			<div class="form-group col-md-6" >
+				<div class="well" > <!--style="border:solid black"-->
+					<br/>
+					<div class="row">
+						<div class="col-md-8">
+							<h4>Record Location (Row Number):</h4>
+							{{matchedRecord.RowNumber}}
+						</div>
+						<div class="col-md-4">
+							<h4>Issue Number:</h4>
+							<input type="text" class="form-control" [(ngModel)]="matchedRecord.IssueNumber" 
+							 placeholder="Status" name="IssueNumber">
+						</div>
 					</div>
-					<div class="col-md-4 panel-title pull-right text-right">
-						<h3 class="panel-title">Last saved at: {{_SiteData.CreatedOn}} </h3>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="panel-body">
-				<!--{{diagnostic}}
-				<div>
-					{{NotSelectedRecords | json}}
-					
-					{{SelectedRecords | json}}
-				</div>
-				-->
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3 class="panel-title" style="height: 50px">Observations: </h3>
-					<!--style="border: 2px solid black"-->
-				</div>
-				<div class="panel-body">
-					<div class="table-responsive">
-						<div *ngFor="let matchedRecord of SelectedRecords">
-							<div class="form-group col-md-12" style="border:solid black">
-								<div class="row">
-									<div class="col-md-4">
-										<button type="button" class="btn btn-default" (click)="RemoveFromSelected(matchedRecord)">Remove</button>
-									</div>
-									<div class="col-md-8">
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										Record Details
-									</div>
-									<div class="col-md-8">
-										<!--{{matchedRecord.RecordDetails}}-->
-										<div *ngFor="let SplitItems of saveContact(matchedRecord.RecordDetails)">
-											{{SplitItems}}
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										Issue Number
-									</div>
-									<div class="col-md-8">
-										<input type="text" class="form-control" [(ngModel)]="matchedRecord.IssueNumber" placeholder="Status">
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										Status
-									</div>
-									<div class="col-md-8">
-										<form action="">
-											<input type="radio" [(ngModel)]="matchedRecord.Status"  name="Approve" value="Approve">Approve &nbsp;
-											<input type="radio" [(ngModel)]="matchedRecord.Status"  name="Reject" value="Reject">Reject &nbsp;
-											<input type="radio" [(ngModel)]="matchedRecord.Status"  name="Clear" value="Clear">Clear
-										</form>
-										<!--<input type="text" class="form-control" [(ngModel)]="matchedRecord.Status" placeholder="Status">-->
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										Observations
-									</div>
-									<div class="col-md-8">
-										<textarea class="form-control" [(ngModel)]="matchedRecord.Issues" rows="3" cols="30" required placeholder="Observations"></textarea>
-									</div>
-								</div>
+					<div class="row">
+						<div class="col-md-12">
+							<!--{{matchedRecord.RecordDetails}}-->
+							<h4>Record Details</h4>
+							<div *ngFor="let SplitItems of saveContact(matchedRecord.RecordDetails)">
+								{{SplitItems}}
 							</div>
 						</div>
-						<!--<table class="table table-bordered">
-							<thead>
-								<tr>
-									<th>Select</th>
-									<th>Issue No</th>
-									<th>Status</th>
-									<th>Observations</th>
-									<th>Record Details</th>
-									<th>Record Location (Row Number)</th>
-
-								</tr>
-							</thead>
-							<tbody>
-								<tr *ngFor="let matchedRecord of SelectedRecords">
-									<td>
-										<input type="checkbox" [(ngModel)]="matchedRecord.Selected" />
-										<button type="button" class="btn btn-default" (click)="RemoveFromSelected(matchedRecord)">Remove</button>
-									</td>
-									<td>
-										<input type="text" [(ngModel)]="matchedRecord.IssueNumber" placeholder="Status">
-									</td>
-									<td>
-										<input type="text" [(ngModel)]="matchedRecord.Status" placeholder="Status">
-									</td>
-									<td>
-										<textarea [(ngModel)]="matchedRecord.Issues" rows="3" cols="30" required placeholder="Observations"></textarea>
-									</td>
-									<td>{{matchedRecord.RecordDetails | slice:0 : 150}} ...</td>
-									<td>{{matchedRecord.RowNumber}}</td>
-								</tr>
-
-							</tbody>
-						</table>-->
 					</div>
+					<div class="row">
+						<div class="col-md-12 form-inline">
+							<h4 class="form-group">Status:</h4>
+							<form action="" class="form-group">
+								<input type="radio"  [(ngModel)]="matchedRecord.Status"  name="Approve" value="Approve">Approve &nbsp;
+								<input type="radio"  [(ngModel)]="matchedRecord.Status"  name="Reject" value="Reject">Reject &nbsp;
+								<input type="radio"  [(ngModel)]="matchedRecord.Status"  name="Clear" value="Clear">Clear
+							</form>
+							<!--<input type="text" class="form-control" [(ngModel)]="matchedRecord.Status" placeholder="Status">-->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h4>Observations</h4>
+							<textarea class="form-control" name="Observation" [(ngModel)]="matchedRecord.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<button type="button" class="btn btn-default" (click)="RemoveFromSelected(matchedRecord)">Remove</button>
+						</div>
+					</div>
+					<br/>
 				</div>
 			</div>
-            <div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3 class="panel-title" style="height: 50px">Matches Found: </h3>
-				</div>
-				<div class="panel-body">
-					<div class="table-responsive">
-						<table class="table table-bordered">
-							<thead>
-								<tr>
-									<th>Select</th>
-									<th>Issue No</th>
-									<th>Status</th>
-									<th>Observations</th>
-									<th>Record Details</th>
-									<th>Record Location (Row Number)</th>
-
-								</tr>
-							</thead>
-							<tbody>
-								<tr *ngFor="let matchedRecord of NotSelectedRecords">
-									<td>
-										<!--<input type="checkbox" [(ngModel)]="matchedRecord.selected" />-->
-										<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Select</button>
-									</td>
-									<td>
-										<!--<input type="text" [(ngModel)]="matchedRecord.IssueNumber" placeholder="Status">-->
-										<label  >
-											{{matchedRecord.IssueNumber}}
-										</label>
-									</td>
-									<td>
-										<!--<input type="text" [(ngModel)]="matchedRecord.Status" placeholder="Status">-->
-										<label  >
-											{{matchedRecord.Status}}
-										</label>
-									</td>
-									<td>
-										<textarea [disabled]="true" [(ngModel)]="matchedRecord.Issues" rows="3" cols="30" required placeholder="Observations"></textarea>
-									</td>
-									<td>
-										<!--{{matchedRecord.RecordDetails | slice:0 : 150}} ...-->
-
-										<!--{{saveContact(matchedRecord.RecordDetails)}}-->
-										<div *ngFor="let SplitItems of saveContact(matchedRecord.RecordDetails)">
-											{{SplitItems}}
-										</div>
-									</td>	<!--.replace('~', '<br/>')-->
-									<td>{{matchedRecord.RowNumber}}</td>
-								</tr>
-
-							</tbody>
-						</table>
-					</div>
-				</div>
-            </div>
-			<div align="center">
-				<button type="button" class="btn btn-success" (click)="saveSiteDetails()">Save</button>
-				<button type="button" class="btn btn-default" (click)="goBack()">Back</button>
-				<br/><br/>
-			</div>
-		</div>
+			<div *ngIf="dividerGeneration(indexVal)" ><div style="clear:both;"></div></div>
+		</form>
 	</div>
 </div>
+
+<p align="center">
+	<button type="button" class="btn btn-success btn-lg" (click)="saveSiteDetails()">Save</button>
+	<button type="button" class="btn btn-default btn-lg" (click)="goBack()">Back</button>
+	<br/><br/>
+</p>
+
+
+<h3 class="" [hidden]="_isMatchFoundCount" >Matches Found: {{MatchFoundCount}}</h3>
+<!--MatchFoundCount==0-->
+			
+<div class="table-responsive" [hidden]="_isMatchFoundCount" >
+	<table class="table table-bordered table-hover table-striped">
+		<thead>
+			<tr>
+				<th>Select</th>
+				<th>Issue No</th>
+				<th>Status</th>
+				<th>Observations</th>
+				<th>Record Details</th>
+				<th>Record Location (Row Number)</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let matchedRecord of NotSelectedRecords">
+				<td>
+					<!--<input type="checkbox" [(ngModel)]="matchedRecord.selected" />-->
+					<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Select</button>
+				</td>
+				<td>
+					<!--<input type="text" [(ngModel)]="matchedRecord.IssueNumber" placeholder="Status">-->
+					<label  >
+						{{matchedRecord.IssueNumber}}
+					</label>
+				</td>
+				<td>
+					<!--<input type="text" [(ngModel)]="matchedRecord.Status" placeholder="Status">-->
+					<label  >
+						{{matchedRecord.Status}}
+					</label>
+				</td>
+				<td>
+					<textarea [disabled]="true" [(ngModel)]="matchedRecord.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
+				</td>
+				<td>
+					<!--{{matchedRecord.RecordDetails | slice:0 : 150}} ...-->
+
+					<!--{{saveContact(matchedRecord.RecordDetails)}}-->
+					<div *ngFor="let SplitItems of saveContact(matchedRecord.RecordDetails)">
+						{{SplitItems}}
+					</div>
+				</td>	<!--.replace('~', '<br/>')-->
+				<td>{{matchedRecord.RowNumber}}</td>
+			</tr>
+
+		</tbody>
+	</table>
+</div>
+			
+      
+
+
+
+<!--<p align="center">
+	<button type="button" class="btn btn-success btn-lg" (click)="saveSiteDetails()">Save</button>
+	<button type="button" class="btn btn-default btn-lg" (click)="goBack()">Back</button>
+	<br/><br/>
+</p>-->
