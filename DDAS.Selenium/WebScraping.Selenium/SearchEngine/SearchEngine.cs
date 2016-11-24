@@ -76,8 +76,9 @@ namespace WebScraping.Selenium.SearchEngine
                 }
                 catch (WebDriverTimeoutException e)
                 {
-                    log.WriteLog("Error while extracting data from site: " + site.SiteEnum +
-                        " Error Details: " + e.ToString());
+                    throw new Exception(e.ToString());
+                    //log.WriteLog("Error while extracting data from site: " + site.SiteEnum +
+                    //    " Error Details: " + e.ToString());
                 }
             }
         }

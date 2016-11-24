@@ -156,23 +156,33 @@ namespace DDAS.Models.Entities.Domain
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
 
+    public class InvestigatorSearched
+    {
+        public string Name { get; set; }
+        public string Role { get; set; }
+    }
+
     public class SitesIncludedInSearch
     {
         public string SiteName { get; set; }
         public DateTime DataExtractedOn { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
+        public DateTime SiteSourceUpdatedOn { get; set; }
+        //public DateTime SiteLastUpdatedOn { get; set; }
         public DateTime CreatedOn { get; set; }
         public string ExtractionMode { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
-        public DateTime LastUpdatedOn { get; set; }
-        public DateTime ScannedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        //public DateTime ScannedOn { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
         public string MatchStatus { get; set; }
         public bool IssuesIdentified { get; set; }
         public int IssuesFound { get; set; }
         public string IssuesFoundStatus { get; set; }
+        public bool HasExtractionError { get; set; }
+        public string ExtractionErrorMessage { get; set; }
+        public bool ReviewCompleted { get; set; }
         public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
     }
 

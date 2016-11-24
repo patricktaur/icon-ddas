@@ -50,7 +50,7 @@ namespace DDAS.Services.Search
                 SummaryItem.FullMatch = Site.FullMatchCount;
                 SummaryItem.PartialMatch = Site.PartialMatchCount;
                 SummaryItem.DataExtractedOn = Site.DataExtractedOn;
-                SummaryItem.SiteLastUpdatedOn = Site.SiteLastUpdatedOn;
+                SummaryItem.SiteLastUpdatedOn = Site.UpdatedOn;
                 SummaryItem.SiteEnum = Site.SiteEnum;
                 SummaryItem.SiteUrl = Site.SiteUrl;
                 SummaryItem.SiteName = Site.SiteName;
@@ -59,7 +59,8 @@ namespace DDAS.Services.Search
                 SummaryItem.IssuesFoundStatus = Site.IssuesFoundStatus;
 
                 searchSummaryItems.Add(SummaryItem);
-                searchSummaryItems.OrderBy(Item => Item.SiteEnum);
+                searchSummaryItems = 
+                    searchSummaryItems.OrderBy(Item => Item.SiteEnum).ToList();
             }
             searchSummary.SearchSummaryItems = searchSummaryItems;
             return searchSummary;

@@ -7,6 +7,7 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Net;
 using System.IO;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -37,74 +38,24 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public bool SearchTerms(string FirstName, string LastName)
+        public string DownloadExclusionList(string DownloadFolder)
         {
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            string fileName = DownloadFolder + "ExclusionDatabaseList.csv";
+            // Create a new WebClient instance.
+            WebClient myWebClient = new WebClient();
+            // Concatenate the domain with the Web resource filename.
+            string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
+                GetAttribute("href");
 
-            IWebElement FNameElement = ExclusionDatabaseSearchFirstName;
-            FNameElement.SendKeys(FirstName);
+            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n",
+                fileName, myStringWebResource);
+            // Download the Web resource and save it into the current filesystem folder.
+            myWebClient.DownloadFile(myStringWebResource, fileName);
 
-            IWebElement LNameElement = ExclusionDatabaseSearchLastName;
-            LNameElement.SendKeys(LastName);
-
-            IWebElement SearchElement = ExclusionDatabaseSearchElement;
-            SearchElement.SendKeys(Keys.Enter);
-            
-            //wait for the page to load
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
-            if (ExclusionDatabaseSearchTable != null)
-            {
-                return true;
-            }
-            else
-                ExclusionDatabaseSearchAgain.Click(); //back to search page
-                return false;
+            return fileName;
         }
 
         private ExclusionDatabaseSearchPageSiteData _exclusionSearchSiteData;
-
-        public void LoadExclusionsDatabaseList()
-        {
-            _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
-
-            _exclusionSearchSiteData.CreatedBy = "Patrick";
-            _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _exclusionSearchSiteData.CreatedOn = DateTime.Now;
-            _exclusionSearchSiteData.Source = driver.Url;
-
-            foreach (IWebElement TR in 
-                ExclusionDatabaseSearchTable.FindElements(By.XPath("tbody/tr")))
-            {
-                ExclusionDatabaseSearchList NewExclusionsList = new ExclusionDatabaseSearchList();
-
-                IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
-
-                if(TDs.Count != 0)
-                {
-                    NewExclusionsList.LastName = TDs[0].Text;
-                    NewExclusionsList.FirstName = TDs[1].Text;
-                    NewExclusionsList.MiddleName = TDs[2].Text;
-                    NewExclusionsList.General = TDs[3].Text;
-                    NewExclusionsList.Specialty = TDs[4].Text;
-                    NewExclusionsList.ExclusionType = TDs[5].Text;
-                    //NewExclusionsList.WaiverDate = TDs[6].Text;
-                    //NewExclusionsList.SSNorEIN = TDs[7].Text;
-
-                    _exclusionSearchSiteData.ExclusionSearchList.Add
-                        (NewExclusionsList);
-                }
-            }
-        }
-
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
-        {
-            //refactor, add code to enter search names
-            //LoadExclusionsDatabaseList();
-
-            string FilePath = DownloadExclusionList(DownloadFolder);
-            LoadExclusionDatabaseListFromCSV(FilePath);
-        }
 
         public void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
         {
@@ -158,21 +109,38 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public string DownloadExclusionList(string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            string fileName = DownloadFolder + "ExclusionDatabaseList.csv";
-            // Create a new WebClient instance.
-            WebClient myWebClient = new WebClient();
-            // Concatenate the domain with the Web resource filename.
-            string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
-                GetAttribute("href");
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_exclusionSearchSiteData.DataExtractionRequired)
+                {
+                    string FilePath = DownloadExclusionList(DownloadFolder);
+                    LoadExclusionDatabaseListFromCSV(FilePath);
+                    _exclusionSearchSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _exclusionSearchSiteData.DataExtractionSucceeded = false;
+                _exclusionSearchSiteData.DataExtractionErrorMessage = e.Message;
+                _exclusionSearchSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_exclusionSearchSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
 
-            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n",
-                fileName, myStringWebResource);
-            // Download the Web resource and save it into the current filesystem folder.
-            myWebClient.DownloadFile(myStringWebResource, fileName);
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
 
-            return fileName;
+            _exclusionSearchSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()

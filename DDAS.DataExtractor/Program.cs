@@ -43,22 +43,34 @@ namespace DDAS.DataExtractor
 
             var SiteScan = new SiteScanData(uow, searchEngine);
 
-            if (SiteNum != null)
+            try
             {
-                SiteEnum siteEnum = (SiteEnum)SiteNum;
-                log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
-                searchEngine.Load(siteEnum, "", DownloadFolder, log);
-            }
-            else
-            {
-                var query = SearchSites.GetNewSearchQuery();
-                searchEngine.Load(query, DownloadFolder, log);
-            }
+                if (SiteNum != null)
+                {
+                    SiteEnum siteEnum = (SiteEnum)SiteNum;
+                    log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
+                    searchEngine.Load(siteEnum, "", DownloadFolder, log);
+                }
+                else
+                {
+                    var query = SearchSites.GetNewSearchQuery();
+                    searchEngine.Load(query, DownloadFolder, log);
+                }
+                log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
 
-            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-            log.WriteLog("=================================================================================");
-            log.LogEnd();
-            Environment.Exit(0);
+            }
+            catch(Exception e)
+            {
+                log.WriteLog("Unable to complete the data extract. Error Details: " + 
+                    e.ToString());
+            }
+            finally
+            {
+                log.WriteLog("=================================================================================");
+                log.LogEnd();
+                Environment.Exit(0);
+            }
+            
         }
     }
 }

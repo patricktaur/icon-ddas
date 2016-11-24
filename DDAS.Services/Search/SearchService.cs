@@ -22,6 +22,42 @@ namespace DDAS.Services.Search
             _SearchEngine = SearchEngine;
         }
 
+        public ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
+            Guid? ComplianceFormId, SiteEnum Enum,
+            ILog log)
+        {
+            NameToSearch = RemoveExtraCharacters(NameToSearch);
+            var ScanData = new SiteScanData(_UOW, _SearchEngine);
+
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var ExistingSiteData = form.SiteDetails.Where(
+            x => x.SiteEnum == Enum).First();
+
+            try
+            {
+                var SiteData = ScanData.GetSiteScanData(Enum, NameToSearch, log);
+
+                var TempSite = GetMatchStatus(Enum,
+                        NameToSearch, SiteData.DataId, ExistingSiteData);
+
+                ExistingSiteData.HasExtractionError = false;
+                ExistingSiteData.ExtractionErrorMessage = null;
+
+                _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+                return form;
+            }
+            catch (Exception e)
+            {
+                log.WriteLog("Unable to extract the details. ErrorMessage: " + e.ToString());
+                ExistingSiteData.HasExtractionError = true;
+                ExistingSiteData.ExtractionErrorMessage = "Site restore was attempted at: " + DateTime.Now
+                    + " and was failed";
+                return form;
+            }
+        }
+
         public ComplianceForm GetSearchSummary(string NameToSearch, ILog log)
         {
             NameToSearch = NameToSearch.Replace(",", "");
@@ -31,11 +67,12 @@ namespace DDAS.Services.Search
 
             string[] ComponentsInName = NameToSearch.Split(' ');
 
-            if (ComponentsInName.Length == 1)
-                return null;
+            //if (ComponentsInName.Length == 1)
+            //    return null;
 
             SiteScanData ScanData = new SiteScanData(_UOW, _SearchEngine);
-            List<SiteScan> SiteScanList = ScanData.GetSiteScanSummary(NameToSearch, log);
+
+            var SiteScanList = ScanData.GetSiteScanSummary(NameToSearch, log);
 
             ComplianceForm complianceForm = new ComplianceForm();
             var SitesForNameToSearch = new List<SitesIncludedInSearch>();
@@ -46,16 +83,24 @@ namespace DDAS.Services.Search
             {
                 var SiteForNameToSearch = new SitesIncludedInSearch();
                 SiteForNameToSearch.SiteEnum = Site.SiteEnum;
-                SiteForNameToSearch.ExtractionMode = "Database";
 
-                var TempSite = GetMatchStatus(Site.SiteEnum, 
-                    NameToSearch, Site.DataId, SiteForNameToSearch);
+                if (Site.SiteEnum == SiteEnum.FDAWarningLettersPage ||
+                    Site.SiteEnum == SiteEnum.ClinicalInvestigatorDisqualificationPage ||
+                    Site.SiteEnum == SiteEnum.SystemForAwardManagementPage)
+                { SiteForNameToSearch.ExtractionMode = "Live"; }
+                else
+                    SiteForNameToSearch.ExtractionMode = "Database";
 
-                if(TempSite.IssuesFoundStatus == null)
-
-                SiteForNameToSearch.MatchStatus =
-                    TempSite.FullMatchCount + " full matches and " +
-                    TempSite.PartialMatchCount + " partial matches";
+                if (Site.HasErrors == false)
+                {
+                    var TempSite = GetMatchStatus(Site.SiteEnum,
+                        NameToSearch, Site.DataId, SiteForNameToSearch);
+                }
+                else
+                {
+                    SiteForNameToSearch.HasExtractionError = true;
+                    SiteForNameToSearch.ExtractionErrorMessage = Site.ErrorDescription;
+                }
 
                 SiteForNameToSearch.SiteUrl = Site.SiteUrl;
                 SiteForNameToSearch.SiteName = Site.SiteName;
@@ -128,8 +173,8 @@ namespace DDAS.Services.Search
             FDADebarPageSiteData FDASearchResult =
                 _UOW.FDADebarPageRepository.FindById(DataId);
 
-            Site.DataExtractedOn = FDASearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = FDASearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = FDASearchResult.CreatedOn;
+            Site.DataExtractedOn = FDASearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(FDASearchResult.DebarredPersons, NameToSearch);
 
@@ -187,8 +232,8 @@ namespace DDAS.Services.Search
             ClinicalInvestigatorInspectionSiteData ClinicalSiteData =
                 _UOW.ClinicalInvestigatorInspectionListRepository.FindById(DataId);
 
-            Site.DataExtractedOn = ClinicalSiteData.CreatedOn;
-            Site.SiteLastUpdatedOn = ClinicalSiteData.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = ClinicalSiteData.CreatedOn;
+            Site.DataExtractedOn = ClinicalSiteData.SiteLastUpdatedOn;
 
             UpdateMatchStatus(ClinicalSiteData.ClinicalInvestigatorInspectionList, 
                 NameToSearch);
@@ -268,8 +313,8 @@ namespace DDAS.Services.Search
             FDAWarningLettersSiteData FDASearchResult =
                 _UOW.FDAWarningLettersRepository.FindById(DataId);
 
-            Site.DataExtractedOn = FDASearchResult.CreatedOn;
-            Site.LastUpdatedOn = FDASearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = FDASearchResult.CreatedOn;
+            Site.DataExtractedOn = FDASearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(FDASearchResult.FDAWarningLetterList, NameToSearch);
 
@@ -339,8 +384,8 @@ namespace DDAS.Services.Search
             ERRProposalToDebarPageSiteData ERRSiteData =
                 _UOW.ERRProposalToDebarRepository.FindById(DataId);
 
-            Site.DataExtractedOn = ERRSiteData.CreatedOn;
-            Site.SiteLastUpdatedOn = ERRSiteData.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = ERRSiteData.CreatedOn;
+            Site.DataExtractedOn = ERRSiteData.SiteLastUpdatedOn;
 
             UpdateMatchStatus(ERRSiteData.ProposalToDebar, NameToSearch);
 
@@ -413,8 +458,8 @@ namespace DDAS.Services.Search
             AdequateAssuranceListSiteData AdequateListSearchResult =
                 _UOW.AdequateAssuranceListRepository.FindById(DataId);
 
-            Site.DataExtractedOn = AdequateListSearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = AdequateListSearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = AdequateListSearchResult.CreatedOn;
+            Site.DataExtractedOn = AdequateListSearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(AdequateListSearchResult.AdequateAssurances, NameToSearch);
 
@@ -488,8 +533,8 @@ namespace DDAS.Services.Search
             ClinicalInvestigatorDisqualificationSiteData DisqualificationSiteData =
                 _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(DataId);
 
-            Site.DataExtractedOn = DisqualificationSiteData.CreatedOn;
-            Site.SiteLastUpdatedOn = DisqualificationSiteData.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = DisqualificationSiteData.CreatedOn;
+            Site.DataExtractedOn = DisqualificationSiteData.SiteLastUpdatedOn;
 
             UpdateMatchStatus(DisqualificationSiteData.DisqualifiedInvestigatorList, NameToSearch);
 
@@ -568,8 +613,8 @@ namespace DDAS.Services.Search
             CBERClinicalInvestigatorInspectionSiteData CBERSearchResult =
                 _UOW.CBERClinicalInvestigatorRepository.FindById(DataId);
 
-            Site.DataExtractedOn = CBERSearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = CBERSearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = CBERSearchResult.CreatedOn;
+            Site.DataExtractedOn = CBERSearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(CBERSearchResult.ClinicalInvestigator, NameToSearch);
 
@@ -642,8 +687,8 @@ namespace DDAS.Services.Search
             PHSAdministrativeActionListingSiteData PHSSearchResult =
                 _UOW.PHSAdministrativeActionListingRepository.FindById(DataId);
 
-            Site.DataExtractedOn = PHSSearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = PHSSearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = PHSSearchResult.CreatedOn;
+            Site.DataExtractedOn = PHSSearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(PHSSearchResult.PHSAdministrativeSiteData, NameToSearch);
 
@@ -723,8 +768,8 @@ namespace DDAS.Services.Search
             ExclusionDatabaseSearchPageSiteData ExclusionSearchResult =
                 _UOW.ExclusionDatabaseSearchRepository.FindById(DataId);
 
-            Site.DataExtractedOn = ExclusionSearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = ExclusionSearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = ExclusionSearchResult.CreatedOn;
+            Site.DataExtractedOn = ExclusionSearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(ExclusionSearchResult.ExclusionSearchList, NameToSearch);
 
@@ -799,8 +844,8 @@ namespace DDAS.Services.Search
             CorporateIntegrityAgreementListSiteData CIASearchResult =
                 _UOW.CorporateIntegrityAgreementRepository.FindById(DataId);
 
-            Site.DataExtractedOn = CIASearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = CIASearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = CIASearchResult.CreatedOn;
+            Site.DataExtractedOn = CIASearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(CIASearchResult.CIAListSiteData, NameToSearch);
 
@@ -875,8 +920,8 @@ namespace DDAS.Services.Search
             SystemForAwardManagementPageSiteData SAMSearchResult =
                 _UOW.SystemForAwardManagementRepository.FindById(DataId);
 
-            Site.DataExtractedOn = SAMSearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = SAMSearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = SAMSearchResult.CreatedOn;
+            Site.DataExtractedOn = SAMSearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(SAMSearchResult.SAMSiteData, NameToSearch);
 
@@ -955,8 +1000,8 @@ namespace DDAS.Services.Search
             SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(DataId);
 
-            Site.DataExtractedOn = SDNSearchResult.CreatedOn;
-            Site.SiteLastUpdatedOn = SDNSearchResult.SiteLastUpdatedOn;
+            //Site.DataExtractedOn = SDNSearchResult.CreatedOn;
+            Site.DataExtractedOn = SDNSearchResult.SiteLastUpdatedOn;
 
             UpdateMatchStatus(SDNSearchResult.SDNListSiteData, NameToSearch);
 
@@ -1098,7 +1143,7 @@ namespace DDAS.Services.Search
             var ExistingSiteDetails = ComplianceFormDetails.SiteDetails.Where(
                 x => x.SiteEnum == Site.SiteEnum).FirstOrDefault();
 
-            ExistingSiteDetails.LastUpdatedOn = DateTime.Now;
+            ExistingSiteDetails.UpdatedOn = DateTime.Now;
 
             var ExistingRecords = ExistingSiteDetails.MatchedRecords;
 
@@ -1124,15 +1169,15 @@ namespace DDAS.Services.Search
             IssuesFound = 0;
             foreach (SitesIncludedInSearch SiteInSearch in ComplianceFormDetails.SiteDetails)
             {
-                if (SiteInSearch.IssuesFound > 0)
-                {
+                //if (SiteInSearch.IssuesFound > 0)
+                //{
                     IssuesFound += SiteInSearch.IssuesFound;
                     SiteCount += 1;
                     ComplianceFormDetails.IssueStatus = IssuesFound +
                         " issue(s) identified in " + SiteCount +
                         " site(s)";
                     ComplianceFormDetails.TotalIssuesFound = IssuesFound;
-                }
+                //}
             }
             _UOW.ComplianceFormRepository.UpdateCollection(ComplianceFormDetails);
 
@@ -1147,306 +1192,5 @@ namespace DDAS.Services.Search
             //return Name.Replace(CharactersToRemove, "");
             return Regex.Replace(Name, "[,.]", "");
         }
-
-        #region Old Code, Not in Use
-        public FDADebarPageSiteData GetStatusOfFDASiteRecords(
-            FDADebarPageSiteData FDASiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.FDADebarPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null) 
-                return FDASiteData;
-
-            foreach (DebarredPerson debarredPerson in FDASiteData.DebarredPersons)
-            {
-                foreach(SaveSearchDetails SearchDetails in 
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (debarredPerson.RowNumber == SearchDetails.RowNumber)
-                        debarredPerson.Status = SearchDetails.Status;
-                }
-            }
-            return FDASiteData;
-        }
-
-        public ClinicalInvestigatorInspectionSiteData GetStatusOfClinicalSiteRecords(
-            ClinicalInvestigatorInspectionSiteData ClinicalSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.ClinicalInvestigatorInspectionPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return ClinicalSiteData;
-
-            foreach (ClinicalInvestigator Investigator in 
-                ClinicalSiteData.ClinicalInvestigatorInspectionList)
-            {
-                foreach(SaveSearchDetails SearchDetails in 
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (Investigator.RowNumber == SearchDetails.RowNumber)
-                        Investigator.Status = SearchDetails.Status;
-                }
-            }
-            return ClinicalSiteData;
-        }
-
-        public FDAWarningLettersSiteData GetStatusOfFDAWarningSiteRecords(
-            FDAWarningLettersSiteData FDAWarningLetterSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.ERRProposalToDebarPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return FDAWarningLetterSiteData;
-
-            foreach (FDAWarningLetter FDAWarningLetterData in
-                FDAWarningLetterSiteData.FDAWarningLetterList)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (FDAWarningLetterData.RowNumber == SearchDetails.RowNumber)
-                        FDAWarningLetterData.Status = SearchDetails.Status;
-                }
-            }
-            return FDAWarningLetterSiteData;
-        }
-
-        public ERRProposalToDebarPageSiteData GetStatusOfProposalToDebarSiteRecords(
-            ERRProposalToDebarPageSiteData ProposalToDebarSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.ERRProposalToDebarPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return ProposalToDebarSiteData;
-
-            foreach (ProposalToDebar proposalToDebar in 
-                ProposalToDebarSiteData.ProposalToDebar)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (proposalToDebar.RowNumber == SearchDetails.RowNumber)
-                        proposalToDebar.Status = SearchDetails.Status;
-                }
-            }
-            return ProposalToDebarSiteData;
-        }
-
-        public AdequateAssuranceListSiteData GetStatusOfAssuranceSiteRecords(
-            AdequateAssuranceListSiteData AssuranceSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.AdequateAssuranceListPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return AssuranceSiteData;
-
-            foreach (AdequateAssuranceList AssuranceList in
-                AssuranceSiteData.AdequateAssurances)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (AssuranceList.RowNumber == SearchDetails.RowNumber)
-                        AssuranceList.Status = SearchDetails.Status;
-                }
-            }
-            return AssuranceSiteData;
-        }
-
-        public ClinicalInvestigatorDisqualificationSiteData 
-            GetStatusOfDisqualificationSiteRecords(
-            ClinicalInvestigatorDisqualificationSiteData DisqualificationSiteData,
-            string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.AdequateAssuranceListPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return DisqualificationSiteData;
-
-            foreach (DisqualifiedInvestigator DisqualifiedList 
-                in DisqualificationSiteData.DisqualifiedInvestigatorList)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (DisqualifiedList.RowNumber == SearchDetails.RowNumber)
-                        DisqualifiedList.Status = SearchDetails.Status;
-                }
-            }
-            return DisqualificationSiteData;
-        }
-
-        public CBERClinicalInvestigatorInspectionSiteData GetStatusOfCBERSiteRecords(
-            CBERClinicalInvestigatorInspectionSiteData CBERSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.CBERClinicalInvestigatorInspectionPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return CBERSiteData;
-
-            foreach (CBERClinicalInvestigator CBERList in
-                CBERSiteData.ClinicalInvestigator)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (CBERList.RowNumber == SearchDetails.RowNumber)
-                        CBERList.Status = SearchDetails.Status;
-                }
-            }
-            return CBERSiteData;
-        }
-
-        public PHSAdministrativeActionListingSiteData GetStatusOfPHSSiteRecords(
-            PHSAdministrativeActionListingSiteData PHSSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.PHSAdministrativeActionListingPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return PHSSiteData;
-
-            foreach (PHSAdministrativeAction PHSData in 
-                PHSSiteData.PHSAdministrativeSiteData)
-            {
-                foreach(SaveSearchDetails SearchDetails in 
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (PHSData.RowNumber == SearchDetails.RowNumber)
-                        PHSData.Status = SearchDetails.Status;
-                }
-            }
-            return PHSSiteData;
-        }
-
-        public ExclusionDatabaseSearchPageSiteData GetStatusOfExclusionSiteRecords(
-            ExclusionDatabaseSearchPageSiteData ExclusionSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.ExclusionDatabaseSearchPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return ExclusionSiteData;
-
-            foreach (ExclusionDatabaseSearchList ExclusionList in
-                ExclusionSiteData.ExclusionSearchList)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (ExclusionList.RowNumber == SearchDetails.RowNumber)
-                        ExclusionList.Status = SearchDetails.Status;
-                }
-            }
-            return ExclusionSiteData;
-        }
-
-        public CorporateIntegrityAgreementListSiteData GetStatusOfCIASiteRecords(
-            CorporateIntegrityAgreementListSiteData CIASiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.CorporateIntegrityAgreementsListPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return CIASiteData;
-
-            foreach (CIAList CIADataList in
-                CIASiteData.CIAListSiteData)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (CIADataList.RowNumber == SearchDetails.RowNumber)
-                        CIADataList.Status = SearchDetails.Status;
-                }
-            }
-            return CIASiteData;
-        }
-
-        public SystemForAwardManagementPageSiteData GetStatusOfSAMSiteRecords(
-            SystemForAwardManagementPageSiteData SAMSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.SystemForAwardManagementPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return SAMSiteData;
-
-            foreach (SystemForAwardManagement SAMData in SAMSiteData.SAMSiteData)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (SAMData.RowNumber == SearchDetails.RowNumber)
-                        SAMData.Status = SearchDetails.Status;
-                }
-            }
-            return SAMSiteData;
-        }
-
-        public SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(
-            SpeciallyDesignatedNationalsListSiteData SDNSiteData, string NameToSearch)
-        {
-            var SavedSearchResult = _UOW.SaveSearchResultRepository.GetAll().
-                Where(x => x.siteEnum == SiteEnum.SpeciallyDesignedNationalsListPage
-                && x.NameToSearch.ToLower() == NameToSearch.ToLower()).
-                OrderByDescending(y => y.CreatedOn).
-                FirstOrDefault();
-
-            if (SavedSearchResult == null)
-                return SDNSiteData;
-
-            foreach(SDNList SDNListData in SDNSiteData.SDNListSiteData)
-            {
-                foreach (SaveSearchDetails SearchDetails in
-                    SavedSearchResult.saveSearchDetails)
-                {
-                    if (SDNListData.RowNumber == SearchDetails.RowNumber)
-                        SDNListData.Status = SearchDetails.Status;
-                }
-            }
-            return SDNSiteData;
-        }
-        #endregion
     }
 }

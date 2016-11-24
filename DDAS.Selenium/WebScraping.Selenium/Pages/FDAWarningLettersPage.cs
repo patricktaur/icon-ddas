@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -71,6 +72,8 @@ namespace WebScraping.Selenium.Pages
 
         private FDAWarningLettersSiteData _FDAWarningSiteData;
 
+        private int RowNumber = 1;
+
         public void LoadFDAWarningLetters()
         {
             _FDAWarningSiteData.CreatedBy = "Patrick";
@@ -80,7 +83,6 @@ namespace WebScraping.Selenium.Pages
 
             IList<IWebElement> TR = FDASortTable.FindElements(By.XPath("//tbody/tr"));
 
-            int RowNumber = 1;
             for (int tableRow = 12; tableRow < TR.Count - 1; tableRow++)
             {
                 var FDAWarningList = new FDAWarningLetter();
@@ -103,16 +105,41 @@ namespace WebScraping.Selenium.Pages
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             string[] FullName = NameToSearch.Split(' ');
-            if (SearchTerms(NameToSearch))
-                LoadFDAWarningLetters();
-            else
+
+            try
             {
-                for (int Counter = 0; Counter < FullName.Length; Counter++)
+                if (SearchTerms(NameToSearch))
+                    LoadFDAWarningLetters();
+                else
                 {
-                    if (FullName[Counter].Length > 1 && SearchTerms(FullName[Counter]))
-                        LoadFDAWarningLetters();
+                    for (int Counter = 0; Counter < FullName.Length; Counter++)
+                    {
+                        if (FullName[Counter].Length > 1 && SearchTerms(FullName[Counter]))
+                            LoadFDAWarningLetters();
+                    }
                 }
+                _FDAWarningSiteData.DataExtractionSucceeded = true;
+                throw new Exception("Testing process flow!");
             }
+            catch (Exception e)
+            {
+                _FDAWarningSiteData.DataExtractionSucceeded = false;
+                _FDAWarningSiteData.DataExtractionErrorMessage = e.Message;
+                _FDAWarningSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _FDAWarningSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()

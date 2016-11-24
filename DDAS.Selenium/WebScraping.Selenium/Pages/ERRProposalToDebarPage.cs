@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -59,7 +60,35 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            LoadProposalToDebarList();
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_proposalToDebarSiteData.DataExtractionRequired)
+                {
+                    LoadProposalToDebarList();
+                    _proposalToDebarSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _proposalToDebarSiteData.DataExtractionSucceeded = false;
+                _proposalToDebarSiteData.DataExtractionErrorMessage = e.Message;
+                _proposalToDebarSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_proposalToDebarSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.ERRProposalToDebarRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _proposalToDebarSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()

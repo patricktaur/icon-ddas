@@ -78,7 +78,35 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            LoadAdministrativeActionList();
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_PHSAdministrativeSiteData.DataExtractionRequired)
+                {
+                    LoadAdministrativeActionList();
+                    _PHSAdministrativeSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _PHSAdministrativeSiteData.DataExtractionSucceeded = false;
+                _PHSAdministrativeSiteData.DataExtractionErrorMessage = e.Message;
+                _PHSAdministrativeSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_PHSAdministrativeSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _PHSAdministrativeSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()

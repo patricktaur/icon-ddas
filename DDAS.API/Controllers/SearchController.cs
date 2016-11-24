@@ -15,6 +15,7 @@ using Utilities;
 using System.Net.Http.Headers;
 using DDAS.Services.Search;
 using System.Collections.Generic;
+using System.Web;
 
 namespace DDAS.API.Controllers
 {
@@ -193,7 +194,7 @@ namespace DDAS.API.Controllers
 
         [Route("GetComplianceForm")]
         [HttpGet]
-        public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
+        public IHttpActionResult GetComplianceForm(string NameToSearch)
         {
             _log.LogStart();
             try
@@ -322,6 +323,24 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("ExtractDataForSingleSite")]
+        [HttpGet]
+        public IHttpActionResult ExtractSingleSite(string NameToSearch,
+            string ComplianceFormId, SiteEnum Enum)
+        {
+            _log.LogStart();
+
+            Guid? RecId = Guid.Parse(ComplianceFormId);
+            var form = 
+                _SearchSummary.UpdateSingleSiteFromComplianceForm(
+                    NameToSearch, RecId, Enum, _log);
+
+            _log.WriteLog("=================================================================================");
+            _log.LogEnd();
+
+            return Ok(form);
+        }
+
         [Route("SaveSearchResult")]
         [HttpPost]
         public IHttpActionResult SaveSearchResults(SitesIncludedInSearch result,
@@ -333,12 +352,34 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
-        public IHttpActionResult GetComplianceForm(string ComplianceFormId)
+        public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
             var form = new GenerateComplianceForm(_UOW);
             form.GetComplianceForm(RecId);
             return Ok();
+        }
+
+        [Route("DownloadComplianceForm")]
+        [HttpGet]
+        public HttpResponseMessage GetTestFile()
+        {
+            HttpResponseMessage result = null;
+            //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
+            var localFilePath = UploadFolder + "SITE LIST REQUEST FORM_Updated.docx";
+            if (!File.Exists(localFilePath))
+            {
+                result = Request.CreateResponse(HttpStatusCode.Gone);
+            }
+            else
+            {
+                // Serve the file to the client
+                result = Request.CreateResponse(HttpStatusCode.OK);
+                result.Content = new StreamContent(new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
+            }
+            return result;
         }
 
         [Route("CloseComplianceForm")]

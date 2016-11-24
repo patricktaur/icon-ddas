@@ -5,6 +5,7 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Enums;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -88,7 +89,35 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            LoadNextInspectionList();
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_CBERSiteData.DataExtractionRequired)
+                {
+                    LoadCBERClinicalInvestigators();
+                    _CBERSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _CBERSiteData.DataExtractionSucceeded = false;
+                _CBERSiteData.DataExtractionErrorMessage = e.Message;
+                _CBERSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_CBERSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _CBERSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()
