@@ -7,19 +7,13 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchSummary
     {
-        ComplianceForm GetSearchSummary(string NameToSearch, ILog log);
+        ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
         ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
             Guid? ComplianceFormId, SiteEnum Enum, ILog log);
 
-        SitesIncludedInSearch GetMatchedRecords(Guid? DataId, SiteEnum Enum);
-
-        SitesIncludedInSearch
-            GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId,
-            SiteEnum Enum);
-
-        SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch, 
-            Guid? DataId, SiteEnum Enum);
+        SitesIncludedInSearch GetMatchedRecords(
+            string NameToSearch, Guid? DataId, SiteEnum Enum);
 
         SitesIncludedInSearch GetPHSAdministrativeMatchCount(string NameToSearch,
             Guid? DataId, SitesIncludedInSearch Site);
@@ -48,9 +42,10 @@ namespace DDAS.Models.Interfaces
         SitesIncludedInSearch GetCIAPageMatchCount(string NameToSearch,
             Guid? DataId, SitesIncludedInSearch Site);
 
-        SitesIncludedInSearch GetSpeciallyDesignatedNationalsMatchCount(string NameToSearch,
-            Guid? DataId, SitesIncludedInSearch Site);
+        SitesIncludedInSearch GetSpeciallyDesignatedNationalsMatchCount(
+            string NameToSearch, Guid? DataId, SitesIncludedInSearch Site);
 
-        bool SaveRecordStatus(SitesIncludedInSearch Result, Guid? ComplianceFormId);
+        bool SaveRecordStatus(string NameToSearch, 
+            SitesIncludedInSearch Result, Guid? ComplianceFormId);
     }
 }

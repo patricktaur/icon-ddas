@@ -281,7 +281,7 @@ namespace DDAS.Services.Search
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
             scan.DataId = ExtractedSiteData.RecId;
 
-            return siteScan;
+            return scan;
         }
 
         public SiteScan GetExclusionDatabaseSearchSiteScanDetails()

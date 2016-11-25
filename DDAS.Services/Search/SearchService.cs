@@ -31,15 +31,18 @@ namespace DDAS.Services.Search
 
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var ExistingSiteData = form.SiteDetails.Where(
+            var InvestigatorDetails = form.InvestigatorDetails.Where(
+                Investigator => Investigator.Name.ToLower() == NameToSearch.ToLower()).
+                FirstOrDefault();
+
+            var ExistingSiteData = InvestigatorDetails.SiteDetails.Where(
             x => x.SiteEnum == Enum).First();
 
             try
             {
                 var SiteData = ScanData.GetSiteScanData(Enum, NameToSearch, log);
 
-                var TempSite = GetMatchStatus(Enum,
-                        NameToSearch, SiteData.DataId, ExistingSiteData);
+                GetMatchStatus(Enum, NameToSearch, SiteData.DataId, ExistingSiteData);
 
                 ExistingSiteData.HasExtractionError = false;
                 ExistingSiteData.ExtractionErrorMessage = null;
@@ -50,72 +53,88 @@ namespace DDAS.Services.Search
             }
             catch (Exception e)
             {
-                log.WriteLog("Unable to extract the details. ErrorMessage: " + e.ToString());
+                log.WriteLog("Data extract failed. ErrorMessage: " + e.ToString());
                 ExistingSiteData.HasExtractionError = true;
-                ExistingSiteData.ExtractionErrorMessage = "Site restore was attempted at: " + DateTime.Now
-                    + " and was failed";
+                ExistingSiteData.ExtractionErrorMessage = 
+                    "Site restore was attempted at: " + 
+                    DateTime.Now + 
+                    " and was failed";
                 return form;
             }
         }
 
-        public ComplianceForm GetSearchSummary(string NameToSearch, ILog log)
+        public ComplianceForm GetSearchSummary(ComplianceForm form, ILog log)
         {
-            NameToSearch = NameToSearch.Replace(",", "");
-            NameToSearch.Trim();
-
-            NameToSearch = RemoveExtraCharacters(NameToSearch);
-
-            string[] ComponentsInName = NameToSearch.Split(' ');
-
-            //if (ComponentsInName.Length == 1)
-            //    return null;
-
-            SiteScanData ScanData = new SiteScanData(_UOW, _SearchEngine);
-
-            var SiteScanList = ScanData.GetSiteScanSummary(NameToSearch, log);
-
-            ComplianceForm complianceForm = new ComplianceForm();
-            var SitesForNameToSearch = new List<SitesIncludedInSearch>();
-
-            complianceForm.NameToSearch = NameToSearch;
-
-            foreach (SiteScan Site in SiteScanList)
+            form.Active = true;
+            if (form.RecId == null)
             {
-                var SiteForNameToSearch = new SitesIncludedInSearch();
-                SiteForNameToSearch.SiteEnum = Site.SiteEnum;
-
-                if (Site.SiteEnum == SiteEnum.FDAWarningLettersPage ||
-                    Site.SiteEnum == SiteEnum.ClinicalInvestigatorDisqualificationPage ||
-                    Site.SiteEnum == SiteEnum.SystemForAwardManagementPage)
-                { SiteForNameToSearch.ExtractionMode = "Live"; }
-                else
-                    SiteForNameToSearch.ExtractionMode = "Database";
-
-                if (Site.HasErrors == false)
-                {
-                    var TempSite = GetMatchStatus(Site.SiteEnum,
-                        NameToSearch, Site.DataId, SiteForNameToSearch);
-                }
-                else
-                {
-                    SiteForNameToSearch.HasExtractionError = true;
-                    SiteForNameToSearch.ExtractionErrorMessage = Site.ErrorDescription;
-                }
-
-                SiteForNameToSearch.SiteUrl = Site.SiteUrl;
-                SiteForNameToSearch.SiteName = Site.SiteName;
-                SitesForNameToSearch.Add(SiteForNameToSearch);
+                form.SearchStartedOn = DateTime.Now;
             }
 
-            complianceForm.SiteDetails = SitesForNameToSearch;
+            var complianceForm = new ComplianceForm();
+            var Investigators = new List<InvestigatorSearched>();
+            
+            foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+            {
+                GetInvestigatorSearchedDetails(Investigator, log);
+                Investigators.Add(Investigator);
+            }
+            form.InvestigatorDetails = Investigators;
 
-            complianceForm.Active = true;
+            var CreateComplianceForm = new ComplianceFormService(_UOW);
+            if (form.RecId == null)
+                CreateComplianceForm.CreateComplianceForm(form);
+            else
+                _UOW.ComplianceFormRepository.UpdateCollection(form);
 
-            ComplianceFormService service = new ComplianceFormService(_UOW);
-            service.CreateComplianceForm(complianceForm);
+            //form.RecId = CreateComplianceForm.GetComplianceFormId()
 
-            complianceForm.SiteDetails = null;
-            return complianceForm;
+            Investigators = null;
+            form.InvestigatorDetails = Investigators;
+
+            return form;
+        }
+
+        public InvestigatorSearched GetInvestigatorSearchedDetails(
+            InvestigatorSearched Investigator, ILog log)
+        {
+            var NameToSearch = RemoveExtraCharacters(Investigator.Name);
+
+            var SiteDetails = new List<SitesIncludedInSearch>();
+
+            SiteScanData ScanData = new SiteScanData(_UOW, _SearchEngine);
+            var SiteScanList = ScanData.GetSiteScanSummary(NameToSearch, log);
+
+            foreach(SiteScan Site in SiteScanList)
+            {
+                var SiteIncludedInSearch = new SitesIncludedInSearch();
+                GetSiteDetails(Site, NameToSearch, SiteIncludedInSearch);
+                SiteDetails.Add(SiteIncludedInSearch);
+                Investigator.SiteDetails = SiteDetails;
+            }
+            return Investigator;
+        }
+
+        public SitesIncludedInSearch GetSiteDetails(SiteScan Site, string NameToSearch, 
+            SitesIncludedInSearch SiteIncludedInSearch)
+        {
+            SiteIncludedInSearch.SiteEnum = Site.SiteEnum;
+
+            if (Site.HasErrors == false)
+            {
+                var TempSite = GetMatchStatus(Site.SiteEnum,
+                    NameToSearch, Site.DataId, SiteIncludedInSearch);
+            }
+            else
+            {
+                SiteIncludedInSearch.HasExtractionError = true;
+                SiteIncludedInSearch.ExtractionErrorMessage = Site.ErrorDescription;
+            }
+
+            SiteIncludedInSearch.SiteUrl = Site.SiteUrl;
+            SiteIncludedInSearch.SiteName = Site.SiteName;
+
+            return SiteIncludedInSearch;
         }
 
         public SitesIncludedInSearch GetMatchStatus(SiteEnum Enum, string NameToSearch, 
@@ -289,20 +308,6 @@ namespace DDAS.Services.Search
 
             return Site;
         }
-
-        public SitesIncludedInSearch
-            GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId,
-            SiteEnum Enum)
-        {
-            var ClinicalSiteMatchedDetails =
-                _UOW.ComplianceFormRepository.FindById(DataId);
-
-            var ClinicalSiteData = ClinicalSiteMatchedDetails.SiteDetails.Where(
-                site => site.SiteEnum == Enum).FirstOrDefault();
-
-            return ClinicalSiteData;
-        }
-
         #endregion
 
         #region FDAWarningLetters
@@ -360,20 +365,6 @@ namespace DDAS.Services.Search
             Site.CreatedOn = DateTime.Now;
             Site.ExtractionMode = "Live";
             return Site;
-        }
-
-        public SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch,
-            Guid? DataId, SiteEnum Enum)
-        {
-            string[] Name = NameToSearch.Split(' ');
-
-            var FDASearchResult =
-                _UOW.ComplianceFormRepository.FindById(DataId);
-
-            var WarningLetters = FDASearchResult.SiteDetails.Where(
-                site => site.SiteEnum == Enum).FirstOrDefault();
-
-            return WarningLetters;
         }
         #endregion
 
@@ -1045,24 +1036,6 @@ namespace DDAS.Services.Search
 
             return Site;
         }
-
-        public SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationsMatch(
-            string NameToSearch, Guid? DataId)
-        {
-            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.FindById(DataId);
-
-            string[] Name = NameToSearch.Split(' ');
-
-            UpdateMatchStatus(SDNSiteData.SDNListSiteData,
-                NameToSearch);
-
-            var CIISiteData = SDNSiteData.SDNListSiteData.
-                Where(CIIData => CIIData.Matched > 0).ToList();
-
-            SDNSiteData.SDNListSiteData = CIISiteData;
-
-            return SDNSiteData;
-        }
         #endregion
 
         void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string NameToSearch)
@@ -1117,12 +1090,18 @@ namespace DDAS.Services.Search
 
         #region GetMatchedRecords for a given site
 
-        public SitesIncludedInSearch GetMatchedRecords(Guid? ComplianceFormId, SiteEnum Enum)
+        public SitesIncludedInSearch GetMatchedRecords(string NameToSearch,
+            Guid? ComplianceFormId, SiteEnum Enum)
         {
+            NameToSearch = RemoveExtraCharacters(NameToSearch);
+
             var complainceForm =
                 _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var MatchingRecordDetails = complainceForm.SiteDetails.Where(
+            var InvestigatorDetails = complainceForm.InvestigatorDetails.Where(
+                form => form.Name.ToLower() == NameToSearch.ToLower()).FirstOrDefault();
+
+            var MatchingRecordDetails = InvestigatorDetails.SiteDetails.Where(
                 site => site.SiteEnum == Enum).FirstOrDefault();
 
             return MatchingRecordDetails;
@@ -1131,17 +1110,22 @@ namespace DDAS.Services.Search
         #endregion
 
         #region Save and Update Approved/Rejected records
-        public bool SaveRecordStatus(SitesIncludedInSearch Site,
+        public bool SaveRecordStatus(string NameToSearch, SitesIncludedInSearch Site,
             Guid? ComplianceFormId)
         {
+            NameToSearch = RemoveExtraCharacters(NameToSearch);
+
             var ComplianceFormDetails = 
                 _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             if (ComplianceFormDetails == null)
                 return false;
 
-            var ExistingSiteDetails = ComplianceFormDetails.SiteDetails.Where(
-                x => x.SiteEnum == Site.SiteEnum).FirstOrDefault();
+            var ExistingInvestigator = ComplianceFormDetails.InvestigatorDetails.Where(
+                x => x.Name.ToLower() == NameToSearch.ToLower()).FirstOrDefault();
+
+            var ExistingSiteDetails = ExistingInvestigator.SiteDetails.Where(site =>
+                site.SiteEnum == Site.SiteEnum).FirstOrDefault();
 
             ExistingSiteDetails.UpdatedOn = DateTime.Now;
 
@@ -1157,27 +1141,21 @@ namespace DDAS.Services.Search
                     IssuesFound += 1;
             }
             ExistingSiteDetails.IssuesFound = IssuesFound;
-            ExistingSiteDetails.IssuesFoundStatus = "issue(s) identified: " + 
+            ExistingSiteDetails.IssuesFoundStatus = "issue(s) identified: " +
                     ExistingSiteDetails.IssuesFound;
-            
+
             ExistingSiteDetails.MatchedRecords = Site.MatchedRecords;
 
             int SiteCount = 0;
-            var TotalIssuesIdentified = ComplianceFormDetails.SiteDetails.Where(x =>
+            var TotalIssuesIdentified = ExistingInvestigator.SiteDetails.Where(x =>
             x.IssuesFound > 0).Count();
 
             IssuesFound = 0;
-            foreach (SitesIncludedInSearch SiteInSearch in ComplianceFormDetails.SiteDetails)
+            foreach (SitesIncludedInSearch SiteInSearch in ExistingInvestigator.SiteDetails)
             {
-                //if (SiteInSearch.IssuesFound > 0)
-                //{
-                    IssuesFound += SiteInSearch.IssuesFound;
-                    SiteCount += 1;
-                    ComplianceFormDetails.IssueStatus = IssuesFound +
-                        " issue(s) identified in " + SiteCount +
-                        " site(s)";
-                    ComplianceFormDetails.TotalIssuesFound = IssuesFound;
-                //}
+                IssuesFound += SiteInSearch.IssuesFound;
+                SiteCount += 1;
+                ExistingInvestigator.TotalIssuesFound = IssuesFound;
             }
             _UOW.ComplianceFormRepository.UpdateCollection(ComplianceFormDetails);
 

@@ -1,14 +1,11 @@
 ﻿using DDAS.Models.Entities.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDAS.Models.Interfaces
 {
     public interface ISiteSummary
     {
-        SearchSummary GetSearchSummaryStatus(Guid? ComplianceFormId);
+        SearchSummary GetSearchSummaryStatus(
+            string NameToSearch, Guid? ComplianceFormId);
     }
 }

@@ -141,25 +141,26 @@ namespace DDAS.Models.Entities.Domain
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public string Country { get; set; }
-        public string NameToSearch { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
-        public DateTime SearchClosedOn { get; set; }
-        public DateTime DataExtractedOn { get; set; }
-        public int Sites_FullMatchCount { get; set; }
-        public int Sites_PartialMatchCount { get; set; }
-        public string Sites_MatchStatus { get; set; }
-        public bool SitesProcessed { get; set; }
-        public int TotalIssuesFound { get; set; }
-        public string IssueStatus { get; set; }
-        public List<SitesIncludedInSearch> SiteDetails { get; set; }
+        //public DateTime SearchClosedOn { get; set; }
+        //public DateTime DataExtractedOn { get; set; }
+        //public string Sites_MatchStatus { get; set; }
+        //public string IssueStatus { get; set; }
+        //public List<SitesIncludedInSearch> SiteDetails { get; set; }
+        public List<InvestigatorSearched> InvestigatorDetails { get; set; }
     }
 
     public class InvestigatorSearched
     {
         public string Name { get; set; }
         public string Role { get; set; }
+        public int Sites_FullMatchCount { get; set; }
+        public int Sites_PartialMatchCount { get; set; }
+        public bool SitesProcessed { get; set; }
+        public int TotalIssuesFound { get; set; }
+        public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
 
     public class SitesIncludedInSearch

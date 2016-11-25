@@ -32,7 +32,10 @@ namespace DDAS.API.Controllers
                 _UOW.ComplianceFormRepository.FindActiveComplianceForms(false);
 
             foreach (ComplianceForm form in ComplianceForms)
-                form.SiteDetails = null;
+            {
+                foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
+                    Investigator.SiteDetails = null;
+            }
 
             return ComplianceForms;
         }

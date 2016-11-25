@@ -10,7 +10,7 @@ namespace Utilities.WordTemplate
     public class ReplaceTextFromWordTemplate
     {
         public void ReplaceTextFromWord(ComplianceForm form,string Name, string CompanyName)
-        {
+        {/*
             using (WordprocessingDocument doc =
                    WordprocessingDocument.Open(
                     @"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx", true))
@@ -19,12 +19,13 @@ namespace Utilities.WordTemplate
 
                 var Table = body.Descendants<Table>().ElementAt(0);
                 UpdateTable(Table, 0, 1, "SPR-1234");
-                UpdateTable(Table, 1, 1, form.NameToSearch);
+                //UpdateTable(Table, 1, 1, form.NameToSearch);
+                
                 //UpdateTable(Table, 2, 1, "Some Sub Investigator Name");
 
                 Table = body.Descendants<Table>().ElementAt(2);
                 
-                var Sites = form.SiteDetails.OrderBy(Site => Site.SiteEnum).ToList();
+                //var Sites = form.SiteDetails.OrderBy(Site => Site.SiteEnum).ToList();
 
                 var FindingsTable = body.Descendants<Table>().ElementAt(3);
                 //int ApprovedOrRejectedCounter = 0;
@@ -54,7 +55,7 @@ namespace Utilities.WordTemplate
                 }
                 //AddFindings(FindingsTable, "NA", DateTime.Now,
                 //"Person was also searched as goes here");
-            }
+            }*/
         }
 
         public void AddFindings(Table table, string SourceNumber, DateTime DateOfInspection,

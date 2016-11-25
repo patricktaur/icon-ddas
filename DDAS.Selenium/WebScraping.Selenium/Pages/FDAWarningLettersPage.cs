@@ -119,7 +119,7 @@ namespace WebScraping.Selenium.Pages
                     }
                 }
                 _FDAWarningSiteData.DataExtractionSucceeded = true;
-                throw new Exception("Testing process flow!");
+                //throw new Exception("Testing process flow!");
             }
             catch (Exception e)
             {
