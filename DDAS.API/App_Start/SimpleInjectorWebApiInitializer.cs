@@ -54,7 +54,7 @@ namespace DDAS.API.App_Start
                 }
             });
 
-            container.Register<IMapper>(() => config.CreateMapper(container.GetInstance));
+            container.Register(() => config.CreateMapper(container.GetInstance));
            
             //Patrick: 23Sept2016:  http context is not available when running on self host mode:
             //get from config file:

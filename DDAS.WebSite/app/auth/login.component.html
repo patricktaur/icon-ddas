@@ -52,6 +52,7 @@
                 </label>
             </div>
             <button  [disabled]="!formCtrl.form.valid" class="btn btn-lg btn-primary btn-block" type="submit" (click)="login()">Sign in</button>
+                <div *ngIf="error" class="alert alert-danger">{{error}}</div>
         </form>
 
     </div>

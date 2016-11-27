@@ -20,40 +20,49 @@ namespace DDAS.Services.Search
 
         public SearchSummary GetSearchSummaryStatus(Guid? ComplianceFormId)
         {
-            SearchSummary searchSummary = new SearchSummary();
-            var searchSummaryItems = new List<SearchSummaryItem>();
-
-            searchSummary.ComplianceFormId = ComplianceFormId;
-
-            searchSummary.SearchSummaryItems = GetSiteMatchStatus(ComplianceFormId);
-
-            return searchSummary;
+            var SiteSearchSummary = GetSiteMatchStatus(ComplianceFormId);
+            return SiteSearchSummary;
         }
 
-        public List<SearchSummaryItem> GetSiteMatchStatus(Guid? ComplianceFormId)
+        public SearchSummary GetSiteMatchStatus(Guid? ComplianceFormId)
         {
             var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             if (ComplianceForm == null)
                 return null;
 
-            var SiteSummaryItems = new List<SearchSummaryItem>();
+            SearchSummary searchSummary = new SearchSummary();
+            var searchSummaryItems = new List<SearchSummaryItem>();
 
-            foreach(SitesIncludedInSearch Site in ComplianceForm.SiteDetails)
+            searchSummary.ComplianceFormId = ComplianceFormId;
+
+            searchSummary.Sites_FullMatchCount = 
+                ComplianceForm.Sites_FullMatchCount;
+            searchSummary.Sites_PartialMatchCount = 
+                ComplianceForm.Sites_PartialMatchCount;
+            searchSummary.TotalIssuesFound = 
+                ComplianceForm.TotalIssuesFound;
+
+            foreach (SitesIncludedInSearch Site in ComplianceForm.SiteDetails)
             {
                 var SummaryItem = new SearchSummaryItem();
-
+                
                 SummaryItem.FullMatch = Site.FullMatchCount;
                 SummaryItem.PartialMatch = Site.PartialMatchCount;
+                SummaryItem.DataExtractedOn = Site.DataExtractedOn;
+                SummaryItem.SiteLastUpdatedOn = Site.SiteLastUpdatedOn;
                 SummaryItem.SiteEnum = Site.SiteEnum;
                 SummaryItem.SiteUrl = Site.SiteUrl;
                 SummaryItem.SiteName = Site.SiteName;
                 SummaryItem.MatchStatus = Site.MatchStatus;
+                SummaryItem.IssuesFound = Site.IssuesFound;
+                SummaryItem.IssuesFoundStatus = Site.IssuesFoundStatus;
 
-                SiteSummaryItems.Add(SummaryItem);
+                searchSummaryItems.Add(SummaryItem);
+                searchSummaryItems = searchSummaryItems.OrderBy(Item => Item.SiteEnum).ToList();
             }
-
-            return SiteSummaryItems;
+            searchSummary.SearchSummaryItems = searchSummaryItems;
+            return searchSummary;
         }
     }
 }

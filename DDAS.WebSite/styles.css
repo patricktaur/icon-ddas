@@ -179,8 +179,9 @@ body{ background: #fff}
 .align-left{ float: left}
 .align-right{ float: right}
 .no-margin-top{ margin-top: 0}
-
+search-result-well{ min-height: 210px}
 .label{ padding: 1em}
+.table{ margin-bottom: 0}
 .table-bordered{ margin-top: 2em}
 .table-bordered th, .table-bordered tr{ padding: 1em; text-align: center}
 .sidebar .nav>li>a {

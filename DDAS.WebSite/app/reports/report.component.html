@@ -1,48 +1,100 @@
-<div class="section">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="well">
+<div class="row">
+	<div class="col-md-12">
+		<div class="well">
 
-					<!--<h2>Active:{{diagnostic1}}</h2>-->
-					<div>
-						<table class="table table-bordered">
-							<thead>
-								<tr>
-									<th>Activate</th>
-									<th>Delete</th>
-									<th>Name</th>
-                                    <th>SearchStartedOn</th> 
-                                    <th>TotalIssuesFound</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr *ngFor="let item of CompForms">
-									<td>
-										<button  class="btn btn-primary" (click)="OnActivate(item.RecId)">Activate</button>
-									</td>
-									<td>
-										<!--<button  class="btn btn-primary" (click)="OnDelete(item.RecId)">Delete</button>-->
-										<a  (click)="OnDelete(item.RecId)" data-toggle="modal" data-target="#myModalOutput">
-											<i class='glyphicon glyphicon-trash'></i>
-										</a>
-									</td>
-									<td>
-										{{item.NameToSearch}}
-									</td>
-                                    <td>
-										{{item.SearchStartedOn}}
-									</td>
-                                    <td>
-										{{item.TotalIssuesFound}}
-									</td>
-								</tr>
-							</tbody>
-						</table>
+			<!--<h2>Active:{{diagnostic1}}</h2>-->
+			<div>
+				<h3>Completed Review</h3>
+				
+				<div class="well">
+ 			<div class="row">
+				<div class="col-lg-2">
+					<div class="form-group">
+
+						<label for="Full Match">Full Match</label>
+
+						<select class="form-control" [(ngModel)]="fullMatch">
+							<option value="all">All</option>
+  							<option value="match">Match</option>
+  							<option value="nomatch">No Match</option>
+ 						</select>
 					</div>
+				</div>
+				<div class="col-lg-2">
+					<div class="form-group">
+						<label for="Full Match">Partial Match</label>
+						<select class="form-control" [(ngModel)]="partialMatch">
+							<option value="all">All</option>
+  							<option value="match">Match</option>
+  							<option value="nomatch">No Match</option>
+ 						</select>
+					</div>
+				</div>
+				<div class="col-lg-4">
+				<div class="form-group">
+						<label for="Full Match">Name</label>
+						<input type="text" [(ngModel)]="nameToSearch" class="form-control" >
+					</div>
+				</div>				
+			</div>
+                
+
+					<div></div>	
+					
+					
 
 
 				</div>
+
+
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+
+							<th>Name</th>
+							<th>Searched on</th>
+							<th>Full Match</th>
+							<th>Partial Match</th>
+							<th>Issues Identified</th>
+							<th>Active</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of FiltersRecords">
+
+							<td>
+								{{item.NameToSearch}}
+							</td>
+							<td>
+								{{item.SearchStartedOn | date:"dd/MMM/yy"}}
+							</td>
+							<td>
+								{{item.Sites_FullMatchCount}}
+							</td>
+							<td>
+								{{item.Sites_PartialMatchCount}}
+							</td>
+							<td>
+								{{item.TotalIssuesFound}}
+							</td>
+
+							<td>
+								{{item.Active}}
+							</td>
+
+							<td>
+								<button class="btn btn-primary" (click)="OnActivate(item.RecId)">Re-open</button>
+								<button class="btn btn-danger" (click)="confirmDialog.open()">Delete</button>
+								<modal #confirmDialog cancelButtonLabel="No" submitButtonLabel="Yes" (onSubmit)="OnDelete(item.RecId)" title="Confirm delete"
+									>
+									<modal-content>Deleting Compliance Form permanently.
+									</modal-content>
+								</modal>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

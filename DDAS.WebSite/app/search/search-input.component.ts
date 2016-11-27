@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef,OnInit, NgZone} from '@angular/core';
+import { Component, ViewContainerRef,OnInit, OnDestroy, NgZone} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {StudyNumbers, SearchList, ComplianceForm} from './search.classes';
 import { ConfigService } from '../shared/utils/config.service';
@@ -63,14 +63,17 @@ export class SearchInputComponent implements OnInit{
         this.LoadStudyNumber();
       });
 
-       //this.StartRefresh();
+       this.StartRefresh();
   } 
+
+  ngOnDestroy(){
+    this.StopRefresh();
+  }
 
    RefreshList(){
         this.LoadNamesFromOpenComplianceForm();
     }
 
-    
     StartRefresh(){
         console.log("StartRefresh");
         this.subscription =  Observable.interval(500 * 60).subscribe(x => {
@@ -101,7 +104,7 @@ LoadNamesFromOpenComplianceForm()
             .subscribe((item: any) => {
                 this.CompForms = item;
                 this.Loading = false ;
-                 console.log('Loaded ComplianceForm Data : ' + item);
+                 console.log('Loaded ComplianceForm Data ' + new Date());
                   },
             error => {
                console.log('Error : Load ComplianceForm');
@@ -166,7 +169,7 @@ gotoSummaryResult(DataItem : ComplianceForm){
 CloseReviewCompForm(RecId : string){
    this.service.CloseReviewComplianceForm(RecId)
             .subscribe((item: any) => {
-               console.log("Review Closed :" + item);
+               this.LoadNamesFromOpenComplianceForm();
             },
             error => {
 
@@ -179,9 +182,8 @@ ToDelete(CompFormId : string){
      this.TodeleteRecID=CompFormId;
       this.service.deleteDataFromComplianceForm(this.TodeleteRecID)
       .subscribe((item: any) => {
-          console.log('delete : ' + item);
-          this.CompForms = item;
-            },
+          this.LoadNamesFromOpenComplianceForm();
+             },
       error => {
 
     });

@@ -19,6 +19,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string UpdatedBy { get; set; }
         public Guid? RecId { get; set; }
 
+        public bool DataExtractionStatus { get; set; }
+        public string DataExtractionMessage { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
         public List<AdequateAssuranceList> AdequateAssurances { get; set; }
     }

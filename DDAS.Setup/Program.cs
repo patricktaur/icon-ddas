@@ -41,6 +41,8 @@ namespace DDAS.Setup
                     CreateFolder(folder);
                     string DownloadFolder = GetWebConfigAppSetting(configFile, "DownloadFolder");
                     CreateFolder(DownloadFolder);
+                    string UploadFolder = GetWebConfigAppSetting(configFile, "UploadFolder");
+                    CreateFolder(UploadFolder);
 
                     //Initialize DB
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
@@ -54,6 +56,9 @@ namespace DDAS.Setup
                     CreateUser("clarityadmin", "admin", "Clarity@148");
                     CreateUser("Patrick", "user", "Clarity@148");
                     CreateUser("Ravi", "user", "Clarity@148");
+                    CreateUser("User1", "user", "User1!234");
+                    CreateUser("User2", "user", "User2!234");
+                    CreateUser("User3", "user", "User3!234");
                 }
                 else
                 {

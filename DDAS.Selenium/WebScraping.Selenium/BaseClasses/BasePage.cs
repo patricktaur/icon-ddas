@@ -19,7 +19,23 @@ namespace WebScraping.Selenium.BaseClasses
 
         public virtual void Open(string part = "")
         {
-            driver.Navigate().GoToUrl(string.Concat(Url, part));
+            bool IsPageLoaded = false;
+            for (int Counter = 1; Counter <= 10; Counter++)
+            {
+                try
+                {
+                    if (!IsPageLoaded)
+                    {
+                        driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                        driver.Navigate().GoToUrl(string.Concat(Url, part));
+                        IsPageLoaded = true;
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    //
+                }
+            }
         }
 
         public bool IsElementPresent(IWebElement elem, By by)

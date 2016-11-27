@@ -19,7 +19,9 @@ namespace DDAS.DataExtractor
             int? SiteNum = null;
             if (args.Length != 0)
             {
-                SiteNum = Int32.Parse(args[0]);
+
+                SiteNum = int.Parse(args[0]);
+
             }
             ExtractData(SiteNum);
         }
@@ -29,11 +31,11 @@ namespace DDAS.DataExtractor
             //ILog log, IUnitOfWork uow
             MongoMaps.Initialize();
 
-            string DataExtractionLogFile = 
-                System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+            string DataExtractionLogFile =
+            System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-            string DownloadFolder = 
-                System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            string DownloadFolder =
+            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
 
             ILog log = new LogText(DataExtractionLogFile, true);
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
@@ -42,6 +44,20 @@ namespace DDAS.DataExtractor
             ISearchEngine searchEngine = new SearchEngine(uow);
 
             var SiteScan = new SiteScanData(uow, searchEngine);
+
+
+            if (SiteNum != null)
+            {
+                SiteEnum siteEnum = (SiteEnum)SiteNum;
+                log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
+                searchEngine.Load(siteEnum, "", DownloadFolder, log);
+            }
+            else
+            {
+                var query = SearchSites.GetNewSearchQuery();
+                searchEngine.Load(query, DownloadFolder, log);
+            }
+
 
             if (SiteNum != null)
             {

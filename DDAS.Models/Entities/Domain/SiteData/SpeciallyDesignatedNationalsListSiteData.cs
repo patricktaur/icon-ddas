@@ -17,6 +17,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string CreatedBy { get; set; }
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
+
+        public bool DataExtractionStatus { get; set; }
+        public string DataExtractionMessage { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
         public string Source { get; set; }
         public List<SDNList> SDNListSiteData { get; set; }

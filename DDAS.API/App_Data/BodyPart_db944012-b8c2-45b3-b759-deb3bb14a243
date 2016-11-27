@@ -1,9 +1,0 @@
-npm update --save 
-will update all packages inside package.json to their latest version according to their defined version range.
-
-If you only want to update a specific package, for example angular2, then you can use 
-npm update angular2 --save.
-
-Note: A cool way to stay up to date with your packages' latest version is to use 
-npm outdated 
-which shows you all outdated packages together with their latest version - source

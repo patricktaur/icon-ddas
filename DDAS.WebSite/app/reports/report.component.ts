@@ -1,75 +1,141 @@
 import { Component} from '@angular/core';
 import { Router }   from '@angular/router';
-// import {complianceForms} from './report.classes';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ComplianceForm,SiteData} from '../search//search.classes';
 import {ReportService} from './report-service';
-
+import { DialogService }  from '../shared/utils/dialog.service';
 @Component({
   moduleId: module.id,
-  template: ""
-  //templateUrl: 'report.component.html',
+  
+  templateUrl: 'report.component.html',
 })
 
 export class ReportComponent {
-  // private Reportdetails: complianceForms; 
 
-  private CompForms: ComplianceForm[];
+  public CompForms: ComplianceForm[];
   ComplianceFormId:any;
   selectedvalue:any;
   recId:string="";
-  // private IsActive : ComplianceForm;
-  isActive:boolean;
+   isActive:boolean;
   public _SiteData: SiteData = new SiteData;
-  constructor(private service: ReportService,private route: ActivatedRoute){
+
+  
+  private dialogResponse: Promise<Boolean>;
+
+  public fullMatch: string ="all";
+  public partialMatch: string ="all";
+  public nameToSearch: string = "";
+
+  constructor(private service: ReportService,private route: ActivatedRoute, private dialog: DialogService){
 
   }
-  // ngOnInit(){
-  //   //  this.route.params.forEach((params: Params) => {
+  ngOnInit(){
+              this.LoadReportResults();
+  }
   
-  //   //         this._SiteData.RecId = params['formid'];  //RecId = compid
-  //   //         // this._SiteData.SiteEnum = params['siteEnum']; 
-  //   //         // this._SiteData.SiteName ="FDA Debarred Person List";
-  //             this.LoadReportResults();
-  //   //     });
-  //   // this._SiteData.RecId = "2ca19000-22cb-4bd5-8cd5-826bb79b0806";
-  //   // this.OnActivate();
+  LoadReportResults(){
+    this.service.getNamesFromClosedComplianceForms()
+            .subscribe((item: any) => {
+              this.CompForms = item;  
+            },
+            error => {
+
+            });
+  }
   
-  // }
-  // LoadReportResults(){
-  //   this.service.getNamesFromClosedComplianceForms()
-  //           .subscribe((item: any) => {
-  //             this.CompForms = item;  
-  //           },
-  //           error => {
+  get FiltersRecords(){
 
-  //           });
-  // }
+      let fullMatchLow:number = 0;
+      let fullMatchHigh:number = 0;
+      
+      switch (this.fullMatch)
+      {
+        case "all" :
+          fullMatchLow = -1;
+          fullMatchHigh = 999999999999;
+          break;
+        case "match" :
+          fullMatchLow = 0;
+           fullMatchHigh = 999999999999;
+          break;
+         case "nomatch" :
+          fullMatchLow = -1;
+          fullMatchHigh = 1;
+          break; 
+       default : 
+        fullMatchLow = 0;
+        fullMatchHigh = 999999999999;
+      }
+ 
+      let partialMatchLow:number = 0;
+      let partialMatchHigh:number = 0;
+       switch (this.partialMatch)
+      {
+        case "all" :
+          partialMatchLow = -1;
+          partialMatchHigh = 999999999999;
+          break;
+        case "match" :
+          partialMatchLow = 0;
+           partialMatchHigh = 999999999999;
+          break;
+         case "nomatch" :
+          partialMatchLow = -1;
+          partialMatchHigh = 1;
+          break; 
+       default : 
+        partialMatchLow = 0;
+        partialMatchHigh = 999999999999;
+      }
+      
+      if (this.CompForms == undefined){
+        return null;
+      }
+      if (this.nameToSearch.length == 0){
+          return this.CompForms.filter((a) =>
+                        (a.Sites_FullMatchCount > fullMatchLow && a.Sites_FullMatchCount < fullMatchHigh)
+                    &&  (a.Sites_PartialMatchCount > partialMatchLow && a.Sites_PartialMatchCount < partialMatchHigh)
+                     )
+      }
+      else
+      {
+          return this.CompForms.filter((a) =>
+                        (a.Sites_FullMatchCount > fullMatchLow && a.Sites_FullMatchCount < fullMatchHigh)
+                    &&  (a.Sites_PartialMatchCount > partialMatchLow && a.Sites_PartialMatchCount < partialMatchHigh)
+                    &&  (a.NameToSearch.toLowerCase().includes(this.nameToSearch))
+                    )
+      }
+      
+      
+   }
   
-  // OnActivate(RecId : string){
-  //   console.log("recid :  " + RecId);
-  //   this.service.getActivateComplianceForm(RecId)
-  //           .subscribe((item: any) => {
-  //              this.isActive = item;
-  //              if(this.isActive==true){
-  //                this.LoadReportResults();
-  //              }
-  //           },
-  //           error => {
+  OnActivate(RecId : string){
+    console.log("recid :  " + RecId);
+    this.service.getActivateComplianceForm(RecId)
+            .subscribe((item: any) => {
+               this.isActive = item;
+               if(this.isActive==true){
+                 this.LoadReportResults();
+               }
+            },
+            error => {
 
-  //           });
-  // }
-  // OnDelete(RecId : string){
-  //   this.service.getDeleteComplianceForm(RecId)
-  //           .subscribe((item: any) => {
-  //             this.CompForms = item;
-  //             //  this.IsActive = item;
-  //           },
-  //           error => {
+            });
+  }
+  
+  OnDelete(RecId : string){
 
-  //           });
+      this.service.getDeleteComplianceForm(RecId)
+            .subscribe((item: any) => {
+              this.CompForms = item;
+              //  this.IsActive = item;
+            },
+            error => {
 
-  // }
-   get diagnostic() { return JSON.stringify(this.CompForms); }
-   get diagnostic1() { return JSON.stringify(this.isActive); }
+            });
+
+
+  }
+   get diagnostic() { return JSON.stringify(this.fullMatch); }
+   
 }

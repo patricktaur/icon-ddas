@@ -98,13 +98,17 @@ namespace WebScraping.Selenium.Pages
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');
 
-            string Name = WordsInNameToSearch[1] + ", " + WordsInNameToSearch[0];
+            //string Name = WordsInNameToSearch[1] + ", " + WordsInNameToSearch[0];
 
-            //for (int counter = 0; counter <= WordsInNameToSearch.Length; counter++)
-            //{
-                if (SearchTerms(Name))
+            for (int counter = 0; counter < WordsInNameToSearch.Length; counter++)
+            {
+                bool ComponentGreaterThanTwoCharacters =
+                    (WordsInNameToSearch[counter].Length > 2);
+
+                if (ComponentGreaterThanTwoCharacters &&
+                    SearchTerms(WordsInNameToSearch[counter]))
                     LoadDisqualificationProceedingsList();
-            //}
+            }
         }
 
         public override void SaveData()

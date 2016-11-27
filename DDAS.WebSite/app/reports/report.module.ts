@@ -5,14 +5,15 @@ import { ReportComponent} from './report.component';
 import {ReportService} from './report-service';
 
 import { ReportRouting} from './report.routings';
-
+import {ModalModule} from "ng2-modal";
 
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReportRouting
+    ReportRouting,
+    ModalModule
   ],
   declarations: [
    ReportComponent

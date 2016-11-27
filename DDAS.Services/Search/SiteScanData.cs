@@ -34,11 +34,14 @@ namespace DDAS.Services.Search
             Sites.AddRange(NewSearchQuery.SearchSites);
             Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
 
+            Sites = Sites.OrderBy(Site => Site.SiteEnum).ToList();
+
             foreach (SearchQuerySite Site in Sites) //NewSearchQuery.SearchSites)
             {
+                var scanData = new SiteScan();
                 try
                 {
-                    var scanData = GetSiteScanData(Site.SiteEnum, NameToSearch, log);
+                    scanData = GetSiteScanData(Site.SiteEnum, NameToSearch, log);
                     scanData.SiteName = Site.SiteName;
                     scanData.SiteUrl = Site.SiteUrl;
                     scanData.SiteEnum = Site.SiteEnum;
@@ -48,6 +51,12 @@ namespace DDAS.Services.Search
                 {
                     log.WriteLog("Error occured while processing the Site:" + Site.SiteEnum
                         + " Error Description:" + e.ToString());
+                    //scanData.HasErrors = true;
+                    //scanData.ErrorDescription = "";
+                }
+                finally
+                {
+                    //ScanData.Add(scanData);
                 }
             }
             return ScanData;
@@ -64,7 +73,7 @@ namespace DDAS.Services.Search
                     return GetClinicalInvestigatorSiteScanDetails();
 
                 case SiteEnum.FDAWarningLettersPage:
-                    return GetFDAWarningLettersSiteScanDetails(NameToSearch, log);
+                    return GetFDAWarningLettersSiteScanDetails(NameToSearch, log, Enum);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarSiteScanDetails();
@@ -73,7 +82,8 @@ namespace DDAS.Services.Search
                     return GetAdequateAssuranceSiteScanDetails();
 
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    return GetClinicalInvestigatorDisqualificationSiteScanDetails();
+                    return GetClinicalInvestigatorDisqualificationSiteScanDetails(
+                        NameToSearch, log, Enum);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorSiteScanDetails();
@@ -88,7 +98,8 @@ namespace DDAS.Services.Search
                     return GetCorporateIntegrityAgreementSiteScanDetails();
 
                 case SiteEnum.SystemForAwardManagementPage:
-                    return GetSystemForAwardManagementSiteScanDetails();
+                    return GetSystemForAwardManagementSiteScanDetails(
+                        NameToSearch, log, Enum);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return GetSpeciallyDesignatedNationsDetails();
@@ -131,14 +142,15 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetFDAWarningLettersSiteScanDetails(string NameToSearch, ILog log)
+        public SiteScan GetFDAWarningLettersSiteScanDetails(
+            string NameToSearch, ILog log, SiteEnum Enum)
         {
             log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 
-            _SearchEngine.Load(NameToSearch, "", log);
+            _SearchEngine.Load(Enum, NameToSearch, "", log);
 
             log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-            log.WriteLog("=================================================================================");
+            //log.WriteLog("=================================================================================");
 
             var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -147,7 +159,7 @@ namespace DDAS.Services.Search
                 throw new Exception("no extracts found for the site: FDAWarningLettersPage");
 
             SiteScan scan = new SiteScan();
-
+            
             scan.DataExtractedOn = SiteData.CreatedOn;
             scan.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
             scan.DataId = SiteData.RecId;
@@ -189,8 +201,16 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetClinicalInvestigatorDisqualificationSiteScanDetails()
+        public SiteScan GetClinicalInvestigatorDisqualificationSiteScanDetails(
+            string NameToSearch, ILog log, SiteEnum Enum)
         {
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+
+            _SearchEngine.Load(Enum, NameToSearch, "", log);
+
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+            //log.WriteLog("=================================================================================");
+
             var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
@@ -274,10 +294,21 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetSystemForAwardManagementSiteScanDetails()
+        public SiteScan GetSystemForAwardManagementSiteScanDetails(
+            string NameToSearch, ILog log, SiteEnum Enum)
         {
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+
+            _SearchEngine.Load(Enum, NameToSearch, "", log);
+
+            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+            //log.WriteLog("=================================================================================");
+
             var SiteData = _UOW.SystemForAwardManagementRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: SystemForAwardManagementSite");
 
             SiteScan scan = new SiteScan();
 
@@ -293,6 +324,9 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.
                 GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null)
+                throw new Exception("no extracts found for the site: SpeciallyDesignatedNationalsPage");
 
             SiteScan siteScan = new SiteScan();
 

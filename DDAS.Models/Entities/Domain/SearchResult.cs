@@ -112,17 +112,24 @@ namespace DDAS.Models.Entities.Domain
         }
         public Guid? ComplianceFormId { get; set; }
         public string NameToSearch { get; set; }
+        public int Sites_FullMatchCount { get; set; }
+        public int Sites_PartialMatchCount { get; set; }
+        public int TotalIssuesFound { get; set; }
         public List<SearchSummaryItem> SearchSummaryItems { get; set; }
     }
     public class SearchSummaryItem
     {
         public Guid? RecId { get; set; }
+        public DateTime DataExtractedOn { get; set; }
+        public DateTime SiteLastUpdatedOn { get; set; }
         public string SiteName { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public string MatchStatus { get; set; }
         public int FullMatch { get; set; }
         public int PartialMatch { get; set; }
+        public int IssuesFound { get; set; }
+        public string IssuesFoundStatus { get; set; }
     }
     #endregion
 
@@ -139,17 +146,23 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public DateTime SearchClosedOn { get; set; }
+        public DateTime DataExtractedOn { get; set; }
         public int Sites_FullMatchCount { get; set; }
         public int Sites_PartialMatchCount { get; set; }
         public string Sites_MatchStatus { get; set; }
         public bool SitesProcessed { get; set; }
+        public int TotalIssuesFound { get; set; }
+        public string IssueStatus { get; set; }
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
     }
 
     public class SitesIncludedInSearch
     {
         public string SiteName { get; set; }
+        public DateTime DataExtractedOn { get; set; }
+        public DateTime SiteLastUpdatedOn { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string ExtractionMode { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public DateTime LastUpdatedOn { get; set; }
@@ -158,6 +171,8 @@ namespace DDAS.Models.Entities.Domain
         public int PartialMatchCount { get; set; }
         public string MatchStatus { get; set; }
         public bool IssuesIdentified { get; set; }
+        public int IssuesFound { get; set; }
+        public string IssuesFoundStatus { get; set; }
         public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
     }
 

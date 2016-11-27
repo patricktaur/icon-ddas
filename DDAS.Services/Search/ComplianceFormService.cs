@@ -19,17 +19,13 @@ namespace DDAS.Services.Search
         public void CreateComplianceForm(ComplianceForm form)
         {
             form.SearchStartedOn = DateTime.Now;
-            foreach(SitesIncludedInSearch site in form.SiteDetails)
+            
+            foreach (SitesIncludedInSearch site in form.SiteDetails)
             {
-                //form.Sites_FullMatchCount += site.FullMatchCount;
-                //form.Sites_PartialMatchCount += site.PartialMatchCount;
-                var MatchedList = site.MatchedRecords.Where(
-                    item => item.Matched > 1).ToList();
-                var FullMatchedList = site.MatchedRecords.Where(
-                    item => item.Matched > 2).ToList();
-                form.Sites_FullMatchCount += MatchedList.Count;
-                form.Sites_PartialMatchCount += FullMatchedList.Count;
-                site.MatchedRecords = MatchedList;
+                form.Sites_FullMatchCount += 
+                    site.FullMatchCount;
+                form.Sites_PartialMatchCount += 
+                    site.PartialMatchCount;
             }
 
             form.Sites_MatchStatus = form.Sites_FullMatchCount +

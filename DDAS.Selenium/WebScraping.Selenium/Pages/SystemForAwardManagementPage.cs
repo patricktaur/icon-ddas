@@ -139,16 +139,19 @@ namespace WebScraping.Selenium.Pages
         {
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-            IWebElement Anchor = SAMAnchorTag;
-            Anchor.Click();
+            //IWebElement Anchor = SAMAnchorTag;
+            SAMAnchorTag.Click();
+            //Anchor.SendKeys(Keys.Enter);
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
             IWebElement TextBox = SAMInputTag;
             TextBox.SendKeys(NameToSearch);
 
-            IWebElement Submit = SAMSubmitButton;
-            Submit.Click();
+            //IWebElement Submit = SAMSubmitButton;
+            SAMSubmitButton.Click();
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            //Submit.SendKeys(Keys.Enter);
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
@@ -158,8 +161,11 @@ namespace WebScraping.Selenium.Pages
             }
             else
             {
-                IWebElement ClearSearch = SAMClearSearch;
-                ClearSearch.Click();
+                //IWebElement ClearSearch = SAMClearSearch;
+                SAMClearSearch.Click();
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                //ClearSearch.Click();
+                //ClearSearch.SendKeys(Keys.Enter);
 
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
@@ -210,7 +216,10 @@ namespace WebScraping.Selenium.Pages
             IList<IWebElement> AnchorsInPagination = 
                 SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));
 
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
             AnchorsInPagination[AnchorsInPagination.Count - 1].Click();
+            //AnchorsInPagination[AnchorsInPagination.Count - 1].SendKeys(Keys.Enter);
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
         }

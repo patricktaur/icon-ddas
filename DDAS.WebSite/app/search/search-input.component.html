@@ -46,40 +46,21 @@
 				<table class="table table-bordered table-hover table-striped">
 					<thead>
 						<tr>
-							<th>Delete</th>
-							<th>Name to search</th>
-							<!--<th>Study</th>-->
-							<!--<th>Protocol</th>-->
-							<!--<th>Country</th>-->
-							
-							<th>Date</th>
-							<th>Sites matched - full</th>
-							<th>Sites matched - partial</th>
-							<!--<th>Sites Match Status</th>-->
+							<th>Name </th>
+							<th>Searched on</th>
+							<th>Full Match</th>
+							<th>Partial Match</th>
 							<th>Issues Identified</th>
 							<th>Review</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr *ngFor="let item of ComplianceFormSummaryList"  class="active">	<!--class='clickable-row'-->
-							<td align='center'>
-								<a  (click)="ToDelete(item.RecId)" data-toggle="modal" data-target="#myModalOutput">
-										<i class='glyphicon glyphicon-trash'></i>
-								</a>
-							
-							</td>
+						
 							<td >
 								<a (click)="gotoSummaryResult(item);">{{item.NameToSearch}}</a>
 							</td>
-							<!--<td>
-								{{item.ProjectNumber}}
-							</td>
-							<td>
-								{{item.SponsorProtocolNumber}}
-							</td>
-							<td>
-								{{item.Country}}
-							</td>-->
+							
 							<td>
 								{{item.SearchStartedOn | date: 'dd/MMM/yyyy'}}
 							</td>
@@ -89,25 +70,17 @@
 							<td [ngClass]="{'Red' : !MatchCountHighlight(item.Sites_PartialMatchCount), 'Green': MatchCountHighlight(item.Sites_PartialMatchCount)}">
 								{{item.Sites_PartialMatchCount}}
 							</td>
-							
-							<!--<td>
-								{{item.Sites_MatchStatus}}
-							</td>-->
+
 							<td  [ngClass]="{'Red' : !MatchCountHighlight(item.TotalIssuesFound), 'Green': MatchCountHighlight(item.TotalIssuesFound)}">
 								{{item.TotalIssuesFound}}
 							</td>
 							<td>
-								<button type="button" class="btn btn-danger" (click)="CloseReviewCompForm(item.RecId)">Close Review</button>
+								<button type="button" class="btn btn-danger" (click)="CloseReviewCompForm(item.RecId)">Complete Review</button>
 							</td>
-							
 						</tr>
-
 					</tbody>
 				</table>
 			</div>
-
-
-
 			<div>
 				<div class="modal fade" id="myModalOutput">
 					<div class="modal-dialog">
