@@ -5,6 +5,7 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Enums;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -31,6 +32,8 @@ namespace WebScraping.Selenium.Pages
 
         private ClinicalInvestigatorDisqualificationSiteData _DisqualificationSiteData;
 
+        private int RowNumber = 1;
+
         public void LoadDisqualificationProceedingsList()
         {
             _DisqualificationSiteData.CreatedBy = "Patrick";
@@ -38,7 +41,6 @@ namespace WebScraping.Selenium.Pages
             _DisqualificationSiteData.CreatedOn = DateTime.Now;
             _DisqualificationSiteData.Source = driver.Url;
 
-            int RowNumber = 1;
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -98,17 +100,39 @@ namespace WebScraping.Selenium.Pages
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');
 
-            //string Name = WordsInNameToSearch[1] + ", " + WordsInNameToSearch[0];
-
-            for (int counter = 0; counter < WordsInNameToSearch.Length; counter++)
+            //refactor - add code to validate ExtractionDate
+            try
             {
-                bool ComponentGreaterThanTwoCharacters =
-                    (WordsInNameToSearch[counter].Length > 2);
+                for (int counter = 0; counter < WordsInNameToSearch.Length; counter++)
+                {
+                    bool ComponentGreaterThanTwoCharacters =
+                        (WordsInNameToSearch[counter].Length > 2);
 
-                if (ComponentGreaterThanTwoCharacters &&
-                    SearchTerms(WordsInNameToSearch[counter]))
-                    LoadDisqualificationProceedingsList();
+                    if (ComponentGreaterThanTwoCharacters &&
+                        SearchTerms(WordsInNameToSearch[counter]))
+                        LoadDisqualificationProceedingsList();
+                }
+                _DisqualificationSiteData.DataExtractionSucceeded = true;
             }
+            catch (Exception e)
+            {
+                _DisqualificationSiteData.DataExtractionSucceeded = false;
+                _DisqualificationSiteData.DataExtractionErrorMessage = e.Message;
+                _DisqualificationSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _DisqualificationSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()

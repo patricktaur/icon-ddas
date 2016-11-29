@@ -177,6 +177,71 @@ export class SearchList{
      //List<SitesIncludedInSearch> SiteDetails : string = "";
     }
 
+  //Patrivk 27Nov2016
+  export class ComplianceFormA{
+      RecId : string = "";
+      SponsorProtocolNumber : string = "";
+      Country : string = "";
+      Address : string = "";
+      ProjectNumber : string = "";
+      SearchStartedOn : Date ;
+      InvestigatorDetails:InvestigatorSearched[] = [];
+      SiteSources : SiteSource[] = [];
+      Findings: Finding[] = [];
+    }
+
+  export class InvestigatorSearched{
+      Id: number = 0;
+      DisplayPosition: number = 0;
+      Name: string = "";
+      Role: string = "";
+      Sites_FullMatchCount: number = 0;
+      Sites_PartialMatchCount: number = 0;
+      AllSitesProcessed: boolean = false;
+      TotalIssuesFound: number = 0;
+      Deleted: boolean = false;
+      SitesSearched: SiteSearchStatus[] = [];
+  }
+
+  export class SiteSearchStatus{
+        siteEnum: number = 0;
+        HasExtractionError : boolean;
+        ExtractionErrorMessage : string;
+        FullMatchCount : number = 0;
+        PartialMatchCount : number = 0;
+        IssuesFound : number = 0;
+        ReviewCompleted : boolean = false;
+  }
+  
+    export class SiteSource{
+        Id: number = 0;
+        DisplayPosition: number = 0;
+        SiteName :string;
+        SiteShortName : string;
+        SiteDataId: string;
+        DataExtractedOn : Date;
+        SiteSourceUpdatedOn : Date;
+        CreatedOn: Date;
+        ExtractionMode : string;
+        SiteEnum : string; 
+        SiteUrl : string;
+        IssuesIdentified : boolean = false;
+        Deleted: boolean = false;
+    }  
+   
+    export class Finding{
+        SiteSourceId: number;
+        InvestigatorSearchedId: number;
+        Matched : number;
+        RowNumberInSource : number;
+        Observation: string;
+        RecordDetails : string;
+        Status : string;
+        HiddenStatus : string;
+    }
+  
+     
+  
     
     
     

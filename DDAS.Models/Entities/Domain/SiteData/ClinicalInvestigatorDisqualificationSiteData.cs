@@ -16,11 +16,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public Guid? RecId { get; set; }
         public DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        //public DateTime UpdatedOn { get; set; }
+        //public string UpdatedBy { get; set; }
 
-        public bool DataExtractionStatus { get; set; }
-        public string DataExtractionMessage { get; set; }
+        public Guid? ReferenceId { get; set; }
+        public bool DataExtractionRequired { get; set; }
+        public bool DataExtractionSucceeded { get; set; }
+        public string DataExtractionErrorMessage { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
         public List<DisqualifiedInvestigator> 
             DisqualifiedInvestigatorList { get; set; }
@@ -29,7 +31,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class DisqualifiedInvestigator : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+       // public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Name { get; set; }
         public string Center { get; set; }
@@ -42,6 +44,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override string FullName {
             get {
                 return Name;
+            }
+        }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
             }
         }
     }

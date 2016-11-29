@@ -17,25 +17,25 @@ namespace DDAS.Services.Search
         }
 
         public void CreateComplianceForm(ComplianceForm form)
-        {
-            form.SearchStartedOn = DateTime.Now;
-            
-            foreach (SitesIncludedInSearch site in form.SiteDetails)
+        {   
+            foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
-                form.Sites_FullMatchCount += 
-                    site.FullMatchCount;
-                form.Sites_PartialMatchCount += 
-                    site.PartialMatchCount;
+                foreach (SitesIncludedInSearch site in Investigator.SiteDetails)
+                {
+                    Investigator.Sites_FullMatchCount +=
+                        site.FullMatchCount;
+                    Investigator.Sites_PartialMatchCount +=
+                        site.PartialMatchCount;
+                }
             }
-
-            form.Sites_MatchStatus = form.Sites_FullMatchCount +
-                " full matches and " +
-                form.Sites_PartialMatchCount +
-                " partial matches in " + 
-                form.SiteDetails.Count + 
-                " sites";
-
             _UOW.ComplianceFormRepository.Add(form);
+        }
+
+        public void AddDetailsToComplianceForm(string LocalFilePath)
+        {
+            var form = new ComplianceForm();
+            var Investigator = new InvestigatorSearched();
+
         }
 
         public ComplianceForm GetComplianceFormId(string NameToSearch)

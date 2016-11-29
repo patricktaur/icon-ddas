@@ -17,6 +17,7 @@ using System.Net.Http.Headers;
 
 using DDAS.Services.Search;
 using System.Collections.Generic;
+using System.Web;
 
 
 namespace DDAS.API.Controllers
@@ -25,7 +26,7 @@ namespace DDAS.API.Controllers
     public class SearchController : ApiController
     {
         private ISearchEngine _SearchEngine;
-        private ISearchSummary _SearchSummary;
+        private ISearchService _SearchSummary;
         private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
         private ILog _log;
@@ -36,7 +37,7 @@ namespace DDAS.API.Controllers
         private string UploadFolder =
             System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
-        public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
+        public SearchController(ISearchEngine search, ISearchService SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
         {
             _SearchEngine = search;
@@ -46,6 +47,7 @@ namespace DDAS.API.Controllers
             _SiteSummary = SiteSummary;
         }
 
+        #region MoveToAccountsController
         [Route("GetAllUsers")]
         [HttpGet]
         public IHttpActionResult GetUser(string UserName)
@@ -120,6 +122,8 @@ namespace DDAS.API.Controllers
 
             return Ok();
         }
+        #endregion
+
 
         [Route("Upload")]
         [HttpPost]
@@ -136,8 +140,10 @@ namespace DDAS.API.Controllers
             {
 
                 //string root = HttpContext.Current.Server.MapPath("~/App_Data");
-                //string root = "C:\\Development\\DDAS_Uploads";
-                CustomMultipartFormDataStreamProvider provider =
+
+
+                CustomMultipartFormDataStreamProvider provider = 
+
                     new CustomMultipartFormDataStreamProvider(UploadFolder);
 
 
@@ -150,12 +156,10 @@ namespace DDAS.API.Controllers
                     Trace.WriteLine("Server file path: " + file.LocalFileName);
 
                     FileContent = File.ReadAllLines(file.LocalFileName);
+                    Trace.WriteLine(FileContent);
                     _log.WriteLog("FileContent Length: " + FileContent.Length);
-                    for (int Counter = 1; Counter < FileContent.Length; Counter++)
-                    {
-                        _log.WriteLog(" Name: " + FileContent[Counter]);
-                        GetSearchSummaryDetailsForSingleName(FileContent[Counter]);
-                    }
+                    var service = new ComplianceFormService(_UOW);
+                    service.AddDetailsToComplianceForm(file.LocalFileName);
                 }
                 return Request.CreateResponse(HttpStatusCode.OK, "Completed");
             }
@@ -189,20 +193,63 @@ namespace DDAS.API.Controllers
             var ComplianceForms =
                 _UOW.ComplianceFormRepository.FindActiveComplianceForms(true);
 
-            foreach (ComplianceForm form in ComplianceForms)
-                form.SiteDetails = null;
+            foreach(ComplianceForm form in ComplianceForms)
+            {
+                foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
+                    Investigator.SiteDetails = null;
+            }
 
             return ComplianceForms;
         }
 
-        [Route("GetComplianceForm")]
+
+        #region Patrick
+        //Patrick:27Nov2016
+        [Route("GetComplianceFormA")]
         [HttpGet]
-        public IHttpActionResult GetSearchSummaryResult(string NameToSearch)
+        public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
+        {
+            if (formId.Length == 0)
+            {
+                return Ok(_SearchSummary.GetNewComplianceForm());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        [Route("SaveComplianceForm")]
+        [HttpPost]
+        public IHttpActionResult UpdateComplianceForm(ComplianceForm form)
+        {
+            return Ok(_SearchSummary.UpdateComplianceForm(form));
+        }
+
+        [Route("ScanSaveComplianceForm")]
+        [HttpPost]
+        public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
+        {
+            return Ok(_SearchSummary.ScanUpdateComplianceForm(form));
+        }
+
+        #endregion
+
+
+
+
+
+
+
+        //Called by Angular single name search.
+        [Route("GetComplianceForm")]
+        [HttpPost]
+        public IHttpActionResult GetComplianceForm(ComplianceForm form)
         {
             _log.LogStart();
             try
             {
-                var SearchResults = GetSearchSummaryDetailsForSingleName(NameToSearch);
+                var SearchResults = GetSearchSummaryDetailsForSingleName(form);
                 return Ok(SearchResults);
             }
             catch (Exception e)
@@ -218,31 +265,33 @@ namespace DDAS.API.Controllers
         }
 
         public ComplianceForm GetSearchSummaryDetailsForSingleName(
-            string NameToSearch)
+            ComplianceForm form)
         {
 
-            var form = _SearchSummary.GetSearchSummary(NameToSearch, _log);
-            return form;
+            return _SearchSummary.GetSearchSummary(form, _log);
+
         }
 
         [Route("GetSearchSummaryResult")]
         [HttpGet]
-        public IHttpActionResult GetSearchSummary(string ComplianceFormId)
+        public IHttpActionResult GetSearchSummary(string NameToSearch, string ComplianceFormId)
         {
             var Query = new NameToSearchQuery();
+            Query.NameToSearch = NameToSearch;
             Query.ComplianceFormId = Guid.Parse(ComplianceFormId);
 
             return Ok(
-                _SiteSummary.GetSearchSummaryStatus(Query.ComplianceFormId));
+                _SiteSummary.GetSearchSummaryStatus(
+                    Query.NameToSearch, Query.ComplianceFormId));
         }
 
         [Route("GetSearchSummaryDetails")]
         [HttpGet]
-        public IHttpActionResult GetSearchSummaryDetailsXXX(string RecId,
-            SiteEnum siteEnum)
+        public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch,
+            string RecId, SiteEnum siteEnum)
         {
             var query = new SearchDetailsQuery();
-            //query.NameToSearch = NameToSearch;
+            query.NameToSearch = NameToSearch;
             query.RecId = Guid.Parse(RecId);
             query.siteEnum = siteEnum;
 
@@ -250,74 +299,85 @@ namespace DDAS.API.Controllers
             {
                 case SiteEnum.FDADebarPage:
                     var SearchDetails = _SearchSummary.
-                        GetMatchedRecords(
+                        GetMatchedRecords(query.NameToSearch,
                         query.RecId, siteEnum);
 
                     return Ok(SearchDetails);
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var ClinicalSearchDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(ClinicalSearchDetails);
 
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningLetterDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(FDAWarningLetterDetails);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     var ProposalToDebarDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(ProposalToDebarDetails);
 
                 case SiteEnum.AdequateAssuranceListPage:
                     var AssuranceDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(AssuranceDetails);
 
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
                     var DisqualificationDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(DisqualificationDetails);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     var CBERDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(CBERDetails);
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
                     var PHSSearchDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(PHSSearchDetails);
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     var ExclusionDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(ExclusionDetails);
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     var CIADetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(CIADetails);
 
                 case SiteEnum.SystemForAwardManagementPage:
                     var SAMDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(SAMDetails);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     var SDNSearchDetails = _SearchSummary.
-                        GetMatchedRecords(query.RecId, siteEnum);
+                        GetMatchedRecords(query.NameToSearch,
+                        query.RecId, siteEnum);
 
                     return Ok(SDNSearchDetails);
 
@@ -326,24 +386,65 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("ExtractDataForSingleSite")]
+        [HttpGet]
+        public IHttpActionResult ExtractSingleSite(string NameToSearch,
+            string ComplianceFormId, SiteEnum Enum)
+        {
+            _log.LogStart();
+
+            Guid? RecId = Guid.Parse(ComplianceFormId);
+            var form = 
+                _SearchSummary.UpdateSingleSiteFromComplianceForm(
+                    NameToSearch, RecId, Enum, _log);
+
+            _log.WriteLog("=================================================================================");
+            _log.LogEnd();
+
+            return Ok(form);
+        }
+
         [Route("SaveSearchResult")]
         [HttpPost]
-        public IHttpActionResult SaveSearchResults(SitesIncludedInSearch result,
-            Guid? ComplianceFormId)
+        public IHttpActionResult SaveSearchResults(string NameToSearch,
+            SitesIncludedInSearch result, Guid? ComplianceFormId)
         {
-            return Ok(_SearchSummary.SaveRecordStatus(
-                result, ComplianceFormId));
+            return Ok(
+                _SearchSummary.SaveRecordStatus(
+                    NameToSearch, result, ComplianceFormId));
         }
 
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
-        public IHttpActionResult GetComplianceForm(string ComplianceFormId)
+        public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
             var form = new GenerateComplianceForm(_UOW);
             form.GetComplianceForm(RecId);
             return Ok();
+        }
+
+        [Route("DownloadComplianceForm")]
+        [HttpGet]
+        public HttpResponseMessage GetTestFile()
+        {
+            HttpResponseMessage result = null;
+            //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
+            var localFilePath = UploadFolder + "SITE LIST REQUEST FORM_Updated.docx";
+            if (!File.Exists(localFilePath))
+            {
+                result = Request.CreateResponse(HttpStatusCode.Gone);
+            }
+            else
+            {
+                // Serve the file to the client
+                result = Request.CreateResponse(HttpStatusCode.OK);
+                result.Content = new StreamContent(new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
+            }
+            return result;
         }
 
         [Route("CloseComplianceForm")]

@@ -5,18 +5,15 @@ using System;
 
 namespace DDAS.Models.Interfaces
 {
-    public interface ISearchSummary
+    public interface ISearchService
     {
-        ComplianceForm GetSearchSummary(string NameToSearch, ILog log);
-        
-        SitesIncludedInSearch GetMatchedRecords(Guid? DataId, SiteEnum Enum);
+        ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
-        SitesIncludedInSearch
-            GetClinicalInvestigatorSiteMatch(string NameToSearch, Guid? DataId,
-            SiteEnum Enum);
+        ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
+            Guid? ComplianceFormId, SiteEnum Enum, ILog log);
 
-        SitesIncludedInSearch GetFDAWarningLettersMatch(string NameToSearch, 
-            Guid? DataId, SiteEnum Enum);
+        SitesIncludedInSearch GetMatchedRecords(
+            string NameToSearch, Guid? DataId, SiteEnum Enum);
 
         SitesIncludedInSearch GetPHSAdministrativeMatchCount(string NameToSearch,
             Guid? DataId, SitesIncludedInSearch Site);
@@ -45,49 +42,17 @@ namespace DDAS.Models.Interfaces
         SitesIncludedInSearch GetCIAPageMatchCount(string NameToSearch,
             Guid? DataId, SitesIncludedInSearch Site);
 
-        SitesIncludedInSearch GetSpeciallyDesignatedNationalsMatchCount(string NameToSearch,
-            Guid? DataId, SitesIncludedInSearch Site);
+        SitesIncludedInSearch GetSpeciallyDesignatedNationalsMatchCount(
+            string NameToSearch, Guid? DataId, SitesIncludedInSearch Site);
 
-        bool SaveRecordStatus(SitesIncludedInSearch Result, Guid? ComplianceFormId);
+        bool SaveRecordStatus(string NameToSearch, 
+            SitesIncludedInSearch Result, Guid? ComplianceFormId);
 
-        //FDADebarPageSiteData 
-        //    GetStatusOfFDASiteRecords(FDADebarPageSiteData FDASiteData,
-        //    string NameToSeach);
+        //Patrick 27Nov2016
+        ComplianceForm GetNewComplianceForm();
 
-        //ClinicalInvestigatorInspectionSiteData GetStatusOfClinicalSiteRecords(
-        //    ClinicalInvestigatorInspectionSiteData ClinicalSiteData, 
-        //    string NameToSearch);
-
-        //FDAWarningLettersSiteData GetStatusOfFDAWarningSiteRecords(
-        //    FDAWarningLettersSiteData FDAWarningLetterSiteData, string NameToSearch);
-
-        //PHSAdministrativeActionListingSiteData GetStatusOfPHSSiteRecords(
-        //    PHSAdministrativeActionListingSiteData PHSSiteData, string NameToSearch);
-
-        //SpeciallyDesignatedNationalsListSiteData GetStatusOfSDNSiteRecords(
-        //    SpeciallyDesignatedNationalsListSiteData SDNSiteData, string NameToSearch);
-
-        //ERRProposalToDebarPageSiteData GetStatusOfProposalToDebarSiteRecords(
-        //    ERRProposalToDebarPageSiteData ProposalToDebarSiteData, string NameToSearch);
-
-        //AdequateAssuranceListSiteData GetStatusOfAssuranceSiteRecords(
-        //    AdequateAssuranceListSiteData AssuranceSiteData, string NameToSearch);
-
-        //ClinicalInvestigatorDisqualificationSiteData
-        //    GetStatusOfDisqualificationSiteRecords(
-        //    ClinicalInvestigatorDisqualificationSiteData DisqualificationSiteData,
-        //    string NameToSearch);
-
-        //CBERClinicalInvestigatorInspectionSiteData GetStatusOfCBERSiteRecords(
-        //    CBERClinicalInvestigatorInspectionSiteData CBERSiteData, string NameToSearch);
-
-        //ExclusionDatabaseSearchPageSiteData GetStatusOfExclusionSiteRecords(
-        //    ExclusionDatabaseSearchPageSiteData ExclusionSiteData, string NameToSearch);
-
-        //CorporateIntegrityAgreementListSiteData GetStatusOfCIASiteRecords(
-        //    CorporateIntegrityAgreementListSiteData CIASiteData, string NameToSearch);
-
-        //SystemForAwardManagementPageSiteData GetStatusOfSAMSiteRecords(
-        //    SystemForAwardManagementPageSiteData SAMSiteData, string NameToSearch);
+        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form);
+        ComplianceForm UpdateComplianceForm(ComplianceForm form);
+        
     }
 }

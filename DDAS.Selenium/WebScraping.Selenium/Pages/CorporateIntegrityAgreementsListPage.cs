@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -67,7 +68,35 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            LoadCIAList();
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_CIASiteData.DataExtractionRequired)
+                {
+                    LoadCIAList();
+                    _CIASiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _CIASiteData.DataExtractionSucceeded = false;
+                _CIASiteData.DataExtractionErrorMessage = e.Message;
+                _CIASiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_CIASiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _CIASiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()

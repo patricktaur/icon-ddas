@@ -1,3 +1,23 @@
+27Nov2016:
+Patrick's code:
+SearchController
+SearchResult
+
+
+Analysing calls:
+Client: getSingleNameUpdatedNamesFromOpenComplianceForm /  search/GetComplianceForm/?NameToSearch=
+Server: GetComplianceForm / GetSearchSummaryDetailsForSingleName / _SearchSummary.GetSearchSummary
+_SearchSummary.GetSearchSummary:
+	GetSearchSummary
+		foreach(InvestigatorSearched Investigator in form.InvestigatorDetails) -- GetInvestigatorSearchedDetails -- CreateComplianceForm (or Update)
+			GetInvestigatorSearchedDetails
+				 ScanData.GetSiteScanSummary
+					Add Sites to search (DB + Live) (List of sites )
+					foreach (SearchQuerySite Site in Sites)
+						GetSiteScanData
+						...
+						GetFDADebarPageMatchCount - matched records are added to site.
+
 Priority:
 5Nov 2016
 1. Live Search - 1 site - completed.
@@ -353,7 +373,9 @@ Entry on 8 Nov 2016
 Entry on 9 Nov 2016
 1. Changed the Upload function in controller to return a dummy ComplianceForm object
 
-
+-----------------------------------------------------------------------------------------------------------
+Entry on 10 Nov 2016
+1. Able to create compliance form when a file is uploaded to server
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 11 Nov 2016
@@ -366,6 +388,44 @@ Entry on 12 Nov 2016
    Unable to figure out the problem with incorrect match counts
 2. few of the sites are throwing 'WebDriverTimeOut Exception' while extracting the data. Need to have a
    mechanism of handling this exception and tyring to extract the data from the sites which throw this 
-   excetion
+   exception
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 14 Nov 2016
+1. Issue with Match counts has been resolved. Able to get match counts per sites and per each NameToSearch
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 15 Nov 2016
+1. Able to delete/activate/close compliance forms
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 16 Nov 2016
+1. Testing 9 sites (8 database and 1 live site). Observations were not being saved. Updated the API to
+   save the observations.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 17 Nov 2016
+1. Adding all sites to check the performance. Webdriver time out exception has been handled temporarily.
+   Need to have a permanent solution for this exception.
+2. Need to notify the user about the sites that have failed, and provide an option to extract data for those
+   sites.
+   
+-----------------------------------------------------------------------------------------------------------
+Entry on 18 Nov 2016
+1. Able to test all sites except SAM, with multiple names uploaded. Search results are as expected but 
+   need to build logic to match the initials as well.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 21 Nov 2016
+1. Able to generate and download the compliance form in word document by adding findings and issues
+2. Demo on DDAS tool functionality to upload a set of search names and get the results, review and add
+   observations.
+3. As per the demo, need to create compliance forms which will have a single PI and multiple SI's
+4. Need to exclude matches that are repeated in cases of live search, when a single component is entered
+   and is searched. (same name will be captured for two or more components)
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 22 Nov 2016
+1. Able to extract the data from the site which fails the live search. User will be provided with a button
+   to reload the site or sites which fail to load due to WebDriveTimeOutException or any other exception
+   caused during the search

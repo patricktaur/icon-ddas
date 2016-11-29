@@ -39,11 +39,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
-        {
-            LoadAdequateAssuranceInvestigators();
-        }
-
         private AdequateAssuranceListSiteData _adequateAssuranceListSiteData;
 
         public void LoadAdequateAssuranceInvestigators()
@@ -73,9 +68,43 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void SaveData() {
-            _UOW.AdequateAssuranceListRepository.
-                Add(_adequateAssuranceListSiteData);
+        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        {
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_adequateAssuranceListSiteData.DataExtractionRequired)
+                {
+                    LoadAdequateAssuranceInvestigators();
+                    _adequateAssuranceListSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _adequateAssuranceListSiteData.DataExtractionSucceeded = false;
+                _adequateAssuranceListSiteData.DataExtractionErrorMessage = e.Message;
+                _adequateAssuranceListSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_adequateAssuranceListSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _adequateAssuranceListSiteData.ReferenceId = SiteData.RecId;
+        }
+
+        public override void SaveData()
+        {
+            _UOW.AdequateAssuranceListRepository.Add(
+                _adequateAssuranceListSiteData);
         }
     }
 }

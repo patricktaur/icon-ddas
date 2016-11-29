@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Net;
 using System.IO.Compression;
 using System.IO;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -45,7 +46,7 @@ namespace WebScraping.Selenium.Pages
 
         public void DownloadSDNList(string DownloadFolder)
         {
-            //string fileName = _folderPath + @"\test.pdf"; // "c:\\development\\temp\\test.pdf";
+            //string fileName = _folderPath + @"\test.pdf";
 
             string fileName = DownloadFolder  + "cliil.zip";
             string UnZipPath = DownloadFolder;
@@ -61,26 +62,6 @@ namespace WebScraping.Selenium.Pages
 
             if (!File.Exists(UnZipPath + "\\cliil.txt"))
                 ZipFile.ExtractToDirectory(fileName, UnZipPath);
-
-        }
-
-        public bool SearchTerms(string Name)
-        {
-            IWebElement InputTag = ClinicalInvestigatorInputTag;
-            InputTag.Clear();
-            InputTag.SendKeys(Name);
-
-            IWebElement SubmitButton = ClinicalInvestigatorSubmit;
-            SubmitButton.Submit();
-
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
-            if (ClinicalInvestigatorNext != null)
-            {
-                return true;
-            }
-            else
-                return false;
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
@@ -128,100 +109,37 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void LoadClinicalInvestigatorList()
+        public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _clinicalSiteData.CreatedBy = "Patrick";
-            _clinicalSiteData.CreatedOn = DateTime.Now;
-            _clinicalSiteData.Source = driver.Url;
-
-            int RowNumber = 1;
-            foreach (IWebElement TR in
-                ClinicalInvestigatorTable.FindElements(By.XPath("//tbody/tr")))
+            //refactor - add code to validate ExtractionDate
+            try
             {
-                var InvestigatorList = new ClinicalInvestigator();
-                IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
-
-                InvestigatorList.RowNumber = RowNumber;
-                InvestigatorList.IdNumber = TDs[0].Text;
-                InvestigatorList.Name = TDs[1].Text;
-                InvestigatorList.Location = TDs[2].Text;
-                InvestigatorList.Address = TDs[3].Text;
-                InvestigatorList.City = TDs[4].Text;
-                InvestigatorList.State = TDs[5].Text;
-                InvestigatorList.Country = TDs[6].Text;
-                InvestigatorList.Zipcode = TDs[7].Text;
-                InvestigatorList.InspectionDate = TDs[8].Text;
-                InvestigatorList.ClassificationType = TDs[9].Text;
-                InvestigatorList.ClassificationCode = TDs[10].Text;
-                InvestigatorList.DeficiencyCode = TDs[11].Text;
-
-                _clinicalSiteData.ClinicalInvestigatorInspectionList.Add
-                    (InvestigatorList);
-                RowNumber += 1;
+                if (_clinicalSiteData.DataExtractionRequired)
+                {
+                    LoadClinicalInvestigatorListAlt(DownloadFolder);
+                    _clinicalSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _clinicalSiteData.DataExtractionSucceeded = false;
+                _clinicalSiteData.DataExtractionErrorMessage = e.Message;
+                _clinicalSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_clinicalSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
             }
         }
 
-        public int GetCountOfRecords()
+        public void AssignReferenceIdOfPreviousDocument()
         {
-            IWebElement element = ClinicalInvestigatorNextList;
+            var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
 
-            IList<IWebElement> ANCHORs = element.FindElements(By.XPath("//span/a"));
-
-            int AnchorCount = ANCHORs.Count;
-
-            return Convert.ToInt32(ANCHORs[AnchorCount - 1].Text);
-        }
-
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
-        {
-            DownloadSDNList(DownloadFolder);
-            LoadClinicalInvestigatorListAlt(DownloadFolder);
-            //if (SearchTerms())
-            //{
-            //    int totalRecords = GetCountOfRecords();
-
-            //    for (int records = 0; records < totalRecords; records++)
-            //    {
-            //        LoadClinicalInvestigatorList();
-
-            //        if (totalRecords > 1)
-            //        {
-            //            LoadNextRecord();
-            //        }
-            //    }
-            //}
-            //else
-            //    driver.Url = 
-            //        "http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm";
-        }
-
-        public void LoadNextRecord()
-        {
-            IWebElement element = ClinicalInvestigatorNext;
-            element.Click();
-
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-        }
-
-        public bool SearchTerms()
-        {
-            IWebElement AdvancedSearchElement = ClinicalInvestigatorAdvancedSearch;
-            AdvancedSearchElement.Click();
-
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
-            IWebElement FirstNameDropDown = ClinicalInvestigatorFirstNameDropDown;
-            FirstNameDropDown.SendKeys("not equal to");
-
-            IWebElement FirstNameTextField = ClinicalInvestigatorFirstNameTextField;
-            FirstNameTextField.SendKeys("zzzzzz");
-
-            ClinicalInvestigatorSubmit.Submit();
-
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
-            return true;
+            _clinicalSiteData.ReferenceId = SiteData.RecId;
         }
         
         public override void SaveData()

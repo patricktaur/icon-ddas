@@ -6,6 +6,7 @@ using DDAS.Models.Enums;
 using DDAS.Models;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.IO;
+using System.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -17,6 +18,7 @@ namespace WebScraping.Selenium.Pages
         {
             Open();
             _UOW = uow;
+            _FDADebarPageSiteData = new FDADebarPageSiteData();
             //SaveScreenShot("abc.png");
         }
 
@@ -30,11 +32,11 @@ namespace WebScraping.Selenium.Pages
 
         private FDADebarPageSiteData _FDADebarPageSiteData;
         
-        public void LoadDebarredPersonListAlt()
+        public void LoadDebarredPersonList()
         {
-            _FDADebarPageSiteData = new FDADebarPageSiteData();
-            
-            _FDADebarPageSiteData.CreatedBy = "pat";
+            _FDADebarPageSiteData.RecId = Guid.NewGuid();
+
+            _FDADebarPageSiteData.CreatedBy = "patrick";
             _FDADebarPageSiteData.SiteLastUpdatedOn = DateTime.Now;
             _FDADebarPageSiteData.CreatedOn = DateTime.Now;
             _FDADebarPageSiteData.Source = driver.Url;
@@ -73,12 +75,41 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            LoadDebarredPersonListAlt();
+            //refactor - add code to validate ExtractionDate
+            try
+            {
+                if (_FDADebarPageSiteData.DataExtractionRequired)
+                {
+                    LoadDebarredPersonList();
+                    _FDADebarPageSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _FDADebarPageSiteData.DataExtractionSucceeded = false;
+                _FDADebarPageSiteData.DataExtractionErrorMessage = e.Message;
+                _FDADebarPageSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_FDADebarPageSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.FDADebarPageRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _FDADebarPageSiteData.ReferenceId = SiteData.RecId;
         }
 
         public override void SaveData()
         {
             _UOW.FDADebarPageRepository.Add(_FDADebarPageSiteData);
+
         }
     }
 }

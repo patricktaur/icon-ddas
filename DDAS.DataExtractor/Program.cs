@@ -45,36 +45,37 @@ namespace DDAS.DataExtractor
 
             var SiteScan = new SiteScanData(uow, searchEngine);
 
+            try
 
-            if (SiteNum != null)
             {
-                SiteEnum siteEnum = (SiteEnum)SiteNum;
-                log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
-                searchEngine.Load(siteEnum, "", DownloadFolder, log);
+                if (SiteNum != null)
+                {
+                    SiteEnum siteEnum = (SiteEnum)SiteNum;
+                    log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
+                    searchEngine.Load(siteEnum, "", DownloadFolder, log);
+                }
+                else
+                {
+                    var query = SearchSites.GetNewSearchQuery();
+                    searchEngine.Load(query, DownloadFolder, log);
+                }
+                log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
+
             }
-            else
+            catch(Exception e)
             {
-                var query = SearchSites.GetNewSearchQuery();
-                searchEngine.Load(query, DownloadFolder, log);
+                log.WriteLog("Unable to complete the data extract. Error Details: " + 
+                    e.ToString());
             }
 
+            finally
+            {
+                log.WriteLog("=================================================================================");
+                log.LogEnd();
+                Environment.Exit(0);
+            }
+            
 
-            if (SiteNum != null)
-            {
-                SiteEnum siteEnum = (SiteEnum)SiteNum;
-                log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
-                searchEngine.Load(siteEnum, "", DownloadFolder, log);
-            }
-            else
-            {
-                var query = SearchSites.GetNewSearchQuery();
-                searchEngine.Load(query, DownloadFolder, log);
-            }
- 
-            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-            log.WriteLog("=================================================================================");
-            log.LogEnd();
-            Environment.Exit(0);
         }
     }
 }

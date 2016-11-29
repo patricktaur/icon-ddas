@@ -117,15 +117,6 @@ namespace WebScraping.Selenium.Pages
             return Names;
         }
 
-        public void LoadContent(string NameToSearch, string DownloadFolder)
-        {
-            if (!CheckSiteUpdatedDate())
-            {
-                DownloadSDNList(DownloadFolder);
-                GetTextFromPDF("", DownloadFolder);
-            }
-        }
-
         public bool CheckSiteUpdatedDate()
         {
             var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
@@ -145,6 +136,40 @@ namespace WebScraping.Selenium.Pages
             DateTime SiteUpdatedDate = SDNSiteData.SiteLastUpdatedOn;
 
             return SiteUpdatedDate != CurrentSiteUpdatedDate ? false : true;
+        }
+
+        public void LoadContent(string NameToSearch, string DownloadFolder)
+        {
+            try
+            {
+                if (!CheckSiteUpdatedDate())
+                {
+                    _SDNSiteData.DataExtractionRequired = true;
+                    DownloadSDNList(DownloadFolder);
+                    GetTextFromPDF("", DownloadFolder);
+                    _SDNSiteData.DataExtractionSucceeded = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _SDNSiteData.DataExtractionSucceeded = false;
+                _SDNSiteData.DataExtractionErrorMessage = e.Message;
+                _SDNSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                if (!_SDNSiteData.DataExtractionRequired)
+                    AssignReferenceIdOfPreviousDocument();
+            }
+        }
+
+        public void AssignReferenceIdOfPreviousDocument()
+        {
+            var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).First();
+
+            _SDNSiteData.ReferenceId = SiteData.RecId;
         }
 
         public void SaveData()

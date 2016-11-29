@@ -17,19 +17,21 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public Guid? RecId { get; set; }
         public DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        //public DateTime UpdatedOn { get; set; }
+        //public string UpdatedBy { get; set; }
 
-        public bool DataExtractionStatus { get; set; }
-        public string DataExtractionMessage { get; set; }
+        public Guid? ReferenceId { get; set; }
+        public bool DataExtractionRequired { get; set; }
+        public bool DataExtractionSucceeded { get; set; }
+        public string DataExtractionErrorMessage { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
-        public List<DebarredPerson> DebarredPersons { get; set; }
         public string Source { get; set; }
+        public List<DebarredPerson> DebarredPersons { get; set; }
     }
 
     public class DebarredPerson : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string NameOfPerson { get; set; }
         public string EffectiveDate { get; set; }
@@ -44,8 +46,26 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 return NameOfPerson; 
             }
         }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "FullName: " + FullName + "~" +
+                    "NameOfPerson: " + FullName + "~" +
+                    "EffectiveDate: " + EffectiveDate + "~" +
+                    "EndOfTermOfDebarment: " + EndOfTermOfDebarment + "~" +
+                    "FrDateText: " + FrDateText + "~" +
+                    "VolumePage: " + VolumePage + "~" +
+                    "DocumentLink: " + DocumentLink + "~" +
+                    "DocumentName: " + DocumentName; 
+            }
+        }
+
     }
 
+    //Patrick Q - why inherit DebarredPerson ?
     public class FDADebarPageMatchRecords : DebarredPerson
     {
         public List<DebarredPerson> FDADebarMatchedRecords { get; set; }
