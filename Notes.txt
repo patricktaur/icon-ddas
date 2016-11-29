@@ -398,3 +398,15 @@ Entry on 22 Nov 2016
 1. Able to extract the data from the site which fails the live search. User will be provided with a button
    to reload the site or sites which fail to load due to WebDriveTimeOutException or any other exception
    caused during the search
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 23 Nov 2016
+1. Working on generating compliance form
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 24 Nov 2016
+1. Discussion on changing the design to add multiple SI's under a single PI. Changing the code accordingly 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 25 Nov 2016
+1. Working on changing the design for saving PI's and SI's. All compilation errors have been fixed
