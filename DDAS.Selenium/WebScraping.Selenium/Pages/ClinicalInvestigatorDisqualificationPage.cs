@@ -30,11 +30,27 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override SiteEnum SiteName
+        {
+            get
+            {
+                return SiteEnum.ClinicalInvestigatorDisqualificationPage;
+            }
+        }
+
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _DisqualificationSiteData.DisqualifiedInvestigatorList;
+            }
+        }
+
         private ClinicalInvestigatorDisqualificationSiteData _DisqualificationSiteData;
 
         private int RowNumber = 1;
 
-        public void LoadDisqualificationProceedingsList()
+        private void LoadDisqualificationProceedingsList()
         {
             _DisqualificationSiteData.CreatedBy = "Patrick";
             _DisqualificationSiteData.SiteLastUpdatedOn = DateTime.Now;
@@ -67,13 +83,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override SiteEnum SiteName {
-            get {
-                return SiteEnum.ClinicalInvestigatorDisqualificationPage;
-            }
-        }
-
-        public bool SearchTerms(string NameToSearch)
+        private bool SearchTerms(string NameToSearch)
         {
             IWebElement SearchTextBox = DisqualifiedInvestigatorSearchTextBox;
             SearchTextBox.Clear();
@@ -127,7 +137,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

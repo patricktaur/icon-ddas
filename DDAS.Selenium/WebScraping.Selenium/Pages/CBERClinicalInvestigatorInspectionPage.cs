@@ -36,9 +36,17 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _CBERSiteData.ClinicalInvestigator;
+            }
+        }
+
         private int RowCount = 1;
 
-        public void LoadNextInspectionList()
+        private void LoadNextInspectionList()
         {
             //links to extract records starting with E-K, L-P, Q-S and T-Z 
             string[] InspectionList = new string[] {
@@ -59,7 +67,7 @@ namespace WebScraping.Selenium.Pages
 
         private CBERClinicalInvestigatorInspectionSiteData _CBERSiteData;
 
-        public void LoadCBERClinicalInvestigators()
+        private void LoadCBERClinicalInvestigators()
         {
             _CBERSiteData.CreatedBy = "patrick";
             _CBERSiteData.SiteLastUpdatedOn = DateTime.Now;
@@ -92,6 +100,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _CBERSiteData.DataExtractionRequired = true;
                 if (_CBERSiteData.DataExtractionRequired)
                 {
                     LoadCBERClinicalInvestigators();
@@ -109,10 +118,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_CBERSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _CBERSiteData.ReferenceId =
+                        _CBERSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

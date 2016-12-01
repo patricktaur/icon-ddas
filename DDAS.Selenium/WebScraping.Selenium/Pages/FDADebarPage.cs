@@ -30,9 +30,26 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override SiteEnum SiteName
+        {
+            get
+            {
+                return SiteEnum.FDADebarPage;
+            }
+        }
+
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _FDADebarPageSiteData.DebarredPersons;
+            }
+        }
+
+
         private FDADebarPageSiteData _FDADebarPageSiteData;
         
-        public void LoadDebarredPersonList()
+        private void LoadDebarredPersonList()
         {
             _FDADebarPageSiteData.RecId = Guid.NewGuid();
 
@@ -67,17 +84,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override SiteEnum SiteName {
-            get {
-                return SiteEnum.FDADebarPage;
-            }
-        }
-
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             //refactor - add code to validate ExtractionDate
             try
             {
+                _FDADebarPageSiteData.DataExtractionRequired = true;
                 if (_FDADebarPageSiteData.DataExtractionRequired)
                 {
                     LoadDebarredPersonList();
@@ -95,10 +107,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_FDADebarPageSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _FDADebarPageSiteData.ReferenceId =
+                        _FDADebarPageSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.FDADebarPageRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

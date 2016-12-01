@@ -35,7 +35,7 @@ namespace DDAS.Data.Mongo.Repositories
         public Task UpdateCollection(ComplianceForm form)
         {
             return _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name).
-                ReplaceOneAsync(Site => Site.RecId == form.RecId, form);
+                ReplaceOneAsync(CompForm => CompForm.RecId == form.RecId, form);
         }
 
         public bool DropComplianceForm(object ComplianceFormId)

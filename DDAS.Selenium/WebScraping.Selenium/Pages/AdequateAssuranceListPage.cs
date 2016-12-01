@@ -21,6 +21,7 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
             SavePageImage();
             //SaveScreenShot("AdequateAssuranceListPage.png");
         }
@@ -39,11 +40,21 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _adequateAssuranceListSiteData.AdequateAssurances;
+            }
+        }
+
         private AdequateAssuranceListSiteData _adequateAssuranceListSiteData;
 
-        public void LoadAdequateAssuranceInvestigators()
+        private void LoadAdequateAssuranceInvestigators()
         {
-            _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
+            _adequateAssuranceListSiteData.CreatedOn = DateTime.Now;
+            _adequateAssuranceListSiteData.CreatedBy = "Patrick";
+            _adequateAssuranceListSiteData.Source = driver.Url;
 
             int RowCount = 1;
             foreach(IWebElement TR in 
@@ -73,6 +84,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _adequateAssuranceListSiteData.DataExtractionRequired = true;
                 if (_adequateAssuranceListSiteData.DataExtractionRequired)
                 {
                     LoadAdequateAssuranceInvestigators();
@@ -90,10 +102,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_adequateAssuranceListSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _adequateAssuranceListSiteData.ReferenceId = 
+                        _adequateAssuranceListSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

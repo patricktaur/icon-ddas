@@ -31,7 +31,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class DebarredPerson : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string NameOfPerson { get; set; }
         public string EffectiveDate { get; set; }
@@ -46,8 +46,26 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 return NameOfPerson; 
             }
         }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "FullName: " + FullName + "~" +
+                    "NameOfPerson: " + FullName + "~" +
+                    "EffectiveDate: " + EffectiveDate + "~" +
+                    "EndOfTermOfDebarment: " + EndOfTermOfDebarment + "~" +
+                    "FrDateText: " + FrDateText + "~" +
+                    "VolumePage: " + VolumePage + "~" +
+                    "DocumentLink: " + DocumentLink + "~" +
+                    "DocumentName: " + DocumentName; 
+            }
+        }
+
     }
 
+    //Patrick Q - why inherit DebarredPerson ?
     public class FDADebarPageMatchRecords : DebarredPerson
     {
         public List<DebarredPerson> FDADebarMatchedRecords { get; set; }

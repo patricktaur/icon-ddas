@@ -25,12 +25,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public bool DataExtractionSucceeded { get; set; }
         public string DataExtractionErrorMessage { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
+        public string Source { get; set; }
         public List<AdequateAssuranceList> AdequateAssurances { get; set; }
     }
 
     public class AdequateAssuranceList : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string NameAndAddress { get; set; }
         public string Center { get; set; }
@@ -41,6 +42,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override string FullName {
             get {
                 return NameAndAddress;
+            }
+        }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
             }
         }
     }

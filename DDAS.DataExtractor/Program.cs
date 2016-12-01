@@ -19,7 +19,9 @@ namespace DDAS.DataExtractor
             int? SiteNum = null;
             if (args.Length != 0)
             {
+
                 SiteNum = int.Parse(args[0]);
+
             }
             ExtractData(SiteNum);
         }
@@ -44,6 +46,7 @@ namespace DDAS.DataExtractor
             var SiteScan = new SiteScanData(uow, searchEngine);
 
             try
+
             {
                 if (SiteNum != null)
                 {
@@ -64,6 +67,7 @@ namespace DDAS.DataExtractor
                 log.WriteLog("Unable to complete the data extract. Error Details: " + 
                     e.ToString());
             }
+
             finally
             {
                 log.WriteLog("=================================================================================");
@@ -71,6 +75,7 @@ namespace DDAS.DataExtractor
                 Environment.Exit(0);
             }
             
+
         }
     }
 }

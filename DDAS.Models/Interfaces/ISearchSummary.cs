@@ -2,10 +2,11 @@
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace DDAS.Models.Interfaces
 {
-    public interface ISearchSummary
+    public interface ISearchService
     {
         ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
@@ -47,5 +48,14 @@ namespace DDAS.Models.Interfaces
 
         bool SaveRecordStatus(string NameToSearch, 
             SitesIncludedInSearch Result, Guid? ComplianceFormId);
+
+        //Patrick 27Nov2016
+        ComplianceForm GetNewComplianceForm(ILog log);
+
+        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log);
+        ComplianceForm UpdateComplianceForm(ComplianceForm form);
+
+        //Pradeep 1Dec2016
+        List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log);
     }
 }

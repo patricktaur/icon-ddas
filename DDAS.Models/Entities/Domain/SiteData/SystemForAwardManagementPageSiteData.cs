@@ -30,7 +30,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class SystemForAwardManagement : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Entity { get; set; }
         public string Duns { get; set; }
@@ -49,5 +49,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 return Entity;
             }
         }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
+            }
+        }
+
     }
 }

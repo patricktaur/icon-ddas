@@ -30,7 +30,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class PHSAdministrativeAction : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
@@ -46,6 +46,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override string FullName {
             get {
                 return FirstName + " " + MiddleName + " " + LastName;
+            }
+        }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
             }
         }
     }

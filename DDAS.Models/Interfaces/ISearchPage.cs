@@ -1,9 +1,5 @@
-﻿using DDAS.Models.Entities.Domain;
-using System;
+﻿using DDAS.Models.Entities.Domain.SiteData;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDAS.Models.Interfaces
 {
@@ -11,7 +7,8 @@ namespace DDAS.Models.Interfaces
     {
         void LoadContent(string NameToSearch, string DownloadFolder);
         void SaveData();
-       
+
+        IEnumerable<SiteDataItemBase> SiteData { get; }
         //ResultAtSite GetResultAtSite(string NameToSearch);
     }
 }

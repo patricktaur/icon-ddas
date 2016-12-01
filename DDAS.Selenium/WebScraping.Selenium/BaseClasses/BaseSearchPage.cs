@@ -1,11 +1,8 @@
-﻿using DDAS.Models.Entities.Domain;
-using DDAS.Models.Enums;
+﻿using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using OpenQA.Selenium;
 using System.Collections.Generic;
-using System;
-using DDAS.Models.Repository;
-using DDAS.Models;
+using DDAS.Models.Entities.Domain.SiteData;
 
 namespace WebScraping.Selenium.BaseClasses
 {
@@ -46,5 +43,7 @@ namespace WebScraping.Selenium.BaseClasses
         }
 
         public abstract void SaveData();
+
+        public abstract IEnumerable<SiteDataItemBase> SiteData { get; }
     }
 } 

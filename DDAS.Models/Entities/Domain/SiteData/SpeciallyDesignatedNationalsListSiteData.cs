@@ -29,9 +29,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class SDNList : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
-        public int RecordNumber { get; set; }
+        //public int RecordNumber { get; set; }
         public string Name { get; set; }
         public int PageNumber { get; set; }
         public string WordsMatched { get; set; }
@@ -39,6 +39,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override string FullName {
             get {
                 return Name;
+            }
+        }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
             }
         }
     }

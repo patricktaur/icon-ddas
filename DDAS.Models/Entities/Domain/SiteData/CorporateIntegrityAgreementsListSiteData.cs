@@ -29,7 +29,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
     }
     public class CIAList : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+       // public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Provider { get; set; }
         public string City { get; set; }
@@ -41,5 +41,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 return Provider;
             }
         }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
+            }
+        }
+
     }
 }

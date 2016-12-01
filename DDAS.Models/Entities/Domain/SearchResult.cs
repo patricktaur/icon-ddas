@@ -10,7 +10,7 @@ namespace DDAS.Models.Entities.Domain
 {
     #region SearchQuery
 
-
+   
     public class SearchQuery
     {
         public string NameToSearch { get; set; }
@@ -21,6 +21,9 @@ namespace DDAS.Models.Entities.Domain
     public class SearchQuerySite
     {
         public string SiteName { get; set; }
+        public bool IsOptional { get; set; }
+        public string ExtractionMode { get; set; }
+        public bool Mandatory { get; set; }
         public string SiteShortName { get; set; }
         public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
@@ -137,6 +140,13 @@ namespace DDAS.Models.Entities.Domain
     
     public class ComplianceForm
     {
+        public ComplianceForm()
+        {
+            InvestigatorDetails = new List<InvestigatorSearched>();
+            SiteSources = new List<SiteSource>();
+            Findings = new List<Finding>();
+        }
+        
         public Guid? RecId { get; set; }
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
@@ -150,21 +160,45 @@ namespace DDAS.Models.Entities.Domain
         //public string IssueStatus { get; set; }
         //public List<SitesIncludedInSearch> SiteDetails { get; set; }
         public List<InvestigatorSearched> InvestigatorDetails { get; set; }
+        //Patrick 27NOvb2016
+        public List<SiteSource> SiteSources { get; set; }
+        public List<Finding> Findings { get; set; }
     }
 
     public class InvestigatorSearched
     {
+        public int Id { get; set; }
+        public int DisplayPosition { get; set; }
         public string Name { get; set; }
         public string Role { get; set; }
         public int Sites_FullMatchCount { get; set; }
         public int Sites_PartialMatchCount { get; set; }
-        public bool SitesProcessed { get; set; }
+        public bool AllSitesProcessed { get; set; }
         public int TotalIssuesFound { get; set; }
+        
+        //Patrick 27NOvb2016: - to be removed:
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
+
+        public bool Deleted { get; set; }
+        public List<SiteSearchStatus> SitesSearched { get; set; }
+
     }
+
+    public class SiteSearchStatus
+    {
+        public SiteEnum siteEnum { get; set; }
+        public bool HasExtractionError { get; set; }
+        public string ExtractionErrorMessage { get; set; }
+        public int FullMatchCount { get; set; }
+        public int PartialMatchCount { get; set; }
+        public int IssuesFound { get; set; }
+        public bool ReviewCompleted { get; set; }
+    }
+
 
     public class SitesIncludedInSearch
     {
+        public int SourceNumber { get; set; }
         public string SiteName { get; set; }
         public DateTime DataExtractedOn { get; set; }
         public DateTime SiteSourceUpdatedOn { get; set; }
@@ -184,11 +218,14 @@ namespace DDAS.Models.Entities.Domain
         public bool HasExtractionError { get; set; }
         public string ExtractionErrorMessage { get; set; }
         public bool ReviewCompleted { get; set; }
+        //Patrick 27Nov2016:
+        //remove MatchedRecords -- to be replaced by Findings in CompForm
         public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
     }
 
     public class MatchedRecordsPerSite
     {
+
         public int Matched { get; set; }
         public int IssueNumber { get; set; }
         public int RowNumber { get; set; }
@@ -197,8 +234,62 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public string HiddenStatus { get; set; }
     }
+    
     #endregion
 
+    #region ByPatrick
+    //Patrick 28Nov2016
+    public class MatchedRecord
+    {
+        public int MatchCount { get; set; }
+        public int RowNumber { get; set; }
+        public string RecordDetails { get; set; }
+    }
+
+    public class PrincipalInvestigatorDetails
+    {
+        public Guid? RecId { get; set; }
+        public string PrincipalInvestigator { get; set; }
+        public bool Active { get; set; }
+        public string SponsorProtocolNumber { get; set; }
+        public string Country { get; set; }
+        public string Address { get; set; }
+        public string ProjectNumber { get; set; }
+        public DateTime SearchStartedOn { get; set; }
+    }
+
+    public class SiteSource
+    {
+        public int Id { get; set; }
+        public int DisplayPosition { get; set; }
+        public string SiteName { get; set; }
+        public string SiteShortName { get; set; }
+        public Guid? SiteDataId { get; set; }
+        public DateTime DataExtractedOn { get; set; }
+        public DateTime SiteSourceUpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string ExtractionMode { get; set; }
+        public bool IsMandatory { get; set; }
+        public bool IsOptional { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        public string SiteUrl { get; set; }
+        public bool IssuesIdentified { get; set; }
+        public bool Deleted { get; set; }
+    }
+
+    //Patrick 27Nov2016
+    public class Finding
+    {
+        public int SiteSourceId { get; set; }
+        public int InvestigatorSearchedId { get; set; }
+        public int MatchCount { get; set; }
+        public int RowNumberInSource { get; set; }
+        public string Observation { get; set; }
+        public string RecordDetails { get; set; }
+        public string Status { get; set; }
+        public string HiddenStatus { get; set; }
+    }
+    #endregion
 
     #region Save Results
 

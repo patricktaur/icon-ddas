@@ -32,7 +32,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public bool SearchTerms(string Name)
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _FDAWarningSiteData.FDAWarningLetterList;
+            }
+        }
+
+        private bool SearchTerms(string Name)
         {
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
@@ -134,7 +142,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

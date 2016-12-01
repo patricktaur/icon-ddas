@@ -62,8 +62,10 @@ namespace DDAS.Services.Search
                 SummaryItem.IssuesFoundStatus = Site.IssuesFoundStatus;
 
                 searchSummaryItems.Add(SummaryItem);
+
                 searchSummaryItems = 
                     searchSummaryItems.OrderBy(Item => Item.SiteEnum).ToList();
+
             }
             searchSummary.SearchSummaryItems = searchSummaryItems;
             return searchSummary;

@@ -29,7 +29,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ClinicalInvestigator : SiteDataItemBase
     {
-        public int RowNumber { get; set; }
+        //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string IdNumber { get; set; }
         public string Name { get; set; }
@@ -47,6 +47,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override string FullName {
             get {
                 return Name;
+            }
+        }
+
+        //Patrick 28Nov2016
+        public override string RecordDetails
+        {
+            get
+            {
+                return "";
             }
         }
     }
