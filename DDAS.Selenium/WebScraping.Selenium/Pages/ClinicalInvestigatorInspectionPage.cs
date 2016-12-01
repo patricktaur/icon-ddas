@@ -26,6 +26,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
+            _clinicalSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
 

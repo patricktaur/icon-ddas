@@ -22,6 +22,8 @@ namespace WebScraping
             ILog log = new LogText(
                 @"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log", true);
 
+            log.LogStart();
+
             ISearchEngine searchEngine = new SearchEngine(uow);
 
             //var test = new SearchService(uow, searchEngine);
@@ -46,7 +48,8 @@ namespace WebScraping
             //SLDocument doc = new SLDocument(@"C:\Development\p926-ddas\DDAS.API\App_Data\Test-DDAS.xlsx");
 
             //doc.GetCellValueAsString("A1");
-
+            log.LogEnd();
+            
             Console.ReadLine();
         }
     }

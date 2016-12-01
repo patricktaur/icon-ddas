@@ -19,6 +19,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _UOW = uow;
             _FDADebarPageSiteData = new FDADebarPageSiteData();
+            _FDADebarPageSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("abc.png");
         }
 

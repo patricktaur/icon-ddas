@@ -50,7 +50,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "";
+                return 
+                    "FullName: " + FullName + "~" +
+                    "NameAndAddress: " + NameAndAddress + "~" +
+                    "Center: " + Center + "~" +
+                    "Type: " + Type + "~" +
+                    "ActionDate: " + ActionDate + "~" +
+                    "Comments: " + Comments;
             }
         }
     }

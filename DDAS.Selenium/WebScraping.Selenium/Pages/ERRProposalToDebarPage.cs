@@ -18,6 +18,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
+            _proposalToDebarSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("ProposalToDebarPage.png");
         }
 

@@ -22,6 +22,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
+            _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
             SavePageImage();
             //SaveScreenShot("AdequateAssuranceListPage.png");
         }

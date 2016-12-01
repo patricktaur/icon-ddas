@@ -22,6 +22,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
+            _exclusionSearchSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("ExclusionDatabaseSearch.png");
         }
 

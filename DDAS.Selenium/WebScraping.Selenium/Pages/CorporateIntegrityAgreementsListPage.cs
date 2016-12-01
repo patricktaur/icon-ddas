@@ -19,6 +19,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _CIASiteData = new CorporateIntegrityAgreementListSiteData();
+            _CIASiteData.RecId = Guid.NewGuid();
         }
 
         public override SiteEnum SiteName {

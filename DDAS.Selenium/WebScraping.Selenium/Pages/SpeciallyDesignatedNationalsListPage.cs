@@ -29,6 +29,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _SDNSiteData = new SpeciallyDesignatedNationalsListSiteData();
+            _SDNSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
 

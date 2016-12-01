@@ -22,6 +22,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _UOW = uow;
             _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
+            _PHSAdministrativeSiteData.RecId = Guid.NewGuid();
         }
 
         public override SiteEnum SiteName {
