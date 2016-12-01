@@ -2,6 +2,7 @@
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace DDAS.Models.Interfaces
 {
@@ -53,6 +54,8 @@ namespace DDAS.Models.Interfaces
 
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form);
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
-        
+        List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
+
+
     }
 }

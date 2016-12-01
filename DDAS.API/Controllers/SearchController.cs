@@ -205,6 +205,15 @@ namespace DDAS.API.Controllers
 
         #region Patrick
         //Patrick:27Nov2016
+
+        [Route("PrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult PrincipalInvestigators()  
+        {
+            return Ok(_SearchSummary.getPrincipalInvestigatorNComplianceFormDetails());
+
+        }
+
         [Route("GetComplianceFormA")]
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
@@ -231,6 +240,15 @@ namespace DDAS.API.Controllers
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
             return Ok(_SearchSummary.ScanUpdateComplianceForm(form));
+        }
+
+        //Patrick 01Dec2016
+        [Route("GetInvestigatorSummary")]
+        [HttpGet]
+        public IHttpActionResult GetInvestigatorSummary(string formId, int investigatorId)  //returns previously generated form or empty form  
+        {
+            //return InvestigatorSearched
+            return null;
         }
 
         #endregion

@@ -3,7 +3,8 @@ import { Component, Input, Output, EventEmitter, ViewChild} from '@angular/core'
 import {Location} from '@angular/common';
 import { ActivatedRoute, Params } from '@angular/router';
 
-import { SiteDataItemBase, SearchResultSaveData, SiteData, saveSearchDetails,SitesIncludedInSearch,  MatchedRecordsPerSite} from './search.classes';
+//import { SiteDataItemBase, SearchResultSaveData, SiteData, saveSearchDetails, Site,  MatchedRecordsPerSite} from './search.classes';
+import { SiteDataItemBase, SearchResultSaveData, SiteData, saveSearchDetails,   MatchedRecordsPerSite} from './search.classes';
 import {SearchService} from './search-service';
 
 
@@ -27,7 +28,7 @@ export class SearchDetailComponent {
     public _isMatchFoundCount : boolean = false;
     public _SiteData: SiteData = new SiteData;
 
-    private siteDetails: SitesIncludedInSearch;
+    //private siteDetails: Site;
     
     public matchedRecords: MatchedRecordsPerSite[];
 
@@ -51,7 +52,7 @@ export class SearchDetailComponent {
           
           this.service.getSearchSummaryDetails(this._SiteData.NameToSearch, this._SiteData.RecId, this._SiteData.SiteEnum)
             .subscribe((item: any) => {
-                this.siteDetails = item;
+                //this.siteDetails = item;
                 this._SiteData.SiteLastUpdatedOn = item.SiteLastUpdatedOn;
                 this._SiteData.Source = item.Source;
                 this._SiteData.SiteName = item.SiteName;
@@ -140,14 +141,14 @@ saveContact = (RecordDetails: string) => {
         //this.isChecked = false;
     }
  
-    saveSiteDetails(){
-           this.service.saveSiteDetails(this.siteDetails, this._SiteData.RecId)
-            .subscribe(
-            error => {
+    // saveSiteDetails(){
+    //        this.service.saveSiteDetails(this.siteDetails, this._SiteData.RecId)
+    //         .subscribe(
+    //         error => {
 
-            }); 
+    //         }); 
 
-    }
+    // }
     
     saveMarkedResults() {
         

@@ -1,3 +1,4 @@
+//This component and the template is replaced by InvestigatorSummaryComponent
 import { Component} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {SiteInfo,SearchSummaryItem,SearchSummary,NameSearch, MatchedRecordsPerSite} from './search.classes';

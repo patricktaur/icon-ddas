@@ -123,6 +123,7 @@ export class SiteDataItemBase{
 //         public string Status { get; set; }
 //     }
 
+
 export class SitesIncludedInSearch{
   
     SiteName: string = "";
@@ -177,7 +178,20 @@ export class SearchList{
      //List<SitesIncludedInSearch> SiteDetails : string = "";
     }
 
-  //Patrivk 27Nov2016
+  
+  
+    export class PrincipalInvestigatorDetails{
+      RecId : string = "";
+      PrincipalInvestigator: string="";
+      SponsorProtocolNumber : string = "";
+      Country : string = "";
+      Address : string = "";
+      ProjectNumber : string = "";
+      SearchStartedOn : Date ;
+      
+    }
+
+
   export class ComplianceFormA{
       RecId : string = "";
       SponsorProtocolNumber : string = "";
@@ -205,6 +219,8 @@ export class SearchList{
 
   export class SiteSearchStatus{
         siteEnum: number = 0;
+        SiteName: string = "";
+        SiteUrl: string = "";
         HasExtractionError : boolean;
         ExtractionErrorMessage : string;
         FullMatchCount : number = 0;
@@ -227,6 +243,7 @@ export class SearchList{
         SiteUrl : string;
         IssuesIdentified : boolean = false;
         Deleted: boolean = false;
+        IsMandatory: boolean = true;  //temp
     }  
    
     export class Finding{
@@ -241,7 +258,15 @@ export class SearchList{
     }
   
      
-  
+    export class SiteToAdd{
+        SiteName :string;
+        SiteShortName : string;
+        SiteEnum : number; 
+        SiteUrl : string;
+        Recomended: boolean = false;
+        Selected: boolean = false;
+        Included: boolean = false; //Included in SiteSource collectio n
+    }  
     
     
     

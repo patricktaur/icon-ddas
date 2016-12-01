@@ -1234,6 +1234,12 @@ namespace DDAS.Services.Search
             return newForm;
         }
 
+
+        public string GetPrincipalInvestigators() {
+            return null;
+        }
+
+
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm)
         {
             //Creates or Updates form
@@ -1428,6 +1434,30 @@ namespace DDAS.Services.Search
             //return Site;
 
         }
+
+        public List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails()
+        {
+            var retList = new List<PrincipalInvestigatorDetails>();
+
+            var compForms = _UOW.ComplianceFormRepository.GetAll();
+            foreach (ComplianceForm compForm in compForms)
+            {
+                var item = new PrincipalInvestigatorDetails();
+                item.Address = compForm.Address;
+                item.Country = compForm.Country;
+                item.ProjectNumber = compForm.ProjectNumber;
+                item.RecId = compForm.RecId;
+                item.SearchStartedOn = compForm.SearchStartedOn;
+                item.PrincipalInvestigator = compForm.InvestigatorDetails.FirstOrDefault().Name;
+
+                retList.Add(item);
+
+            }
+
+
+            return retList;
+        }
+
         #endregion
     }
 }
