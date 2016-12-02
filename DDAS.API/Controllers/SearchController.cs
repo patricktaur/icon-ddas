@@ -124,6 +124,14 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
+        [Route("GetPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetPrincipalInvestigators()
+        {
+            return Ok(
+                _SearchSummary.
+                getPrincipalInvestigatorNComplianceFormDetails());
+        }
 
         [Route("Upload")]
         [HttpPost]

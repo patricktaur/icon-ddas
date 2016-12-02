@@ -57,5 +57,8 @@ namespace DDAS.Models.Interfaces
 
         //Pradeep 1Dec2016
         List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log);
+        List<PrincipalInvestigatorDetails> 
+            getPrincipalInvestigatorNComplianceFormDetails();
+        ComplianceForm UpdateFindings(ComplianceForm form);
     }
 }

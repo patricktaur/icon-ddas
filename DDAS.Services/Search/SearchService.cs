@@ -1298,12 +1298,14 @@ namespace DDAS.Services.Search
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
             RemoveDeleteMarkedItemsFromFormCollections(frm);
+            
             //Check and Search if required:
             AddMatchingRecords(frm, log);
-            //_UOW.ComplianceFormRepository.Update(frm);
-            //_UOW.ComplianceFormRepository.UpdateCollection(frm);
 
-            _UOW.ComplianceFormRepository.Add(frm);
+            if(frm.RecId != null)
+                _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
+            else
+                _UOW.ComplianceFormRepository.Add(frm); //Insert
 
             return frm;
         }
@@ -1313,7 +1315,11 @@ namespace DDAS.Services.Search
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
             RemoveDeleteMarkedItemsFromFormCollections(frm);
-            _UOW.ComplianceFormRepository.Update(frm);
+
+            //calculate issues found
+            //UpdateFindings(frm);
+
+            _UOW.ComplianceFormRepository.UpdateCollection(frm);
             return frm;
         }
 
@@ -1337,6 +1343,32 @@ namespace DDAS.Services.Search
                 retList.Add(item);
             }
             return retList;
+        }
+
+        public ComplianceForm UpdateFindings(ComplianceForm form)
+        {
+            foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+            {
+                Investigator.TotalIssuesFound = 0;
+
+                foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched)
+                {
+                    var ListOfFindings = form.Findings;
+
+                    var Findings = ListOfFindings.Where(
+                        x => x.SiteEnum == searchStatus.siteEnum).FirstOrDefault();
+
+                    int IssuesFound = 0;
+
+                    if(Findings.Status.ToLower() == "approve")
+                    {
+                        IssuesFound += 1;
+                        searchStatus.IssuesFound = IssuesFound;
+                    }
+                    Investigator.TotalIssuesFound += IssuesFound;
+                }
+            }
+            return form;
         }
 
         private void AddMatchingRecords(ComplianceForm frm, ILog log)
@@ -1380,6 +1412,7 @@ namespace DDAS.Services.Search
                                 finding.MatchCount = rec.MatchCount;
                                 finding.InvestigatorSearchedId = inv.Id;
                                 finding.SiteSourceId = site.Id;
+                                finding.SiteEnum = site.SiteEnum; //Pradeep 2Dec2016
                                 finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
 

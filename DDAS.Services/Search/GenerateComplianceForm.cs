@@ -23,7 +23,7 @@ namespace DDAS.Services.Search
 
             var WordTemplate = new ReplaceTextFromWordTemplate();
 
-            WordTemplate.ReplaceTextFromWord(complianceform, "", "");
+            WordTemplate.ReplaceTextFromWord(complianceform);
 
         }
     }

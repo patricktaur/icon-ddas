@@ -33,7 +33,7 @@ namespace DDAS.Services.Search
 
                     new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = false, ExtractionMode = "DB", SiteName="HHS/OIG Corporate Integrity Agreements/Watch List", SiteShortName="HHS/OIG Corporate Integrity", SiteEnum = SiteEnum.CorporateIntegrityAgreementsListPage, SiteUrl="http://oig.hhs.gov/compliance/corporate-integrity-agreements/cia-documents.asp" },
 
-                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = false, ExtractionMode = "Live", SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" },
+                    //new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = false, ExtractionMode = "Live", SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="XXX" },
 
                     new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = false, ExtractionMode = "DB", SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx" },
                 }

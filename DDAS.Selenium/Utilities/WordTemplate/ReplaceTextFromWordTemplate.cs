@@ -9,8 +9,8 @@ namespace Utilities.WordTemplate
 {
     public class ReplaceTextFromWordTemplate
     {
-        public void ReplaceTextFromWord(ComplianceForm form,string Name, string CompanyName)
-        {/*
+        public void ReplaceTextFromWord(ComplianceForm form)
+        {
             using (WordprocessingDocument doc =
                    WordprocessingDocument.Open(
                     @"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx", true))
@@ -18,44 +18,76 @@ namespace Utilities.WordTemplate
                 var body = doc.MainDocumentPart.Document.Body;
 
                 var Table = body.Descendants<Table>().ElementAt(0);
-                UpdateTable(Table, 0, 1, "SPR-1234");
+                UpdateTable(Table, 0, 1, form.SponsorProtocolNumber);
+                
+                foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+                {
+                    int RowIndex = 1;
+                    foreach(SiteSearchStatus Site in Investigator.SitesSearched)
+                    {
+                        var ListOfFindings = form.Findings;
+
+                        var Findings = ListOfFindings.Where(
+                            x => x.SiteEnum == Site.siteEnum).
+                            FirstOrDefault();
+
+                        if(Findings.Status.ToLower() == "approve")
+                        {
+                            CheckOrUnCheckIssuesIdentified(Table, RowIndex, true);
+                        }
+                    }
+                }
+                
                 //UpdateTable(Table, 1, 1, form.NameToSearch);
                 
                 //UpdateTable(Table, 2, 1, "Some Sub Investigator Name");
 
                 Table = body.Descendants<Table>().ElementAt(2);
                 
-                //var Sites = form.SiteDetails.OrderBy(Site => Site.SiteEnum).ToList();
+                var Sites = form.SiteSources.OrderBy(Site => Site.SiteEnum).ToList();
 
                 var FindingsTable = body.Descendants<Table>().ElementAt(3);
                 //int ApprovedOrRejectedCounter = 0;
                 for (int i = 0; i < 12; i++)
                 {
-                    var ApprovedOrRejectedRecords = 
-                    Sites[i].MatchedRecords.Where(record =>
-                    record.Status == "Approve" || record.Status == "Reject").
-                    ToList();
+                    //var ApprovedOrRejectedRecords = 
+                    //Sites[i].MatchedRecords.Where(record =>
+                    //record.Status == "Approve" || record.Status == "Reject").
+                    //ToList();
 
                     UpdateTable(Table, i, 2, DateTime.Now.ToShortDateString());
-                    if (Sites[i].IssuesFound > 0)
-                    {
+                    //if (Sites[i])//.IssuesFound > 0)
+                    //{
                         ChangeCheckBoxStatus(Table, i, 4, false);
                         ChangeCheckBoxStatus(Table, i, 5, true);
 
                         AddFindings(FindingsTable, (i + 1).ToString(),
                             Sites[i].DataExtractedOn,
-                            ApprovedOrRejectedRecords[0].Observation);
+                            "");
                         //ApprovedOrRejectedCounter += 1;
-                    }
-                    else
-                    {
+                    //}
+                    //else
+                    //{
                         ChangeCheckBoxStatus(Table, i, 4, true);
                         ChangeCheckBoxStatus(Table, i, 5, false);
-                    }
+                    //}
                 }
-                //AddFindings(FindingsTable, "NA", DateTime.Now,
-                //"Person was also searched as goes here");
-            }*/
+            }
+        }
+
+        public void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
+        {
+
+            if(IsIssueIdentified)
+            {
+                ChangeCheckBoxStatus(table, RowIndex, 4, false);
+                ChangeCheckBoxStatus(table, RowIndex, 5, true);
+            }
+            else
+            {
+                ChangeCheckBoxStatus(table, RowIndex, 4, true);
+                ChangeCheckBoxStatus(table, RowIndex, 5, false);
+            }
         }
 
         public void AddFindings(Table table, string SourceNumber, DateTime DateOfInspection,
