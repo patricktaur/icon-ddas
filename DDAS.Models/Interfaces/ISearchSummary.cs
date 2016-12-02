@@ -49,13 +49,17 @@ namespace DDAS.Models.Interfaces
         bool SaveRecordStatus(string NameToSearch, 
             SitesIncludedInSearch Result, Guid? ComplianceFormId);
 
-        //Patrick 27Nov2016
-        ComplianceForm GetNewComplianceForm();
-
-        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form);
-        ComplianceForm UpdateComplianceForm(ComplianceForm form);
         List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
 
+        //Patrick 27Nov2016
+        ComplianceForm GetNewComplianceForm(ILog log);
+
+        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log);
+        ComplianceForm UpdateComplianceForm(ComplianceForm form);
+
+
+        //Pradeep 1Dec2016
+        List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log);
 
     }
 }

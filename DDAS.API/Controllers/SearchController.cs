@@ -138,18 +138,16 @@ namespace DDAS.API.Controllers
 
             try
             {
-
                 //string root = HttpContext.Current.Server.MapPath("~/App_Data");
 
-
                 CustomMultipartFormDataStreamProvider provider = 
-
                     new CustomMultipartFormDataStreamProvider(UploadFolder);
-
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
+                var complianceForms = new List<ComplianceForm>();
                 string[] FileContent = null;
+
                 foreach (MultipartFileData file in provider.FileData)
                 {
                     Trace.WriteLine(file.Headers.ContentDisposition.FileName);
@@ -158,10 +156,17 @@ namespace DDAS.API.Controllers
                     FileContent = File.ReadAllLines(file.LocalFileName);
                     Trace.WriteLine(FileContent);
                     _log.WriteLog("FileContent Length: " + FileContent.Length);
-                    var service = new ComplianceFormService(_UOW);
-                    service.AddDetailsToComplianceForm(file.LocalFileName);
+
+                    var forms = _SearchSummary.ReadUploadedFileData(file.LocalFileName,
+                        _log);
+
+                    foreach(ComplianceForm form in forms)
+                    {
+                        complianceForms.Add(
+                            _SearchSummary.ScanUpdateComplianceForm(form, _log));
+                    }
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, "Completed");
+                return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
             }
             catch (Exception e)
             {
@@ -202,30 +207,54 @@ namespace DDAS.API.Controllers
             return ComplianceForms;
         }
 
+        [Route("GetPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetPrincipalInvestigators()
+        {
+            return Ok(
+                _SearchSummary.
+                getPrincipalInvestigatorNComplianceFormDetails());
+        }
 
         #region Patrick
         //Patrick:27Nov2016
 
-        [Route("PrincipalInvestigators")]
-        [HttpGet]
-        public IHttpActionResult PrincipalInvestigators()  
-        {
-            return Ok(_SearchSummary.getPrincipalInvestigatorNComplianceFormDetails());
+        //[Route("PrincipalInvestigators")]
+        //[HttpGet]
+        //public IHttpActionResult PrincipalInvestigators()  
+        //{
+        //    return Ok(_SearchSummary.getPrincipalInvestigatorNComplianceFormDetails());
 
-        }
+        //}
 
         [Route("GetComplianceFormA")]
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
+            //Patrick 02Dec2016
+            //_log.LogStart();
+            //try
+            //{
             if (formId.Length == 0)
             {
-                return Ok(_SearchSummary.GetNewComplianceForm());
+                return Ok(_SearchSummary.GetNewComplianceForm(_log));
             }
             else
             {
-                return null;
+                return Ok(_UOW.ComplianceFormRepository.FindById(formId));
             }
+           
+            //}
+            //catch (Exception e)
+            //{
+            //    _log.WriteLog("ErrorMessage: " + e.ToString());
+            //    return InternalServerError(e);
+            //}
+            //finally
+            //{
+            //    _log.WriteLog("=================================================================================");
+            //    _log.LogEnd();
+            //}
         }
 
         [Route("SaveComplianceForm")]
@@ -239,7 +268,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
-            return Ok(_SearchSummary.ScanUpdateComplianceForm(form));
+            _log.LogStart();
+            var result = _SearchSummary.ScanUpdateComplianceForm(form, _log);
+            _log.WriteLog("=================================================================================");
+            _log.LogEnd();
+            return Ok(result);
         }
 
         //Patrick 01Dec2016
@@ -252,11 +285,6 @@ namespace DDAS.API.Controllers
         }
 
         #endregion
-
-
-
-
-
 
 
         //Called by Angular single name search.

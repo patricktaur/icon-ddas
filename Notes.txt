@@ -433,3 +433,28 @@ Entry on 22 Nov 2016
 1. Able to extract the data from the site which fails the live search. User will be provided with a button
    to reload the site or sites which fail to load due to WebDriveTimeOutException or any other exception
    caused during the search
+<<<<<<< HEAD
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 23 Nov 2016
+1. Working on generating compliance form
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 24 Nov 2016
+1. Discussion on changing the design to add multiple SI's under a single PI. Changing the code accordingly 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 25 Nov 2016
+1. Working on changing the design for saving PI's and SI's. All compilation errors have been fixed
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 29 Nov 2016
+1. ComplianceForm design has been changed. ComplianceForm will have a collection of SiteSource and Findings.
+2. InvestigatorSearched will have a collection of SiteSearchStatus
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 30 Nov 2016
+1. Unable to get the new design to work. Working on reading excel file and finding matched records for each
+   investigator. Using spreadsheetlight to read excel data
+
+

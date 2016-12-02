@@ -1,6 +1,7 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,10 @@ namespace Utilities
 {
     public class ReadUploadedExcelFile
     {
-        public List<ComplianceForm> ReadDataFromExcelFile(string FilePath)
+        public List<RowData> ReadDataFromExcelFile(string FilePath)
         {
             var forms = new List<ComplianceForm>();
+            var ListOfRows = new List<RowData>();
 
             using (SpreadsheetDocument doc =
                    SpreadsheetDocument.Open(FilePath, false))
@@ -22,54 +24,92 @@ namespace Utilities
                 WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
                 SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
 
-                //bool ReadDataFromEachRow = true;
-                var Investigators = new List<InvestigatorSearched>();
+                //var sheetData = doc.WorkbookPart.Workbook.Sheets.GetFirstChild<Sheet>();
+                //var tempDetailsInEachRow = new List<RowData>();
 
-                bool ReadDataFromEachRow = true;
-
-                int RowIndex = 1;
-                //int CellIndex = 1;
-
-                while (ReadDataFromEachRow)
+                foreach (Row row in sheetData.Elements<Row>())
                 {
-                    Row row = sheetData.Elements<Row>().ElementAt(RowIndex);
-
-                    if (row.Elements<Cell>().ElementAt(0).CellValue.Text != "")
+                    if (row.Elements<Cell>().ElementAt(0).CellValue.InnerText != "")
                     {
-                        var form = new ComplianceForm();
-                        var Investigator = new InvestigatorSearched();
+                        foreach (Cell cell in row.Elements<Cell>())
+                        {
 
-                        Investigator.Name = row.Elements<Cell>().ElementAt(0).
-                                            CellValue.Text;
-                        Investigator.Role = row.Elements<Cell>().ElementAt(1).
-                                            CellValue.Text;
-                        form.ProjectNumber = row.Elements<Cell>().ElementAt(2).
-                                            CellValue.Text;
-                        form.SponsorProtocolNumber = row.Elements<Cell>().ElementAt(3).
-                                            CellValue.Text;
-                        form.Address = row.Elements<Cell>().ElementAt(4).
-                                            CellValue.Text;
-                        form.Country = row.Elements<Cell>().ElementAt(5).
-                                            CellValue.Text;
+                            var Rows = new RowData();
+                            var Details = new List<string>();
 
-                        Investigators.Add(Investigator);
-                        form.InvestigatorDetails = Investigators;
-                        if (Investigator.Role == "PI")
-                            forms.Add(form);
+                            string Name = row.Elements<Cell>().ElementAt(0).
+                                                CellValue.InnerText.ToString();
+
+                            string ProjectNumber = row.Elements<Cell>().ElementAt(1).
+                                                CellValue.InnerText;
+
+                            Details.Add(row.Elements<Cell>().ElementAt(0).
+                                                CellValue.InnerText); //PI Name
+                            Details.Add(row.Elements<Cell>().ElementAt(1).
+                                                CellValue.InnerText); //Project#
+                            Details.Add(row.Elements<Cell>().ElementAt(2).
+                                                CellValue.InnerText); //SponsorProtocol#
+                            Details.Add(row.Elements<Cell>().ElementAt(3).
+                                                CellValue.InnerText); //Address
+                            Details.Add(row.Elements<Cell>().ElementAt(4).
+                                                CellValue.InnerText); //Country
+
+                            int ColumnIndex = 5;
+
+                            while (row.Elements<Cell>().ElementAt(ColumnIndex).CellValue.InnerText != "")
+                            {
+                                Details.Add(
+                                    row.Elements<Cell>().ElementAt(ColumnIndex).
+                                                    CellValue.Text); //SI Name
+                                ColumnIndex += 1;
+                            }
+                            Rows.DetailsInEachRow = Details;
+                            ListOfRows.Add(Rows);
+                        }
                     }
                     else
-                        ReadDataFromEachRow = false;
-
-                    RowIndex += 1;
+                        break;
                 }
             }
-            return forms;
+            return ListOfRows;
         }
 
-        public void ReadData()
+        public List<RowData> ReadData(string FilePath)
         {
-            
+            SLDocument doc = new SLDocument(FilePath);
 
+            int RowIndex = 2;
+
+            var ListOfRows = new List<RowData>();
+
+            while (doc.HasCellValue("A" + RowIndex))
+            {
+                var RowData = new RowData();
+                var DataFromEachRow = new List<string>();
+
+                DataFromEachRow.Add(doc.GetCellValueAsString("A" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("B" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("C" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("D" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("E" + RowIndex));
+
+                int ColumnIndex = 6;
+                while (doc.HasCellValue(RowIndex, ColumnIndex) == true)
+                {
+                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex));
+                    ColumnIndex += 1;
+                }
+                RowData.DetailsInEachRow = DataFromEachRow;
+                ListOfRows.Add(RowData);
+
+                RowIndex += 1;
+            }
+            return ListOfRows;
         }
+    }
+
+    public class RowData
+    {
+        public List<string> DetailsInEachRow { get; set; }
     }
 }

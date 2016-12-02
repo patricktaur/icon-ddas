@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
@@ -36,11 +32,18 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _SAMSiteData.SAMSiteData;
+            }
+        }
 
         private SystemForAwardManagementPageSiteData _SAMSiteData;
 
         //need to refactor
-        public void LoadSAMList()
+        private void LoadSAMList()
         {
             _SAMSiteData = new SystemForAwardManagementPageSiteData();
 
@@ -135,7 +138,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public bool SearchTerms(string NameToSearch)
+        private bool SearchTerms(string NameToSearch)
         {
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
@@ -194,7 +197,7 @@ namespace WebScraping.Selenium.Pages
             //}
         }
 
-        public bool CheckForAnchorTagNext()
+        private bool CheckForAnchorTagNext()
         {
             if (IsElementPresent(SAMPaginationElement, By.XPath("table/tbody/tr/td/a")))
             {
@@ -211,7 +214,7 @@ namespace WebScraping.Selenium.Pages
                 return false;
         }
 
-        public void LoadNextRecord()
+        private void LoadNextRecord()
         {
             IList<IWebElement> AnchorsInPagination = 
                 SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));

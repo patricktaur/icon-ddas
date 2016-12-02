@@ -5,6 +5,7 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
+using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,39 +18,39 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            //test t = new test();
-            //t.TestConnection();
-            Program p = new Program();
-
-            p.TestClinicalInvestigator();
-
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
-            ILog log = new LogText("", true);
+            ILog log = new LogText(
+                @"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log", true);
+
+            log.LogStart();
+
             ISearchEngine searchEngine = new SearchEngine(uow);
 
-            var test = new SearchService(uow, searchEngine);
+            //var test = new SearchService(uow, searchEngine);
 
             MongoMaps.Initialize();
 
-            var FDASiteData = 
-                uow.FDADebarPageRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            var service = new ComplianceFormService(uow);
 
-            //var result = test.GetFDADebarPageMatch("Cullinane Andrew R", FDASiteData.RecId);
-            //Console.WriteLine("Records matching single word:");
-            //Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 1).Count());
-            //Console.WriteLine("Records matching two word:");
-            //Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 2).Count());
-            //Console.WriteLine("Records matching three words:");
-            //Console.WriteLine(result.DebarredPersons.Where(x => x.Matched == 3).Count());
-            //Console.WriteLine("All Records:");
-            //Console.WriteLine(result.DebarredPersons.ToList());
-            //Console.ReadLine();
-        }
+            var searchSummary = new SearchService(uow, searchEngine);
 
-        public void TestClinicalInvestigator()
-        {
+            var forms = searchSummary.ReadUploadedFileData(
+                @"C:\Development\p926-ddas\DDAS.API\App_Data\DDAS_Upload.xlsx", log);
 
+            var complianceForms = new List<ComplianceForm>();
+
+            foreach (ComplianceForm form in forms)
+            {
+                complianceForms.Add(searchSummary.ScanUpdateComplianceForm(
+                    form, log));
+            }
+
+            //SLDocument doc = new SLDocument(@"C:\Development\p926-ddas\DDAS.API\App_Data\Test-DDAS.xlsx");
+
+            //doc.GetCellValueAsString("A1");
+            log.LogEnd();
+            
+            Console.ReadLine();
         }
     }
 }

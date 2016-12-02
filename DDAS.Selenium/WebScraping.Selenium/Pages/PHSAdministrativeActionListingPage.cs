@@ -21,6 +21,8 @@ namespace WebScraping.Selenium.Pages
         {
             Open();
             _UOW = uow;
+            _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
+            _PHSAdministrativeSiteData.RecId = Guid.NewGuid();
         }
 
         public override SiteEnum SiteName {
@@ -35,12 +37,18 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _PHSAdministrativeSiteData.PHSAdministrativeSiteData;
+            }
+        }
+
         private PHSAdministrativeActionListingSiteData _PHSAdministrativeSiteData;
 
-        public void LoadAdministrativeActionList()
+        private void LoadAdministrativeActionList()
         {
-            _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
-
             _PHSAdministrativeSiteData.CreatedBy = "Patrick";
             _PHSAdministrativeSiteData.SiteLastUpdatedOn = DateTime.Now;
             _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
@@ -81,6 +89,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _PHSAdministrativeSiteData.DataExtractionRequired = true;
                 if (_PHSAdministrativeSiteData.DataExtractionRequired)
                 {
                     LoadAdministrativeActionList();
@@ -98,10 +107,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_PHSAdministrativeSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _PHSAdministrativeSiteData.ReferenceId =
+                        _PHSAdministrativeSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

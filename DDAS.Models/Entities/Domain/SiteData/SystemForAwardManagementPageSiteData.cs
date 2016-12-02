@@ -55,7 +55,19 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "";
+                return 
+                    "FullName: " + FullName + "~" +
+                    "Name: " + Entity + "~" +
+                    "Duns: " + Duns + "~" +
+                    "HasActiveExclusion: " + HasActiveExclusion + "~" +
+                    "ExpirationDate: " + ExpirationDate + "~" +
+                    "PurposeOfRegistration: " + HasActiveExclusion + "~" +
+                    "CAGECode: " + HasActiveExclusion + "~" +
+                    "DoDAAC: " + HasActiveExclusion + "~" +
+                    "DelinquentFederalDebt: " + HasActiveExclusion + "~" +
+                    "Classification: " + HasActiveExclusion + "~" +
+                    "ActivationDate: " + HasActiveExclusion + "~" +
+                    "TerminationDate: " + HasActiveExclusion;
             }
         }
 

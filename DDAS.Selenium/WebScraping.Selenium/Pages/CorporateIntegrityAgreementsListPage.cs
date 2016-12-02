@@ -18,6 +18,8 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _CIASiteData = new CorporateIntegrityAgreementListSiteData();
+            _CIASiteData.RecId = Guid.NewGuid();
         }
 
         public override SiteEnum SiteName {
@@ -32,12 +34,18 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _CIASiteData.CIAListSiteData;
+            }
+        }
+
         private CorporateIntegrityAgreementListSiteData _CIASiteData;
 
-        public void LoadCIAList()
+        private void LoadCIAList()
         {
-            _CIASiteData = new CorporateIntegrityAgreementListSiteData();
-
             _CIASiteData.CreatedBy = "patrick";
             _CIASiteData.SiteLastUpdatedOn = DateTime.Now;
             _CIASiteData.CreatedOn = DateTime.Now;
@@ -71,6 +79,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _CIASiteData.DataExtractionRequired = true;
                 if (_CIASiteData.DataExtractionRequired)
                 {
                     LoadCIAList();
@@ -88,10 +97,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_CIASiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _CIASiteData.ReferenceId =
+                        _CIASiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

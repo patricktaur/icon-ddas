@@ -25,6 +25,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public bool DataExtractionSucceeded { get; set; }
         public string DataExtractionErrorMessage { get; set; }
         public DateTime SiteLastUpdatedOn { get; set; }
+        public string Source { get; set; }
         public List<AdequateAssuranceList> AdequateAssurances { get; set; }
     }
 
@@ -49,7 +50,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "";
+                return 
+                    "FullName: " + FullName + "~" +
+                    "NameAndAddress: " + NameAndAddress + "~" +
+                    "Center: " + Center + "~" +
+                    "Type: " + Type + "~" +
+                    "ActionDate: " + ActionDate + "~" +
+                    "Comments: " + Comments;
             }
         }
     }

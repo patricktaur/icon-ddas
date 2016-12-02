@@ -61,7 +61,14 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "";
+                return 
+                    "FullName: " + FullName + "~" +
+                    "FirstName: " + FirstName + "~" +
+                    "LastName: " + LastName + "~" +
+                    "MiddleName: " + MiddleName + "~" +
+                    "General: " + General + "~" +
+                    "Specialty: " + Specialty + "~" +
+                    "ExclusionType: " + ExclusionType;
             }
         }
     }

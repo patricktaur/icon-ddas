@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace DDAS.Services.Search
 {
@@ -31,11 +32,14 @@ namespace DDAS.Services.Search
             _UOW.ComplianceFormRepository.Add(form);
         }
 
-        public void AddDetailsToComplianceForm(string LocalFilePath)
+        public List<RowData> AddDetailsToComplianceForm(string FilePath)
         {
-            var form = new ComplianceForm();
-            var Investigator = new InvestigatorSearched();
+            var readUploadedExcelFile = new ReadUploadedExcelFile();
 
+            var DataFromExcelFile = readUploadedExcelFile.
+                ReadData(FilePath);
+
+            return DataFromExcelFile;
         }
 
         public ComplianceForm GetComplianceFormId(string NameToSearch)

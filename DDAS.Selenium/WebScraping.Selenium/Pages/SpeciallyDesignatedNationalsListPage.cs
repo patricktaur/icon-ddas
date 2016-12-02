@@ -28,6 +28,8 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _SDNSiteData = new SpeciallyDesignatedNationalsListSiteData();
+            _SDNSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
 
@@ -44,7 +46,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void DownloadSDNList(string DownloadFolder)
+        public IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _SDNSiteData.SDNListSiteData;
+            }
+        }
+
+        private void DownloadSDNList(string DownloadFolder)
         {
             //string fileName = _folderPath + @"\test.pdf"; // "c:\\development\\temp\\test.pdf";
 
@@ -61,15 +71,13 @@ namespace WebScraping.Selenium.Pages
 
         private SpeciallyDesignatedNationalsListSiteData _SDNSiteData;
 
-        public List<SDNList> GetTextFromPDF(string NameToSearch, string DownloadFolder)
+        private List<SDNList> GetTextFromPDF(string NameToSearch, string DownloadFolder)
         {
             string tempSiteDate = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "");
 
             DateTime SiteDateTime;
 
             DateTime.TryParse(tempSiteDate, out SiteDateTime);
-
-            _SDNSiteData = new SpeciallyDesignatedNationalsListSiteData();
 
             _SDNSiteData.CreatedBy = "Patrick";
             _SDNSiteData.CreatedOn = DateTime.Now;
@@ -117,7 +125,7 @@ namespace WebScraping.Selenium.Pages
             return Names;
         }
 
-        public bool CheckSiteUpdatedDate()
+        private bool CheckSiteUpdatedDate()
         {
             var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -142,13 +150,13 @@ namespace WebScraping.Selenium.Pages
         {
             try
             {
-                if (!CheckSiteUpdatedDate())
-                {
+                //if (!CheckSiteUpdatedDate())
+                //{
                     _SDNSiteData.DataExtractionRequired = true;
                     DownloadSDNList(DownloadFolder);
                     GetTextFromPDF("", DownloadFolder);
                     _SDNSiteData.DataExtractionSucceeded = true;
-                }
+                //}
             }
             catch (Exception e)
             {
@@ -161,10 +169,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_SDNSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _SDNSiteData.ReferenceId =
+                        _SDNSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

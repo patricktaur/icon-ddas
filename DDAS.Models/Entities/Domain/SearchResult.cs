@@ -21,6 +21,9 @@ namespace DDAS.Models.Entities.Domain
     public class SearchQuerySite
     {
         public string SiteName { get; set; }
+        public bool IsOptional { get; set; }
+        public string ExtractionMode { get; set; }
+        public bool Mandatory { get; set; }
         public string SiteShortName { get; set; }
         public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
@@ -142,8 +145,8 @@ namespace DDAS.Models.Entities.Domain
             InvestigatorDetails = new List<InvestigatorSearched>();
             SiteSources = new List<SiteSource>();
             Findings = new List<Finding>();
-       }
-
+        }
+        
         public Guid? RecId { get; set; }
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
@@ -160,7 +163,6 @@ namespace DDAS.Models.Entities.Domain
         //Patrick 27NOvb2016
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
-
     }
 
     public class PrincipalInvestigatorDetails
@@ -174,6 +176,8 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
     }
+
+    
 
     public class InvestigatorSearched
     {
@@ -247,12 +251,7 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public string HiddenStatus { get; set; }
     }
-
-
-
-
-
-
+    
     #endregion
 
     #region ByPatrick
@@ -262,8 +261,9 @@ namespace DDAS.Models.Entities.Domain
         public int MatchCount { get; set; }
         public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
-
     }
+
+    
 
     public class SiteSource
     {
@@ -271,11 +271,13 @@ namespace DDAS.Models.Entities.Domain
         public int DisplayPosition { get; set; }
         public string SiteName { get; set; }
         public string SiteShortName { get; set; }
-        public Guid SiteDataId { get; set; }
+        public Guid? SiteDataId { get; set; }
         public DateTime DataExtractedOn { get; set; }
         public DateTime SiteSourceUpdatedOn { get; set; }
         public DateTime CreatedOn { get; set; }
         public string ExtractionMode { get; set; }
+        public bool IsMandatory { get; set; }
+        public bool IsOptional { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public bool IssuesIdentified { get; set; }

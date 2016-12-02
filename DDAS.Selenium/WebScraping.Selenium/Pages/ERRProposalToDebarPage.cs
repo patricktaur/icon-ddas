@@ -17,6 +17,8 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
+            _proposalToDebarSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("ProposalToDebarPage.png");
         }
 
@@ -33,12 +35,18 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _proposalToDebarSiteData.ProposalToDebar;
+            }
+        }
+
         private ERRProposalToDebarPageSiteData _proposalToDebarSiteData;
 
-        public void LoadProposalToDebarList()
+        private void LoadProposalToDebarList()
         {
-            _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
-
             _proposalToDebarSiteData.CreatedBy = "Patrick";
             _proposalToDebarSiteData.SiteLastUpdatedOn = DateTime.Now;
             _proposalToDebarSiteData.CreatedOn = DateTime.Now;
@@ -63,6 +71,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _proposalToDebarSiteData.DataExtractionRequired = true;
                 if (_proposalToDebarSiteData.DataExtractionRequired)
                 {
                     LoadProposalToDebarList();
@@ -80,10 +89,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_proposalToDebarSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _proposalToDebarSiteData.ReferenceId =
+                        _proposalToDebarSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.ERRProposalToDebarRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

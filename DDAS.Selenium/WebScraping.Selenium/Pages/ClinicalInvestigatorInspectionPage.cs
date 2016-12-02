@@ -26,6 +26,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
+            _clinicalSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
 
@@ -44,7 +45,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public void DownloadSDNList(string DownloadFolder)
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _clinicalSiteData.ClinicalInvestigatorInspectionList;
+            }
+        }
+
+        private void DownloadSDNList(string DownloadFolder)
         {
             //string fileName = _folderPath + @"\test.pdf";
 
@@ -66,7 +75,8 @@ namespace WebScraping.Selenium.Pages
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        public void LoadClinicalInvestigatorListAlt(string DownloadFolder)
+        //this function currently not in use. Using the downloaded text file to save data
+        private void LoadClinicalInvestigatorListAlt(string DownloadFolder)
         {
             _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
             _clinicalSiteData.CreatedBy = "Patrick";
@@ -114,6 +124,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _clinicalSiteData.DataExtractionRequired = true;
                 if (_clinicalSiteData.DataExtractionRequired)
                 {
                     LoadClinicalInvestigatorListAlt(DownloadFolder);
@@ -131,10 +142,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_clinicalSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _clinicalSiteData.ReferenceId =
+                        _clinicalSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

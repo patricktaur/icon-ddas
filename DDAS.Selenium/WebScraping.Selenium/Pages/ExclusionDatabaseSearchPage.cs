@@ -21,6 +21,8 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
+            _exclusionSearchSiteData.RecId = Guid.NewGuid();
             //SaveScreenShot("ExclusionDatabaseSearch.png");
         }
 
@@ -38,7 +40,15 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public string DownloadExclusionList(string DownloadFolder)
+        public override IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _exclusionSearchSiteData.ExclusionSearchList;
+            }
+        }
+
+        private string DownloadExclusionList(string DownloadFolder)
         {
             string fileName = DownloadFolder + "ExclusionDatabaseList.csv";
             // Create a new WebClient instance.
@@ -57,11 +67,9 @@ namespace WebScraping.Selenium.Pages
 
         private ExclusionDatabaseSearchPageSiteData _exclusionSearchSiteData;
 
-        public void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
+        private void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
         {
             string[] AllRecords = File.ReadAllLines(CSVFilePath);
-
-            _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
 
             _exclusionSearchSiteData.CreatedBy = "Patrick";
             _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
@@ -114,6 +122,7 @@ namespace WebScraping.Selenium.Pages
             //refactor - add code to validate ExtractionDate
             try
             {
+                _exclusionSearchSiteData.DataExtractionRequired = true;
                 if (_exclusionSearchSiteData.DataExtractionRequired)
                 {
                     string FilePath = DownloadExclusionList(DownloadFolder);
@@ -132,10 +141,13 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!_exclusionSearchSiteData.DataExtractionRequired)
                     AssignReferenceIdOfPreviousDocument();
+                else
+                    _exclusionSearchSiteData.ReferenceId =
+                        _exclusionSearchSiteData.RecId;
             }
         }
 
-        public void AssignReferenceIdOfPreviousDocument()
+        private void AssignReferenceIdOfPreviousDocument()
         {
             var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).First();

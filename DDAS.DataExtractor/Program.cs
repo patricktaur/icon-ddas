@@ -37,7 +37,7 @@ namespace DDAS.DataExtractor
             string DownloadFolder =
             System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
 
-            ILog log = new LogText(DataExtractionLogFile, true);
+            ILog log = new LogText(DataExtractionLogFile,  true);
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             log.LogStart();
             log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
