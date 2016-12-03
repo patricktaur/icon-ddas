@@ -1,12 +1,12 @@
 ﻿using DDAS.Models.Entities.Domain;
-using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace DDAS.Models.Interfaces
 {
-    public interface ISearchService
+    public interface ISearchSummary
     {
         ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
@@ -49,16 +49,20 @@ namespace DDAS.Models.Interfaces
         bool SaveRecordStatus(string NameToSearch, 
             SitesIncludedInSearch Result, Guid? ComplianceFormId);
 
+        List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
+
         //Patrick 27Nov2016
         ComplianceForm GetNewComplianceForm(ILog log);
 
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log);
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
 
+
         //Pradeep 1Dec2016
         List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log);
-        List<PrincipalInvestigatorDetails> 
-            getPrincipalInvestigatorNComplianceFormDetails();
+
         ComplianceForm UpdateFindings(ComplianceForm form);
+
+        MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
     }
 }

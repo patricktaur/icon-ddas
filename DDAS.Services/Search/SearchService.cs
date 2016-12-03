@@ -8,10 +8,12 @@ using System.Linq;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.Text.RegularExpressions;
 using Utilities;
+using System.IO;
+using Utilities.WordTemplate;
 
 namespace DDAS.Services.Search
 {
-    public class SearchService : ISearchService
+    public class SearchService : ISearchSummary
     {
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
@@ -81,6 +83,7 @@ namespace DDAS.Services.Search
                 var siteSourceToAdd = new SiteSource();
 
                 if (site.ExtractionMode.ToLower() == "db")
+                    //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
                     siteScan = ScanData.GetSiteScanData(site.SiteEnum, "", log);
 
                 if(siteScan != null)
@@ -1240,7 +1243,6 @@ namespace DDAS.Services.Search
 
 
         #region ByPradeep
-
         //Pradeep 1Dec2016
 
         public List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log)
@@ -1293,6 +1295,16 @@ namespace DDAS.Services.Search
             return newForm;
         }
 
+        //3Dec2016
+        public MemoryStream GenerateComplianceForm(Guid? ComplianceFormId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var UtilitiesObject = new ReplaceTextFromWordTemplate();
+
+            return UtilitiesObject.ReplaceTextFromWord(form);
+        }
+
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
         {
             //Creates or Updates form
@@ -1314,15 +1326,19 @@ namespace DDAS.Services.Search
         {
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
-            RemoveDeleteMarkedItemsFromFormCollections(frm);
-
-            //calculate issues found
-            //UpdateFindings(frm);
-
-            _UOW.ComplianceFormRepository.UpdateCollection(frm);
+            RemoveDeleteMarkedItemsFromFormCollections(frm); 
+            //Patrick 02Dec2016:
+            if (frm.RecId == null){
+                _UOW.ComplianceFormRepository.Add(frm);
+            }
+            else
+            {
+                UpdateFindings(frm);
+                _UOW.ComplianceFormRepository.UpdateCollection(frm);
+            }
             return frm;
         }
-
+        
         public List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails()
         {
             var retList = new List<PrincipalInvestigatorDetails>();
@@ -1331,8 +1347,10 @@ namespace DDAS.Services.Search
 
             foreach (ComplianceForm compForm in compForms)
             {
+                var form = _UOW.ComplianceFormRepository.FindById(compForm.RecId);
+
                 var item = new PrincipalInvestigatorDetails();
-                item.Active = compForm.Active;
+                //item.Active = compForm.Active;
                 item.Address = compForm.Address;
                 item.Country = compForm.Country;
                 item.ProjectNumber = compForm.ProjectNumber;
@@ -1347,7 +1365,26 @@ namespace DDAS.Services.Search
 
         public ComplianceForm UpdateFindings(ComplianceForm form)
         {
-            foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+
+            //foreach(Finding Findings in form.Findings)
+            //{
+            //    if (Findings != null && Findings.Status != null &&
+            //        Findings.Status.ToLower() == "approve")
+            //    {
+            //        var Investigator = form.InvestigatorDetails.Where(
+            //            Inv => Inv.Id == Findings.InvestigatorSearchedId).
+            //            FirstOrDefault();
+
+            //        var SearchStatus = Investigator.SitesSearched.Where(
+            //            site => site.siteEnum == Findings.SiteEnum).
+            //            FirstOrDefault();
+
+
+            //    }
+            //}
+
+
+            foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 Investigator.TotalIssuesFound = 0;
 
@@ -1356,15 +1393,16 @@ namespace DDAS.Services.Search
                     var ListOfFindings = form.Findings;
 
                     var Findings = ListOfFindings.Where(
-                        x => x.SiteEnum == searchStatus.siteEnum).FirstOrDefault();
+                        x => x.SiteEnum == searchStatus.siteEnum);
 
                     int IssuesFound = 0;
 
-                    if(Findings.Status.ToLower() == "approve")
-                    {
-                        IssuesFound += 1;
-                        searchStatus.IssuesFound = IssuesFound;
-                    }
+                    //if (Findings != null && Findings.Status != null &&
+                    //    Findings.Status.ToLower() == "approve")
+                    //{
+                    //    IssuesFound += 1;
+                    //    searchStatus.IssuesFound = IssuesFound;
+                    //}
                     Investigator.TotalIssuesFound += IssuesFound;
                 }
             }
@@ -1582,6 +1620,7 @@ namespace DDAS.Services.Search
 
         }
 
+
         //added on 1Dec2016 Pradeep, Yet to add Live sites below..
 
         public List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
@@ -1759,6 +1798,7 @@ namespace DDAS.Services.Search
             GetFullAndPartialMatchCount(SDNList, searchStatus, NameToSearch);
 
             return ConvertToMatchedRecords(SDNList);
+
         }
 
         #endregion

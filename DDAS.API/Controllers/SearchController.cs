@@ -26,7 +26,7 @@ namespace DDAS.API.Controllers
     public class SearchController : ApiController
     {
         private ISearchEngine _SearchEngine;
-        private ISearchService _SearchSummary;
+        private ISearchSummary _SearchSummary;
         private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
         private ILog _log;
@@ -37,7 +37,7 @@ namespace DDAS.API.Controllers
         private string UploadFolder =
             System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
-        public SearchController(ISearchEngine search, ISearchService SearchSummary,
+        public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
         {
             _SearchEngine = search;
@@ -124,15 +124,6 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
-        [Route("GetPrincipalInvestigators")]
-        [HttpGet]
-        public IHttpActionResult GetPrincipalInvestigators()
-        {
-            return Ok(
-                _SearchSummary.
-                getPrincipalInvestigatorNComplianceFormDetails());
-        }
-
         [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
@@ -215,34 +206,42 @@ namespace DDAS.API.Controllers
             return ComplianceForms;
         }
 
+        [Route("GetPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetPrincipalInvestigators()
+        {
+            return Ok(
+                _SearchSummary.
+                getPrincipalInvestigatorNComplianceFormDetails());
+        }
 
         #region Patrick
         //Patrick:27Nov2016
+
+        //[Route("PrincipalInvestigators")]
+        //[HttpGet]
+        //public IHttpActionResult PrincipalInvestigators()  
+        //{
+        //    return Ok(_SearchSummary.getPrincipalInvestigatorNComplianceFormDetails());
+
+        //}
+
         [Route("GetComplianceFormA")]
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
-            _log.LogStart();
-            try
+            //Patrick 02Dec2016
+            //_log.LogStart();
+            //try
+            //{
+            if (formId == null)
             {
-                if (formId.Length == 0)
-                {
-                    return Ok(_SearchSummary.GetNewComplianceForm(_log));
-                }
-                else
-                {
-                    return null;
-                }
+                return Ok(_SearchSummary.GetNewComplianceForm(_log));
             }
-            catch (Exception e)
+            else
             {
-                _log.WriteLog("ErrorMessage: " + e.ToString());
-                return InternalServerError(e);
-            }
-            finally
-            {
-                _log.WriteLog("=================================================================================");
-                _log.LogEnd();
+                Guid? RecId = Guid.Parse(formId);
+                return Ok(_UOW.ComplianceFormRepository.FindById(RecId));
             }
         }
 
@@ -262,6 +261,15 @@ namespace DDAS.API.Controllers
             _log.WriteLog("=================================================================================");
             _log.LogEnd();
             return Ok(result);
+        }
+
+        //Patrick 01Dec2016
+        [Route("GetInvestigatorSummary")]
+        [HttpGet]
+        public IHttpActionResult GetInvestigatorSummary(string formId, int investigatorId)  //returns previously generated form or empty form  
+        {
+            //return InvestigatorSearched
+            return null;
         }
 
         #endregion
@@ -451,9 +459,42 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
+
+        //3Dec2016
         [Route("DownloadComplianceForm")]
         [HttpGet]
-        public HttpResponseMessage GetTestFile()
+        public HttpResponseMessage DownloadForm(string ComplianceFormId = null)
+        {
+            HttpResponseMessage result = null;
+
+            if (ComplianceFormId == null)
+            {
+                result = Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+            else
+            {
+                // Serve the file to the client
+                result = Request.CreateResponse(HttpStatusCode.OK);
+                var form = _SearchSummary.GenerateComplianceForm(Guid.Parse(ComplianceFormId));
+
+                result.Content = new ByteArrayContent(form.ToArray());
+
+                result.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(
+                    "application/vnd.ms-word");
+                    
+                result.Content.Headers.ContentDisposition.FileName = "Compliance Form.docx";
+            }
+            return result;
+        }
+
+
+        //Not required
+        [Route("TestDownload")]
+        [HttpGet]
+        public HttpResponseMessage DownloadComplianceForm()
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
@@ -466,8 +507,13 @@ namespace DDAS.API.Controllers
             {
                 // Serve the file to the client
                 result = Request.CreateResponse(HttpStatusCode.OK);
-                result.Content = new StreamContent(new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+
+                result.Content = new StreamContent(
+                    new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+
+                result.Content.Headers.ContentDisposition = 
+                    new ContentDispositionHeaderValue("attachment");
+
                 result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
             }
             return result;

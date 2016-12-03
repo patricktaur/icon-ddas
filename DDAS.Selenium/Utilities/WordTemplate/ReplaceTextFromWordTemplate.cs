@@ -3,76 +3,117 @@ using DDAS.Models.Entities.Domain;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace Utilities.WordTemplate
 {
     public class ReplaceTextFromWordTemplate
     {
-        public void ReplaceTextFromWord(ComplianceForm form)
+        public MemoryStream ReplaceTextFromWord(ComplianceForm form)
         {
-            using (WordprocessingDocument doc =
-                   WordprocessingDocument.Open(
-                    @"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx", true))
+            string FilePath = @"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx";
+
+            byte[] byteArray = File.ReadAllBytes(
+                FilePath);
+
+            using (MemoryStream stream = new MemoryStream())
             {
-                var body = doc.MainDocumentPart.Document.Body;
+                stream.Write(byteArray, 0, byteArray.Length);
 
-                var Table = body.Descendants<Table>().ElementAt(0);
-                UpdateTable(Table, 0, 1, form.SponsorProtocolNumber);
-                
-                foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+                using (WordprocessingDocument doc =
+                   WordprocessingDocument.Open(
+                    stream, true))
                 {
-                    int RowIndex = 1;
-                    foreach(SiteSearchStatus Site in Investigator.SitesSearched)
+                    var body = doc.MainDocumentPart.Document.Body;
+
+                    var HeaderTable = body.Descendants<Table>().ElementAt(0);
+
+                    UpdateTable(HeaderTable, 0, 1, form.ProjectNumber);
+
+                    UpdateTable(HeaderTable, 0, 1, form.SponsorProtocolNumber);
+
+                    var PI = form.InvestigatorDetails.FirstOrDefault().Name;
+
+                    UpdateTable(HeaderTable, 1, 1, PI);
+
+                    UpdateTable(HeaderTable, 1, 3, form.Address);
+
+                    var SitesTable = body.Descendants<Table>().ElementAt(2);
+
+                    var FindingsTable = body.Descendants<Table>().ElementAt(3);
+
+                    foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
                     {
-                        var ListOfFindings = form.Findings;
+                        int RowIndex = 1;
 
-                        var Findings = ListOfFindings.Where(
-                            x => x.SiteEnum == Site.siteEnum).
-                            FirstOrDefault();
+                        UpdateTable(HeaderTable, 2, 1, Investigator.Name); //Add SI
 
-                        if(Findings.Status.ToLower() == "approve")
+                        foreach (SiteSearchStatus Site in Investigator.SitesSearched)
                         {
-                            CheckOrUnCheckIssuesIdentified(Table, RowIndex, true);
+                            var ListOfFindings = form.Findings;
+
+                            var Findings = ListOfFindings.Where(
+                                x => x.SiteEnum == Site.siteEnum).
+                                FirstOrDefault();
+
+                            if (Findings == null)
+                                continue;
+
+                            if (Findings.Status != null &&
+                                Findings.Status.ToLower() == "approve")
+                            {
+                                CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, true);
+                                //Add Observation
+                                AddFindings(FindingsTable, RowIndex.ToString(),
+                                    DateTime.Now,
+                                    Findings.Observation);
+                            }
+                            else
+                                CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, false);
+
+                            RowIndex += 1;
                         }
                     }
                 }
-                
-                //UpdateTable(Table, 1, 1, form.NameToSearch);
-                
-                //UpdateTable(Table, 2, 1, "Some Sub Investigator Name");
 
-                Table = body.Descendants<Table>().ElementAt(2);
-                
-                var Sites = form.SiteSources.OrderBy(Site => Site.SiteEnum).ToList();
+                var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
 
-                var FindingsTable = body.Descendants<Table>().ElementAt(3);
-                //int ApprovedOrRejectedCounter = 0;
-                for (int i = 0; i < 12; i++)
+                //FileName += "_" + DateTime.Now.ToShortDateString() + ".docx";
+
+                return stream;
+                //using (FileStream fileStream = new FileStream("Test.docx",
+                //FileMode.Open))
+                //{
+                //    stream.WriteTo(fileStream);
+                //    return fileStream;
+                //}
+            }
+        }
+
+        public void GenerateComplianceForm()
+        {
+
+            byte[] byteArray = File.ReadAllBytes(@"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx");
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                stream.Write(byteArray, 0, byteArray.Length);
+
+                using (WordprocessingDocument doc =
+                   WordprocessingDocument.Open(
+                    stream, true))
                 {
-                    //var ApprovedOrRejectedRecords = 
-                    //Sites[i].MatchedRecords.Where(record =>
-                    //record.Status == "Approve" || record.Status == "Reject").
-                    //ToList();
 
-                    UpdateTable(Table, i, 2, DateTime.Now.ToShortDateString());
-                    //if (Sites[i])//.IssuesFound > 0)
-                    //{
-                        ChangeCheckBoxStatus(Table, i, 4, false);
-                        ChangeCheckBoxStatus(Table, i, 5, true);
+                }
 
-                        AddFindings(FindingsTable, (i + 1).ToString(),
-                            Sites[i].DataExtractedOn,
-                            "");
-                        //ApprovedOrRejectedCounter += 1;
-                    //}
-                    //else
-                    //{
-                        ChangeCheckBoxStatus(Table, i, 4, true);
-                        ChangeCheckBoxStatus(Table, i, 5, false);
-                    //}
+                using (FileStream fileStream = new FileStream("Test2.docx",
+                FileMode.CreateNew))
+                {
+                    stream.WriteTo(fileStream);
                 }
             }
+            
         }
 
         public void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
@@ -117,7 +158,6 @@ namespace Utilities.WordTemplate
             TableRow Row = table.Elements<TableRow>().ElementAt(RowIndex);
             TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
             Paragraph paragraph = Cell.Elements<Paragraph>().First();
-            //ParagraphProperties pr = paragraph.Elements<ParagraphProperties>().First();
             Run run = paragraph.Elements<Run>().First();
             Text text = run.Elements<Text>().First();
             text.Text = null;
@@ -134,7 +174,7 @@ namespace Utilities.WordTemplate
             CheckBox chk = paragraph.Descendants<CheckBox>().FirstOrDefault();
             DefaultCheckBoxFormFieldState DefaultStatus =
                 chk.GetFirstChild<DefaultCheckBoxFormFieldState>();
-            if(DefaultStatus.Val.Value != CheckOrUnCheck)
+            if (DefaultStatus.Val.Value != CheckOrUnCheck)
                 DefaultStatus.Val.Value = CheckOrUnCheck;
         }
     }

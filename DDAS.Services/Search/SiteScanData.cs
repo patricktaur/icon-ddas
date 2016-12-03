@@ -124,7 +124,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if(SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData = 
                 _UOW.FDADebarPageRepository.FindById(SiteData.RecId);
@@ -144,7 +146,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.ClinicalInvestigatorInspectionListRepository.FindById(SiteData.RecId);
@@ -167,7 +171,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null) // || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                                  //Patrick 02Dec2016
+                return null;
+                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.FDAWarningLettersRepository.FindById(SiteData.RecId);
@@ -187,7 +193,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.ERRProposalToDebarRepository.FindById(SiteData.RecId);
@@ -207,7 +215,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.AdequateAssuranceListRepository.FindById(SiteData.RecId);
@@ -230,7 +240,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null) // || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteData.RecId);
@@ -250,7 +262,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+            //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.CBERClinicalInvestigatorRepository.FindById(SiteData.RecId);
@@ -270,7 +284,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+            //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.PHSAdministrativeActionListingRepository.FindById(SiteData.RecId);
@@ -290,7 +306,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+            //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.ExclusionDatabaseSearchRepository.FindById(SiteData.RecId);
@@ -310,7 +328,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+            //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.CorporateIntegrityAgreementRepository.FindById(SiteData.RecId);
@@ -333,7 +353,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null) // || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                                  //Patrick 02Dec2016
+                return null;
+            //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.SystemForAwardManagementRepository.FindById(SiteData.RecId);
@@ -354,7 +376,9 @@ namespace DDAS.Services.Search
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                throw new Exception("Failed to extract data for the site: FDADebarPage");
+                //Patrick 02Dec2016
+                return null;
+            //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteData.RecId);

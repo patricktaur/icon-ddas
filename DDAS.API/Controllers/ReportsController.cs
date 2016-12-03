@@ -12,11 +12,11 @@ namespace DDAS.API.Controllers
     [RoutePrefix("api/Reports")]
     public class ReportsController : ApiController
     {
-        private ISearchService _SearchSummary;
+        private ISearchSummary _SearchSummary;
         private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
 
-        public ReportsController(ISearchService SearchSummary,
+        public ReportsController(ISearchSummary SearchSummary,
             ISiteSummary SiteSummary, IUnitOfWork UOW)
         {
             _SearchSummary = SearchSummary;

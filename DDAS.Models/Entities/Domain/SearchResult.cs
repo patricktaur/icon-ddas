@@ -165,6 +165,20 @@ namespace DDAS.Models.Entities.Domain
         public List<Finding> Findings { get; set; }
     }
 
+    public class PrincipalInvestigatorDetails
+    {
+        public Guid? RecId { get; set; }
+        public string PrincipalInvestigator { get; set; }
+       
+        public string SponsorProtocolNumber { get; set; }
+        public string Country { get; set; }
+        public string Address { get; set; }
+        public string ProjectNumber { get; set; }
+        public DateTime SearchStartedOn { get; set; }
+    }
+
+    
+
     public class InvestigatorSearched
     {
         public int Id { get; set; }
@@ -184,9 +198,12 @@ namespace DDAS.Models.Entities.Domain
 
     }
 
+    //Patrick 01Dec2016 - new props added:
     public class SiteSearchStatus
     {
         public SiteEnum siteEnum { get; set; }
+        public string SiteName { get; set; }
+        public string SiteUrl { get; set; }
         public bool HasExtractionError { get; set; }
         public string ExtractionErrorMessage { get; set; }
         public int FullMatchCount { get; set; }
@@ -244,17 +261,7 @@ namespace DDAS.Models.Entities.Domain
         public string RecordDetails { get; set; }
     }
 
-    public class PrincipalInvestigatorDetails
-    {
-        public Guid? RecId { get; set; }
-        public string PrincipalInvestigator { get; set; }
-        public bool Active { get; set; }
-        public string SponsorProtocolNumber { get; set; }
-        public string Country { get; set; }
-        public string Address { get; set; }
-        public string ProjectNumber { get; set; }
-        public DateTime SearchStartedOn { get; set; }
-    }
+    
 
     public class SiteSource
     {
@@ -272,7 +279,7 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public bool IssuesIdentified { get; set; }
-        public bool Deleted { get; set; }
+        public bool Deleted { get; set; } = false; //Patrick 30NOv2016
     }
 
     //Patrick 27Nov2016
