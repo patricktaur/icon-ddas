@@ -216,6 +216,17 @@ namespace DDAS.API.Controllers
                 getPrincipalInvestigatorNComplianceFormDetails());
         }
 
+        //GetInvestigatorSiteSummary/?formId=' + formId + "&investigatorId=" + investigatorId)
+        [Route("GetInvestigatorSiteSummary")]
+        [HttpGet]
+        public IHttpActionResult GetInvestigatorSiteSummary(string formId, int investigatorId)
+        {
+            return Ok(
+                _SearchSummary.
+                    getInvestigatorSiteSummary(formId, investigatorId));
+        }
+
+
         #region Patrick
         //Patrick:27Nov2016
 
@@ -241,7 +252,18 @@ namespace DDAS.API.Controllers
             }
             else
             {
-                return Ok(_UOW.ComplianceFormRepository.FindById(formId));
+                Guid? gFormId = Guid.Parse(formId);
+                var compForm = _UOW.ComplianceFormRepository.FindById(gFormId);
+                if (compForm == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(compForm);
+                }
+                
+                //return Ok(_UOW.ComplianceFormRepository.FindById(formId));
             }
            
             //}
@@ -275,14 +297,7 @@ namespace DDAS.API.Controllers
             return Ok(result);
         }
 
-        //Patrick 01Dec2016
-        [Route("GetInvestigatorSummary")]
-        [HttpGet]
-        public IHttpActionResult GetInvestigatorSummary(string formId, int investigatorId)  //returns previously generated form or empty form  
-        {
-            //return InvestigatorSearched
-            return null;
-        }
+      
 
         #endregion
 

@@ -229,6 +229,7 @@ export class SearchList{
         ReviewCompleted : boolean = false;
   }
   
+  
     export class SiteSource{
         Id: number = 0;
         DisplayPosition: number = 0;
@@ -239,12 +240,14 @@ export class SearchList{
         SiteSourceUpdatedOn : Date;
         CreatedOn: Date;
         ExtractionMode : string;
-        SiteEnum : string; 
+        SiteEnum : number; 
         SiteUrl : string;
         IssuesIdentified : boolean = false;
         Deleted: boolean = false;
         IsMandatory: boolean = true;  //temp
     }  
+
+   
    
     export class Finding{
         SiteSourceId: number;

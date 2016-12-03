@@ -178,9 +178,14 @@ namespace DDAS.Models.Entities.Domain
     }
 
     
-
+    //Patrick 03Dec2016 modified.
     public class InvestigatorSearched
     {
+        public InvestigatorSearched()
+        {
+            SitesSearched = new List<SiteSearchStatus>();
+        }
+
         public int Id { get; set; }
         public int DisplayPosition { get; set; }
         public string Name { get; set; }
