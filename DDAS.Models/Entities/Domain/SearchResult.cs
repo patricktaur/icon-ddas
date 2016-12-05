@@ -217,7 +217,6 @@ namespace DDAS.Models.Entities.Domain
         public bool ReviewCompleted { get; set; }
     }
 
-
     public class SitesIncludedInSearch
     {
         public int SourceNumber { get; set; }
@@ -247,7 +246,6 @@ namespace DDAS.Models.Entities.Domain
 
     public class MatchedRecordsPerSite
     {
-
         public int Matched { get; set; }
         public int IssueNumber { get; set; }
         public int RowNumber { get; set; }
@@ -292,14 +290,29 @@ namespace DDAS.Models.Entities.Domain
     //Patrick 27Nov2016
     public class Finding
     {
-        public int SiteSourceId { get; set; }
+        //Patrick 04Dec2016:
+        //public int SiteSourceId { get; set; }
+        
+        //Pradeep 2Dec2016
+        public SiteEnum SiteEnum { get; set; }
+
         public int InvestigatorSearchedId { get; set; }
         public int MatchCount { get; set; }
         public int RowNumberInSource { get; set; }
         public string Observation { get; set; }
         public string RecordDetails { get; set; }
+        //???:
         public string Status { get; set; }
+        ////Patrick 04Dec2016: no longer required, can be deleted.
         public string HiddenStatus { get; set; }
+        
+        //Patrick 04Dec2016 added:
+        public bool Selected { get; set; }
+        public bool IsMatchedRecord { get; set; }
+        public int SourceNumber { get; set; }
+        public DateTime DateOfInspection { get; set; }
+        public string InvestigatorName { get; set; }
+
     }
     #endregion
 

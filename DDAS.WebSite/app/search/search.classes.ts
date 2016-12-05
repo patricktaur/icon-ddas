@@ -247,17 +247,21 @@ export class SearchList{
         IsMandatory: boolean = true;  //temp
     }  
 
-   
-   
     export class Finding{
-        SiteSourceId: number;
+        SiteEnum: number;
         InvestigatorSearchedId: number;
-        Matched : number;
+        MatchCount : number;
         RowNumberInSource : number;
         Observation: string;
         RecordDetails : string;
         Status : string;
-        HiddenStatus : string;
+        HiddenStatus : string = "";
+        Selected: boolean = false;
+        UISelected: boolean = false;
+        IsMatchedRecord: boolean;
+        SourceNumber: number;
+        DateOfInspection: Date;
+        InvestigatorName: string;
     }
   
      

@@ -346,8 +346,6 @@ Entry on 28 Oct 2016
    For each name, a compliance form is to be generated.
 3. Need to use OpenXml to create word document (compliance form) on the server for each Search name.
   
-<<<<<<< HEAD
-=======
 -----------------------------------------------------------------------------------------------------------
 Entry on 2 Nov 2016
 1. Able to Create the Compliance From structure
@@ -383,8 +381,7 @@ Entry on 10 Nov 2016
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 11 Nov 2016
-1. Able to test 8 sites in the local machine. 
-   Extractor was run on the server.
+1. Able to test 8 sites in the local machine. Extractor was run on the server.
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 12 Nov 2016
@@ -420,6 +417,11 @@ Entry on 18 Nov 2016
    need to build logic to match the initials as well.
 
 -----------------------------------------------------------------------------------------------------------
+Entry on 19 Nov 2016
+1. Changing the logic to match the initials as well but names not related to the search names are being
+   matched. Need to discuss on initials with clients
+
+-----------------------------------------------------------------------------------------------------------
 Entry on 21 Nov 2016
 1. Able to generate and download the compliance form in word document by adding findings and issues
 2. Demo on DDAS tool functionality to upload a set of search names and get the results, review and add
@@ -433,7 +435,6 @@ Entry on 22 Nov 2016
 1. Able to extract the data from the site which fails the live search. User will be provided with a button
    to reload the site or sites which fail to load due to WebDriveTimeOutException or any other exception
    caused during the search
-<<<<<<< HEAD
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 23 Nov 2016

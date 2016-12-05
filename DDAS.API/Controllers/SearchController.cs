@@ -26,7 +26,7 @@ namespace DDAS.API.Controllers
     public class SearchController : ApiController
     {
         private ISearchEngine _SearchEngine;
-        private ISearchService _SearchSummary;
+        private ISearchSummary _SearchSummary;
         private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
         private ILog _log;
@@ -37,7 +37,7 @@ namespace DDAS.API.Controllers
         private string UploadFolder =
             System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
-        public SearchController(ISearchEngine search, ISearchService SearchSummary,
+        public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
         {
             _SearchEngine = search;
@@ -123,7 +123,6 @@ namespace DDAS.API.Controllers
             return Ok();
         }
         #endregion
-
 
         [Route("Upload")]
         [HttpPost]
@@ -246,12 +245,13 @@ namespace DDAS.API.Controllers
             //_log.LogStart();
             //try
             //{
-            if (formId.Length == 0)
+            if (formId == null)
             {
                 return Ok(_SearchSummary.GetNewComplianceForm(_log));
             }
             else
             {
+
                 Guid? gFormId = Guid.Parse(formId);
                 var compForm = _UOW.ComplianceFormRepository.FindById(gFormId);
                 if (compForm == null)
@@ -262,21 +262,9 @@ namespace DDAS.API.Controllers
                 {
                     return Ok(compForm);
                 }
-                
-                //return Ok(_UOW.ComplianceFormRepository.FindById(formId));
+   
+
             }
-           
-            //}
-            //catch (Exception e)
-            //{
-            //    _log.WriteLog("ErrorMessage: " + e.ToString());
-            //    return InternalServerError(e);
-            //}
-            //finally
-            //{
-            //    _log.WriteLog("=================================================================================");
-            //    _log.LogEnd();
-            //}
         }
 
         [Route("SaveComplianceForm")]
@@ -486,9 +474,42 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
+
+        //3Dec2016
         [Route("DownloadComplianceForm")]
         [HttpGet]
-        public HttpResponseMessage GetTestFile()
+        public HttpResponseMessage DownloadForm(string ComplianceFormId = null)
+        {
+            HttpResponseMessage result = null;
+
+            if (ComplianceFormId == null)
+            {
+                result = Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+            else
+            {
+                // Serve the file to the client
+                result = Request.CreateResponse(HttpStatusCode.OK);
+                var form = _SearchSummary.GenerateComplianceForm(Guid.Parse(ComplianceFormId));
+
+                result.Content = new ByteArrayContent(form.ToArray());
+
+                result.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(
+                    "application/vnd.ms-word");
+                    
+                result.Content.Headers.ContentDisposition.FileName = "Compliance Form.docx";
+            }
+            return result;
+        }
+
+
+        //Not required
+        [Route("TestDownload")]
+        [HttpGet]
+        public HttpResponseMessage DownloadComplianceForm()
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
@@ -501,8 +522,13 @@ namespace DDAS.API.Controllers
             {
                 // Serve the file to the client
                 result = Request.CreateResponse(HttpStatusCode.OK);
-                result.Content = new StreamContent(new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+
+                result.Content = new StreamContent(
+                    new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+
+                result.Content.Headers.ContentDisposition = 
+                    new ContentDispositionHeaderValue("attachment");
+
                 result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
             }
             return result;
