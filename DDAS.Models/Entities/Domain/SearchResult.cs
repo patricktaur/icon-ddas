@@ -177,8 +177,6 @@ namespace DDAS.Models.Entities.Domain
         public DateTime SearchStartedOn { get; set; }
     }
 
-    
-
     public class InvestigatorSearched
     {
         public int Id { get; set; }
@@ -195,7 +193,6 @@ namespace DDAS.Models.Entities.Domain
 
         public bool Deleted { get; set; }
         public List<SiteSearchStatus> SitesSearched { get; set; }
-
     }
 
     //Patrick 01Dec2016 - new props added:
@@ -260,8 +257,6 @@ namespace DDAS.Models.Entities.Domain
         public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
     }
-
-    
 
     public class SiteSource
     {
