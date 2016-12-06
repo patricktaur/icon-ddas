@@ -20,6 +20,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             _FDADebarPageSiteData = new FDADebarPageSiteData();
             _FDADebarPageSiteData.RecId = Guid.NewGuid();
+            _FDADebarPageSiteData.Source = driver.Url;
             //SaveScreenShot("abc.png");
         }
 
@@ -57,7 +58,6 @@ namespace WebScraping.Selenium.Pages
             _FDADebarPageSiteData.CreatedBy = "patrick";
             _FDADebarPageSiteData.SiteLastUpdatedOn = DateTime.Now;
             _FDADebarPageSiteData.CreatedOn = DateTime.Now;
-            _FDADebarPageSiteData.Source = driver.Url;
 
             int RowCount = 1;
             foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))

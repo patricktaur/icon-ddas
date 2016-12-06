@@ -30,6 +30,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _SDNSiteData = new SpeciallyDesignatedNationalsListSiteData();
             _SDNSiteData.RecId = Guid.NewGuid();
+            _SDNSiteData.Source = driver.Url;
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
 

@@ -24,6 +24,7 @@ namespace WebScraping.Selenium.Pages
             _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
             _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
             SavePageImage();
+            _adequateAssuranceListSiteData.Source = driver.Url;
             //SaveScreenShot("AdequateAssuranceListPage.png");
         }
 
@@ -55,7 +56,6 @@ namespace WebScraping.Selenium.Pages
         {
             _adequateAssuranceListSiteData.CreatedOn = DateTime.Now;
             _adequateAssuranceListSiteData.CreatedBy = "Patrick";
-            _adequateAssuranceListSiteData.Source = driver.Url;
 
             int RowCount = 1;
             foreach(IWebElement TR in 

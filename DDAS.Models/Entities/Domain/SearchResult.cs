@@ -179,6 +179,11 @@ namespace DDAS.Models.Entities.Domain
 
     public class InvestigatorSearched
     {
+        public InvestigatorSearched()
+        {
+            SitesSearched = new List<SiteSearchStatus>();
+        }
+
         public int Id { get; set; }
         public int DisplayPosition { get; set; }
         public string Name { get; set; }
@@ -280,7 +285,8 @@ namespace DDAS.Models.Entities.Domain
     //Patrick 27Nov2016
     public class Finding
     {
-        public int SiteSourceId { get; set; }
+        //Patrick 04Dec2016:
+        //public int SiteSourceId { get; set; }
         
         //Pradeep 2Dec2016
         public SiteEnum SiteEnum { get; set; }
@@ -290,8 +296,18 @@ namespace DDAS.Models.Entities.Domain
         public int RowNumberInSource { get; set; }
         public string Observation { get; set; }
         public string RecordDetails { get; set; }
-        public string Status { get; set; }
+        //???:
+        public bool IsAnIssue { get; set; }
+        ////Patrick 04Dec2016: no longer required, can be deleted.
         public string HiddenStatus { get; set; }
+        
+        //Patrick 04Dec2016 added:
+        public bool Selected { get; set; }
+        public bool IsMatchedRecord { get; set; }
+        public int SourceNumber { get; set; }
+        public DateTime DateOfInspection { get; set; }
+        public string InvestigatorName { get; set; }
+        public DateTime DateOfAction { get; set; }
     }
     #endregion
 

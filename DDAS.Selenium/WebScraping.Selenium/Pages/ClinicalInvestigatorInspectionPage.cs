@@ -27,6 +27,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
             _clinicalSiteData.RecId = Guid.NewGuid();
+            _clinicalSiteData.Source = driver.Url;
             //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
 
@@ -81,7 +82,6 @@ namespace WebScraping.Selenium.Pages
             _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
             _clinicalSiteData.CreatedBy = "Patrick";
             _clinicalSiteData.CreatedOn = DateTime.Now;
-            _clinicalSiteData.Source = driver.Url;
 
             int RowNumber = 1;
 

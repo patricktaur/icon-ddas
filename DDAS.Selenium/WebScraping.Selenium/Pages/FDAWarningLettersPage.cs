@@ -18,6 +18,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             Open();
             _FDAWarningSiteData = new FDAWarningLettersSiteData();
+            _FDAWarningSiteData.Source = driver.Url;
         }
 
         public override string Url {
@@ -87,7 +88,6 @@ namespace WebScraping.Selenium.Pages
             _FDAWarningSiteData.CreatedBy = "Patrick";
             _FDAWarningSiteData.SiteLastUpdatedOn = DateTime.Now;
             _FDAWarningSiteData.CreatedOn = DateTime.Now;
-            _FDAWarningSiteData.Source = driver.Url;
 
             IList<IWebElement> TR = FDASortTable.FindElements(By.XPath("//tbody/tr"));
 

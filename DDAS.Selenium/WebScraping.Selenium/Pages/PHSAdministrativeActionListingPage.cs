@@ -23,6 +23,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
             _PHSAdministrativeSiteData.RecId = Guid.NewGuid();
+            _PHSAdministrativeSiteData.Source = driver.Url;
         }
 
         public override SiteEnum SiteName {
@@ -52,7 +53,6 @@ namespace WebScraping.Selenium.Pages
             _PHSAdministrativeSiteData.CreatedBy = "Patrick";
             _PHSAdministrativeSiteData.SiteLastUpdatedOn = DateTime.Now;
             _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
-            _PHSAdministrativeSiteData.Source = driver.Url;
 
             IList<IWebElement> TRs = PHSTable.FindElements(By.XPath("//tbody/tr"));
 

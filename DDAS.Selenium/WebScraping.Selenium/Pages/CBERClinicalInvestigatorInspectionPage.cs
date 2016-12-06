@@ -20,6 +20,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
             _CBERSiteData.RecId = Guid.NewGuid();
+            _CBERSiteData.Source = driver.Url;
             //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
 
@@ -73,7 +74,6 @@ namespace WebScraping.Selenium.Pages
             _CBERSiteData.CreatedBy = "patrick";
             _CBERSiteData.SiteLastUpdatedOn = DateTime.Now;
             _CBERSiteData.CreatedOn = DateTime.Now;
-            _CBERSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in 
                 CBERClinicalInvestigatorTable.FindElements(By.XPath("tbody/tr")))

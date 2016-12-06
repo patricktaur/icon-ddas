@@ -82,6 +82,7 @@ namespace DDAS.Services.Search
 
                 var siteSourceToAdd = new SiteSource();
 
+
                 if (site.ExtractionMode.ToLower() == "db")
                     //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
                     siteScan = ScanData.GetSiteScanData(site.SiteEnum, "", log);
@@ -90,12 +91,16 @@ namespace DDAS.Services.Search
                 {
                     siteSourceToAdd.DataExtractedOn = siteScan.DataExtractedOn;
                     siteSourceToAdd.SiteSourceUpdatedOn = siteScan.SiteLastUpdatedOn;
+                    //Patrick Is this required?
                     siteSourceToAdd.SiteDataId = siteScan.DataId; 
                 }
 
+                siteSourceToAdd.CreatedOn = DateTime.Now;
+                //The Id and DisplayPosition are identical when form is created.
+                //DisplayPosition may change at the client side.
                 siteSourceToAdd.Id = SrNo;
-                //siteSourceToAdd.DataExtractedOn = xxxx; required
-                //siteSourceToAdd.SiteSourceUpdatedOn = xxxx; required
+                siteSourceToAdd.DisplayPosition = SrNo;
+              
                 siteSourceToAdd.SiteEnum = site.SiteEnum;
                 siteSourceToAdd.SiteUrl = site.SiteUrl;
                 siteSourceToAdd.SiteName = site.SiteName;
@@ -103,11 +108,11 @@ namespace DDAS.Services.Search
                 siteSourceToAdd.IsMandatory = site.Mandatory;
                 siteSourceToAdd.IsOptional = site.IsOptional;
                 siteSourceToAdd.ExtractionMode = site.ExtractionMode;
+                siteSourceToAdd.Deleted = false;
 
                 compForm.SiteSources.Add(siteSourceToAdd);
             }
         }
-
 
         public ComplianceForm GetSearchSummary(ComplianceForm form, ILog log)
         {
@@ -1314,10 +1319,12 @@ namespace DDAS.Services.Search
             //Check and Search if required:
             AddMatchingRecords(frm, log);
 
+
             if(frm.RecId != null)
                 _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
             else
                 _UOW.ComplianceFormRepository.Add(frm); //Insert
+
 
             return frm;
         }
@@ -1363,6 +1370,64 @@ namespace DDAS.Services.Search
             return retList;
         }
 
+        public InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId)
+        {
+            Guid gCompFormId = Guid.Parse(compFormId);
+            var compForm = _UOW.ComplianceFormRepository.FindById(gCompFormId);
+            if (compForm == null)
+            {
+                return null;
+            }
+            else
+            {
+                return getInvestigatorSiteSummary(compForm, InvestigatorId);
+            }
+         }
+
+        public InvestigatorSearched getInvestigatorSiteSummary(ComplianceForm compForm, int InvestigatorId)
+        {
+            InvestigatorSearched retInv = new InvestigatorSearched();
+            // inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
+            InvestigatorSearched invInCompForm = 
+                compForm.InvestigatorDetails.Find(
+                x => x.Id == InvestigatorId);
+
+            if (invInCompForm == null)
+            {
+                return null;
+            }
+            //?? for manual sites ???
+            foreach (SiteSource site in compForm.SiteSources)
+            {
+                var searchStatus = new SiteSearchStatus();
+
+                searchStatus.siteEnum = site.SiteEnum;
+                searchStatus.SiteUrl = site.SiteUrl;
+                searchStatus.SiteName = site.SiteName;
+
+                var searchStatusInCompForm = 
+                    invInCompForm.SitesSearched.Find(
+                    x => x.siteEnum == site.SiteEnum);
+
+                if (searchStatusInCompForm == null)
+                {
+                    searchStatus.ExtractionErrorMessage = "Site not searched";
+                }
+                else
+                {
+                    searchStatus.FullMatchCount = searchStatusInCompForm.FullMatchCount;
+                    searchStatus.IssuesFound = searchStatusInCompForm.IssuesFound;
+                    searchStatus.PartialMatchCount = searchStatusInCompForm.PartialMatchCount;
+                    searchStatus.ReviewCompleted = searchStatusInCompForm.ReviewCompleted;
+
+                }
+
+                retInv.SitesSearched.Add(searchStatus);
+            }
+
+            return retInv;
+        }
+
         public ComplianceForm UpdateFindings(ComplianceForm form)
         {
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
@@ -1377,18 +1442,28 @@ namespace DDAS.Services.Search
                         x => x.SiteEnum == searchStatus.siteEnum).ToList();
 
                     int IssuesFound = 0;
-
+                    int InvId = 0;
                     foreach(Finding Finding in Findings)
                     {
-                        if (Finding != null && Finding.Status != null 
-                            && Finding.Status.ToLower() == "approve" && 
+                        if (Finding != null && Finding.IsAnIssue &&
                             Finding.InvestigatorSearchedId == Investigator.Id)
                         {
+                            InvId = Finding.InvestigatorSearchedId;
                             IssuesFound += 1;
                             searchStatus.IssuesFound = IssuesFound;
                         }
                     }
                     Investigator.TotalIssuesFound += IssuesFound;
+
+                    var Site = form.SiteSources.Find
+                        (x => x.SiteEnum == searchStatus.siteEnum);
+
+                    //if (Investigator.TotalIssuesFound > 0)
+                    //    Site.IssuesIdentified = true;
+                    if(IssuesFound > 0 && Investigator.Id == InvId)
+                        Site.IssuesIdentified = true;
+                    //else
+                    //    Site.IssuesIdentified = false;
                 }
             }
             return form;
@@ -1431,18 +1506,24 @@ namespace DDAS.Services.Search
 
                             //To-Do: convert matchedRecords to Findings
 
+
                             inv.Id = InvestigatorId;
+
 
                             foreach (MatchedRecord rec in matchedRecords)
                             {
                                 var finding = new Finding();
                                 finding.MatchCount = rec.MatchCount;
                                 finding.InvestigatorSearchedId = inv.Id;
-                                finding.SiteSourceId = site.Id;
+                                finding.SourceNumber = site.DisplayPosition;
                                 finding.SiteEnum = site.SiteEnum; //Pradeep 2Dec2016
                                 finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
 
+                                //Patrick 04Dec2016
+                                finding.IsMatchedRecord = true;
+                                finding.DateOfInspection = site.SiteSourceUpdatedOn;
+                                finding.InvestigatorName = inv.Name;
                                 frm.Findings.Add(finding);
                             }
 
@@ -1481,6 +1562,9 @@ namespace DDAS.Services.Search
                 }
             }
             frm.SiteSources.RemoveAll(x => x.Deleted == true);
+
+            //findings -  Delete Source = site and selected = false, manual is set on the client side
+            frm.Findings.RemoveAll(x => x.IsMatchedRecord == false && x.Selected == false);
         }
 
         public List<MatchedRecord> GetMatchedRecords(SiteSource site, 

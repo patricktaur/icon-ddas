@@ -18,6 +18,7 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _SAMSiteData.Source = driver.Url;
         }
 
         public override SiteEnum SiteName {
@@ -50,7 +51,6 @@ namespace WebScraping.Selenium.Pages
             _SAMSiteData.CreatedBy = "Patrick";
             _SAMSiteData.CreatedOn = DateTime.Now;
             _SAMSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _SAMSiteData.Source = driver.Url;
 
             int RowNumber = 1;
 

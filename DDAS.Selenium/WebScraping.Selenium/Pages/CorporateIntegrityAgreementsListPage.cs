@@ -20,6 +20,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _CIASiteData = new CorporateIntegrityAgreementListSiteData();
             _CIASiteData.RecId = Guid.NewGuid();
+            _CIASiteData.Source = driver.Url;
         }
 
         public override SiteEnum SiteName {
@@ -49,7 +50,6 @@ namespace WebScraping.Selenium.Pages
             _CIASiteData.CreatedBy = "patrick";
             _CIASiteData.SiteLastUpdatedOn = DateTime.Now;
             _CIASiteData.CreatedOn = DateTime.Now;
-            _CIASiteData.Source = driver.Url;
 
             IList<IWebElement> TRs = CIAListTable.FindElements(By.XPath("//tbody/tr"));
 
