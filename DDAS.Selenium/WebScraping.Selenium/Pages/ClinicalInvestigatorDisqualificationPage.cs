@@ -31,11 +31,16 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override SiteEnum SiteName
-        {
-            get
-            {
+        public override SiteEnum SiteName {
+            get {
                 return SiteEnum.ClinicalInvestigatorDisqualificationPage;
+            }
+        }
+
+        public ClinicalInvestigatorDisqualificationSiteData 
+            DisqualificationSiteData {
+            get {
+                return _DisqualificationSiteData;
             }
         }
 

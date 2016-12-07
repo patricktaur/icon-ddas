@@ -50,6 +50,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DummyLog.cs" />
     <Compile Include="ExportList.cs" />
     <Compile Include="LogText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

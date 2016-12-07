@@ -33,6 +33,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public FDAWarningLettersSiteData FDADebarSiteData {
+            get {
+                return _FDAWarningSiteData;
+            }
+        }
+
         public override IEnumerable<SiteDataItemBase> SiteData
         {
             get
@@ -127,7 +133,6 @@ namespace WebScraping.Selenium.Pages
                     }
                 }
                 _FDAWarningSiteData.DataExtractionSucceeded = true;
-                //throw new Exception("Testing process flow!");
             }
             catch (Exception e)
             {

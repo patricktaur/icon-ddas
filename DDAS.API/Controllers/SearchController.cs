@@ -9,15 +9,12 @@ using Microsoft.AspNet.Identity;
 using System.Net.Http;
 using System.Net;
 using System.Diagnostics;
-
 using System.IO;
 using System.Threading.Tasks;
 using Utilities;
 using System.Net.Http.Headers;
-
 using DDAS.Services.Search;
 using System.Collections.Generic;
-using System.Web;
 
 
 namespace DDAS.API.Controllers
@@ -38,12 +35,12 @@ namespace DDAS.API.Controllers
             System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
-            IUnitOfWork uow, ILog log, ISiteSummary SiteSummary)
+            IUnitOfWork uow, ISiteSummary SiteSummary)
         {
             _SearchEngine = search;
             _SearchSummary = SearchSummary;
             _UOW = uow;
-            _log = new LogText(DataExtractionLogFile);
+            _log = new DummyLog(); //Need to refactor
             _SiteSummary = SiteSummary;
         }
 
@@ -225,17 +222,7 @@ namespace DDAS.API.Controllers
                     getInvestigatorSiteSummary(formId, investigatorId));
         }
 
-
         #region Patrick
-        //Patrick:27Nov2016
-
-        //[Route("PrincipalInvestigators")]
-        //[HttpGet]
-        //public IHttpActionResult PrincipalInvestigators()  
-        //{
-        //    return Ok(_SearchSummary.getPrincipalInvestigatorNComplianceFormDetails());
-
-        //}
 
         [Route("GetComplianceFormA")]
         [HttpGet]
@@ -251,7 +238,6 @@ namespace DDAS.API.Controllers
             }
             else
             {
-
                 Guid? gFormId = Guid.Parse(formId);
                 var compForm = _UOW.ComplianceFormRepository.FindById(gFormId);
                 if (compForm == null)
@@ -262,8 +248,6 @@ namespace DDAS.API.Controllers
                 {
                     return Ok(compForm);
                 }
-   
-
             }
         }
 
@@ -284,11 +268,7 @@ namespace DDAS.API.Controllers
             _log.LogEnd();
             return Ok(result);
         }
-
-      
-
         #endregion
-
 
         //Called by Angular single name search.
         [Route("GetComplianceForm")]
@@ -474,7 +454,6 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
-
         //3Dec2016
         [Route("DownloadComplianceForm")]
         [HttpGet]
@@ -504,7 +483,6 @@ namespace DDAS.API.Controllers
             }
             return result;
         }
-
 
         //Not required
         [Route("TestDownload")]

@@ -22,7 +22,8 @@ namespace WebScraping.Selenium.SearchEngine
         {
             _uow = uow;
         }
-        
+
+        #region To be deleted
         public SearchResult SearchByName(SearchQuery searchQuery)
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -51,9 +52,10 @@ namespace WebScraping.Selenium.SearchEngine
                 PageObject.SaveData();
                 return true;
         }
+        #endregion
 
         #region Load
-        
+
         public void Load(string NameToSearch, string DownloadFolder, ILog log) //LoadAll
         {
             var query = SearchSites.GetNewLiveSiteSearchQuery();
@@ -61,7 +63,8 @@ namespace WebScraping.Selenium.SearchEngine
             log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
-                Load(site.SiteEnum, NameToSearch, DownloadFolder, log);
+                if(site.ExtractionMode.ToLower() == "db")
+                    Load(site.SiteEnum, NameToSearch, DownloadFolder, log);
             }
         }
 
@@ -77,8 +80,6 @@ namespace WebScraping.Selenium.SearchEngine
                 catch (WebDriverTimeoutException e)
                 {
                     throw new Exception(e.ToString());
-                    //log.WriteLog("Error while extracting data from site: " + site.SiteEnum +
-                    //    " Error Details: " + e.ToString());
                 }
             }
         }

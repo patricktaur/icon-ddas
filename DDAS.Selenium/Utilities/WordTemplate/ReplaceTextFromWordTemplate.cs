@@ -69,8 +69,6 @@ namespace Utilities.WordTemplate
                     {
                         int RowIndex = 1;
 
-                        //UpdateTable(HeaderTable, 2, 1, Investigator.Name); //Add SI
-
                         SIs[ArrayIndex] = Investigator.Name;
 
                         foreach (SiteSearchStatus Site in Investigator.SitesSearched)
@@ -93,13 +91,14 @@ namespace Utilities.WordTemplate
                                     Finding.Selected && 
                                     Investigator.Id == Finding.InvestigatorSearchedId)
                                 {
-                                    //CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex - 1, true);
                                     //Add Observation
-                                    AddFindings(FindingsTable, RowIndex.ToString(),
+                                    AddFindings(
+                                        FindingsTable, 
+                                        RowIndex.ToString(),
+                                        Finding.InvestigatorName,
                                         DateTime.Now,
                                         Finding.Observation);
                                 }
-                                //CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex - 1, false);
                             }
                             RowIndex += 1;
                         }
@@ -152,11 +151,8 @@ namespace Utilities.WordTemplate
             var SourceNumberCell = CellWithVerticalAlign(); //new TableCell();
 
             var paragraph = ParagraphWithCenterAlign();
-            //var paragraphProperties = new ParagraphProperties();
-            //var justification = new Justification() { Val = JustificationValues.Center };
 
             paragraph.Append(new Run(new Text(SourceNumber)));
-            //paragraphProperties.Append(justification);
 
             SourceNumberCell.Append(paragraph);
 
@@ -166,9 +162,6 @@ namespace Utilities.WordTemplate
 
             SourceNameParagraph.Append(new Run(new Text(SourceName)));
             SourceNameCell.Append(SourceNameParagraph);
-
-            //SourceNameCell.Append(new Paragraph(new Run(new Text(
-            //    SourceName))));
 
             var SourceDateCell = CellWithVerticalAlign(); //new TableCell();
 
@@ -212,24 +205,54 @@ namespace Utilities.WordTemplate
             }
         }
 
-        public void AddFindings(Table table, string SourceNumber, DateTime DateOfInspection,
+        public void AddFindings(Table table, string SourceNumber, 
+            string InvestigatorName, DateTime DateOfInspection, 
             string DescriptionOfFindings)
         {
             var tr = new TableRow();
 
-            var SourceTableCell = new TableCell();
-            SourceTableCell.Append(new Paragraph(new Run(new Text(
-                SourceNumber))));
+            var SourceNumberCell = CellWithVerticalAlign(); //new TableCell();
+            var paragraph = ParagraphWithCenterAlign();
 
-            var DateTableCell = new TableCell();
-            DateTableCell.Append(new Paragraph(new Run(new Text(
-                DateOfInspection.ToShortDateString()))));
+            paragraph.Append(
+                new Run(
+                    new Text(
+                        SourceNumber)));
 
-            var FindingsTableCell = new TableCell();
-            FindingsTableCell.Append(new Paragraph(new Run(new Text(
-                DescriptionOfFindings))));
+            SourceNumberCell.Append(paragraph);
 
-            tr.Append(SourceTableCell, DateTableCell, FindingsTableCell);
+            var InvestigatorNameCell = CellWithVerticalAlign();
+            var InvestigatorNameParagraph = ParagraphWithCenterAlign();
+
+            InvestigatorNameParagraph.Append(
+                new Run(
+                    new Text(
+                        InvestigatorName)));
+
+            InvestigatorNameCell.Append(InvestigatorNameParagraph);
+
+
+            var DateOfInspectionCell = CellWithVerticalAlign(); //new TableCell();
+            var DateOfInspectionParagraph = ParagraphWithCenterAlign();
+
+            DateOfInspectionParagraph.Append(
+                new Run(
+                    new Text(
+                        DateOfInspection.ToShortDateString())));
+
+            DateOfInspectionCell.Append(DateOfInspectionParagraph);
+
+            var FindingsCell = CellWithVerticalAlign(); //new TableCell();
+            var FindingsParagraph = ParagraphWithCenterAlign();
+
+            FindingsParagraph.Append(
+                new Run(
+                    new Text(
+                    DescriptionOfFindings)));
+
+            FindingsCell.Append(FindingsParagraph);
+
+            tr.Append(SourceNumberCell, DateOfInspectionCell, FindingsCell);
             table.Append(tr);
         }
 

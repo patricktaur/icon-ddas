@@ -1246,6 +1246,11 @@ namespace DDAS.Services.Search
             return Regex.Replace(Name, "[,.]", "");
         }
 
+        public string AddSpaceBetweenWords(string Name)
+        {
+            string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
+            return res;
+        }
 
         #region ByPradeep
         //Pradeep 1Dec2016
@@ -1324,7 +1329,6 @@ namespace DDAS.Services.Search
                 _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
             else
                 _UOW.ComplianceFormRepository.Add(frm); //Insert
-
 
             return frm;
         }
@@ -1458,12 +1462,8 @@ namespace DDAS.Services.Search
                     var Site = form.SiteSources.Find
                         (x => x.SiteEnum == searchStatus.siteEnum);
 
-                    //if (Investigator.TotalIssuesFound > 0)
-                    //    Site.IssuesIdentified = true;
                     if(IssuesFound > 0 && Investigator.Id == InvId)
                         Site.IssuesIdentified = true;
-                    //else
-                    //    Site.IssuesIdentified = false;
                 }
             }
             return form;
@@ -1487,7 +1487,8 @@ namespace DDAS.Services.Search
                             inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
                     }
                         
-                    if (searchStatus == null || searchStatus.HasExtractionError == true)
+                    if (!site.IsOptional &&
+                        searchStatus == null || searchStatus.HasExtractionError == true)
                     {
                         if (searchStatus == null)
                         {
@@ -1582,7 +1583,7 @@ namespace DDAS.Services.Search
 
                 //case SiteEnum.FDAWarningLettersPage:
                 //    return GetFDAWarningLettersPageMatchedRecords(site.SiteDataId,
-                //        NameToSearch, searchStatus);
+                //        NameToSearch, searchStatus, log);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetERRProposalToDebarPageMatchedRecords(site.SiteDataId,
@@ -1716,14 +1717,15 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
-            string NameToSearch, SiteSearchStatus searchStatus)
+            string NameToSearch, SiteSearchStatus searchStatus, ILog log)
         {
-            //var ScanData = new SiteScanData(_UOW, _SearchEngine);
-            //var siteScan = ScanData.GetSiteScanData(SiteEnum.FDAWarningLettersPage, NameToSearch,
-            //    log);
+            var ScanData = new SiteScanData(_UOW, _SearchEngine);
+            var siteScan = ScanData.GetSiteScanData(SiteEnum.FDAWarningLettersPage, 
+                NameToSearch, log);
 
             FDAWarningLettersSiteData FDAWarningSearchResult =
                 _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
+ 
 
             UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
 

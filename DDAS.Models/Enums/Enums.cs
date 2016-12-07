@@ -13,6 +13,25 @@
         ExclusionDatabaseSearchPage,
         CorporateIntegrityAgreementsListPage,
         SystemForAwardManagementPage,
-        SpeciallyDesignedNationalsListPage
+        SpeciallyDesignedNationalsListPage,
+        
+        //Pradeep 7Dec2016
+        //Manual sites
+        AustralianHealthPratitionerRegulationPage,
+        ZoekEenArtsPage,
+        RizivZoekenPage,
+        ConselhosDeMedicinaPage,
+        TribunalNationalDeEticaMedicaPage,
+        ValviraPage,
+        ConseilNationalDeMedecinsPage,
+        MedicalCouncilOfIndiaPage,
+        MinistryOfHealthIsraelPage,
+        ListOfRegisteredDoctorsPage,
+        NaczelnaIzbaLekarskaPage,
+        PortalOficialDaOrdemDosMedicosPage,
+        OrganizacionMedicaColegialDeEspanaPage,
+        SingaporeMedicalCouncilPage,
+        SriLankaMedicalCouncilPage,
+        HealthGuideUSAPage
     };
 }

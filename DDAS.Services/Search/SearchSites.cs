@@ -36,6 +36,39 @@ namespace DDAS.Services.Search
                     //new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = false, ExtractionMode = "Live", SiteName="SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName="SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl="https://www.sam.gov/portal/public/SAM" },
 
                     new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = false, ExtractionMode = "DB", SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx" },
+
+                    //Manual sites
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="AUSTRALIAN HEALTH PRACTITIONER REGULATION AGENCY", SiteShortName="HEALTH PRACTITIONER ...", SiteEnum = SiteEnum.AustralianHealthPratitionerRegulationPage, SiteUrl="http://www.ahpra.gov.au/Registration/Registers-of-Practitioners.aspx" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Belgium1 - ZOEK EEN ARTS", SiteShortName="ZOEK EEN ARTS", SiteEnum = SiteEnum.ZoekEenArtsPage, SiteUrl="https://ordomedic.be/nl/zoek-een-arts/" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Belgium2 - RIZIV - Zoeken", SiteShortName="RIZIV - Zoeken", SiteEnum = SiteEnum.RizivZoekenPage, SiteUrl="https://www.riziv.fgov.be/webprd/appl/psilverpages/nl" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Brazil - CONSELHOS DE MEDICINA", SiteShortName="CONSELHOS DE MEDICINA", SiteEnum = SiteEnum.ConselhosDeMedicinaPage, SiteUrl="http://portal.cfm.org.br/index.php?option=com_medicos&Itemid=59" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Colombia - EL TRIBUNAL NACIONAL DE ÉTICA MÉDICA", SiteShortName="EL TRIBUNAL NACIONAL...", SiteEnum = SiteEnum.TribunalNationalDeEticaMedicaPage, SiteUrl="http://www.tribunalnacionaldeeticamedica.org/site/biblioteca_documental" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Finland - VALVIRA", SiteShortName="VALVIRA", SiteEnum = SiteEnum.ValviraPage, SiteUrl="https://julkiterhikki.valvira.fi/" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="France - CONSEIL NATIONAL DE L'ORDRE DES MEDECINS", SiteShortName="CONSEIL NATIONAL DE L'ORDRE...", SiteEnum = SiteEnum.ConseilNationalDeMedecinsPage, SiteUrl="http://www.conseil-national.medecin.fr/annuaire" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="MEDICAL COUNCIL OF INDIA", SiteShortName="MEDICAL COUNSIL OF INDIA", SiteEnum = SiteEnum.MedicalCouncilOfIndiaPage, SiteUrl="http://online.mciindia.org/online//Index.aspx?qstr_level=01" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Israel - MINISTRY OF HEALTH ISRAEL", SiteShortName="MINISTRY OF HEALTH ISRAEL", SiteEnum = SiteEnum.MinistryOfHealthIsraelPage, SiteUrl="http://www.health.gov.il/UnitsOffice/HR/professions/postponements/Pages/default.aspx" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="New Zeland - LIST OF REGISTERED DOCTORS", SiteShortName="LIST OF REGISTERED DOCTORS", SiteEnum = SiteEnum.ListOfRegisteredDoctorsPage, SiteUrl="https://www.mcnz.org.nz/support-for-doctors/list-of-registered-doctors/" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Poland - NACZELNA IZBA LEKARSKA", SiteShortName="NACZELNA IZBA LEKARSKA", SiteEnum = SiteEnum.NaczelnaIzbaLekarskaPage, SiteUrl="http://rejestr.nil.org.pl/xml/nil/rejlek/hurtd" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Portugal - PORTAL OFICIAL DA ORDEM DOS MEDICOS", SiteShortName="PORTAL OFICIAL DA ORDEM...", SiteEnum = SiteEnum.PortalOficialDaOrdemDosMedicosPage, SiteUrl="https://www.ordemdosmedicos.pt/" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="Spain - ORGANIZACION MEDICA COLEGIAL DE ESPANA", SiteShortName="ORGANIZACION MEDICA COLEGIAL...", SiteEnum = SiteEnum.OrganizacionMedicaColegialDeEspanaPage, SiteUrl="http://www.cgcom.es/consultapublicacolegiados" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="SINGAPORE MEDICAL COUNCIL", SiteShortName="SINGAPORE MEDICAL COUNCIL...", SiteEnum = SiteEnum.SingaporeMedicalCouncilPage, SiteUrl="http://www.healthprofessionals.gov.sg/content/hprof/smc/en.html" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="SRI LANKA MEDICAL COUNCIL", SiteShortName="SRI LANKA MEDICAL COUNCIL...", SiteEnum = SiteEnum.SriLankaMedicalCouncilPage, SiteUrl="http://www.srilankamedicalcouncil.org/registry.php" },
+
+                    new SearchQuerySite {Selected = true, Mandatory = true, IsOptional = true, ExtractionMode = "Manual", SiteName="HEALTH GUIDE USA", SiteShortName="HEALTH GUIDE USA", SiteEnum = SiteEnum.HealthGuideUSAPage, SiteUrl="http://www.healthguideusa.org/medical_license_lookup.htm" }
                 }
             };
         }
