@@ -66,5 +66,8 @@ namespace DDAS.Models.Interfaces
         ComplianceForm UpdateFindings(ComplianceForm form);
 
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
+
+        //To be removed
+        string GenerateComplianceFormAlt(Guid? ComplianceFormId);
     }
 }

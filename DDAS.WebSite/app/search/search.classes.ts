@@ -176,6 +176,8 @@ export class SearchList{
       IssueStatus:string="";
       SiteDetails:string="";
      //List<SitesIncludedInSearch> SiteDetails : string = "";
+
+    
     }
 
   
@@ -202,6 +204,9 @@ export class SearchList{
       InvestigatorDetails:InvestigatorSearched[] = [];
       SiteSources : SiteSource[] = [];
       Findings: Finding[] = [];
+
+        //Validations:
+        SearchPending: boolean = true;
     }
 
   export class InvestigatorSearched{
@@ -215,6 +220,9 @@ export class SearchList{
       TotalIssuesFound: number = 0;
       Deleted: boolean = false;
       SitesSearched: SiteSearchStatus[] = [];
+        //---Validations
+        CanEdit:boolean = true;
+      
   }
 
   export class SiteSearchStatus{

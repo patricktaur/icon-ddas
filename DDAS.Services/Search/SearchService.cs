@@ -1296,6 +1296,7 @@ namespace DDAS.Services.Search
         public ComplianceForm GetNewComplianceForm(ILog log)
         {
             ComplianceForm newForm = new ComplianceForm();
+            newForm.SearchStartedOn = DateTime.Now;
             AddMandatorySitesToComplianceForm(newForm, log);
 
             return newForm;
@@ -1308,7 +1309,27 @@ namespace DDAS.Services.Search
 
             var UtilitiesObject = new ReplaceTextFromWordTemplate();
 
-            return UtilitiesObject.ReplaceTextFromWord(form);
+
+            var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
+
+            return UtilitiesObject.ReplaceTextFromWord(form, FileName);
+        }
+
+        public string GenerateComplianceFormAlt(Guid? ComplianceFormId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var UtilitiesObject = new ReplaceTextFromWordTemplate();
+
+            var FileName = @"C:\Development\p926-ddas\DDAS.API\Downloads\";
+
+            var PI = RemoveExtraCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
+
+            FileName += PI + ".docx";
+
+            var stream = UtilitiesObject.ReplaceTextFromWord(form, FileName);
+
+            return @"Downloads\" + PI + ".docx";
         }
 
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
@@ -1362,9 +1383,17 @@ namespace DDAS.Services.Search
                 item.Address = compForm.Address;
                 item.Country = compForm.Country;
                 item.ProjectNumber = compForm.ProjectNumber;
+                item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
                 item.RecId = compForm.RecId;
                 item.SearchStartedOn = compForm.SearchStartedOn;
-                item.PrincipalInvestigator = compForm.InvestigatorDetails.FirstOrDefault().Name;
+                if (compForm.InvestigatorDetails.Count > 0)
+                {
+                    item.PrincipalInvestigator = compForm.InvestigatorDetails.FirstOrDefault().Name;
+                }
+
+                
+                item.Status = "";
+               
 
                 retList.Add(item);
             }

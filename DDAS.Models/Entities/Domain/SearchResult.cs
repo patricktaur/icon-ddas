@@ -163,6 +163,8 @@ namespace DDAS.Models.Entities.Domain
         //Patrick 27NOvb2016
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
+
+
     }
 
     public class PrincipalInvestigatorDetails
@@ -175,6 +177,7 @@ namespace DDAS.Models.Entities.Domain
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
+        public string Status { get; set; }
     }
 
     

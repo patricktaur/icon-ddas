@@ -10,7 +10,7 @@ namespace Utilities.WordTemplate
 {
     public class ReplaceTextFromWordTemplate
     {
-        public MemoryStream ReplaceTextFromWord(ComplianceForm form)
+        public MemoryStream ReplaceTextFromWord(ComplianceForm form, string fileName = "")
         {
             string FilePath = @"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx";
 
@@ -69,25 +69,36 @@ namespace Utilities.WordTemplate
                                     DateTime.Now,
                                     Findings.Observation);
                             }
-                            else
-                                CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, false);
+                            //else
+                            //    CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, false);
 
                             RowIndex += 1;
                         }
                     }
                 }
 
-                var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
+                //var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
 
                 //FileName += "_" + DateTime.Now.ToShortDateString() + ".docx";
+               
+                //Patrick 06Dec2016
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+
+                if ( fileName != null)
+                {
+                    using (FileStream fileStream = new FileStream(fileName,
+                    FileMode.CreateNew))
+                    {
+                        stream.WriteTo(fileStream);
+                    }
+                }
+                var DownloadFolder = @"C:\Development\p926-ddas\DDAS.API\Downloads\ComplianceForm.docx";
+                
 
                 return stream;
-                //using (FileStream fileStream = new FileStream("Test.docx",
-                //FileMode.Open))
-                //{
-                //    stream.WriteTo(fileStream);
-                //    return fileStream;
-                //}
             }
         }
 
