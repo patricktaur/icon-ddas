@@ -263,13 +263,14 @@ export class SearchList{
         Observation: string;
         RecordDetails : string;
         Status : string;
-        HiddenStatus : string = "";
+        //HiddenStatus : string = "";
         Selected: boolean = false;
         UISelected: boolean = false;
         IsMatchedRecord: boolean;
         SourceNumber: number;
         DateOfInspection: Date;
         InvestigatorName: string;
+        IsAnIssue: boolean = false;
     }
   
      

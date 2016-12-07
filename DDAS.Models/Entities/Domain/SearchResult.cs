@@ -180,6 +180,8 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
     }
 
+    
+    //Patrick 03Dec2016 modified.
     public class InvestigatorSearched
     {
         public InvestigatorSearched()
@@ -201,11 +203,13 @@ namespace DDAS.Models.Entities.Domain
 
         public bool Deleted { get; set; }
         public List<SiteSearchStatus> SitesSearched { get; set; }
+
     }
 
     //Patrick 01Dec2016 - new props added:
     public class SiteSearchStatus
     {
+        public int DisplayPosition { get; set; }
         public SiteEnum siteEnum { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
@@ -266,6 +270,8 @@ namespace DDAS.Models.Entities.Domain
         public string RecordDetails { get; set; }
     }
 
+    
+
     public class SiteSource
     {
         public int Id { get; set; }
@@ -300,8 +306,8 @@ namespace DDAS.Models.Entities.Domain
         public string Observation { get; set; }
         public string RecordDetails { get; set; }
         //???:
-        public bool IsAnIssue { get; set; }
-        ////Patrick 04Dec2016: no longer required, can be deleted.
+        public string Status { get; set; }
+        ////Patrick 04Dec2016: no longer required, can be deleted.  Comp Form collection in MOngodB has to be dropped.
         public string HiddenStatus { get; set; }
         
         //Patrick 04Dec2016 added:
@@ -310,7 +316,8 @@ namespace DDAS.Models.Entities.Domain
         public int SourceNumber { get; set; }
         public DateTime DateOfInspection { get; set; }
         public string InvestigatorName { get; set; }
-        public DateTime DateOfAction { get; set; }
+        public bool IsAnIssue { get;  set;}
+
     }
     #endregion
 

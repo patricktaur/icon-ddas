@@ -101,12 +101,7 @@ namespace Utilities.WordTemplate
                                 }
                                 //CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex - 1, false);
                             }
-<<<<<<< HEAD
-                            //else
-                            //    CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, false);
 
-=======
->>>>>>> e6c5afaf7e7ce4ad0a4f6e0c89b59f1e1473bca6
                             RowIndex += 1;
                         }
                         ArrayIndex += 1;
@@ -132,8 +127,7 @@ namespace Utilities.WordTemplate
                         stream.WriteTo(fileStream);
                     }
                 }
-                var DownloadFolder = @"C:\Development\p926-ddas\DDAS.API\Downloads\ComplianceForm.docx";
-                
+                //var DownloadFolder = @"C:\Development\p926-ddas\DDAS.API\Downloads\ComplianceForm.docx";
 
                 return stream;
             }

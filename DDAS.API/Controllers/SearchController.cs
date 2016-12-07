@@ -47,6 +47,7 @@ namespace DDAS.API.Controllers
             _SearchSummary = SearchSummary;
             _UOW = uow;
             _log = new LogText(DataExtractionLogFile);
+
             _SiteSummary = SiteSummary;
         }
 

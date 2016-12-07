@@ -20,6 +20,7 @@ namespace DDAS.Services.Search
             _SearchEngine = SearchEngine;
         }
 
+        //Not used
         public List<SiteScan> GetSiteScanSummary(string NameToSearch, ILog log)
         {
             //need to refactor
@@ -113,7 +114,7 @@ namespace DDAS.Services.Search
         {
             log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 
-            _SearchEngine.Load(Enum, NameToSearch, "", log);
+            _SearchEngine.Load(Enum, NameToSearch, "");
 
             log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
         }

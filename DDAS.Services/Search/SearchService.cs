@@ -188,6 +188,7 @@ namespace DDAS.Services.Search
             return SiteIncludedInSearch;
         }
 
+        //old ?
         public SitesIncludedInSearch GetMatchStatus(SiteEnum Enum, string NameToSearch, 
             Guid? DataId, SitesIncludedInSearch Site)
         {
@@ -1429,11 +1430,11 @@ namespace DDAS.Services.Search
             foreach (SiteSource site in compForm.SiteSources)
             {
                 var searchStatus = new SiteSearchStatus();
-
+                searchStatus.DisplayPosition = site.DisplayPosition;
                 searchStatus.siteEnum = site.SiteEnum;
                 searchStatus.SiteUrl = site.SiteUrl;
                 searchStatus.SiteName = site.SiteName;
-
+                
                 var searchStatusInCompForm = 
                     invInCompForm.SitesSearched.Find(
                     x => x.siteEnum == site.SiteEnum);
@@ -1533,6 +1534,7 @@ namespace DDAS.Services.Search
                             var matchedRecords = GetMatchedRecords(
                                 site, searchStatus, inv.Name, log);
 
+                            
                             //To-Do: convert matchedRecords to Findings
 
 
@@ -1609,9 +1611,9 @@ namespace DDAS.Services.Search
                     return GetClinicalInvestigatorPageMatchedRecords(site.SiteDataId, 
                         NameToSearch, searchStatus);
 
-                //case SiteEnum.FDAWarningLettersPage:
-                //    return GetFDAWarningLettersPageMatchedRecords(site.SiteDataId,
-                //        NameToSearch, searchStatus);
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningLettersPageMatchedRecords(site.SiteDataId,
+                        NameToSearch, searchStatus);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetERRProposalToDebarPageMatchedRecords(site.SiteDataId,
@@ -1751,21 +1753,28 @@ namespace DDAS.Services.Search
             //var siteScan = ScanData.GetSiteScanData(SiteEnum.FDAWarningLettersPage, NameToSearch,
             //    log);
 
-            FDAWarningLettersSiteData FDAWarningSearchResult =
-                _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
+            //FDAWarningLettersSiteData FDAWarningSearchResult =
+            //    _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
 
-            UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
+            _SearchEngine.Load(SiteEnum.FDAWarningLettersPage, NameToSearch, "");
+            var siteData = _SearchEngine.SiteData;
 
-            var FDAWarningLetterList = 
-                FDAWarningSearchResult.FDAWarningLetterList.Where(
-                FDAList => FDAList.Matched > 0).ToList();
+            //UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
+            UpdateMatchStatus(siteData, NameToSearch);  //updates list with match count
 
-            if (FDAWarningLetterList == null)
+            //var FDAWarningLetterList = 
+            //    FDAWarningSearchResult.FDAWarningLetterList.Where(
+            //    FDAList => FDAList.Matched > 0).ToList();
+
+            //if (FDAWarningLetterList == null)
+            //    return null;
+
+            if (siteData == null)
                 return null;
 
-            GetFullAndPartialMatchCount(FDAWarningLetterList, searchStatus, NameToSearch);
+            GetFullAndPartialMatchCount(siteData, searchStatus, NameToSearch);
 
-            return ConvertToMatchedRecords(FDAWarningLetterList);
+            return ConvertToMatchedRecords(siteData);
         }
 
         public List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,
