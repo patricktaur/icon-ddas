@@ -39,15 +39,39 @@ namespace Utilities.WordTemplate
 
                     UpdateTable(HeaderTable, 1, 3, form.Address);
 
-                    var SitesTable = body.Descendants<Table>().ElementAt(2);
+                    var SitesTable = body.Descendants<Table>().ElementAt(1);
 
-                    var FindingsTable = body.Descendants<Table>().ElementAt(3);
+                    var FindingsTable = body.Descendants<Table>().ElementAt(2);
+
+                    string [] SIs = new string[form.InvestigatorDetails.Count];
+
+                    foreach(SiteSource siteSource in form.SiteSources)
+                    {
+                        if(siteSource.IssuesIdentified)
+                        AddSites(
+                            SitesTable,
+                            siteSource.Id.ToString(), 
+                            siteSource.SiteName,
+                            siteSource.SiteSourceUpdatedOn.ToShortDateString(),
+                            siteSource.SiteUrl, "Yes");
+                        else
+                            AddSites(
+                                SitesTable,
+                                siteSource.Id.ToString(),
+                                siteSource.SiteName,
+                                siteSource.SiteSourceUpdatedOn.ToShortDateString(),
+                                siteSource.SiteUrl, "No");
+                    }
+
+                    int ArrayIndex = 0;
 
                     foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
                     {
                         int RowIndex = 1;
 
-                        UpdateTable(HeaderTable, 2, 1, Investigator.Name); //Add SI
+                        //UpdateTable(HeaderTable, 2, 1, Investigator.Name); //Add SI
+
+                        SIs[ArrayIndex] = Investigator.Name;
 
                         foreach (SiteSearchStatus Site in Investigator.SitesSearched)
                         {
@@ -55,26 +79,39 @@ namespace Utilities.WordTemplate
 
                             var Findings = ListOfFindings.Where(
                                 x => x.SiteEnum == Site.siteEnum).
-                                FirstOrDefault();
+                                ToList();
 
                             if (Findings == null)
                                 continue;
 
-                            if (Findings.Status != null &&
-                                Findings.Status.ToLower() == "approve")
+                            foreach(Finding Finding in Findings)
                             {
-                                CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, true);
-                                //Add Observation
-                                AddFindings(FindingsTable, RowIndex.ToString(),
-                                    DateTime.Now,
-                                    Findings.Observation);
+                                var SiteSource = form.SiteSources.Find(x =>
+                                    x.SiteEnum == Site.siteEnum);
+
+                                if (Finding.Observation != null &&
+                                    Finding.Selected && 
+                                    Investigator.Id == Finding.InvestigatorSearchedId)
+                                {
+                                    //CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex - 1, true);
+                                    //Add Observation
+                                    AddFindings(FindingsTable, RowIndex.ToString(),
+                                        DateTime.Now,
+                                        Finding.Observation);
+                                }
+                                //CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex - 1, false);
                             }
+<<<<<<< HEAD
                             //else
                             //    CheckOrUnCheckIssuesIdentified(SitesTable, RowIndex, false);
 
+=======
+>>>>>>> e6c5afaf7e7ce4ad0a4f6e0c89b59f1e1473bca6
                             RowIndex += 1;
                         }
+                        ArrayIndex += 1;
                     }
+                    AddSubInvestigators(HeaderTable, 2, 1, SIs);
                 }
 
                 //var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
@@ -102,29 +139,79 @@ namespace Utilities.WordTemplate
             }
         }
 
-        public void GenerateComplianceForm()
+        public TableCell CellWithVerticalAlign()
         {
+            var tableCell = new TableCell();
+            var SitesTableProperties = new TableCellProperties();
+            var VerticalAlignProperty = new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center };
 
-            byte[] byteArray = File.ReadAllBytes(@"C:\Development\p926-ddas\DDAS.API\App_Data\SITE LIST REQUEST FORM_Updated.docx");
+            SitesTableProperties.Append(VerticalAlignProperty);
+            tableCell.Append(SitesTableProperties);
 
-            using (MemoryStream stream = new MemoryStream())
-            {
-                stream.Write(byteArray, 0, byteArray.Length);
+            return tableCell;
+        }
+        public Paragraph ParagraphWithCenterAlign()
+        {
+            var paragraph = new Paragraph();
+            var paragraphProperties = new ParagraphProperties();
+            var justification = new Justification() { Val = JustificationValues.Center };
 
-                using (WordprocessingDocument doc =
-                   WordprocessingDocument.Open(
-                    stream, true))
-                {
+            paragraphProperties.Append(justification);
+            paragraph.Append(paragraphProperties);
+            return paragraph;
+        }
 
-                }
+        public void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
+            string SourceDate, string WebLink, string IssueIdentified)
+        {
+            var tr = new TableRow();
 
-                using (FileStream fileStream = new FileStream("Test2.docx",
-                FileMode.CreateNew))
-                {
-                    stream.WriteTo(fileStream);
-                }
-            }
-            
+            var SourceNumberCell = CellWithVerticalAlign(); //new TableCell();
+
+            var paragraph = ParagraphWithCenterAlign();
+            //var paragraphProperties = new ParagraphProperties();
+            //var justification = new Justification() { Val = JustificationValues.Center };
+
+            paragraph.Append(new Run(new Text(SourceNumber)));
+            //paragraphProperties.Append(justification);
+
+            SourceNumberCell.Append(paragraph);
+
+            var SourceNameCell = CellWithVerticalAlign(); //new TableCell();
+
+            var SourceNameParagraph = ParagraphWithCenterAlign();
+
+            SourceNameParagraph.Append(new Run(new Text(SourceName)));
+            SourceNameCell.Append(SourceNameParagraph);
+
+            //SourceNameCell.Append(new Paragraph(new Run(new Text(
+            //    SourceName))));
+
+            var SourceDateCell = CellWithVerticalAlign(); //new TableCell();
+
+            var SourceDateParagraph = ParagraphWithCenterAlign();
+
+            SourceDateParagraph.Append(new Run(new Text(SourceDate)));
+            SourceDateCell.Append(SourceDateParagraph);
+
+            var WebLinkCell = CellWithVerticalAlign(); //new TableCell();
+
+            var WebLinkParagraph = ParagraphWithCenterAlign();
+
+            WebLinkParagraph.Append(new Run(new Text(WebLink)));
+            WebLinkCell.Append(WebLinkParagraph);
+
+            var IssueIdentifiedCell = CellWithVerticalAlign(); //new TableCell();
+
+            var IssueIdentifiedParagraph = ParagraphWithCenterAlign();
+
+            IssueIdentifiedParagraph.Append(new Run(new Text(IssueIdentified)));
+            IssueIdentifiedCell.Append(IssueIdentifiedParagraph);
+
+            tr.Append(SourceNumberCell, SourceNameCell, SourceDateCell, WebLinkCell,
+                IssueIdentifiedCell);
+
+            SitesTable.Append(tr);
         }
 
         public void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
@@ -163,6 +250,21 @@ namespace Utilities.WordTemplate
             table.Append(tr);
         }
 
+        public void AddSubInvestigators(Table table, int RowIndex, int CellIndex, string[] SIs)
+        {
+            TableRow Row = table.Elements<TableRow>().ElementAt(RowIndex);
+            TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
+            Paragraph paragraph = Cell.Elements<Paragraph>().First();
+            Run run = paragraph.Elements<Run>().First();
+            Text text = run.Elements<Text>().First();
+            text.Text = null;
+            foreach(string SI in SIs)
+            {
+                run.AppendChild(new Text(SI));
+                run.AppendChild(new Break());
+            }
+        }
+
         public void UpdateTable(Table table, int RowIndex, int CellIndex, 
             string replaceWith)
         {
@@ -171,7 +273,7 @@ namespace Utilities.WordTemplate
             Paragraph paragraph = Cell.Elements<Paragraph>().First();
             Run run = paragraph.Elements<Run>().First();
             Text text = run.Elements<Text>().First();
-            text.Text = null;
+            //text.Text = null;
             text.Text = replaceWith;
         }
 
@@ -181,7 +283,7 @@ namespace Utilities.WordTemplate
             TableRow Row = table.Elements<TableRow>().ElementAt(RowIndex);
             TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
             Paragraph paragraph = Cell.Elements<Paragraph>().First();
-            Run run = paragraph.Elements<Run>().First();
+            //Run run = paragraph.Elements<Run>().First();
             CheckBox chk = paragraph.Descendants<CheckBox>().FirstOrDefault();
             DefaultCheckBoxFormFieldState DefaultStatus =
                 chk.GetFirstChild<DefaultCheckBoxFormFieldState>();

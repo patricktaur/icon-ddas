@@ -114,7 +114,6 @@ namespace DDAS.Services.Search
             }
         }
 
-
         public ComplianceForm GetSearchSummary(ComplianceForm form, ILog log)
         {
             form.Active = true;
@@ -1400,7 +1399,6 @@ namespace DDAS.Services.Search
             return retList;
         }
 
-
         public InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId)
         {
             Guid gCompFormId = Guid.Parse(compFormId);
@@ -1419,7 +1417,10 @@ namespace DDAS.Services.Search
         {
             InvestigatorSearched retInv = new InvestigatorSearched();
             // inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
-            InvestigatorSearched invInCompForm = compForm.InvestigatorDetails.Find(x => x.Id == InvestigatorId);
+            InvestigatorSearched invInCompForm = 
+                compForm.InvestigatorDetails.Find(
+                x => x.Id == InvestigatorId);
+
             if (invInCompForm == null)
             {
                 return null;
@@ -1433,7 +1434,10 @@ namespace DDAS.Services.Search
                 searchStatus.SiteUrl = site.SiteUrl;
                 searchStatus.SiteName = site.SiteName;
 
-                var searchStatusInCompForm = invInCompForm.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
+                var searchStatusInCompForm = 
+                    invInCompForm.SitesSearched.Find(
+                    x => x.siteEnum == site.SiteEnum);
+
                 if (searchStatusInCompForm == null)
                 {
                     searchStatus.ExtractionErrorMessage = "Site not searched";
@@ -1455,25 +1459,6 @@ namespace DDAS.Services.Search
 
         public ComplianceForm UpdateFindings(ComplianceForm form)
         {
-
-            //foreach(Finding Findings in form.Findings)
-            //{
-            //    if (Findings != null && Findings.Status != null &&
-            //        Findings.Status.ToLower() == "approve")
-            //    {
-            //        var Investigator = form.InvestigatorDetails.Where(
-            //            Inv => Inv.Id == Findings.InvestigatorSearchedId).
-            //            FirstOrDefault();
-
-            //        var SearchStatus = Investigator.SitesSearched.Where(
-            //            site => site.siteEnum == Findings.SiteEnum).
-            //            FirstOrDefault();
-
-
-            //    }
-            //}
-
-
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 Investigator.TotalIssuesFound = 0;
@@ -1483,28 +1468,43 @@ namespace DDAS.Services.Search
                     var ListOfFindings = form.Findings;
 
                     var Findings = ListOfFindings.Where(
-                        x => x.SiteEnum == searchStatus.siteEnum);
+                        x => x.SiteEnum == searchStatus.siteEnum).ToList();
 
                     int IssuesFound = 0;
-
-                    //if (Findings != null && Findings.Status != null &&
-                    //    Findings.Status.ToLower() == "approve")
-                    //{
-                    //    IssuesFound += 1;
-                    //    searchStatus.IssuesFound = IssuesFound;
-                    //}
+                    int InvId = 0;
+                    foreach(Finding Finding in Findings)
+                    {
+                        if (Finding != null && Finding.IsAnIssue &&
+                            Finding.InvestigatorSearchedId == Investigator.Id)
+                        {
+                            InvId = Finding.InvestigatorSearchedId;
+                            IssuesFound += 1;
+                            searchStatus.IssuesFound = IssuesFound;
+                        }
+                    }
                     Investigator.TotalIssuesFound += IssuesFound;
+
+                    var Site = form.SiteSources.Find
+                        (x => x.SiteEnum == searchStatus.siteEnum);
+
+                    //if (Investigator.TotalIssuesFound > 0)
+                    //    Site.IssuesIdentified = true;
+                    if(IssuesFound > 0 && Investigator.Id == InvId)
+                        Site.IssuesIdentified = true;
+                    //else
+                    //    Site.IssuesIdentified = false;
                 }
             }
             return form;
-
         }
 
         private void AddMatchingRecords(ComplianceForm frm, ILog log)
         {
+            int InvestigatorId = 1;
+
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
-                var ListOfSiteSearchStatus = new List<SiteSearchStatus>();
+                var ListOfSiteSearchStatus = new List<SiteSearchStatus>();    
 
                 foreach (SiteSource site in frm.SiteSources)
                 {
@@ -1534,6 +1534,9 @@ namespace DDAS.Services.Search
                                 site, searchStatus, inv.Name, log);
 
                             //To-Do: convert matchedRecords to Findings
+
+
+                            inv.Id = InvestigatorId;
 
 
                             foreach (MatchedRecord rec in matchedRecords)
@@ -1570,6 +1573,7 @@ namespace DDAS.Services.Search
                     }
                 }
                 inv.SitesSearched = ListOfSiteSearchStatus;
+                InvestigatorId += 1;
             }
         }
 
@@ -1718,7 +1722,6 @@ namespace DDAS.Services.Search
             //return Site;
 
         }
-
 
         //added on 1Dec2016 Pradeep, Yet to add Live sites below..
 

@@ -23,6 +23,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
             _exclusionSearchSiteData.RecId = Guid.NewGuid();
+            _exclusionSearchSiteData.Source = driver.Url;
             //SaveScreenShot("ExclusionDatabaseSearch.png");
         }
 
@@ -74,7 +75,6 @@ namespace WebScraping.Selenium.Pages
             _exclusionSearchSiteData.CreatedBy = "Patrick";
             _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
             _exclusionSearchSiteData.CreatedOn = DateTime.Now;
-            _exclusionSearchSiteData.Source = driver.Url;
 
             int RowNumber = 1;
             foreach (string Record in AllRecords)

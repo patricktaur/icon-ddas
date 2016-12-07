@@ -180,8 +180,6 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
     }
 
-    
-    //Patrick 03Dec2016 modified.
     public class InvestigatorSearched
     {
         public InvestigatorSearched()
@@ -203,7 +201,6 @@ namespace DDAS.Models.Entities.Domain
 
         public bool Deleted { get; set; }
         public List<SiteSearchStatus> SitesSearched { get; set; }
-
     }
 
     //Patrick 01Dec2016 - new props added:
@@ -269,8 +266,6 @@ namespace DDAS.Models.Entities.Domain
         public string RecordDetails { get; set; }
     }
 
-    
-
     public class SiteSource
     {
         public int Id { get; set; }
@@ -305,7 +300,7 @@ namespace DDAS.Models.Entities.Domain
         public string Observation { get; set; }
         public string RecordDetails { get; set; }
         //???:
-        public string Status { get; set; }
+        public bool IsAnIssue { get; set; }
         ////Patrick 04Dec2016: no longer required, can be deleted.
         public string HiddenStatus { get; set; }
         
@@ -315,7 +310,7 @@ namespace DDAS.Models.Entities.Domain
         public int SourceNumber { get; set; }
         public DateTime DateOfInspection { get; set; }
         public string InvestigatorName { get; set; }
-
+        public DateTime DateOfAction { get; set; }
     }
     #endregion
 

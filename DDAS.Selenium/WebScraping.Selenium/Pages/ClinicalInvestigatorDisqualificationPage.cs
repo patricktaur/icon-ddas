@@ -19,6 +19,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _DisqualificationSiteData = 
                 new ClinicalInvestigatorDisqualificationSiteData();
+            _DisqualificationSiteData.Source = driver.Url;
             //SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
         }
 
@@ -55,7 +56,6 @@ namespace WebScraping.Selenium.Pages
             _DisqualificationSiteData.CreatedBy = "Patrick";
             _DisqualificationSiteData.SiteLastUpdatedOn = DateTime.Now;
             _DisqualificationSiteData.CreatedOn = DateTime.Now;
-            _DisqualificationSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))

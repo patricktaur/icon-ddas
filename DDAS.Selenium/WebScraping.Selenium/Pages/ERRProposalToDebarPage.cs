@@ -19,6 +19,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
             _proposalToDebarSiteData.RecId = Guid.NewGuid();
+            _proposalToDebarSiteData.Source = driver.Url;
             //SaveScreenShot("ProposalToDebarPage.png");
         }
 
@@ -50,7 +51,6 @@ namespace WebScraping.Selenium.Pages
             _proposalToDebarSiteData.CreatedBy = "Patrick";
             _proposalToDebarSiteData.SiteLastUpdatedOn = DateTime.Now;
             _proposalToDebarSiteData.CreatedOn = DateTime.Now;
-            _proposalToDebarSiteData.Source = driver.Url;
 
             foreach (IWebElement TR in ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")))
             {
