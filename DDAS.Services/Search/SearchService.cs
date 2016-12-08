@@ -188,6 +188,7 @@ namespace DDAS.Services.Search
             return SiteIncludedInSearch;
         }
 
+        //old ?
         public SitesIncludedInSearch GetMatchStatus(SiteEnum Enum, string NameToSearch, 
             Guid? DataId, SitesIncludedInSearch Site)
         {
@@ -1300,6 +1301,7 @@ namespace DDAS.Services.Search
         public ComplianceForm GetNewComplianceForm(ILog log)
         {
             ComplianceForm newForm = new ComplianceForm();
+            newForm.SearchStartedOn = DateTime.Now;
             AddMandatorySitesToComplianceForm(newForm, log);
 
             return newForm;
@@ -1312,7 +1314,27 @@ namespace DDAS.Services.Search
 
             var UtilitiesObject = new ReplaceTextFromWordTemplate();
 
-            return UtilitiesObject.ReplaceTextFromWord(form);
+
+            var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
+
+            return UtilitiesObject.ReplaceTextFromWord(form, FileName);
+        }
+
+        public string GenerateComplianceFormAlt(Guid? ComplianceFormId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var UtilitiesObject = new ReplaceTextFromWordTemplate();
+
+            var FileName = @"C:\Development\p926-ddas\DDAS.API\Downloads\";
+
+            var PI = RemoveExtraCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
+
+            FileName += PI + ".docx";
+
+            var stream = UtilitiesObject.ReplaceTextFromWord(form, FileName);
+
+            return @"Downloads\" + PI + ".docx";
         }
 
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
@@ -1365,9 +1387,17 @@ namespace DDAS.Services.Search
                 item.Address = compForm.Address;
                 item.Country = compForm.Country;
                 item.ProjectNumber = compForm.ProjectNumber;
+                item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
                 item.RecId = compForm.RecId;
                 item.SearchStartedOn = compForm.SearchStartedOn;
-                item.PrincipalInvestigator = compForm.InvestigatorDetails.FirstOrDefault().Name;
+                if (compForm.InvestigatorDetails.Count > 0)
+                {
+                    item.PrincipalInvestigator = compForm.InvestigatorDetails.FirstOrDefault().Name;
+                }
+
+                
+                item.Status = "";
+               
 
                 retList.Add(item);
             }
@@ -1404,11 +1434,11 @@ namespace DDAS.Services.Search
             foreach (SiteSource site in compForm.SiteSources)
             {
                 var searchStatus = new SiteSearchStatus();
-
+                searchStatus.DisplayPosition = site.DisplayPosition;
                 searchStatus.siteEnum = site.SiteEnum;
                 searchStatus.SiteUrl = site.SiteUrl;
                 searchStatus.SiteName = site.SiteName;
-
+                
                 var searchStatusInCompForm = 
                     invInCompForm.SitesSearched.Find(
                     x => x.siteEnum == site.SiteEnum);
@@ -1505,6 +1535,7 @@ namespace DDAS.Services.Search
                             var matchedRecords = GetMatchedRecords(
                                 site, searchStatus, inv.Name, log);
 
+                            
                             //To-Do: convert matchedRecords to Findings
 
 
@@ -1581,9 +1612,9 @@ namespace DDAS.Services.Search
                     return GetClinicalInvestigatorPageMatchedRecords(site.SiteDataId, 
                         NameToSearch, searchStatus);
 
-                //case SiteEnum.FDAWarningLettersPage:
-                //    return GetFDAWarningLettersPageMatchedRecords(site.SiteDataId,
-                //        NameToSearch, searchStatus, log);
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningLettersPageMatchedRecords(site.SiteDataId,
+                        NameToSearch, searchStatus);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetERRProposalToDebarPageMatchedRecords(site.SiteDataId,
@@ -1717,28 +1748,28 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
-            string NameToSearch, SiteSearchStatus searchStatus, ILog log)
+            string NameToSearch, SiteSearchStatus searchStatus)
         {
-            var ScanData = new SiteScanData(_UOW, _SearchEngine);
-            var siteScan = ScanData.GetSiteScanData(SiteEnum.FDAWarningLettersPage, 
-                NameToSearch, log);
 
-            FDAWarningLettersSiteData FDAWarningSearchResult =
-                _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
- 
+            _SearchEngine.Load(SiteEnum.FDAWarningLettersPage, NameToSearch, "");
+            var siteData = _SearchEngine.SiteData;
 
-            UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
+            //UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
+            UpdateMatchStatus(siteData, NameToSearch);  //updates list with match count
 
-            var FDAWarningLetterList = 
-                FDAWarningSearchResult.FDAWarningLetterList.Where(
-                FDAList => FDAList.Matched > 0).ToList();
+            //var FDAWarningLetterList = 
+            //    FDAWarningSearchResult.FDAWarningLetterList.Where(
+            //    FDAList => FDAList.Matched > 0).ToList();
 
-            if (FDAWarningLetterList == null)
+            //if (FDAWarningLetterList == null)
+            //    return null;
+
+            if (siteData == null)
                 return null;
 
-            GetFullAndPartialMatchCount(FDAWarningLetterList, searchStatus, NameToSearch);
+            GetFullAndPartialMatchCount(siteData, searchStatus, NameToSearch);
 
-            return ConvertToMatchedRecords(FDAWarningLetterList);
+            return ConvertToMatchedRecords(siteData);
         }
 
         public List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,

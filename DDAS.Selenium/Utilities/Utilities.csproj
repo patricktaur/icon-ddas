@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DummyLog.cs" />
     <Compile Include="ExportList.cs" />
+    <Compile Include="LogConsole.cs" />
     <Compile Include="LogText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadUploadedExcelFile.cs" />

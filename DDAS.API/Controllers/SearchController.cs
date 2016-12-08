@@ -34,6 +34,9 @@ namespace DDAS.API.Controllers
         private string UploadFolder =
             System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
 
+        private string DownloadFolder =
+            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ISiteSummary SiteSummary)
         {
@@ -41,6 +44,7 @@ namespace DDAS.API.Controllers
             _SearchSummary = SearchSummary;
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
+            _log = new LogText(DataExtractionLogFile);
             _SiteSummary = SiteSummary;
         }
 
@@ -449,9 +453,18 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
-            var form = new GenerateComplianceForm(_UOW);
-            form.GetComplianceForm(RecId);
-            return Ok();
+
+            var FilePath = _SearchSummary.GenerateComplianceFormAlt(Guid.Parse(ComplianceFormId));
+
+            //var DownloadFolder = @"Downloads\ComplianceForm.docx";
+
+            //using (FileStream fileStream = new FileStream(DownloadPath,
+            //FileMode.CreateNew))
+            //{
+            //    form.WriteTo(fileStream);
+            //}
+
+            return Ok(FilePath);
         }
 
         //3Dec2016

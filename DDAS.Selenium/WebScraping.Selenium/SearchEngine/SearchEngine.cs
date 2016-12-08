@@ -10,6 +10,8 @@ using OpenQA.Selenium.Chrome;
 //using OpenQA.Selenium.Edge;
 using DDAS.Models;
 using DDAS.Services.Search;
+using DDAS.Models.Entities.Domain.SiteData;
+using System.Collections.Generic;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -17,8 +19,8 @@ namespace WebScraping.Selenium.SearchEngine
     {
         private IWebDriver _Driver;
         private IUnitOfWork _uow;
-
-        public SearchEngine( IUnitOfWork uow)
+        private ISearchPage _searchPage;
+        public SearchEngine(IUnitOfWork uow)
         {
             _uow = uow;
         }
@@ -63,8 +65,7 @@ namespace WebScraping.Selenium.SearchEngine
             log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
-                if(site.ExtractionMode.ToLower() == "db")
-                    Load(site.SiteEnum, NameToSearch, DownloadFolder, log);
+                Load(site.SiteEnum, NameToSearch, DownloadFolder);                
             }
         }
 
@@ -75,7 +76,11 @@ namespace WebScraping.Selenium.SearchEngine
             {
                 try
                 {
-                    Load(site.SiteEnum, query.NameToSearch, DownloadFolder, log);
+                    log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + site.SiteEnum);
+                    Load(site.SiteEnum, query.NameToSearch, DownloadFolder);
+                    log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + site.SiteEnum);
+                    SaveData();
+                    log.WriteLog("Data Saved");
                 }
                 catch (WebDriverTimeoutException e)
                 {
@@ -85,17 +90,21 @@ namespace WebScraping.Selenium.SearchEngine
         }
 
         public void Load(SiteEnum siteEnum, string NameToSearch, 
-            string DownloadFolder, ILog log)  //Load one
+            string DownloadFolder)  //Load one
         {
-            log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + siteEnum);
+            
 
-            var page = GetSearchPage(siteEnum);
-            page.LoadContent(NameToSearch, DownloadFolder);
+            //var page = GetSearchPage(siteEnum);
 
-            log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + siteEnum);
+            //page.LoadContent(NameToSearch, DownloadFolder);
 
-            page.SaveData();
-            log.WriteLog( "Data Saved" );
+            _searchPage = GetSearchPage(siteEnum);
+            _searchPage.LoadContent(NameToSearch, DownloadFolder);
+
+           
+
+            //page.SaveData();
+            //log.WriteLog( "Data Saved" );
         }
         #endregion
 
@@ -154,6 +163,14 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
+        public IEnumerable<SiteDataItemBase> SiteData
+        {
+            get
+            {
+                return _searchPage.SiteData;
+            }
+        }
+
         public enum DriverEnum
         {
             ChromeDriver,
@@ -170,6 +187,9 @@ namespace WebScraping.Selenium.SearchEngine
             
         }
 
-    
+        public void SaveData()
+        {
+            _searchPage.SaveData();
+        }
     }
 }

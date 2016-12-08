@@ -52,7 +52,11 @@ namespace DDAS.DataExtractor
                 {
                     SiteEnum siteEnum = (SiteEnum)SiteNum;
                     log.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
-                    searchEngine.Load(siteEnum, "", DownloadFolder, log);
+
+                    searchEngine.Load(siteEnum, "", DownloadFolder);
+                    log.WriteLog(DateTime.Now.ToString(), "Extract completed");
+                    searchEngine.SaveData();
+                    log.WriteLog(DateTime.Now.ToString(), "Data Saved");
                 }
                 else
                 {
