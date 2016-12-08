@@ -1430,6 +1430,16 @@ namespace DDAS.Services.Search
             {
                 return null;
             }
+            retInv.Name = invInCompForm.Name;
+            retInv.Role = invInCompForm.Role;
+            retInv.Deleted = invInCompForm.Deleted;
+            retInv.DisplayPosition = invInCompForm.DisplayPosition;
+            retInv.Id = invInCompForm.Id;
+            retInv.Sites_FullMatchCount = invInCompForm.Sites_FullMatchCount;
+            retInv.Sites_PartialMatchCount = invInCompForm.Sites_PartialMatchCount;
+            retInv.TotalIssuesFound = invInCompForm.TotalIssuesFound;
+           
+
             //?? for manual sites ???
             foreach (SiteSource site in compForm.SiteSources)
             {
