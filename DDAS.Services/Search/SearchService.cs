@@ -1634,8 +1634,9 @@ namespace DDAS.Services.Search
                     return GetAdequateAssurancePageMatchedRecords(site.SiteDataId,
                         NameToSearch, searchStatus);
 
-                //case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                //    return GetDisqualifionProceedingsMatchCount(NameToSearch, DataId, Site);
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    return GetClinicalInvestigatorDisqualificationPageMatchedRecords(
+                        site.SiteDataId, NameToSearch, searchStatus);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorPageMatchedRecords(site.SiteDataId,
@@ -1664,6 +1665,7 @@ namespace DDAS.Services.Search
             }
         }
 
+        //refactor
         public void GetFullAndPartialMatchCount(
             IEnumerable<SiteDataItemBase> DebarList, SiteSearchStatus searchStatus,
             string NameToSearch)
@@ -1819,6 +1821,22 @@ namespace DDAS.Services.Search
             GetFullAndPartialMatchCount(AdequateAssuranceList, searchStatus, NameToSearch);
 
             return ConvertToMatchedRecords(AdequateAssuranceList);
+        }
+
+        public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
+            Guid? SiteDataId, string NameToSearch, SiteSearchStatus searchStatus)
+        {
+            _SearchEngine.Load(SiteEnum.FDAWarningLettersPage, NameToSearch, "");
+            var siteData = _SearchEngine.SiteData;
+
+            UpdateMatchStatus(siteData, NameToSearch);  //updates list with match count
+
+            if (siteData == null)
+                return null;
+
+            GetFullAndPartialMatchCount(siteData, searchStatus, NameToSearch);
+
+            return ConvertToMatchedRecords(siteData);
         }
 
         public List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,

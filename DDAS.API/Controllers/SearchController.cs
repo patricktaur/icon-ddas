@@ -274,7 +274,7 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
-        //Called by Angular single name search.
+        //Called by Angular single name search
         [Route("GetComplianceForm")]
         [HttpPost]
         public IHttpActionResult GetComplianceForm(ComplianceForm form)
