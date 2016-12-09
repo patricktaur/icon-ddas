@@ -19,5 +19,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
             string UserName);
         //Patrick 30Oct2016
         Task UpdateUser(User entity);
+
     }
 }

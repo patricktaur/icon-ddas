@@ -1534,14 +1534,20 @@ namespace DDAS.Services.Search
                         searchStatus =
                             inv.SitesSearched.Find(x => x.siteEnum == siteSource.SiteEnum);
 
-                    bool SearchRequired = false;
+                    bool searchRequired = false;
+                    if (searchStatus == null )
+                    {
+                        searchRequired = true;
+                    }
+                    else
+                    {
+                        if (searchStatus.HasExtractionError == true)
+                        {
+                            searchRequired = true;
+                        }
+                    }
 
-                    if (searchStatus == null)
-                        SearchRequired = true;
-                    else if (searchStatus.HasExtractionError == true)
-                        SearchRequired = true;
-
-                    if (SearchRequired && siteSource.IsOptional == false)
+                    if (searchRequired == true)
                     {
                         if (searchStatus == null)
                         {
@@ -1561,6 +1567,10 @@ namespace DDAS.Services.Search
 
                             GetFullAndPartialMatchCount(MatchedRecords, searchStatus,
                                 ComponentsInInvestigatorName);
+                            //GetFullAndPartialMatchCount( DebarList, searchStatus, NameToSearch); //updates full and partial match counts
+
+
+                            //To-Do: convert matchedRecords to Findings
 
                             inv.Sites_PartialMatchCount +=
                                 searchStatus.PartialMatchCount;
