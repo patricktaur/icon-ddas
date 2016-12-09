@@ -68,6 +68,6 @@ namespace DDAS.Models.Interfaces
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
 
         //To be removed
-        string GenerateComplianceFormAlt(Guid? ComplianceFormId);
+        string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder); 
     }
 }

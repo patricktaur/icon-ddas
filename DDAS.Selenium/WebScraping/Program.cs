@@ -9,6 +9,7 @@ using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
 
@@ -18,38 +19,45 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
-            ILog log = new LogText(
-                @"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log", true);
 
-            log.LogStart();
+            string Name = "FullName: Pradeep Chavhan~ FirstName: Pradeep~LastName: Chavhan~Company: Clarity~WorkLocation: Bangalore";
 
-            ISearchEngine searchEngine = new SearchEngine(uow);
+            string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
 
-            //var test = new SearchService(uow, searchEngine);
+            Console.WriteLine(res);
 
-            MongoMaps.Initialize();
+            //IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+            //ILog log = new LogText(
+            //    @"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log", true);
 
-            var service = new ComplianceFormService(uow);
+            //log.LogStart();
 
-            var searchSummary = new SearchService(uow, searchEngine);
+            //ISearchEngine searchEngine = new SearchEngine(uow);
 
-            var forms = searchSummary.ReadUploadedFileData(
-                @"C:\Development\p926-ddas\DDAS.API\App_Data\DDAS_Upload.xlsx", log);
+            ////var test = new SearchService(uow, searchEngine);
 
-            var complianceForms = new List<ComplianceForm>();
+            //MongoMaps.Initialize();
 
-            foreach (ComplianceForm form in forms)
-            {
-                complianceForms.Add(searchSummary.ScanUpdateComplianceForm(
-                    form, log));
-            }
+            //var service = new ComplianceFormService(uow);
 
-            //SLDocument doc = new SLDocument(@"C:\Development\p926-ddas\DDAS.API\App_Data\Test-DDAS.xlsx");
+            //var searchSummary = new SearchService(uow, searchEngine);
 
-            //doc.GetCellValueAsString("A1");
-            log.LogEnd();
-            
+            //var forms = searchSummary.ReadUploadedFileData(
+            //    @"C:\Development\p926-ddas\DDAS.API\App_Data\DDAS_Upload.xlsx", log);
+
+            //var complianceForms = new List<ComplianceForm>();
+
+            //foreach (ComplianceForm form in forms)
+            //{
+            //    complianceForms.Add(searchSummary.ScanUpdateComplianceForm(
+            //        form, log));
+            //}
+
+            ////SLDocument doc = new SLDocument(@"C:\Development\p926-ddas\DDAS.API\App_Data\Test-DDAS.xlsx");
+
+            ////doc.GetCellValueAsString("A1");
+            //log.LogEnd();
+
             Console.ReadLine();
         }
     }

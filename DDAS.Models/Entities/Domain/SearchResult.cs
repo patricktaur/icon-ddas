@@ -153,6 +153,7 @@ namespace DDAS.Models.Entities.Domain
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
+        public string Institute { get; set; }
         public DateTime SearchStartedOn { get; set; }
         //public DateTime SearchClosedOn { get; set; }
         //public DateTime DataExtractedOn { get; set; }
@@ -193,6 +194,8 @@ namespace DDAS.Models.Entities.Domain
         public int DisplayPosition { get; set; }
         public string Name { get; set; }
         public string Role { get; set; }
+        public string Qualification { get; set; }
+        public string MedicalLiceseNumber { get; set; }
         public int Sites_FullMatchCount { get; set; }
         public int Sites_PartialMatchCount { get; set; }
         public bool AllSitesProcessed { get; set; }

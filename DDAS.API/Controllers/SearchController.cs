@@ -37,6 +37,9 @@ namespace DDAS.API.Controllers
         private string DownloadFolder =
             System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
 
+        private string TemplatesFolder =
+            System.Configuration.ConfigurationManager.AppSettings["TemplatesFolder"];
+
         public SearchController(ISearchEngine search, ISearchSummary SearchSummary,
             IUnitOfWork uow, ISiteSummary SiteSummary)
         {
@@ -454,7 +457,8 @@ namespace DDAS.API.Controllers
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
 
-            var FilePath = _SearchSummary.GenerateComplianceFormAlt(Guid.Parse(ComplianceFormId));
+            var FilePath = _SearchSummary.GenerateComplianceFormAlt(
+                Guid.Parse(ComplianceFormId), DownloadFolder);
 
             //var DownloadFolder = @"Downloads\ComplianceForm.docx";
 
@@ -548,6 +552,13 @@ namespace DDAS.API.Controllers
             return Ok(Forms);
         }
 
+        [Route("GetAllCountries")]
+        [HttpGet]
+        public IHttpActionResult GetAllCountries()
+        {
+            var Countries = new CountryList();
+            return Ok(Countries.GetCountries);
+        }
     }
 
     public class UserDetails

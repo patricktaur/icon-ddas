@@ -58,7 +58,16 @@ namespace Utilities
                                 Details.Add(
                                     row.Elements<Cell>().ElementAt(ColumnIndex).
                                                     CellValue.Text); //SI Name
-                                ColumnIndex += 1;
+
+                                Details.Add(
+                                    row.Elements<Cell>().ElementAt(ColumnIndex + 1).
+                                                    CellValue.Text); //MedicalLicenseNumber
+
+                                Details.Add(
+                                    row.Elements<Cell>().ElementAt(ColumnIndex + 2).
+                                                    CellValue.Text); //Qualification
+
+                                ColumnIndex += 3;
                             }
                             Rows.DetailsInEachRow = Details;
                             ListOfRows.Add(Rows);
@@ -89,12 +98,18 @@ namespace Utilities
                 DataFromEachRow.Add(doc.GetCellValueAsString("C" + RowIndex));
                 DataFromEachRow.Add(doc.GetCellValueAsString("D" + RowIndex));
                 DataFromEachRow.Add(doc.GetCellValueAsString("E" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("F" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("G" + RowIndex));
+                DataFromEachRow.Add(doc.GetCellValueAsString("H" + RowIndex));
 
-                int ColumnIndex = 6;
+                int ColumnIndex = 9;
                 while (doc.HasCellValue(RowIndex, ColumnIndex) == true)
                 {
-                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex));
-                    ColumnIndex += 1;
+                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex)); //SI Name
+                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 1)); //ML#
+                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 2)); //Qualification
+
+                    ColumnIndex += 3;
                 }
                 RowData.DetailsInEachRow = DataFromEachRow;
                 ListOfRows.Add(RowData);

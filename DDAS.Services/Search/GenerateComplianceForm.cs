@@ -21,7 +21,7 @@ namespace DDAS.Services.Search
             var complianceform = 
                 _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var WordTemplate = new ReplaceTextFromWordTemplate();
+            var WordTemplate = new CreateComplianceForm();
 
             WordTemplate.ReplaceTextFromWord(complianceform);
 
