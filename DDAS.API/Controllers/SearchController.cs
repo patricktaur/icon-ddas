@@ -52,18 +52,35 @@ namespace DDAS.API.Controllers
         }
 
         #region MoveToAccountsController
-        [Route("GetAllUsers")]
+        [Route("GetUsers")]
         [HttpGet]
-        public IHttpActionResult GetUser(string UserName)
+        public IHttpActionResult GetUsers()
         {
-            var User = _UOW.UserRepository.GetAllUsers();
+            var Users = _UOW.UserRepository.GetAllUsers();
+   
+            if (Users != null)
+            {
+                return Ok(Users);
+            }
+            else
+                return Ok("no users found!");
+        }
+
+        [Route("GetUser")]
+        [HttpGet]
+        public IHttpActionResult GetUser(string UserId)
+        {
+            Guid? gUserId = Guid.Parse(UserId);
+            var User = _UOW.UserRepository.FindById(gUserId); 
+            //important: the User object must be mapped to Userview to eliminate security fields (hash code etc) 
             if (User != null)
             {
                 return Ok(User);
             }
             else
-                return Ok("no users found!");
+                return Ok("No user found!");
         }
+
 
         [Route("AddNewRole")]
         [HttpPost]
@@ -113,6 +130,8 @@ namespace DDAS.API.Controllers
             return Ok("User: " + user.UserName + " has been added");
         }
 
+        
+        
         //[Authorize] //(Roles="User")]
         [Route("AddRole")]
         [HttpPost]
@@ -126,6 +145,15 @@ namespace DDAS.API.Controllers
 
             return Ok();
         }
+
+        [Route("GetAllRoles")]
+        [HttpGet]
+        public IHttpActionResult GetAllRoles()
+        {
+            var roles = _UOW.RoleRepository.GetAll();
+            return Ok(roles);
+        }
+
         #endregion
 
         [Route("Upload")]
