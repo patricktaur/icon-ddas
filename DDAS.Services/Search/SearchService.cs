@@ -1526,8 +1526,21 @@ namespace DDAS.Services.Search
                         searchStatus =
                             inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
                     }
-                        
-                    if (searchStatus == null || searchStatus.HasExtractionError == true)
+
+                    bool searchRequired = false;
+                    if (searchStatus == null )
+                    {
+                        searchRequired = true;
+                    }
+                    else
+                    {
+                        if (searchStatus.HasExtractionError == true)
+                        {
+                            searchRequired = true;
+                        }
+                    }
+
+                    if (searchRequired == true)
                     {
                         if (searchStatus == null)
                         {
@@ -1544,7 +1557,9 @@ namespace DDAS.Services.Search
                             var matchedRecords = GetMatchedRecords(
                                 site, searchStatus, inv.Name, log);
 
-                            
+                            //GetFullAndPartialMatchCount( DebarList, searchStatus, NameToSearch); //updates full and partial match counts
+
+
                             //To-Do: convert matchedRecords to Findings
 
 
