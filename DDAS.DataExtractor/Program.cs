@@ -1,10 +1,12 @@
 ﻿using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
+using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
 using System;
+using System.Collections.Generic;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
 

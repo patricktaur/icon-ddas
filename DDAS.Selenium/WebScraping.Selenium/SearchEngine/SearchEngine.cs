@@ -58,26 +58,26 @@ namespace WebScraping.Selenium.SearchEngine
 
         #region Load
 
-        public void Load(string NameToSearch, string DownloadFolder, ILog log) //LoadAll
-        {
-            var query = SearchSites.GetNewLiveSiteSearchQuery();
+        //public void Load(string NameToSearch, string DownloadFolder, ILog log) //LoadAll
+        //{
+        //    var query = SearchSites.GetNewLiveSiteSearchQuery();
 
-            log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
-            foreach (SearchQuerySite site in query.SearchSites)
-            {
-                Load(site.SiteEnum, NameToSearch, DownloadFolder);                
-            }
-        }
+        //    log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+        //    foreach (SearchQuerySite site in query.SearchSites)
+        //    {
+        //        Load(site.SiteEnum, NameToSearch, DownloadFolder);                
+        //    }
+        //}
 
-        public void Load(SearchQuery query, string DownloadFolder, ILog log)  //Load some
+        public void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log)  //Load some
         {
-            log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
-            foreach (SearchQuerySite site in query.SearchSites)
+            log.WriteLog("Processing:" + query.Count + " sites");
+            foreach (SearchQuerySite site in query)
             {
                 try
                 {
                     log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + site.SiteEnum);
-                    Load(site.SiteEnum, query.NameToSearch, DownloadFolder);
+                    Load(site.SiteEnum, "", DownloadFolder);
                     log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + site.SiteEnum);
                     SaveData();
                     log.WriteLog("Data Saved");

@@ -10,14 +10,15 @@ namespace Utilities.WordTemplate
 {
     public class CreateComplianceForm
     {
-        public MemoryStream ReplaceTextFromWord(ComplianceForm form, string fileName = "")
+        public MemoryStream ReplaceTextFromWord(ComplianceForm form, string TemplateFolder, string fileName = "")
         {
             //string FilePath = System.Configuration.ConfigurationManager.AppSettings["TemplatesFolder"];
 
-            string FilePath = @"C:\Development\p926-ddas\DDAS.API\App_Data\Data\Templates\ComplianceFormTemplate.docx";
+            //string FilePath = @"C:\Development\p926-ddas\DDAS.API\App_Data\Data\Templates\ComplianceFormTemplate.docx";
+            string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
 
             byte[] byteArray = File.ReadAllBytes(
-                FilePath);
+                TemplateFile);
 
             using (MemoryStream stream = new MemoryStream())
             {

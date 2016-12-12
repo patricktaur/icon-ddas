@@ -26,13 +26,13 @@ namespace DDAS.Services.Search
             //need to refactor
             List<SiteScan> ListOfSiteScan = new List<SiteScan>();
 
-            SearchQuery NewSearchQuery = SearchSites.GetNewSearchQuery();
+            List<SearchQuerySite> NewSearchQuery = SearchSites.GetNewSearchQuery();
 
             SearchQuery NewLiveSiteSearchQuery = SearchSites.GetNewLiveSiteSearchQuery();
 
             List<SearchQuerySite> Sites = new List<SearchQuerySite>();
             
-            Sites.AddRange(NewSearchQuery.SearchSites);
+            Sites.AddRange(NewSearchQuery);
             Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
 
             Sites = Sites.OrderBy(Site => Site.SiteEnum).ToList();
