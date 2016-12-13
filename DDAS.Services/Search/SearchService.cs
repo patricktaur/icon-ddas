@@ -284,13 +284,21 @@ namespace DDAS.Services.Search
             //public bool ExtractionErrorSiteCount { get; set; }
             //public int IssuesFoundSiteCount { get; set; }
             //public int ReviewCompletedSiteCount { get; set; }
-            int ExtractionErrorSiteCount = 0;
-            int IssuesFoundSiteCount = 0;
-            int ReviewCompletedSiteCount = 0;
 
+            int FullMatchesFoundInvestigatorCount = 0;
+            int PartialMatchesFoundInvestigatorCount = 0;
+
+            int IssuesFoundInvestigatorCount = 0;
+            int ReviewCompletedInvestigatorCount = 0;
+     
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 Investigator.TotalIssuesFound = 0;
+
+                int PartialMatchSiteCount = 0;
+                int FullMatchSiteCount = 0;
+                int IssuesFoundSiteCount = 0;
+                int ReviewCompletedSiteCount = 0;
 
                 foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched)
                 {
@@ -321,9 +329,13 @@ namespace DDAS.Services.Search
                         Site.IssuesIdentified = true;
 
                     //Rollup summary:
-                    if (searchStatus.HasExtractionError)
+                    if (searchStatus.PartialMatchCount > 0)
                     {
-                        ExtractionErrorSiteCount += 1;
+                        PartialMatchSiteCount += 1;
+                    }
+                    if (searchStatus.FullMatchCount > 0)
+                    {
+                        FullMatchSiteCount += 1;
                     }
                     if (searchStatus.IssuesFound > 0)
                     {
@@ -334,8 +346,36 @@ namespace DDAS.Services.Search
                         ReviewCompletedSiteCount += 1;
                     }
                 }
-                
+                Investigator.Sites_PartialMatchCount = PartialMatchSiteCount;
+                Investigator.Sites_FullMatchCount = FullMatchSiteCount;
+                Investigator.IssuesFoundSiteCount = IssuesFoundSiteCount;
+                Investigator.ReviewCompletedSiteCount = ReviewCompletedSiteCount;
+
+                if (Investigator.Sites_PartialMatchCount > 0)
+                {
+                    PartialMatchesFoundInvestigatorCount += 1;
+                }
+
+                if (Investigator.Sites_FullMatchCount > 0)
+                {
+                    FullMatchesFoundInvestigatorCount += 1;
+                }
+
+                if (Investigator.IssuesFoundSiteCount > 0)
+                {
+                    IssuesFoundInvestigatorCount += 1;
+                }
+                if (Investigator.ReviewCompletedSiteCount > 0)
+                {
+                    ReviewCompletedInvestigatorCount += 1;
+                }
+
             }
+            form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
+            form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
+            form.IssuesFoundInvestigatorCount = IssuesFoundInvestigatorCount;
+            form.ReviewCompletedInvestigatorCount = ReviewCompletedInvestigatorCount;
+
             return form;
         }
 
@@ -606,9 +646,38 @@ namespace DDAS.Services.Search
                     item.PrincipalInvestigator = compForm.InvestigatorDetails.FirstOrDefault().Name;
                 }
 
-
-                item.Status = "";
-
+                var ReviewCompleted = false;
+                if (compForm.ReviewCompletedInvestigatorCount == compForm.InvestigatorDetails.Count)
+                {
+                    ReviewCompleted = true;
+                }
+                if (ReviewCompleted == true)
+                {
+                    item.Status = "Issues Not Identified";
+                    if (compForm.IssuesFoundInvestigatorCount > 0)
+                    {
+                        item.Status = "Issues Identified";
+                    }
+                }
+                else if (compForm.ExtractedOn == null)
+                {
+                    item.Status = "Data not extracted";
+                }
+                else
+                {
+                    if (compForm.FullMatchesFoundInvestigatorCount > 0)
+                    {
+                        item.Status = "Full Match Found";
+                    }
+                    else if (compForm.FullMatchesFoundInvestigatorCount > 0)
+                    {
+                        item.Status = "Partial Match Found";
+                    }
+                    else
+                    {
+                        item.Status = "No Match Found";
+                    }
+                }
 
                 retList.Add(item);
             }

@@ -10,7 +10,6 @@ namespace DDAS.Models.Entities.Domain
 {
     #region SearchQuery
 
-   
     public class SearchQuery
     {
         public string NameToSearch { get; set; }
@@ -158,7 +157,8 @@ namespace DDAS.Models.Entities.Domain
 
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
         public int ExtractionErrorInvestigatorCount { get; set; }
-        public int MatchesFoundInvestigatorCount { get; set; }
+        public int FullMatchesFoundInvestigatorCount { get; set; }
+        public int PartialMatchesFoundInvestigatorCount { get; set; }
         public int IssuesFoundInvestigatorCount { get; set; }
         public int ReviewCompletedInvestigatorCount { get; set; }
 
@@ -203,16 +203,16 @@ namespace DDAS.Models.Entities.Domain
         public string Role { get; set; }
         public string Qualification { get; set; }
         public string MedicalLiceseNumber { get; set; }
-        public int Sites_FullMatchCount { get; set; }
-        public int Sites_PartialMatchCount { get; set; }
+      
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
         public bool HasExtractionError { get; set; }
-
         public int ExtractionErrorSiteCount { get; set; }
-        public int MatchesFoundSiteCount { get; set; }
+        //public int MatchesFoundSiteCount { get; set; }
+
+        public int Sites_FullMatchCount { get; set; }
+        public int Sites_PartialMatchCount { get; set; }
         public int IssuesFoundSiteCount { get; set; }
         public int ReviewCompletedSiteCount { get; set; }
-
 
         public int TotalIssuesFound { get; set; }
         public int ReviewCompletedCount { get; set; }
