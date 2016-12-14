@@ -53,6 +53,13 @@ namespace DDAS.API.Controllers
             _SiteSummary = SiteSummary;
         }
 
+        [Route("Test")]
+
+        [HttpGet]
+        public IHttpActionResult Test() {
+            return Ok("Test Call");
+        }
+
         #region MoveToAccountsController
         [Route("GetUsers")]
         [HttpGet]

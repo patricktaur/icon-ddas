@@ -36,6 +36,7 @@ namespace DDAS.API.App_Start
         }
         private static void InitializeContainer(Container container)
         {
+
             container.RegisterWebApiRequest<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
 
 
