@@ -7,19 +7,23 @@ using DDAS.Models;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.IO;
 using System.Linq;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDADebarPage : BaseSearchPage
     {
-
         IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
+
         public FDADebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
             Open();
             _UOW = uow;
             _FDADebarPageSiteData = new FDADebarPageSiteData();
             _FDADebarPageSiteData.RecId = Guid.NewGuid();
+            _FDADebarPageSiteData.ReferenceId = _FDADebarPageSiteData.RecId;
             _FDADebarPageSiteData.Source = driver.Url;
             //SaveScreenShot("abc.png");
         }
@@ -48,17 +52,36 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
 
-        private FDADebarPageSiteData _FDADebarPageSiteData;
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _FDADebarPageSiteData;
+            }
+        }
+
+        public FDADebarPageSiteData _FDADebarPageSiteData;
         
         private void LoadDebarredPersonList()
         {
-            _FDADebarPageSiteData.RecId = Guid.NewGuid();
-
-            _FDADebarPageSiteData.CreatedBy = "patrick";
-            _FDADebarPageSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _FDADebarPageSiteData.CreatedOn = DateTime.Now;
-
             int RowCount = 1;
             foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -75,11 +98,11 @@ namespace WebScraping.Selenium.Pages
                 if (IsElementPresent(TDs[4], By.XPath("a")))
                 {
                     IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
-                    debarredPerson.DocumentLink = anchor.GetAttribute("href");
-                    debarredPerson.DocumentName = 
-                        Path.GetFileName(debarredPerson.DocumentLink);
+                    Link link = new Link();
+                    link.Title = "Company";
+                    link.url = anchor.GetAttribute("href");
+                    debarredPerson.Links.Add(link);
                 }
-
                 _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
                 RowCount = RowCount + 1;
             }
@@ -87,15 +110,11 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
                 _FDADebarPageSiteData.DataExtractionRequired = true;
-                if (_FDADebarPageSiteData.DataExtractionRequired)
-                {
-                    LoadDebarredPersonList();
-                    _FDADebarPageSiteData.DataExtractionSucceeded = true;
-                }
+                LoadDebarredPersonList();
+                _FDADebarPageSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -106,12 +125,24 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_FDADebarPageSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _FDADebarPageSiteData.ReferenceId =
-                        _FDADebarPageSiteData.RecId;
+                _FDADebarPageSiteData.CreatedBy = "patrick";
+                _FDADebarPageSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        private void ReadSiteLastUpdatedDateFromPage()
+        {
+            string[] DataInPageLastUpdatedElement = PageLastUpdatedTextElement.Text.Split(':');
+
+            string PageLastUpdated = 
+                DataInPageLastUpdatedElement[1].Replace("\r\nNote", "").Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
         }
 
         private void AssignReferenceIdOfPreviousDocument()

@@ -191,6 +191,10 @@ namespace DDAS.API.Controllers
                     var forms = _SearchSummary.ReadUploadedFileData(file.LocalFileName,
                         _log);
 
+                    if (forms == null)
+                        return 
+                            Request.CreateResponse(HttpStatusCode.NotAcceptable, "Invalid File");
+
                     foreach(ComplianceForm form in forms)
                     {
                         complianceForms.Add(

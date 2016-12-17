@@ -19,5 +19,14 @@ namespace WebScraping.Selenium.Pages
                 return table[1];
             }
         }
+
+        public IWebElement PageLastUpdatedElement
+        {
+            get
+            {
+                IWebElement Element = driver.FindElement(By.Id("updated-list"));
+                return Element;
+            }
+        }
     }
 }

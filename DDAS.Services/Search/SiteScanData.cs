@@ -20,7 +20,7 @@ namespace DDAS.Services.Search
             _SearchEngine = SearchEngine;
         }
 
-        //Not used
+        #region Not Used
         public List<SiteScan> GetSiteScanSummary(string NameToSearch, ILog log)
         {
             //need to refactor
@@ -70,21 +70,13 @@ namespace DDAS.Services.Search
                 case SiteEnum.FDADebarPage : return GetFDADebarSiteScanDetails();
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    //return GetClinicalInevstigatorInspectionDetails();
                     return GetClinicalInvestigatorSiteScanDetails();
-
-                case SiteEnum.FDAWarningLettersPage:
-                    return GetFDAWarningLettersSiteScanDetails(NameToSearch, log, Enum);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarSiteScanDetails();
 
                 case SiteEnum.AdequateAssuranceListPage:
                     return GetAdequateAssuranceSiteScanDetails();
-
-                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    return GetClinicalInvestigatorDisqualificationSiteScanDetails(
-                        NameToSearch, log, Enum);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorSiteScanDetails();
@@ -109,15 +101,10 @@ namespace DDAS.Services.Search
                     throw new Exception("Invalid Enum");
             }
         }
+        #endregion
 
-        public void ExtractDataFromLiveSites(string NameToSearch, ILog log, SiteEnum Enum)
-        {
-            log.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
-
-            _SearchEngine.Load(Enum, NameToSearch, "");
-
-            log.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-        }
+        //Pradeep 17Dec2016 Changing FindById(SiteData.RecId) to
+        //FindById(SiteData.ReferenceId)
 
         public SiteScan GetFDADebarSiteScanDetails()
         {
@@ -130,7 +117,7 @@ namespace DDAS.Services.Search
                 //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData = 
-                _UOW.FDADebarPageRepository.FindById(SiteData.RecId);
+                _UOW.FDADebarPageRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
             
@@ -152,32 +139,7 @@ namespace DDAS.Services.Search
                 //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.ClinicalInvestigatorInspectionListRepository.FindById(SiteData.RecId);
-
-            SiteScan scan = new SiteScan();
-
-            scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
-            scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
-
-            return scan;
-        }
-
-        public SiteScan GetFDAWarningLettersSiteScanDetails(
-            string NameToSearch, ILog log, SiteEnum Enum)
-        {
-            ExtractDataFromLiveSites(NameToSearch, log, Enum);
-
-            var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
-
-            if (SiteData == null) // || SiteData.ReferenceId == null)
-                                  //Patrick 02Dec2016
-                return null;
-                //throw new Exception("Failed to extract data for the site: FDADebarPage");
-
-            var ExtractedSiteData =
-                _UOW.FDAWarningLettersRepository.FindById(SiteData.RecId);
+                _UOW.ClinicalInvestigatorInspectionListRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -199,7 +161,7 @@ namespace DDAS.Services.Search
                 //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.ERRProposalToDebarRepository.FindById(SiteData.RecId);
+                _UOW.ERRProposalToDebarRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -221,32 +183,7 @@ namespace DDAS.Services.Search
                 //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.AdequateAssuranceListRepository.FindById(SiteData.RecId);
-
-            SiteScan scan = new SiteScan();
-
-            scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
-            scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
-
-            return scan;
-        }
-
-        public SiteScan GetClinicalInvestigatorDisqualificationSiteScanDetails(
-            string NameToSearch, ILog log, SiteEnum Enum)
-        {
-            ExtractDataFromLiveSites(NameToSearch, log, Enum);
-
-            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
-
-            if (SiteData == null) // || SiteData.ReferenceId == null)
-                //Patrick 02Dec2016
-                return null;
-                //throw new Exception("Failed to extract data for the site: FDADebarPage");
-
-            var ExtractedSiteData =
-                _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteData.RecId);
+                _UOW.AdequateAssuranceListRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -268,7 +205,7 @@ namespace DDAS.Services.Search
             //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.CBERClinicalInvestigatorRepository.FindById(SiteData.RecId);
+                _UOW.CBERClinicalInvestigatorRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -290,7 +227,7 @@ namespace DDAS.Services.Search
             //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.PHSAdministrativeActionListingRepository.FindById(SiteData.RecId);
+                _UOW.PHSAdministrativeActionListingRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -312,7 +249,7 @@ namespace DDAS.Services.Search
             //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.ExclusionDatabaseSearchRepository.FindById(SiteData.RecId);
+                _UOW.ExclusionDatabaseSearchRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -334,7 +271,7 @@ namespace DDAS.Services.Search
             //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.CorporateIntegrityAgreementRepository.FindById(SiteData.RecId);
+                _UOW.CorporateIntegrityAgreementRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 
@@ -345,29 +282,11 @@ namespace DDAS.Services.Search
             return scan;
         }
 
+        //Pending
         public SiteScan GetSystemForAwardManagementSiteScanDetails(
             string NameToSearch, ILog log, SiteEnum Enum)
         {
-            ExtractDataFromLiveSites(NameToSearch, log, Enum);
-
-            var SiteData = _UOW.SystemForAwardManagementRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
-
-            if (SiteData == null) // || SiteData.ReferenceId == null)
-                                  //Patrick 02Dec2016
-                return null;
-            //throw new Exception("Failed to extract data for the site: FDADebarPage");
-
-            var ExtractedSiteData =
-                _UOW.SystemForAwardManagementRepository.FindById(SiteData.RecId);
-
-            SiteScan scan = new SiteScan();
-
-            scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
-            scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
-
-            return scan;
+            return null;
         }
 
         public SiteScan GetSpeciallyDesignatedNationsDetails()
@@ -382,7 +301,7 @@ namespace DDAS.Services.Search
             //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
-                _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteData.RecId);
+                _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteData.ReferenceId);
 
             SiteScan scan = new SiteScan();
 

@@ -75,5 +75,14 @@ namespace WebScraping.Selenium.Pages
                 throw new Exception("Could not download LEIE database file!");
             }
         }
+
+        public IWebElement PageLastUpdatedTextElement
+        {
+            get
+            {
+                IList<IWebElement> Elements = driver.FindElements(By.XPath("//h2"));
+                return Elements[1];
+            }
+        }
     }
 }

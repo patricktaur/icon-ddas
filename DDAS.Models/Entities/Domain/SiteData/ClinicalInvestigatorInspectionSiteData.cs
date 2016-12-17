@@ -6,24 +6,13 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class ClinicalInvestigatorInspectionSiteData //: AuditEntity<long?>
+    public class ClinicalInvestigatorInspectionSiteData : BaseSiteData //: AuditEntity<long?>
     {
         public ClinicalInvestigatorInspectionSiteData()
         {
             ClinicalInvestigatorInspectionList = new List<ClinicalInvestigator>();
         }
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
-        public string Source { get; set; }
         public List<ClinicalInvestigator> ClinicalInvestigatorInspectionList { get; set; }
     }
 
@@ -38,7 +27,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
-        public string Zipcode { get; set; }
+        public string Zip { get; set; }
         public string InspectionDate { get; set; }
         public string ClassificationType { get; set; }
         public string ClassificationCode { get; set; }
@@ -56,19 +45,19 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get
             {
                 return 
-                    "FullName: " + FullName + "~" +
+                    "Full Name: " + FullName + "~" +
                     "Name: " + Name + "~" +
-                    "IdNumber: " + IdNumber + "~" +
+                    "Id Number: " + IdNumber + "~" +
                     "Location: " + Location + "~" +
                     "Address: " + Address + "~" +
                     "City: " + City + "~" +
                     "State: " + State + "~" +
                     "Country: " + Country + "~" +
-                    "ZipCode: " + Zipcode + "~" +
-                    "InspectionDate: " + InspectionDate + "~" +
-                    "ClassificationType: " + ClassificationType + "~" +
-                    "ClassificationCode: " + ClassificationCode + "~" +
-                    "DeficiencyCode: " + DeficiencyCode; ;
+                    "Zip: " + Zip + "~" +
+                    "Inspection Date: " + InspectionDate + "~" +
+                    "Classification Type: " + ClassificationType + "~" +
+                    "Classification Code: " + ClassificationCode + "~" +
+                    "Deficiency Code: " + DeficiencyCode; ;
             }
         }
     }

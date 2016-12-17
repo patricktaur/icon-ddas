@@ -6,25 +6,13 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class SystemForAwardManagementPageSiteData //: AuditEntity<long?>
+    public class SystemForAwardManagementPageSiteData : BaseSiteData //: AuditEntity<long?>
     {
         public SystemForAwardManagementPageSiteData()
         {
             SAMSiteData = new List<SystemForAwardManagement>();
         }
-
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
-        public string Source { get; set; }
         public ICollection<SystemForAwardManagement> SAMSiteData { get; set; }
     }
 
@@ -56,18 +44,18 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get
             {
                 return 
-                    "FullName: " + FullName + "~" +
+                    "Full Name: " + FullName + "~" +
                     "Name: " + Entity + "~" +
                     "Duns: " + Duns + "~" +
-                    "HasActiveExclusion: " + HasActiveExclusion + "~" +
-                    "ExpirationDate: " + ExpirationDate + "~" +
-                    "PurposeOfRegistration: " + HasActiveExclusion + "~" +
-                    "CAGECode: " + HasActiveExclusion + "~" +
+                    "Has Active Exclusion?: " + HasActiveExclusion + "~" +
+                    "Expiration Date: " + ExpirationDate + "~" +
+                    "Purpose Of Registration: " + HasActiveExclusion + "~" +
+                    "CAGE Code: " + HasActiveExclusion + "~" +
                     "DoDAAC: " + HasActiveExclusion + "~" +
-                    "DelinquentFederalDebt: " + HasActiveExclusion + "~" +
+                    "Delinquent Federal Debt?: " + HasActiveExclusion + "~" +
                     "Classification: " + HasActiveExclusion + "~" +
-                    "ActivationDate: " + HasActiveExclusion + "~" +
-                    "TerminationDate: " + HasActiveExclusion;
+                    "Activation Date: " + HasActiveExclusion + "~" +
+                    "Termination Date: " + HasActiveExclusion;
             }
         }
 

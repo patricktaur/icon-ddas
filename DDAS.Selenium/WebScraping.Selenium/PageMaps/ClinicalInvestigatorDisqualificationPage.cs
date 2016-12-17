@@ -55,5 +55,14 @@ namespace WebScraping.Selenium.Pages
                 return Tables[3];
             }
         }
+
+        public IWebElement PageLastUpdatedTextElement
+        {
+            get
+            {
+                IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                return Element;
+            }
+        }
     }
 }

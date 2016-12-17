@@ -10,12 +10,17 @@ using System.Net;
 using System.IO.Compression;
 using System.IO;
 using System.Linq;
+using System.Globalization;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class ClinicalInvestigatorInspectionPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
+
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL,
             string szFileName, long dwReserved, long lpfnCB);
@@ -27,6 +32,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
             _clinicalSiteData.RecId = Guid.NewGuid();
+            _clinicalSiteData.ReferenceId = _clinicalSiteData.RecId;
             _clinicalSiteData.Source = driver.Url;
             //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
@@ -54,7 +60,33 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private void DownloadSDNList(string DownloadFolder)
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _clinicalSiteData;
+            }
+        }
+
+        private void DownloadCIIList(string DownloadFolder)
         {
             //string fileName = _folderPath + @"\test.pdf";
 
@@ -76,20 +108,18 @@ namespace WebScraping.Selenium.Pages
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        //this function currently not in use. Using the downloaded text file to save data
         private void LoadClinicalInvestigatorListAlt(string DownloadFolder)
         {
-            _clinicalSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _clinicalSiteData.CreatedBy = "Patrick";
-            _clinicalSiteData.CreatedOn = DateTime.Now;
-
             int RowNumber = 1;
 
             string[] LinesFromTextFile = File.ReadAllLines(DownloadFolder + "cliil.txt");
 
-            foreach (string line in LinesFromTextFile)
+            DateTime CurrentRowInspectionDate = new DateTime();
+
+            //foreach (string line in LinesFromTextFile)
+            for (int Counter = 0; Counter < LinesFromTextFile.Length; Counter++)
             {
-                string[] FieldData = line.Split('~');
+                string[] FieldData = LinesFromTextFile[Counter].Split('~');
 
                 var InvestigatorList = new ClinicalInvestigator();
 
@@ -97,6 +127,42 @@ namespace WebScraping.Selenium.Pages
                 {
                     if (FieldData[1].ToLower().Contains("last name"))
                         continue;
+
+                    string[] NextRowData = LinesFromTextFile[Counter + 1].Split('~');
+
+                    //CurrentRowInspectionDate = DateTime.ParseExact(
+                    //    FieldData[9],
+                    //    "MM/dd/yyyy", null);
+
+                    DateTime.TryParseExact(
+                        FieldData[9], "MM/dd/yyyy", null, 
+                        DateTimeStyles.None, out CurrentRowInspectionDate);
+
+                    string DeficiencyCode = null;
+                    int TempCounter = Counter + 1;
+
+                    while(FieldData[0] == NextRowData[0])
+                    {
+                        DateTime NextRowInspectionDate = new DateTime(); 
+
+                        DateTime.TryParseExact(
+                            NextRowData[9], "MM/dd/yyyy", null, DateTimeStyles.None,
+                            out NextRowInspectionDate);
+
+                        if (CurrentRowInspectionDate == NextRowInspectionDate)
+                        {
+                            if (DeficiencyCode == null)
+                                DeficiencyCode = FieldData[12] + "," + NextRowData[12];
+                            else
+                                DeficiencyCode += "," + NextRowData[12];
+
+                            TempCounter += 1;
+                            NextRowData = LinesFromTextFile[TempCounter].Split('~');
+                        }
+                        else
+                            break;
+                    }
+                    Counter = TempCounter - 1; //For the 'for' loop!
 
                     InvestigatorList.RowNumber = RowNumber;
                     InvestigatorList.IdNumber = FieldData[0];
@@ -106,30 +172,31 @@ namespace WebScraping.Selenium.Pages
                     InvestigatorList.City = FieldData[5];
                     InvestigatorList.State = FieldData[6];
                     InvestigatorList.Country = FieldData[7];
-                    InvestigatorList.Zipcode = FieldData[8];
+                    InvestigatorList.Zip = FieldData[8];
                     InvestigatorList.InspectionDate = FieldData[9];
                     InvestigatorList.ClassificationType = FieldData[10];
                     InvestigatorList.ClassificationCode = FieldData[11];
-                    InvestigatorList.DeficiencyCode = FieldData[12];
+
+                    if (DeficiencyCode != null)
+                        InvestigatorList.DeficiencyCode = DeficiencyCode;
+                    else
+                        InvestigatorList.DeficiencyCode = FieldData[12];
 
                     _clinicalSiteData.ClinicalInvestigatorInspectionList.Add(
                         InvestigatorList);
-                    RowNumber += 1;   
+                    RowNumber += 1;
                 }
             }
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
                 _clinicalSiteData.DataExtractionRequired = true;
-                if (_clinicalSiteData.DataExtractionRequired)
-                {
-                    LoadClinicalInvestigatorListAlt(DownloadFolder);
-                    _clinicalSiteData.DataExtractionSucceeded = true;
-                }
+                DownloadCIIList(DownloadFolder);
+                LoadClinicalInvestigatorListAlt(DownloadFolder);
+                _clinicalSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -140,12 +207,68 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_clinicalSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _clinicalSiteData.ReferenceId =
-                        _clinicalSiteData.RecId;
+                _clinicalSiteData.CreatedBy = "Patrick";
+                _clinicalSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        public void ReadSiteLastUpdatedDateFromPage()
+        {
+            //ClinicalInvestigatorInspectionSiteData ClinicalSiteData = null;
+
+            string[] DatabaseLastUpdated = DatabaseLastUpdatedElement.Text.Split(' ');
+
+            string LastUpdatedDate = 
+                DatabaseLastUpdated[DatabaseLastUpdated.Length - 1];
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(LastUpdatedDate, "M'/'d'/'yyyy", 
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+
+            //var ExistingClinicalSiteData =
+            //    _UOW.ClinicalInvestigatorInspectionListRepository.GetAll();
+
+            //if (ExistingClinicalSiteData.Count == 0)
+            //{
+            //    _clinicalSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //    _clinicalSiteData.DataExtractionRequired = true;
+            //}
+            //else
+            //{
+            //    ClinicalSiteData = ExistingClinicalSiteData.OrderByDescending(
+            //        x => x.CreatedOn).First();
+
+            //    if (RecentLastUpdatedDate > ClinicalSiteData.SiteLastUpdatedOn)
+            //    {
+            //        _clinicalSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //        _clinicalSiteData.DataExtractionRequired = true;
+            //    }
+            //    else
+            //    {
+            //        _clinicalSiteData.SiteLastUpdatedOn =
+            //            ClinicalSiteData.SiteLastUpdatedOn;
+            //        _clinicalSiteData.DataExtractionRequired = false;
+            //    }
+            //}
+
+            //if (!_clinicalSiteData.DataExtractionRequired)
+            //    _clinicalSiteData.ReferenceId = ClinicalSiteData.RecId;
+            //else
+            //    _clinicalSiteData.ReferenceId =
+            //        _clinicalSiteData.RecId;
+        }
+
+        public string GetSiteLastUpdatedDate()
+        {
+            string[] DatabaseLastUpdated = DatabaseLastUpdatedElement.Text.Split(' ');
+
+            string LastUpdatedDate = DatabaseLastUpdated[DatabaseLastUpdated.Length - 1];
+
+            return LastUpdatedDate;
         }
 
         private void AssignReferenceIdOfPreviousDocument()

@@ -15,6 +15,8 @@ namespace WebScraping.Selenium.Pages
     public partial class PHSAdministrativeActionListingPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public PHSAdministrativeActionListingPage(IWebDriver driver, IUnitOfWork uow)
             : base(driver)
@@ -23,6 +25,8 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
             _PHSAdministrativeSiteData.RecId = Guid.NewGuid();
+            _PHSAdministrativeSiteData.ReferenceId = 
+                _PHSAdministrativeSiteData.RecId;
             _PHSAdministrativeSiteData.Source = driver.Url;
         }
 
@@ -46,14 +50,36 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _PHSAdministrativeSiteData;
+            }
+        }
+
         private PHSAdministrativeActionListingSiteData _PHSAdministrativeSiteData;
 
         private void LoadAdministrativeActionList()
         {
-            _PHSAdministrativeSiteData.CreatedBy = "Patrick";
-            _PHSAdministrativeSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
-
             IList<IWebElement> TRs = PHSTable.FindElements(By.XPath("//tbody/tr"));
 
             int RowCount = 1;
@@ -77,6 +103,33 @@ namespace WebScraping.Selenium.Pages
                     AdministrativeActionListing.CorrectionOfArticle = TDs[8].Text;
                     AdministrativeActionListing.Memo = TDs[9].Text;
 
+                    if(IsElementPresent(TDs[0], By.XPath("a")))
+                    {
+                        IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
+                        Link link = new Link();
+                        link.Title = "Last Name";
+                        link.url = anchor.GetAttribute("href");
+                        AdministrativeActionListing.Links.Add(link);
+                    }
+
+                    if (IsElementPresent(TDs[1], By.XPath("a")))
+                    {
+                        IWebElement anchor = TDs[1].FindElement(By.XPath("a"));
+                        Link link = new Link();
+                        link.Title = "First Name";
+                        link.url = anchor.GetAttribute("href");
+                        AdministrativeActionListing.Links.Add(link);
+                    }
+
+                    if (IsElementPresent(TDs[2], By.XPath("a")))
+                    {
+                        IWebElement anchor = TDs[2].FindElement(By.XPath("a"));
+                        Link link = new Link();
+                        link.Title = "Middle Name";
+                        link.url = anchor.GetAttribute("href");
+                        AdministrativeActionListing.Links.Add(link);
+                    }
+
                     _PHSAdministrativeSiteData.PHSAdministrativeSiteData.Add
                         (AdministrativeActionListing);
                     RowCount = RowCount + 1;
@@ -86,15 +139,11 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
                 _PHSAdministrativeSiteData.DataExtractionRequired = true;
-                if (_PHSAdministrativeSiteData.DataExtractionRequired)
-                {
-                    LoadAdministrativeActionList();
-                    _PHSAdministrativeSiteData.DataExtractionSucceeded = true;
-                }
+                LoadAdministrativeActionList();
+                _PHSAdministrativeSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -105,11 +154,8 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_PHSAdministrativeSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _PHSAdministrativeSiteData.ReferenceId =
-                        _PHSAdministrativeSiteData.RecId;
+                _PHSAdministrativeSiteData.CreatedBy = "Patrick";
+                _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
             }
         }
 
@@ -125,6 +171,55 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW.PHSAdministrativeActionListingRepository.
                 Add(_PHSAdministrativeSiteData);
+        }
+
+        public void ReadSiteLastUpdatedDateFromPage()
+        {
+            string[] DataInPageLastUpdatedElement = 
+                PageLastUpdatedTextElement.Text.Split('-');
+
+            string PageLastUpdated =
+                DataInPageLastUpdatedElement[1].Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+
+            //var ExistingPHSSiteData = 
+            //    _UOW.PHSAdministrativeActionListingRepository.GetAll();
+
+            //PHSAdministrativeActionListingSiteData PHSSiteData = null;
+
+            //if (ExistingPHSSiteData.Count == 0)
+            //{
+            //    _PHSAdministrativeSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //    _PHSAdministrativeSiteData.DataExtractionRequired = true;
+            //}
+            //else
+            //{
+            //    PHSSiteData = ExistingPHSSiteData.OrderByDescending(
+            //        x => x.CreatedOn).First();
+
+            //    if (RecentLastUpdatedDate > PHSSiteData.SiteLastUpdatedOn)
+            //    {
+            //        _PHSAdministrativeSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //        _PHSAdministrativeSiteData.DataExtractionRequired = true;
+            //    }
+            //    else
+            //    {
+            //        _PHSAdministrativeSiteData.SiteLastUpdatedOn =
+            //            PHSSiteData.SiteLastUpdatedOn;
+            //        _PHSAdministrativeSiteData.DataExtractionRequired = false;
+            //    }
+            //}
+            //if (!_PHSAdministrativeSiteData.DataExtractionRequired)
+            //    _PHSAdministrativeSiteData.ReferenceId = PHSSiteData.RecId;
+            //else
+            //    _PHSAdministrativeSiteData.ReferenceId =
+            //        _PHSAdministrativeSiteData.RecId;
         }
     }
 }

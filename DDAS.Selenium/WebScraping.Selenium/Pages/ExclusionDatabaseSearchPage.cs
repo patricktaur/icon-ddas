@@ -8,6 +8,7 @@ using DDAS.Models;
 using System.Net;
 using System.IO;
 using System.Linq;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -15,6 +16,8 @@ namespace WebScraping.Selenium.Pages
     {
 
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public ExclusionDatabaseSearchPage(IWebDriver driver, IUnitOfWork uow) 
             : base(driver)
@@ -23,6 +26,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
             _exclusionSearchSiteData.RecId = Guid.NewGuid();
+            _exclusionSearchSiteData.ReferenceId = _exclusionSearchSiteData.RecId;
             _exclusionSearchSiteData.Source = driver.Url;
             //SaveScreenShot("ExclusionDatabaseSearch.png");
         }
@@ -49,6 +53,32 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _exclusionSearchSiteData;
+            }
+        }
+
         private string DownloadExclusionList(string DownloadFolder)
         {
             string fileName = DownloadFolder + "ExclusionDatabaseList.csv";
@@ -71,10 +101,6 @@ namespace WebScraping.Selenium.Pages
         private void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
         {
             string[] AllRecords = File.ReadAllLines(CSVFilePath);
-
-            _exclusionSearchSiteData.CreatedBy = "Patrick";
-            _exclusionSearchSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _exclusionSearchSiteData.CreatedOn = DateTime.Now;
 
             int RowNumber = 1;
             foreach (string Record in AllRecords)
@@ -119,16 +145,12 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
                 _exclusionSearchSiteData.DataExtractionRequired = true;
-                if (_exclusionSearchSiteData.DataExtractionRequired)
-                {
-                    string FilePath = DownloadExclusionList(DownloadFolder);
-                    LoadExclusionDatabaseListFromCSV(FilePath);
-                    _exclusionSearchSiteData.DataExtractionSucceeded = true;
-                }
+                string FilePath = DownloadExclusionList(DownloadFolder);
+                LoadExclusionDatabaseListFromCSV(FilePath);
+                _exclusionSearchSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -139,11 +161,8 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_exclusionSearchSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _exclusionSearchSiteData.ReferenceId =
-                        _exclusionSearchSiteData.RecId;
+                _exclusionSearchSiteData.CreatedBy = "Patrick";
+                _exclusionSearchSiteData.CreatedOn = DateTime.Now;
             }
         }
 
@@ -159,6 +178,54 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW.ExclusionDatabaseSearchRepository.Add(
                 _exclusionSearchSiteData);
+        }
+
+        public void ReadSiteLastUpdatedDateFromPage()
+        {
+            string PageLastUpdated  = 
+                PageLastUpdatedTextElement.Text.Replace("UPDATED ", "").
+                Replace("-","/").Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+
+            //var ExistingExclusionSiteData = 
+            //    _UOW.ExclusionDatabaseSearchRepository.GetAll();
+
+            //ExclusionDatabaseSearchPageSiteData ExclusionSiteData = null;
+
+            //if (ExistingExclusionSiteData.Count == 0)
+            //{
+            //    _exclusionSearchSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //    _exclusionSearchSiteData.DataExtractionRequired = true;
+            //}
+            //else
+            //{
+            //    ExclusionSiteData = ExistingExclusionSiteData.OrderByDescending(
+            //        x => x.CreatedOn).First();
+
+            //    if (RecentLastUpdatedDate > ExclusionSiteData.SiteLastUpdatedOn)
+            //    {
+            //        _exclusionSearchSiteData.SiteLastUpdatedOn = 
+            //            RecentLastUpdatedDate;
+            //        _exclusionSearchSiteData.DataExtractionRequired = true;
+            //    }
+            //    else
+            //    {
+            //        _exclusionSearchSiteData.SiteLastUpdatedOn =
+            //            ExclusionSiteData.SiteLastUpdatedOn;
+            //        _exclusionSearchSiteData.DataExtractionRequired = false;
+            //    }
+            //}
+            //if (!_exclusionSearchSiteData.DataExtractionRequired)
+            //    _exclusionSearchSiteData.ReferenceId = ExclusionSiteData.RecId;
+            //else
+            //    _exclusionSearchSiteData.ReferenceId =
+            //        _exclusionSearchSiteData.RecId;
         }
     }
 }

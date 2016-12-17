@@ -6,12 +6,15 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -44,6 +47,32 @@ namespace WebScraping.Selenium.Pages
             get
             {
                 return _FDAWarningSiteData.FDAWarningLetterList;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _FDAWarningSiteData;
             }
         }
 
@@ -91,10 +120,6 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadFDAWarningLetters()
         {
-            _FDAWarningSiteData.CreatedBy = "Patrick";
-            _FDAWarningSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _FDAWarningSiteData.CreatedOn = DateTime.Now;
-
             IList<IWebElement> TR = FDASortTable.FindElements(By.XPath("//tbody/tr"));
 
             for (int tableRow = 12; tableRow < TR.Count - 1; tableRow++)
@@ -109,7 +134,16 @@ namespace WebScraping.Selenium.Pages
                 FDAWarningList.IssuingOffice = TDs[2].Text;
                 FDAWarningList.Subject = TDs[3].Text;
                 FDAWarningList.ResponseLetterPosted = TDs[4].Text;
-                FDAWarningList.CloseOutDate = TDs[5].Text;
+                FDAWarningList.CloseoutDate = TDs[5].Text;
+
+                if (IsElementPresent(TDs[0], By.XPath("a")))
+                {
+                    IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
+                    Link link = new Link();
+                    link.Title = "Company";
+                    link.url = anchor.GetAttribute("href");
+                    FDAWarningList.Links.Add(link);
+                }
 
                 _FDAWarningSiteData.FDAWarningLetterList.Add(FDAWarningList);
                 RowNumber += 1;
@@ -132,6 +166,7 @@ namespace WebScraping.Selenium.Pages
                             LoadFDAWarningLetters();
                     }
                 }
+                _FDAWarningSiteData.DataExtractionRequired = true;
                 _FDAWarningSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
@@ -143,8 +178,24 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-
+                _FDAWarningSiteData.CreatedBy = "Patrick";
+                _FDAWarningSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        private void ReadSiteLastUpdatedDateFromPage()
+        {
+            string[] DataInPageLastUpdatedElement = PageLastUpdatedTextElement.Text.Split(':');
+
+            string PageLastUpdated =
+                DataInPageLastUpdatedElement[1].Replace("\r\nNote", "").Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
         }
 
         private void AssignReferenceIdOfPreviousDocument()
@@ -157,8 +208,7 @@ namespace WebScraping.Selenium.Pages
 
         public override void SaveData()
         {
-            if(_FDAWarningSiteData != null)
-                _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
+            _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
         }
     }
 }

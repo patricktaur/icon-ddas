@@ -3,6 +3,8 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Bson.Serialization.Serializers;
+using System;
 
 namespace DDAS.Data.Mongo.Maps
 {
@@ -10,6 +12,11 @@ namespace DDAS.Data.Mongo.Maps
     {
         public static void Initialize()
         {
+            BsonSerializer.RegisterSerializer(
+                typeof(DateTime), 
+                DateTimeSerializer.LocalInstance
+                );
+
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
                 map.AutoMap();
@@ -56,7 +63,7 @@ namespace DDAS.Data.Mongo.Maps
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
                   });
-
+                
             });
 
             BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>

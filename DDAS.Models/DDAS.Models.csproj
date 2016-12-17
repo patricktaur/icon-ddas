@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\AuditEntity.cs" />
+    <Compile Include="Entities\Domain\BaseSiteData.cs" />
     <Compile Include="Entities\Domain\SearchResult.cs" />
     <Compile Include="Entities\Domain\SiteData\AdequateAssuranceListSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\CBERClinicalInvestigatorInspectionSiteData.cs" />

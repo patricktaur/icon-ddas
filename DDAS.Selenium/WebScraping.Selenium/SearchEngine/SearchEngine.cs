@@ -12,6 +12,7 @@ using DDAS.Models;
 using DDAS.Services.Search;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -20,6 +21,7 @@ namespace WebScraping.Selenium.SearchEngine
         private IWebDriver _Driver;
         private IUnitOfWork _uow;
         private ISearchPage _searchPage;
+
         public SearchEngine(IUnitOfWork uow)
         {
             _uow = uow;
@@ -65,7 +67,7 @@ namespace WebScraping.Selenium.SearchEngine
             log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
             foreach (SearchQuerySite site in query.SearchSites)
             {
-                Load(site.SiteEnum, NameToSearch, DownloadFolder);                
+                Load(site.SiteEnum, NameToSearch, DownloadFolder, true);               
             }
         }
 
@@ -76,35 +78,46 @@ namespace WebScraping.Selenium.SearchEngine
             {
                 try
                 {
-                    log.WriteLog(DateTime.Now.ToString(), "Start extracting from:" + site.SiteEnum);
-                    Load(site.SiteEnum, query.NameToSearch, DownloadFolder);
-                    log.WriteLog(DateTime.Now.ToString(), "End extracting from:" + site.SiteEnum);
-                    SaveData();
-                    log.WriteLog("Data Saved");
+                    if(site.ExtractionMode.ToLower() == "db")
+                    {
+                        if (IsDataExtractionRequired(site.SiteEnum))
+                        {
+                            log.WriteLog(DateTime.Now.ToString(), "Start extracting from: " + site.SiteEnum);
+
+                            Load(site.SiteEnum, query.NameToSearch, DownloadFolder, true);
+
+                            log.WriteLog(DateTime.Now.ToString(), "End extracting from: " + site.SiteEnum);
+                        }
+                        else
+                            Load(site.SiteEnum, query.NameToSearch, DownloadFolder, false);
+
+                        SaveData();
+                        log.WriteLog("Data Saved");
+                    }
                 }
                 catch (WebDriverTimeoutException e)
                 {
-                    throw new Exception(e.ToString());
+                    log.WriteLog("Enable to extract data for: " + site.SiteEnum +
+                        "Error Details: " + e.ToString());
+                    continue;
+                    //throw new Exception(e.ToString());
                 }
             }
         }
 
         public void Load(SiteEnum siteEnum, string NameToSearch, 
-            string DownloadFolder)  //Load one
+            string DownloadFolder, bool ExtractData)  //Load one
         {
-            
+            var SiteData = _searchPage.baseSiteData;
+            SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
 
-            //var page = GetSearchPage(siteEnum);
-
-            //page.LoadContent(NameToSearch, DownloadFolder);
-
-            _searchPage = GetSearchPage(siteEnum);
-            _searchPage.LoadContent(NameToSearch, DownloadFolder);
-
-           
-
-            //page.SaveData();
-            //log.WriteLog( "Data Saved" );
+            if (ExtractData)
+                _searchPage.LoadContent(NameToSearch, DownloadFolder);
+            else
+            {
+                SiteData.CreatedOn = DateTime.Now;
+                SiteData.ReferenceId = GetRecIdOfPreviousDocument(siteEnum);
+            }
         }
         #endregion
 
@@ -141,7 +154,298 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
-         public IWebDriver Driver {
+        private DateTime? GetSiteLastUpdatedFromDatabase(SiteEnum siteEnum)
+        {
+            switch (siteEnum)
+            {
+                case SiteEnum.FDADebarPage:
+                    var Collection = _uow.FDADebarPageRepository.GetAll();
+
+                    if (Collection.Count == 0)
+                        return null;
+
+                    var SiteData = Collection.OrderByDescending(x => x.CreatedOn).First();
+                    return SiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    var AdequateAssuranceCollection = 
+                        _uow.AdequateAssuranceListRepository.GetAll();
+
+                    if (AdequateAssuranceCollection.Count == 0)
+                        return null;
+
+                    var AdequateSiteData = 
+                        AdequateAssuranceCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return AdequateSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    var DisqualificationSiteCollection = 
+                        _uow.ClinicalInvestigatorDisqualificationRepository.GetAll();
+
+                    if (DisqualificationSiteCollection.Count == 0)
+                        return null;
+
+                    var DisqualificationSiteData =
+                        DisqualificationSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return DisqualificationSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.ERRProposalToDebarPage:
+                    var ERRSiteCollection = 
+                        _uow.ERRProposalToDebarRepository.GetAll();
+
+                    if (ERRSiteCollection.Count == 0)
+                        return null;
+
+                    var ERRSiteData =
+                        ERRSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return ERRSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    var CIILSiteCollection = 
+                        _uow.ClinicalInvestigatorInspectionListRepository.GetAll();
+
+                    if (CIILSiteCollection.Count == 0)
+                        return null;
+
+                    var CIILSiteData =
+                        CIILSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return CIILSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    var CBERSiteCollection = 
+                        _uow.CBERClinicalInvestigatorRepository.GetAll();
+
+                    if (CBERSiteCollection.Count == 0)
+                        return null;
+
+                    var CBERSiteData =
+                        CBERSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return CBERSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    var ExclusionSiteCollection = 
+                        _uow.ExclusionDatabaseSearchRepository.GetAll();
+
+                    if (ExclusionSiteCollection.Count == 0)
+                        return null;
+
+                    var ExclusionSiteData =
+                        ExclusionSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return ExclusionSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    var SDNSiteCollection =
+                        _uow.SpeciallyDesignatedNationalsRepository.GetAll();
+
+                    if (SDNSiteCollection.Count == 0)
+                        return null;
+
+                    var SDNSiteData =
+                        SDNSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return SDNSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.FDAWarningLettersPage:
+                    var FDAWarningSiteCollection =
+                        _uow.FDAWarningLettersRepository.GetAll();
+
+                    if (FDAWarningSiteCollection.Count == 0)
+                        return null;
+
+                    var FDAWarningSiteData =
+                        FDAWarningSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return FDAWarningSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    var PHSSiteCollection =
+                        _uow.PHSAdministrativeActionListingRepository.GetAll();
+
+                    if (PHSSiteCollection.Count == 0)
+                        return null;
+
+                    var PHSSiteData =
+                        PHSSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return PHSSiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    var CIASiteCollection =
+                        _uow.CorporateIntegrityAgreementRepository.GetAll();
+
+                    if (CIASiteCollection.Count == 0)
+                        return null;
+
+                    var CIASiteData =
+                        CIASiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return CIASiteData.SiteLastUpdatedOn;
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    var SAMSiteCollection =
+                        _uow.SystemForAwardManagementRepository.GetAll();
+
+                    if (SAMSiteCollection.Count == 0)
+                        return null;
+
+                    var SAMSiteData =
+                        SAMSiteCollection.OrderByDescending(x => x.CreatedOn).First();
+
+                    return SAMSiteData.SiteLastUpdatedOn;
+
+                default: return null;
+            }
+        }
+
+        private Guid? GetRecIdOfPreviousDocument(SiteEnum siteEnum)
+        {
+            switch (siteEnum)
+            {
+                case SiteEnum.FDADebarPage:
+                    var FDASiteData =
+                    _uow.FDADebarPageRepository.GetAll().OrderByDescending(
+                        x => x.CreatedOn).First();
+
+                    return FDASiteData.RecId;
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    var AdequateSiteData =
+                    _uow.AdequateAssuranceListRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return AdequateSiteData.RecId;
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    var DisqualificationSiteData =
+                    _uow.ClinicalInvestigatorDisqualificationRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return DisqualificationSiteData.RecId;
+
+                case SiteEnum.ERRProposalToDebarPage:
+                    var ERRSiteData =
+                    _uow.ERRProposalToDebarRepository.GetAll().OrderByDescending(
+                        x => x.CreatedOn).First();
+
+                    return ERRSiteData.RecId;
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    var CIILSiteData =
+                    _uow.ClinicalInvestigatorInspectionListRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return CIILSiteData.RecId;
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    var CBERSiteData =
+                    _uow.CBERClinicalInvestigatorRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return CBERSiteData.RecId;
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    var ExclusionSiteData =
+                    _uow.ExclusionDatabaseSearchRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return ExclusionSiteData.RecId;
+
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    var SDNSiteData =
+                    _uow.SpeciallyDesignatedNationalsRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return SDNSiteData.RecId;
+
+                case SiteEnum.FDAWarningLettersPage:
+                    var FDAWarningSiteData =
+                    _uow.FDAWarningLettersRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return FDAWarningSiteData.RecId;
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    var PHSSiteData =
+                    _uow.PHSAdministrativeActionListingRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return PHSSiteData.RecId;
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    var CIASiteData =
+                    _uow.CorporateIntegrityAgreementRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return CIASiteData.RecId;
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    var SAMSiteData =
+                    _uow.SystemForAwardManagementRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).First();
+
+                    return SAMSiteData.RecId;
+
+                default: return null;
+            }
+        }
+
+        private void SaveSiteData(SiteEnum siteEnum)
+        {
+            switch (siteEnum)
+            {
+                case SiteEnum.FDADebarPage:
+
+                    //_uow.FDADebarPageRepository.Add(_searchPage.baseSiteData);
+
+                case SiteEnum.AdequateAssuranceListPage:
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+
+                case SiteEnum.ERRProposalToDebarPage:
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+
+                case SiteEnum.FDAWarningLettersPage:
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    break;
+
+            }
+        }
+
+        public bool IsDataExtractionRequired(SiteEnum siteEnum)
+        {
+            _searchPage = GetSearchPage(siteEnum);
+            var SiteUpdatedDateFromPage =
+                _searchPage.SiteLastUpdatedDateFromPage;
+
+            var SiteUpdatedDateFromDatabase =
+                GetSiteLastUpdatedFromDatabase(siteEnum);
+
+            if (SiteUpdatedDateFromDatabase == null ||
+                SiteUpdatedDateFromPage > SiteUpdatedDateFromDatabase)
+                return true;
+            else
+                return false;
+        }
+
+        public IWebDriver Driver {
             get { 
                 if (_Driver == null)
                 {
@@ -184,7 +488,6 @@ namespace WebScraping.Selenium.SearchEngine
             {
                 _Driver.Quit();
             }
-            
         }
 
         public void SaveData()

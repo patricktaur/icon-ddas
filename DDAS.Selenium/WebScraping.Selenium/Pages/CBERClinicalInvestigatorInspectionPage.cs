@@ -6,12 +6,15 @@ using DDAS.Models.Enums;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class CBERClinicalInvestigatorInspectionPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public CBERClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow) :
             base(driver)
@@ -20,6 +23,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
             _CBERSiteData.RecId = Guid.NewGuid();
+            _CBERSiteData.ReferenceId = _CBERSiteData.RecId;
             _CBERSiteData.Source = driver.Url;
             //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
@@ -43,6 +47,32 @@ namespace WebScraping.Selenium.Pages
             get
             {
                 return _CBERSiteData.ClinicalInvestigator;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _CBERSiteData;
             }
         }
 
@@ -71,10 +101,6 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadCBERClinicalInvestigators()
         {
-            _CBERSiteData.CreatedBy = "patrick";
-            _CBERSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _CBERSiteData.CreatedOn = DateTime.Now;
-
             foreach (IWebElement TR in 
                 CBERClinicalInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -98,15 +124,12 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
                 _CBERSiteData.DataExtractionRequired = true;
-                if (_CBERSiteData.DataExtractionRequired)
-                {
-                    LoadCBERClinicalInvestigators();
-                    _CBERSiteData.DataExtractionSucceeded = true;
-                }
+                //LoadCBERClinicalInvestigators();
+                LoadNextInspectionList();
+                _CBERSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -117,12 +140,58 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_CBERSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _CBERSiteData.ReferenceId =
-                        _CBERSiteData.RecId;
+                _CBERSiteData.CreatedBy = "Patrick";
+                _CBERSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        public  void ReadSiteLastUpdatedDateFromPage()
+        {
+            string[] DataInPageLastUpdatedElement = 
+                PageLastUpdatedTextElement.Text.Split(':');
+
+            string PageLastUpdated =
+                DataInPageLastUpdatedElement[1].Replace("\r\nNote", "").Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+
+            //var ExistingCBERSiteData = 
+            //    _UOW.CBERClinicalInvestigatorRepository.GetAll();
+
+            //CBERClinicalInvestigatorInspectionSiteData CBERSiteData = null;
+
+            //if (ExistingCBERSiteData.Count == 0)
+            //{
+            //    _CBERSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //    _CBERSiteData.DataExtractionRequired = true;
+            //}
+            //else
+            //{
+            //    CBERSiteData = ExistingCBERSiteData.OrderByDescending(
+            //        x => x.CreatedOn).First();
+
+            //    if (RecentLastUpdatedDate > CBERSiteData.SiteLastUpdatedOn)
+            //    {
+            //        _CBERSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //        _CBERSiteData.DataExtractionRequired = true;
+            //    }
+            //    else
+            //    {
+            //        _CBERSiteData.SiteLastUpdatedOn =
+            //            CBERSiteData.SiteLastUpdatedOn;
+            //        _CBERSiteData.DataExtractionRequired = false;
+            //    }
+            //}
+            //if (!_CBERSiteData.DataExtractionRequired)
+            //    _CBERSiteData.ReferenceId = CBERSiteData.RecId;
+            //else
+            //    _CBERSiteData.ReferenceId =
+            //        _CBERSiteData.RecId;
         }
 
         private void AssignReferenceIdOfPreviousDocument()

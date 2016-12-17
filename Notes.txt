@@ -458,4 +458,27 @@ Entry on 30 Nov 2016
 1. Unable to get the new design to work. Working on reading excel file and finding matched records for each
    investigator. Using spreadsheetlight to read excel data
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 12 Dec 2016
+1. Able to merge records which have same IdNumber and InspectionDate. Merging the DeficiencyCode for these
+   records into one for the site: ClinicalInvestigatorInspectionList
 
+-----------------------------------------------------------------------------------------------------------
+Entry on 13 Dec 2016
+1. Added the code to check the Page/Site/Database last updated date and extract the data accordingly. Only
+   if required for sites - FDADebar, CIIL and ERRProposalToDebar
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 14 Dec 2016
+1. Added a base class to all SiteData classes which will have common properties
+2. Working on reading PageLastUpdated from each site
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 15 Dec 2016
+1. SearchEngine is updated to provide SiteLastUpdatedDateFromDatabase. No conditions will be added to check
+   the date in each site/page. ExtractionRequired check will be done outside the selenium (site)  
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 16 Dec 2016
+1. Able to read and validate the Site last updated date from page and database. Extracting the data if 
+   required. Live sites yet to be done

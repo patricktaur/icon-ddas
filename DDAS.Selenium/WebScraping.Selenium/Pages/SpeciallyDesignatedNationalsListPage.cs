@@ -11,13 +11,17 @@ using DDAS.Models.Interfaces;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using OpenQA.Selenium;
-using System.IO;
+using DDAS.Models.Entities.Domain;
+using System.Globalization;
 
 namespace WebScraping.Selenium.Pages
 {
-    public partial class SpeciallyDesignatedNationalsListPage: ISearchPage
+    public partial class SpeciallyDesignatedNationalsListPage: ISearchPage //BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
+
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL, 
             string szFileName, long dwReserved, long lpfnCB);
@@ -30,6 +34,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _SDNSiteData = new SpeciallyDesignatedNationalsListSiteData();
             _SDNSiteData.RecId = Guid.NewGuid();
+            _SDNSiteData.ReferenceId = _SDNSiteData.RecId;
             _SDNSiteData.Source = driver.Url;
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
@@ -52,6 +57,32 @@ namespace WebScraping.Selenium.Pages
             get
             {
                 return _SDNSiteData.SDNListSiteData;
+            }
+        }
+
+        public DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _SDNSiteData;
             }
         }
 
@@ -80,10 +111,6 @@ namespace WebScraping.Selenium.Pages
 
             DateTime.TryParse(tempSiteDate, out SiteDateTime);
 
-            _SDNSiteData.CreatedBy = "Patrick";
-            _SDNSiteData.CreatedOn = DateTime.Now;
-            _SDNSiteData.SiteLastUpdatedOn = SiteDateTime;
-
             List<SDNList> Names = new List<SDNList>();
 
             StringBuilder text = new StringBuilder();
@@ -100,7 +127,7 @@ namespace WebScraping.Selenium.Pages
                     ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy(); 
                     PageContent = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
 
-                    Console.WriteLine(PageContent.Length);
+                    //Console.WriteLine(PageContent.Length);
 
                     string[] SplitNames = PageContent.Split(']');
 
@@ -128,23 +155,24 @@ namespace WebScraping.Selenium.Pages
 
         private bool CheckSiteUpdatedDate()
         {
-            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            return false;
+            //var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
-            if (SDNSiteData == null)
-                return false;
+            //if (SDNSiteData == null)
+            //    return false;
 
-            Console.WriteLine(SDNSiteUpdatedDate.Text.Replace("Last Updated: ", ""));
+            //Console.WriteLine(SDNSiteUpdatedDate.Text.Replace("Last Updated: ", ""));
 
-            string temp = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "");
+            //string temp = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "");
 
-            DateTime CurrentSiteUpdatedDate;
+            //DateTime CurrentSiteUpdatedDate;
 
-            DateTime.TryParse(temp, out CurrentSiteUpdatedDate);
+            //DateTime.TryParse(temp, out CurrentSiteUpdatedDate);
 
-            DateTime SiteUpdatedDate = SDNSiteData.SiteLastUpdatedOn;
+            //DateTime SiteUpdatedDate = SDNSiteData.SiteLastUpdatedOn;
 
-            return SiteUpdatedDate != CurrentSiteUpdatedDate ? false : true;
+            //return SiteUpdatedDate != CurrentSiteUpdatedDate ? false : true;
         }
 
         public void LoadContent(string NameToSearch, string DownloadFolder)
@@ -168,11 +196,8 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_SDNSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _SDNSiteData.ReferenceId =
-                        _SDNSiteData.RecId;
+                _SDNSiteData.CreatedBy = "Patrick";
+                _SDNSiteData.CreatedOn = DateTime.Now;
             }
         }
 
@@ -188,6 +213,19 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW.SpeciallyDesignatedNationalsRepository.
                 Add(_SDNSiteData);
+        }
+
+        public void ReadSiteLastUpdatedDateFromPage()
+        {
+            string temp = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "").Trim();
+
+            DateTime CurrentSiteUpdatedDate;
+
+            DateTime.TryParseExact(temp, "M'/'d'/'yyyy h:mm tt",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out CurrentSiteUpdatedDate);
+
+            _SiteLastUpdatedFromPage = CurrentSiteUpdatedDate;
         }
     }
 }
