@@ -691,8 +691,7 @@ namespace DDAS.Services.Search
                                 finding.SourceNumber = siteSource.DisplayPosition;
                                 finding.SiteEnum = siteSource.SiteEnum; //Pradeep 2Dec2016
 
-                                string RecordDetails = 
-                                    AddSpaceBetweenWords(rec.RecordDetails);
+                                string RecordDetails = rec.RecordDetails;
 
                                 finding.RecordDetails = RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
