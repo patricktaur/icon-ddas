@@ -16,15 +16,16 @@ namespace DDAS.Services.Search
             _UOW = UOW;
         }
 
-        public void GetComplianceForm(Guid? ComplianceFormId)
-        {
-            var complianceform = 
-                _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+        //Not called - can be deleted.
+        //public void GetComplianceForm(Guid? ComplianceFormId)
+        //{
+        //    var complianceform = 
+        //        _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var WordTemplate = new CreateComplianceForm();
+        //    var WordTemplate = new CreateComplianceForm();
 
-            WordTemplate.ReplaceTextFromWord(complianceform);
+        //    WordTemplate.ReplaceTextFromWord(complianceform);
 
-        }
+        //}
     }
 }

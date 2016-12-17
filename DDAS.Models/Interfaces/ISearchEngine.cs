@@ -10,17 +10,21 @@ namespace DDAS.Models.Interfaces
         //SearchResult SearchByName(string NameToSearch);
         //SearchResult SearchByName(string NameToSearch, List<SiteEnum> siteEnums);
         
-        bool SearchByName(string NameToSearch, SiteEnum siteEnum);
-        SearchResult SearchByName(SearchQuery searchQuery);
+        //bool SearchByName(string NameToSearch, SiteEnum siteEnum);
+        //SearchResult SearchByName(SearchQuery searchQuery);
         //SearchQuery GetNewSearchQuery();
 
         void Load(string NameToSearch, string DownloadFolder, ILog log);
 
-        void Load(SearchQuery query, string DownloadFolder, ILog log);
+        //void Load(SearchQuery query, string DownloadFolder, ILog log);
 
         void Load(
             SiteEnum siteEnum, string NameToSearch, 
             string DownloadFolder, bool IsExtractionRequired); //Pradeep 15Dec2016
+
+        //void Load(string NameToSearch, string DownloadFolder, ILog log);
+        void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log);
+        //void Load(SiteEnum siteEnum, string NameToSearch, string DownloadFolder);
 
         IEnumerable<SiteDataItemBase> SiteData { get; }
 

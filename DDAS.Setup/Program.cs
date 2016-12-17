@@ -22,7 +22,7 @@ namespace DDAS.Setup
         static void Main(string[] args)
         {
 
-            //System.Reflection.Assembly.GetExecutingAssembly().Location
+            
             try
             {
                 string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -43,6 +43,7 @@ namespace DDAS.Setup
                     CreateFolder(DownloadFolder);
                     string UploadFolder = GetWebConfigAppSetting(configFile, "UploadFolder");
                     CreateFolder(UploadFolder);
+
 
                     //Initialize DB
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");

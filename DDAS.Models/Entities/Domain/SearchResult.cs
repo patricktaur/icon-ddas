@@ -10,7 +10,6 @@ namespace DDAS.Models.Entities.Domain
 {
     #region SearchQuery
 
-   
     public class SearchQuery
     {
         public string NameToSearch { get; set; }
@@ -21,11 +20,11 @@ namespace DDAS.Models.Entities.Domain
     public class SearchQuerySite
     {
         public string SiteName { get; set; }
-        public bool IsOptional { get; set; }
+        //public bool IsOptional { get; set; }
         public string ExtractionMode { get; set; }
         public bool Mandatory { get; set; }
         public string SiteShortName { get; set; }
-        public bool Selected { get; set; }
+        //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
         public string SearchTimeTakenInMs { get; set; }
@@ -156,6 +155,14 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public string Institute { get; set; }
         public DateTime SearchStartedOn { get; set; }
+
+        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        public int ExtractionErrorInvestigatorCount { get; set; }
+        public int FullMatchesFoundInvestigatorCount { get; set; }
+        public int PartialMatchesFoundInvestigatorCount { get; set; }
+        public int IssuesFoundInvestigatorCount { get; set; }
+        public int ReviewCompletedInvestigatorCount { get; set; }
+
         //public DateTime SearchClosedOn { get; set; }
         //public DateTime DataExtractedOn { get; set; }
         //public string Sites_MatchStatus { get; set; }
@@ -197,11 +204,20 @@ namespace DDAS.Models.Entities.Domain
         public string Role { get; set; }
         public string Qualification { get; set; }
         public string MedicalLiceseNumber { get; set; }
+      
+        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        public bool HasExtractionError { get; set; }
+        public int ExtractionErrorSiteCount { get; set; }
+        //public int MatchesFoundSiteCount { get; set; }
+
         public int Sites_FullMatchCount { get; set; }
         public int Sites_PartialMatchCount { get; set; }
-        public bool AllSitesProcessed { get; set; }
+        public int IssuesFoundSiteCount { get; set; }
+        public int ReviewCompletedSiteCount { get; set; }
+
         public int TotalIssuesFound { get; set; }
-        
+        public int ReviewCompletedCount { get; set; }
+
         //Patrick 27NOvb2016: - to be removed:
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
 
@@ -217,6 +233,7 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum siteEnum { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
+        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' or has errors.
         public bool HasExtractionError { get; set; }
         public string ExtractionErrorMessage { get; set; }
         public int FullMatchCount { get; set; }
@@ -367,6 +384,8 @@ namespace DDAS.Models.Entities.Domain
             get { return _roles ?? (_roles = new List<Role>()); }
             set { _roles = value; }
         }
+
+
 
     }
 

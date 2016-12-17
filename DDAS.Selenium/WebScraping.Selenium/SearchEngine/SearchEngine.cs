@@ -60,7 +60,18 @@ namespace WebScraping.Selenium.SearchEngine
 
         #region Load
 
-        public void Load(string NameToSearch, string DownloadFolder, ILog log) //LoadAll
+        //public void Load(string NameToSearch, string DownloadFolder, ILog log) //LoadAll
+        //{
+        //    var query = SearchSites.GetNewLiveSiteSearchQuery();
+
+        //    log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
+        //    foreach (SearchQuerySite site in query.SearchSites)
+        //    {
+        //        Load(site.SiteEnum, NameToSearch, DownloadFolder);                
+        //    }
+        //}
+
+        public void Load(string NameToSearch, string DownloadFolder, ILog log)  //Load some
         {
             var query = SearchSites.GetNewLiveSiteSearchQuery();
 
@@ -71,10 +82,12 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
-        public void Load(SearchQuery query, string DownloadFolder, ILog log)  //Load some
+        public void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log)  //Load some
         {
-            log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
-            foreach (SearchQuerySite site in query.SearchSites)
+            var DBSites = query.Where(x => x.ExtractionMode == "DB").ToList();
+
+            log.WriteLog("Processing:" + DBSites.Count + " sites");
+            foreach (SearchQuerySite site in DBSites)
             {
                 try
                 {
@@ -84,12 +97,12 @@ namespace WebScraping.Selenium.SearchEngine
                         {
                             log.WriteLog(DateTime.Now.ToString(), "Start extracting from: " + site.SiteEnum);
 
-                            Load(site.SiteEnum, query.NameToSearch, DownloadFolder, true);
+                            Load(site.SiteEnum, "", DownloadFolder, true);
 
                             log.WriteLog(DateTime.Now.ToString(), "End extracting from: " + site.SiteEnum);
                         }
                         else
-                            Load(site.SiteEnum, query.NameToSearch, DownloadFolder, false);
+                            Load(site.SiteEnum, "", DownloadFolder, false);
 
                         SaveData();
                         log.WriteLog("Data Saved");

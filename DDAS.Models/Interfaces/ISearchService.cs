@@ -6,19 +6,12 @@ using System.IO;
 
 namespace DDAS.Models.Interfaces
 {
-    public interface ISearchSummary
+    public interface ISearchService
     {
         ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
         ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
             Guid? ComplianceFormId, SiteEnum Enum, ILog log);
-
-        SitesIncludedInSearch GetMatchedRecords(
-            string NameToSearch, Guid? DataId, SiteEnum Enum);
-
-
-        bool SaveRecordStatus(string NameToSearch, 
-            SitesIncludedInSearch Result, Guid? ComplianceFormId);
 
         List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
 
@@ -34,11 +27,11 @@ namespace DDAS.Models.Interfaces
         //Pradeep 1Dec2016
         List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log);
 
-        ComplianceForm UpdateFindings(ComplianceForm form);
+        ComplianceForm RollUpSummary(ComplianceForm form);
 
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
 
         //To be removed
-        string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder); 
+        string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder); 
     }
 }

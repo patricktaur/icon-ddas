@@ -77,7 +77,7 @@
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\ISearchEngine.cs" />
     <Compile Include="Interfaces\ISearchPage.cs" />
-    <Compile Include="Interfaces\ISearchSummary.cs" />
+    <Compile Include="Interfaces\ISearchService.cs" />
     <Compile Include="Interfaces\ISiteSummary.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
