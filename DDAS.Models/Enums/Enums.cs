@@ -34,4 +34,13 @@
         SriLankaMedicalCouncilPage,
         HealthGuideUSAPage
     };
+
+    public enum ColorEnum
+    {
+        Grey,
+        Green,
+        LightGreen,
+        Red,
+        LightRed
+    }
 }

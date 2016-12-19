@@ -12,6 +12,7 @@ using DDAS.Models;
 using DDAS.Services.Search;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -71,8 +72,10 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log)  //Load some
         {
-            log.WriteLog("Processing:" + query.Count + " sites");
-            foreach (SearchQuerySite site in query)
+            
+            var sites = query.Where(x => x.ExtractionMode == "DB");
+            log.WriteLog("Processing:" + sites.Count() + " sites");
+            foreach (SearchQuerySite site in query.Where(x => x.ExtractionMode == "DB"))
             {
                 try
                 {

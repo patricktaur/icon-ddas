@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
+using System.Diagnostics;
+using System.Threading;
 
 namespace DDAS.DataExtractor
 {
@@ -77,7 +79,7 @@ namespace DDAS.DataExtractor
                 else
                 {
                     var query = SearchSites.GetNewSearchQuery();
-                    searchEngine.Load(query, DownloadFolder, _WriteLog);
+                    //searchEngine.Load(query, DownloadFolder, _WriteLog);
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
 
@@ -92,6 +94,7 @@ namespace DDAS.DataExtractor
             {
                 _WriteLog.WriteLog("=================================================================================");
                 _WriteLog.LogEnd();
+                ForcedCleanUp();
                 Environment.Exit(0);
             }
             
@@ -159,6 +162,30 @@ namespace DDAS.DataExtractor
                 }
             }
 
+        }
+
+        static void ForcedCleanUp()
+        {
+   
+            ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
+            foreach (ProcessThread thread in currentThreads)
+            {
+                thread.Dispose();
+            }
+
+            //foreach (Thread thread in currentThreads)
+            //{
+            //    //thread.Interupt(); // If thread is waiting, stop waiting
+            //    //thread.Interrupt();
+
+            //    // or
+
+            //    thread.Abort(); // Terminate thread immediately 
+
+            //    // or
+            //    //thread.IsBackground = true;
+                
+            //}
         }
 
     }

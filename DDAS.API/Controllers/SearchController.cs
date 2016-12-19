@@ -53,13 +53,7 @@ namespace DDAS.API.Controllers
             _SiteSummary = SiteSummary;
         }
 
-        [Route("Test")]
-
-        [HttpGet]
-        public IHttpActionResult Test() {
-            return Ok("Test Call");
-        }
-
+    
         #region MoveToAccountsController
         [Route("GetUsers")]
         [HttpGet]
@@ -504,12 +498,23 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
         {
-            Guid? RecId = Guid.Parse(ComplianceFormId);
+            try
+            {
+               
+                Guid? RecId = Guid.Parse(ComplianceFormId);
 
-            var FilePath = _SearchService.GenerateComplianceFormAlt(
-                Guid.Parse(ComplianceFormId), TemplatesFolder, DownloadFolder);
+                var FilePath = _SearchService.GenerateComplianceFormAlt(
+                    Guid.Parse(ComplianceFormId), TemplatesFolder, DownloadFolder);
 
-            return Ok(FilePath);
+                return Ok(FilePath);
+            }
+            catch (Exception e)
+            {
+                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                //    "Error Details: " + e.Message);
+                return  Content(HttpStatusCode.BadRequest, e.Message);
+            }
+        
         }
 
         //3Dec2016

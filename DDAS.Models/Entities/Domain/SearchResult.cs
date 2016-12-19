@@ -186,6 +186,7 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public string Status { get; set; }
+        public ColorEnum StatusColor { get; set; }
     }
 
     
@@ -222,9 +223,10 @@ namespace DDAS.Models.Entities.Domain
 
         public bool Deleted { get; set; }
         public List<SiteSearchStatus> SitesSearched { get; set; }
-
+  
     }
 
+  
     //Patrick 01Dec2016 - new props added:
     public class SiteSearchStatus
     {
@@ -239,6 +241,9 @@ namespace DDAS.Models.Entities.Domain
         public int PartialMatchCount { get; set; }
         public int IssuesFound { get; set; }
         public bool ReviewCompleted { get; set; }
+
+        public DateTime SiteSourceUpdatedOn { get; set; }
+        public string ExtractionMode { get; set; }
     }
 
     public class SitesIncludedInSearch

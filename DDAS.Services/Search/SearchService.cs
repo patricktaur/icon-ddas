@@ -456,10 +456,9 @@ namespace DDAS.Services.Search
                                 finding.SourceNumber = siteSource.DisplayPosition;
                                 finding.SiteEnum = siteSource.SiteEnum; //Pradeep 2Dec2016
 
-                                string RecordDetails =
-                                    AddSpaceBetweenWords(rec.RecordDetails);
+                                //string RecordDetails =   AddSpaceBetweenWords(rec.RecordDetails);
 
-                                finding.RecordDetails = RecordDetails;
+                                finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
 
                                 //Patrick 04Dec2016
@@ -468,7 +467,11 @@ namespace DDAS.Services.Search
                                 finding.InvestigatorName = inv.Name;
                                 frm.Findings.Add(finding);
                             }
-
+                            //Review:
+                            //siteSource.SiteSourceUpdatedOn' is the date of update at the time of creation of CompForm
+                            //
+                            //replace  '= siteSource.SiteSourceUpdatedOn' SiteSourceUpdatedOn at the time of data extraction
+                            searchStatus.SiteSourceUpdatedOn = siteSource.SiteSourceUpdatedOn;
                             searchStatus.HasExtractionError = false;
                             searchStatus.ExtractionErrorMessage = "";
                             
@@ -518,7 +521,6 @@ namespace DDAS.Services.Search
             //Adds SearchStatus Records if not found for an investigator.
             //This will happen when new investigator is added or new sites are added from the client side
 
-
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
                 foreach (SiteSource site in frm.SiteSources)
@@ -531,6 +533,7 @@ namespace DDAS.Services.Search
                         searchStatus.SiteName = site.SiteName;
                         searchStatus.SiteUrl = site.SiteUrl;
                         searchStatus.DisplayPosition = site.DisplayPosition;
+                        searchStatus.ExtractionMode = site.ExtractionMode;
                         inv.SitesSearched.Add(searchStatus);
                     }
                 }
@@ -653,29 +656,35 @@ namespace DDAS.Services.Search
                 }
                 if (ReviewCompleted == true)
                 {
-                    item.Status = "Issues Not Identified";
+                    item.Status = "Review completed, Issues Not Identified";
+                    item.StatusColor = ColorEnum.Green;
                     if (compForm.IssuesFoundInvestigatorCount > 0)
                     {
-                        item.Status = "Issues Identified";
+                        item.Status = "Review completed, Issues Identified";
+                        item.StatusColor = ColorEnum.Red;
                     }
                 }
                 else if (compForm.ExtractedOn == null)
                 {
                     item.Status = "Data not extracted";
+                    item.StatusColor = ColorEnum.Grey;
                 }
                 else
                 {
                     if (compForm.FullMatchesFoundInvestigatorCount > 0)
                     {
-                        item.Status = "Full Match Found";
+                        item.Status = "Full Match Found, Review Pending";
+                        item.StatusColor = ColorEnum.LightRed;
                     }
                     else if (compForm.FullMatchesFoundInvestigatorCount > 0)
                     {
-                        item.Status = "Partial Match Found";
+                        item.Status = "Partial Match Found, Review Pending";
+                        item.StatusColor = ColorEnum.LightRed;
                     }
                     else
                     {
-                        item.Status = "No Match Found";
+                        item.Status = "No Match Found, Review Pending";
+                        item.StatusColor = ColorEnum.LightGreen;
                     }
                 }
 
