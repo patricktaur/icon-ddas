@@ -424,8 +424,7 @@ namespace DDAS.Services.Search
                     }
 
                     if (searchRequired == true)
-                    {
-    
+                    {    
                         try
                         {
                             //clear previously added matching records.
@@ -445,7 +444,6 @@ namespace DDAS.Services.Search
 
                             inv.Id = InvestigatorId;
 
-                           
 
                             //To-Do: convert matchedRecords to Findings
                             foreach (MatchedRecord rec in MatchedRecords)
@@ -469,8 +467,7 @@ namespace DDAS.Services.Search
                             }
 
                             searchStatus.HasExtractionError = false;
-                            searchStatus.ExtractionErrorMessage = "";
-                            
+                            searchStatus.ExtractionErrorMessage = "";                            
                         }
                         catch (Exception ex)
                         {

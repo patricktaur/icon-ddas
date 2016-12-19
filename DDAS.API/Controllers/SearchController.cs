@@ -205,7 +205,7 @@ namespace DDAS.API.Controllers
 
                     FileContent = File.ReadAllLines(file.LocalFileName);
                     Trace.WriteLine(FileContent);
-                    _log.WriteLog("FileContent Length: " + FileContent.Length);
+                    //_log.WriteLog("FileContent Length: " + FileContent.Length);
 
                     var forms = _SearchService.ReadUploadedFileData(file.LocalFileName,
                         _log);
