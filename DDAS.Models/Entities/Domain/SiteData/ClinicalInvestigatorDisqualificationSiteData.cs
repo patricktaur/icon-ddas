@@ -6,27 +6,15 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class ClinicalInvestigatorDisqualificationSiteData //: AuditEntity<long?>
+    public class ClinicalInvestigatorDisqualificationSiteData : BaseSiteData //: AuditEntity<long?>
     {
         public ClinicalInvestigatorDisqualificationSiteData()
         {
             DisqualifiedInvestigatorList = new List<DisqualifiedInvestigator>();
         }
-
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
         public List<DisqualifiedInvestigator> 
             DisqualifiedInvestigatorList { get; set; }
-        public string Source { get; set; }
     }
 
     public class DisqualifiedInvestigator : SiteDataItemBase
@@ -53,14 +41,14 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get
             {
                 return 
-                    "FullName: " + FullName + "~" +
+                    "Full Name: " + FullName + "~" +
                     "Name: " + Name + "~" +
                     "Center: " + Center + "~" +
-                    "DateOfStatus: " + DateOfStatus + "~" +
-                    "DateNIDPOEIssued: " + DateNIDPOEIssued + "~" +
-                    "DateNOOHIssued: " + DateNOOHIssued + "~" +
-                    "LinkToNIDPOELetter: " + LinkToNIDPOELetter + "~" +
-                    "LinkToNOOHLetter: " + LinkToNOOHLetter;
+                    "Date Of Status: " + DateOfStatus + "~" +
+                    "Date NIDPOE Issued: " + DateNIDPOEIssued + "~" +
+                    "Date NOOH Issued: " + DateNOOHIssued + "~" +
+                    "Link To NIDPOE Letter: " + LinkToNIDPOELetter + "~" +
+                    "Link To NOOH Letter: " + LinkToNOOHLetter;
             }
         }
     }

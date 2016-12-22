@@ -102,6 +102,15 @@ namespace DDAS.Services.Search
                     new SearchQuerySite { Mandatory = true,  ExtractionMode = "DB", SiteName="LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName="SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl="http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx" },
 
                     //Manual sites
+
+                    new SearchQuerySite {Mandatory = false, ExtractionMode = "Manual", SiteName="Pfizer DMC Checks", SiteShortName="Pfizer DMC Checks", SiteEnum = SiteEnum.PfizerDMCChecksPage, SiteUrl=" http://ecf12.pfizer.com/sites/clinicaloversightcommittees/default.aspx" },
+
+                    new SearchQuerySite {Mandatory = false, ExtractionMode = "Manual", SiteName="Pfizer Unavailable Checks", SiteShortName="Pfizer DMC Checks", SiteEnum = SiteEnum.PfizerUnavailableChecksPage, SiteUrl="http://ecf12.pfizer.com/" },
+
+                    new SearchQuerySite {Mandatory = false, ExtractionMode = "Manual", SiteName="GSK Do Not Use Check", SiteShortName="GSK DNU Check", SiteEnum = SiteEnum.GSKDoNotUseCheckPage, SiteUrl="" },
+
+                    new SearchQuerySite {Mandatory = false, ExtractionMode = "Manual", SiteName="Regeneron Usability Check", SiteShortName="Regeneron Usability Check", SiteEnum = SiteEnum.RegeneronUsabilityCheckPage, SiteUrl="" },
+
                     new SearchQuerySite { Mandatory = false,  ExtractionMode = "Manual", SiteName="AUSTRALIAN HEALTH PRACTITIONER REGULATION AGENCY", SiteShortName="HEALTH PRACTITIONER ...", SiteEnum = SiteEnum.AustralianHealthPratitionerRegulationPage, SiteUrl="http://www.ahpra.gov.au/Registration/Registers-of-Practitioners.aspx" },
 
                     new SearchQuerySite { Mandatory = false,  ExtractionMode = "Manual", SiteName="Belgium1 - ZOEK EEN ARTS", SiteShortName="ZOEK EEN ARTS", SiteEnum = SiteEnum.ZoekEenArtsPage, SiteUrl="https://ordomedic.be/nl/zoek-een-arts/" },

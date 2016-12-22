@@ -55,7 +55,7 @@ namespace DDAS.Setup
                     CreateRole("admin");
                     CreateRole("user");
                     CreateUser("clarityadmin", "admin", "Clarity@148");
-                    CreateUser("Patrick", "user", "Clarity@148");
+                    CreateUser("Patrick", "admin", "Clarity@148");
                     CreateUser("Ravi", "user", "Clarity@148");
                     CreateUser("User1", "user", "User1!234");
                     CreateUser("User2", "user", "User2!234");

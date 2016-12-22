@@ -20,5 +20,14 @@ namespace WebScraping.Selenium.Pages
                 return Tables[0];
             }
         }
+
+        public IWebElement PageLastUpdatedTextElement
+        {
+            get
+            {
+                IList<IWebElement> Elements = driver.FindElements(By.XPath("//small"));
+                return Elements[0];
+            }
+        }
     }
 }

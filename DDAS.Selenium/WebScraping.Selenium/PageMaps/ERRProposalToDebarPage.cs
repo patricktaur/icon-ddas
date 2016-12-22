@@ -19,5 +19,15 @@ namespace WebScraping.Selenium.Pages
                 return Tables[0];
             }
         }
+
+        public IWebElement PageLastUdpatedElement
+        {
+            get
+            {
+                string XPathValue = "//div[@id='pagetools_right']/p";
+                IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
+                return Elements[0];
+            }
+        }
     }
 }

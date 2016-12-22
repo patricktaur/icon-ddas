@@ -6,12 +6,15 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class ERRProposalToDebarPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public ERRProposalToDebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -19,6 +22,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
             _proposalToDebarSiteData.RecId = Guid.NewGuid();
+            _proposalToDebarSiteData.ReferenceId = _proposalToDebarSiteData.RecId;
             _proposalToDebarSiteData.Source = driver.Url;
             //SaveScreenShot("ProposalToDebarPage.png");
         }
@@ -44,14 +48,36 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _proposalToDebarSiteData;
+            }
+        }
+
         private ERRProposalToDebarPageSiteData _proposalToDebarSiteData;
 
         private void LoadProposalToDebarList()
         {
-            _proposalToDebarSiteData.CreatedBy = "Patrick";
-            _proposalToDebarSiteData.SiteLastUpdatedOn = DateTime.Now;
-            _proposalToDebarSiteData.CreatedOn = DateTime.Now;
-
             foreach (IWebElement TR in ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")))
             {
                 var proposalToDebarList = new ProposalToDebar();
@@ -62,21 +88,30 @@ namespace WebScraping.Selenium.Pages
                 proposalToDebarList.date = TDs[2].Text;
                 proposalToDebarList.IssuingOffice = TDs[3].Text;
 
+                if (IsElementPresent(TDs[0], By.XPath("p/a")))
+                {
+                    Link link = new Link();
+                    IList<IWebElement> anchors = TDs[0].FindElements(By.XPath("a"));
+
+                    foreach (IWebElement anchor in anchors)
+                    {
+                        link.Title = "Name - " + anchor.Text;
+                        link.url = anchor.GetAttribute("href");
+                        proposalToDebarList.Links.Add(link);
+                    }
+                }
+
                 _proposalToDebarSiteData.ProposalToDebar.Add(proposalToDebarList);
             }
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
                 _proposalToDebarSiteData.DataExtractionRequired = true;
-                if (_proposalToDebarSiteData.DataExtractionRequired)
-                {
-                    LoadProposalToDebarList();
-                    _proposalToDebarSiteData.DataExtractionSucceeded = true;
-                }
+                LoadProposalToDebarList();
+                _proposalToDebarSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -87,12 +122,61 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_proposalToDebarSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _proposalToDebarSiteData.ReferenceId =
-                        _proposalToDebarSiteData.RecId;
+                _proposalToDebarSiteData.CreatedBy = "Patrick";
+                _proposalToDebarSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        public void ReadSiteLastUpdatedDateFromPage()
+        {
+            string[] PageLastUpdated = PageLastUdpatedElement.Text.Split(':');
+
+            var SiteLastUpdated = PageLastUpdated[1].Replace("\r\nNote", "").Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(SiteLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+
+            //var ExistingERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll();
+
+            //if (ExistingERRSiteData.Count == 0)
+            //{
+            //    _proposalToDebarSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //    _proposalToDebarSiteData.DataExtractionRequired = true;
+            //}
+            //else
+            //{
+            //    ERRSiteData = ExistingERRSiteData.OrderByDescending(
+            //        x => x.CreatedOn).First();
+
+            //    if (RecentLastUpdatedDate > ERRSiteData.SiteLastUpdatedOn)
+            //    {
+            //        _proposalToDebarSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
+            //        _proposalToDebarSiteData.DataExtractionRequired = true;
+            //    }
+            //    else
+            //    {
+            //        _proposalToDebarSiteData.SiteLastUpdatedOn =
+            //            ERRSiteData.SiteLastUpdatedOn;
+            //        _proposalToDebarSiteData.DataExtractionRequired = false;
+            //    }
+            //}
+
+            //if (!_proposalToDebarSiteData.DataExtractionRequired)
+            //    _proposalToDebarSiteData.ReferenceId = ERRSiteData.RecId;
+            //else
+            //    _proposalToDebarSiteData.ReferenceId =
+            //        _proposalToDebarSiteData.RecId;
+        }
+
+        public string GetSiteLastUpdatedDate()
+        {
+            string[] PageLastUpdated = PageLastUdpatedElement.Text.Split(':');
+
+            return PageLastUpdated[1].Replace("\r\nNote", "");
         }
 
         private void AssignReferenceIdOfPreviousDocument()

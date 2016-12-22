@@ -6,24 +6,13 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class SpeciallyDesignatedNationalsListSiteData
+    public class SpeciallyDesignatedNationalsListSiteData : BaseSiteData
     {
         public SpeciallyDesignatedNationalsListSiteData()
         {
             SDNListSiteData = new List<SDNList>();
         }
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
-        public string Source { get; set; }
         public List<SDNList> SDNListSiteData { get; set; }
     }
 
@@ -48,11 +37,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get
             {
                 return 
-                    "FullName: " + FullName + "~" +
+                    "Full Name: " + FullName + "~" +
                     "Name: " + Name + "~" +
-                    "PageNumber: " + PageNumber + "~" +
-                    "RecordNumber: " + RecordNumber + "~" +
-                    "WordsMatched: " + WordsMatched;
+                    "Page Number: " + PageNumber + "~" +
+                    "Record Number: " + RecordNumber + "~" +
+                    "Words Matched: " + WordsMatched;  //???? Pradeep 14Dec2016
             }
         }
     }

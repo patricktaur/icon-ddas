@@ -16,6 +16,8 @@ namespace WebScraping.Selenium.Pages
     public partial class AdequateAssuranceListPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -23,6 +25,8 @@ namespace WebScraping.Selenium.Pages
             Open();
             _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
             _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
+            _adequateAssuranceListSiteData.ReferenceId =
+                _adequateAssuranceListSiteData.RecId;
             SavePageImage();
             _adequateAssuranceListSiteData.Source = driver.Url;
             //SaveScreenShot("AdequateAssuranceListPage.png");
@@ -50,13 +54,36 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _adequateAssuranceListSiteData;
+            }
+        }
+
         private AdequateAssuranceListSiteData _adequateAssuranceListSiteData;
 
         private void LoadAdequateAssuranceInvestigators()
         {
-            _adequateAssuranceListSiteData.CreatedOn = DateTime.Now;
-            _adequateAssuranceListSiteData.CreatedBy = "Patrick";
-
             int RowCount = 1;
             foreach(IWebElement TR in 
                 AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")))
@@ -82,15 +109,11 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //refactor - add code to validate ExtractionDate
             try
             {
-                _adequateAssuranceListSiteData.DataExtractionRequired = true;
-                if (_adequateAssuranceListSiteData.DataExtractionRequired)
-                {
-                    LoadAdequateAssuranceInvestigators();
-                    _adequateAssuranceListSiteData.DataExtractionSucceeded = true;
-                }
+                _adequateAssuranceListSiteData.DataExtractionRequired = true;                
+                LoadAdequateAssuranceInvestigators();
+                _adequateAssuranceListSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
             {
@@ -101,12 +124,38 @@ namespace WebScraping.Selenium.Pages
             }
             finally
             {
-                if (!_adequateAssuranceListSiteData.DataExtractionRequired)
-                    AssignReferenceIdOfPreviousDocument();
-                else
-                    _adequateAssuranceListSiteData.ReferenceId = 
-                        _adequateAssuranceListSiteData.RecId;
+                _adequateAssuranceListSiteData.CreatedOn = DateTime.Now;
+                _adequateAssuranceListSiteData.CreatedBy = "Patrick";
             }
+        }
+
+        private void ReadSiteLastUpdatedDateFromPage()
+        {
+            string[] PageLastUpdated = PageLastUdpatedElement.Text.Split(':');
+
+            var SiteLastUpdated = PageLastUpdated[1].Replace("\r\nNote", "").Trim();
+
+            DateTime RecentLastUpdatedDate;
+
+            DateTime.TryParseExact(SiteLastUpdated, "M'/'d'/'yyyy", null,
+                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+        }
+
+        public void GetSiteLastUpdatedDateFromDatabase()
+        {
+            var ExistingSiteData = _UOW.AdequateAssuranceListRepository.GetAll();
+
+            if (ExistingSiteData.Count == 0)
+            {
+                _SiteLastUpdatedFromDatabse = null;
+            }
+            var AdequateAssuranceSiteData = ExistingSiteData.OrderByDescending(
+                x => x.CreatedOn).First();
+
+            _SiteLastUpdatedFromDatabse = 
+                AdequateAssuranceSiteData.SiteLastUpdatedOn;
         }
 
         private void AssignReferenceIdOfPreviousDocument()

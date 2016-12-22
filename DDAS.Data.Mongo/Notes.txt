@@ -22,3 +22,7 @@ BsonClassMap.RegisterClassMap<MyClass>(cm =>
 
 Mongo Full Text Search:
 Indexing the documents in a collection is possible => https://code.tutsplus.com/tutorials/full-text-search-in-mongodb--cms-24835
+
+
+Saving local date into MongoDb. (By default the date is stored in UTC format)
+http://stackoverflow.com/questions/8063323/how-to-save-date-properly

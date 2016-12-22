@@ -6,25 +6,13 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class FDAWarningLettersSiteData //: AuditEntity<long?>
+    public class FDAWarningLettersSiteData : BaseSiteData //: AuditEntity<long?>
     {
         public FDAWarningLettersSiteData()
         {
             FDAWarningLetterList = new List<FDAWarningLetter>();
         }
-
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
-        public string Source { get; set; }
         public List<FDAWarningLetter> FDAWarningLetterList { get; set; }
     }
 
@@ -37,7 +25,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string IssuingOffice { get; set; }
         public string Subject { get; set; }
         public string ResponseLetterPosted { get; set; }
-        public string CloseOutDate { get; set; }
+        public string CloseoutDate { get; set; }
 
         public override string FullName {
             get {
@@ -51,13 +39,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get
             {
                 return
-                    "FullName: " + FullName + "~" +
+                    "Full Name: " + FullName + "~" +
                     "Company: " + Company + "~" +
-                    "LetterIssued: " + LetterIssued + "~" +
-                    "IssuingOffice: " + IssuingOffice + "~" +
+                    "Letter Issued: " + LetterIssued + "~" +
+                    "Issuing Office: " + IssuingOffice + "~" +
                     "Subject: " + Subject + "~" +
-                    "ResponseLetterPosted: " + ResponseLetterPosted + "~" +
-                    "CloseOutDate: " + CloseOutDate;
+                    "Response Letter Posted: " + ResponseLetterPosted + "~" +
+                    "Closeout Date: " + CloseoutDate;
             }
         }
     }

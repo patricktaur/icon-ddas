@@ -15,6 +15,12 @@
         SystemForAwardManagementPage,
         SpeciallyDesignedNationalsListPage,
         
+        //16Dec2016 Pradeep SponsorSpecificSites
+        PfizerDMCChecksPage,
+        PfizerUnavailableChecksPage,
+        GSKDoNotUseCheckPage,
+        RegeneronUsabilityCheckPage,
+
         //Pradeep 7Dec2016
         //Manual sites
         AustralianHealthPratitionerRegulationPage,
@@ -35,6 +41,7 @@
         HealthGuideUSAPage
     };
 
+    //ColorEnum
     public enum ColorEnum
     {
         Grey,

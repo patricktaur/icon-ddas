@@ -38,7 +38,7 @@ namespace DDAS.Models.Entities.Domain
     {
         public Guid? DataId { get; set; }
         public DateTime DataExtractedOn { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
+        public DateTime? SiteLastUpdatedOn { get; set; }
         public int FullMatch { get; set; }
         public int PartialMatch { get; set; }
     }
@@ -147,6 +147,7 @@ namespace DDAS.Models.Entities.Domain
         }
         
         public Guid? RecId { get; set; }
+        public string AssignedTo { get; set; }
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public string Country { get; set; }
@@ -242,7 +243,7 @@ namespace DDAS.Models.Entities.Domain
         public int IssuesFound { get; set; }
         public bool ReviewCompleted { get; set; }
 
-        public DateTime SiteSourceUpdatedOn { get; set; }
+        public DateTime? SiteSourceUpdatedOn { get; set; }
         public string ExtractionMode { get; set; }
     }
 
@@ -295,8 +296,6 @@ namespace DDAS.Models.Entities.Domain
         public string RecordDetails { get; set; }
     }
 
-    
-
     public class SiteSource
     {
         public int Id { get; set; }
@@ -305,7 +304,7 @@ namespace DDAS.Models.Entities.Domain
         public string SiteShortName { get; set; }
         public Guid? SiteDataId { get; set; }
         public DateTime DataExtractedOn { get; set; }
-        public DateTime SiteSourceUpdatedOn { get; set; }
+        public DateTime? SiteSourceUpdatedOn { get; set; }
         public DateTime CreatedOn { get; set; }
         public string ExtractionMode { get; set; }
         public bool IsMandatory { get; set; }
@@ -339,7 +338,7 @@ namespace DDAS.Models.Entities.Domain
         public bool Selected { get; set; }
         public bool IsMatchedRecord { get; set; }
         public int SourceNumber { get; set; }
-        public DateTime DateOfInspection { get; set; }
+        public DateTime? DateOfInspection { get; set; }
         public string InvestigatorName { get; set; }
         public bool IsAnIssue { get;  set;}
 

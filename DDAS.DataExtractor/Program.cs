@@ -6,7 +6,6 @@ using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
@@ -20,8 +19,11 @@ namespace DDAS.DataExtractor
         //public static string ConfigurationManager { get; private set; }
         private static LogText _WriteLog;
 
+        public static string DownloadFolder =
+            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+
         static void Main(string[] args)
-        {
+        {  
             int? SiteNum = null;
             if (args.Length != 0)
             {
@@ -37,7 +39,7 @@ namespace DDAS.DataExtractor
             //ILog log, IUnitOfWork uow
             MongoMaps.Initialize();
 
-            string configFile = System.Configuration.ConfigurationManager.AppSettings["APIWebConfigFile"];
+            string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
             if (configFile == null)
             {
                 string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -45,17 +47,17 @@ namespace DDAS.DataExtractor
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Data Extractor: Entry in AppSettings: APIWebConfigFile not found");
                 _WriteLog.LogEnd();
-
             }
        
             string DataExtractionLogFile =
-            System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+            ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-            string DownloadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            //string DownloadFolder =
+            //ConfigurationManager.AppSettings["AppDataDownloadFolder"];
 
             //ILog log = new LogText(DataExtractionLogFile,  true);
             _WriteLog = new LogText(DataExtractionLogFile, true);
+
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             _WriteLog.LogStart();
             _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
@@ -64,32 +66,35 @@ namespace DDAS.DataExtractor
             var SiteScan = new SiteScanData(uow, searchEngine);
 
             try
-
             {
                 if (SiteNum != null)
                 {
                     SiteEnum siteEnum = (SiteEnum)SiteNum;
                     _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
 
-                    searchEngine.Load(siteEnum, "", DownloadFolder);
+                    if(searchEngine.IsDataExtractionRequired(siteEnum))
+                        searchEngine.Load(siteEnum, "", DownloadFolder, true);
+                    else
+                        searchEngine.Load(siteEnum, "", DownloadFolder, false);
+
                     _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract completed");
+
                     searchEngine.SaveData();
                     _WriteLog.WriteLog(DateTime.Now.ToString(), "Data Saved");
                 }
                 else
                 {
                     var query = SearchSites.GetNewSearchQuery();
-                    //searchEngine.Load(query, DownloadFolder, _WriteLog);
+                    //_WriteLog.WriteLog("Download Folder;", DownloadFolder);
+                    searchEngine.Load(query, DownloadFolder, _WriteLog);
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
-
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _WriteLog.WriteLog("Unable to complete the data extract. Error Details: " + 
                     e.ToString());
             }
-
             finally
             {
                 _WriteLog.WriteLog("=================================================================================");
@@ -97,8 +102,6 @@ namespace DDAS.DataExtractor
                 ForcedCleanUp();
                 Environment.Exit(0);
             }
-            
-
         }
 
         static string GetWebConfigAppSetting(string configFile, string keyName)
@@ -106,7 +109,7 @@ namespace DDAS.DataExtractor
             string error;
             ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
             fileMap.ExeConfigFilename = configFile;
-            System.Configuration.Configuration config =
+            Configuration config =
                 ConfigurationManager.OpenMappedExeConfiguration
                 (fileMap, ConfigurationUserLevel.None);
             if (config == null)
@@ -117,7 +120,7 @@ namespace DDAS.DataExtractor
             }
             else
             {
-                System.Configuration.KeyValueConfigurationElement settings = config.AppSettings.Settings[keyName];
+                KeyValueConfigurationElement settings = config.AppSettings.Settings[keyName];
                 if (settings != null)
                 {
                     _WriteLog.WriteLog("Key : " + keyName + ", Value: " + settings.Value);
@@ -132,12 +135,13 @@ namespace DDAS.DataExtractor
             }
 
         }
+
         static string GetWebConfigConnectionString(string configFile, string keyName)
         {
             string error;
             ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
             fileMap.ExeConfigFilename = configFile;
-            System.Configuration.Configuration config =
+            Configuration config =
                 ConfigurationManager.OpenMappedExeConfiguration
                 (fileMap, ConfigurationUserLevel.None);
             if (config == null)
@@ -161,8 +165,8 @@ namespace DDAS.DataExtractor
                     throw new Exception(error);
                 }
             }
-
         }
+
 
         static void ForcedCleanUp()
         {
@@ -188,8 +192,6 @@ namespace DDAS.DataExtractor
             //}
         }
 
+
     }
-
-
-
 }

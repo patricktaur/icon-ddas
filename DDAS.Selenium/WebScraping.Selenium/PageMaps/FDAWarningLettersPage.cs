@@ -12,8 +12,10 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
-        public IWebElement FDASearchTextBox {
-            get {
+        public IWebElement FDASearchTextBox
+        {
+            get
+            {
                 IWebElement Element = driver.FindElement(By.Id("qryStr"));
                 return Element;
             }
@@ -24,10 +26,10 @@ namespace WebScraping.Selenium.Pages
             {
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
-                IList<IWebElement> SearchButtons = 
+                IList<IWebElement> SearchButtons =
                     driver.FindElements(By.TagName("input"));
                 //"input[value='Search']"
-                
+
                 foreach (IWebElement element in SearchButtons)
                 {
                     if (element.GetAttribute("value").ToLower() == "search")
@@ -43,6 +45,15 @@ namespace WebScraping.Selenium.Pages
             {
                 IList<IWebElement> Table = driver.FindElements(By.XPath("//table"));
                 return Table[7];
+            }
+        }
+
+        public IWebElement PageLastUpdatedTextElement
+        {
+            get
+            {
+                IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                return Element;
             }
         }
     }

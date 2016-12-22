@@ -53,8 +53,8 @@ namespace DDAS.API.Controllers
             _SiteSummary = SiteSummary;
         }
 
-    
         #region MoveToAccountsController
+        [Authorize(Roles = "admin")]
         [Route("GetUsers")]
         [HttpGet]
         public IHttpActionResult GetUsers()
@@ -199,10 +199,14 @@ namespace DDAS.API.Controllers
 
                     FileContent = File.ReadAllLines(file.LocalFileName);
                     Trace.WriteLine(FileContent);
-                    _log.WriteLog("FileContent Length: " + FileContent.Length);
+                    //_log.WriteLog("FileContent Length: " + FileContent.Length);
 
                     var forms = _SearchService.ReadUploadedFileData(file.LocalFileName,
                         _log);
+
+                    if (forms == null)
+                        return 
+                            Request.CreateResponse(HttpStatusCode.NotAcceptable, "Invalid File");
 
                     foreach(ComplianceForm form in forms)
                     {
@@ -252,6 +256,7 @@ namespace DDAS.API.Controllers
             return ComplianceForms;
         }
 
+        [Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetPrincipalInvestigators()
@@ -346,9 +351,7 @@ namespace DDAS.API.Controllers
         public ComplianceForm GetSearchSummaryDetailsForSingleName(
             ComplianceForm form)
         {
-
             return _SearchService.GetSearchSummary(form, _log);
-
         }
 
         [Route("GetSearchSummaryResult")]
@@ -369,100 +372,101 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch,
             string RecId, SiteEnum siteEnum)
         {
-            var query = new SearchDetailsQuery();
-            query.NameToSearch = NameToSearch;
-            query.RecId = Guid.Parse(RecId);
-            query.siteEnum = siteEnum;
+            return Ok();
+            //var query = new SearchDetailsQuery();
+            //query.NameToSearch = NameToSearch;
+            //query.RecId = Guid.Parse(RecId);
+            //query.siteEnum = siteEnum;
 
-            switch (query.siteEnum)
-            {
-                case SiteEnum.FDADebarPage:
-                    var SearchDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //switch (query.siteEnum)
+            //{
+            //    case SiteEnum.FDADebarPage:
+            //        var SearchDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(SearchDetails);
+            //        return Ok(SearchDetails);
 
-                case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    var ClinicalSearchDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.ClinicalInvestigatorInspectionPage:
+            //        var ClinicalSearchDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(ClinicalSearchDetails);
+            //        return Ok(ClinicalSearchDetails);
 
-                case SiteEnum.FDAWarningLettersPage:
-                    var FDAWarningLetterDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.FDAWarningLettersPage:
+            //        var FDAWarningLetterDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(FDAWarningLetterDetails);
+            //        return Ok(FDAWarningLetterDetails);
 
-                case SiteEnum.ERRProposalToDebarPage:
-                    var ProposalToDebarDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.ERRProposalToDebarPage:
+            //        var ProposalToDebarDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(ProposalToDebarDetails);
+            //        return Ok(ProposalToDebarDetails);
 
-                case SiteEnum.AdequateAssuranceListPage:
-                    var AssuranceDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.AdequateAssuranceListPage:
+            //        var AssuranceDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(AssuranceDetails);
+            //        return Ok(AssuranceDetails);
 
-                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    var DisqualificationDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+            //        var DisqualificationDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(DisqualificationDetails);
+            //        return Ok(DisqualificationDetails);
 
-                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                    var CBERDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+            //        var CBERDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(CBERDetails);
+            //        return Ok(CBERDetails);
 
-                case SiteEnum.PHSAdministrativeActionListingPage:
-                    var PHSSearchDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.PHSAdministrativeActionListingPage:
+            //        var PHSSearchDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(PHSSearchDetails);
+            //        return Ok(PHSSearchDetails);
 
-                case SiteEnum.ExclusionDatabaseSearchPage:
-                    var ExclusionDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.ExclusionDatabaseSearchPage:
+            //        var ExclusionDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(ExclusionDetails);
+            //        return Ok(ExclusionDetails);
 
-                case SiteEnum.CorporateIntegrityAgreementsListPage:
-                    var CIADetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.CorporateIntegrityAgreementsListPage:
+            //        var CIADetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(CIADetails);
+            //        return Ok(CIADetails);
 
-                case SiteEnum.SystemForAwardManagementPage:
-                    var SAMDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.SystemForAwardManagementPage:
+            //        var SAMDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(SAMDetails);
+            //        return Ok(SAMDetails);
 
-                case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    var SDNSearchDetails = _SearchService.
-                        GetMatchedRecords(query.NameToSearch,
-                        query.RecId, siteEnum);
+            //    case SiteEnum.SpeciallyDesignedNationalsListPage:
+            //        var SDNSearchDetails = _SearchService.
+            //            GetMatchedRecords(query.NameToSearch,
+            //            query.RecId, siteEnum);
 
-                    return Ok(SDNSearchDetails);
+            //        return Ok(SDNSearchDetails);
 
-                default:
-                    throw new Exception("wrong enum");
-            }
+            //    default:
+            //        throw new Exception("wrong enum");
+            //}
         }
 
         [Route("ExtractDataForSingleSite")]
@@ -481,16 +485,6 @@ namespace DDAS.API.Controllers
             _log.LogEnd();
 
             return Ok(form);
-        }
-
-        [Route("SaveSearchResult")]
-        [HttpPost]
-        public IHttpActionResult SaveSearchResults(string NameToSearch,
-            SitesIncludedInSearch result, Guid? ComplianceFormId)
-        {
-            return Ok(
-                _SearchService.SaveRecordStatus(
-                    NameToSearch, result, ComplianceFormId));
         }
 
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 
@@ -120,6 +117,15 @@ namespace WebScraping.Selenium.Pages
                         return Anchor;
                 }
                 throw new Exception("Could not download ciil list!");
+            }
+        }
+
+        public IWebElement DatabaseLastUpdatedElement
+        {
+            get
+            {
+                IList<IWebElement> Elements = driver.FindElements(By.XPath("//div/ul/li"));
+                return Elements[28];
             }
         }
     }

@@ -6,26 +6,14 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
-    public class CBERClinicalInvestigatorInspectionSiteData //: AuditEntity<long?>
+    public class CBERClinicalInvestigatorInspectionSiteData : BaseSiteData //: AuditEntity<long?>
     {
-
         public CBERClinicalInvestigatorInspectionSiteData()
         {
             ClinicalInvestigator = new List<CBERClinicalInvestigator>();
         }
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
         public List<CBERClinicalInvestigator> ClinicalInvestigator { get; set; }
-        public string Source { get; set; }
     }
 
     public class CBERClinicalInvestigator : SiteDataItemBase
@@ -47,11 +35,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "FullName: " + FullName + "~" +
+                return "Full Name: " + FullName + "~" +
                     "Name: " + Name + "~" +
                     "Title: " + Title + "~" +
-                    "InstituteAndAddress: " + InstituteAndAddress + "~" +
-                    "InspectionStartAndEndDate: " + InspectionStartAndEndDate + "~" +
+                    "Institute/Address: " + InstituteAndAddress + "~" +
+                    "Inspection Start/End Date: " + InspectionStartAndEndDate + "~" +
                     "Classification: " + Classification;
             }
         }

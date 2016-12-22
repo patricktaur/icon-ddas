@@ -9,6 +9,7 @@ namespace Utilities
 {
     public class ReadUploadedExcelFile
     {
+        #region Not in use
         public List<RowData> ReadDataFromExcelFile(string FilePath)
         {
             var forms = new List<ComplianceForm>();
@@ -79,10 +80,14 @@ namespace Utilities
             }
             return ListOfRows;
         }
+        #endregion
 
         public List<RowData> ReadData(string FilePath)
         {
             SLDocument doc = new SLDocument(FilePath);
+
+            if (doc.GetCellValueAsString("A1").ToLower() != "pi name")
+                return null;
 
             int RowIndex = 2;
 

@@ -8,24 +8,13 @@ using System.Threading.Tasks;
 namespace DDAS.Models.Entities.Domain.SiteData
 {
     //Int64? required for mongodb go generate ids
-    public class FDADebarPageSiteData  //: AuditEntity<long?>
+    public class FDADebarPageSiteData : BaseSiteData //: AuditEntity<long?>
     {
         public FDADebarPageSiteData()
         {
-            DebarredPersons = new List<DebarredPerson>(); 
+            DebarredPersons = new List<DebarredPerson>();
         }
         public Guid? RecId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
-        //public DateTime UpdatedOn { get; set; }
-        //public string UpdatedBy { get; set; }
-
-        public Guid? ReferenceId { get; set; }
-        public bool DataExtractionRequired { get; set; }
-        public bool DataExtractionSucceeded { get; set; }
-        public string DataExtractionErrorMessage { get; set; }
-        public DateTime SiteLastUpdatedOn { get; set; }
-        public string Source { get; set; }
         public List<DebarredPerson> DebarredPersons { get; set; }
     }
 
@@ -52,14 +41,14 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "FullName: " + FullName + "~" +
-                    "NameOfPerson: " + FullName + "~" +
-                    "EffectiveDate: " + EffectiveDate + "~" +
-                    "EndOfTermOfDebarment: " + EndOfTermOfDebarment + "~" +
-                    "FrDateText: " + FrDateText + "~" +
-                    "VolumePage: " + VolumePage + "~" +
-                    "DocumentLink: " + DocumentLink + "~" +
-                    "DocumentName: " + DocumentName; 
+                return "Full Name: " + FullName + "~" +
+                    "Name Of Person: " + FullName + "~" +
+                    "Effective Date: " + EffectiveDate + "~" +
+                    "End/Term Of Debarment: " + EndOfTermOfDebarment + "~" +
+                    "FR Date.txt: " + FrDateText + "~" +
+                    "VOLUMEPAGE.pdf: " + VolumePage + "~" +
+                    "Document Link: " + DocumentLink + "~" +
+                    "Document Name: " + DocumentName;
             }
         }
 

@@ -7,9 +7,7 @@ using DDAS.Models.Repository;
 using MongoDB.Bson;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver;
-
-
-
+using System.Linq;
 
 namespace DDAS.Data.Mongo.Repositories
 {
@@ -101,11 +99,6 @@ namespace DDAS.Data.Mongo.Repositories
             //same as Add:
             //??entity, entity ?
             //_db.GetCollection<TEntity>().UpdateOne(entity, entity);
-
-           
-
-
-
         }
     }
 }

@@ -14,7 +14,8 @@ namespace Utilities.WordTemplate
         {
             //string FilePath = System.Configuration.ConfigurationManager.AppSettings["TemplatesFolder"];
 
-            //string FilePath = @"C:\Development\p926-ddas\DDAS.API\App_Data\Data\Templates\ComplianceFormTemplate.docx";
+            //string FilePath = @"C:\Development\p926-ddas\DDAS.API\Templates\ComplianceFormTemplate.docx";
+
             string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
 
             byte[] byteArray = File.ReadAllBytes(
@@ -44,12 +45,6 @@ namespace Utilities.WordTemplate
 
                     UpdateTable(HeaderTable, 2, 1, form.Institute);
 
-                    //var PI = form.InvestigatorDetails.FirstOrDefault().Name;
-
-                    //UpdateTable(HeaderTable, 1, 1, PI);
-
-                    //UpdateTable(HeaderTable, 1, 3, form.Address);
-
                     var SitesTable = body.Descendants<Table>().ElementAt(2);
 
                     var FindingsTable = body.Descendants<Table>().ElementAt(3);
@@ -63,18 +58,16 @@ namespace Utilities.WordTemplate
                             SitesTable,
                             siteSource.Id.ToString(), 
                             siteSource.SiteName,
-                            siteSource.SiteSourceUpdatedOn.ToShortDateString(),
+                            siteSource.SiteSourceUpdatedOn.ToString(),
                             siteSource.SiteUrl, "Yes");
                         else
                             AddSites(
                                 SitesTable,
                                 siteSource.Id.ToString(),
                                 siteSource.SiteName,
-                                siteSource.SiteSourceUpdatedOn.ToShortDateString(),
+                                siteSource.SiteSourceUpdatedOn.ToString(),
                                 siteSource.SiteUrl, "No");
                     }
-
-                    //int ArrayIndex = 0;
 
                     var InvestigatorsTable = body.Descendants<Table>().ElementAt(1);
 
@@ -82,7 +75,6 @@ namespace Utilities.WordTemplate
                     {
                         int RowIndex = 1;
 
-                        //SIs[ArrayIndex] = Investigator.Name;
                         AddInvestigatorDetails(
                             InvestigatorsTable, Investigator.Name,
                             Investigator.Qualification, 
@@ -117,17 +109,10 @@ namespace Utilities.WordTemplate
                                         Finding.Observation);
                                 }
                             }
-
                             RowIndex += 1;
                         }
-                        //ArrayIndex += 1;
                     }
-                    //AddSubInvestigators(HeaderTable, 2, 1, SIs);
                 }
-
-                //var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
-
-                //FileName += "_" + DateTime.Now.ToShortDateString() + ".docx";
                
                 //Patrick 06Dec2016
                 if (File.Exists(fileName))
@@ -146,6 +131,8 @@ namespace Utilities.WordTemplate
                 return stream;
             }
         }
+
+        //Pradeep 12Dec2016 - Clean up required
 
         public TableCell CellWithVerticalAlign()
         {
@@ -376,28 +363,3 @@ namespace Utilities.WordTemplate
         }
     }
 }
-//foreach( var t in Table)
-//{
-//    foreach(var Row in t.Elements<TableRow>())
-//    {
-//        foreach(var cell in Row.Elements<TableCell>())
-//        {
-//            if (cell.InnerText.Contains("$$Company"))
-//            {
-//                //cell.InnerText = cell.InnerText.Replace("$$Company", "$$Updated");
-//                var p = cell.Elements<Paragraph>().First();
-//                var run = p.Elements<Run>().First();
-//                var text = run.Elements<Text>().First();
-//                text.Text = CompanyName;
-//            }
-//            else if(cell.InnerText.Contains("$$Name"))
-//            {
-//                var p = cell.Elements<Paragraph>().First();
-//                var run = p.Elements<Run>().First();
-//                var text = run.Elements<Text>().First();
-//                text.Text = Name;
-//            }
-//        }
-//    }
-//}
-

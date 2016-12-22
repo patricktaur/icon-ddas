@@ -6,12 +6,15 @@ using WebScraping.Selenium.BaseClasses;
 using System.Diagnostics;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using DDAS.Models.Entities.Domain;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class SystemForAwardManagementPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private DateTime? _SiteLastUpdatedFromPage;
+        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public SystemForAwardManagementPage(IWebDriver driver, IUnitOfWork uow) 
             : base(driver)
@@ -41,6 +44,32 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override DateTime? SiteLastUpdatedDateFromPage
+        {
+            get
+            {
+                if (_SiteLastUpdatedFromPage == null)
+                    ReadSiteLastUpdatedDateFromPage();
+                return _SiteLastUpdatedFromPage;
+            }
+        }
+
+        public override DateTime? SiteLastUpdatedDateFromDatabase
+        {
+            get
+            {
+                return _SiteLastUpdatedFromDatabse;
+            }
+        }
+
+        public override BaseSiteData baseSiteData
+        {
+            get
+            {
+                return _SAMSiteData;
+            }
+        }
+
         private SystemForAwardManagementPageSiteData _SAMSiteData;
 
         //need to refactor
@@ -50,7 +79,6 @@ namespace WebScraping.Selenium.Pages
 
             _SAMSiteData.CreatedBy = "Patrick";
             _SAMSiteData.CreatedOn = DateTime.Now;
-            _SAMSiteData.SiteLastUpdatedOn = DateTime.Now;
 
             int RowNumber = 1;
 
@@ -225,6 +253,11 @@ namespace WebScraping.Selenium.Pages
             //AnchorsInPagination[AnchorsInPagination.Count - 1].SendKeys(Keys.Enter);
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+        }
+
+        public void ReadSiteLastUpdatedDateFromPage()
+        {
+            
         }
 
         public override void SaveData()
