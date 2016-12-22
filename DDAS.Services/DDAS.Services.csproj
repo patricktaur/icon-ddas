@@ -51,7 +51,6 @@
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchSites.cs" />
     <Compile Include="Search\SiteScanData.cs" />
-    <Compile Include="Search\SiteSummary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">

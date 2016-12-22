@@ -39,7 +39,7 @@ namespace Utilities.WordTemplate
 
                     UpdateTable(HeaderTable, 1, 1, form.SponsorProtocolNumber);
 
-                    UpdateTable(HeaderTable, 2, 3, form.Country);
+                    //UpdateTable(HeaderTable, 2, 3, form.Country);
 
                     UpdateTable(HeaderTable, 0, 3, form.Address);
 
@@ -53,19 +53,22 @@ namespace Utilities.WordTemplate
 
                     foreach(SiteSource siteSource in form.SiteSources)
                     {
+                        if (siteSource.SiteSourceUpdatedOn == null)
+                            siteSource.SiteSourceUpdatedOn = DateTime.Now;
+
                         if(siteSource.IssuesIdentified)
                         AddSites(
                             SitesTable,
-                            siteSource.Id.ToString(), 
+                            siteSource.Id.ToString(),
                             siteSource.SiteName,
-                            siteSource.SiteSourceUpdatedOn.ToString(),
+                            siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
                             siteSource.SiteUrl, "Yes");
                         else
                             AddSites(
                                 SitesTable,
                                 siteSource.Id.ToString(),
                                 siteSource.SiteName,
-                                siteSource.SiteSourceUpdatedOn.ToString(),
+                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
                                 siteSource.SiteUrl, "No");
                     }
 
@@ -138,7 +141,8 @@ namespace Utilities.WordTemplate
         {
             var tableCell = new TableCell();
             var SitesTableProperties = new TableCellProperties();
-            var VerticalAlignProperty = new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center };
+            var VerticalAlignProperty = new TableCellVerticalAlignment() {
+                Val = TableVerticalAlignmentValues.Center };
 
             SitesTableProperties.Append(VerticalAlignProperty);
             tableCell.Append(SitesTableProperties);
@@ -150,7 +154,8 @@ namespace Utilities.WordTemplate
         {
             var paragraph = new Paragraph();
             var paragraphProperties = new ParagraphProperties();
-            var justification = new Justification() { Val = JustificationValues.Center };
+            var justification = new Justification() {
+                Val = JustificationValues.Center };
 
             paragraphProperties.Append(justification);
             paragraph.Append(paragraphProperties);

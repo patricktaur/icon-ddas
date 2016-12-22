@@ -18,16 +18,14 @@ namespace DDAS.DataExtractor
         private static LogText _WriteLog;
 
         public static string DownloadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            ConfigurationManager.AppSettings["DownloadFolder"];
 
         static void Main(string[] args)
-        {  
+        {
             int? SiteNum = null;
             if (args.Length != 0)
             {
-
                 SiteNum = int.Parse(args[0]);
-
             }
             ExtractData(SiteNum);
         }
@@ -50,8 +48,8 @@ namespace DDAS.DataExtractor
             string DataExtractionLogFile =
             ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-            string DownloadFolder =
-            ConfigurationManager.AppSettings["AppDataDownloadFolder"];
+            //string DownloadFolder =
+            //ConfigurationManager.AppSettings["AppDataDownloadFolder"];
 
             //ILog log = new LogText(DataExtractionLogFile,  true);
             _WriteLog = new LogText(DataExtractionLogFile, true);

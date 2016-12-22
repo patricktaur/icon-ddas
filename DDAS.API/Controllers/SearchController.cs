@@ -1,7 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
 using System.Web.Http;
-using DDAS.Models.Enums;
 using System;
 using DDAS.Models;
 using DDAS.API.Identity;
@@ -24,7 +23,6 @@ namespace DDAS.API.Controllers
     {
         private ISearchEngine _SearchEngine;
         private ISearchService _SearchService;
-        private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
         private ILog _log;
 
@@ -43,21 +41,13 @@ namespace DDAS.API.Controllers
         private string AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
-            IUnitOfWork uow, ISiteSummary SiteSummary)
+            IUnitOfWork uow)
         {
             _SearchEngine = search;
             _SearchService = SearchSummary;
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
-            _log = new LogText(DataExtractionLogFile);
-            _SiteSummary = SiteSummary;
-        }
-
-        [Route("Test")]
-
-        [HttpGet]
-        public IHttpActionResult Test() {
-            return Ok("Test Call");
+            //_log = new LogText(DataExtractionLogFile);
         }
 
         #region MoveToAccountsController
@@ -246,22 +236,6 @@ namespace DDAS.API.Controllers
             }
         }
 
-        [Route("GetNamesFromOpenComplianceForms")]
-        [HttpGet]
-        public List<ComplianceForm> GetNamesFromOpenComplianceForm()
-        {
-            var ComplianceForms =
-                _UOW.ComplianceFormRepository.FindActiveComplianceForms(true);
-
-            foreach(ComplianceForm form in ComplianceForms)
-            {
-                foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
-                    Investigator.SiteDetails = null;
-            }
-
-            return ComplianceForms;
-        }
-
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetPrincipalInvestigators()
@@ -328,170 +302,6 @@ namespace DDAS.API.Controllers
             return Ok(result);
         }
         #endregion
-
-        //Called by Angular single name search
-        [Route("GetComplianceForm")]
-        [HttpPost]
-        public IHttpActionResult GetComplianceForm(ComplianceForm form)
-        {
-            _log.LogStart();
-            try
-            {
-                var SearchResults = GetSearchSummaryDetailsForSingleName(form);
-                return Ok(SearchResults);
-            }
-            catch (Exception e)
-            {
-                _log.WriteLog("ErrorMessage: " + e.ToString());
-                return InternalServerError(e);
-            }
-            finally
-            {
-                _log.WriteLog("=================================================================================");
-                _log.LogEnd();
-            }
-        }
-
-        //??? 
-        public ComplianceForm GetSearchSummaryDetailsForSingleName(
-            ComplianceForm form)
-        {
-            return _SearchService.GetSearchSummary(form, _log);
-        }
-
-        [Route("GetSearchSummaryResult")]
-        [HttpGet]
-        public IHttpActionResult GetSearchSummary(string NameToSearch, string ComplianceFormId)
-        {
-            var Query = new NameToSearchQuery();
-            Query.NameToSearch = NameToSearch;
-            Query.ComplianceFormId = Guid.Parse(ComplianceFormId);
-
-            return Ok(
-                _SiteSummary.GetSearchSummaryStatus(
-                    Query.NameToSearch, Query.ComplianceFormId));
-        }
-
-        [Route("GetSearchSummaryDetails")]
-        [HttpGet]
-        public IHttpActionResult GetSearchSummaryDetailsXXX(string NameToSearch,
-            string RecId, SiteEnum siteEnum)
-        {
-            return Ok();
-            //var query = new SearchDetailsQuery();
-            //query.NameToSearch = NameToSearch;
-            //query.RecId = Guid.Parse(RecId);
-            //query.siteEnum = siteEnum;
-
-            //switch (query.siteEnum)
-            //{
-            //    case SiteEnum.FDADebarPage:
-            //        var SearchDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(SearchDetails);
-
-            //    case SiteEnum.ClinicalInvestigatorInspectionPage:
-            //        var ClinicalSearchDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(ClinicalSearchDetails);
-
-            //    case SiteEnum.FDAWarningLettersPage:
-            //        var FDAWarningLetterDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(FDAWarningLetterDetails);
-
-            //    case SiteEnum.ERRProposalToDebarPage:
-            //        var ProposalToDebarDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(ProposalToDebarDetails);
-
-            //    case SiteEnum.AdequateAssuranceListPage:
-            //        var AssuranceDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(AssuranceDetails);
-
-            //    case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-            //        var DisqualificationDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(DisqualificationDetails);
-
-            //    case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-            //        var CBERDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(CBERDetails);
-
-            //    case SiteEnum.PHSAdministrativeActionListingPage:
-            //        var PHSSearchDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(PHSSearchDetails);
-
-            //    case SiteEnum.ExclusionDatabaseSearchPage:
-            //        var ExclusionDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(ExclusionDetails);
-
-            //    case SiteEnum.CorporateIntegrityAgreementsListPage:
-            //        var CIADetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(CIADetails);
-
-            //    case SiteEnum.SystemForAwardManagementPage:
-            //        var SAMDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(SAMDetails);
-
-            //    case SiteEnum.SpeciallyDesignedNationalsListPage:
-            //        var SDNSearchDetails = _SearchService.
-            //            GetMatchedRecords(query.NameToSearch,
-            //            query.RecId, siteEnum);
-
-            //        return Ok(SDNSearchDetails);
-
-            //    default:
-            //        throw new Exception("wrong enum");
-            //}
-        }
-
-        [Route("ExtractDataForSingleSite")]
-        [HttpGet]
-        public IHttpActionResult ExtractSingleSite(string NameToSearch,
-            string ComplianceFormId, SiteEnum Enum)
-        {
-            _log.LogStart();
-
-            Guid? RecId = Guid.Parse(ComplianceFormId);
-            var form = 
-                _SearchService.UpdateSingleSiteFromComplianceForm(
-                    NameToSearch, RecId, Enum, _log);
-
-            _log.WriteLog("=================================================================================");
-            _log.LogEnd();
-
-            return Ok(form);
-        }
-
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
@@ -563,6 +373,7 @@ namespace DDAS.API.Controllers
             return result;
         }
 
+        //Required ?
         [Route("CloseComplianceForm")]
         [HttpGet]
         public IHttpActionResult CloseComplianceForm(string ComplianceFormId)
@@ -582,8 +393,7 @@ namespace DDAS.API.Controllers
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
             _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
-            var Forms = GetNamesFromOpenComplianceForm();
-            return Ok(Forms);
+            return Ok();
         }
 
         [Route("GetAllCountries")]

@@ -41,7 +41,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "Full Name: " + FullName + "~" +
+                return
                     "Name Of Person: " + FullName + "~" +
                     "Effective Date: " + EffectiveDate + "~" +
                     "End/Term Of Debarment: " + EndOfTermOfDebarment + "~" +

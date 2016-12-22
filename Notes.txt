@@ -482,3 +482,17 @@ Entry on 15 Dec 2016
 Entry on 16 Dec 2016
 1. Able to read and validate the Site last updated date from page and database. Extracting the data if 
    required. Live sites yet to be done
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 17 Dec 2016
+1. Search engine is updated.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 19 Dec 2016
+1. Removing unused code from the SearchService. Updating code for live sites as per the changes done in 
+   ISearchEngine interface towards the Load function.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 20 Dec 2016
+1. Updated SearchEngine to write log when the data extraction is not required
+2. Downloads folder for the extractor is App_Data

@@ -102,18 +102,24 @@ namespace WebScraping.Selenium.SearchEngine
                             log.WriteLog(DateTime.Now.ToString(), "End extracting from: " + site.SiteEnum);
                         }
                         else
+                        {
                             Load(site.SiteEnum, "", DownloadFolder, false);
 
-                        SaveData();
-                        log.WriteLog("Data Saved");
+                            log.WriteLog(DateTime.Now.ToString(), "Source data has not been updated. Extraction not required");
+                        }
                     }
                 }
-                catch (WebDriverTimeoutException e)
+                catch (Exception e)
                 {
                     log.WriteLog("Enable to extract data for: " + site.SiteEnum +
                         "Error Details: " + e.ToString());
                     continue;
                     //throw new Exception(e.ToString());
+                }
+                finally
+                {
+                    SaveData();
+                    log.WriteLog("Data Saved");
                 }
             }
         }
@@ -166,6 +172,8 @@ namespace WebScraping.Selenium.SearchEngine
                 default: return null;
             }
         }
+
+        #region Related to SiteLastUpdatedOn
 
         private DateTime? GetSiteLastUpdatedFromDatabase(SiteEnum siteEnum)
         {
@@ -316,6 +324,8 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
+        //Pradeep 20Dec2016
+        //Returning ReferenceId instead of RecId 
         private Guid? GetRecIdOfPreviousDocument(SiteEnum siteEnum)
         {
             switch (siteEnum)
@@ -325,96 +335,121 @@ namespace WebScraping.Selenium.SearchEngine
                     _uow.FDADebarPageRepository.GetAll().OrderByDescending(
                         x => x.CreatedOn).First();
 
-                    return FDASiteData.RecId;
+                    return FDASiteData.ReferenceId;
 
                 case SiteEnum.AdequateAssuranceListPage:
                     var AdequateSiteData =
                     _uow.AdequateAssuranceListRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return AdequateSiteData.RecId;
+                    return AdequateSiteData.ReferenceId;
 
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
                     var DisqualificationSiteData =
                     _uow.ClinicalInvestigatorDisqualificationRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return DisqualificationSiteData.RecId;
+                    return DisqualificationSiteData.ReferenceId;
 
                 case SiteEnum.ERRProposalToDebarPage:
                     var ERRSiteData =
                     _uow.ERRProposalToDebarRepository.GetAll().OrderByDescending(
                         x => x.CreatedOn).First();
 
-                    return ERRSiteData.RecId;
+                    return ERRSiteData.ReferenceId;
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     var CIILSiteData =
                     _uow.ClinicalInvestigatorInspectionListRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return CIILSiteData.RecId;
+                    return CIILSiteData.ReferenceId;
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     var CBERSiteData =
                     _uow.CBERClinicalInvestigatorRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return CBERSiteData.RecId;
+                    return CBERSiteData.ReferenceId;
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     var ExclusionSiteData =
                     _uow.ExclusionDatabaseSearchRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return ExclusionSiteData.RecId;
+                    return ExclusionSiteData.ReferenceId;
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     var SDNSiteData =
                     _uow.SpeciallyDesignatedNationalsRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return SDNSiteData.RecId;
+                    return SDNSiteData.ReferenceId;
 
                 case SiteEnum.FDAWarningLettersPage:
                     var FDAWarningSiteData =
                     _uow.FDAWarningLettersRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return FDAWarningSiteData.RecId;
+                    return FDAWarningSiteData.ReferenceId;
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
                     var PHSSiteData =
                     _uow.PHSAdministrativeActionListingRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return PHSSiteData.RecId;
+                    return PHSSiteData.ReferenceId;
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     var CIASiteData =
                     _uow.CorporateIntegrityAgreementRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return CIASiteData.RecId;
+                    return CIASiteData.ReferenceId;
 
                 case SiteEnum.SystemForAwardManagementPage:
                     var SAMSiteData =
                     _uow.SystemForAwardManagementRepository.GetAll().
                     OrderByDescending(x => x.CreatedOn).First();
 
-                    return SAMSiteData.RecId;
+                    return SAMSiteData.ReferenceId;
 
                 default: return null;
             }
         }
 
+        public bool IsDataExtractionRequired(SiteEnum siteEnum)
+        {
+            _searchPage = GetSearchPage(siteEnum);
+
+            //Pradeep 21Dec2016 return true for live sites - Need to refactor
+            if (siteEnum == SiteEnum.FDAWarningLettersPage ||
+                siteEnum == SiteEnum.ClinicalInvestigatorDisqualificationPage)
+                return true;
+
+            var SiteUpdatedDateFromPage =
+                _searchPage.SiteLastUpdatedDateFromPage;
+
+            var SiteUpdatedDateFromDatabase =
+                GetSiteLastUpdatedFromDatabase(siteEnum);
+
+            if (SiteUpdatedDateFromDatabase == null ||
+                SiteUpdatedDateFromPage > SiteUpdatedDateFromDatabase)
+                return true;
+            else
+                return false;
+        }
+        
+        #endregion
+
+        //pending due to Repository<TEntity>
         private void SaveSiteData(SiteEnum siteEnum)
         {
             switch (siteEnum)
             {
                 case SiteEnum.FDADebarPage:
 
-                    //_uow.FDADebarPageRepository.Add(_searchPage.baseSiteData);
+                //_uow.FDADebarPageRepository.Add(_searchPage.baseSiteData);
 
                 case SiteEnum.AdequateAssuranceListPage:
 
@@ -440,22 +475,6 @@ namespace WebScraping.Selenium.SearchEngine
                     break;
 
             }
-        }
-
-        public bool IsDataExtractionRequired(SiteEnum siteEnum)
-        {
-            _searchPage = GetSearchPage(siteEnum);
-            var SiteUpdatedDateFromPage =
-                _searchPage.SiteLastUpdatedDateFromPage;
-
-            var SiteUpdatedDateFromDatabase =
-                GetSiteLastUpdatedFromDatabase(siteEnum);
-
-            if (SiteUpdatedDateFromDatabase == null ||
-                SiteUpdatedDateFromPage > SiteUpdatedDateFromDatabase)
-                return true;
-            else
-                return false;
         }
 
         public IWebDriver Driver {

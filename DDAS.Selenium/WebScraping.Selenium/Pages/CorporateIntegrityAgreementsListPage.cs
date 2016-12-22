@@ -94,14 +94,14 @@ namespace WebScraping.Selenium.Pages
                     CiaList.State = TDs[2].Text;
                     CiaList.Effective = TDs[3].Text;
 
-                    if(IsElementPresent(TDs[0], By.XPath("a")))
-                    {
-                        IWebElement anchor = driver.FindElement(By.XPath("a"));
-                        var link = new Link();
-                        link.Title = "Provider";
-                        link.url = anchor.GetAttribute("href");
-                        CiaList.Links.Add(link);
-                    }
+                    //if(IsElementPresent(TDs[0], By.XPath("a")))
+                    //{
+                    //    IWebElement anchor = driver.FindElement(By.XPath("a"));
+                    //    var link = new Link();
+                    //    link.Title = "Provider";
+                    //    link.url = anchor.GetAttribute("href");
+                    //    CiaList.Links.Add(link);
+                    //}
 
                     _CIASiteData.CIAListSiteData.Add(CiaList);
                     RowCount = RowCount + 1;

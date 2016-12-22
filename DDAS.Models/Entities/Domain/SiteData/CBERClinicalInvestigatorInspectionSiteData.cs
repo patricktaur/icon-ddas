@@ -18,6 +18,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class CBERClinicalInvestigator : SiteDataItemBase
     {
+
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Name { get; set; }
@@ -35,7 +36,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return "Full Name: " + FullName + "~" +
+                return
                     "Name: " + Name + "~" +
                     "Title: " + Title + "~" +
                     "Institute/Address: " + InstituteAndAddress + "~" +

@@ -131,7 +131,7 @@ namespace WebScraping.Selenium.Pages
 
                     if (IsElementPresent(TDs[7], By.XPath("a")))
                     {
-                        IList<IWebElement> anchors = TDs[6].FindElements(By.XPath("a"));
+                        IList<IWebElement> anchors = TDs[7].FindElements(By.XPath("a"));
 
                         foreach (IWebElement anchor in anchors)
                         {

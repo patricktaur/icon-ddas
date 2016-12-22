@@ -8,10 +8,10 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-        ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
+        //ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
-        ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
-            Guid? ComplianceFormId, SiteEnum Enum, ILog log);
+        //ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
+        //    Guid? ComplianceFormId, SiteEnum Enum, ILog log);
 
         List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
 

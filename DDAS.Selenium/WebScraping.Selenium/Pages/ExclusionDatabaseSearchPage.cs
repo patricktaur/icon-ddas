@@ -192,40 +192,6 @@ namespace WebScraping.Selenium.Pages
                 System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
 
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
-            //var ExistingExclusionSiteData = 
-            //    _UOW.ExclusionDatabaseSearchRepository.GetAll();
-
-            //ExclusionDatabaseSearchPageSiteData ExclusionSiteData = null;
-
-            //if (ExistingExclusionSiteData.Count == 0)
-            //{
-            //    _exclusionSearchSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //    _exclusionSearchSiteData.DataExtractionRequired = true;
-            //}
-            //else
-            //{
-            //    ExclusionSiteData = ExistingExclusionSiteData.OrderByDescending(
-            //        x => x.CreatedOn).First();
-
-            //    if (RecentLastUpdatedDate > ExclusionSiteData.SiteLastUpdatedOn)
-            //    {
-            //        _exclusionSearchSiteData.SiteLastUpdatedOn = 
-            //            RecentLastUpdatedDate;
-            //        _exclusionSearchSiteData.DataExtractionRequired = true;
-            //    }
-            //    else
-            //    {
-            //        _exclusionSearchSiteData.SiteLastUpdatedOn =
-            //            ExclusionSiteData.SiteLastUpdatedOn;
-            //        _exclusionSearchSiteData.DataExtractionRequired = false;
-            //    }
-            //}
-            //if (!_exclusionSearchSiteData.DataExtractionRequired)
-            //    _exclusionSearchSiteData.ReferenceId = ExclusionSiteData.RecId;
-            //else
-            //    _exclusionSearchSiteData.ReferenceId =
-            //        _exclusionSearchSiteData.RecId;
         }
     }
 }

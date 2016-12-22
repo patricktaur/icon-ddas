@@ -37,8 +37,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         {
             get
             {
-                return 
-                    "Full Name: " + FullName + "~" +
+                return
                     "Name And Address: " + NameAndAddress + "~" +
                     "Center: " + Center + "~" +
                     "Type: " + Type + "~" +
