@@ -62,9 +62,10 @@ namespace DDAS.Services.Search
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
-        public ComplianceForm GetNewComplianceForm(ILog log)
+        public ComplianceForm GetNewComplianceForm(ILog log, string UserName)
         {
             ComplianceForm newForm = new ComplianceForm();
+            newForm.AssignedTo = UserName;
             newForm.SearchStartedOn = DateTime.Now;
             AddMandatorySitesToComplianceForm(newForm, log);
 
@@ -73,7 +74,8 @@ namespace DDAS.Services.Search
 
         #region ByPradeep
         //Pradeep 1Dec2016
-        public List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log)
+        public List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log,
+            string UserName)
         {
             var ComplianceForms = new List<ComplianceForm>();
 
@@ -84,7 +86,9 @@ namespace DDAS.Services.Search
 
             foreach (RowData row in DataFromExcelFile)
             {
-                var form = GetNewComplianceForm(log);
+                var form = GetNewComplianceForm(log, UserName);
+
+                form.AssignedTo = UserName;
 
                 var Investigators = new List<InvestigatorSearched>();
                 var Investigator = new InvestigatorSearched();
@@ -986,7 +990,7 @@ namespace DDAS.Services.Search
             _SearchEngine.ExtractData(SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch);
             var siteData = _SearchEngine.SiteData;
 
-            //var Data = siteData.Distinct();
+            var Data = siteData.Distinct();
 
             UpdateMatchStatus(siteData, NameToSearch);  //updates list with match count
 

@@ -115,8 +115,12 @@ namespace Utilities.WordTemplate
                             RowIndex += 1;
                         }
                     }
+
+                    //var SearchedByTable = body.Descendants<Table>().ElementAt(4);
+
                 }
-               
+                
+
                 //Patrick 06Dec2016
                 if (File.Exists(fileName))
                 {

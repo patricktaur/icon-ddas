@@ -14,6 +14,7 @@ using WebScraping.Selenium.SearchEngine;
 using Utilities;
 using DDAS.Data.Mongo;
 using DDAS.Services.Search;
+using DDAS.Services.UserService;
 
 namespace DDAS.API.App_Start
 {
@@ -70,6 +71,8 @@ namespace DDAS.API.App_Start
             container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
             container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
+
+            container.RegisterWebApiRequest<IUserService, UserService>();
         }
     }
 }

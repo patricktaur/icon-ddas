@@ -23,7 +23,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             return _db.GetCollection<User>(typeof(User).Name).InsertOneAsync(entity);
         }
 
-        public object GetAllUsers()
+        public List<User> GetAllUsers()
         {
             //var filter = Builders<User>.Filter.Eq("UserName", UserName);
             var collection = _db.GetCollection<User>(typeof(User).Name);
@@ -69,7 +69,13 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
   
         }
 
-      
+        public bool DropUser(Guid UserId)
+        {
+            var filter = Builders<User>.Filter.Eq("_id", UserId);
+            var collection = _db.GetCollection<User>(typeof(User).Name);
+            var entity = collection.DeleteOne(filter);
+            return true;
+        }
 
     }
 }

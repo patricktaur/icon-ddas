@@ -134,7 +134,7 @@ namespace DDAS.API.Identity
         public Task<IList<string>> GetRolesAsync(IdentityUser user)
         {
 
-            return Task.FromResult < IList < string >>(_UOW.UserRoleRepository.GetRoles(user.Id));
+            return Task.FromResult < IList < string >>(_UOW.UserRoleRepository.GetRoleValues(user.Id));
             /*
 
             IList<string> rolenames = new List<string>();

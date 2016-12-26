@@ -18,6 +18,7 @@ using System.Web;
 
 namespace DDAS.API.Controllers
 {
+    
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
@@ -179,7 +180,7 @@ namespace DDAS.API.Controllers
             try
             {
                 //string root = HttpContext.Current.Server.MapPath("~/App_Data");
-
+                var userName = User.Identity.GetUserName();
                 CustomMultipartFormDataStreamProvider provider = 
                     new CustomMultipartFormDataStreamProvider(UploadFolder);
 
@@ -198,7 +199,7 @@ namespace DDAS.API.Controllers
                     //_log.WriteLog("FileContent Length: " + FileContent.Length);
 
                     var forms = _SearchService.ReadUploadedFileData(file.LocalFileName,
-                        _log);
+                        _log, userName);
 
                     if (forms == null)
                         return 
@@ -267,9 +268,10 @@ namespace DDAS.API.Controllers
             //_log.LogStart();
             //try
             //{
+            var UserName = User.Identity.GetUserName();
             if (formId == null)
             {
-                return Ok(_SearchService.GetNewComplianceForm(_log));
+                return Ok(_SearchService.GetNewComplianceForm(_log, UserName));
             }
             else
             {
