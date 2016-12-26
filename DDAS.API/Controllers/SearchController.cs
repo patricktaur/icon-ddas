@@ -257,7 +257,7 @@ namespace DDAS.API.Controllers
             return ComplianceForms;
         }
 
-        [Authorize(Roles ="user")]
+        //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetPrincipalInvestigators()
