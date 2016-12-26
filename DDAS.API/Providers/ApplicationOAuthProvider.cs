@@ -9,7 +9,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using DDAS.API.Identity;
-
+using DDAS.Models.Entities.Domain;
+using DDAS.Models;
+using DDAS.Data.Mongo;
 
 namespace DDAS.API.Providers
 {
@@ -17,6 +19,10 @@ namespace DDAS.API.Providers
     {
         private readonly string _publicClientId;
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
+
+        private IUnitOfWork _UOW;
+        //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
+        //{
 
         public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         {
@@ -32,6 +38,8 @@ namespace DDAS.API.Providers
 
             _publicClientId = publicClientId;
             _userManagerFactory = userManagerFactory;
+            //temp - until Mongo Identity is implemented:
+            _UOW = new UnitOfWork("");
         }
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
@@ -43,8 +51,9 @@ namespace DDAS.API.Providers
                 try
                 {
                     IdentityUser user = await userManager.FindAsync(context.UserName, context.Password);
-               
-                if (user == null)
+                    
+
+                    if (user == null)
                 {
                     context.SetError("invalid_grant", "The user name or password is incorrect.");
                     return;
@@ -52,16 +61,38 @@ namespace DDAS.API.Providers
 
                     ClaimsIdentity oAuthIdentity = await userManager.CreateIdentityAsync(user,
                         context.Options.AuthenticationType);
+                    var r = userManager.GetRoles(user.Id);
+
+
+
                     ClaimsIdentity cookiesIdentity = await userManager.CreateIdentityAsync(user,
                         CookieAuthenticationDefaults.AuthenticationType);
-                    AuthenticationProperties properties = CreateProperties(user.UserName);
+
+                    //AuthenticationProperties properties = CreateProperties(user.UserName);
+                    //Modified for mongo roles
+                    User mongoUser = _UOW.UserRepository.FindById(user.Id);
+                    if (mongoUser == null)
+                    {
+                        throw new Exception("Unable to access user record from Mongo DB");
+                    }
+
+                    //Role Properties are added:
+                    AuthenticationProperties properties = CreateProperties(mongoUser);
+
+                    foreach (Role role in mongoUser.Roles)
+                    {
+                        oAuthIdentity.AddClaim(new Claim("Role", role.Name));
+                        
+                    }
+ 
+
                     AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
                     context.Validated(ticket);
                     context.Request.Context.Authentication.SignIn(cookiesIdentity);
                 }
-                catch(Exception)
+                catch(Exception e)
                 {
-
+                    Console.Write("" + e);
                 }
             }
         }
@@ -110,5 +141,22 @@ namespace DDAS.API.Providers
             };
             return new AuthenticationProperties(data);
         }
+
+        //Added: to include user roles: temp until mongo Identity is implemented.
+        public static AuthenticationProperties CreateProperties(User user)
+        {
+            IDictionary<string, string> data = new Dictionary<string, string>
+            {
+                { "userName", user.UserName },
+                { "userFullName", user.UserFullName + "" }
+
+            };
+            foreach (Role role in user.Roles)
+            {
+                data.Add(role.Name, "Role");
+            }
+            return new AuthenticationProperties(data);
+        }
+
     }
 }

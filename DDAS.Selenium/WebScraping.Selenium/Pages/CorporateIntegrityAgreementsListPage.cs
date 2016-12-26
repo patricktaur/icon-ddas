@@ -109,6 +109,27 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _CIASiteData.DataExtractionRequired = true;
+                LoadCIAList();
+                _CIASiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _CIASiteData.DataExtractionSucceeded = false;
+                _CIASiteData.DataExtractionErrorMessage = e.Message;
+                _CIASiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _CIASiteData.CreatedOn = DateTime.Now;
+            }
+        }
+
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             try

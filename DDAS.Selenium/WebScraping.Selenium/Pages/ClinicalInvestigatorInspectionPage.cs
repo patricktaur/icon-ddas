@@ -284,5 +284,28 @@ namespace WebScraping.Selenium.Pages
             _UOW.ClinicalInvestigatorInspectionListRepository.Add(
                 _clinicalSiteData);
         }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _clinicalSiteData.DataExtractionRequired = true;
+                DownloadCIIList(DownloadsFolder);
+                LoadClinicalInvestigatorListAlt(DownloadsFolder);
+                _clinicalSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _clinicalSiteData.DataExtractionSucceeded = false;
+                _clinicalSiteData.DataExtractionErrorMessage = e.Message;
+                _clinicalSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _clinicalSiteData.CreatedBy = "Patrick";
+                _clinicalSiteData.CreatedOn = DateTime.Now;
+            }
+        }
     }
 }

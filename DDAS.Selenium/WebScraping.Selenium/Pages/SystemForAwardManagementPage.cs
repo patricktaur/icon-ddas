@@ -21,6 +21,8 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW = uow;
             Open();
+            _SAMSiteData = new SystemForAwardManagementPageSiteData();
+            _SAMSiteData.RecId = Guid.NewGuid();
             _SAMSiteData.Source = driver.Url;
         }
 
@@ -72,16 +74,11 @@ namespace WebScraping.Selenium.Pages
 
         private SystemForAwardManagementPageSiteData _SAMSiteData;
 
+        private int RowNumber = 1;
+
         //need to refactor
         private void LoadSAMList()
         {
-            _SAMSiteData = new SystemForAwardManagementPageSiteData();
-
-            _SAMSiteData.CreatedBy = "Patrick";
-            _SAMSiteData.CreatedOn = DateTime.Now;
-
-            int RowNumber = 1;
-
             IList<IWebElement> TableThatContainsRecords =
                 SAMCheckResult.FindElements
                 (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table"));
@@ -204,25 +201,45 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override void LoadContent(string DownloadsFolder)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
-            //string[] Name = NameToSearch.Split(' ');
-
-            //for (int counter = 0; counter < Name.Length; counter++)
-            //{
-                if (SearchTerms(NameToSearch))
+            string[] Name = NameToSearch.Split(' ');
+            try
+            {
+                for (int counter = 0; counter < Name.Length; counter++)
                 {
-                    while (CheckForAnchorTagNext())
+                    if (Name[counter].Length > 2 && SearchTerms(NameToSearch))
                     {
-                        LoadSAMList();
+                        while (CheckForAnchorTagNext())
+                        {
+                            LoadSAMList();
 
-                        LoadNextRecord();
+                            LoadNextRecord();
+                        }
+                        LoadSAMList();
                     }
-                    LoadSAMList();
+                    else
+                        continue;
                 }
-                //else
-                //    continue;
-            //}
+                _SAMSiteData.DataExtractionSucceeded = true;
+                _SAMSiteData.DataExtractionRequired = true;
+            }
+            catch(Exception e)
+            {
+                _SAMSiteData.DataExtractionSucceeded = false;
+                _SAMSiteData.DataExtractionErrorMessage = e.Message;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _SAMSiteData.CreatedBy = "Patrick";
+                _SAMSiteData.CreatedOn = DateTime.Now;
+            }
         }
 
         private bool CheckForAnchorTagNext()
@@ -257,7 +274,26 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadSiteLastUpdatedDateFromPage()
         {
-            
+            try
+            {
+                string[] DataInPageLastUpdatedElement =
+                    PageLastUpdatedTextElement.Text.Split('.');
+
+                string PageLastUpdated =
+                    DataInPageLastUpdatedElement[3].Replace("-", " ").Trim();
+
+                DateTime RecentLastUpdatedDate;
+
+                DateTime.TryParseExact(PageLastUpdated, "yyyyMd hhmm", null,
+                    System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+
+            }
+            catch (Exception)
+            {
+                throw new Exception("Unable to read or parse the SiteUpdatedDate");
+            }
         }
 
         public override void SaveData()

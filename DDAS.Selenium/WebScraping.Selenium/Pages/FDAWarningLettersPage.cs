@@ -153,7 +153,6 @@ namespace WebScraping.Selenium.Pages
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             string[] FullName = NameToSearch.Split(' ');
-
             try
             {
                 if (SearchTerms(NameToSearch))
@@ -209,6 +208,11 @@ namespace WebScraping.Selenium.Pages
         public override void SaveData()
         {
             _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
+        }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            throw new NotImplementedException();
         }
     }
 }

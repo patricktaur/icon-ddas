@@ -158,5 +158,27 @@ namespace WebScraping.Selenium.Pages
             _UOW.FDADebarPageRepository.Add(_FDADebarPageSiteData);
 
         }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _FDADebarPageSiteData.DataExtractionRequired = true;
+                LoadDebarredPersonList();
+                _FDADebarPageSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _FDADebarPageSiteData.DataExtractionSucceeded = false;
+                _FDADebarPageSiteData.DataExtractionErrorMessage = e.Message;
+                _FDADebarPageSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _FDADebarPageSiteData.CreatedBy = "patrick";
+                _FDADebarPageSiteData.CreatedOn = DateTime.Now;
+            }
+        }
     }
 }

@@ -81,7 +81,17 @@ namespace WebScraping.Selenium.Pages
                         return element;
                     }
                 }
-                return null;
+                throw new Exception("Pagination element not found");
+            }
+        }
+
+        public IWebElement PageLastUpdatedTextElement
+        {
+            get
+            {
+                string XPathValue = "//div[@id='foot']/div/p";
+                IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
+                return Elements[1];
             }
         }
     }

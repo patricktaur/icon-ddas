@@ -191,5 +191,27 @@ namespace WebScraping.Selenium.Pages
         {
             _UOW.ERRProposalToDebarRepository.Add(_proposalToDebarSiteData);
         }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _proposalToDebarSiteData.DataExtractionRequired = true;
+                LoadProposalToDebarList();
+                _proposalToDebarSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _proposalToDebarSiteData.DataExtractionSucceeded = false;
+                _proposalToDebarSiteData.DataExtractionErrorMessage = e.Message;
+                _proposalToDebarSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _proposalToDebarSiteData.CreatedBy = "Patrick";
+                _proposalToDebarSiteData.CreatedOn = DateTime.Now;
+            }
+        }
     }
 }

@@ -14,7 +14,6 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class ExclusionDatabaseSearchPage : BaseSearchPage 
     {
-
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
         private DateTime? _SiteLastUpdatedFromDatabse;
@@ -182,9 +181,14 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadSiteLastUpdatedDateFromPage()
         {
-            string PageLastUpdated  = 
-                PageLastUpdatedTextElement.Text.Replace("UPDATED ", "").
-                Replace("-","/").Trim();
+            string PageLastUpdated =
+                PageLastUpdatedTextElement.Text;
+
+            if (PageLastUpdated == null || PageLastUpdated == "")
+                throw new Exception("PageLastUpdated is null");
+            else
+                PageLastUpdated = PageLastUpdated.Replace("UPDATED ", "").
+                Replace("-", "/").Trim();
 
             DateTime RecentLastUpdatedDate;
 
@@ -192,6 +196,31 @@ namespace WebScraping.Selenium.Pages
                 System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
 
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+        }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _exclusionSearchSiteData.DataExtractionRequired = true;
+
+                string FilePath = DownloadExclusionList(DownloadsFolder);
+                LoadExclusionDatabaseListFromCSV(FilePath);
+
+                _exclusionSearchSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _exclusionSearchSiteData.DataExtractionSucceeded = false;
+                _exclusionSearchSiteData.DataExtractionErrorMessage = e.Message;
+                _exclusionSearchSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _exclusionSearchSiteData.CreatedBy = "Patrick";
+                _exclusionSearchSiteData.CreatedOn = DateTime.Now;
+            }
         }
     }
 }

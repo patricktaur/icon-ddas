@@ -171,6 +171,11 @@ namespace WebScraping.Selenium.Pages
             return true;
         }
 
+        public override void LoadContent(string DownloadsFolder)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');

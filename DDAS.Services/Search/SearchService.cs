@@ -13,7 +13,7 @@ using Utilities.WordTemplate;
 
 namespace DDAS.Services.Search
 {
-    public class SearchService : ISearchService
+    public class SearchService //: ISearchService
     {
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
@@ -24,7 +24,7 @@ namespace DDAS.Services.Search
             _UOW = uow;
             _SearchEngine = SearchEngine;
         }
-
+/*
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
@@ -429,9 +429,8 @@ namespace DDAS.Services.Search
                                 finding.SourceNumber = siteSource.DisplayPosition;
                                 finding.SiteEnum = siteSource.SiteEnum; //Pradeep 2Dec2016
 
-                                string RecordDetails = rec.RecordDetails;
 
-                                finding.RecordDetails = RecordDetails;
+                                finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
 
                                 //Patrick 04Dec2016
@@ -440,7 +439,11 @@ namespace DDAS.Services.Search
                                 finding.InvestigatorName = inv.Name;
                                 frm.Findings.Add(finding);
                             }
-
+                            //Review:
+                            //siteSource.SiteSourceUpdatedOn' is the date of update at the time of creation of CompForm
+                            //
+                            //replace  '= siteSource.SiteSourceUpdatedOn' SiteSourceUpdatedOn at the time of data extraction
+                            searchStatus.SiteSourceUpdatedOn = siteSource.SiteSourceUpdatedOn;
                             searchStatus.HasExtractionError = false;
                             searchStatus.ExtractionErrorMessage = "";                            
                         }
@@ -463,12 +466,6 @@ namespace DDAS.Services.Search
                 inv.SitesSearched = ListOfSiteSearchStatus;
                 InvestigatorId += 1;
             }
-        }
-
-        //Pradeep 21Dec2016
-        private void GetSiteLastUpdatedDateForLiveSite()
-        {
-            
         }
 
         private void RemoveDeleteMarkedItemsFromFormCollections(ComplianceForm frm)
@@ -495,7 +492,6 @@ namespace DDAS.Services.Search
             //Adds SearchStatus Records if not found for an investigator.
             //This will happen when new investigator is added or new sites are added from the client side
 
-
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
                 foreach (SiteSource site in frm.SiteSources)
@@ -508,6 +504,7 @@ namespace DDAS.Services.Search
                         searchStatus.SiteName = site.SiteName;
                         searchStatus.SiteUrl = site.SiteUrl;
                         searchStatus.DisplayPosition = site.DisplayPosition;
+                        searchStatus.ExtractionMode = site.ExtractionMode;
                         inv.SitesSearched.Add(searchStatus);
                     }
                 }
@@ -630,29 +627,35 @@ namespace DDAS.Services.Search
                 }
                 if (ReviewCompleted == true)
                 {
-                    item.Status = "Issues Not Identified";
+                    item.Status = "Review completed, Issues Not Identified";
+                    item.StatusColor = ColorEnum.Green;
                     if (compForm.IssuesFoundInvestigatorCount > 0)
                     {
-                        item.Status = "Issues Identified";
+                        item.Status = "Review completed, Issues Identified";
+                        item.StatusColor = ColorEnum.Red;
                     }
                 }
                 else if (compForm.ExtractedOn == null)
                 {
                     item.Status = "Data not extracted";
+                    item.StatusColor = ColorEnum.Grey;
                 }
                 else
                 {
                     if (compForm.FullMatchesFoundInvestigatorCount > 0)
                     {
-                        item.Status = "Full Match Found";
+                        item.Status = "Full Match Found, Review Pending";
+                        item.StatusColor = ColorEnum.LightRed;
                     }
                     else if (compForm.FullMatchesFoundInvestigatorCount > 0)
                     {
-                        item.Status = "Partial Match Found";
+                        item.Status = "Partial Match Found, Review Pending";
+                        item.StatusColor = ColorEnum.LightRed;
                     }
                     else
                     {
-                        item.Status = "No Match Found";
+                        item.Status = "No Match Found, Review Pending";
+                        item.StatusColor = ColorEnum.LightGreen;
                     }
                 }
                 retList.Add(item);
@@ -803,8 +806,7 @@ namespace DDAS.Services.Search
             }
             return form;
         }
-
-        //Alt for GetFDADebarPageMatchCount  
+  
         public List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName)
@@ -860,8 +862,6 @@ namespace DDAS.Services.Search
 
         }
 
-        //added on 1Dec2016 Pradeep, Yet to add Live sites below..
-
         public List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, 
             int ComponentsInInvestigatorName)
@@ -885,10 +885,7 @@ namespace DDAS.Services.Search
             string NameToSearch,
             int ComponentsInInvestigatorName)
         {
-            //21Dec2016 Pradeep - To set _searchPage
-            _SearchEngine.IsDataExtractionRequired(SiteEnum.FDAWarningLettersPage);
-
-            _SearchEngine.Load(SiteEnum.FDAWarningLettersPage, NameToSearch, "", true);
+            _SearchEngine.ExtractData(SiteEnum.FDAWarningLettersPage, NameToSearch);
             var siteData = _SearchEngine.SiteData;
 
             //UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
@@ -951,11 +948,7 @@ namespace DDAS.Services.Search
             Guid? SiteDataId, string NameToSearch,
             int ComponentsInInvestigatorName)
         {
-            //21Dec2016 Pradeep - To set _searchPage
-            _SearchEngine.IsDataExtractionRequired(
-                SiteEnum.ClinicalInvestigatorDisqualificationPage);
-
-            _SearchEngine.Load(SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch, "", true);
+            _SearchEngine.ExtractData(SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch);
             var siteData = _SearchEngine.SiteData;
 
             UpdateMatchStatus(siteData, NameToSearch);  //updates list with match count
@@ -1084,5 +1077,6 @@ namespace DDAS.Services.Search
             return res;
         }
         #endregion
+        */
     }
 }

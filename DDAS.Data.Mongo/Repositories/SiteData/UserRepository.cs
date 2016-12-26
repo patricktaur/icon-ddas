@@ -34,10 +34,14 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
 
         public User FindByUserName(string UserName)
         {
-            var filter = Builders<User>.Filter.Eq("UserName", UserName);
-            var collection = _db.GetCollection<User>(typeof(User).Name);
-            var entity = collection.Find(filter).FirstOrDefault();
-            return entity;
+            //Patrick 21Dec2016
+            //var filter = Builders<User>.Filter.Eq("UserName", UserName);
+            //var collection = _db.GetCollection<User>(typeof(User).Name);
+            //var entity = collection.Find(filter).FirstOrDefault();
+
+            //Case insesnetive for login.
+            return GetAll().FirstOrDefault(u => u.UserName.ToLower() == UserName.ToLower());
+            
         }
 
         public Task UpdateUserAsync(string UserName)

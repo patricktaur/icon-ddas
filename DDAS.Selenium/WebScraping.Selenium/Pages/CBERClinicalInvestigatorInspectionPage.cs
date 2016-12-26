@@ -122,6 +122,28 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _CBERSiteData.DataExtractionRequired = true;
+                LoadNextInspectionList();
+                _CBERSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _CBERSiteData.DataExtractionSucceeded = false;
+                _CBERSiteData.DataExtractionErrorMessage = e.Message;
+                _CBERSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _CBERSiteData.CreatedBy = "Patrick";
+                _CBERSiteData.CreatedOn = DateTime.Now;
+            }
+        }
+
         public override void LoadContent(string NameToSearch, string DownloadFolder)
         {
             try

@@ -47,10 +47,10 @@ namespace DDAS.API.Controllers
             _SearchService = SearchSummary;
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
-            //_log = new LogText(DataExtractionLogFile);
         }
 
         #region MoveToAccountsController
+        [Authorize(Roles = "admin")]
         [Route("GetUsers")]
         [HttpGet]
         public IHttpActionResult GetUsers()
@@ -236,6 +236,8 @@ namespace DDAS.API.Controllers
             }
         }
 
+
+        //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetPrincipalInvestigators()
@@ -307,12 +309,23 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
         {
-            Guid? RecId = Guid.Parse(ComplianceFormId);
+            try
+            {
+               
+                Guid? RecId = Guid.Parse(ComplianceFormId);
 
-            var FilePath = _SearchService.GenerateComplianceFormAlt(
-                Guid.Parse(ComplianceFormId), TemplatesFolder, DownloadFolder);
+                var FilePath = _SearchService.GenerateComplianceFormAlt(
+                    Guid.Parse(ComplianceFormId), TemplatesFolder, DownloadFolder);
 
-            return Ok(FilePath);
+                return Ok(FilePath);
+            }
+            catch (Exception e)
+            {
+                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                //    "Error Details: " + e.Message);
+                return  Content(HttpStatusCode.BadRequest, e.Message);
+            }
+        
         }
 
         //3Dec2016

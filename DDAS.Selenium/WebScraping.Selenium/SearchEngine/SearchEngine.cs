@@ -526,5 +526,55 @@ namespace WebScraping.Selenium.SearchEngine
         {
             _searchPage.SaveData();
         }
+
+        public void ExtractData(List<SearchQuerySite> query, 
+            string DownloadFolder, ILog log)
+        {
+            var DBSites = query.Where(x => x.ExtractionMode == "DB").ToList();
+
+            log.WriteLog("Processing:" + DBSites.Count + " sites");
+            foreach (SearchQuerySite site in DBSites)
+            {
+                try
+                {
+                    ExtractData(site.SiteEnum, DownloadFolder, log);
+                }
+                catch (Exception e)
+                {
+                    log.WriteLog("Unable to extract data for: " + site.SiteEnum +
+                        "Error Details: " + e.ToString());
+                    continue;
+                }
+            }
+        }
+
+        public void ExtractData(SiteEnum siteEnum, string DownloadFolder, ILog log)
+        {
+            var ExtractionRequired = IsDataExtractionRequired(siteEnum);
+
+            var SiteData = _searchPage.baseSiteData;
+            SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+
+            if (ExtractionRequired)
+            {
+                log.WriteLog(DateTime.Now.ToString(), "Start extracting from: " + siteEnum);
+                _searchPage.LoadContent(DownloadFolder);
+                log.WriteLog(DateTime.Now.ToString(), "End extracting from: " + siteEnum);
+            }
+            else
+            {
+                SiteData.CreatedOn = DateTime.Now;
+                SiteData.ReferenceId = GetRecIdOfPreviousDocument(siteEnum);
+                log.WriteLog(DateTime.Now.ToString(), "Source data has not been updated. Extraction not required");
+            }
+            SaveData();
+            log.WriteLog(DateTime.Now.ToString(), "Data Saved");
+        }
+
+        public void ExtractData(SiteEnum siteEnum, string NameToSearch)
+        {
+            _searchPage = GetSearchPage(siteEnum);
+            _searchPage.LoadContent(NameToSearch, "");
+        }
     }
 }

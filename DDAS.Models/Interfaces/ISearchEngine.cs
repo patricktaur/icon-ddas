@@ -26,6 +26,11 @@ namespace DDAS.Models.Interfaces
         void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log);
         //void Load(SiteEnum siteEnum, string NameToSearch, string DownloadFolder);
 
+        //Pradeep 22Dec2016
+        void ExtractData(List<SearchQuerySite> query, string DownloadFolder, ILog log);
+        void ExtractData(SiteEnum siteEnum, string DownloadFolder, ILog log);
+        void ExtractData(SiteEnum siteEnum, string NameToSearch);//For Live site
+
         IEnumerable<SiteDataItemBase> SiteData { get; }
 
         void SaveData();
