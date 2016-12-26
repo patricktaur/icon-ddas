@@ -61,9 +61,8 @@ namespace DDAS.API.Providers
 
                     ClaimsIdentity oAuthIdentity = await userManager.CreateIdentityAsync(user,
                         context.Options.AuthenticationType);
-                    var r = userManager.GetRoles(user.Id);
 
-
+                    var userRoles = userManager.GetRoles(user.Id);
 
                     ClaimsIdentity cookiesIdentity = await userManager.CreateIdentityAsync(user,
                         CookieAuthenticationDefaults.AuthenticationType);
@@ -77,15 +76,14 @@ namespace DDAS.API.Providers
                     }
 
                     //Role Properties are added:
-                    AuthenticationProperties properties = CreateProperties(mongoUser);
+                    AuthenticationProperties properties = CreateProperties(user, userRoles);
 
-                    foreach (Role role in mongoUser.Roles)
-                    {
-                        oAuthIdentity.AddClaim(new Claim("Role", role.Name));
+                    //foreach (Role role in mongoUser.Roles)
+                    //{
+                    //    oAuthIdentity.AddClaim(new Claim("Role", role.Name));
                         
-                    }
+                    //}
  
-
                     AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
                     context.Validated(ticket);
                     context.Request.Context.Authentication.SignIn(cookiesIdentity);
@@ -143,17 +141,15 @@ namespace DDAS.API.Providers
         }
 
         //Added: to include user roles: temp until mongo Identity is implemented.
-        public static AuthenticationProperties CreateProperties(User user)
+        public static AuthenticationProperties CreateProperties(IdentityUser user, IList<string> roles)
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
                 { "userName", user.UserName },
-                { "userFullName", user.UserFullName + "" }
-
             };
-            foreach (Role role in user.Roles)
+            foreach (string role in roles)
             {
-                data.Add(role.Name, "Role");
+                data.Add(role, "Role");
             }
             return new AuthenticationProperties(data);
         }

@@ -73,12 +73,12 @@
     <Compile Include="Repositories\SiteData\FDADebarPageRepository.cs" />
     <Compile Include="Repositories\SiteData\FDAWarningLettersRepository.cs" />
     <Compile Include="Repositories\SiteData\PHSAdministrativeActionListingRepository.cs" />
-    <Compile Include="Repositories\SiteData\RoleRepository.cs" />
+    <Compile Include="Repositories\Users\RoleRepository.cs" />
     <Compile Include="Repositories\SiteData\SaveSearchResultRepository.cs" />
     <Compile Include="Repositories\SiteData\SpeciallyDesignatedNationalsRepository.cs" />
     <Compile Include="Repositories\SiteData\SystemForAwardManagementRepository.cs" />
-    <Compile Include="Repositories\SiteData\UserRepository.cs" />
-    <Compile Include="Repositories\SiteData\UserRoleRepository.cs" />
+    <Compile Include="Repositories\Users\UserRepository.cs" />
+    <Compile Include="Repositories\Users\UserRoleRepository.cs" />
     <Compile Include="test.cs" />
     <Compile Include="TestingMongoDb.cs" />
     <Compile Include="UnitOfWork.cs" />

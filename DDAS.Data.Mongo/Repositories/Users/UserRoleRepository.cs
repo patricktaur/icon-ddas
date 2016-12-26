@@ -34,14 +34,14 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         }
 
         //Patrick:
-        public IList<string> GetRoles(User user)
+        public IList<string> GetRoleValues(User user)
         {
-            return GetRoles(user.UserId);
+            return GetRoleValues(user.UserId);
         }
-        public IList<string> GetRoles(Guid UserId)
+
+        public IList<string> GetRoleValues(Guid UserId)
         {
-        
-            
+ 
             IList<string> roles = new List<string>();
 
             IList<UserRole> userRoles = GetAll();
@@ -56,6 +56,30 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             }
             
             return roles;
+        }
+
+        public IList<UserRole> GetUserRoles(Guid UserId)
+        {
+
+            IList<string> roles = new List<string>();
+
+            IList<UserRole> userRoles = GetAll().Where(x => x.UserId == UserId).ToList();
+
+            return userRoles;
+        }
+
+        public UserRole GetUserRole(Guid UserId, Guid RoleId)
+        {
+            return  GetAll().Where(x => x.UserId == UserId && x.RoleId == RoleId).FirstOrDefault();
+
+        }
+
+        public bool DropUserRole(Guid UserRoleId)
+        {
+            var filter = Builders<UserRole>.Filter.Eq("_id", UserRoleId);
+            var collection = _db.GetCollection<UserRole>(typeof(UserRole).Name);
+            var entity = collection.DeleteOne(filter);
+            return true;
         }
     }
 }

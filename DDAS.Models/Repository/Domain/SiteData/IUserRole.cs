@@ -11,8 +11,11 @@ namespace DDAS.Models.Repository.Domain.SiteData
     {
         Task AddAsync(UserRole userRole);
         IList<Guid> GetRoleId(User user);
-        IList<string> GetRoles(User user);
-        IList<string> GetRoles(Guid UserId);
+        IList<string> GetRoleValues(User user);
+        IList<string> GetRoleValues(Guid UserId);
+        IList<UserRole> GetUserRoles(Guid UserId);
+        UserRole GetUserRole(Guid UserId, Guid RoleId);
+        bool DropUserRole(Guid UserRoleId);
 
     }
 }
