@@ -342,6 +342,7 @@ namespace DDAS.Models.Entities.Domain
         public string InvestigatorName { get; set; }
         public bool IsAnIssue { get;  set;}
 
+        //public List<Link> Links { get; set; } = new List<Link>();
     }
     #endregion
 

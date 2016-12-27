@@ -13,14 +13,11 @@ namespace DDAS.API.Controllers
     public class ReportsController : ApiController
     {
         private ISearchService _SearchSummary;
-        private ISiteSummary _SiteSummary;
         private IUnitOfWork _UOW;
 
-        public ReportsController(ISearchService SearchSummary,
-            ISiteSummary SiteSummary, IUnitOfWork UOW)
+        public ReportsController(ISearchService SearchSummary, IUnitOfWork UOW)
         {
             _SearchSummary = SearchSummary;
-            _SiteSummary = SiteSummary;
             _UOW = UOW;
         }
 

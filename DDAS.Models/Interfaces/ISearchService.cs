@@ -8,15 +8,15 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-        ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
+        //ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
 
-        ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
-            Guid? ComplianceFormId, SiteEnum Enum, ILog log);
+        //ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
+        //    Guid? ComplianceFormId, SiteEnum Enum, ILog log);
 
         List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
 
         //Patrick 27Nov2016
-        ComplianceForm GetNewComplianceForm(ILog log);
+        ComplianceForm GetNewComplianceForm(ILog log, string UserName);
 
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log);
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
@@ -25,7 +25,7 @@ namespace DDAS.Models.Interfaces
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
         
         //Pradeep 1Dec2016
-        List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log);
+        List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log, string UserName);
 
         ComplianceForm RollUpSummary(ComplianceForm form);
 

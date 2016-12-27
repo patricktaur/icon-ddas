@@ -227,5 +227,31 @@ namespace WebScraping.Selenium.Pages
 
             _SiteLastUpdatedFromPage = CurrentSiteUpdatedDate;
         }
+
+        public void LoadContent(string DownloadFolder)
+        {
+            try
+            {
+                //if (!CheckSiteUpdatedDate())
+                //{
+                _SDNSiteData.DataExtractionRequired = true;
+                DownloadSDNList(DownloadFolder);
+                GetTextFromPDF("", DownloadFolder);
+                _SDNSiteData.DataExtractionSucceeded = true;
+                //}
+            }
+            catch (Exception e)
+            {
+                _SDNSiteData.DataExtractionSucceeded = false;
+                _SDNSiteData.DataExtractionErrorMessage = e.Message;
+                _SDNSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _SDNSiteData.CreatedBy = "Patrick";
+                _SDNSiteData.CreatedOn = DateTime.Now;
+            }
+        }
     }
 }

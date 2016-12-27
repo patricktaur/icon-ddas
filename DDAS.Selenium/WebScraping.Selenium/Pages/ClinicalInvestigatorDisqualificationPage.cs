@@ -131,7 +131,7 @@ namespace WebScraping.Selenium.Pages
 
                     if (IsElementPresent(TDs[7], By.XPath("a")))
                     {
-                        IList<IWebElement> anchors = TDs[6].FindElements(By.XPath("a"));
+                        IList<IWebElement> anchors = TDs[7].FindElements(By.XPath("a"));
 
                         foreach (IWebElement anchor in anchors)
                         {
@@ -169,6 +169,11 @@ namespace WebScraping.Selenium.Pages
                 return false;
 
             return true;
+        }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            throw new NotImplementedException();
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder)

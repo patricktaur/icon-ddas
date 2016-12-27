@@ -62,6 +62,7 @@ namespace DDAS.Services.Search
             }
             return ListOfSiteScan;
         }
+        #endregion
 
         public SiteScan GetSiteScanData(SiteEnum Enum, string NameToSearch, ILog log)
         {
@@ -101,7 +102,7 @@ namespace DDAS.Services.Search
                     throw new Exception("Invalid Enum");
             }
         }
-        #endregion
+        
 
         //Pradeep 17Dec2016 Changing FindById(SiteData.RecId) to
         //FindById(SiteData.ReferenceId)
@@ -123,7 +124,7 @@ namespace DDAS.Services.Search
             
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -145,7 +146,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -167,7 +168,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -189,7 +190,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -211,7 +212,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -233,7 +234,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -255,7 +256,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -277,7 +278,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }
@@ -307,7 +308,7 @@ namespace DDAS.Services.Search
 
             scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
             scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
-            scan.DataId = ExtractedSiteData.RecId;
+            scan.DataId = ExtractedSiteData.ReferenceId;
 
             return scan;
         }

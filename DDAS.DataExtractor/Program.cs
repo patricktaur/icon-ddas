@@ -10,7 +10,6 @@ using System.Configuration;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
 using System.Diagnostics;
-using System.Threading;
 
 namespace DDAS.DataExtractor
 {
@@ -20,16 +19,14 @@ namespace DDAS.DataExtractor
         private static LogText _WriteLog;
 
         public static string DownloadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            ConfigurationManager.AppSettings["DownloadFolder"];
 
         static void Main(string[] args)
-        {  
+        {
             int? SiteNum = null;
             if (args.Length != 0)
             {
-
                 SiteNum = int.Parse(args[0]);
-
             }
             ExtractData(SiteNum);
         }
@@ -63,30 +60,40 @@ namespace DDAS.DataExtractor
             _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
             ISearchEngine searchEngine = new SearchEngine(uow);
 
-            var SiteScan = new SiteScanData(uow, searchEngine);
+            //var SiteScan = new SiteScanData(uow, searchEngine);
+
+            var extractData = new ExtractData(searchEngine);
 
             try
             {
                 if (SiteNum != null)
                 {
                     SiteEnum siteEnum = (SiteEnum)SiteNum;
-                    _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
 
-                    if(searchEngine.IsDataExtractionRequired(siteEnum))
-                        searchEngine.Load(siteEnum, "", DownloadFolder, true);
-                    else
-                        searchEngine.Load(siteEnum, "", DownloadFolder, false);
+                    extractData.ExtractDataSingleSite(
+                        siteEnum, DownloadFolder, _WriteLog);
 
-                    _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract completed");
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
 
-                    searchEngine.SaveData();
-                    _WriteLog.WriteLog(DateTime.Now.ToString(), "Data Saved");
+                    //if(searchEngine.IsDataExtractionRequired(siteEnum))
+                    //    searchEngine.Load(siteEnum, "", DownloadFolder, true);
+                    //else
+                    //    searchEngine.Load(siteEnum, "", DownloadFolder, false);
+
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Extract completed");
+
+                    //searchEngine.SaveData();
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Data Saved");
                 }
                 else
                 {
                     var query = SearchSites.GetNewSearchQuery();
-                    //_WriteLog.WriteLog("Download Folder;", DownloadFolder);
-                    searchEngine.Load(query, DownloadFolder, _WriteLog);
+
+                    extractData.ExtractDataAllDBSites(
+                        query, DownloadFolder, _WriteLog);
+                    
+                    ////_WriteLog.WriteLog("Download Folder;", DownloadFolder);
+                    //searchEngine.Load(query, DownloadFolder, _WriteLog);
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             }

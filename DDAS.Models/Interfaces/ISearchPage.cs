@@ -7,6 +7,7 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchPage
     {
+        void LoadContent(string DownloadFolder);
         void LoadContent(string NameToSearch, string DownloadFolder);
         void SaveData();
         DateTime? SiteLastUpdatedDateFromPage { get; }

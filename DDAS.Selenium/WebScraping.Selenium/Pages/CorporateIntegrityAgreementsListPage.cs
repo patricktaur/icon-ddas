@@ -94,18 +94,39 @@ namespace WebScraping.Selenium.Pages
                     CiaList.State = TDs[2].Text;
                     CiaList.Effective = TDs[3].Text;
 
-                    if(IsElementPresent(TDs[0], By.XPath("a")))
-                    {
-                        IWebElement anchor = driver.FindElement(By.XPath("a"));
-                        var link = new Link();
-                        link.Title = "Provider";
-                        link.url = anchor.GetAttribute("href");
-                        CiaList.Links.Add(link);
-                    }
+                    //if(IsElementPresent(TDs[0], By.XPath("a")))
+                    //{
+                    //    IWebElement anchor = driver.FindElement(By.XPath("a"));
+                    //    var link = new Link();
+                    //    link.Title = "Provider";
+                    //    link.url = anchor.GetAttribute("href");
+                    //    CiaList.Links.Add(link);
+                    //}
 
                     _CIASiteData.CIAListSiteData.Add(CiaList);
                     RowCount = RowCount + 1;
                 }
+            }
+        }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _CIASiteData.DataExtractionRequired = true;
+                LoadCIAList();
+                _CIASiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _CIASiteData.DataExtractionSucceeded = false;
+                _CIASiteData.DataExtractionErrorMessage = e.Message;
+                _CIASiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _CIASiteData.CreatedOn = DateTime.Now;
             }
         }
 

@@ -221,5 +221,27 @@ namespace WebScraping.Selenium.Pages
             //    _PHSAdministrativeSiteData.ReferenceId =
             //        _PHSAdministrativeSiteData.RecId;
         }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _PHSAdministrativeSiteData.DataExtractionRequired = true;
+                LoadAdministrativeActionList();
+                _PHSAdministrativeSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _PHSAdministrativeSiteData.DataExtractionSucceeded = false;
+                _PHSAdministrativeSiteData.DataExtractionErrorMessage = e.Message;
+                _PHSAdministrativeSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _PHSAdministrativeSiteData.CreatedBy = "Patrick";
+                _PHSAdministrativeSiteData.CreatedOn = DateTime.Now;
+            }
+        }
     }
 }

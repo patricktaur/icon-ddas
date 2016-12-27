@@ -171,5 +171,27 @@ namespace WebScraping.Selenium.Pages
             _UOW.AdequateAssuranceListRepository.Add(
                 _adequateAssuranceListSiteData);
         }
+
+        public override void LoadContent(string DownloadsFolder)
+        {
+            try
+            {
+                _adequateAssuranceListSiteData.DataExtractionRequired = true;
+                LoadAdequateAssuranceInvestigators();
+                _adequateAssuranceListSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _adequateAssuranceListSiteData.DataExtractionSucceeded = false;
+                _adequateAssuranceListSiteData.DataExtractionErrorMessage = e.Message;
+                _adequateAssuranceListSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _adequateAssuranceListSiteData.CreatedOn = DateTime.Now;
+                _adequateAssuranceListSiteData.CreatedBy = "Patrick";
+            }
+        }
     }
 }
