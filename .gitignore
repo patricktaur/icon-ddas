@@ -17016,3 +17016,6 @@ DDAS.WebSite (2).zip
 *.zip
 Documents/Generated/
 DDAS.API/Uploads/DDAS_Upload_Template.xlsx
+DDAS.API/DataFiles/ComplianceForms/
+DDAS.API/DDAS_Upload.xlsx
+DDAS.API/DataFiles/Uploads/

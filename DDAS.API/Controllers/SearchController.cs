@@ -27,19 +27,13 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         private ILog _log;
 
-        private string DataExtractionLogFile =
-            System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
-
-        private string UploadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
-
-        private string DownloadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
-
-        private string TemplatesFolder =
-            System.Configuration.ConfigurationManager.AppSettings["TemplateFolder"];
-
-        private string AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
+        private string DataExtractionLogFile;
+        private string UploadsFolder;
+        private string ComplianceFormFolder;
+        private string ExcelTemplateFolder;
+        private string AppDataFolder;
+        private string RootPath;
+        private string WordTemplateFolder;
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
             IUnitOfWork uow)
@@ -48,6 +42,25 @@ namespace DDAS.API.Controllers
             _SearchService = SearchSummary;
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
+
+            RootPath = HttpRuntime.AppDomainAppPath;
+
+            //AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
+
+            DataExtractionLogFile = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+
+            UploadsFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"];
+
+            ComplianceFormFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["ComplianceFormFolder"];
+
+            ExcelTemplateFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["ExcelTemplateFolder"];
+
+            WordTemplateFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
         }
 
         #region MoveToAccountsController
@@ -182,7 +195,7 @@ namespace DDAS.API.Controllers
                 //string root = HttpContext.Current.Server.MapPath("~/App_Data");
                 var userName = User.Identity.GetUserName();
                 CustomMultipartFormDataStreamProvider provider = 
-                    new CustomMultipartFormDataStreamProvider(UploadFolder);
+                    new CustomMultipartFormDataStreamProvider(UploadsFolder);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -317,9 +330,11 @@ namespace DDAS.API.Controllers
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
                 var FilePath = _SearchService.GenerateComplianceFormAlt(
-                    Guid.Parse(ComplianceFormId), TemplatesFolder, DownloadFolder);
+                    RecId, WordTemplateFolder, ComplianceFormFolder);
 
-                return Ok(FilePath);
+                string path = FilePath.Replace(RootPath, "");
+
+                return Ok(path);
             }
             catch (Exception e)
             {
@@ -367,7 +382,7 @@ namespace DDAS.API.Controllers
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
-            var localFilePath = UploadFolder + "SITE LIST REQUEST FORM_Updated.docx";
+            var localFilePath = UploadsFolder + "SITE LIST REQUEST FORM_Updated.docx";
             if (!File.Exists(localFilePath))
             {
                 result = Request.CreateResponse(HttpStatusCode.Gone);

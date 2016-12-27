@@ -704,7 +704,8 @@ namespace DDAS.Services.Search
         #endregion
 
         #region ComplianceFormGeneration
-        public string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplateFolder, string DownloadFolder)
+        public string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplateFolder, 
+            string DownloadFolder)
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -722,7 +723,7 @@ namespace DDAS.Services.Search
 
             //return @"App_Data\Data\Downloads\" + GeneratedFileName;
             //threfore: 
-            return @"Downloads\" + GeneratedFileName;
+            return DownloadFolder + GeneratedFileName;
         }
         #endregion
 
@@ -734,7 +735,6 @@ namespace DDAS.Services.Search
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             var UtilitiesObject = new CreateComplianceForm();
-
 
             var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
 

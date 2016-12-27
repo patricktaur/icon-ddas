@@ -211,9 +211,9 @@ namespace WebScraping.Selenium.Pages
             string[] Name = NameToSearch.Split(' ');
             try
             {
-                for (int counter = 0; counter < Name.Length; counter++)
-                {
-                    if (Name[counter].Length > 2 && SearchTerms(NameToSearch))
+                //for (int counter = 0; counter < Name.Length; counter++)
+                //{
+                    if (SearchTerms(NameToSearch))
                     {
                         while (CheckForAnchorTagNext())
                         {
@@ -223,9 +223,9 @@ namespace WebScraping.Selenium.Pages
                         }
                         LoadSAMList();
                     }
-                    else
-                        continue;
-                }
+                    //else
+                        //continue;
+                //}
                 _SAMSiteData.DataExtractionSucceeded = true;
                 _SAMSiteData.DataExtractionRequired = true;
             }
