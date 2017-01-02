@@ -543,4 +543,8 @@ Entry on 23 Dec 2016
 Entry on 26 Dec 2016
 1. Demo was given to clients to show the all functionalities in the applications. few changes were requested
    by the clients. Need to re-assign a compliance form to any other user. Adding extra table for additional 
-   sites. 
+   sites.
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 27 Dec 2016
+1. Changed the filepaths - Downloads, uploads and templates
