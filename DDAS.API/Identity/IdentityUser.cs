@@ -22,6 +22,9 @@ namespace DDAS.API.Identity
 
         public Guid Id { get; set; }
         public string UserName { get; set; }
+        public string EmailId { get; set; }
+        public string UserFullName { get; set; }
+        public bool Active { get; set; }
         public virtual string PasswordHash { get; set; }
         public virtual string SecurityStamp { get; set; }
     }

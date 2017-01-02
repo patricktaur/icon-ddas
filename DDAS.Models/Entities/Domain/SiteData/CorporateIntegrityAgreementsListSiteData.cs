@@ -44,6 +44,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Effective: " + Effective;
             }
         }
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link>();
+            }
+        }
 
     }
 }

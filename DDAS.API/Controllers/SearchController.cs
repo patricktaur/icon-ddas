@@ -27,18 +27,15 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         private ILog _log;
 
-        //For Pradeep:
-        private string _rootPath;
-
         private string DataExtractionLogFile;
-
-        private string UploadFolder;
-
-        private string DownloadFolder;
-
-        private string TemplatesFolder;
-
-        private string AppDataFolder;
+        private string UploadsFolder;
+        private string ComplianceFormFolder;
+        private string ExcelTemplateFolder;
+        
+        private string RootPath;
+        private string WordTemplateFolder;
+        
+        
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
             IUnitOfWork uow)
@@ -47,136 +44,143 @@ namespace DDAS.API.Controllers
             _SearchService = SearchSummary;
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
-            _rootPath = HttpRuntime.AppDomainAppPath;
 
-             DataExtractionLogFile = _rootPath + "/" +
-            System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
+            //_userName = User.Identity.GetUserName(); //returns null in constructor, returns correct value in method.
+           
 
-            UploadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["UploadFolder"];
+            RootPath = HttpRuntime.AppDomainAppPath;
 
-            DownloadFolder =
-            System.Configuration.ConfigurationManager.AppSettings["DownloadFolder"];
+            //AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
 
-            TemplatesFolder =
-            System.Configuration.ConfigurationManager.AppSettings["TemplateFolder"];
+            DataExtractionLogFile = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-            AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
-    }
+            UploadsFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"];
+
+            ComplianceFormFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["ComplianceFormFolder"];
+
+            ExcelTemplateFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["ExcelTemplateFolder"];
+
+            WordTemplateFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
+        }
 
         #region MoveToAccountsController
-        [Authorize(Roles = "admin")]
-        [Route("GetUsers")]
-        [HttpGet]
-        public IHttpActionResult GetUsers()
-        {
-            var Users = _UOW.UserRepository.GetAllUsers();
+        //[Authorize(Roles = "admin")]
+        //[Route("GetUsers")]
+        //[HttpGet]
+        //public IHttpActionResult GetUsers()
+        //{
+        //    var Users = _UOW.UserRepository.GetAllUsers();
    
-            if (Users != null)
-            {
-                return Ok(Users);
-            }
-            else
-                return Ok("no users found!");
-        }
+        //    if (Users != null)
+        //    {
+        //        return Ok(Users);
+        //    }
+        //    else
+        //        return Ok("no users found!");
+        //}
 
-        [Route("GetUser")]
-        [HttpGet]
-        public IHttpActionResult GetUser(string UserId)
-        {
-            Guid? gUserId = Guid.Parse(UserId);
-            var User = _UOW.UserRepository.FindById(gUserId); 
-            //important: the User object must be mapped to Userview to eliminate security fields (hash code etc) 
-            if (User != null)
-            {
-                return Ok(User);
-            }
-            else
-                return Ok("No user found!");
-        }
+        //[Route("GetUser")]
+        //[HttpGet]
+        //public IHttpActionResult GetUser(string UserId)
+        //{
+        //    Guid? gUserId = Guid.Parse(UserId);
+        //    var User = _UOW.UserRepository.FindById(gUserId); 
+        //    //important: the User object must be mapped to Userview to eliminate security fields (hash code etc) 
+        //    if (User != null)
+        //    {
+        //        return Ok(User);
+        //    }
+        //    else
+        //        return Ok("No user found!");
+        //}
 
 
-        [Route("AddNewRole")]
-        [HttpPost]
-        public IHttpActionResult CreateRole(IdentityRole role)
-        {
-            //IdentityRole role = new IdentityRole(roleName);
-            RoleStore roleStore = new RoleStore(_UOW);
-            roleStore.CreateAsync(role);
-            return Ok();
-        }
+        //[Route("AddNewRole")]
+        //[HttpPost]
+        //public IHttpActionResult CreateRole(IdentityRole role)
+        //{
+        //    //IdentityRole role = new IdentityRole(roleName);
+        //    RoleStore roleStore = new RoleStore(_UOW);
+        //    roleStore.CreateAsync(role);
+        //    return Ok();
+        //}
 
-        //[Authorize] //(Roles = "")]
-        [Route("AddUser")]
-        [HttpPost]
-        public IHttpActionResult GetUser(UserDetails user)
-        {
-            UserStore userStore = new UserStore(_UOW);
-            var um = new UserManager<IdentityUser, Guid>(userStore);
+        ////[Authorize] //(Roles = "")]
+        //[Route("AddUser")]
+        //[HttpPost]
+        //public IHttpActionResult GetUser(UserDetails user)
+        //{
+        //    UserStore userStore = new UserStore(_UOW);
+        //    var um = new UserManager<IdentityUser, Guid>(userStore);
 
-            RoleStore roleStore = new RoleStore(_UOW);
-            var rm = new RoleManager<IdentityRole, Guid>(roleStore);
+        //    RoleStore roleStore = new RoleStore(_UOW);
+        //    var rm = new RoleManager<IdentityRole, Guid>(roleStore);
 
-            var IdUser = new IdentityUser();
-            IdUser.UserName = user.UserName;
-            IdUser.SecurityStamp = Guid.NewGuid().ToString();
+        //    var IdUser = new IdentityUser();
+        //    IdUser.UserName = user.UserName;
+        //    IdUser.SecurityStamp = Guid.NewGuid().ToString();
 
-            try
-            {
-                var role = new List<IdentityRole>();
-                role = user.Role;
-                IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
-                if (IdUsertemp == null)
-                {
-                    um.CreateAsync(IdUser, user.pwd);
+        //    try
+        //    {
+        //        var role = new List<IdentityRole>();
+        //        role = user.Role;
+        //        IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
+        //        if (IdUsertemp == null)
+        //        {
+        //            um.CreateAsync(IdUser, user.pwd);
 
-                    um.AddToRole(IdUser.Id, role[0].Name);
-                }
-                else
-                {
-                    um.AddToRole(IdUser.Id, role[0].Name);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-            }
-            return Ok("User: " + user.UserName + " has been added");
-        }
+        //            um.AddToRole(IdUser.Id, role[0].Name);
+        //        }
+        //        else
+        //        {
+        //            um.AddToRole(IdUser.Id, role[0].Name);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.Write(ex.Message);
+        //    }
+        //    return Ok("User: " + user.UserName + " has been added");
+        //}
 
        
 
-        [Route("SaveUser")]
-        [HttpPost]
-        public IHttpActionResult SaveUser(User user)
-        {
+        //[Route("SaveUser")]
+        //[HttpPost]
+        //public IHttpActionResult SaveUser(User user)
+        //{
 
-            _UOW.UserRepository.UpdateUser(user);
+        //    _UOW.UserRepository.UpdateUser(user);
 
-            return Ok(user);
-        }
+        //    return Ok(user);
+        //}
 
-        //[Authorize] //(Roles="User")]
-        [Route("AddRole")]
-        [HttpPost]
-        public IHttpActionResult AddRole(Role role)
-        {
-            RoleStore roleStore = new RoleStore(_UOW);
-            IdentityRole irole = new IdentityRole();
-            irole.Name = role.Name;
-            var rm = new RoleManager<IdentityRole, Guid>(roleStore);
-            rm.Create(irole);
+        ////[Authorize] //(Roles="User")]
+        //[Route("AddRole")]
+        //[HttpPost]
+        //public IHttpActionResult AddRole(Role role)
+        //{
+        //    RoleStore roleStore = new RoleStore(_UOW);
+        //    IdentityRole irole = new IdentityRole();
+        //    irole.Name = role.Name;
+        //    var rm = new RoleManager<IdentityRole, Guid>(roleStore);
+        //    rm.Create(irole);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
-        [Route("GetAllRoles")]
-        [HttpGet]
-        public IHttpActionResult GetAllRoles()
-        {
-            var roles = _UOW.RoleRepository.GetAll();
-            return Ok(roles);
-        }
+        //[Route("GetAllRoles")]
+        //[HttpGet]
+        //public IHttpActionResult GetAllRoles()
+        //{
+        //    var roles = _UOW.RoleRepository.GetAll();
+        //    return Ok(roles);
+        //}
 
         #endregion
 
@@ -193,10 +197,9 @@ namespace DDAS.API.Controllers
 
             try
             {
-                //string root = HttpContext.Current.Server.MapPath("~/App_Data");
                 var userName = User.Identity.GetUserName();
                 CustomMultipartFormDataStreamProvider provider = 
-                    new CustomMultipartFormDataStreamProvider(UploadFolder);
+                    new CustomMultipartFormDataStreamProvider(UploadsFolder);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -239,9 +242,8 @@ namespace DDAS.API.Controllers
                 _log.LogEnd();
             }
         }
-
-        
-        public class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
+ 
+        private class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
         {
             public CustomMultipartFormDataStreamProvider(string path) : base(path) { }
 
@@ -259,8 +261,20 @@ namespace DDAS.API.Controllers
         {
             return Ok(
                 _SearchService.
-                getPrincipalInvestigatorNComplianceFormDetails());
+                getAllPrincipalInvestigators());
         }
+
+        [Route("GetMyActivePrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyActivePrincipalInvestigators()
+        {
+             var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, true));
+         }
+
+
+
 
         //GetInvestigatorSiteSummary/?formId=' + formId + "&investigatorId=" + investigatorId)
         [Route("GetInvestigatorSiteSummary")]
@@ -331,10 +345,12 @@ namespace DDAS.API.Controllers
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
                 var FilePath = _SearchService.GenerateComplianceFormAlt(
-                    Guid.Parse(ComplianceFormId), TemplatesFolder, DownloadFolder);
+                    RecId, WordTemplateFolder, ComplianceFormFolder);
 
+                string path = FilePath.Replace(RootPath, "");
 
-                return Ok(FilePath);
+                return Ok(path);
+
             }
             catch (Exception e)
             {
@@ -382,7 +398,7 @@ namespace DDAS.API.Controllers
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
-            var localFilePath = UploadFolder + "SITE LIST REQUEST FORM_Updated.docx";
+            var localFilePath = UploadsFolder + "SITE LIST REQUEST FORM_Updated.docx";
             if (!File.Exists(localFilePath))
             {
                 result = Request.CreateResponse(HttpStatusCode.Gone);

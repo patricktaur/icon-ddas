@@ -62,7 +62,7 @@ namespace DDAS.Data.Mongo.Maps
                 {
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
-                  });
+                });
                 
             });
 
@@ -92,6 +92,12 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<AdequateAssuranceList>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
+
             });
 
             BsonClassMap.RegisterClassMap<ClinicalInvestigatorDisqualificationSiteData>

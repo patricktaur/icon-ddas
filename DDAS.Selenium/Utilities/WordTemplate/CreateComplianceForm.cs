@@ -35,34 +35,54 @@ namespace Utilities.WordTemplate
 
                     UpdateTable(HeaderTable, 0, 1, form.ProjectNumber);
 
-                    UpdateTable(HeaderTable, 0, 3, form.Address);
+                    UpdateTable(HeaderTable, 0, 3, form.SponsorProtocolNumber);
 
-                    UpdateTable(HeaderTable, 1, 1, form.SponsorProtocolNumber);
+                    UpdateTable(HeaderTable, 1, 1, form.Institute);
 
-                    //UpdateTable(HeaderTable, 2, 3, form.Country);
-
-                    UpdateTable(HeaderTable, 0, 3, form.Address);
-
-                    UpdateTable(HeaderTable, 2, 1, form.Institute);
+                    UpdateTable(HeaderTable, 1, 3, form.Address);
 
                     var SitesTable = body.Descendants<Table>().ElementAt(2);
 
-                    var FindingsTable = body.Descendants<Table>().ElementAt(3);
+                    var AdditionalSitesTable = body.Descendants<Table>().ElementAt(3);
+
+                    var FindingsTable = body.Descendants<Table>().ElementAt(4);
 
                     string [] SIs = new string[form.InvestigatorDetails.Count];
+
+                    int RowNumber = 1;
 
                     foreach(SiteSource siteSource in form.SiteSources)
                     {
                         if (siteSource.SiteSourceUpdatedOn == null)
-                            siteSource.SiteSourceUpdatedOn = DateTime.Now;
+                            siteSource.SiteSourceUpdatedOn = DateTime.Now; //Refactor
 
-                        if(siteSource.IssuesIdentified)
-                        AddSites(
-                            SitesTable,
-                            siteSource.Id.ToString(),
-                            siteSource.SiteName,
-                            siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
-                            siteSource.SiteUrl, "Yes");
+                        if (RowNumber > 12 && siteSource.IssuesIdentified)
+                        {
+                            AddSites(
+                                AdditionalSitesTable,
+                                RowNumber.ToString(),
+                                siteSource.SiteName,
+                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                siteSource.SiteUrl, "Yes");
+                        }
+                        else if (RowNumber > 12)
+                        {
+                            AddSites(
+                                AdditionalSitesTable,
+                                RowNumber.ToString(),
+                                siteSource.SiteName,
+                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                siteSource.SiteUrl, "No");
+                        }
+                        else if (siteSource.IssuesIdentified)
+                        {
+                            AddSites(
+                                SitesTable,
+                                siteSource.Id.ToString(),
+                                siteSource.SiteName,
+                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                siteSource.SiteUrl, "Yes");
+                        }
                         else
                             AddSites(
                                 SitesTable,
@@ -70,6 +90,8 @@ namespace Utilities.WordTemplate
                                 siteSource.SiteName,
                                 siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
                                 siteSource.SiteUrl, "No");
+
+                        RowNumber += 1;
                     }
 
                     var InvestigatorsTable = body.Descendants<Table>().ElementAt(1);
@@ -120,7 +142,6 @@ namespace Utilities.WordTemplate
 
                 }
                 
-
                 //Patrick 06Dec2016
                 if (File.Exists(fileName))
                 {

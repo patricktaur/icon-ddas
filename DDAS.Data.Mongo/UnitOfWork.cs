@@ -15,6 +15,7 @@ using MongoDB.Driver;
 using DDAS.Data.Mongo.Repositories;
 using DDAS.Models.Repository.Domain.MatchedSiteData;
 using DDAS.Data.Mongo.Repositories.MathedRecordsSiteData;
+using DDAS.Models.Enums;
 
 namespace DDAS.Data.Mongo
 {
@@ -25,6 +26,10 @@ namespace DDAS.Data.Mongo
         private IMongoDatabase _db;
         #region PrivateRepositoryMembers
         private IFDADebarPageRepository _FDADebarPageRepository;
+
+        //***
+        private IFDADebarPageRepository _FDADebarPageRepository1;
+
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
         private IPHSAdministrativeActionListingRepository 
@@ -96,6 +101,9 @@ namespace DDAS.Data.Mongo
                     (_FDADebarPageRepository = new FDADebarPageRepository(_db));
             }
         }
+
+     
+
         public IAdequateAssuranceListRepository AdequateAssuranceListRepository
         {
             get
@@ -253,6 +261,8 @@ namespace DDAS.Data.Mongo
             }
         }
 
+     
+        
         #endregion
 
 

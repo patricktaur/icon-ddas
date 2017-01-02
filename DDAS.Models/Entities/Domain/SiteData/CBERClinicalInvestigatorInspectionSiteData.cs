@@ -44,6 +44,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Classification: " + Classification;
             }
         }
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link>();
+            }
+        }
     }
 }
 

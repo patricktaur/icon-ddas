@@ -12,7 +12,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         internal FDADebarPageRepository(IMongoDatabase db)
             : base(db)
         {
-
+            
         }
     }
 }

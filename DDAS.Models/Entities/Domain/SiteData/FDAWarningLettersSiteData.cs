@@ -14,6 +14,10 @@ namespace DDAS.Models.Entities.Domain.SiteData
         }
         public Guid? RecId { get; set; }
         public List<FDAWarningLetter> FDAWarningLetterList { get; set; }
+        
+        public override List<SiteDataItemBase> Records { get { return new List<FDAWarningLetter>().Cast<SiteDataItemBase>().ToList(); } }
+        //public override List<SiteDataItemBase> Records { get {return new FDAWarningLetterList<FDAWarningLetter>().Cast<SiteDataItemBase>().ToList() } ; }
+
     }
 
     public class FDAWarningLetter : SiteDataItemBase
@@ -45,6 +49,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Subject: " + Subject + "~" +
                     "Response Letter Posted: " + ResponseLetterPosted + "~" +
                     "Closeout Date: " + CloseoutDate;
+            }
+        }
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link>();
             }
         }
     }

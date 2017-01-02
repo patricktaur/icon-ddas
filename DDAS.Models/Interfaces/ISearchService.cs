@@ -13,7 +13,8 @@ namespace DDAS.Models.Interfaces
         //ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
         //    Guid? ComplianceFormId, SiteEnum Enum, ILog log);
 
-        List<PrincipalInvestigatorDetails> getPrincipalInvestigatorNComplianceFormDetails();
+        List<PrincipalInvestigator> getAllPrincipalInvestigators();
+        List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
 
         //Patrick 27Nov2016
         ComplianceForm GetNewComplianceForm(ILog log, string UserName);

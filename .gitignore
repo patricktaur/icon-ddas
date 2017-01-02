@@ -17016,3 +17016,15 @@ DDAS.WebSite (2).zip
 *.zip
 Documents/Generated/
 DDAS.API/Uploads/DDAS_Upload_Template.xlsx
+DDAS.API/DataFiles/ComplianceForms/
+DDAS.API/DDAS_Upload.xlsx
+DDAS.API/DataFiles/Uploads/
+DDAS.API/Downloads-TobeDeleted/0078-0609_Donald Hricik.docx
+DDAS.API/Downloads-TobeDeleted/Donald Hricik.docx
+DDAS.API/Downloads-TobeDeleted/ExclusionDatabaseList.csv
+DDAS.API/Templates-ToBeDeleted/ComplianceFormTemplate.docx
+DDAS.API/Uploads-ToBeDeleted/DDAS_Upload.xlsx
+Documents/Technical/TestUpload/DDAS_Upload - 3.xlsx
+Documents/Technical/TestUpload/DDAS_Upload.xlsx
+Documents/Technical/TestUpload/DDAS_Upload - 2.xlsx
+Documents/Technical/TestUpload/DDAS_Upload - 1.xlsx

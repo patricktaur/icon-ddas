@@ -41,13 +41,14 @@
         HealthGuideUSAPage
     };
 
-    //ColorEnum
-    public enum ColorEnum
+  
+    public enum ComplianceFormStatusEnum
     {
-        Grey,
-        Green,
-        LightGreen,
-        Red,
-        LightRed
+        NotScanned,
+        ReviewCompletedIssuesIdentified,
+        ReviewCompletedIssuesNotIdentified,
+        FullMatchFoundReviewPending,
+        PartialMatchFoundReviewPending,
+        NoMatchFoundReviewPending
     }
 }

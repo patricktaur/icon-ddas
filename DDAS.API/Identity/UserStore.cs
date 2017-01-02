@@ -68,8 +68,12 @@ namespace DDAS.API.Identity
             var identityUser = new IdentityUser();
             identityUser.Id = user.UserId;
             identityUser.UserName = user.UserName;
+            identityUser.EmailId = user.EmailId;
+            identityUser.UserFullName = user.UserFullName;
+            identityUser.Active = user.Active;
             identityUser.PasswordHash = user.PasswordHash;
             identityUser.SecurityStamp = user.SecurityStamp;
+
              return identityUser;
         }
 

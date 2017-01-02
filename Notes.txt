@@ -1,3 +1,15 @@
+30Dec2016
+Patrick:
+DDAS.Models.Entities.Domain.SiteData.AdequateAssuranceListSiteData: Element 'Links' does not match any field or property of class DDAS.Models.Entities.Domain.SiteData.AdequateAssuranceList.
+
+Refactoring MatchedRecords:
+ public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
+	AddMatchingRecords(frm, log);
+		 var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
+                                ComponentsInInvestigatorName); returns IList of MatchedRecord
+
+
+
 27Nov2016:
 Patrick's code:
 SearchController
@@ -459,6 +471,34 @@ Entry on 30 Nov 2016
    investigator. Using spreadsheetlight to read excel data
 
 -----------------------------------------------------------------------------------------------------------
+Entry on 1 Dec 2016
+1. Able to read excel data from the input file. Understanding the new design
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 2 Dec 2016
+1. Understanding and working with new design
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 5 Dec 2016
+1. working on new design. Need to remove the old code
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 6 Dec 2016
+1. working on new design 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 7 Dec 2016
+1. working on new design 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 8 Dec 2016
+1. working on new design 
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 9 Dec 2016
+1. working on new design
+
+-----------------------------------------------------------------------------------------------------------
 Entry on 12 Dec 2016
 1. Able to merge records which have same IdNumber and InspectionDate. Merging the DeficiencyCode for these
    records into one for the site: ClinicalInvestigatorInspectionList
@@ -485,7 +525,7 @@ Entry on 16 Dec 2016
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 17 Dec 2016
-1. Search engine is updated.
+1. Search engine is updated - functions related to reading SiteLastUpdatedDate from database
 
 -----------------------------------------------------------------------------------------------------------
 Entry on 19 Dec 2016
@@ -496,3 +536,23 @@ Entry on 19 Dec 2016
 Entry on 20 Dec 2016
 1. Updated SearchEngine to write log when the data extraction is not required
 2. Downloads folder for the extractor is App_Data
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 21 Dec 2016
+1. Added ExtractData in Services under Search folder. Extractor/API will use ExtractData function to extract
+   data from selenium for single or all the sites
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 22 Dec 2016
+1. Removed SearchService and SiteSummary classes completely from services. SearchService functions are
+   added into ComplianceFormService class
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 23 Dec 2016
+1. Removed country from the Compliance form word template as requested by clients
+
+-----------------------------------------------------------------------------------------------------------
+Entry on 26 Dec 2016
+1. Demo was given to clients to show the all functionalities in the applications. few changes were requested
+   by the clients. Need to re-assign a compliance form to any other user. Adding extra table for additional 
+   sites. 
