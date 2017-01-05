@@ -400,11 +400,18 @@ namespace DDAS.Models.Entities.Domain
 
         public List<Link> Links { get; set; } = new List<Link>();
     }
-    #endregion
 
-    #region Save Results
+    public class ComplianceFormManage
+    {
+        public string AssignedTo { get; set; }
+        public bool Active { get; set; }
+    }
 
-    public class SaveSearchResult
+        #endregion
+
+        #region Save Results
+
+        public class SaveSearchResult
     {
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

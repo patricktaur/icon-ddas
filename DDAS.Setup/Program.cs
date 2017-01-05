@@ -21,12 +21,12 @@ namespace DDAS.Setup
 
         static void Main(string[] args)
         {
-
+            string appRootFolder = "";
             
             try
             {
                 string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
+                
                 _WriteLog = new LogText(exePath + @"\setup.log", true);
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog("DDAS Setup Utility");
@@ -35,15 +35,24 @@ namespace DDAS.Setup
                 string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
                 if (configFile != null)
                 {
+                    appRootFolder = Path.GetDirectoryName(configFile);
                     //Folders:
                     string DataExtractionLogFile = GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
                     string folder = Path.GetDirectoryName(DataExtractionLogFile);
-                    CreateFolder(folder);
-                    string DownloadFolder = GetWebConfigAppSetting(configFile, "DownloadFolder");
-                    CreateFolder(DownloadFolder);
-                    string UploadFolder = GetWebConfigAppSetting(configFile, "UploadFolder");
-                    CreateFolder(UploadFolder);
+                    CreateFolder(appRootFolder  + @"\" + folder);
 
+                    string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
+                    CreateFolder(appRootFolder + @"\" + DownloadFolder);
+
+                    string UploadFolder = GetWebConfigAppSetting(configFile, "UploadsFolder");
+                    CreateFolder(appRootFolder + @"\" + UploadFolder);
+
+                    string ExcelTemplateFolder = GetWebConfigAppSetting(configFile, "ExcelTemplateFolder");
+                    CreateFolder(appRootFolder + @"\" + UploadFolder);
+
+                    string WordTemplateFolder = GetWebConfigAppSetting(configFile, "WordTemplateFolder");
+                    CreateFolder(appRootFolder + @"\" + UploadFolder);
+  
 
                     //Initialize DB
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
