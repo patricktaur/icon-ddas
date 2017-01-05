@@ -20,7 +20,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL, 
@@ -67,14 +66,6 @@ namespace WebScraping.Selenium.Pages
                 if (_SiteLastUpdatedFromPage == null)
                     ReadSiteLastUpdatedDateFromPage();
                 return _SiteLastUpdatedFromPage;
-            }
-        }
-
-        public DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
             }
         }
 
@@ -175,30 +166,10 @@ namespace WebScraping.Selenium.Pages
             //return SiteUpdatedDate != CurrentSiteUpdatedDate ? false : true;
         }
 
-        public void LoadContent(string NameToSearch, string DownloadFolder)
+        public void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                //if (!CheckSiteUpdatedDate())
-                //{
-                    _SDNSiteData.DataExtractionRequired = true;
-                    DownloadSDNList(DownloadFolder);
-                    GetTextFromPDF("", DownloadFolder);
-                    _SDNSiteData.DataExtractionSucceeded = true;
-                //}
-            }
-            catch (Exception e)
-            {
-                _SDNSiteData.DataExtractionSucceeded = false;
-                _SDNSiteData.DataExtractionErrorMessage = e.Message;
-                _SDNSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _SDNSiteData.CreatedBy = "Patrick";
-                _SDNSiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         private void AssignReferenceIdOfPreviousDocument()
@@ -232,13 +203,10 @@ namespace WebScraping.Selenium.Pages
         {
             try
             {
-                //if (!CheckSiteUpdatedDate())
-                //{
                 _SDNSiteData.DataExtractionRequired = true;
                 DownloadSDNList(DownloadFolder);
                 GetTextFromPDF("", DownloadFolder);
                 _SDNSiteData.DataExtractionSucceeded = true;
-                //}
             }
             catch (Exception e)
             {

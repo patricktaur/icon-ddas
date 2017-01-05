@@ -17,7 +17,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -64,14 +63,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
-            }
-        }
-
         public override BaseSiteData baseSiteData
         {
             get
@@ -107,7 +98,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
             try
             {
@@ -141,21 +133,6 @@ namespace WebScraping.Selenium.Pages
                 System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
 
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-        }
-
-        public void GetSiteLastUpdatedDateFromDatabase()
-        {
-            var ExistingSiteData = _UOW.AdequateAssuranceListRepository.GetAll();
-
-            if (ExistingSiteData.Count == 0)
-            {
-                _SiteLastUpdatedFromDatabse = null;
-            }
-            var AdequateAssuranceSiteData = ExistingSiteData.OrderByDescending(
-                x => x.CreatedOn).First();
-
-            _SiteLastUpdatedFromDatabse = 
-                AdequateAssuranceSiteData.SiteLastUpdatedOn;
         }
 
         private void AssignReferenceIdOfPreviousDocument()

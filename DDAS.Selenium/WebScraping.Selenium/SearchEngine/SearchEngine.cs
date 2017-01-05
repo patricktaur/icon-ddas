@@ -52,7 +52,7 @@ namespace WebScraping.Selenium.SearchEngine
         {
                 NameToSearch = NameToSearch.Replace(",", "");
                 var PageObject = GetSearchPage(siteEnum);
-                PageObject.LoadContent(NameToSearch, "");
+                PageObject.LoadContent(NameToSearch, "", 0);
                 PageObject.SaveData();
                 return true;
         }
@@ -131,7 +131,7 @@ namespace WebScraping.Selenium.SearchEngine
             SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
 
             if (ExtractData)
-                _searchPage.LoadContent(NameToSearch, DownloadFolder);
+                _searchPage.LoadContent(NameToSearch, DownloadFolder, 0);
             else
             {
                 SiteData.CreatedOn = DateTime.Now;
@@ -565,16 +565,16 @@ namespace WebScraping.Selenium.SearchEngine
             {
                 SiteData.CreatedOn = DateTime.Now;
                 SiteData.ReferenceId = GetRecIdOfPreviousDocument(siteEnum);
-                log.WriteLog(DateTime.Now.ToString(), "Source data has not been updated. Extraction not required");
+                log.WriteLog(DateTime.Now.ToString(), siteEnum + ": Source data has not been updated. Extraction is not required");
             }
             SaveData();
             log.WriteLog(DateTime.Now.ToString(), "Data Saved");
         }
 
-        public void ExtractData(SiteEnum siteEnum, string NameToSearch)
+        public void ExtractData(SiteEnum siteEnum, string NameToSearch, int MatchCountLowerLimit)
         {
             _searchPage = GetSearchPage(siteEnum);
-            _searchPage.LoadContent(NameToSearch, "");
+            _searchPage.LoadContent(NameToSearch, "", MatchCountLowerLimit);
         }
     }
 }

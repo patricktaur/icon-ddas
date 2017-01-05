@@ -8,16 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities.EMail;
 
 namespace DDAS.Services.UserService
 {
     public class UserService : IUserService
     {
         private IUnitOfWork _UOW;
-
+        
         public UserService(IUnitOfWork uow)
         {
             _UOW = uow;
+            
         }
 
         public UserViewModel GetNewUser()
@@ -157,8 +159,6 @@ namespace DDAS.Services.UserService
 
         public bool SetPassword(SetPasswordBindingModel model)
         {
-
-
 
 
             return true;

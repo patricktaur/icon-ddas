@@ -42,5 +42,12 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Issuing Office: " + IssuingOffice;
             }
         }
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link>();
+            }
+        }
     }
 }

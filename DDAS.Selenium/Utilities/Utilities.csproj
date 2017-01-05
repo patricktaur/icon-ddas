@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CountryList.cs" />
     <Compile Include="DummyLog.cs" />
+    <Compile Include="EMail\EMailService.cs" />
     <Compile Include="ExportList.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogText.cs" />

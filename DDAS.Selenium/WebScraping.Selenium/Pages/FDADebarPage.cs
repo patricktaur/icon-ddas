@@ -15,7 +15,6 @@ namespace WebScraping.Selenium.Pages
     {
         IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public FDADebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -62,14 +61,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
-            }
-        }
-
         public override BaseSiteData baseSiteData
         {
             get
@@ -108,26 +99,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _FDADebarPageSiteData.DataExtractionRequired = true;
-                LoadDebarredPersonList();
-                _FDADebarPageSiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _FDADebarPageSiteData.DataExtractionSucceeded = false;
-                _FDADebarPageSiteData.DataExtractionErrorMessage = e.Message;
-                _FDADebarPageSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _FDADebarPageSiteData.CreatedBy = "patrick";
-                _FDADebarPageSiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         private void ReadSiteLastUpdatedDateFromPage()

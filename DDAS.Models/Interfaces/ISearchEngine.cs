@@ -29,7 +29,7 @@ namespace DDAS.Models.Interfaces
         //Pradeep 22Dec2016
         void ExtractData(List<SearchQuerySite> query, string DownloadFolder, ILog log);
         void ExtractData(SiteEnum siteEnum, string DownloadFolder, ILog log);
-        void ExtractData(SiteEnum siteEnum, string NameToSearch);//For Live site
+        void ExtractData(SiteEnum siteEnum, string NameToSearch, int MatchCountLowerLimit);//For Live site
 
         IEnumerable<SiteDataItemBase> SiteData { get; }
 

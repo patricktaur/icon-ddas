@@ -20,6 +20,7 @@ using DDAS.Models.Interfaces;
 using DDAS.Models.ViewModels;
 using DDAS.Models.Entities.Identity;
 using System.Threading.Tasks;
+using Utilities.EMail;
 
 namespace DDAS.API.Controllers
 {
@@ -29,10 +30,21 @@ namespace DDAS.API.Controllers
     {
         private IUnitOfWork _UOW;
         private IUserService _userService;
-        public AccountController(IUnitOfWork uow, IUserService userService)
+        private IEMailService _EMailService;
+        public AccountController(IUnitOfWork uow, IUserService userService, IEMailService email)
         {
               _UOW = uow;
             _userService = userService;
+            _EMailService = email;
+            
+            //var cred = new EMailServerCredentialsModel();
+            //cred.EMailHost = System.Configuration.ConfigurationManager.AppSettings["EMailHost"];
+            //string port = System.Configuration.ConfigurationManager.AppSettings["EMailPort"];
+            //cred.EMailPort = Int32.Parse(port);
+            //cred.FromEMailId = System.Configuration.ConfigurationManager.AppSettings["FromEMailId"];
+            //cred.FromEMailPassword = System.Configuration.ConfigurationManager.AppSettings["FromEMailPassword"];
+            //_EMailService = new EMailService(cred);
+
         }
 
         #region WorkingCode
@@ -125,8 +137,20 @@ namespace DDAS.API.Controllers
             var user = userManager.FindById(userId);
             userStore.SetPasswordHashAsync(user, hashedNewPassword);
 
-            //Temp: until the email is ready, later only Ok must be returned.
-            return Ok(password);
+            var EMail = new EMailModel();
+            EMail.To.Add(user.EmailId);
+            EMail.Subject = "Password reset for Due Diligence Automation System Account";
+
+            var htmlBody = "Dear " + user.UserName + ",<br/><br/> ";
+            htmlBody += "Your password for Due Diligence Automation System was reset. <br/> ";
+            htmlBody += "Your new password is : <b>" + password + "</b><br/><br/>";
+            htmlBody += "Yours Sincerely,<br/>";
+            htmlBody += "DDAS Team";
+
+            EMail.Body = htmlBody;
+            _EMailService.SendMail( EMail);
+
+            return Ok(true);
         }
 
 
@@ -138,6 +162,7 @@ namespace DDAS.API.Controllers
 
 
         // POST api/Account/Logout
+       
         [Route("Logout")]
         public IHttpActionResult Logout()
         {

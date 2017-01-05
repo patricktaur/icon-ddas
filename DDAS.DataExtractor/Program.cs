@@ -16,6 +16,7 @@ namespace DDAS.DataExtractor
     class Program
     {
         //public static string ConfigurationManager { get; private set; }
+
         private static LogText _WriteLog;
 
         public static string DownloadFolder =
@@ -29,6 +30,7 @@ namespace DDAS.DataExtractor
                 SiteNum = int.Parse(args[0]);
             }
             ExtractData(SiteNum);
+            return;
         }
 
         static void ExtractData(int? SiteNum = null)
@@ -37,6 +39,7 @@ namespace DDAS.DataExtractor
             MongoMaps.Initialize();
 
             string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
+
             if (configFile == null)
             {
                 string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -49,18 +52,12 @@ namespace DDAS.DataExtractor
             string DataExtractionLogFile =
             ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-            //string DownloadFolder =
-            //ConfigurationManager.AppSettings["AppDataDownloadFolder"];
-
-            //ILog log = new LogText(DataExtractionLogFile,  true);
             _WriteLog = new LogText(DataExtractionLogFile, true);
 
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             _WriteLog.LogStart();
             _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
             ISearchEngine searchEngine = new SearchEngine(uow);
-
-            //var SiteScan = new SiteScanData(uow, searchEngine);
 
             var extractData = new ExtractData(searchEngine);
 
@@ -72,28 +69,13 @@ namespace DDAS.DataExtractor
 
                     extractData.ExtractDataSingleSite(
                         siteEnum, DownloadFolder, _WriteLog);
-
-                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data for:" + siteEnum.ToString());
-
-                    //if(searchEngine.IsDataExtractionRequired(siteEnum))
-                    //    searchEngine.Load(siteEnum, "", DownloadFolder, true);
-                    //else
-                    //    searchEngine.Load(siteEnum, "", DownloadFolder, false);
-
-                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Extract completed");
-
-                    //searchEngine.SaveData();
-                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Data Saved");
                 }
                 else
                 {
                     var query = SearchSites.GetNewSearchQuery();
 
                     extractData.ExtractDataAllDBSites(
-                        query, DownloadFolder, _WriteLog);
-                    
-                    ////_WriteLog.WriteLog("Download Folder;", DownloadFolder);
-                    //searchEngine.Load(query, DownloadFolder, _WriteLog);
+                        query, DownloadFolder, _WriteLog);                    
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             }
@@ -107,7 +89,7 @@ namespace DDAS.DataExtractor
                 _WriteLog.WriteLog("=================================================================================");
                 _WriteLog.LogEnd();
                 ForcedCleanUp();
-                Environment.Exit(0);
+                //Environment.Exit(0);
             }
         }
 
@@ -174,15 +156,17 @@ namespace DDAS.DataExtractor
             }
         }
 
-
         static void ForcedCleanUp()
         {
-   
-            ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
-            foreach (ProcessThread thread in currentThreads)
-            {
-                thread.Dispose();
-            }
+            Process currentProcess = Process.GetCurrentProcess();
+
+            currentProcess.CloseMainWindow();
+
+            //ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
+            //foreach (ProcessThread thread in currentThreads)
+            //{
+            //    thread.Dispose();
+            //}
 
             //foreach (Thread thread in currentThreads)
             //{

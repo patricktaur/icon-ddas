@@ -1,3 +1,15 @@
+30Dec2016
+Patrick:
+DDAS.Models.Entities.Domain.SiteData.AdequateAssuranceListSiteData: Element 'Links' does not match any field or property of class DDAS.Models.Entities.Domain.SiteData.AdequateAssuranceList.
+
+Refactoring MatchedRecords:
+ public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
+	AddMatchingRecords(frm, log);
+		 var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
+                                ComponentsInInvestigatorName); returns IList of MatchedRecord
+
+
+
 27Nov2016:
 Patrick's code:
 SearchController

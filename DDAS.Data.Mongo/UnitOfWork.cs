@@ -1,16 +1,10 @@
 ﻿using DDAS.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DDAS.Models.Repository.Domain;
 using System.Threading;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Repository.Domain.SiteData;
 using DDAS.Data.Mongo.Repositories.SiteData;
-using MongoDB.Bson.Serialization;
-using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Driver;
 using DDAS.Data.Mongo.Repositories;
 using DDAS.Models.Repository.Domain.MatchedSiteData;
@@ -25,6 +19,10 @@ namespace DDAS.Data.Mongo
         private IMongoDatabase _db;
         #region PrivateRepositoryMembers
         private IFDADebarPageRepository _FDADebarPageRepository;
+
+        //***
+        //private IFDADebarPageRepository _FDADebarPageRepository1; ???Pradeep 3Jan2017
+
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
         private IPHSAdministrativeActionListingRepository 
@@ -96,6 +94,9 @@ namespace DDAS.Data.Mongo
                     (_FDADebarPageRepository = new FDADebarPageRepository(_db));
             }
         }
+
+     
+
         public IAdequateAssuranceListRepository AdequateAssuranceListRepository
         {
             get
@@ -253,6 +254,8 @@ namespace DDAS.Data.Mongo
             }
         }
 
+     
+        
         #endregion
 
 
@@ -311,7 +314,6 @@ namespace DDAS.Data.Mongo
         public void Dispose()
         {
             //_provider.Dispose();
-           
         }
     }
 }

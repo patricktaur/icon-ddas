@@ -15,6 +15,7 @@ using Utilities;
 using DDAS.Data.Mongo;
 using DDAS.Services.Search;
 using DDAS.Services.UserService;
+using Utilities.EMail;
 
 namespace DDAS.API.App_Start
 {
@@ -73,6 +74,16 @@ namespace DDAS.API.App_Start
             container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
 
             container.RegisterWebApiRequest<IUserService, UserService>();
+
+            var cred = new EMailServerCredentialsModel();
+            cred.EMailHost = System.Configuration.ConfigurationManager.AppSettings["EMailHost"];
+            string port = System.Configuration.ConfigurationManager.AppSettings["EMailPort"];
+            cred.EMailPort = Int32.Parse(port); 
+            cred.FromEMailId = System.Configuration.ConfigurationManager.AppSettings["FromEMailId"];
+            cred.FromEMailPassword = System.Configuration.ConfigurationManager.AppSettings["FromEMailPassword"];
+
+            container.RegisterWebApiRequest<IEMailService>(() => new EMailService(cred));
+
         }
     }
 }

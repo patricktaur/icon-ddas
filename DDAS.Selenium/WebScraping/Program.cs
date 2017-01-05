@@ -58,7 +58,7 @@ namespace WebScraping
             ////doc.GetCellValueAsString("A1");
             //log.LogEnd();
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 }

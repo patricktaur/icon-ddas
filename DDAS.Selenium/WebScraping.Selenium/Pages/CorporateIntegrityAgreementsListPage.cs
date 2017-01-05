@@ -14,7 +14,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public CorporateIntegrityAgreementsListPage(IWebDriver driver, IUnitOfWork uow)
             : base(driver)
@@ -54,14 +53,6 @@ namespace WebScraping.Selenium.Pages
                 if (_SiteLastUpdatedFromPage == null)
                     ReadSiteLastUpdatedDateFromPage();
                 return _SiteLastUpdatedFromPage;
-            }
-        }
-
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
             }
         }
 
@@ -130,25 +121,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _CIASiteData.DataExtractionRequired = true;
-                    LoadCIAList();
-                    _CIASiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _CIASiteData.DataExtractionSucceeded = false;
-                _CIASiteData.DataExtractionErrorMessage = e.Message;
-                _CIASiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _CIASiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         public void ReadSiteLastUpdatedDateFromPage()

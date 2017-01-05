@@ -8,10 +8,13 @@ namespace DDAS.Services.Search
     public class ExtractData
     {
         private ISearchEngine _searchEngine;
+
         public ExtractData(ISearchEngine SearchEngine)
         {
             _searchEngine = SearchEngine;
         }
+
+        //Currently ExtractData is only for DB sites
 
         public void ExtractDataSingleSite(SiteEnum siteEnum, 
             string DownloadFolder, ILog log)

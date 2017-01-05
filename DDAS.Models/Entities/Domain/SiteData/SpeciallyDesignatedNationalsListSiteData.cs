@@ -43,5 +43,12 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Words Matched: " + WordsMatched;  //???? Pradeep 14Dec2016
             }
         }
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link>();
+            }
+        }
     }
 }

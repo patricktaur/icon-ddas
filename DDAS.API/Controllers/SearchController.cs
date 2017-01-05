@@ -18,7 +18,7 @@ using System.Web;
 
 namespace DDAS.API.Controllers
 {
-    
+    [Authorize]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
@@ -31,9 +31,11 @@ namespace DDAS.API.Controllers
         private string UploadsFolder;
         private string ComplianceFormFolder;
         private string ExcelTemplateFolder;
-        private string AppDataFolder;
+        
         private string RootPath;
         private string WordTemplateFolder;
+        
+        
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
             IUnitOfWork uow)
@@ -43,9 +45,9 @@ namespace DDAS.API.Controllers
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
 
+            //_userName = User.Identity.GetUserName(); //returns null in constructor, returns correct value in method.
+           
             RootPath = HttpRuntime.AppDomainAppPath;
-
-            //AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
 
             DataExtractionLogFile = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
@@ -64,118 +66,118 @@ namespace DDAS.API.Controllers
         }
 
         #region MoveToAccountsController
-        [Authorize(Roles = "admin")]
-        [Route("GetUsers")]
-        [HttpGet]
-        public IHttpActionResult GetUsers()
-        {
-            var Users = _UOW.UserRepository.GetAllUsers();
+        //[Authorize(Roles = "admin")]
+        //[Route("GetUsers")]
+        //[HttpGet]
+        //public IHttpActionResult GetUsers()
+        //{
+        //    var Users = _UOW.UserRepository.GetAllUsers();
    
-            if (Users != null)
-            {
-                return Ok(Users);
-            }
-            else
-                return Ok("no users found!");
-        }
+        //    if (Users != null)
+        //    {
+        //        return Ok(Users);
+        //    }
+        //    else
+        //        return Ok("no users found!");
+        //}
 
-        [Route("GetUser")]
-        [HttpGet]
-        public IHttpActionResult GetUser(string UserId)
-        {
-            Guid? gUserId = Guid.Parse(UserId);
-            var User = _UOW.UserRepository.FindById(gUserId); 
-            //important: the User object must be mapped to Userview to eliminate security fields (hash code etc) 
-            if (User != null)
-            {
-                return Ok(User);
-            }
-            else
-                return Ok("No user found!");
-        }
+        //[Route("GetUser")]
+        //[HttpGet]
+        //public IHttpActionResult GetUser(string UserId)
+        //{
+        //    Guid? gUserId = Guid.Parse(UserId);
+        //    var User = _UOW.UserRepository.FindById(gUserId); 
+        //    //important: the User object must be mapped to Userview to eliminate security fields (hash code etc) 
+        //    if (User != null)
+        //    {
+        //        return Ok(User);
+        //    }
+        //    else
+        //        return Ok("No user found!");
+        //}
 
 
-        [Route("AddNewRole")]
-        [HttpPost]
-        public IHttpActionResult CreateRole(IdentityRole role)
-        {
-            //IdentityRole role = new IdentityRole(roleName);
-            RoleStore roleStore = new RoleStore(_UOW);
-            roleStore.CreateAsync(role);
-            return Ok();
-        }
+        //[Route("AddNewRole")]
+        //[HttpPost]
+        //public IHttpActionResult CreateRole(IdentityRole role)
+        //{
+        //    //IdentityRole role = new IdentityRole(roleName);
+        //    RoleStore roleStore = new RoleStore(_UOW);
+        //    roleStore.CreateAsync(role);
+        //    return Ok();
+        //}
 
-        //[Authorize] //(Roles = "")]
-        [Route("AddUser")]
-        [HttpPost]
-        public IHttpActionResult GetUser(UserDetails user)
-        {
-            UserStore userStore = new UserStore(_UOW);
-            var um = new UserManager<IdentityUser, Guid>(userStore);
+        ////[Authorize] //(Roles = "")]
+        //[Route("AddUser")]
+        //[HttpPost]
+        //public IHttpActionResult GetUser(UserDetails user)
+        //{
+        //    UserStore userStore = new UserStore(_UOW);
+        //    var um = new UserManager<IdentityUser, Guid>(userStore);
 
-            RoleStore roleStore = new RoleStore(_UOW);
-            var rm = new RoleManager<IdentityRole, Guid>(roleStore);
+        //    RoleStore roleStore = new RoleStore(_UOW);
+        //    var rm = new RoleManager<IdentityRole, Guid>(roleStore);
 
-            var IdUser = new IdentityUser();
-            IdUser.UserName = user.UserName;
-            IdUser.SecurityStamp = Guid.NewGuid().ToString();
+        //    var IdUser = new IdentityUser();
+        //    IdUser.UserName = user.UserName;
+        //    IdUser.SecurityStamp = Guid.NewGuid().ToString();
 
-            try
-            {
-                var role = new List<IdentityRole>();
-                role = user.Role;
-                IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
-                if (IdUsertemp == null)
-                {
-                    um.CreateAsync(IdUser, user.pwd);
+        //    try
+        //    {
+        //        var role = new List<IdentityRole>();
+        //        role = user.Role;
+        //        IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
+        //        if (IdUsertemp == null)
+        //        {
+        //            um.CreateAsync(IdUser, user.pwd);
 
-                    um.AddToRole(IdUser.Id, role[0].Name);
-                }
-                else
-                {
-                    um.AddToRole(IdUser.Id, role[0].Name);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-            }
-            return Ok("User: " + user.UserName + " has been added");
-        }
+        //            um.AddToRole(IdUser.Id, role[0].Name);
+        //        }
+        //        else
+        //        {
+        //            um.AddToRole(IdUser.Id, role[0].Name);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.Write(ex.Message);
+        //    }
+        //    return Ok("User: " + user.UserName + " has been added");
+        //}
 
        
 
-        [Route("SaveUser")]
-        [HttpPost]
-        public IHttpActionResult SaveUser(User user)
-        {
+        //[Route("SaveUser")]
+        //[HttpPost]
+        //public IHttpActionResult SaveUser(User user)
+        //{
 
-            _UOW.UserRepository.UpdateUser(user);
+        //    _UOW.UserRepository.UpdateUser(user);
 
-            return Ok(user);
-        }
+        //    return Ok(user);
+        //}
 
-        //[Authorize] //(Roles="User")]
-        [Route("AddRole")]
-        [HttpPost]
-        public IHttpActionResult AddRole(Role role)
-        {
-            RoleStore roleStore = new RoleStore(_UOW);
-            IdentityRole irole = new IdentityRole();
-            irole.Name = role.Name;
-            var rm = new RoleManager<IdentityRole, Guid>(roleStore);
-            rm.Create(irole);
+        ////[Authorize] //(Roles="User")]
+        //[Route("AddRole")]
+        //[HttpPost]
+        //public IHttpActionResult AddRole(Role role)
+        //{
+        //    RoleStore roleStore = new RoleStore(_UOW);
+        //    IdentityRole irole = new IdentityRole();
+        //    irole.Name = role.Name;
+        //    var rm = new RoleManager<IdentityRole, Guid>(roleStore);
+        //    rm.Create(irole);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
-        [Route("GetAllRoles")]
-        [HttpGet]
-        public IHttpActionResult GetAllRoles()
-        {
-            var roles = _UOW.RoleRepository.GetAll();
-            return Ok(roles);
-        }
+        //[Route("GetAllRoles")]
+        //[HttpGet]
+        //public IHttpActionResult GetAllRoles()
+        //{
+        //    var roles = _UOW.RoleRepository.GetAll();
+        //    return Ok(roles);
+        //}
 
         #endregion
 
@@ -192,7 +194,6 @@ namespace DDAS.API.Controllers
 
             try
             {
-                //string root = HttpContext.Current.Server.MapPath("~/App_Data");
                 var userName = User.Identity.GetUserName();
                 CustomMultipartFormDataStreamProvider provider = 
                     new CustomMultipartFormDataStreamProvider(UploadsFolder);
@@ -238,9 +239,8 @@ namespace DDAS.API.Controllers
                 _log.LogEnd();
             }
         }
-
-        
-        public class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
+ 
+        private class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
         {
             public CustomMultipartFormDataStreamProvider(string path) : base(path) { }
 
@@ -258,8 +258,17 @@ namespace DDAS.API.Controllers
         {
             return Ok(
                 _SearchService.
-                getPrincipalInvestigatorNComplianceFormDetails());
+                getAllPrincipalInvestigators());
         }
+
+        [Route("GetMyActivePrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyActivePrincipalInvestigators()
+        {
+             var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, true));
+         }
 
         //GetInvestigatorSiteSummary/?formId=' + formId + "&investigatorId=" + investigatorId)
         [Route("GetInvestigatorSiteSummary")]
@@ -269,6 +278,14 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.
                     getInvestigatorSiteSummary(formId, investigatorId));
+        }
+
+        //Pradeep 4Jan2017
+        [Route("ComplianceFormFilters")]
+        [HttpPost]
+        public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
+        {
+            return Ok(_SearchService.GetComplianceFormsFromFilters(CompFormFilter));
         }
 
         #region Patrick
@@ -335,6 +352,7 @@ namespace DDAS.API.Controllers
                 string path = FilePath.Replace(RootPath, "");
 
                 return Ok(path);
+
             }
             catch (Exception e)
             {

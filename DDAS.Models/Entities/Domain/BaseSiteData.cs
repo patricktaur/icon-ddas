@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DDAS.Models.Entities.Domain.SiteData;
+using System;
+using System.Collections.Generic;
 
 namespace DDAS.Models.Entities.Domain
 {
@@ -16,5 +18,6 @@ namespace DDAS.Models.Entities.Domain
         public string DataExtractionErrorMessage { get; set; }
         public DateTime? SiteLastUpdatedOn { get; set; }
         public string Source { get; set; }
+        public virtual List<SiteDataItemBase> Records { get; } 
     }
 }

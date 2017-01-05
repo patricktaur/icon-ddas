@@ -11,7 +11,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public abstract string RecordDetails { get; }
         public int RowNumber { get; set; }
         public int RecordNumber { get; set; }
-        public List<Link> Links { get; set; } = new List<Link>();
+        public abstract List<Link> Links { get; }
     }
 
     public class Link

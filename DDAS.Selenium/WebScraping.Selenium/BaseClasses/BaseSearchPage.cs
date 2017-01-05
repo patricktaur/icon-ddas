@@ -18,7 +18,10 @@ namespace WebScraping.Selenium.BaseClasses
         
         public abstract void LoadContent(string DownloadsFolder);
 
-        public abstract void LoadContent(string NameToSearch, string DownloadFolder);
+        public abstract void LoadContent(
+            string NameToSearch, 
+            string DownloadFolder,
+            int MatchCountLowerLimit);
 
         public virtual void SavePageImage() {
         SaveScreenShot("XXXXX");
@@ -28,7 +31,7 @@ namespace WebScraping.Selenium.BaseClasses
 
         public abstract DateTime? SiteLastUpdatedDateFromPage { get; }
 
-        public abstract DateTime? SiteLastUpdatedDateFromDatabase { get; }
+        //public abstract DateTime? SiteLastUpdatedDateFromDatabase { get; }
 
         public abstract IEnumerable<SiteDataItemBase> SiteData { get; }
 

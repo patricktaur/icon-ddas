@@ -13,6 +13,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public FDADebarPageSiteData()
         {
             DebarredPersons = new List<DebarredPerson>();
+            
         }
         public Guid? RecId { get; set; }
         public List<DebarredPerson> DebarredPersons { get; set; }
@@ -49,6 +50,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "VOLUMEPAGE.pdf: " + VolumePage + "~" +
                     "Document Link: " + DocumentLink + "~" +
                     "Document Name: " + DocumentName;
+            }
+        }
+
+        public override List<Link> Links {
+            get
+            {
+                return new List<Link> { new Link {Title = DocumentName, url = DocumentLink } };
             }
         }
 

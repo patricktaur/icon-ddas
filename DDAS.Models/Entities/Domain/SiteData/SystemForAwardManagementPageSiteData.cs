@@ -57,6 +57,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Termination Date: " + HasActiveExclusion;
             }
         }
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link>();
+            }
+        }
 
     }
 }

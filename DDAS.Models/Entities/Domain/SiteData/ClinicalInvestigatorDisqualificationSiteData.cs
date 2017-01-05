@@ -50,5 +50,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Link To NOOH Letter: " + LinkToNOOHLetter;
             }
         }
+
+        public override List<Link> Links
+        {
+            get
+            {
+                return new List<Link> {
+                    new Link { Title = "NIDPOE Letter", url = LinkToNIDPOELetter },
+                    new Link { Title = "NOOH Letter", url = LinkToNOOHLetter }
+                };
+            }
+        }
     }
 }
