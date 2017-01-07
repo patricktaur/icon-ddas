@@ -14,7 +14,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public CBERClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow) :
             base(driver)
@@ -60,13 +59,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
-            }
-        }
 
         public override BaseSiteData baseSiteData
         {
@@ -144,27 +136,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _CBERSiteData.DataExtractionRequired = true;
-                //LoadCBERClinicalInvestigators();
-                LoadNextInspectionList();
-                _CBERSiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _CBERSiteData.DataExtractionSucceeded = false;
-                _CBERSiteData.DataExtractionErrorMessage = e.Message;
-                _CBERSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _CBERSiteData.CreatedBy = "Patrick";
-                _CBERSiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         public  void ReadSiteLastUpdatedDateFromPage()

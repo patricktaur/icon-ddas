@@ -14,7 +14,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public ClinicalInvestigatorDisqualificationPage(IWebDriver driver, IUnitOfWork uow)
             : base(driver)
@@ -66,14 +65,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
-            }
-        }
-
         public override BaseSiteData baseSiteData
         {
             get
@@ -86,7 +77,8 @@ namespace WebScraping.Selenium.Pages
 
         private int RowNumber = 1;
 
-        private void LoadDisqualificationProceedingsList()
+        private void LoadDisqualificationProceedingsList(string NameToSearch,
+            int MatchCountLowerLimit)
         {
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
@@ -95,7 +87,8 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                if (TDs.Count > 0)
+                if (TDs.Count > 0 && 
+                    GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
                 {
                     DisqualifiedClinicalInvestigator.RowNumber = RowNumber;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
@@ -148,6 +141,29 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private int GetMatchCount(string NameToSearch, string FullName)
+        {
+            string[] NameToSearchComponents = NameToSearch.Split(' ');
+            string[] FullNameComponents = FullName.Split(' ');
+
+            int MatchCount = 0;
+
+            for(int NameToSearchIndex = 0; 
+                NameToSearchIndex < NameToSearchComponents.Count();
+                NameToSearchIndex++)
+            {
+                for(int FullNameIndex = 0; 
+                    FullNameIndex < FullNameComponents.Count();
+                    FullNameIndex++)
+                {
+                    if (FullNameComponents[FullNameIndex].Replace(",", "").ToLower()
+                        == NameToSearchComponents[NameToSearchIndex].ToLower())
+                        MatchCount += 1;
+                }
+            }
+            return MatchCount;
+        }
+
         private bool SearchTerms(string NameToSearch)
         {
             IWebElement SearchTextBox = DisqualifiedInvestigatorSearchTextBox;
@@ -176,11 +192,11 @@ namespace WebScraping.Selenium.Pages
             throw new NotImplementedException();
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');
 
-            //refactor - add code to validate ExtractionDate
             try
             {
                 for (int counter = 0; counter < WordsInNameToSearch.Length; counter++)
@@ -189,8 +205,10 @@ namespace WebScraping.Selenium.Pages
                         (WordsInNameToSearch[counter].Length > 1);
 
                     if (ComponentGreaterThanTwoCharacters &&
-                        SearchTerms(WordsInNameToSearch[counter]))
-                        LoadDisqualificationProceedingsList();
+                        SearchTerms(WordsInNameToSearch[counter]) &&
+                        _DisqualificationSiteData.DisqualifiedInvestigatorList.Count() == 0)
+                        LoadDisqualificationProceedingsList(NameToSearch,
+                            MatchCountLowerLimit);
                 }
                 _DisqualificationSiteData.DataExtractionSucceeded = true;
             }

@@ -1,21 +1,14 @@
 ﻿using DDAS.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DDAS.Models.Repository.Domain;
 using System.Threading;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Repository.Domain.SiteData;
 using DDAS.Data.Mongo.Repositories.SiteData;
-using MongoDB.Bson.Serialization;
-using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Driver;
 using DDAS.Data.Mongo.Repositories;
 using DDAS.Models.Repository.Domain.MatchedSiteData;
 using DDAS.Data.Mongo.Repositories.MathedRecordsSiteData;
-using DDAS.Models.Enums;
 
 namespace DDAS.Data.Mongo
 {
@@ -28,7 +21,7 @@ namespace DDAS.Data.Mongo
         private IFDADebarPageRepository _FDADebarPageRepository;
 
         //***
-        private IFDADebarPageRepository _FDADebarPageRepository1;
+        //private IFDADebarPageRepository _FDADebarPageRepository1; ???Pradeep 3Jan2017
 
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
@@ -321,7 +314,6 @@ namespace DDAS.Data.Mongo
         public void Dispose()
         {
             //_provider.Dispose();
-           
         }
     }
 }

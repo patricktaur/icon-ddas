@@ -37,22 +37,32 @@ namespace DDAS.Setup
                 {
                     appRootFolder = Path.GetDirectoryName(configFile);
                     //Folders:
+                    _WriteLog.WriteLog("Reading Web.config for:", "DataExtractionLogFile");
                     string DataExtractionLogFile = GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
                     string folder = Path.GetDirectoryName(DataExtractionLogFile);
                     CreateFolder(appRootFolder  + @"\" + folder);
 
+                    _WriteLog.WriteLog("Reading Web.config for:", "AppDataDownloadFolder");
                     string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
                     CreateFolder(appRootFolder + @"\" + DownloadFolder);
 
+                    _WriteLog.WriteLog("Reading Web.config for:", "UploadsFolder");
                     string UploadFolder = GetWebConfigAppSetting(configFile, "UploadsFolder");
                     CreateFolder(appRootFolder + @"\" + UploadFolder);
 
+                    _WriteLog.WriteLog("Reading Web.config for:", "ExcelTemplateFolder");
                     string ExcelTemplateFolder = GetWebConfigAppSetting(configFile, "ExcelTemplateFolder");
                     CreateFolder(appRootFolder + @"\" + UploadFolder);
+                    //Copy Excel Template from ...
 
+                    _WriteLog.WriteLog("Reading Web.config for:", "WordTemplateFolder");
                     string WordTemplateFolder = GetWebConfigAppSetting(configFile, "WordTemplateFolder");
                     CreateFolder(appRootFolder + @"\" + UploadFolder);
-  
+                    //Copy Word Template from ...
+
+                    _WriteLog.WriteLog("Reading Web.config for:", "ComplianceFormFolder");
+                    string ComplianceFormFolder = GetWebConfigAppSetting(configFile, "ComplianceFormFolder");
+                    CreateFolder(appRootFolder + @"\" + ComplianceFormFolder);
 
                     //Initialize DB
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");

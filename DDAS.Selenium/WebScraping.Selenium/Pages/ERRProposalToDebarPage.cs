@@ -14,7 +14,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public ERRProposalToDebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -58,14 +57,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
-            }
-        }
-
         public override BaseSiteData baseSiteData
         {
             get
@@ -105,26 +96,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _proposalToDebarSiteData.DataExtractionRequired = true;
-                LoadProposalToDebarList();
-                _proposalToDebarSiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _proposalToDebarSiteData.DataExtractionSucceeded = false;
-                _proposalToDebarSiteData.DataExtractionErrorMessage = e.Message;
-                _proposalToDebarSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _proposalToDebarSiteData.CreatedBy = "Patrick";
-                _proposalToDebarSiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         public void ReadSiteLastUpdatedDateFromPage()

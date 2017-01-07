@@ -16,7 +16,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public ExclusionDatabaseSearchPage(IWebDriver driver, IUnitOfWork uow) 
             : base(driver)
@@ -59,14 +58,6 @@ namespace WebScraping.Selenium.Pages
                 if (_SiteLastUpdatedFromPage == null)
                     ReadSiteLastUpdatedDateFromPage();
                 return _SiteLastUpdatedFromPage;
-            }
-        }
-
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                return _SiteLastUpdatedFromDatabse;
             }
         }
 
@@ -142,27 +133,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _exclusionSearchSiteData.DataExtractionRequired = true;
-                string FilePath = DownloadExclusionList(DownloadFolder);
-                LoadExclusionDatabaseListFromCSV(FilePath);
-                _exclusionSearchSiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _exclusionSearchSiteData.DataExtractionSucceeded = false;
-                _exclusionSearchSiteData.DataExtractionErrorMessage = e.Message;
-                _exclusionSearchSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _exclusionSearchSiteData.CreatedBy = "Patrick";
-                _exclusionSearchSiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         private void AssignReferenceIdOfPreviousDocument()

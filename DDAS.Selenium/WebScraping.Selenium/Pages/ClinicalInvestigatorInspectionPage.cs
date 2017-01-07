@@ -19,7 +19,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL,
@@ -67,14 +66,6 @@ namespace WebScraping.Selenium.Pages
                 if (_SiteLastUpdatedFromPage == null)
                     ReadSiteLastUpdatedDateFromPage();
                 return _SiteLastUpdatedFromPage;
-            }
-        }
-
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                throw new NotImplementedException();
             }
         }
 
@@ -189,27 +180,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _clinicalSiteData.DataExtractionRequired = true;
-                DownloadCIIList(DownloadFolder);
-                LoadClinicalInvestigatorListAlt(DownloadFolder);
-                _clinicalSiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _clinicalSiteData.DataExtractionSucceeded = false;
-                _clinicalSiteData.DataExtractionErrorMessage = e.Message;
-                _clinicalSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _clinicalSiteData.CreatedBy = "Patrick";
-                _clinicalSiteData.CreatedOn = DateTime.Now;
-            }
+            throw new NotImplementedException();
         }
 
         public void ReadSiteLastUpdatedDateFromPage()

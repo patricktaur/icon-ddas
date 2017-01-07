@@ -22,6 +22,10 @@ namespace DDAS.Models.Interfaces
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log);
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
 
+        //Pradeep 5Jan2017
+        List<ComplianceForm> GetComplianceFormsFromFilters(
+            ComplianceFormFilter CompFormFilter);
+
         //Patrick 03Dec2016
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
         

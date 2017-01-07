@@ -164,6 +164,7 @@ namespace DDAS.API.Controllers
         // POST api/Account/Logout
        
         [Route("Logout")]
+        [HttpPost]
         public IHttpActionResult Logout()
         {
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);

@@ -168,6 +168,8 @@ namespace DDAS.Models.Entities.Domain
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
         //patrick 31Dec2016
+        private string _Status;
+        private ComplianceFormStatusEnum _StatusEnum;
         public string Status { get {
                 if (_Status == null)
                 {
@@ -182,8 +184,6 @@ namespace DDAS.Models.Entities.Domain
                 }
                 return _StatusEnum;
             } }
-        private string _Status;
-        private ComplianceFormStatusEnum _StatusEnum;
         private void setStatusNStatusEnum()
         {
             var ReviewCompleted = false;
@@ -213,7 +213,7 @@ namespace DDAS.Models.Entities.Domain
                     _Status = "Full Match Found, Review Pending";
                     _StatusEnum = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
                 }
-                else if (FullMatchesFoundInvestigatorCount > 0)
+                else if (PartialMatchesFoundInvestigatorCount > 0)
                 {
                     _Status = "Partial Match Found, Review Pending";
                     _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
@@ -225,8 +225,6 @@ namespace DDAS.Models.Entities.Domain
                 }
             }
         }
-
-        
     }
 
     public class PrincipalInvestigator
@@ -279,7 +277,72 @@ namespace DDAS.Models.Entities.Domain
 
         public bool Deleted { get; set; }
         public List<SiteSearchStatus> SitesSearched { get; set; }
-  
+
+        private string _Status;
+        private ComplianceFormStatusEnum _StatusEnum;
+        public string Status
+        {
+            get
+            {
+                if (_Status == null)
+                {
+                    setStatusNStatusEnum();
+                }
+                return _Status;
+            }
+        }
+        public ComplianceFormStatusEnum StatusEnum
+        {
+            get
+            {
+                if (_Status == null)
+                {
+                    setStatusNStatusEnum();
+                }
+                return _StatusEnum;
+            }
+        }
+        private void setStatusNStatusEnum()
+        {
+            var ReviewCompleted = false;
+            if (ReviewCompletedSiteCount == SitesSearched.Count)
+            {
+                ReviewCompleted = true;
+            }
+            if (ReviewCompleted == true)
+            {
+                _Status = "Review completed, Issues Not Identified";
+                _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified;
+                if (IssuesFoundSiteCount > 0)
+                {
+                    _Status = "Review completed, Issues Identified";
+                    _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;
+                }
+            }
+            else if (ExtractedOn == null)
+            {
+                _Status = "Data not extracted";
+                _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+            }
+            else
+            {
+                if (Sites_FullMatchCount > 0)
+                {
+                    _Status = "Full Match Found, Review Pending";
+                    _StatusEnum = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
+                }
+                else if (Sites_PartialMatchCount > 0)
+                {
+                    _Status = "Partial Match Found, Review Pending";
+                    _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
+                }
+                else
+                {
+                    _Status = "No Match Found, Review Pending";
+                    _StatusEnum = ComplianceFormStatusEnum.NoMatchFoundReviewPending;
+                }
+            }
+        }
     }
 
   
@@ -300,6 +363,68 @@ namespace DDAS.Models.Entities.Domain
 
         public DateTime? SiteSourceUpdatedOn { get; set; }
         public string ExtractionMode { get; set; }
+
+
+        private string _Status;
+        private ComplianceFormStatusEnum _StatusEnum;
+        public string Status
+        {
+            get
+            {
+                if (_Status == null)
+                {
+                    setStatusNStatusEnum();
+                }
+                return _Status;
+            }
+        }
+        public ComplianceFormStatusEnum StatusEnum
+        {
+            get
+            {
+                if (_Status == null)
+                {
+                    setStatusNStatusEnum();
+                }
+                return _StatusEnum;
+            }
+        }
+        private void setStatusNStatusEnum()
+        {
+            if (ReviewCompleted == true)
+            {
+                _Status = "Review completed, Issues Not Identified";
+                _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified;
+                if (IssuesFound > 0)
+                {
+                    _Status = "Review completed, Issues Identified";
+                    _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;
+                }
+            }
+            else if (ExtractedOn == null)
+            {
+                _Status = "Data not extracted";
+                _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+            }
+            else
+            {
+                if (FullMatchCount > 0)
+                {
+                    _Status = "Full Match Found, Review Pending";
+                    _StatusEnum = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
+                }
+                else if (PartialMatchCount > 0)
+                {
+                    _Status = "Partial Match Found, Review Pending";
+                    _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
+                }
+                else
+                {
+                    _Status = "No Match Found, Review Pending";
+                    _StatusEnum = ComplianceFormStatusEnum.NoMatchFoundReviewPending;
+                }
+            }
+        }
     }
 
     public class SitesIncludedInSearch
@@ -401,6 +526,7 @@ namespace DDAS.Models.Entities.Domain
         public List<Link> Links { get; set; } = new List<Link>();
     }
 
+
     public class ComplianceFormManage
     {
         public string AssignedTo { get; set; }
@@ -410,6 +536,23 @@ namespace DDAS.Models.Entities.Domain
         #endregion
 
         #region Save Results
+
+    #region ComplianceFormFilter
+    
+    public class ComplianceFormFilter
+    {
+        public string InvestigatorName { get; set; }
+        public string ProjectNumber { get; set; }
+        public string SponsorProtocolNumber { get; set; }
+        public DateTime? SearchedOnFrom { get; set; }
+        public DateTime? SearchedOnTo { get; set; }
+        public string Country { get; set; }
+        public ComplianceFormStatusEnum Status { get; set; }
+    }
+
+    #endregion
+
+
 
         public class SaveSearchResult
     {

@@ -47,10 +47,7 @@ namespace DDAS.API.Controllers
 
             //_userName = User.Identity.GetUserName(); //returns null in constructor, returns correct value in method.
            
-
             RootPath = HttpRuntime.AppDomainAppPath;
-
-            //AppDataFolder = HttpContext.Current.Server.MapPath("~/App_Data");
 
             DataExtractionLogFile = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
@@ -159,6 +156,7 @@ namespace DDAS.API.Controllers
                 _SearchService.getPrincipalInvestigators(UserName, true));
          }
 
+
         [Route("GetMyClosedPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyClosedPrincipalInvestigators()
@@ -168,10 +166,6 @@ namespace DDAS.API.Controllers
                 _SearchService.getPrincipalInvestigators(UserName, false));
         }
 
-
-
-
-        //GetInvestigatorSiteSummary/?formId=' + formId + "&investigatorId=" + investigatorId)
         [Route("GetInvestigatorSiteSummary")]
         [HttpGet]
         public IHttpActionResult GetInvestigatorSiteSummary(string formId, int investigatorId)
@@ -179,6 +173,14 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.
                     getInvestigatorSiteSummary(formId, investigatorId));
+        }
+
+        //Pradeep 4Jan2017
+        [Route("ComplianceFormFilters")]
+        [HttpPost]
+        public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
+        {
+            return Ok(_SearchService.GetComplianceFormsFromFilters(CompFormFilter));
         }
 
         #region Patrick
@@ -350,7 +352,7 @@ namespace DDAS.API.Controllers
         {
             Guid? RecId = Guid.Parse(ComplianceFormId);
             _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
-            return Ok();
+            return Ok(true);
         }
 
         [Route("GetAllCountries")]

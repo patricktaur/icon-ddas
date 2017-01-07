@@ -17,6 +17,7 @@ namespace DDAS.Data.Mongo.Maps
                 DateTimeSerializer.LocalInstance
                 );
 
+            #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
                 map.AutoMap();
@@ -24,6 +25,14 @@ namespace DDAS.Data.Mongo.Maps
                 map.SetIgnoreExtraElements(true);
             });
 
+            BsonClassMap.RegisterClassMap<BaseSiteData>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+            });
+            #endregion
+
+            #region ComplianceForm
             BsonClassMap.RegisterClassMap<ComplianceForm>(map =>
             {
                 map.AutoMap();
@@ -47,10 +56,10 @@ namespace DDAS.Data.Mongo.Maps
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
                 });
-    
-
             });
+            #endregion
 
+            #region SiteDataClasses
             BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
             {
                 map.AutoMap();
@@ -63,7 +72,6 @@ namespace DDAS.Data.Mongo.Maps
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
                 });
-                
             });
 
             BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>
@@ -85,6 +93,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<FDAWarningLetter>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
@@ -106,6 +119,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<DisqualifiedInvestigator>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<ERRProposalToDebarPageSiteData>(map =>
@@ -113,6 +131,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<ProposalToDebar>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<CBERClinicalInvestigatorInspectionSiteData>(map =>
@@ -120,6 +143,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<CBERClinicalInvestigator>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<PHSAdministrativeActionListingSiteData>(map =>
@@ -139,6 +167,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<ExclusionDatabaseSearchList>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<CorporateIntegrityAgreementListSiteData>(map =>
@@ -146,6 +179,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<CIAList>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<SystemForAwardManagementPageSiteData>
@@ -154,6 +192,11 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                BsonClassMap.RegisterClassMap<SystemForAwardManagement>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                });
             });
 
             BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>
@@ -162,15 +205,13 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-            });
-
-            BsonClassMap.RegisterClassMap<SaveSearchResult>
-                (map =>
+                BsonClassMap.RegisterClassMap<SDNList>(child =>
                 {
-                    map.AutoMap();
-                    map.SetIgnoreExtraElements(true);
-                    map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
                 });
+            });
+            #endregion
 
             #region Identity
             BsonClassMap.RegisterClassMap<User>(map =>

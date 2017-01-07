@@ -14,7 +14,6 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
-        private DateTime? _SiteLastUpdatedFromDatabse;
 
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
@@ -57,14 +56,6 @@ namespace WebScraping.Selenium.Pages
                 if (_SiteLastUpdatedFromPage == null)
                     ReadSiteLastUpdatedDateFromPage();
                 return _SiteLastUpdatedFromPage;
-            }
-        }
-
-        public override DateTime? SiteLastUpdatedDateFromDatabase
-        {
-            get
-            {
-                throw new NotImplementedException();
             }
         }
 
@@ -150,7 +141,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder)
+        public override void LoadContent(string NameToSearch, string DownloadFolder,
+            int MatchCountLowerLimit)
         {
             string[] FullName = NameToSearch.Split(' ');
             try
