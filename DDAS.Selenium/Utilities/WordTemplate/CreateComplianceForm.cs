@@ -138,8 +138,10 @@ namespace Utilities.WordTemplate
                         }
                     }
 
-                    //var SearchedByTable = body.Descendants<Table>().ElementAt(4);
-
+                    var SearchedByTable = body.Descendants<Table>().ElementAt(5);
+                    AddSearchedByDetails(SearchedByTable, form.AssignedTo, 0, 0);
+                    AddSearchedByDetails(SearchedByTable, DateTime.Now.ToShortDateString(),
+                        0, 2);
                 }
                 
                 //Patrick 06Dec2016
@@ -161,6 +163,17 @@ namespace Utilities.WordTemplate
         }
 
         //Pradeep 12Dec2016 - Clean up required
+
+        public void AddSearchedByDetails(Table SearchedByTable, 
+            string Value, int RowIndex, int CellIndex)
+        {
+            TableRow Row = SearchedByTable.Elements<TableRow>().ElementAt(RowIndex);
+            TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
+            Paragraph paragraph = Cell.Elements<Paragraph>().First();
+            Run run = paragraph.Elements<Run>().First();
+            Text text = run.Elements<Text>().First();
+            text.Text += " " +Value;
+        }
 
         public TableCell CellWithVerticalAlign()
         {

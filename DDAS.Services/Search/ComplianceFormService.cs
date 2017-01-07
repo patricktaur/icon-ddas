@@ -88,6 +88,15 @@ namespace DDAS.Services.Search
         }
         #endregion
 
+        public void UpdateAssignedToData(string AssignedTo, bool Active,
+            Guid? RecId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(RecId);
+            form.AssignedTo = AssignedTo;
+            form.Active = Active;
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+        }
+
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
         {
             //Creates or Updates form
@@ -392,7 +401,8 @@ namespace DDAS.Services.Search
                     if (searchStatus == null)
                     {
                         //SearchStatus records must be added to each Investigator before calling AddMatchingRecords
-                        throw new Exception("Coding Error: Search Status is not added to Project-Investigator:" + frm.ProjectNumber + "-" + inv.Name);
+                        throw new Exception("Coding Error: Search Status is not added to Project-Investigator:"
+                            + frm.ProjectNumber + "-" + inv.Name);
                     }
 
                     if (searchStatus.HasExtractionError == true)
@@ -697,13 +707,14 @@ namespace DDAS.Services.Search
         }
 
 
-        public List<ComplianceForm> GetComplianceFormsFromFilters(
+        public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter)
         {
             var Filter = _UOW.ComplianceFormRepository.GetAll();
             var Filter1 = Filter;
 
-            if(CompFormFilter.InvestigatorName != null)
+            if(CompFormFilter.InvestigatorName != null && 
+                CompFormFilter.InvestigatorName != "")
             {
                 var tempFilter = Filter1.Select(x => x.InvestigatorDetails.Where(inv =>
                 inv.Name == CompFormFilter.InvestigatorName)).ToList();
@@ -711,7 +722,8 @@ namespace DDAS.Services.Search
 
             var Filter2 = Filter1;
 
-            if(CompFormFilter.ProjectNumber != null)
+            if(CompFormFilter.ProjectNumber != null &&
+                CompFormFilter.ProjectNumber != "")
             {
                 Filter2 = Filter1.Where(x =>
                 x.ProjectNumber == CompFormFilter.ProjectNumber).ToList();
@@ -719,7 +731,8 @@ namespace DDAS.Services.Search
 
             var Filter3 = Filter2;
 
-            if(CompFormFilter.SponsorProtocolNumber != null)
+            if(CompFormFilter.SponsorProtocolNumber != null &&
+                CompFormFilter.SponsorProtocolNumber != "")
             {
                 Filter3 = Filter2.Where(x =>
                 x.SponsorProtocolNumber.ToLower() == 
@@ -749,10 +762,29 @@ namespace DDAS.Services.Search
 
             var Filter6 = Filter5;
 
-            Filter6 = Filter5.Where(x =>
-            x.StatusEnum == CompFormFilter.Status).ToList();
+            if(CompFormFilter.Country != null &&
+                CompFormFilter.Country != "")
+            {
+                Filter6 = Filter5.Where(x =>
+                x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
+            }
 
-            return Filter6;
+            var Filter7 = Filter6;
+
+            if((int)CompFormFilter.Status != -1)
+            {
+                Filter7 = Filter6.Where(x =>
+                x.StatusEnum == CompFormFilter.Status).ToList();
+            }
+
+
+            var ReturnList = new List<PrincipalInvestigator>();
+
+            foreach(ComplianceForm form in Filter7)
+            {
+                ReturnList.Add(getPrincipalInvestigators(form));
+            }
+            return ReturnList;
         }
 
         #endregion
