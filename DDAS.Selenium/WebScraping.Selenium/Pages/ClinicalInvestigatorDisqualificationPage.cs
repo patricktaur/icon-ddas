@@ -100,10 +100,11 @@ namespace WebScraping.Selenium.Pages
                     DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
                     DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
 
-                    Link link = new Link();
+                    
 
                     if(IsElementPresent(TDs[0], By.XPath("a")))
                     {
+                        Link link = new Link();
                         IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
                         link.Title = "Name";
                         link.url = anchor.GetAttribute("href");
@@ -116,6 +117,7 @@ namespace WebScraping.Selenium.Pages
 
                         foreach(IWebElement anchor in anchors)
                         {
+                            Link link = new Link();
                             link.Title = "Link To NIDPOE Letter - " + anchor.Text;
                             link.url = anchor.GetAttribute("href");
                             DisqualifiedClinicalInvestigator.Links.Add(link);
@@ -128,6 +130,7 @@ namespace WebScraping.Selenium.Pages
 
                         foreach (IWebElement anchor in anchors)
                         {
+                            Link link = new Link();
                             link.Title = "Link To NOOH Letter - " + anchor.Text;
                             link.url = anchor.GetAttribute("href");
                             DisqualifiedClinicalInvestigator.Links.Add(link);

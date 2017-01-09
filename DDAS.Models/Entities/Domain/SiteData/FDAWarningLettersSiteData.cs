@@ -51,13 +51,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Closeout Date: " + CloseoutDate;
             }
         }
-        public override List<Link> Links
-        {
-            get
-            {
-                return new List<Link>();
-            }
-        }
     }
-
 }
