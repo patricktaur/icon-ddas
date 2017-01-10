@@ -23,8 +23,11 @@ namespace DDAS.Models.Interfaces
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
 
         //Pradeep 5Jan2017
-        List<ComplianceForm> GetComplianceFormsFromFilters(
+        List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter);
+
+        void UpdateAssignedToData(string AssignedTo, bool Active,
+            Guid? RecId);
 
         //Patrick 03Dec2016
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);

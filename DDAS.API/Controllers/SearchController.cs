@@ -232,7 +232,18 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
-      
+
+        [Route("SaveAssignedToData")]
+        [HttpGet]
+        public IHttpActionResult SaveAssginedToData(string AssignedTo, bool Active,
+            string ComplianceFormId)
+        {
+            var RecId = Guid.Parse(ComplianceFormId);
+            _SearchService.UpdateAssignedToData(AssignedTo, Active, RecId);
+            return Ok(true);
+        }
+
+
         [Route("GenerateComplianceForm")]
         [HttpGet]
         public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)

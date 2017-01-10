@@ -55,7 +55,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUsers()
         {
-            return Ok(_userService.GetUsers());
+            var Users = _userService.GetUsers();
+            return Ok(Users);
         }
 
 

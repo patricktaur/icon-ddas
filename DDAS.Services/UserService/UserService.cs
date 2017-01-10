@@ -98,6 +98,7 @@ namespace DDAS.Services.UserService
                 userToUpdate.Active = userViewModel.Active;
                 userToUpdate.EmailId = userViewModel.EmailId;
                 _UOW.UserRepository.UpdateUser(userToUpdate);
+
             }
 
             //Update Roles.
