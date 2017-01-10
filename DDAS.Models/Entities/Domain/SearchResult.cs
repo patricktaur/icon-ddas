@@ -391,6 +391,8 @@ namespace DDAS.Models.Entities.Domain
         }
         private void setStatusNStatusEnum()
         {
+            //ExtractionMode = "Manual"
+
             if (ReviewCompleted == true)
             {
                 _Status = "Review completed, Issues Not Identified";
@@ -401,6 +403,11 @@ namespace DDAS.Models.Entities.Domain
                     _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;
                 }
             }
+            else if (ExtractionMode == "Manual")
+            {
+                _Status = "Review Pending";
+                _StatusEnum = ComplianceFormStatusEnum.ReviewPending;
+            }          
             else if (ExtractedOn == null)
             {
                 _Status = "Data not extracted";
