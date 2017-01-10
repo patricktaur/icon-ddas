@@ -575,6 +575,7 @@ namespace WebScraping.Selenium.SearchEngine
         {
             _searchPage = GetSearchPage(siteEnum);
             _searchPage.LoadContent(NameToSearch, "", MatchCountLowerLimit);
+            _searchPage.SaveData();
         }
     }
 }

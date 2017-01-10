@@ -59,12 +59,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Exclusion Type: " + ExclusionType;
             }
         }
-        public override List<Link> Links
-        {
-            get
-            {
-                return new List<Link>();
-            }
-        }
     }
 }

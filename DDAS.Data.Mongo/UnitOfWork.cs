@@ -7,8 +7,6 @@ using DDAS.Models.Repository.Domain.SiteData;
 using DDAS.Data.Mongo.Repositories.SiteData;
 using MongoDB.Driver;
 using DDAS.Data.Mongo.Repositories;
-using DDAS.Models.Repository.Domain.MatchedSiteData;
-using DDAS.Data.Mongo.Repositories.MathedRecordsSiteData;
 
 namespace DDAS.Data.Mongo
 {
@@ -50,11 +48,6 @@ namespace DDAS.Data.Mongo
         private IUserRepository _UserRepository;
         private IUserRoleRepository _UserRoleRepository;
 
-        #endregion
-
-        #region PrivateMatchedRecordsRepositoryMembers
-        private IFDADebarMatchedRecordsRepository
-            _FDADebarMatchedRecordsRepository;
         #endregion
 
         /*
@@ -252,26 +245,7 @@ namespace DDAS.Data.Mongo
                 return _ComplianceFormRepository ??
                     (_ComplianceFormRepository = new ComplianceFormRepository(_db));
             }
-        }
-
-     
-        
-        #endregion
-
-
-        #region MatchedRecordsProperties
-
-        public IFDADebarMatchedRecordsRepository 
-            FDADebarMatchedRecordsRepository
-        {
-            get
-            {
-                return _FDADebarMatchedRecordsRepository ??
-                    (_FDADebarMatchedRecordsRepository = 
-                    new FDADebarMatchedRecordsRepository(_db));
-            }
-        }
-
+        }        
         #endregion
 
         private void InitializeMaps()

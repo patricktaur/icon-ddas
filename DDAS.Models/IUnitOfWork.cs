@@ -1,10 +1,5 @@
-﻿using DDAS.Models.Repository.Domain;
-using DDAS.Models.Repository.Domain.MatchedSiteData;
-using DDAS.Models.Repository.Domain.SiteData;
+﻿using DDAS.Models.Repository.Domain.SiteData;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,11 +41,6 @@ namespace DDAS.Models
         ISystemForAwardManagementRepository 
             SystemForAwardManagementRepository { get; }
         IComplianceFormRepository ComplianceFormRepository { get; }
-        #endregion
-
-        #region MatchedRecordsSiteData
-        IFDADebarMatchedRecordsRepository 
-            FDADebarMatchedRecordsRepository { get; } 
         #endregion
 
         #endregion

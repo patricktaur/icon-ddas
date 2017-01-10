@@ -52,20 +52,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Document Name: " + DocumentName;
             }
         }
-
-        public override List<Link> Links {
-            get
-            {
-                return new List<Link> { new Link {Title = DocumentName, url = DocumentLink } };
-            }
-        }
-
     }
-
-    //Patrick Q - why inherit DebarredPerson ?
-    public class FDADebarPageMatchRecords : DebarredPerson
-    {
-        public List<DebarredPerson> FDADebarMatchedRecords { get; set; }
-    }
-
 }

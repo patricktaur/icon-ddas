@@ -45,15 +45,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Comments: " + Comments;
             }
         }
-
-        public override List<Link> Links
-        {
-            get
-            {
-                 return new List<Link>();
-            }
-        }
     }
-
-
 }

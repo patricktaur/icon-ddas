@@ -55,12 +55,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Memo: " + Memo;
             }
         }
-        public override List<Link> Links
-        {
-            get
-            {
-                return new List<Link>();
-            }
-        }
     }
 }
