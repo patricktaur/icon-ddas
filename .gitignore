@@ -16849,27 +16849,17 @@ DDAS.WebSite/node_modules/
 *.js
 *.map
 DDAS.API/Downloads/
-<<<<<<< HEAD
-DDAS.API/phantomjs-license.txt
-DDAS.Selenium/WebScraping.Selenium/phantomjs-license.txt
-=======
 Libraries/PhantomJS/phantomjs.exe
 DDAS.Selenium/WebScraping.Selenium/phantomjs-license.txt
 Libraries/ChromeDriver/chromedriver.exe
-<<<<<<< HEAD
->>>>>>> 32ad08b6c513bf0c281c27e8809f6dcad8fcb8f9
-=======
 DDAS.Selenium/~$Testing_Results.xlsx
->>>>>>> c6207d6ae49f9d0e6d9770dd33eecd3d2b8e2f13
 DDAS.Data.Mongo/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
 DDAS.Data.Mongo/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
 .vs/restore.dg
 DDAS.Data.Mongo/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
-<<<<<<< HEAD
 DDAS.Data.Mongo/obj/
 DDAS.Data.Mongo/bin/
 DDAS.WebSite.zip
-=======
 DDAS.Run/bin/Debug/DDAS.Run.vshost.exe.config
 DDAS.Run/bin/Debug/DDAS.Run.exe.config
 DDAS.Run/bin/Debug/AutoMapper.xml
@@ -16879,7 +16869,6 @@ DDAS.Run/obj/
 DDAS.DataExtractor/bin/
 DDAS.Data.Mongo/obj/
 DDAS.Data.Mongo/bin/
->>>>>>> ba9cf142902b14d35837af7f7c8b71c7ca6dbacc
 DDAS.Services/bin/
 DDAS.Services/obj/
 ~$Testing_Results.xlsx
@@ -16891,7 +16880,6 @@ Prod/bin/
 DDAS.Setup/obj/
 Prod/
 DDAS.API/App_Data/BodyPart_06cf9cbe-f389-4452-bd2f-6740f18944a7
-DDAS.WebSite/
 DDAS.API/App_Data/
 DDAS.API/Logs/
 DDAS.WebSite (2).zip
@@ -16912,3 +16900,14 @@ Documents/Technical/TestUpload/DDAS_Upload - 2.xlsx
 Documents/Technical/TestUpload/DDAS_Upload - 1.xlsx
  - Copy.gitignore
 Documents/Technical/~$ProjectPlan-Internal.xlsx
+DDAS.WebSite/npm-debug.log
+npm-debug.log
+DDAS.WebSite/npm-debug.log.210741359
+DDAS.WebSite/npm-debug.log.2228499453
+DDAS.WebSite/npm-debug.log.2554236656
+DDAS.WebSite/npm-debug.log.3332788271
+DDAS.WebSite/npm-debug.log.3718176324
+DDAS.WebSite/npm-debug.log.442389767
+*.d.ts
+DDAS.WebSite/aot/node_modules/
+DDAS.WebSite/app/

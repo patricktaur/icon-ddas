@@ -1,0 +1,158 @@
+1. Install a few new npm dependencies with the following command:
+npm install @angular/compiler-cli @angular/platform-server --save
+
+
+2. Initiate AoT compilation from the command line using the previously installed ngc compiler by executing:
+
+node_modules/.bin/ngc -p tsconfig-aot.json
+
+Windows users should surround the ngc command in double quotes:
+
+"node_modules/.bin/ngc" -p tsconfig-aot.json
+
+
+tsconfig.json - changes:
+
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true
+    //error when this code is added.
+    /*,
+    "typeRoots": [
+      "../../node_modules/@types/"
+    ]
+    */
+  },
+  "compileOnSave": true,
+  "exclude": [
+    "node_modules/*",
+    "**/*-aot.ts"
+  ]
+  
+}
+
+Install the Rollup dependencies with this command:
+npm install rollup rollup-plugin-node-resolve rollup-plugin-commonjs rollup-plugin-uglify --save-dev
+
+create rollup-config.js
+
+"node_modules/.bin/rollup" -c rollup-config.js
+
+
+tsconfig-aot.json - Important change: "app/main-aot.ts"(not found in ang doc)
+
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+
+  "files": [
+    "app/app.module.ts",
+    "app/main-aot.ts"
+  ],
+
+  "angularCompilerOptions": {
+   "genDir": "aot",
+   "skipMetadataEmit" : true
+ }
+}
+
+
+"node_modules/.bin/source-map-explorer" aot/dist/build.js
+
+IMPORTANT:
+prefix site name demoddas\ to file paths.
+<html>
+  <head>
+    <base href="/">
+    <title>Angular Tour of Heroes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="demoddas\stylesheet" href="styles.css">
+    <script src="demoddas\dist\lib\shim.min.js"></script>
+    <script src="demoddas\dist\lib\zone.min.js"></script>
+    <script>window.module = 'aot';</script>
+  </head>
+  <body>
+    <my-app>Loading...</my-app>
+  </body>
+  <script src="demoddas\dist\build.js"></script>
+</html>
+
+Compile:
+
+1. "node_modules/.bin/ngc" -p tsconfig-aot.json
+2. "node_modules/.bin/rollup" -c rollup-config.js
+
+OR 
+npm run lite:aot 
+
+while running npm start the error displayed is related to aot, delete the aot folder
+
+Delete AOT folder and recompile.
+
+
+1Nov2016
+package.json  ver changes from 2.1.1 to 2.1.2 and then npm pdate
+
+
+RUN aot version;
+npm run build:aot && npm run lite:aot
+
+
+npm run start or npm start
+compiles files inside aot.  removed main-aot.ts, aot folder and 
+"build:aot": "ngc -p tsconfig-aot.json && rollup -c rollup-config.js",
+    "lite:aot": "lite-server -c aot/bs-config.json"
+--recheck.
+Rechecked, working:
+Remove file: app/main-aot.ts
+Remove folder: aot/app (only the app folder)
+There is no need to remove:"build:aot" and "lite:aot" in package.json
+
+Not resolved 1.
+=================
+
+Cannot compile, Error:
+
+Operator '==' cannot be applied to tpes 'boolean' and '""'
+
+Removed these lines 
+
+div [hidden]="!NameToSearch==''" class="alert alert-danger">
+                                            Name is required
+                                        </div>
+from search-input.component:
+
+<div class="form-group">
+                                    <label class="control-label" for="exampleInputEmail1">Name to search:</label>
+                                    <textarea [(ngModel)]="NameToSearch" name="NameToSearch" class="form-control" id="TextArea1" rows="3" cols="30"
+                                       ngcontroll="NameToSearch" (ngModelChange)="NameToSearch = $event" required placeholder="Enter a name to search, example:Ramesh Krishnan Venkat Narayan, first name, middle name, last name order is not important. "></textarea>
+                                        <div [hidden]="!NameToSearch==''" class="alert alert-danger">
+                                            Name is required
+                                        </div>
+                                </div>
+
+Important:
+
+The build.js must be placed after the body:
+<body>
+    <!--<my-app>Loading...</my-app>-->
+    <ddas-app><div class="loader"></div></ddas-app>
+  </body>
+  <script src="dist/build.js"></script>

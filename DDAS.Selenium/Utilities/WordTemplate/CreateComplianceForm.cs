@@ -12,10 +12,6 @@ namespace Utilities.WordTemplate
     {
         public MemoryStream ReplaceTextFromWord(ComplianceForm form, string TemplateFolder, string fileName = "")
         {
-            //string FilePath = System.Configuration.ConfigurationManager.AppSettings["TemplatesFolder"];
-
-            //string FilePath = @"C:\Development\p926-ddas\DDAS.API\Templates\ComplianceFormTemplate.docx";
-
             string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
 
             byte[] byteArray = File.ReadAllBytes(
@@ -56,13 +52,16 @@ namespace Utilities.WordTemplate
                         if (siteSource.SiteSourceUpdatedOn == null)
                             siteSource.SiteSourceUpdatedOn = DateTime.Now; //Refactor
 
+                        string SiteSourceUpdatedOn = 
+                            siteSource.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy");
+
                         if (RowNumber > 12 && siteSource.IssuesIdentified)
                         {
                             AddSites(
                                 AdditionalSitesTable,
                                 RowNumber.ToString(),
                                 siteSource.SiteName,
-                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                SiteSourceUpdatedOn,
                                 siteSource.SiteUrl, "Yes");
                         }
                         else if (RowNumber > 12)
@@ -71,7 +70,7 @@ namespace Utilities.WordTemplate
                                 AdditionalSitesTable,
                                 RowNumber.ToString(),
                                 siteSource.SiteName,
-                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                SiteSourceUpdatedOn,
                                 siteSource.SiteUrl, "No");
                         }
                         else if (siteSource.IssuesIdentified)
@@ -80,7 +79,7 @@ namespace Utilities.WordTemplate
                                 SitesTable,
                                 siteSource.Id.ToString(),
                                 siteSource.SiteName,
-                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                SiteSourceUpdatedOn,
                                 siteSource.SiteUrl, "Yes");
                         }
                         else
@@ -88,7 +87,7 @@ namespace Utilities.WordTemplate
                                 SitesTable,
                                 siteSource.Id.ToString(),
                                 siteSource.SiteName,
-                                siteSource.SiteSourceUpdatedOn.Value.ToShortDateString(),
+                                SiteSourceUpdatedOn,
                                 siteSource.SiteUrl, "No");
 
                         RowNumber += 1;
@@ -130,7 +129,7 @@ namespace Utilities.WordTemplate
                                         FindingsTable, 
                                         RowIndex.ToString(),
                                         Finding.InvestigatorName,
-                                        DateTime.Now,
+                                        DateTime.Now, //Refactor - clarification required
                                         Finding.Observation);
                                 }
                             }
@@ -140,8 +139,8 @@ namespace Utilities.WordTemplate
 
                     var SearchedByTable = body.Descendants<Table>().ElementAt(5);
                     AddSearchedByDetails(SearchedByTable, form.AssignedTo, 0, 0);
-                    AddSearchedByDetails(SearchedByTable, DateTime.Now.ToShortDateString(),
-                        0, 2);
+                    AddSearchedByDetails(SearchedByTable, DateTime.Now.ToString("dd MMM yyyy"),
+                        1, 0);
                 }
                 
                 //Patrick 06Dec2016
