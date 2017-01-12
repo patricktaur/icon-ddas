@@ -391,6 +391,8 @@ namespace DDAS.Models.Entities.Domain
         }
         private void setStatusNStatusEnum()
         {
+            //ExtractionMode = "Manual"
+
             if (ReviewCompleted == true)
             {
                 _Status = "Review completed, Issues Not Identified";
@@ -401,6 +403,11 @@ namespace DDAS.Models.Entities.Domain
                     _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;
                 }
             }
+            else if (ExtractionMode == "Manual")
+            {
+                _Status = "Review Pending";
+                _StatusEnum = ComplianceFormStatusEnum.ReviewPending;
+            }          
             else if (ExtractedOn == null)
             {
                 _Status = "Data not extracted";
@@ -525,7 +532,17 @@ namespace DDAS.Models.Entities.Domain
 
         public List<Link> Links { get; set; } = new List<Link>();
     }
-    #endregion
+
+
+    public class ComplianceFormManage
+    {
+        public string AssignedTo { get; set; }
+        public bool Active { get; set; }
+    }
+
+        #endregion
+
+        #region Save Results
 
     #region ComplianceFormFilter
     
@@ -542,9 +559,9 @@ namespace DDAS.Models.Entities.Domain
 
     #endregion
 
-    #region Save Results
 
-    public class SaveSearchResult
+
+        public class SaveSearchResult
     {
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

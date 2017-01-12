@@ -64,16 +64,8 @@ namespace DDAS.API.Providers
 
                     var userRoles = userManager.GetRoles(user.Id);
 
-                    ClaimsIdentity cookiesIdentity = await userManager.CreateIdentityAsync(user,
-                        CookieAuthenticationDefaults.AuthenticationType);
-
-                    //AuthenticationProperties properties = CreateProperties(user.UserName);
-                    //Modified for mongo roles
-                    User mongoUser = _UOW.UserRepository.FindById(user.Id);
-                    if (mongoUser == null)
-                    {
-                        throw new Exception("Unable to access user record from Mongo DB");
-                    }
+                    //ClaimsIdentity cookiesIdentity = await userManager.CreateIdentityAsync(user,
+                    //    CookieAuthenticationDefaults.AuthenticationType);
 
                     //Role Properties are added:
                     AuthenticationProperties properties = CreateProperties(user, userRoles);
@@ -86,7 +78,7 @@ namespace DDAS.API.Providers
  
                     AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
                     context.Validated(ticket);
-                    context.Request.Context.Authentication.SignIn(cookiesIdentity);
+                    //context.Request.Context.Authentication.SignIn(cookiesIdentity);
                 }
                 catch(Exception e)
                 {

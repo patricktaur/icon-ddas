@@ -45,6 +45,7 @@
     public enum ComplianceFormStatusEnum
     {
         NotScanned,
+        ReviewPending,
         ReviewCompletedIssuesIdentified,
         ReviewCompletedIssuesNotIdentified,
         FullMatchFoundReviewPending,

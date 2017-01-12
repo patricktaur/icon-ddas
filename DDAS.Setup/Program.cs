@@ -21,12 +21,12 @@ namespace DDAS.Setup
 
         static void Main(string[] args)
         {
-
+            string appRootFolder = "";
             
             try
             {
                 string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
+                
                 _WriteLog = new LogText(exePath + @"\setup.log", true);
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog("DDAS Setup Utility");
@@ -35,15 +35,34 @@ namespace DDAS.Setup
                 string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
                 if (configFile != null)
                 {
+                    appRootFolder = Path.GetDirectoryName(configFile);
                     //Folders:
+                    _WriteLog.WriteLog("Reading Web.config for:", "DataExtractionLogFile");
                     string DataExtractionLogFile = GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
                     string folder = Path.GetDirectoryName(DataExtractionLogFile);
-                    CreateFolder(folder);
-                    string DownloadFolder = GetWebConfigAppSetting(configFile, "DownloadFolder");
-                    CreateFolder(DownloadFolder);
-                    string UploadFolder = GetWebConfigAppSetting(configFile, "UploadFolder");
-                    CreateFolder(UploadFolder);
+                    CreateFolder(appRootFolder  + @"\" + folder);
 
+                    _WriteLog.WriteLog("Reading Web.config for:", "AppDataDownloadFolder");
+                    string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
+                    CreateFolder(appRootFolder + @"\" + DownloadFolder);
+
+                    _WriteLog.WriteLog("Reading Web.config for:", "UploadsFolder");
+                    string UploadFolder = GetWebConfigAppSetting(configFile, "UploadsFolder");
+                    CreateFolder(appRootFolder + @"\" + UploadFolder);
+
+                    _WriteLog.WriteLog("Reading Web.config for:", "ExcelTemplateFolder");
+                    string ExcelTemplateFolder = GetWebConfigAppSetting(configFile, "ExcelTemplateFolder");
+                    CreateFolder(appRootFolder + @"\" + UploadFolder);
+                    //Copy Excel Template from ...
+
+                    _WriteLog.WriteLog("Reading Web.config for:", "WordTemplateFolder");
+                    string WordTemplateFolder = GetWebConfigAppSetting(configFile, "WordTemplateFolder");
+                    CreateFolder(appRootFolder + @"\" + UploadFolder);
+                    //Copy Word Template from ...
+
+                    _WriteLog.WriteLog("Reading Web.config for:", "ComplianceFormFolder");
+                    string ComplianceFormFolder = GetWebConfigAppSetting(configFile, "ComplianceFormFolder");
+                    CreateFolder(appRootFolder + @"\" + ComplianceFormFolder);
 
                     //Initialize DB
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");

@@ -65,6 +65,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         //Patrick:
         public Task UpdateUser(User entity)
         {
+
             return _db.GetCollection<User>(typeof(User).Name).ReplaceOneAsync(item => item.UserId == entity.UserId, entity );
   
         }

@@ -1,0 +1,244 @@
+/* Master Styles */
+/*
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
+}
+h2, h3 {
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+}
+body {
+  margin: 2em;
+}
+body, input[text], button {
+  color: #888;
+  font-family: Cambria, Georgia;
+}
+a {
+  cursor: pointer;
+  cursor: hand;
+}
+button {
+  font-family: Arial;
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+}
+button:hover {
+  background-color: #cfd8dc;
+}
+button:disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: auto;
+}
+*/
+
+
+/* Navigation link styles */
+/*
+nav a {
+  padding: 5px 10px;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+}
+nav a:visited, a:link {
+  color: #607D8B;
+}
+nav a:hover {
+  color: #039be5;
+  background-color: #CFD8DC;
+}
+nav a.active {
+  color: #039be5;
+}
+*/
+
+/* items class */
+/*
+.items {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+  width: 24em;
+}
+.items li {
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  background-color: #EEE;
+  margin: .5em;
+  padding: .3em 0;
+  height: 1.6em;
+  border-radius: 4px;
+}
+.items li:hover {
+  color: #607D8B;
+  background-color: #DDD;
+  left: .1em;
+}
+.items li.selected:hover {
+  background-color: #BBD8DC;
+  color: white;
+}
+.items .text {
+  position: relative;
+  top: -3px;
+}
+.items {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+  width: 24em;
+}
+.items li {
+  cursor: pointer;
+  position: relative;
+  left: 0;
+  background-color: #EEE;
+  margin: .5em;
+  padding: .3em 0;
+  height: 1.6em;
+  border-radius: 4px;
+}
+.items li:hover {
+  color: #607D8B;
+  background-color: #DDD;
+  left: .1em;
+}
+.items li.selected {
+  background-color: #CFD8DC;
+  color: white;
+}
+
+.items li.selected:hover {
+  background-color: #BBD8DC;
+}
+.items .text {
+  position: relative;
+  top: -3px;
+}
+.items .badge {
+  display: inline-block;
+  font-size: small;
+  color: white;
+  padding: 0.8em 0.7em 0 0.7em;
+  background-color: #607D8B;
+  line-height: 1em;
+  position: relative;
+  left: -1px;
+  top: -4px;
+  height: 1.8em;
+  margin-right: .8em;
+  border-radius: 4px 0 0 4px;
+}
+*/
+/* everywhere else */
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* CSS used here will be applied after bootstrap.css */
+
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #CC3333;
+}
+a :hover{
+  cursor: pointer;
+}
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
+
+/**************New Changes ****************/
+
+body{ background: #fff}
+.well{
+    border: 1px solid #ccc;
+    padding: 2em;
+    background: white; border-radius: 0
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{ font-weight: 400}
+.btn{ border-radius: 2px}
+.btn-primary{ background-color: #188574; border-color: #0D5F52}
+.border-line{ margin-left: -2em; margin-right: -2em;}
+.form-control{ border-width: 0 0 1px 0 !important; box-shadow: none !important; border-radius: 0; margin-bottom: 1em}
+.align-left{ float: left}
+.align-right{ float: right}
+.no-margin-top{ margin-top: 0}
+search-result-well{ min-height: 210px}
+.label{ padding: 1em}
+.table{ margin-bottom: 0}
+.table-bordered{ margin-top: 2em}
+.table-bordered th, .table-bordered tr{ padding: 1em; text-align: center}
+.sidebar .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 1em 2em;
+    margin: 0 -2em;
+    color: #666; font-weight: 400; font-size: 1.2em
+}
+
+
+.main{ padding: 2em !important; }
+.header-top{ background: #188574; color: white; padding: 2em; margin: -2em}
+.header-top .page-header{ border: 0; padding-bottom: 2em; margin: 0}
+.well-top{ margin-top: -5em}
+/*.sidebar {
+  display: none;
+}*/
+.sidebar-white{ background: white; height: 10vh}
+.logo-area {
+    background: white;  padding: 1em; text-align: center;  margin: -2em -2em 0;
+}
+.logo-area img{ margin: 2em auto 1em}
+
+
+
+
+
+@media (min-width: 768px) {
+  /*.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; 
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }*/
+}
+
+.sidebar .nav>li.active>a {
+    color: #0D5F52; font-weight: bold
+}
+
+.login-box{ margin-top: 10vh}
+
+.label:hover{
+  cursor: pointer;
+  cursor: hand;
+}
+a:hover{
+    cursor: pointer;
+}
+a {
+  cursor: pointer;
+}

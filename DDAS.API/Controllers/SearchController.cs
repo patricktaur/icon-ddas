@@ -33,9 +33,7 @@ namespace DDAS.API.Controllers
         private string ExcelTemplateFolder;
         
         private string RootPath;
-        private string WordTemplateFolder;
-        
-        
+        private string WordTemplateFolder;     
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
             IUnitOfWork uow)
@@ -64,122 +62,6 @@ namespace DDAS.API.Controllers
             WordTemplateFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
         }
-
-        #region MoveToAccountsController
-        //[Authorize(Roles = "admin")]
-        //[Route("GetUsers")]
-        //[HttpGet]
-        //public IHttpActionResult GetUsers()
-        //{
-        //    var Users = _UOW.UserRepository.GetAllUsers();
-   
-        //    if (Users != null)
-        //    {
-        //        return Ok(Users);
-        //    }
-        //    else
-        //        return Ok("no users found!");
-        //}
-
-        //[Route("GetUser")]
-        //[HttpGet]
-        //public IHttpActionResult GetUser(string UserId)
-        //{
-        //    Guid? gUserId = Guid.Parse(UserId);
-        //    var User = _UOW.UserRepository.FindById(gUserId); 
-        //    //important: the User object must be mapped to Userview to eliminate security fields (hash code etc) 
-        //    if (User != null)
-        //    {
-        //        return Ok(User);
-        //    }
-        //    else
-        //        return Ok("No user found!");
-        //}
-
-
-        //[Route("AddNewRole")]
-        //[HttpPost]
-        //public IHttpActionResult CreateRole(IdentityRole role)
-        //{
-        //    //IdentityRole role = new IdentityRole(roleName);
-        //    RoleStore roleStore = new RoleStore(_UOW);
-        //    roleStore.CreateAsync(role);
-        //    return Ok();
-        //}
-
-        ////[Authorize] //(Roles = "")]
-        //[Route("AddUser")]
-        //[HttpPost]
-        //public IHttpActionResult GetUser(UserDetails user)
-        //{
-        //    UserStore userStore = new UserStore(_UOW);
-        //    var um = new UserManager<IdentityUser, Guid>(userStore);
-
-        //    RoleStore roleStore = new RoleStore(_UOW);
-        //    var rm = new RoleManager<IdentityRole, Guid>(roleStore);
-
-        //    var IdUser = new IdentityUser();
-        //    IdUser.UserName = user.UserName;
-        //    IdUser.SecurityStamp = Guid.NewGuid().ToString();
-
-        //    try
-        //    {
-        //        var role = new List<IdentityRole>();
-        //        role = user.Role;
-        //        IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
-        //        if (IdUsertemp == null)
-        //        {
-        //            um.CreateAsync(IdUser, user.pwd);
-
-        //            um.AddToRole(IdUser.Id, role[0].Name);
-        //        }
-        //        else
-        //        {
-        //            um.AddToRole(IdUser.Id, role[0].Name);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.Write(ex.Message);
-        //    }
-        //    return Ok("User: " + user.UserName + " has been added");
-        //}
-
-       
-
-        //[Route("SaveUser")]
-        //[HttpPost]
-        //public IHttpActionResult SaveUser(User user)
-        //{
-
-        //    _UOW.UserRepository.UpdateUser(user);
-
-        //    return Ok(user);
-        //}
-
-        ////[Authorize] //(Roles="User")]
-        //[Route("AddRole")]
-        //[HttpPost]
-        //public IHttpActionResult AddRole(Role role)
-        //{
-        //    RoleStore roleStore = new RoleStore(_UOW);
-        //    IdentityRole irole = new IdentityRole();
-        //    irole.Name = role.Name;
-        //    var rm = new RoleManager<IdentityRole, Guid>(roleStore);
-        //    rm.Create(irole);
-
-        //    return Ok();
-        //}
-
-        //[Route("GetAllRoles")]
-        //[HttpGet]
-        //public IHttpActionResult GetAllRoles()
-        //{
-        //    var roles = _UOW.RoleRepository.GetAll();
-        //    return Ok(roles);
-        //}
-
-        #endregion
 
         [Route("Upload")]
         [HttpPost]
@@ -270,7 +152,16 @@ namespace DDAS.API.Controllers
                 _SearchService.getPrincipalInvestigators(UserName, true));
          }
 
-        //GetInvestigatorSiteSummary/?formId=' + formId + "&investigatorId=" + investigatorId)
+
+        [Route("GetMyClosedPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyClosedPrincipalInvestigators()
+        {
+            var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, false));
+        }
+
         [Route("GetInvestigatorSiteSummary")]
         [HttpGet]
         public IHttpActionResult GetInvestigatorSiteSummary(string formId, int investigatorId)
@@ -337,6 +228,7 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
+
         [Route("SaveAssignedToData")]
         [HttpGet]
         public IHttpActionResult SaveAssginedToData(string AssignedTo, bool Active,
@@ -346,6 +238,7 @@ namespace DDAS.API.Controllers
             _SearchService.UpdateAssignedToData(AssignedTo, Active, RecId);
             return Ok(true);
         }
+
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
@@ -431,19 +324,34 @@ namespace DDAS.API.Controllers
             return result;
         }
 
-        //Required ?
+       
         [Route("CloseComplianceForm")]
-        [HttpGet]
-        public IHttpActionResult CloseComplianceForm(string ComplianceFormId)
+        [HttpPut]
+        public IHttpActionResult CloseComplianceForm(Guid ComplianceFormId)
         {
-            Guid? RecId = Guid.Parse(ComplianceFormId);
-            ComplianceForm form = _UOW.ComplianceFormRepository.FindById(RecId);
+            //compare AssignedTo to loggedInUser
+            //validation: all reviews must be completed.
+
+            ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             form.Active = false;
             _UOW.ComplianceFormRepository.UpdateCollection(form);
 
             return Ok(true);
         }
+
+        [Route("OpenComplianceForm")]
+        [HttpPut]
+        public IHttpActionResult OpenComplianceForm(Guid ComplianceFormId)
+        {
+           
+            ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            form.Active = true;
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+            return Ok(true);
+        }
+
 
         [Route("DeleteComplianceForm")]
         [HttpGet]

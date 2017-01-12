@@ -83,7 +83,7 @@ namespace DDAS.Services.UserService
             {
                 userToUpdate = new User();
                 userToUpdate.UserId = Guid.NewGuid();
-                userToUpdate.UserName = userViewModel.UserName;
+                userToUpdate.UserName = userViewModel.UserName.Trim();
                 userToUpdate.Active = userViewModel.Active;
                 userToUpdate.EmailId = userViewModel.EmailId;
                 _UOW.UserRepository.Add(userToUpdate);
@@ -98,6 +98,7 @@ namespace DDAS.Services.UserService
                 userToUpdate.Active = userViewModel.Active;
                 userToUpdate.EmailId = userViewModel.EmailId;
                 _UOW.UserRepository.UpdateUser(userToUpdate);
+
             }
 
             //Update Roles.
