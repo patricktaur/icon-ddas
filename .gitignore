@@ -16911,3 +16911,5 @@ DDAS.WebSite/npm-debug.log.442389767
 *.d.ts
 DDAS.WebSite/aot/node_modules/
 DDAS.WebSite/app/
+DDAS.WebSite/aot/app/
+DDAS.WebSite/npm-debug.log.*

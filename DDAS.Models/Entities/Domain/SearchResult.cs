@@ -405,9 +405,9 @@ namespace DDAS.Models.Entities.Domain
             }
             else if (ExtractionMode == "Manual")
             {
-                _Status = "Review Pending";
-                _StatusEnum = ComplianceFormStatusEnum.ReviewPending;
-            }          
+                _Status = "Manual Search Site, Review Pending";
+                _StatusEnum = ComplianceFormStatusEnum.ManualSearchSiteReviewPending;
+            }
             else if (ExtractedOn == null)
             {
                 _Status = "Data not extracted";

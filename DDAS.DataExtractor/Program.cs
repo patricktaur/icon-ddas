@@ -10,6 +10,7 @@ using System.Configuration;
 using Utilities;
 using WebScraping.Selenium.SearchEngine;
 using System.Diagnostics;
+using System.IO;
 
 namespace DDAS.DataExtractor
 {
@@ -19,11 +20,11 @@ namespace DDAS.DataExtractor
 
         private static LogText _WriteLog;
 
-        public static string DownloadFolder =
-            ConfigurationManager.AppSettings["DownloadFolder"];
+        public static string DownloadFolder; //= ConfigurationManager.AppSettings["DownloadFolder"];
 
         static void Main(string[] args)
         {
+   
             int? SiteNum = null;
             if (args.Length != 0)
             {
@@ -37,7 +38,7 @@ namespace DDAS.DataExtractor
         {
             //ILog log, IUnitOfWork uow
             MongoMaps.Initialize();
-
+            string appRootFolder = "";
             string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
 
             if (configFile == null)
@@ -47,12 +48,15 @@ namespace DDAS.DataExtractor
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Data Extractor: Entry in AppSettings: APIWebConfigFile not found");
                 _WriteLog.LogEnd();
+                return;
             }
-       
-            string DataExtractionLogFile =
-            ConfigurationManager.AppSettings["DataExtractionLogFile"];
-
+            appRootFolder = Path.GetDirectoryName(configFile);
+            string DataExtractionLogFile = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
             _WriteLog = new LogText(DataExtractionLogFile, true);
+
+            DownloadFolder = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
+            
+            //string DataExtractionLogFile = ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             _WriteLog.LogStart();
@@ -88,7 +92,11 @@ namespace DDAS.DataExtractor
             {
                 _WriteLog.WriteLog("=================================================================================");
                 _WriteLog.LogEnd();
-                ForcedCleanUp();
+                Process currentProcess = Process.GetCurrentProcess();
+
+                currentProcess.CloseMainWindow();
+                
+                //ForcedCleanUp();
                 //Environment.Exit(0);
             }
         }
@@ -104,7 +112,7 @@ namespace DDAS.DataExtractor
             if (config == null)
             {
                 error = "Config file : " + configFile + " could not be loaded.";
-                _WriteLog.WriteLog(error);
+                //_WriteLog.WriteLog(error);
                 throw new Exception(error);
             }
             else
@@ -112,13 +120,13 @@ namespace DDAS.DataExtractor
                 KeyValueConfigurationElement settings = config.AppSettings.Settings[keyName];
                 if (settings != null)
                 {
-                    _WriteLog.WriteLog("Key : " + keyName + ", Value: " + settings.Value);
+                    //_WriteLog.WriteLog("Key : " + keyName + ", Value: " + settings.Value);
                     return settings.Value;
                 }
                 else
                 {
                     error = "Key : " + keyName + ", Value: " + settings.Value + " could not be read";
-                    _WriteLog.WriteLog(error);
+                    //_WriteLog.WriteLog(error);
                     throw new Exception(error);
                 }
             }
@@ -156,32 +164,13 @@ namespace DDAS.DataExtractor
             }
         }
 
-        static void ForcedCleanUp()
-        {
-            Process currentProcess = Process.GetCurrentProcess();
+        //static void ForcedCleanUp()
+        //{
+        //    Process currentProcess = Process.GetCurrentProcess();
 
-            currentProcess.CloseMainWindow();
+        //    currentProcess.CloseMainWindow();
 
-            //ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
-            //foreach (ProcessThread thread in currentThreads)
-            //{
-            //    thread.Dispose();
-            //}
-
-            //foreach (Thread thread in currentThreads)
-            //{
-            //    //thread.Interupt(); // If thread is waiting, stop waiting
-            //    //thread.Interrupt();
-
-            //    // or
-
-            //    thread.Abort(); // Terminate thread immediately 
-
-            //    // or
-            //    //thread.IsBackground = true;
-                
-            //}
-        }
+        //}
 
 
     }
