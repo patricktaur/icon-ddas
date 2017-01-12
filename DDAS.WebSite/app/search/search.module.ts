@@ -1,8 +1,6 @@
 import { NgModule }       from '@angular/core';
 import { CommonModule }   from '@angular/common';
 import { FormsModule }    from '@angular/forms';
-import { SearchResultSummaryComponent } from './search-result-summary.component';
-import { SearchInputComponent }       from './search-input.component';
 
 import { OpenComplianceFormsComponent }       from './open-compliance-search-forms.component';
 
@@ -18,7 +16,7 @@ import {AllISCFsComponent} from './all-iscfs.component';
 
 import { searchRouting } from './search.routing';
 
-import {SearchDetailComponent} from './search-detail.component';
+
  import {Ng2Uploader} from '../shared/utils/ng2-uploader1/ng2-uploader'
 
  import {ComplianceFormComponent} from './compliance-form.component'

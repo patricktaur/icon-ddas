@@ -2,7 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 //import { SearchResultSummaryComponent } from './search-result-summary.component';
-import { SearchInputComponent } from './search-input.component';
+
 import { OpenComplianceFormsComponent } from './open-compliance-search-forms.component';
 
 import { DueDiligenceCheckComponent } from './due-diligence-check.component';
