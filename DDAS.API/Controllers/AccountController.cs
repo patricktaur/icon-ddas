@@ -21,6 +21,7 @@ using DDAS.Models.ViewModels;
 using DDAS.Models.Entities.Identity;
 using System.Threading.Tasks;
 using Utilities.EMail;
+using System.Linq;
 
 namespace DDAS.API.Controllers
 {
@@ -59,6 +60,17 @@ namespace DDAS.API.Controllers
             return Ok(Users);
         }
 
+        [Route("GetAdminList")]
+        [HttpGet]
+        public IHttpActionResult GetAdminList()
+        {
+            var Users = _userService.GetUsers();
+
+            var AdminList = Users.Where(x =>
+            x.ActiveRoles.ToLower().Contains("admin")).ToList();
+
+            return Ok(AdminList);
+        }
 
         [Route("GetUser")]
         [HttpGet]

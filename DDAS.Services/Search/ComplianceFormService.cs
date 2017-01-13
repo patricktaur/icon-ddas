@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Utilities;
 using Utilities.WordTemplate;
@@ -797,9 +798,11 @@ namespace DDAS.Services.Search
 
             var UtilitiesObject = new CreateComplianceForm();
 
-            var PI = RemoveExtraCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
+            var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
 
-            var GeneratedFileName = form.ProjectNumber + "_" + PI + ".docx";
+            var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+
+            var GeneratedFileName = ProjectNumber + "_" + PI + ".docx";
 
             var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
 
@@ -811,7 +814,6 @@ namespace DDAS.Services.Search
             //threfore: 
 
             return DownloadFolder + GeneratedFileName;
-
         }
         #endregion
 
@@ -1198,6 +1200,18 @@ namespace DDAS.Services.Search
             //string CharactersToRemove = ".,/:";
             //return Name.Replace(CharactersToRemove, "");
             return Regex.Replace(Name, "[,.]", "");
+        }
+
+        public static string RemoveSpecialCharacters(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in str)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_'
+                    || c == ' ')
+                    sb.Append(c);
+            }
+            return sb.ToString();
         }
 
         public string AddSpaceBetweenWords(string Name)
