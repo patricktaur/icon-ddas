@@ -41,44 +41,52 @@ namespace DDAS.Services.Search
         }
 
         #region ByPradeep
+        //13Jan2017
+        public List<List<string>> ReadDataFromExcelFile(string FilePath)
+        {
+            var readExcelData = new ReadUploadedExcelFile();
+            return readExcelData.ReadData(FilePath);
+        }
         //Pradeep 1Dec2016
-        public List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log,
-            string UserName)
+        public List<ComplianceForm> ReadUploadedFileData(List<List<string>> DataFromExcelFile, 
+            ILog log,
+            string UserName, 
+            string FilePath)
         {
             var ComplianceForms = new List<ComplianceForm>();
 
-            var readUploadedExcelFile = new ReadUploadedExcelFile();
-
-            var DataFromExcelFile = readUploadedExcelFile.
-                ReadData(FilePath);
-
-            foreach (RowData row in DataFromExcelFile)
+            //foreach (RowData row in DataFromExcelFile)
+            for(int Counter = 0; Counter < DataFromExcelFile.Count; Counter++)
             {
+                var DetailsInEachRow = DataFromExcelFile[Counter];
+
                 var form = GetNewComplianceForm(log, UserName);
 
                 form.AssignedTo = UserName;
 
+                form.UploadedFileName = Path.GetFileName(FilePath);
+
                 var Investigators = new List<InvestigatorSearched>();
                 var Investigator = new InvestigatorSearched();
-                Investigator.Name = row.DetailsInEachRow[0];
-                Investigator.MedicalLiceseNumber = row.DetailsInEachRow[1];
-                Investigator.Qualification = row.DetailsInEachRow[2];
+                Investigator.Name = DetailsInEachRow[0];
+                Investigator.MedicalLiceseNumber = DetailsInEachRow[1];
+                Investigator.Qualification = DetailsInEachRow[2];
                 Investigator.Role = "Principal";
-                form.ProjectNumber = row.DetailsInEachRow[3];
-                form.SponsorProtocolNumber = row.DetailsInEachRow[4];
-                form.Institute = row.DetailsInEachRow[5];
-                form.Address = row.DetailsInEachRow[6];
-                form.Country = row.DetailsInEachRow[7];
+                form.ProjectNumber = DetailsInEachRow[3];
+                form.SponsorProtocolNumber = DetailsInEachRow[4];
+                form.Institute = DetailsInEachRow[5];
+                form.Address = DetailsInEachRow[6];
+                form.Country = DetailsInEachRow[7];
 
                 Investigators.Add(Investigator);
 
-                for (int Index = 8; Index < row.DetailsInEachRow.Count; Index++)
+                for (int Index = 8; Index < DetailsInEachRow.Count; Index++)
                 {
                     var Inv = new InvestigatorSearched();
-                    Inv.Name = row.DetailsInEachRow[Index]; //SIs
+                    Inv.Name = DetailsInEachRow[Index]; //SIs
                     Inv.Role = "Sub";
-                    Inv.MedicalLiceseNumber = row.DetailsInEachRow[Index + 1];
-                    Inv.Qualification = row.DetailsInEachRow[Index + 2];
+                    Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 1];
+                    Inv.Qualification = DetailsInEachRow[Index + 2];
                     Investigators.Add(Inv);
                     Index += 2;
                 }
@@ -1220,6 +1228,135 @@ namespace DDAS.Services.Search
         {
             string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
             return res;
+        }
+        #endregion
+
+        #region ExcelValidations
+        public List<string> ValidateExcelInputs(List<List<string>> ExcelInputRows)
+        {
+            var ValidationMessages = new List<string>();
+
+            string ValidationMessage = null;
+
+            //foreach(List<string> Data in ExcelInputRows)
+            for(int Counter = 0; Counter < ExcelInputRows.Count; Counter++)
+            {
+                var DetailsInEachRow = ExcelInputRows[Counter];
+
+                var PrincipalInv = DetailsInEachRow[0].Split(' ').Count();
+
+                if(DetailsInEachRow[0] == "")
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 + 
+                        " Principal Investigator Name is null!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if(PrincipalInv <= 1)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Principal Investigator Name must have atleast two components " +
+                        "separated with a space!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if(IsAlpha(DetailsInEachRow[0]))
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Principal Investigator Name should not have any " +
+                        "numbers or special characters!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if(DetailsInEachRow[0].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Principal Investigator Name exceeds max character(100) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if(DetailsInEachRow[1].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Principal Investigator ML Number exceeds max character(100) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if (DetailsInEachRow[2].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Principal Investigator Qualification exceeds max character(100) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if (DetailsInEachRow[3] == "")
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Project Number is mandatory!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if(DetailsInEachRow[3].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Project Number exceeds max character(100) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if(HasSpecialCharacters(DetailsInEachRow[3]))
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Project Number should not have any special characters!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if (DetailsInEachRow[4].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Sponsor protocol number exceeds max character(100) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if (DetailsInEachRow[5].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Institute Name exceeds max character(100) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                if (DetailsInEachRow[6].Length > 100)
+                {
+                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                        " Address exceeds max character(500) limit!";
+                    ValidationMessages.Add(ValidationMessage);
+                }
+                for(int counter = 8; counter < DetailsInEachRow.Count(); counter++)
+                {
+                    if(DetailsInEachRow[counter] != "" &&
+                        HasSpecialCharacters(DetailsInEachRow[counter]) ||
+                        DetailsInEachRow[counter].Length > 100)
+                    {
+                        ValidationMessage = "RowNumber: " + Counter + 1 +
+                            " Sub Investigator name/ML#/Qualification has invalid inputs!";
+                        ValidationMessages.Add(ValidationMessage);
+                    }
+                }
+            }
+            return ValidationMessages;
+        }
+
+        private bool IsAlpha(string Value)
+        {
+            foreach (char c in Value)
+            {
+                if ((c >= '0' && c <= '9'))
+                    return true;
+            }
+            return HasSpecialCharacters(Value) ? true : false;
+        }
+
+        private bool HasSpecialCharacters(string Value)
+        {
+            foreach (char c in Value)
+            {
+                if (c == '?' || c == '\\' ||
+                    c == '$' || c == '#' ||
+                    c == '.' || c == '*' || 
+                    c == '_' || c == '&' || 
+                    c == '@' || c == '!' || 
+                    c == '%' || c == '^')
+                    return true;
+            }
+            return false;
         }
         #endregion
     }

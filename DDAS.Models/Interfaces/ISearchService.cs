@@ -33,13 +33,19 @@ namespace DDAS.Models.Interfaces
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
         
         //Pradeep 1Dec2016
-        List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log, string UserName);
+        //List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log, string UserName);
 
         ComplianceForm RollUpSummary(ComplianceForm form);
 
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
 
         //To be removed
-        string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder); 
+        string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder);
+
+        //13Jan2017
+        List<string> ValidateExcelInputs(List<List<string>> ExcelInputRow);
+        List<List<string>> ReadDataFromExcelFile(string FilePath);
+        List<ComplianceForm> ReadUploadedFileData(List<List<string>> ExcelInputData, 
+            ILog log, string UserName, string FilePath);
     }
 }

@@ -32,7 +32,8 @@ export class DueDiligenceCheckComponent implements OnInit {
     public filterInvestigatorName: string = "";
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
-
+    
+    public excelFileUploadValidations:string [];
 
     constructor(
         private route: ActivatedRoute,
@@ -104,6 +105,7 @@ export class DueDiligenceCheckComponent implements OnInit {
             });
     }
 
+    
     handleUpload(data: any): void {
         this.Loading = true;
         this.zone.run(() => {
@@ -112,9 +114,13 @@ export class DueDiligenceCheckComponent implements OnInit {
 
             }
             else {
-                this.Loading = false;
-                this.modal.close();
-                this.LoadPrincipalInvestigators();
+                this.excelFileUploadValidations = data.response;
+                if (!this.excelFileUploadValidations){
+                    this.Loading = false;
+                    this.modal.close();
+                    this.LoadPrincipalInvestigators();
+                }
+                
             }
 
             this.progress = data.progress.percent / 100;
@@ -161,5 +167,5 @@ export class DueDiligenceCheckComponent implements OnInit {
 
     }
 
-    get diagnostic() { return JSON.stringify(this.response); }
+    get diagnostic() { return JSON.stringify(this.excelFileUploadValidations); }
 }
