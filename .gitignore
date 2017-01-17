@@ -16905,9 +16905,7 @@ npm-debug.log
 DDAS.WebSite/npm-debug.log.*
 *.d.ts
 DDAS.WebSite/aot/node_modules/
-<<<<<<< HEAD
-DDAS.WebSite/app/
 DDAS.WebSite/aot/app/
 DDAS.WebSite/npm-debug.log.*
-=======
->>>>>>> 67700299546bba72a2f1ddae89b2253136a45891
+
+Bak/
