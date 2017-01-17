@@ -1,0 +1,70 @@
+﻿<div class="container">
+
+	<form class="well login-box col-lg-6 col-lg-offset-4" name="form" #formCtrl="ngForm">
+		<div class="logo-area">
+			<img src="assets\images\ICON-logo.gif" width="40%" class="img-responsive" />
+		</div>
+		<h2 class="form-signin-heading text-center">Due Diligence Automation System</h2>
+		<hr class="border-line">
+		<label for="username">User Name</label>
+		<input type="text" ngControl="username" class="form-control" name="username" [(ngModel)]="logInfo.username" required autofocus>
+		<label for="password">Password</label>
+		<input type="password" ngControl="password" class="form-control" name="password" [(ngModel)]="logInfo.password" required>
+		<div class="checkbox">
+			<label>
+                    <input type="checkbox" name="checked" [(ngModel)]="rememberChecked" data-md-icheck (change)="checkedChange($event)" > Remember me
+                </label>
+		</div>
+		<button [disabled]="!formCtrl.form.valid" class="btn btn-lg btn-primary btn-block" type="submit" (click)="login()">Sign in</button>
+		<div class="activity_indicator">
+			<br>
+			<img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+			/>
+		</div>
+		<br>
+		<div *ngIf="error" class="alert alert-danger">{{error}}</div>
+	</form>
+
+</div>
+<style>
+	/*body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #eee;
+        }*/
+	
+	.form-signin .form-signin-heading,
+	.form-signin .checkbox {
+		margin-bottom: 10px;
+	}
+	
+	.form-signin .checkbox {
+		font-weight: normal;
+	}
+	
+	.form-signin .form-control {
+		position: relative;
+		height: auto;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		padding: 10px;
+		font-size: 16px;
+	}
+	
+	.form-signin .form-control:focus {
+		z-index: 2;
+	}
+	
+	.form-signin input[type="email"] {
+		margin-bottom: -1px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	
+	.form-signin input[type="password"] {
+		margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+</style>

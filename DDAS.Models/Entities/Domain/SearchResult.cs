@@ -155,7 +155,7 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public string Institute { get; set; }
         public DateTime SearchStartedOn { get; set; }
-
+        public string UploadedFileName { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
         public int ExtractionErrorInvestigatorCount { get; set; }
         public int FullMatchesFoundInvestigatorCount { get; set; }

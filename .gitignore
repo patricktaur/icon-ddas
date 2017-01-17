@@ -16902,14 +16902,12 @@ Documents/Technical/TestUpload/DDAS_Upload - 1.xlsx
 Documents/Technical/~$ProjectPlan-Internal.xlsx
 DDAS.WebSite/npm-debug.log
 npm-debug.log
-DDAS.WebSite/npm-debug.log.210741359
-DDAS.WebSite/npm-debug.log.2228499453
-DDAS.WebSite/npm-debug.log.2554236656
-DDAS.WebSite/npm-debug.log.3332788271
-DDAS.WebSite/npm-debug.log.3718176324
-DDAS.WebSite/npm-debug.log.442389767
+DDAS.WebSite/npm-debug.log.*
 *.d.ts
 DDAS.WebSite/aot/node_modules/
+<<<<<<< HEAD
 DDAS.WebSite/app/
 DDAS.WebSite/aot/app/
 DDAS.WebSite/npm-debug.log.*
+=======
+>>>>>>> 67700299546bba72a2f1ddae89b2253136a45891

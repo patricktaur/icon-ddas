@@ -33,9 +33,7 @@ namespace DDAS.API.Controllers
         private string ExcelTemplateFolder;
         
         private string RootPath;
-        private string WordTemplateFolder;
-        
-        
+        private string WordTemplateFolder;     
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
             IUnitOfWork uow)
@@ -65,8 +63,6 @@ namespace DDAS.API.Controllers
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
         }
 
-      
-
         [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
@@ -81,29 +77,30 @@ namespace DDAS.API.Controllers
             try
             {
                 var userName = User.Identity.GetUserName();
-                CustomMultipartFormDataStreamProvider provider = 
-                    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+                //CustomMultipartFormDataStreamProvider provider = 
+                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+
+                var provider = new MultipartFormDataStreamProvider(UploadsFolder);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
                 var complianceForms = new List<ComplianceForm>();
-                string[] FileContent = null;
 
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
-                    Trace.WriteLine("Server file path: " + file.LocalFileName);
+                    var DataInExcelFile = 
+                        _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    FileContent = File.ReadAllLines(file.LocalFileName);
-                    Trace.WriteLine(FileContent);
-                    //_log.WriteLog("FileContent Length: " + FileContent.Length);
+                    var ValidationMessages = 
+                        _SearchService.ValidateExcelInputs(DataInExcelFile);
 
-                    var forms = _SearchService.ReadUploadedFileData(file.LocalFileName,
-                        _log, userName);
-
-                    if (forms == null)
+                    if (ValidationMessages.Count > 0)
                         return 
-                            Request.CreateResponse(HttpStatusCode.NotAcceptable, "Invalid File");
+                            Request.CreateResponse(HttpStatusCode.Forbidden,
+                            ValidationMessages);
+
+                    var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
+                        _log, userName, file.LocalFileName);
 
                     foreach(ComplianceForm form in forms)
                     {

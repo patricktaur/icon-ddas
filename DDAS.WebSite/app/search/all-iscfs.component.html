@@ -1,0 +1,113 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="well">
+
+			<h3 class="no-margin-top">Complaince Forms:</h3>
+			<br>
+			<div class="row">
+				<div class="col-md-8 ">
+					<div class="row">
+						<div class="col-md-6 ">
+							<h4>Filters:</h4>
+							<!--{{diagnostic}}-->
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col-md-6 ">
+							<!--<div class="form-group">
+								<label for="PrincipalInvestigator">Principal Investigator:</label>
+								<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
+							</div>-->
+							<div class="form-group">
+								<label for="SponsorProtocolNumber">Sponsor Protocol Number:</label>
+								<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="ComplianceFormFilter.SponsorProtocolNumber">
+							</div>
+							<!--<div class="form-group">
+								<label for="SearchedOnFrom">Searched on From:</label>
+								<input type="text" class="form-control" name="SearchedOnFrom" [(ngModel)]="ComplianceFormFilter.SearchedOnFrom">
+							</div>							-->
+							<div class="form-group">
+								<label for="Status">Status:</label>
+								<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
+									<option value="-1" selected="selected">All</option>
+  									<option value="0">Data Not Extracted</option>
+  									<option value="1">Review Completed, Issues Identified</option>
+									<option value="2">Review Completed, No Issues Identified</option>  
+ 						     		<option value="3">Full Match Found, Review Pending</option>
+									<option value="4">Partial Match Found, Review Pending</option>
+							  		<option value="5">No Matched Found, Review Pending</option>              
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ProjectNumber">Project Number:</label>
+								<input type="text" class="form-control" name="ProjectNumber" [(ngModel)]="ComplianceFormFilter.ProjectNumber">
+							</div>
+							<div class="form-group">
+								<label for="Country">Country:</label>
+								<input type="text" class="form-control" name="Country" [(ngModel)]="ComplianceFormFilter.Country">
+							</div>
+							<!--<div class="form-group">
+								<label for="SearchedOnTo">Searched on To:</label>
+								<input type="text" class="form-control" name="SearchedOnTo" [(ngModel)]="ComplianceFormFilter.SearchedOnTo">
+							</div>-->
+						</div>
+					</div>
+					<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
+					<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
+				</div>
+				<div class="col-md-4 ">
+
+				</div>
+			</div>
+
+		</div>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th class="col-md-3 ">Principal Investigator </th>
+					<th class="col-md-2 text-left">ICON Project Number</th>
+					<th class="col-md-1 text-left">Active</th>
+					<th class="col-md-1 text-center">Searched on</th>
+					<th class="col-md-1 text-center">Assigned to</th>
+                    <th class="col-md-1 text-left">Status</th>
+					<th class="col-md-3 text-center">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let item of PrincipalInvestigators" class="active">
+
+					<td class="text-left">
+						{{item.Name}}
+					</td>
+					<td class="text-center">
+						{{item.ProjectNumber}}
+					</td>
+					<td>
+						{{item.Active | boolToYesNo}}
+					</td>
+					<td class="text-left">
+						{{item.AssignedTo}}
+					</td>
+					<td class="text-left">
+						{{item.SearchStartedOn | date: 'dd/MMM/yyyy'}}
+					</td>
+					<td class="text-center">
+						<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
+					</td>
+					<td class="text-center">
+						<button type="button" class="btn btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
+							title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
+
+						<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
+						<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div #DownloadComplianceFormModal download-compliance-form></div>
