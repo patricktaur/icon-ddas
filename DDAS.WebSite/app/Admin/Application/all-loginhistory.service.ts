@@ -6,22 +6,19 @@ import { Observer } from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { Pagination, PaginatedResult } from '../shared/interfaces';
-import {
-    User, Role
-} 
-from './loggedinuser.classes';
+//import { Pagination, PaginatedResult } from '../shared/interfaces';
 
-import { ConfigService } from '../shared/utils/config.service';
-import { AuthService } from '../auth/auth.service';
+//import { ConfigService } from '../shared/utils/config.service';
+//import { AuthService } from '../auth/auth.service';
+import { ConfigService } from '../../shared/utils/config.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Injectable()
-export class loggedinuserService {
+export class LoginHistoryService {
     _baseUrl: string = '';
     //_controller: string = 'search/'; 
     _controller: string = '';
     _options: RequestOptions;
-    loggedInUserName: string ='';
 
     constructor(private http: Http,
         private configService: ConfigService,
@@ -32,21 +29,11 @@ export class loggedinuserService {
             headers.append('Content-Type', 'application/json');
             headers.append("Authorization","Bearer " + this.authService.token);
             this._options = new RequestOptions({headers: headers});
-        
-        this.loggedInUserName = authService.userName;
     }
 
-    getAdminList(){
-                return this.http.get(this._baseUrl + 'Account/GetAdminList', this._options)
-            .map((res: Response) => {
-                return res.json();
-            })
-            .catch(this.handleError);
-
-    }
-
-    getMyLoginHistory(userName: string){
-        return this.http.get(this._baseUrl + 'Account/getMyLogHistory?UserName=' + userName, this._options)
+    getLoginHistory(){
+        //return this.http.get(this._baseUrl + 'Account/GetAllLoginHistory', this._options)
+                return this.http.get(this._baseUrl + 'Account/getLogHistory', this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -70,5 +57,6 @@ export class loggedinuserService {
         modelStateErrors = modelStateErrors = '' ? null : modelStateErrors;
 
         return Observable.throw(applicationError || modelStateErrors || 'Server error');
-    }       
+    }
+
 }

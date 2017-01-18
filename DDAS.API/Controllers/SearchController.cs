@@ -68,6 +68,7 @@ namespace DDAS.API.Controllers
         public async Task<HttpResponseMessage> PostFormData()
         {
             _log.LogStart();
+            
             // Check if the request contains multipart/form-data.
             if (!Request.Content.IsMimeMultipartContent())
             {

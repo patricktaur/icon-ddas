@@ -75,6 +75,7 @@
     <Compile Include="Repositories\SiteData\ExclusionDatabaseSearchRepository.cs" />
     <Compile Include="Repositories\SiteData\FDADebarPageRepository.cs" />
     <Compile Include="Repositories\SiteData\FDAWarningLettersRepository.cs" />
+    <Compile Include="Repositories\SiteData\LoginDetailsRepository.cs" />
     <Compile Include="Repositories\SiteData\PHSAdministrativeActionListingRepository.cs" />
     <Compile Include="Repositories\Users\RoleRepository.cs" />
     <Compile Include="Repositories\SiteData\SaveSearchResultRepository.cs" />

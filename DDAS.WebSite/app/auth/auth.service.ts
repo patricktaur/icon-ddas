@@ -22,6 +22,7 @@ export class AuthService {
   public isUser: boolean;
   public roles: string = ""; //comma separarted
 
+  
   // store the URL so we can redirect after logging in
   redirectUrl: string;
   _baseUrl: string = '';
@@ -142,12 +143,6 @@ export class AuthService {
         console.log("serverError" + serverError);
         return Observable.throw(applicationError || modelStateErrors || 'Server error');
     }
-
-
-
-
-
-
 }
 
 

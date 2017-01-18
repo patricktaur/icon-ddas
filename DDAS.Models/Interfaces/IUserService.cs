@@ -1,4 +1,5 @@
-﻿using DDAS.Models.ViewModels;
+﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,19 @@ namespace DDAS.Models.Interfaces
         UserViewModel SaveUser(UserViewModel user);
         bool DeleteUser(Guid UserId);
 
+        bool AddLoginDetails(
+            string UserName, 
+            string LocalIPAddress,
+            string HostIPAddress, 
+            string PortNumber, 
+            bool IsLoginSuccessful,
+            string ServerProtocol,
+            string ServerSoftware,
+            string HttpHost,
+            string ServerName,
+            string GatewayInterface,
+            string Https);
+
+        List<LoginDetails> GetAllLoginHistory();
     }
 }

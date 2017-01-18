@@ -7,6 +7,8 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System;
 using DDAS.Data.Mongo;
+using DDAS.Services.UserService;
+
 namespace DDAS.API
 {
     public partial class Startup
@@ -25,12 +27,15 @@ namespace DDAS.API
             //ninject.mvc3 or ninject.mvc5 has to be included in the project, otherwise uow is assigned to null 
             //var uow = DependencyResolver.Current.GetService<IUnitOfWork>();
             var uow = new UnitOfWork("DefaultConnection");
+            var userService = new UserService(uow);
+
             UserManagerFactory = () => new UserManager<IdentityUser, Guid>(new UserStore(uow));
 
             OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 TokenEndpointPath = new PathString("/Token"),
-                Provider = new ApplicationOAuthProvider(PublicClientId, UserManagerFactory),
+                Provider = new ApplicationOAuthProvider(
+                    PublicClientId, UserManagerFactory, userService),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                 AllowInsecureHttp = true

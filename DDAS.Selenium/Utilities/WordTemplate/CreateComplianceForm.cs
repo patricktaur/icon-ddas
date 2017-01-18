@@ -112,15 +112,15 @@ namespace Utilities.WordTemplate
                                 x => x.SiteEnum == Site.siteEnum).
                                 ToList();
 
-                            if (Findings == null)
-                                continue;
+                            //if (Findings == null)
+                            //    continue;
 
                             foreach(Finding Finding in Findings)
                             {
                                 var SiteSource = form.SiteSources.Find(x =>
                                     x.SiteEnum == Site.siteEnum);
 
-                                if (Finding.Observation != null &&
+                                if (//Finding.Observation != null &&
                                     Finding.Selected && 
                                     Investigator.Id == Finding.InvestigatorSearchedId)
                                 {

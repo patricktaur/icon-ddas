@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
+using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -539,9 +540,8 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public bool Active { get; set; }
     }
-
-        #endregion
-
+    #endregion
+    
         #region Save Results
 
     #region ComplianceFormFilter
@@ -581,6 +581,24 @@ namespace DDAS.Models.Entities.Domain
     #endregion
 
     #region Indentity
+    //Pradeep 16Jan2017
+    public class LoginDetails
+    {
+        public Guid? RecId { get; set; }
+        public string UserName { get; set; }
+        //public string Role { get; set; }
+        public bool IsLoginSuccessful { get; set; }
+        public DateTime LoginAttemptTime { get; set; }
+        public string LocalIPAddress { get; set; }
+        public string HostIPAddress { get; set; }
+        public string PortNumber { get; set; }
+        public string ServerProtocol { get; set; }
+        public string ServerSoftware { get; set; }
+        public string HttpHost { get; set; }
+        public string ServerName { get; set; }
+        public string GatewayInterface { get; set; }
+        public string Https { get; set; }
+    }
 
     public class User
     {
@@ -603,9 +621,6 @@ namespace DDAS.Models.Entities.Domain
             get { return _roles ?? (_roles = new List<Role>()); }
             set { _roles = value; }
         }
-
-
-
     }
 
     public class Role

@@ -63,8 +63,6 @@ export class LoginComponent implements OnInit{
                     this.loading = false;
                 });
 
-     
-     
     //  this.loading = true;
     //   this.authService.login(this.logInfo.username, this.logInfo.password).subscribe(() => {
     //     this.setMessage();
@@ -96,8 +94,7 @@ export class LoginComponent implements OnInit{
       localStorage.setItem('currentUsername',this.logInfo.username);
       localStorage.setItem('currentUserpassword',this.logInfo.password);
     }
-  
-  
+
   ///
   
   // login() {

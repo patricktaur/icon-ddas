@@ -21,6 +21,7 @@ import {SearchService} from './search/search-service';
 import {ReportModule}  from './reports/report.module';
 import {UserModule} from './user/user.module';
 import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
+import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
 
 @NgModule({
   imports:      [ 
@@ -31,7 +32,8 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
     SearchModule,
     ReportModule,
     UserModule,
-    LoggedInUserModule
+    LoggedInUserModule,
+    LoginHistoryModule
   ],
   declarations: [ 
     AppComponent,
@@ -46,7 +48,6 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
     DialogService,
     ConfigService,
     SearchService
-     
     ],
   bootstrap:    [ AppComponent ]
 })

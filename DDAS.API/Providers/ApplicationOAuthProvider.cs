@@ -12,6 +12,8 @@ using DDAS.API.Identity;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models;
 using DDAS.Data.Mongo;
+using DDAS.API.Controllers;
+using DDAS.Models.Interfaces;
 
 namespace DDAS.API.Providers
 {
@@ -21,10 +23,15 @@ namespace DDAS.API.Providers
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
 
         private IUnitOfWork _UOW;
+
+        private IUserService _UserService;
+        
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{
 
-        public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
+        public ApplicationOAuthProvider(string publicClientId, 
+            Func<UserManager<IdentityUser, Guid>> userManagerFactory,
+            IUserService UserService)
         {
             if (publicClientId == null)
             {
@@ -40,6 +47,7 @@ namespace DDAS.API.Providers
             _userManagerFactory = userManagerFactory;
             //temp - until Mongo Identity is implemented:
             _UOW = new UnitOfWork("");
+            _UserService = UserService;
         }
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
@@ -47,20 +55,74 @@ namespace DDAS.API.Providers
             //context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
             using (UserManager<IdentityUser, Guid> userManager = _userManagerFactory())
             {
-
                 try
                 {
-                    IdentityUser user = await userManager.FindAsync(context.UserName, context.Password);
-                    
+                    IdentityUser user = 
+                        await userManager.FindAsync(context.UserName, context.Password);
+
+                    var LocalIPAddress =
+                        HttpContext.Current.Request.ServerVariables.Get("LOCAL_ADDR");
+
+                    var HostIPAddress =
+                        HttpContext.Current.Request.ServerVariables.Get("REMOTE_ADDR");
+
+                    var PortNumber =
+                        HttpContext.Current.Request.ServerVariables.Get("SERVER_PORT");
+
+                    var ServerProtocol =
+                        HttpContext.Current.Request.ServerVariables.Get("SERVER_PROTOCOL");
+
+                    var ServerSoftware =
+                        HttpContext.Current.Request.ServerVariables.Get("SERVER_SOFTWARE");
+
+                    var HttpHost =
+                        HttpContext.Current.Request.ServerVariables.Get("HTTP_HOST");
+
+                    var ServerName =
+                        HttpContext.Current.Request.ServerVariables.Get("SERVER_NAME");
+
+                    var GatewayInterface =
+                        HttpContext.Current.Request.ServerVariables.Get("GATEWAY_INTERFACE");
+
+                    var Https =
+                        HttpContext.Current.Request.ServerVariables.Get("HTTPS");
 
                     if (user == null)
-                {
-                    context.SetError("invalid_grant", "The user name or password is incorrect.");
-                    return;
-                }
+                    {
+                        _UserService.AddLoginDetails(
+                            context.UserName, 
+                            LocalIPAddress,
+                            HostIPAddress, 
+                            PortNumber, 
+                            false,
+                            ServerProtocol,
+                            ServerSoftware,
+                            HttpHost,
+                            ServerName,
+                            GatewayInterface,
+                            Https);
 
-                    ClaimsIdentity oAuthIdentity = await userManager.CreateIdentityAsync(user,
-                        context.Options.AuthenticationType);
+                        context.SetError(
+                            "invalid_grant", "The user name or password is incorrect.");
+                        return;
+                    }
+
+                    _UserService.AddLoginDetails(
+                        context.UserName, 
+                        LocalIPAddress,
+                        HostIPAddress, 
+                        PortNumber, 
+                        true,
+                        ServerProtocol,
+                        ServerSoftware,
+                        HttpHost,
+                        ServerName,
+                        GatewayInterface,
+                        Https);
+
+                    ClaimsIdentity oAuthIdentity = 
+                        await userManager.CreateIdentityAsync(
+                            user, context.Options.AuthenticationType);
 
                     var userRoles = userManager.GetRoles(user.Id);
 
@@ -76,7 +138,9 @@ namespace DDAS.API.Providers
                         
                     //}
  
-                    AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
+                    AuthenticationTicket ticket = 
+                        new AuthenticationTicket(oAuthIdentity, properties);
+
                     context.Validated(ticket);
                     //context.Request.Context.Authentication.SignIn(cookiesIdentity);
                 }

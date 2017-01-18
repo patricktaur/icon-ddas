@@ -234,6 +234,14 @@ namespace DDAS.Data.Mongo.Maps
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.Id).SetIdGenerator(GuidGenerator.Instance);
             });
+
+            BsonClassMap.RegisterClassMap<LoginDetails>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             #endregion
         }
 

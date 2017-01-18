@@ -47,7 +47,7 @@ namespace DDAS.Data.Mongo
         private IRoleRepository _RoleRepository;
         private IUserRepository _UserRepository;
         private IUserRoleRepository _UserRoleRepository;
-
+        private ILoginDetailsRepository _LoginDetailsRepository;
         #endregion
 
         /*
@@ -87,8 +87,6 @@ namespace DDAS.Data.Mongo
                     (_FDADebarPageRepository = new FDADebarPageRepository(_db));
             }
         }
-
-     
 
         public IAdequateAssuranceListRepository AdequateAssuranceListRepository
         {
@@ -173,6 +171,15 @@ namespace DDAS.Data.Mongo
             {
                 return _UserRoleRepository ??
                     (_UserRoleRepository = new UserRoleRepository(_db));
+            }
+        }
+
+        public ILoginDetailsRepository LoginDetailsRepository
+        {
+            get
+            {
+                return _LoginDetailsRepository ??
+                    (_LoginDetailsRepository = new LoginDetailsRepository(_db));
             }
         }
 
