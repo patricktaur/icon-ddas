@@ -1,5 +1,6 @@
 ﻿//using DocumentFormat.OpenXml.Drawing;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
@@ -8,9 +9,14 @@ using System.Linq;
 
 namespace Utilities.WordTemplate
 {
-    public class CreateComplianceForm
+    public class CreateComplianceFormWord : IWriter
     {
-        public MemoryStream ReplaceTextFromWord(ComplianceForm form, string TemplateFolder, string fileName = "")
+        private FileStream _stream;
+        private WordprocessingDocument _document;
+        private string _templateFolder;
+
+        #region Existing working code
+        public MemoryStream CreateComplianceForm(ComplianceForm form, string TemplateFolder, string fileName = "")
         {
             string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
 
@@ -403,5 +409,74 @@ namespace Utilities.WordTemplate
             if (DefaultStatus.Val.Value != CheckOrUnCheck)
                 DefaultStatus.Val.Value = CheckOrUnCheck;
         }
+        #endregion
+
+        public void Temp(ComplianceForm form, string TemplateFolder, string fileName = "")
+        {
+            string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
+
+            byte[] byteArray = File.ReadAllBytes(
+                TemplateFile);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                stream.Write(byteArray, 0, byteArray.Length);
+
+                using (WordprocessingDocument doc =
+                   WordprocessingDocument.Open(
+                    stream, true))
+                {
+                    var body = doc.MainDocumentPart.Document.Body;
+                    Table table = new Table();
+                    AddInvestigatorDetails(table, "Pradeep", "MD", "#221145", "Sub");
+                    body.Append(table);
+                }
+            }
+        }
+        
+        #region IWriter Implementation
+
+        public void Initialize(string TemplateFolder)
+        {
+            _templateFolder = TemplateFolder;
+            _stream = new FileStream(_templateFolder, FileMode.CreateNew);
+            _document = WordprocessingDocument.Open(_stream, true);
+        }
+
+        public void AddTableHeaders(string[] Headers, int Columns)
+        {
+
+        }
+
+        public void FillUpTable(int RowIndex, int ColumnIndex, int TableIndex, string Text)
+        {
+            var body = _document.MainDocumentPart.Document.Body;
+
+            var Table = body.Descendants<Table>().ElementAt(TableIndex);
+
+
+        }
+
+        public void WriteParagraph(string Text)
+        {
+            
+        }
+
+        public void AddSearchedBy(string SearchedBy, string Date)
+        {
+            
+        }
+
+        public void CloseDocument()
+        {
+            
+        }
+
+        public void AddFormHeaders(string ProjectNumber, 
+            string SponsorProtocolNumber, string InstituteName, string Address)
+        {
+            
+        }
+        #endregion
     }
 }

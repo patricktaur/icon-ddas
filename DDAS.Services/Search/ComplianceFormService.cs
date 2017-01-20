@@ -804,7 +804,7 @@ namespace DDAS.Services.Search
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var UtilitiesObject = new CreateComplianceForm();
+            var UtilitiesObject = new CreateComplianceFormWord();
 
             var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
 
@@ -814,7 +814,7 @@ namespace DDAS.Services.Search
 
             var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
 
-            var stream = UtilitiesObject.ReplaceTextFromWord(form, TemplateFolder, GeneratedFileNameNPath);
+            var stream = UtilitiesObject.CreateComplianceForm(form, TemplateFolder, GeneratedFileNameNPath);
 
             //The following path does not work, client unable to download the file:
 
@@ -826,6 +826,39 @@ namespace DDAS.Services.Search
         }
         #endregion
 
+        #region ComplianceFormGeneration-PDF
+        public string GenerateComplianceFormPDF(string DownloadFolder)
+        {
+            var PDFformObject = new CreateComplianceFormPDF();
+
+            var stream = PDFformObject.CreateComplianceForm();
+
+            return @"\DataFiles\pdf_trial.pdf";
+        }
+        #endregion
+
+        #region ComplianceFormGeneration - both PDF and Word
+        public string GenerateComplianceForm(
+            string DownloadFolder, Guid? ComplianceFormId, IWriter writer)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
+
+            var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+
+            var GeneratedFileName = ProjectNumber + "_" + PI + ".docx";
+
+            var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
+
+            writer.Initialize(GeneratedFileNameNPath);
+
+
+
+            return null;
+        }
+        #endregion
+
         #region ByPatrick
 
         //3Dec2016
@@ -833,11 +866,11 @@ namespace DDAS.Services.Search
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var UtilitiesObject = new CreateComplianceForm();
+            var UtilitiesObject = new CreateComplianceFormWord();
 
             var FileName = form.InvestigatorDetails.FirstOrDefault().Name + ".docx";
 
-            return UtilitiesObject.ReplaceTextFromWord(form, FileName);
+            return UtilitiesObject.CreateComplianceForm(form, FileName);
         }
 
         //Not required?
