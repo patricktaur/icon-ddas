@@ -94,6 +94,7 @@
     <Compile Include="Repository\Domain\SiteData\IFDADebarPageRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IAdequateAssuranceListRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IFDAWarningLettersRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ILoginDetailsRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IPHSAdministrativeActionListingRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IRoleRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISaveSearchResultRepository.cs" />

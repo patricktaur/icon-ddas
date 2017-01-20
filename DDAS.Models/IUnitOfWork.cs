@@ -11,9 +11,7 @@ namespace DDAS.Models
 
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
-        
-
-    IAdequateAssuranceListRepository AdequateAssuranceListRepository { get; }
+        IAdequateAssuranceListRepository AdequateAssuranceListRepository { get; }
         IERRProposalToDebarRepository ERRProposalToDebarRepository { get; }
         IPHSAdministrativeActionListingRepository 
             PHSAdministrativeActionListingRepository { get; }
@@ -33,14 +31,13 @@ namespace DDAS.Models
         ICorporateIntegrityAgreementRepository 
             CorporateIntegrityAgreementRepository { get; }
         IFDAWarningLettersRepository FDAWarningLettersRepository { get; }
-
-
-
         IClinicalInvestigatorDisqualificationRepository
             ClinicalInvestigatorDisqualificationRepository { get; }
         ISystemForAwardManagementRepository 
             SystemForAwardManagementRepository { get; }
         IComplianceFormRepository ComplianceFormRepository { get; }
+        
+        ILoginDetailsRepository LoginDetailsRepository { get; }
         #endregion
 
         #endregion

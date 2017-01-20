@@ -14,6 +14,10 @@
 
 				<li class="active" *ngIf="authService.isUser"> <a routerLink="/about-ddas" routerLinkActive="active">About DDAS</a></li><br/>
 
+				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li><br/>
+
+				<li class="active" *ngIf="authService.isUser"> <a routerLink="/my-loginhistory" routerLinkActive="active">My Login History</a></li><br/>
+
 				<li class="active" *ngIf="false"> <a routerLink="/open-compliance-forms" routerLinkActive="active">Due Diligence Check  (Alt)</a></li><br/>
 				
 				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/report" routerLinkActive="active">Report</a></li><br/>

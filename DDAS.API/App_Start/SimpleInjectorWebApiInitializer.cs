@@ -16,6 +16,7 @@ using DDAS.Data.Mongo;
 using DDAS.Services.Search;
 using DDAS.Services.UserService;
 using Utilities.EMail;
+using DDAS.Models.Entities.Domain;
 
 namespace DDAS.API.App_Start
 {
@@ -36,11 +37,11 @@ namespace DDAS.API.App_Start
 
             config.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
         }
+
         private static void InitializeContainer(Container container)
         {
-
-            container.RegisterWebApiRequest<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
-
+            //container.RegisterWebApiRequest<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
+            container.Register<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
 
             //For Automapper <<<< 
             //Get all my Profiles from the assembly (in my case was the webapi)
@@ -67,13 +68,18 @@ namespace DDAS.API.App_Start
             string logFile = @"C:\Development\p926-ddas\DDAS.API\Logs\DataExtraction.log";
             //var log = new LogText(logFile);
 
-            container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
+            //container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
+            container.Register<ISearchEngine, SearchEngine>();
 
-            container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
+            //container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
-            container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
+            container.Register<ILog>(() => new LogText(logFile, true));
 
-            container.RegisterWebApiRequest<IUserService, UserService>();
+            //container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
+            container.Register<ISearchService, ComplianceFormService>();
+
+            //container.RegisterWebApiRequest<IUserService, UserService>();
+            container.Register<IUserService, UserService>();
 
             var cred = new EMailServerCredentialsModel();
             cred.EMailHost = System.Configuration.ConfigurationManager.AppSettings["EMailHost"];
@@ -82,8 +88,8 @@ namespace DDAS.API.App_Start
             cred.FromEMailId = System.Configuration.ConfigurationManager.AppSettings["FromEMailId"];
             cred.FromEMailPassword = System.Configuration.ConfigurationManager.AppSettings["FromEMailPassword"];
 
-            container.RegisterWebApiRequest<IEMailService>(() => new EMailService(cred));
-
+            //container.RegisterWebApiRequest<IEMailService>(() => new EMailService(cred));
+            container.Register<IEMailService>(() => new EMailService(cred));
         }
     }
 }

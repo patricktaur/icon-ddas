@@ -201,7 +201,49 @@ namespace DDAS.Services.UserService
             return activeRolesText;
         }
 
-       
+
+        #endregion
+
+        #region Login Details
+
+        public bool AddLoginDetails(
+            string UserName,
+            string LocalIPAddress,
+            string HostIPAddress,
+            string PortNumber,
+            bool IsLoginSuccessful,
+            string ServerProtocol,
+            string ServerSoftware,
+            string HttpHost,
+            string ServerName,
+            string GatewayInterface,
+            string Https)
+        {
+            var loginDetails = new LoginDetails();
+
+            loginDetails.UserName = UserName;
+            loginDetails.LoginAttemptTime = DateTime.Now;
+            loginDetails.LocalIPAddress = LocalIPAddress;
+            loginDetails.HostIPAddress = HostIPAddress;
+            loginDetails.PortNumber = PortNumber;
+            loginDetails.IsLoginSuccessful = IsLoginSuccessful;
+            loginDetails.ServerProtocol = ServerProtocol;
+            loginDetails.ServerName = ServerName;
+            loginDetails.ServerSoftware = ServerSoftware;
+            loginDetails.HttpHost = HttpHost;
+            loginDetails.Https = Https;
+            loginDetails.GatewayInterface = GatewayInterface;
+
+            _UOW.LoginDetailsRepository.Add(loginDetails);
+
+            return true;
+        }
+
+        public List<LoginDetails> GetAllLoginHistory()
+        {
+            var AllLoginHistory = _UOW.LoginDetailsRepository.GetAll();
+            return AllLoginHistory;
+        }
         #endregion
     }
 }

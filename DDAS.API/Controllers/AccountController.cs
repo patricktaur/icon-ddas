@@ -156,9 +156,50 @@ namespace DDAS.API.Controllers
 
             return Ok(true);
         }
+                
+        [Route("getLogHistory")]
+        [HttpGet]
+        public IHttpActionResult GetAllLoginHistory()
+        {
+            var AllLoginHistory = _userService.GetAllLoginHistory();
+            return Ok(AllLoginHistory);
+        }
 
+        [Route("getMyLogHistory")]
+        [HttpGet]
+        public IHttpActionResult GetMyLoginHistory(string UserName)
+        {
+            var AllLoginHistory = _userService.GetAllLoginHistory();
 
+            var MyLoginHistory = AllLoginHistory.Where(x =>
+            x.UserName.ToLower() == UserName.ToLower());
 
+            return Ok(MyLoginHistory);
+        }
+
+        //[Route("AddLoginDetails")]
+        //[HttpGet]
+        public IHttpActionResult AddLoginDetails(
+            string UserName, bool IsLoginSuccessful)
+        {
+            //var LocalIPAddress =
+            //    HttpContext.Current.Request.ServerVariables.Get("LOCAL_ADDR");
+
+            //var HostIPAddress =
+            //    HttpContext.Current.Request.ServerVariables.Get("REMOTE_ADDR");
+
+            //var PortNumber =
+            //    HttpContext.Current.Request.ServerVariables.Get("SERVER_PORT");
+
+            //_userService.AddLoginDetails(
+            //    UserName,
+            //    LocalIPAddress,
+            //    HostIPAddress,
+            //    PortNumber,
+            //    IsLoginSuccessful);
+
+            return Ok();
+        }
         #endregion
 
         #region FromAccountsController
