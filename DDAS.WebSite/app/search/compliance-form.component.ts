@@ -1,45 +1,159 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { FormGroup, FormBuilder, Validators, FormArray} from '@angular/forms';
+
 import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource } from './search.classes';
 import { SearchService } from './search-service';
 import { Location } from '@angular/common';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'compliance-form.component.html',
+    //templateUrl: 'compliance-form.component.html',
+    //templateUrl: 'compliance-form-reactive-style.component.html',
+    templateUrl: 'compliance-form-template-style-component.html',
 
 })
 export class ComplianceFormComponent implements OnInit {
+    compFormForm: FormGroup;
+
     public CompForm: ComplianceFormA = new ComplianceFormA;
     private ComplianceFormId: string;
     public SitesAvailable : SiteSource[] = [];
     public searchInProgress: boolean = false;
     public Selected: boolean = false;
-    public InvestigatorToRemove: InvestigatorSearched = new InvestigatorSearched;
-    public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
-
-  
-    
+     public InvestigatorToRemove: InvestigatorSearched = new InvestigatorSearched;
+     public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
+    private pageChanged: boolean= false;
+     
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private _location: Location,
-        private service: SearchService
-
-        
-       
-       
+        private service: SearchService,
+        private fb: FormBuilder
 
     ) { }
 
     ngOnInit() {
-        
-        
-        this.route.params.forEach((params: Params) => {
+        //this.buildForm();
+
+       
+          this.route.params.forEach((params: Params) => {
             this.ComplianceFormId = params['formid'];
             this.LoadOpenComplainceForm();
         });
     
+    }
+
+    //for REactive Validation
+    buildForm(): void {
+         this.compFormForm = this.fb.group({
+            'projNumber': [this.CompForm.ProjectNumber,
+             [ 
+            Validators.minLength(9), 
+           Validators.maxLength(9) 
+            ]
+            ],
+           
+             'SponsorProtocolNumber': [this.CompForm.SponsorProtocolNumber],
+              'Institute': [this.CompForm.Institute],
+               'Country': [this.CompForm.Country],
+                'Address': [this.CompForm.Address],
+                
+                'Investigators': this.fb.array([])
+ 
+            });
+
+            this.LoadInvestigatorControls();
+        // this.compFormForm.valueChanges
+        // .subscribe(data => this.onValueChanged(data));
+        //  this.onValueChanged(); // (re)set validation messages now
+    }
+
+    InitInvestigatorControls(){
+         return this.fb.group({
+            Name: ['', Validators.required],
+            CanEdit:['']
+        });
+    }
+    
+    LoadInvestigatorControls(){
+        const control = <FormArray>this.compFormForm.controls['Investigators'];
+        
+       this.CompForm.InvestigatorDetails.forEach(inv => 
+            control.push(this.getInvestigatorControl(inv))
+       );
+    }
+
+    addInvestigatorControl(){
+        const control = <FormArray>this.compFormForm.controls['Investigators'];
+        let inv = new InvestigatorSearched;
+        control.push(this.getInvestigatorControl(inv))
+    }
+    
+    getInvestigatorControl(inv: InvestigatorSearched){
+          return this.fb.group({
+            Name: [inv.Name, Validators.required],
+             CanEdit:[inv.CanEdit]
+         });
+    }
+
+   onValueChanged(data?: any) {
+         if (!this.compFormForm) { return; }
+         const form = this.compFormForm;
+        for (const field in this.formErrors) {
+          // clear previous error message (if any)
+          this.formErrors[field] = '';
+          const control = form.get(field);
+          if (control && control.dirty && !control.valid) {
+            const messages = this.validationMessages[field];
+            for (const key in control.errors) {
+              this.formErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+    }
+
+ formErrors = {
+    'projNumber': '',
+    'SponsorProtocolNumber': '',
+    'Institute': '',
+    'Country': '',
+    'Address': '',
+
+  };
+  
+  
+  
+  investigator = {
+
+  }
+
+  validationMessages = {
+    'projNumber': {
+      'required':      'Project Number is required.',
+      'minlength':     'Project Number must be at 9 characters long.',
+      'maxlength':     'Project Number must be at 9 characters long.'
+      
+    }
+  };
+    
+    SaveReactiveForm() {
+             console.log("Inside Save");
+
+              (<FormGroup>this.compFormForm)
+             .setValue(this.CompForm, { onlySelf: true });
+             //this.CompForm = this.compFormForm.value;
+             this.service.saveComplianceForm(this.CompForm)
+            .subscribe((item: any) => {
+                console.log("Save Successful");
+                let newCompForm: ComplianceFormA = item;
+                this.ComplianceFormId = newCompForm.RecId;
+                this.LoadOpenComplainceForm();
+               },
+            error => {
+
+            });
     }
 
     LoadOpenComplainceForm() {
@@ -49,6 +163,8 @@ export class ComplianceFormComponent implements OnInit {
                 this.LoadSitesAvailable();
                 this.Initialize();
                 this.SetInvestigatorsSavedFlag();
+                this.pageChanged = false;
+                this.buildForm();
                 },
             error => {
             });
@@ -68,6 +184,7 @@ export class ComplianceFormComponent implements OnInit {
                      SitesSearchedCount +=1;
                 }
                 inv.CanEdit = true;
+                inv.Saved = true;
                 if (SitesSearchedCount > 0){
                     inv.CanEdit = false;
                 }
@@ -122,6 +239,7 @@ export class ComplianceFormComponent implements OnInit {
         this.CompForm.InvestigatorDetails.push(inv);
         this.SetInvestigatorRole();
         this.Initialize();
+        this.pageChanged = true;
    } 
      
  setInvestigatorRemove(inv: InvestigatorSearched){
@@ -135,6 +253,7 @@ export class ComplianceFormComponent implements OnInit {
         this.InvestigatorToRemove.Deleted = true;
         this.SetInvestigatorRole();
         this.Initialize();
+        this.pageChanged = true;
    } 
    
    //Better method?
@@ -222,6 +341,7 @@ export class ComplianceFormComponent implements OnInit {
  
  //SitesParticpatingInSearch  
  //================================   
+    
     LoadSitesAvailable(){
             this.service.getSiteSources()
             .subscribe((item: any) => {
@@ -274,6 +394,8 @@ export class ComplianceFormComponent implements OnInit {
          return this.CompForm.SiteSources.filter(x => x.Deleted == false)
     }
 
+    
+    
     get SitesAvalaibleToInclude(){
       return this.SitesAvailable.filter(x => x.Included == false);
    }
@@ -299,7 +421,8 @@ export class ComplianceFormComponent implements OnInit {
                         this.CompForm.SiteSources.push(siteToAdd);
                         this.SitesAvailable[index].Included = true;
                    }
-                   
+                   //one or more sites are added.
+                   this.pageChanged = true;
             }
             this.SitesAvailable[index].Selected = false;
         }
@@ -316,6 +439,7 @@ export class ComplianceFormComponent implements OnInit {
      let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
      if (site){
          site.Included = false;
+         this.pageChanged = true;
      }
      this.SetSiteDisplayPosition();
 }
@@ -352,27 +476,31 @@ export class ComplianceFormComponent implements OnInit {
        return this.CompForm.Findings.filter(x => x.Selected == true);
    }
   
-    Save() {
+      Save() {
+             
+             console.log("Save called");
              this.service.saveComplianceForm(this.CompForm)
-            .subscribe((item: any) => {
-                this.CompForm = item;
-                this.Initialize();
-                this.SetInvestigatorsSavedFlag();
+            .subscribe((item: ComplianceFormA) => {
+                //this.CompForm = item;
+                this.ComplianceFormId = item.RecId;
+                this.LoadOpenComplainceForm();
+                // this.Initialize();
+                // this.SetInvestigatorsSavedFlag();
                 
               },
             error => {
 
             });
-    }
+    } 
 
     ScanNSave() {
             this.searchInProgress = true;
             this.service.scanSaveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
-                this.CompForm = item;
-                this.Initialize();
-                this.SetInvestigatorsSavedFlag();
+                
                 this.searchInProgress = false;
+                this.LoadOpenComplainceForm();
+                
                },
             error => {
                 this.searchInProgress = false;
@@ -401,17 +529,32 @@ Split = (RecordDetails: string) => {
 
     return middleNames;
 }
+
+  canDeactivate(): Promise<boolean> | boolean {
+              
+        if (this.pageChanged == false){
+            return true;
+        }
+        // Otherwise ask the user with the dialog service and return its
+        // promise which resolves to true or false when the user decides
+        //this.IgnoreChangesConfirmModal.open();
+        //return this.canDeactivateValue;
+        return window.confirm("Changes not saved. Ignore changes?");//this.dialogService.confirm('Discard changes?');
+    }
     
-BoolYesNo (value: boolean): string   {
-    if (value == null){
-        return "";
-    }
-    if (value == true){
-        return "Yes"
-    }
-    else{
-        return "No"
-    }
-}
+// BoolYesNo (value: boolean): string   {
+//     if (value == null){
+//         return "";
+//     }
+//     if (value == true){
+//         return "Yes"
+//     }
+//     else{
+//         return "No"
+//     }
+// }
     get diagnostic() { return JSON.stringify(this.SitesAvailable); }
+
+ 
 }
+

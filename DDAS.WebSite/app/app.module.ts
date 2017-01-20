@@ -14,13 +14,14 @@ import { routing,
 
 import { HttpModule, JsonpModule } from '@angular/http';       
 
-import {LoginComponent} from './auth/login.component';
-import {ChangePasswordComponent} from './auth/change-password.component';
-import {SearchModule}  from './search/search.module';
+import { LoginComponent } from './auth/login.component';
+import { ChangePasswordComponent } from './auth/change-password.component';
+import { SearchModule }         from './search/search.module';
 import {SearchService} from './search/search-service';
-import {ReportModule}  from './reports/report.module';
-import {UserModule} from './user/user.module';
+import { ReportModule }         from './reports/report.module';
+import { UserModule }         from './user/user.module';
 import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
+
 import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
 
 @NgModule({
@@ -34,6 +35,7 @@ import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
     UserModule,
     LoggedInUserModule,
     LoginHistoryModule
+  
   ],
   declarations: [ 
     AppComponent,
@@ -48,6 +50,7 @@ import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
     DialogService,
     ConfigService,
     SearchService
+     
     ],
   bootstrap:    [ AppComponent ]
 })

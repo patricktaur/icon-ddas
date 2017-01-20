@@ -1,0 +1,402 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<form [formGroup]="compFormForm" novalidate>
+
+				<div class="row">
+					<div class="col-lg-8 text-left">
+						<h3 class="no-margin-top">Investigator Compliance Search Form</h3>
+					</div>
+					<div class="col-lg-4 text-right">
+						<!--not working: -->
+						<div *ngIf="false" statusCircle [status]="CompForm.StatusEnum" size=24 [title]="CompForm.Status"></div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<label for="ProjectNumber">ICON Project Number (1234/1234):</label>
+
+							<!--<input type="text" class="form-control" name="ProjectNumber"  [(ngModel)]="CompForm.ProjectNumber">-->
+							<input type="text" class="form-control" id="ProjectNumber" formControlName="projNumber" required>
+							<small *ngIf="!compFormForm.controls.projNumber.valid" class="text-danger">
+           						 Project Number in format '1234/5678' expected.
+        					</small>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="form-group">
+							<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
+							<input type="text" class="form-control" formControlName="SponsorProtocolNumber">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<label for="Country">Institute:</label>
+							<input type="text" class="form-control" formControlName="Institute">
+						</div>
+						<div class="form-group">
+							<label for="Country">Country:</label>
+							<input type="text" class="form-control" formControlName="Country">
+						</div>
+
+					</div>
+					<div class="col-lg-6">
+						<div class="form-group">
+							<label for="NameToSeaICONrch">Address:</label>
+							<textarea name="Address" class="form-control" id="Address" rows="5" cols="30" placeholder="Address" formControlName="Address"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<h4>Investigators:</h4>
+							<div class="table-responsive">
+
+
+								
+								<div >
+									<table class="table table-bordered table-hover table-striped" formArrayName="Investigators">
+										<thead>
+											<tr>
+												<th class="col-md-3 text-left">Name</th>
+												<th class="col-md-2">Qualifications</th>
+												<th class="col-md-1">Med. Lic No. / ML#</th>
+												<th class="col-md-1">Inv. Id</th>
+												<th class="col-md-1">Role</th>
+
+												<th class="col-md-1">Status</th>
+												<!--<th class="col-md-1">Status</th>-->
+
+												<th class="col-md-3">Actions</th>
+
+											</tr>
+										</thead>
+										<tbody>
+
+
+											<tr  *ngFor="let inv of compFormForm.controls.Investigators.controls; let i=index" [formGroupName]="i">
+												<td>
+													<input *ngIf="inv.CanEdit" type="text" class="form-control" formControlName="Name">
+													<label></label>
+													<div *ngIf="!inv.CanEdit" class="text-left">{{Name}}</div>
+													<small [hidden]="compFormForm.controls.Investigators.controls[i].controls.Name.valid">
+                        							Name is required
+                    							</small>
+												</td>
+												<td>
+												</td>
+												<td>
+												</td>
+												<td>
+
+												</td>
+												<td>
+
+												</td>
+
+
+												<td align="center">
+													<!--<div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>-->
+												</td>
+
+												<td>
+														<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+															title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+														<!--<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>-->
+													
+												</td>
+
+											</tr>
+
+											<tr *ngFor="let inv of Investigators; let idx=index">
+
+												<td>
+													<div *ngIf="inv.CanEdit"><input type="text" [(ngModel)]="inv.Name" class="form-control"></div>
+													<div *ngIf="!inv.CanEdit" class="text-left">{{inv.Name}}</div>
+
+													<td>
+														<!--<div><input type="text" [(ngModel)]="inv.Qualification" class="form-control"></div>-->
+														<!--<div *ngIf="!inv.CanEdit" class="text-left">{{inv.Qualification}}</div>-->
+													</td>
+													<td>
+														<!--<div><input type="text" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control"></div>-->
+														<!--<div *ngIf="!inv.CanEdit" class="text-left">{{inv.MedicalLiceseNumber}}</div>-->
+													</td>
+													<td>
+														<!--<div><input type="text" [(ngModel)]="inv.InvestigatorId" class="form-control"></div>-->
+
+													</td>
+													<td>
+														{{inv.Role}}
+													</td>
+
+
+													<td align="center">
+														<div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
+													</td>
+
+													<td>
+														<!--<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>-->
+														<!--<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>-->
+														<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+															title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+														<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+													</td>
+											</tr>
+											<tr>
+												<td style="align-left" colspan="7">
+													<div class="text-left">
+														<button type="button" class="btn btn-primary" (click)="addInvestigatorControl()">Add an Investigator</button>
+														<!--<button type="button" class="btn btn-primary" >Undo</button>-->
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+						</div>
+						<div class="well">
+							<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+
+							<button type="button" class="btn btn-primary" [disabled]="!compFormForm.valid" (click)="Save()">Save</button>
+							<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!CompForm.SearchPending">Search</button>
+							<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>
+							<p *ngIf="searchInProgress">Search in progress ... </p>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<br>
+							<h4>Sites participating in the search:</h4>
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th class="">#</th>
+											<th class="">Source Name</th>
+											<!--<th class="">Extracted On</th>-->
+											<!--<th class="">Site Source Updated On</th>-->
+											<th class="">Extraction Mode</th>
+											<th class="">Issues Identified</th>
+											<th class="">Remove</th>
+											<!--<th class="col-md-1">#</th>
+										<th class="col-md-4">Source Name</th>
+										<th class="col-md-2">DataExtractedOn</th>
+										<th class="col-md-2">SiteSourceUpdatedOn</th>
+										<th class="col-md-1">ExtractionMode</th>
+										<th class="col-md-1">Issues Identified</th>
+										<th class="col-md-1">Remove</th>-->
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="active" *ngFor="let item of SitesParticpatingInSearch; let idx = index;">
+											<td>{{item.DisplayPosition}}</td>
+											<td>
+												<div class="text-left">
+													<a target="_blank" [href]="item.SiteUrl">
+                                                 {{item.SiteName}}
+                                            </a>
+												</div>
+
+											</td>
+											<td>
+												{{item.ExtractionMode}}
+											</td>
+											<td>
+												{{item.IssuesIdentified | boolToYesNo}}
+												<!--{{BoolYesNo(item.IssuesIdentified)}}-->
+											</td>
+											<td>
+												<button type="button" class="btn btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="5">
+												<div class="text-left"><button type="button" class="btn btn-primary" (click)="AddSiteModal.open()">Add</button> </div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" *ngIf="false">
+					<h4>Summary:</h4>
+					<p>ExtractedOn: {{CompForm.ExtractedOn}} </p>
+					<p>ExtractionErrorInvestigatorCount: {{CompForm.ExtractionErrorInvestigatorCount}} </p>
+					<p>PartialMatchesFoundInvestigatorCount: {{CompForm.PartialMatchesFoundInvestigatorCount}} </p>
+					<p>FullMatchesFoundInvestigatorCount: {{CompForm.FullMatchesFoundInvestigatorCount}} </p>
+					<p>IssuesFoundInvestigatorCount: {{CompForm.IssuesFoundInvestigatorCount}} </p>
+					<p>ReviewCompletedInvestigatorCount: {{CompForm.ReviewCompletedInvestigatorCount}} </p>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<h4>Findings (Issues identified):</h4>
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th class="col-md-1">Source #</th>
+											<th class="col-md-3">Investigator</th>
+											<th class="col-md-2">Date of Inspection / Action</th>
+											<th class="col-md-6">Description of Findings</th>
+
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="active" *ngFor="let item of Findings; ">
+
+
+											<td>
+												{{item.SourceNumber}}
+											</td>
+											<td align="left">
+												{{item.InvestigatorName}}
+											</td>
+											<td>
+												{{item.DateOfInspection |date:'dd/MMM/yyyy' }}
+											</td>
+											<td align="left">
+												<div *ngFor="let SplitItem of Split(item.RecordDetails)" align="left">
+													{{SplitItem}}
+												</div>
+												<div *ngIf="item.RecordDetails"><br> </div>
+												{{item.Observation}}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<h4>Search Performed By:</h4>
+							<div class="row">
+								<div class="col-lg-6">
+									<label for="NameToSeaICONrch">Searched By:</label>
+									<label class="form-control">{{CompForm.AssignedTo}}</label>
+
+								</div>
+								<div class="col-lg-6">
+									<label for="NameToSeaICONrch">Searched On:</label>
+									<label class="form-control">{{CompForm.SearchStartedOn | date: 'dd/MMM/yyyy'}}</label>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<!--<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>-->
+				<button type="button" class="btn btn-primary" (click)="ScanNSave()">Search</button>
+			</form>
+
+		</div>
+	</div>
+
+	<modal #AddSiteModal>
+		<modal-header>
+			<h4>Include additional sites to search.</h4>
+		</modal-header>
+		<modal-body>
+
+			<table class="table table-bordered table-hover table-striped">
+				<thead>
+					<tr>
+						<th class="col-md-2">SelectAll
+							<input type="checkbox" [(ngModel)]="Selected" (click)="selectionChange()" [checked]="true" />
+						</th>
+						<th class="col-md-6">Site</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="active" *ngFor="let item of SitesAvalaibleToInclude">
+						<td>
+							<input type="checkbox" [(ngModel)]="item.Selected" />
+						</td>
+						<td>
+							<div class="text-left">
+								<a target="_blank" [href]="item.SiteUrl">
+								{{item.SiteName}}
+								</a>
+							</div>
+
+						</td>
+
+					</tr>
+
+				</tbody>
+			</table>
+
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="AddSelectedSite(); AddSiteModal.close()">Add</button>
+			<button type="button" class="btn btn-default" (click)="AddSiteModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>
+
+	<modal #RemoveInvestigatorConfirmModal>
+		<modal-header>
+			<h4 class="modal-title">Delete confirm</h4>
+		</modal-header>
+		<modal-body>
+			Investigator: {{InvestigatorToRemove.Name}} will be removed.
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="InvestigatorRemove(); RemoveInvestigatorConfirmModal.close()">Confirm Delete</button>
+			<button type="button" class="btn btn-default" (click)=" RemoveInvestigatorConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>
+
+	<modal #RemoveSiteConfirmModal>
+		<modal-header>
+			<h4 class="modal-title">Delete confirm</h4>
+		</modal-header>
+		<modal-body>
+			Site: {{siteToRemove.SiteName}} will be removed.
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
+			<button type="button" class="btn btn-default" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>
+
+	<modal #ConfirmCloseForEditModal>
+		<modal-header [show-close]="true">
+			<h4 class="modal-title">Close ICF for: {{PrincipalInvestigatorName}}</h4>
+		</modal-header>
+		<modal-body>
+			<p>Closed ICF will be removed from Due Diligence Check page. </p>
+			<p>and will be displayed in Closed ICFs page. </p>
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="CloseForEdit(); ConfirmCloseForEditModal.close()">Confirm</button>
+			<button type="button" class="btn btn-default" (click)="ConfirmCloseForEditModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>
+
+</div>

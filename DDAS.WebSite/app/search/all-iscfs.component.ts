@@ -5,8 +5,7 @@ import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
-
-//import { Http, Response, Headers , RequestOptions } from '@angular/http';
+ 
 
 @Component({
     moduleId: module.id,
@@ -14,7 +13,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class AllISCFsComponent implements OnInit {
 
-    private PrincipalInvestigators: PrincipalInvestigatorDetails[];
+    public PrincipalInvestigators: PrincipalInvestigatorDetails[];
     
     public Active: boolean;
     public AssignedTo: string;
@@ -26,14 +25,26 @@ export class AllISCFsComponent implements OnInit {
     public ComplianceFormFilter: CompFormFilter;
     public Users: any[];
 
+    public myDatePickerOptions = {
+        // other options...
+        dateFormat: 'dd mmm yyyy',
+    };
+
+    public p:number;
  constructor(
         private route: ActivatedRoute,
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
         private authService: AuthService
-    ) { }
+    ) {
+        
+     }
 
+  onDateChanged(event: any) {
+        // event properties are: event.date, event.jsdate, event.formatted and event.epoc
+ }
+  
   ngOnInit(){
             this.ComplianceFormFilter = new CompFormFilter;
             this.SetDefaultFilterValues();

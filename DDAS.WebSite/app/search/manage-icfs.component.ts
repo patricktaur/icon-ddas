@@ -14,7 +14,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class ManageICFsComponent implements OnInit {
 
-    private PrincipalInvestigators: PrincipalInvestigatorDetails[];
+    public PrincipalInvestigators: PrincipalInvestigatorDetails[];
     //public ComplianceFormIdToDelete: string;
     //public InvestigatorNameToDelete: string;
     //public ComplianceFormIdToManage: string;
@@ -136,10 +136,13 @@ export class ManageICFsComponent implements OnInit {
         error => {
         });
  
-
-
-
  }
+
+  OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
+
+        this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+
+    }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 }

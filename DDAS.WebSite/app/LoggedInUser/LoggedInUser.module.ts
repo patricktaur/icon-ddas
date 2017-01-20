@@ -4,9 +4,8 @@ import { FormsModule }    from '@angular/forms';
 
 import {AboutDDASComponent} from './about-ddas.component';
 
-import {myLoginHistoryComponent} from './my-loginhistory.component';
-
-import {LoggedInUserRouting} from './loggedinuser.routing';
+import {myLoginHistoryComponent}  from './my-loginhistory.component';
+import {LoggedInUserRouting} from './LoggedInUser.Routing';
 
 import {loggedinuserService} from './loggedinuser.service';
 
@@ -18,7 +17,7 @@ import {loggedinuserService} from './loggedinuser.service';
   ],
   declarations: [
       AboutDDASComponent,
-      myLoginHistoryComponent
+       myLoginHistoryComponent
   ],
  
   providers: [      

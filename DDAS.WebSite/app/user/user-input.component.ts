@@ -14,19 +14,23 @@ export class UserInputComponent {
     public user: UserViewModel;
     private userId: string;
 
-    //public allRoles: Role[];
-
-    private processing: boolean;
+     private processing: boolean;
+     public isNew: boolean = false;
+    public isNewText: string = "";
 
     constructor(private router: Router, private service: UserService, private route: ActivatedRoute) { }
     ngOnInit() {
         this.user = new UserViewModel;
-        //this.LoadAllRoles();
+       
         this.route.params.forEach((params: Params) => {
             this.userId = params['userid'];
-
+             this.isNew = false;
+             this.isNewText = "Edit";
+            if (this.userId == ""){
+                this.isNew = true;
+                this.isNewText = "New";
+            }
             this.LoadUser();
-
         });
 
     }
@@ -38,7 +42,7 @@ export class UserInputComponent {
             .subscribe((item) => {
                 this.processing = false;
                 this.user = item;
-                //this.MapFromUserRolesToRoles();
+               
 
             },
             error => {
@@ -46,49 +50,7 @@ export class UserInputComponent {
             });
     }
 
-    // LoadAllRoles() {
-    //     this.processing = true;
-
-    //     this.service.getAllRoles()
-    //         .subscribe((item) => {
-    //             this.processing = false;
-    //             this.allRoles = item;
-
-    //         },
-    //         error => {
-    //             this.processing = false;
-    //         });
-    // }
-
-    // MapFromUserRolesToRoles() {
-
-    //     if (this.allRoles != null) {
-    //         for (let item of this.allRoles) {
-
-    //             let role = this.user.Roles.find(x => x.Name == item.Name);
-
-    //             if (role != null) {
-    //                 item.Selected = true;
-    //             }
-    //         }
-    //     }
-
-    // }
-
-    // UpdateUserRoles() {
-
-    //     //No method found to selectively delete roles.
-    //     //Deleting all roles and add currently selected ones.
-    //     this.user.Roles = [];
-    //     if (this.allRoles != null) {
-    //         for (let item of this.allRoles) {
-    //             if (item.Selected == true) {
-    //                 this.user.Roles.push(item)
-    //             }
-    //         }
-    //     }
-
-    // }
+   
 
     Save() {
         //this.UpdateUserRoles();

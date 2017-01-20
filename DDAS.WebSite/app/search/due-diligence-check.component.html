@@ -3,7 +3,7 @@
 		<div class="well">
 			<h3 class="no-margin-top">Due Diligence Check</h3>
 			<br>
-					{{diagnostic}}
+
 
 			<div class="row text-left">
 
@@ -17,7 +17,8 @@
 
 					<div class="text-right vertical-center">
 						<a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Sample Upload Template</a>
-
+						
+						
 					</div>
 
 				</div>
@@ -31,10 +32,7 @@
 	
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
-				<tr>
-				<th colspan="7"><div statusCircle-Legend-Horizontal></div> </th>
-				
-			</tr>
+		
 			<tr>
 				<th class="col-md-3 text-left">Principal Investigator </th>
 				<th class="col-md-2 text-left">ICON Project Number</th>
@@ -72,7 +70,7 @@
 				<td>
 					
 					<button type="button" class="btn btn-primary" 
-					(click)= "DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
+					(click)= "DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
 					 title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
 					
 					
@@ -99,7 +97,6 @@
 					<p class="help-block">You can close this Window if you wish to continue with other activities.</p>
 					<p class="help-block">The process will continue in the background.</p>
 				</div>
-				<!--<p  *ngFor="let val of excelFileUploadValidations" class="active">{{val}}	</p>-->
 			</div>
 		</form>
 	</modal-body>

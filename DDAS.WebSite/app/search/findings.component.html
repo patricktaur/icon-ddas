@@ -33,8 +33,8 @@
 					<div class="col-lg-3  text-center">
 						<div *ngIf="!ExtractionModeIsManual">
 							<div *ngIf="!SiteSearchStatus.HasExtractionError">
-								<p>ExtractedOn </p>
-								<p>{{SiteSearchStatus.ExtractedOn | date: 'dd MMM yyyy'}} </p>
+								<p>Extracted On </p>
+								<p>{{SiteSearchStatus.ExtractedOn | date: 'dd/MMM/yyyy'}} </p>
 							</div>
 							<div *ngIf="SiteSearchStatus.HasExtractionError">
 								<p>Data Extraction Errors </p>
@@ -160,7 +160,7 @@
 						<tr>
 							<th class="col-md-2">Select</th>
 							<th class="col-md-8">Record Details</th>
-							<th class="col-md-2">Match Status</th>
+							<th class="col-md-2">Record Location (Row Number)</th>
 						</tr>
 					</thead>
 
@@ -176,14 +176,12 @@
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
 									{{SplitItem}}
 								</div>
+
 							</td>
 							<td>
-								<div *ngIf="FullMatchCount > 0">
-									Full Match
-								</div>
-								<div *ngIf="PartialMatchCount > 0">
-									Partial Match
-								</div>
+
+								{{finding.RowNumberInSource}}
+
 							</td>
 						</tr>
 
@@ -198,3 +196,16 @@
 		</modal-footer>
 
 	</modal>
+
+<modal #IgnoreChangesConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Changes not saved.</h4>
+	</modal-header>
+	<modal-body>
+		<p class="help-block">Changes </p>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="setDeactivateValue(); IgnoreChangesConfirmModal.close()">Ignore Changes</button>
+		<button type="button" class="btn btn-default" (click)=" IgnoreChangesConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>

@@ -56,7 +56,7 @@ export class DownloadComplianceFormComponent implements OnInit {
     ) { }
     
     ngOnInit() {
- 
+        this.ComplianceFormGenerationError = "";
     }
 
     open(){
@@ -77,6 +77,7 @@ export class DownloadComplianceFormComponent implements OnInit {
 
      GenerateComplianceForm() {   //(formid: string){
 
+        this.ComplianceFormGenerationError = "";
         this.downloadUrl = "";
         this.service.generateComplianceForm(this.formId)
             .subscribe((item: any) => {

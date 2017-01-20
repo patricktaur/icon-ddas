@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, Finding, SiteSearchStatus } 
-from './search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, Finding, SiteSearchStatus } from './search.classes';
 import { SearchService } from './search-service';
 import { Location } from '@angular/common';
+import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
     moduleId: module.id,
@@ -16,12 +16,14 @@ export class FindingsComponent implements OnInit {
     private InvestigatorId: number;
     private SiteEnum: number;
 
-    public FullMatchCount : number = 0;
-    public PartialMatchCount : number = 0;
-
     public SitesAvailable : SiteSourceToSearch[] = [];
     public searchInProgress: boolean = false;
+
+    private pageChanged: boolean= false;
     
+    @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
+    private canDeactivateValue: boolean;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -36,6 +38,7 @@ export class FindingsComponent implements OnInit {
             this.InvestigatorId = +params['investigatorid'];
             this.SiteEnum = +params['siteenum'];
             this.LoadOpenComplainceForm();
+            
         });
      
     }
@@ -107,25 +110,22 @@ export class FindingsComponent implements OnInit {
         let siteSearched1 = this.Investigator.SitesSearched.find(x => x.siteEnum == this.SiteEnum);
         if (siteSearched1 == undefined){
              //siteSearched.siteEnum = -1;
-             this.FullMatchCount = siteSearched.FullMatchCount;
-             this.PartialMatchCount = siteSearched.PartialMatchCount;
             return siteSearched;
         }
         else{
-             this.FullMatchCount = siteSearched1.FullMatchCount;
-             this.PartialMatchCount = siteSearched1.PartialMatchCount;            
             return siteSearched1;
         }
  
     }
 
-    AddNewSearchStatusItem(){
+    
+    // AddNewSearchStatusItem(){
         
-        if (this.SiteSearchStatus.siteEnum = -1){
-            this.SiteSearchStatus.siteEnum = this.SiteEnum;
-            this.Investigator.SitesSearched.push(this.SiteSearchStatus);
-        }
-    }
+    //     if (this.SiteSearchStatus.siteEnum = -1){
+    //         this.SiteSearchStatus.siteEnum = this.SiteEnum;
+    //         this.Investigator.SitesSearched.push(this.SiteSearchStatus);
+    //     }
+    // }
 
     Add(){
         let finding = new Finding;
@@ -137,6 +137,7 @@ export class FindingsComponent implements OnInit {
         finding.Selected = true;
         finding.InvestigatorName = this.Investigator.Name;
         this.CompForm.Findings.push(finding);
+        this.pageChanged = true;
     }
     
     AddSelectedToFindings(){
@@ -146,9 +147,11 @@ export class FindingsComponent implements OnInit {
                     item.UISelected = false;
                  }
             }
+            this.pageChanged = true;
     }
     
     RemoveFromSelected(selectedRecord: Finding){
+        this.pageChanged = true;
         selectedRecord.Selected = false;
     } 
     
@@ -169,6 +172,7 @@ export class FindingsComponent implements OnInit {
             //this.AddNewSearchStatusItem();
             this.service.saveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
+                this.pageChanged = false;
                 this.CompForm = item;
                 this.IntiliazeRecords();
               },
@@ -181,6 +185,7 @@ export class FindingsComponent implements OnInit {
             //this.AddNewSearchStatusItem();
                this.service.saveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
+                this.pageChanged = false;
                 this._location.back();
                  },
             error => {
@@ -206,17 +211,21 @@ export class FindingsComponent implements OnInit {
         }
     }
 
-    // BoolYesNo (value: boolean): string   {
-    // if (value == null){
-    //     return "";
-    // }
-    // if (value == true){
-    //     return "Yes"
-    // }
-    // else{
-    //     return "No"
-    // }
-    // }
+   canDeactivate(): Promise<boolean> | boolean {
+              
+        if (this.pageChanged == false){
+            return true;
+        }
+        // Otherwise ask the user with the dialog service and return its
+        // promise which resolves to true or false when the user decides
+        //this.IgnoreChangesConfirmModal.open();
+        //return this.canDeactivateValue;
+        return window.confirm("Changes not saved. Ignore changes?");//this.dialogService.confirm('Discard changes?');
+    }
+    
+    setDeactivateValue(){
+        this.canDeactivateValue = true;
+    }
     
     goBack() {
         this._location.back();

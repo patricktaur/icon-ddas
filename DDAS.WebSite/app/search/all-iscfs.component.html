@@ -36,9 +36,11 @@
 									<option value="2">Review Completed, No Issues Identified</option>  
  						     		<option value="3">Full Match Found, Review Pending</option>
 									<option value="4">Partial Match Found, Review Pending</option>
-							  		<option value="5">No Matched Found, Review Pending</option>              
+							  		<option value="5">No Matched Found, Review Completed</option>              
 								</select>
 							</div>
+
+							
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
@@ -55,10 +57,28 @@
 							</div>-->
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-6 ">
+							<div class="form-group">
+								<label for="Date">Searched On (from):</label>
+								<my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="ComplianceFormFilter.SearchedOnFrom"></my-date-picker>
+							</div>
+						</div>
+						<div class="col-md-6 ">
+							<div class="form-group">
+								<label for="Date">Searched On (to):</label>
+								<my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="ComplianceFormFilter.SearchedOnTo"></my-date-picker>
+							</div>
+						</div>
+					</div>
 					<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
 					<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
 				</div>
+				
+				
 				<div class="col-md-4 ">
+					<div statusCircle-Legend-Vertical></div>
+					<div statusCircle-Legend-Horizontal1></div>
 
 				</div>
 			</div>
@@ -72,12 +92,12 @@
 					<th class="col-md-1 text-left">Active</th>
 					<th class="col-md-1 text-center">Searched on</th>
 					<th class="col-md-1 text-center">Assigned to</th>
-                    <th class="col-md-1 text-left">Status</th>
+					<th class="col-md-1 text-left">Status</th>
 					<th class="col-md-3 text-center">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr *ngFor="let item of PrincipalInvestigators" class="active">
+				<tr *ngFor="let item of PrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: p} " class="active">
 
 					<td class="text-left">
 						{{item.Name}}
@@ -107,6 +127,7 @@
 				</tr>
 			</tbody>
 		</table>
+		 <pagination-controls (pageChange)="p = $event"></pagination-controls>
 	</div>
 </div>
 

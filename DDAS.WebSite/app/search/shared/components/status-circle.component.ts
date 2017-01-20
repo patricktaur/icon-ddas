@@ -35,6 +35,9 @@ export class StatusCircleComponent implements OnInit {
         case 5:
             this.color ="lawngreen";
             break;   
+         case 6:
+            this.color ="grey";
+            break; 
         default:
             this.color ="black";
             break;

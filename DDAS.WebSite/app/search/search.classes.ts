@@ -186,15 +186,10 @@ export class SearchList{
       InvestigatorDetails:InvestigatorSearched[] = [];
       SiteSources : SiteSourceToSearch[] = [];
       Findings: Finding[] = [];
-      Status: string;
-      StatusEnum: ComplianceFormStatusEnum;
+      Status: string = "";
+      StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
 
-    //   AllDataExtractionSuccessful: boolean;
-    //   TotalIssuesFound: number = 0;
-    //   HasExtractionError : boolean;
-        
-        //Validations:
-        SearchPending: boolean = true;
+      SearchPending: boolean = true;
     }
  
 
@@ -221,6 +216,9 @@ export class SearchList{
           
       SitesSearched: SiteSearchStatus[] = [];
       InvestigatorSiteStatus:string[];
+     Status: string = "";
+      StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
+
         //---For client side Validations
       CanEdit:boolean = true;  //set to false when the name is searched.
       Saved: boolean = false;  //temp, to be replaced by form validation
@@ -321,4 +319,5 @@ export class SearchList{
         Status: ComplianceFormStatusEnum
     }
      
-      
+
+  

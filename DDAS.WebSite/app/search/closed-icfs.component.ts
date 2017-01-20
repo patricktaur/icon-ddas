@@ -34,7 +34,7 @@ export class ClosedICFsComponent implements OnInit {
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
     private makeActiveCompFormId: string;
-    private makeActivePrincipalInvestigatorName: string
+    public makeActivePrincipalInvestigatorName: string
 
     constructor(
         private route: ActivatedRoute,

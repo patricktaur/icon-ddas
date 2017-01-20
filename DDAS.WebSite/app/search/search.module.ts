@@ -1,6 +1,8 @@
 import { NgModule }       from '@angular/core';
 import { CommonModule }   from '@angular/common';
-import { FormsModule }    from '@angular/forms';
+import { ReactiveFormsModule }    from '@angular/forms';
+import { SearchResultSummaryComponent } from './search-result-summary.component';
+import { SearchInputComponent }       from './search-input.component';
 
 import { OpenComplianceFormsComponent }       from './open-compliance-search-forms.component';
 
@@ -9,14 +11,14 @@ import { DueDiligenceCheckComponent }       from './due-diligence-check.componen
 import { ClosedICFsComponent }       from './closed-icfs.component';
 
 import { ManageICFsComponent }       from './manage-icfs.component';
+import { AllISCFsComponent }       from './all-iscfs.component';
 
 import { SearchComponent }     from './search.component';
 
-import {AllISCFsComponent} from './all-iscfs.component';
 
 import { searchRouting } from './search.routing';
 
-
+import {SearchDetailComponent} from './search-detail.component';
  import {Ng2Uploader} from '../shared/utils/ng2-uploader1/ng2-uploader'
 
  import {ComplianceFormComponent} from './compliance-form.component'
@@ -27,16 +29,17 @@ import { searchRouting } from './search.routing';
  import {SharedModule} from '../shared/shared.module'
  import { StatusCircleComponent}  from './shared/components/status-circle.component';
  import { StatusCircleLegendVerticalComponent}  from './shared/components/status-circle-legend-vertical';
- import { StatusCircleLegendHorizontalComponent}  from './shared/components/status-circle-legend-horizontal';
- 
+ import { StatusCircleLegHorComponent}  from './shared/components/status-circle-legend-horizontal';
  import { DownloadComplianceFormComponent}  from './shared/components/download-compliance-form.component';
  
+
 
 
 @NgModule({ 
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
+    
     searchRouting,
     Ng2Uploader,
     Ng2Bs3ModalModule,
@@ -55,19 +58,19 @@ import { searchRouting } from './search.routing';
   FindingsComponent,
   StatusCircleComponent,
   StatusCircleLegendVerticalComponent,
-  StatusCircleLegendHorizontalComponent,
+  StatusCircleLegHorComponent,
   DownloadComplianceFormComponent,
   AllISCFsComponent
+
   ],
  
   providers: [
     
   ],
-  exports:      [ 
-    StatusCircleComponent,
-    StatusCircleLegendVerticalComponent,
-    StatusCircleLegendHorizontalComponent,
-    DownloadComplianceFormComponent
-    ]
+  exports:      [ StatusCircleComponent,
+  StatusCircleLegendVerticalComponent,
+  StatusCircleLegHorComponent,
+  DownloadComplianceFormComponent
+                   ]
 })
 export class SearchModule {}

@@ -59,13 +59,13 @@
 									<div class="form-group text-left">
 										<label for="Status">Status:</label>
 										<select class="form-control" [(ngModel)]="filterStatus">
-											<option value="-1">All</option>
-											<option value="0">Data Not Extracted</option>
-											<option value="1">Review Completed, No Issues Found.</option>
-											<option value="2">No Matches Found, Review Pending</option>
-											<option value="3">Review Completed, Issues Identified.</option>
-											<option value="4">Matches Found, Review Pending.</option>              
-										</select>
+							<option value="-1">All</option>
+  							<option value="0">Data Not Extracted</option>
+  							<option value="1">Review Completed, No Issues Found.</option>
+ 						     <option value="2">No Matches Found, Review Pending</option>
+							  <option value="3">Review Completed, Issues Identified.</option>
+							  <option value="4">Matches Found, Review Pending.</option>              
+												</select>
 									</div>
 								</div>
 								
@@ -125,13 +125,9 @@
 				</td>
 				<td>
 					<button type="button" class="btn btn-primary" 
-					(click)= "DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
+					(click)= "DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
 					 title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
-					
-					
 					<button type="button" class="btn btn-primary" (click)="OpenForEdit(item)" title="Edit Compliance Form"><span class="glyphicon glyphicon-edit" ></span></button>
-					
-					
 				</td>
 			</tr>
 		</tbody>

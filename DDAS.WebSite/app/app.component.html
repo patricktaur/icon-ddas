@@ -1,42 +1,43 @@
 <div class="container-fluid">
 	<div class="row">
-		
+
 		<div class="col-lg-2 sidebar" *ngIf="authService.isLoggedIn">
 			<div class="logo-area">
 				<img src="assets\images\ICON-logo.gif" width="60%" class="img-responsive">
 			</div>
 			<ul class="nav nav-sidebar">
-	
-				<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Check</a></li><br/>
-				<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">My Closed ISCFs</a></li><br/>
-				
-				<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All ISCFs</a></li><br/>
 
-				<li class="active" *ngIf="authService.isUser"> <a routerLink="/about-ddas" routerLinkActive="active">About DDAS</a></li><br/>
+				<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Check</a></li>
+				<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed ICSFs</a></li>
+				<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All ISCFs</a></li>
+				<li class="active" *ngIf="false"> <a routerLink="/open-compliance-forms" routerLinkActive="active">Due Diligence Check  (Alt)</a></li>
 
-				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li><br/>
+				<li class="active" *ngIf="false"> <a routerLink="/report" routerLinkActive="active">Report</a></li>
+				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
+				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-compliance-forms" routerLinkActive="active">Manage ICSFs</a></li>
+								<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li><br/>
 
 				<li class="active" *ngIf="authService.isUser"> <a routerLink="/my-loginhistory" routerLinkActive="active">My Login History</a></li><br/>
 
-				<li class="active" *ngIf="false"> <a routerLink="/open-compliance-forms" routerLinkActive="active">Due Diligence Check  (Alt)</a></li><br/>
 				
-				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/report" routerLinkActive="active">Report</a></li><br/>
-				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li><br/>
-				<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-compliance-forms" routerLinkActive="active">Manage ICFs</a></li><br/>
-				
-				<li >{{authService.userName}} </li><br/>
-				<li >Roles: {{authService.roles}} </li><br/>
-				<li class="active"> <a routerLink="/changepassword" routerLinkActive="active">Change Password</a></li>
-				<li class="active"> <a routerLink="/logout" routerLinkActive="active">Logout</a></li>
-	
+				<li class="active" > <a routerLink="/about-ddas" routerLinkActive="active">About DDAS</a></li>
 			</ul>
+			<div class="panel panel-info">
+				<div class="panel-heading">Welcome {{authService.userName}} </div>
+				<div class="panel-body">
+					<p>Your roles: {{authService.roles}} </p>
+					<p><a routerLink="/changepassword" routerLinkActive="active">Change Password</a></p>
+					<p><a (click)="logout()" routerLinkActive="active">Logout</a></p>
+				</div>
+
+			</div>
 		</div>
 		<div class="col-lg-10">
 			<!--<h1>test</h1>-->
 			<div class="main">
 				<div class="header-top" *ngIf="authService.isLoggedIn">
 					<h1 class="page-header">Due Diligence Automation System</h1>
-					
+
 				</div>
 				<div class="well-top">
 					<router-outlet> </router-outlet>

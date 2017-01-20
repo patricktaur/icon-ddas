@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit{
     public rememberChecked:boolean=false;
   constructor(public authService: AuthService, public router: Router) {
     this.setMessage();
-    this.authService.logout();
+    
   }
 
   ngOnInit() {
@@ -32,13 +32,11 @@ export class LoginComponent implements OnInit{
    
   }
 
-  
-
-
+ 
   login() {
   
     this.loading = true;
-        
+ 
         this.error = "";
         this.authService.login(this.logInfo.username, this.logInfo.password)
             .subscribe(
@@ -63,30 +61,9 @@ export class LoginComponent implements OnInit{
                     this.loading = false;
                 });
 
-    //  this.loading = true;
-    //   this.authService.login(this.logInfo.username, this.logInfo.password).subscribe(() => {
-    //     this.setMessage();
-    //     if (this.authService.isLoggedIn) {
-    //       // Get the redirect URL from our auth service
-    //       // If no redirect has been set, use the default
-    //       let redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/search';
-          
-    //       // Set our navigation extras object
-    //       // that passes on our global query params and fragment
-    //       let navigationExtras: NavigationExtras = {
-    //         preserveQueryParams: true,
-    //         preserveFragment: true
-    //       };
-
-    //     // Redirect the user
-    //     this.router.navigate([redirect], navigationExtras);
-    //   }
-    //   else{
-    //     console.log("Password incorrect");
-    //     this.error = 'Username or password is incorrect';
-    //     this.loading = false;
-    //   }
-    // });
+     
+     
+    
 
     }
     
@@ -94,7 +71,8 @@ export class LoginComponent implements OnInit{
       localStorage.setItem('currentUsername',this.logInfo.username);
       localStorage.setItem('currentUserpassword',this.logInfo.password);
     }
-
+  
+  
   ///
   
   // login() {
@@ -122,14 +100,20 @@ export class LoginComponent implements OnInit{
   // }
 
   logout() {
-    //this.authService.logout();
-    //this.setMessage();
+
+    this.authService.logout()
+            .subscribe(
+                data => {
+                    
+                },
+                error => {
+                   
+                    this.error = 'Could not logout.';
+                    this.loading = false;
+                });
   }
+
+  get diagnostic() { return JSON.stringify(this.authService.token); }
 }
 
 
-/*
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

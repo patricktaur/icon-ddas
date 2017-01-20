@@ -1,14 +1,16 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule }   from '@angular/router';
-
+import {ReportTempComponent} from './report-temp.component';
 
 import { AuthGuard }             from './auth/auth-guard.service';
 
 import { loginRoutes,  authProviders }  from './auth/login.routing';
+
 import { CanDeactivateGuard } from './shared/services/can-deactivate-guard.service';
+//import {  LoginComponent }  from './auth/login.component';
  
 const appRoutes: Routes = [
-  //{ path: 'report', component: ReportTempComponent , canActivate: [AuthGuard] },
+  //{ path: 'login', component: LoginComponent  },
   ...loginRoutes
   
    

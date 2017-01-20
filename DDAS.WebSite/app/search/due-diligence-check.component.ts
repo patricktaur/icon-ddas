@@ -32,8 +32,7 @@ export class DueDiligenceCheckComponent implements OnInit {
     public filterInvestigatorName: string = "";
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
-    
-    public excelFileUploadValidations:string [];
+
 
     constructor(
         private route: ActivatedRoute,
@@ -89,23 +88,21 @@ export class DueDiligenceCheckComponent implements OnInit {
         this.Loading = false;
     }
 
-    GenerateComplianceForm(inv: PrincipalInvestigatorDetails) {   //(formid: string){
+    // GenerateComplianceForm(inv: PrincipalInvestigatorDetails) {   //(formid: string){
 
-        let formid = inv.RecId;
-        this.PrincipalInvestigatorNameToDownload = inv.Name;
-        this.downloadUrl = "";
-        this.service.generateComplianceForm(formid)
-            .subscribe((item: any) => {
-                this.downloadUrl = this.configService.getApiHost() +  item;
-                console.log("item:" + item);
-                 console.log("this.downloadUrl:" + this.downloadUrl);
-            },
-            error => {
-                this.ComplianceFormGenerationError = "Error: Compliance Form could not be generated."
-            });
-    }
+    //     this.ComplianceFormGenerationError = "";
+    //     let formid = inv.RecId;
+    //     this.PrincipalInvestigatorNameToDownload = inv.Name;
+    //     this.downloadUrl = "";
+    //     this.service.generateComplianceForm(formid)
+    //         .subscribe((item: any) => {
+    //             this.downloadUrl = this.configService.getApiHost() +  item;
+    //          },
+    //         error => {
+    //             this.ComplianceFormGenerationError = "Error: Compliance Form could not be generated."
+    //         });
+    // }
 
-    
     handleUpload(data: any): void {
         this.Loading = true;
         this.zone.run(() => {
@@ -114,13 +111,9 @@ export class DueDiligenceCheckComponent implements OnInit {
 
             }
             else {
-                this.excelFileUploadValidations = data.response;
-                if (!this.excelFileUploadValidations){
-                    this.Loading = false;
-                    this.modal.close();
-                    this.LoadPrincipalInvestigators();
-                }
-                
+                this.Loading = false;
+                this.modal.close();
+                this.LoadPrincipalInvestigators();
             }
 
             this.progress = data.progress.percent / 100;
@@ -138,34 +131,34 @@ export class DueDiligenceCheckComponent implements OnInit {
             });
     }
 
-    getBackgroundColor(color: number) {
-        let retColor: string;
+    // getBackgroundColor(color: number) {
+    //     let retColor: string;
 
-        switch (color) {
-            case 0:
-                retColor = "grey"; //Grey
-                break;
-            case 1:
-                retColor = "green";
-                //retColor = "#00b300";
-                break;
-            case 2:
-                retColor = "lawngreen";
-                //retColor = "#00ff00";
-                break;
-            case 3:
-                retColor = "red";
-                //retColor = "#b30000";
-                break;
-            case 4:
-                retColor = "lightcoral";
-                //retColor = "#ff0000";
-                break;
-            default: retColor = "grey";
-        }
-        return retColor;
+    //     switch (color) {
+    //         case 0:
+    //             retColor = "grey"; //Grey
+    //             break;
+    //         case 1:
+    //             retColor = "green";
+    //             //retColor = "#00b300";
+    //             break;
+    //         case 2:
+    //             retColor = "lawngreen";
+    //             //retColor = "#00ff00";
+    //             break;
+    //         case 3:
+    //             retColor = "red";
+    //             //retColor = "#b30000";
+    //             break;
+    //         case 4:
+    //             retColor = "lightcoral";
+    //             //retColor = "#ff0000";
+    //             break;
+    //         default: retColor = "grey";
+    //     }
+    //     return retColor;
 
-    }
+    // }
 
-    get diagnostic() { return JSON.stringify(this.excelFileUploadValidations); }
+    get diagnostic() { return JSON.stringify(this.response); }
 }

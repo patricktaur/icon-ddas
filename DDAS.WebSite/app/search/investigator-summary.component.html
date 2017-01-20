@@ -13,6 +13,7 @@
 					<h3 class="align-left no-margin-top">
 						Investigator: <strong>{{Investigator.Name}}, (Role: {{Investigator.Role}})</strong>
 					</h3>
+					<div *ngIf="false" statusCircle [status]="Investigator.StatusEnum" size=24 [title]="Investigator.Status"></div>
 				</div>
 			</div>
 		</div>
@@ -24,7 +25,7 @@
 			<h4>
 				Summary: Sites with full Match:
 				<strong>{{Investigator.Sites_FullMatchCount}}</strong> | Partial Matches: <strong>{{Investigator.Sites_PartialMatchCount}}</strong>				| Issues Identified: <strong>{{Investigator.TotalIssuesFound}}</strong>
-					
+
 			</h4>
 			<div *ngIf="true">
 				<!--Summary: {{Investigator.InvestigatorSiteStatus}}-->
@@ -59,18 +60,21 @@
 <div class="row">
 	<div *ngFor="let item of InvestigatorSiteSummary; let indexVal = index">
 		<div class="col-lg-4">
-			<div class="well search-result-well">
+
+			<div class="well ">
 				<div class="row">
-					<div class="col-lg-12">
-						<!-- Site name -->
+					<div class="col-xs-10" style="height: 42px; overflow:hidden;">
 						<h5 class="no-margin-top">
 							<a target="_blank" [href]="item.SiteUrl">
 								{{item.DisplayPosition + "." + item.SiteName |pad: 90 : "&nbsp;"}} <!--not working -->
    							</a>
-							 
 						</h5>
+
+
 					</div>
-					
+					<div class="col-xs-2 text-right">
+						<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-12">
@@ -105,7 +109,7 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-8">
-						
+
 						<label for="Country">Review Completed:{{item.ReviewCompleted | boolToYesNo}}</label>
 					</div>
 					<div class="col-lg-4">
@@ -113,6 +117,8 @@
 					</div>
 				</div>
 			</div>
+
+
 		</div>
 		<div *ngIf="dividerGeneration(indexVal)">
 			<div style="clear:both;"></div>
@@ -121,5 +127,5 @@
 </div>
 <p>
 	<button type="button" class="btn btn-default " (click)="goBack()">BACK</button>
-	
+
 </p>

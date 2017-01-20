@@ -15,21 +15,15 @@ import { DialogService }  from '../shared/utils/dialog.service';
 
 export class ReportComponent {
 
- 
-
-
   private PrincipalInvestigators: PrincipalInvestigatorDetails[];
   public ComplianceFormIdToDelete: string;
   public InvestigatorNameToDelete: string;
 
      public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
-
-
-    
-    
+ 
   
-  constructor(private service: ReportService,private route: ActivatedRoute, private dialog: DialogService){
+  constructor(private service: ReportService, private route: ActivatedRoute, private dialog: DialogService){
 
   }
   ngOnInit(){

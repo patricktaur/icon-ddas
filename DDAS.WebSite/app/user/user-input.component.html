@@ -2,87 +2,105 @@
 	<div class="col-lg-12">
 
 		<div class="well">
-			<div class="row">
-				<div class="col-lg-12">
-					<h3 class="align-left no-margin-top">
-						Edit
-					</h3>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-4">
-					<div class="form-group">
-						<label for="Name">Name:</label>
-						<input type="text" class="form-control" name="Name" [(ngModel)]="user.UserName">
-					</div>
-
-				</div>
-				<div class="col-lg-8">
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-4">
-					<div class="form-group">
-						<label for="Name">EMail Id:</label>
-						<input type="text" name="Name" class="form-control" [(ngModel)]="user.EmailId">
+			<form #f="ngForm" novalidate>
+				<div class="row">
+					<div class="col-lg-12">
+						<h3 class="align-left no-margin-top">
+							{{isNewText}}
+						</h3>
 					</div>
 				</div>
-				<div class="col-lg-8">
-				</div>
-			</div>
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="form-group">
+							<label for="Name">Name:</label>
+							<label *ngIf="!isNew" class="form-control">{{user.UserName}}</label>
+							<div *ngIf="isNew">
+								<input type="text" class="form-control" name="Name" [(ngModel)]="user.UserName" 
+								#name="ngModel" required pattern="[a-zA-Z]{3,15}">
+								<small  class="text-danger">
+            						Caution: Name cannot be modified after SAVE.
+ 								</small>
+								 <br>
+								<small [hidden]="name.valid || (name.pristine && !f.submitted)" class="text-danger">
+            						Only alphabets allowed, min: 3, max: 15
+ 								</small>
+							</div>
 
-			<div class="row">
-				<div class="col-lg-4">
-					<div class="form-group">
-						<label for="Active">Active:</label>
-						<input type="checkbox" name="Active" [(ngModel)]="user.Active">
+						</div>
+
 					</div>
+					<div class="col-lg-8">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="form-group">
+							<label for="Name">EMail Id:</label>
+							<input type="text" name="emailId" class="form-control" [(ngModel)]="user.EmailId"
+							#emailId="ngModel" required 
+							pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*">
+							<small [hidden]="emailId.valid || (emailId.pristine && !f.submitted)" class="text-danger">
+            						Invalid EMail.
+ 								</small>
+						</div>
+					</div>
+					<div class="col-lg-8">
+					</div>
+				</div>
 
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="form-group">
+							<label for="Active">Active:</label>
+							<input type="checkbox" name="Active" [(ngModel)]="user.Active">
+						</div>
+
+					</div>
+					<div class="col-lg-8">
+					</div>
 				</div>
-				<div class="col-lg-8">
+				<div class="row">
+
+					<div class="col-lg-2">
+						<div class="form-group">
+							<label for="Roles">Roles:</label>
+							<br>
+							<div class="row" *ngFor="let role of user.Roles;">
+								<div class="col-lg-8">
+									&nbsp;&nbsp;&nbsp;{{role.Name}}
+								</div>
+								<div class="col-lg-4">
+									<input type="checkbox" name="Selected" [(ngModel)]="role.Active">
+								</div>
+
+							</div>
+							<div class="col-lg-10">
+							</div>
+						</div>
+
+					</div>
+					<div class="col-lg-10">
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				
-				<div class="col-lg-2">
-					<div class="form-group">
-						<label for="Roles">Roles:</label>
-						<br>
-						<div class="row" *ngFor="let role of user.Roles;">
+
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="row">
+
+
 							<div class="col-lg-8">
-								&nbsp;&nbsp;&nbsp;{{role.Name}}
 							</div>
-							<div class="col-lg-4">
-								<input type="checkbox" name="Selected" [(ngModel)]="role.Active">
-							</div>
-
-						</div>
-						<div class="col-lg-10">
-						</div>
-					</div>
-
-				</div>
-				<div class="col-lg-10">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4">
-					<div class="row">
-
-
-						<div class="col-lg-8">
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-4">
-					<button type="button" class="btn btn-primary" (click)="Save()" title="Save"><span class="glyphicon glyphicon-ok" > Save</span></button>
-					<button type="button" class="btn btn-primary" (click)="CancelSave()" title="Cancel">Cancel</button>
+				<div class="row">
+					<div class="col-lg-4">
+						<button type="button" class="btn btn-primary" (click)="Save()" title="Save" [disabled]="!f.valid"><span class="glyphicon glyphicon-ok" > Save</span></button>
+						<button type="button" class="btn btn-primary" (click)="CancelSave()" title="Cancel">Cancel</button>
+					</div>
 				</div>
-			</div>
+			</form>
 		</div>
-
 	</div>
 </div>

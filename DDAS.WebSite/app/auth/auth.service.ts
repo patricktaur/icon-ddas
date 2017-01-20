@@ -7,7 +7,8 @@ import 'rxjs/add/operator/delay';
 import { Http, Headers, Response,  RequestOptions } from '@angular/http';
 import { ConfigService } from '../shared/utils/config.service';
 import { ChangePasswordBindingModel }      from './auth.classes';
-
+import { Component } from '@angular/core';
+import { Router }   from '@angular/router';
 //temp:
 //import {SiteInfo,StudyNumbers,SearchSummaryItem,SearchSummary,NameSearch, SearchResultSaveData} from '../search/search.classes';
 
@@ -22,12 +23,11 @@ export class AuthService {
   public isUser: boolean;
   public roles: string = ""; //comma separarted
 
-  
   // store the URL so we can redirect after logging in
   redirectUrl: string;
   _baseUrl: string = '';
 
-   constructor(private http: Http, private configService: ConfigService) {
+   constructor(private http: Http, private configService: ConfigService, private router: Router) {
         // set token if saved in local storage
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         //this.token = currentUser && currentUser.token;
@@ -45,6 +45,7 @@ export class AuthService {
  login(username:string, password:string) {
     
     this.token = null;
+    this.isLoggedIn = false;
     
     var body = "grant_type=password&username=" +  username + "&password=" + password;
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
@@ -57,7 +58,7 @@ export class AuthService {
                  //console.log("token: " + this.token)
                 
                 //let token = response.json() && response.json().access_token;
-                let token = response.json().access_token;
+                //let token = response.json().access_token;
                 this.userName = response.json().userName;
                 
                 //refactor code to handle dynamic addition of roles:
@@ -81,22 +82,7 @@ export class AuthService {
                      comma = ", "
                 }
        
-                if (token) {
-                    // set token property
-                    this.token = token;
-   
-                    // store username and jwt token in local storage to keep user logged in between page refreshes
-                    //localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token }));
-
-                    //localStorage.setItem('currentUser', JSON.stringify({ username: username, password: password }));
-                    
-                    // return true to indicate successful login
-                    return true;
-                } else {
-                    // return false to indicate failed login
-                    this.token = null;
-                    return false;
-                }
+                
             })
             //.catch(this.handleError);
  
@@ -108,8 +94,7 @@ export class AuthService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         headers.append("Authorization","Bearer " + this.token);
         let options = new RequestOptions({ headers: headers });
-         console.log("YYYYYY: " + body);
-
+ 
         return this.http.post(this._baseUrl + 'Account/SetPassword', body, options)
             .map((res: Response) => {
                 console.log("success");
@@ -119,9 +104,19 @@ export class AuthService {
     }
 
   logout() {
-      console.log("Start of logout");
-      this.isLoggedIn = false;
-      this.token = null;
+   
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        headers.append("Authorization","Bearer " + this.token);
+        let options = new RequestOptions({ headers: headers });
+         return this.http.post(this.configService.getApiURI() + 'Account/Logout', null, options )
+            .map((response: Response) => {
+                  this.token = null;
+                  this.isLoggedIn = false;
+                  //this.router.navigate(['/']); //not working in prod
+                  //window.location.reload();
+              })
+            .catch(this.handleError);
+   
   }
 
   private handleError(error: any) {
@@ -143,6 +138,12 @@ export class AuthService {
         console.log("serverError" + serverError);
         return Observable.throw(applicationError || modelStateErrors || 'Server error');
     }
+
+
+
+
+
+
 }
 
 

@@ -13,7 +13,7 @@ import { AuthService } from './auth/auth.service';
   moduleId: module.id,
   selector: 'ddas-app',
   templateUrl: 'app.component.html',
-  //styleUrls: ['..assets/css/styles.css'],  
+  
 })
 // #enddocregion metadata
 // #docregion class
@@ -22,29 +22,30 @@ export class AppComponent {
  constructor(
         public authService: AuthService,
         private router: Router
-  ) {
+  ) { }
+
+  // logout(){
     
-    //authService.isAdmin
-    //authService.isUser
+  //   this.authService.logout();
+  //   this.router.navigate(['/login']);
+  // }  
+
+  logout() {
+
+    this.authService.logout()
+            .subscribe(
+                data => {
+ 
+                    this.router.navigate(['/login']);
+                    window.location.reload();
+    
+                },
+                error => {
+                   
+                    //this.error = 'Could not logout.';
+                    //this.loading = false;
+                });
   }
-
-  
-  logout(){
-    this.router.navigate(['/login']);
-
-    //this.authService.userName
-    //this.authService.logout();
-
-      // this.authService.logout()
-      //       .subscribe((item: any) => {
-      //          //this.router.navigate(['/login']);
-      //       },
-      //       error => {
-                 
-      //       });
-
-
-  }  
 
   get diagnostic() { return JSON.stringify(this.authService.token); }
 }

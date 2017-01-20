@@ -36,7 +36,7 @@
 									<option value="2">Review Completed, No Issues Identified</option>  
  						     		<option value="3">Full Match Found, Review Pending</option>
 									<option value="4">Partial Match Found, Review Pending</option>
-							  		<option value="5">No Matched Found, Review Pending</option>              
+							  		<option value="5">No Matched Found, Review Completed</option>              
 								</select>
 							</div>
 						</div>
@@ -98,8 +98,8 @@
 					<td class="text-center">
 						<button type="button" class="btn btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
 							title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
-
-						<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
+						<button type="button" class="btn btn-primary" (click)="OpenForEdit(item)" title="Open"> <span class="glyphicon glyphicon-folder-open"></span> </button>
+						<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-retweet"></span> </button>
 						<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>
 					</td>
 				</tr>

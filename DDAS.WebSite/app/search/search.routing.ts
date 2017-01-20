@@ -1,24 +1,26 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CanDeactivateGuard } from '../shared/services/can-deactivate-guard.service';
 
 //import { SearchResultSummaryComponent } from './search-result-summary.component';
-
+import { SearchInputComponent } from './search-input.component';
 import { OpenComplianceFormsComponent } from './open-compliance-search-forms.component';
 
 import { DueDiligenceCheckComponent } from './due-diligence-check.component';
 import { ClosedICFsComponent } from './closed-icfs.component';
 import { ManageICFsComponent } from './manage-icfs.component';
+import { AllISCFsComponent } from './all-iscfs.component';
 
-import { SearchComponent }     from './search.component';
+
+import { SearchComponent } from './search.component';
 //import { SearchDetailComponent }     from './search-detail.component';
-  
-import {ComplianceFormComponent} from './compliance-form.component'
 
-import {InvestigatorSummaryComponent} from './investigator-summary.component'
-import {FindingsComponent} from './findings.component'
+import { ComplianceFormComponent } from './compliance-form.component'
 
-//pradeep 9Jan2017
-import {AllISCFsComponent} from './all-iscfs.component'
+import { InvestigatorSummaryComponent } from './investigator-summary.component'
+import { FindingsComponent } from './findings.component'
+
+
 
 import { AuthGuard } from '../auth/auth-guard.service';
 
@@ -30,42 +32,62 @@ const searchRoutes: Routes = [
   },
   {
     path: 'search',
-    component: SearchComponent , canActivate: [AuthGuard],
+    component: SearchComponent, canActivate: [AuthGuard],
     children: [
-          //{ path: '',  component: SearchInputComponent },
-            
-            { path: '',  component: DueDiligenceCheckComponent },
-             
-           
-          //  { path: 'details/:siteEnum/:formid/:NameToSearch',
-          //  component: SearchDetailComponent,
-          //  },
-           //can be removed?
-          //  {
-          //   path: 'summary/:NameToSearch/:formid/:FullMatchCount/:PartialMatchCount',
-          //   component: SearchResultSummaryComponent,
-          // },
-          {
-            path: 'complianceform/:formid',
-            component: ComplianceFormComponent,
-          },
-          {
-            path: 'investigator-summary/:formid/:investigatorid',
-            component: InvestigatorSummaryComponent,
-          },
-          {
-            path: 'findings/:formid/:investigatorid/:siteenum',
-            component: FindingsComponent,
-          }
+
+      { path: '', component: DueDiligenceCheckComponent },
+
+      {
+        path: 'complianceform/:formid',
+        component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'investigator-summary/:formid/:investigatorid',
+        component: InvestigatorSummaryComponent,
+      },
+      {
+        path: 'findings/:formid/:investigatorid/:siteenum',
+        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+      }
     ]
   },
-   { path: 'closed-icfs',  component: ClosedICFsComponent 
-    , canActivate: [AuthGuard] },
-     { path: 'open-compliance-forms',  component: OpenComplianceFormsComponent 
-    , canActivate: [AuthGuard] },
-   { path: 'manage-compliance-forms',  component: ManageICFsComponent 
-    , canActivate: [AuthGuard] },
-    { path: 'all-iscfs', component: AllISCFsComponent}
+  {
+    path: 'closed-icfs', component: ClosedICFsComponent
+    , canActivate: [AuthGuard]
+  },
+  {
+    path: 'open-compliance-forms', component: OpenComplianceFormsComponent
+    , canActivate: [AuthGuard]
+  },
+  {
+    path: 'manage-compliance-forms', component: SearchComponent
+    , canActivate: [AuthGuard],
+    children: [
+
+      { path: '', component: ManageICFsComponent },
+
+      {
+        path: 'complianceform/:formid',
+        component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'investigator-summary/:formid/:investigatorid',
+        component: InvestigatorSummaryComponent,
+      },
+      {
+        path: 'findings/:formid/:investigatorid/:siteenum',
+        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+      }
+    ]
+  },
+
+{
+  path: 'all-iscfs', component: AllISCFsComponent
+    , canActivate: [AuthGuard]
+},
+    
+  
+   
 ];
 
 export const searchRouting: ModuleWithProviders = RouterModule.forChild(searchRoutes);
