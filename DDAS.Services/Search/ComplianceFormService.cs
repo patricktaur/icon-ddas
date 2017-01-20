@@ -802,6 +802,10 @@ namespace DDAS.Services.Search
         public string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplateFolder, 
             string DownloadFolder)
         {
+            IWriter wri = new CreateComplianceFormPDF();
+
+            GenerateComplianceForm(DownloadFolder, ComplianceFormId, wri);
+
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             var UtilitiesObject = new CreateComplianceFormWord();
@@ -822,7 +826,6 @@ namespace DDAS.Services.Search
             //threfore: 
 
             return DownloadFolder + GeneratedFileName;
-
         }
         #endregion
 
@@ -853,9 +856,12 @@ namespace DDAS.Services.Search
 
             writer.Initialize(GeneratedFileNameNPath);
 
+            writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
+            writer.AddFormHeaders(form.ProjectNumber, form.SponsorProtocolNumber,
+                form.Institute, form.Address);
 
-            return null;
+            return DownloadFolder + GeneratedFileName;
         }
         #endregion
 
@@ -1256,6 +1262,8 @@ namespace DDAS.Services.Search
             }
             return sb.ToString();
         }
+
+      
 
         public string AddSpaceBetweenWords(string Name)
         {

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- #docregion -->
+<html>
+  <head>
+    <base href="/">
+    <title>ICON - DDAS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+      
+    <link rel="stylesheet" href="assets/css/styles.css" 
+
+    <!-- 1. Load libraries -->
+    <!-- #docregion libraries -->
+    <!-- #docregion polyfills -->
+     <!-- Polyfill(s) for older browsers -->
+    <script src="dist/lib/shim.min.js"></script>
+    <!-- #enddocregion polyfills -->
+
+   <script src="dist/lib/zone.min.js"></script>
+    <!-- #enddocregion libraries -->
+
+
+    <!-- 2. Configure SystemJS -->
+    <!-- #docregion systemjs -->
+    <script src="assets/js/jquery.min.js"> </script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"> </script>
+   
+    
+    <script>window.module = 'aot';</script>
+   
+    <!-- #enddocregion systemjs -->
+  </head>
+
+  <!-- 3. Display the application -->
+  <!-- #docregion my-app -->
+  <body>
+    <!--<my-app>Loading...</my-app>-->
+    <ddas-app><div class="loader"></div></ddas-app>
+  </body>
+  <!-- #enddocregion my-app -->
+   <script src="dist/build.js"></script>
+
+</html>

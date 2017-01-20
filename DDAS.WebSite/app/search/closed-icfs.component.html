@@ -1,0 +1,83 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well">
+			<h3 class="no-margin-top">Closed ICFs</h3>
+			<br>
+		</div>
+	</div>
+</div>
+
+<div class="table-responsive">
+	
+	<table class="table table-bordered table-hover table-striped">
+		<thead>
+				<tr>
+				<th colspan="7"><div statusCircle-Legend-Horizontal></div> </th>
+			</tr>
+			<tr>
+				<th class="col-md-3 text-left">Principal Investigator </th>
+				<th class="col-md-2 text-left">ICON Project Number</th>
+				<th class="col-md-1 text-left">Sponsor Protocol Number</th>
+				<th class="col-md-2 text-left">Country</th>
+				<th class="col-md-1 text-center">Searched on</th>
+				<th class="col-md-1 text-left">Status</th>
+				<th class="col-md-2 text-center">Actions</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let item of filteredRecords" class="active">
+
+				<td class="text-left">
+					{{item.Name}}
+				</td>
+				<td class="text-center">
+					{{item.ProjectNumber}}
+				</td>
+				<td>
+					{{item.SponsorProtocolNumber}}
+				</td>
+				<td class="text-left">
+					{{item.Country}}
+
+				</td>
+				<td class="text-left">
+					{{item.SearchStartedOn | date: 'dd/MMM/yyyy'}}
+
+				</td>
+				<td align="center">
+				 	<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>			
+				</td>
+				<td>
+					
+					<button type="button" class="btn btn-primary" 
+					(click)= "DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
+					 title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
+
+					<button type="button" class="btn btn-primary" (click)="setCompFormActiveValue(item); ConfirmOpenForEditModal.open()" title="Open Compliance Form"><span class="glyphicon glyphicon-edit" ></span></button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+
+<div #DownloadComplianceFormModal download-compliance-form></div>
+
+<modal #ConfirmOpenForEditModal>
+	<modal-header [show-close]="true">
+		<h4 class="modal-title">Open ICF for Edit: {{makeActivePrincipalInvestigatorName}}</h4>
+	</modal-header>
+	<modal-body>
+		<p>Make the Compliance Form Editable.</p>
+		<p>The Form will be listed in the Due Diligence Check page</p>
+		<p></p>
+		
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="makeCompFormActiveValue(); ConfirmOpenForEditModal.close()">Confirm</button>
+		<button type="button" class="btn btn-default" (click)=" ConfirmOpenForEditModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+

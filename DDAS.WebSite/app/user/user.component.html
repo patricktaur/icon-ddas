@@ -1,0 +1,79 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<div class="row">
+				<div class="col-lg-12">
+					<h3 class="align-left no-margin-top">
+						Application Users
+					</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th class="col-md-3">Name</th>
+								<th class="col-md-2">Role</th>
+								<th class="col-md-3">EMail</th>
+								<th class="col-md-4">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let item of Users">
+								<td >
+									<div class="text-left">
+											{{item.UserName}}
+									</div>
+                                  </td>
+								
+								<td>
+									{{item.ActiveRoles}} 
+	                            </td>
+								<td >
+									<div class="text-left">
+											{{item.EmailId}}
+									</div>
+                                  </td>
+								
+								<td>
+									<button class="btn btn-primary" (click)="OpenForEdit(item.UserId)">Edit</button>
+									<button class="btn btn-primary" (click)="ResetPassword(item.UserId)">Reset Password</button>
+									<button class="btn btn-danger" (click)="setUserToDelete(item); DeleteUserModal.open()">Delete</button>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" style="align-left">
+									<div class = "text-left">
+										<button class="btn btn-primary" (click)="AddNew()">Add</button>
+									</div>
+								</td>
+							</tr>
+							<tr *ngIf="passwordReset">
+								<td colspan="3" style="align-left">
+									<div class = "text-left">
+										Password Reset.  Mail sent to the user.
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<modal #DeleteUserModal>
+	<modal-header>
+		<h4 class="modal-title">Delete confirm</h4>
+	</modal-header>
+	<modal-body>
+		User: {{userNameToDelete}} will be deleted.
+	</modal-body>
+	<modal-footer  >
+		<button type="button" class="btn btn-default" (click)="DeleteUser(); DeleteUserModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-default" (click)=" DeleteUserModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
