@@ -159,6 +159,7 @@ namespace DDAS.Models.Entities.Domain
         public string UploadedFileName { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
         public int ExtractionErrorInvestigatorCount { get; set; }
+        public int ExtractedInvestigatorCount { get; set; }
         public int FullMatchesFoundInvestigatorCount { get; set; }
         public int PartialMatchesFoundInvestigatorCount { get; set; }
         public int IssuesFoundInvestigatorCount { get; set; }

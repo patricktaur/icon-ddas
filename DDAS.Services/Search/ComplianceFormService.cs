@@ -272,12 +272,14 @@ namespace DDAS.Services.Search
 
             int IssuesFoundInvestigatorCount = 0;
             int ReviewCompletedInvestigatorCount = 0;
+            int ExtractedInvestigatorCount = 0;
 
             //Pradeep 20Dec2016
             form.PartialMatchesFoundInvestigatorCount = 0;
             form.FullMatchesFoundInvestigatorCount = 0;
             form.IssuesFoundInvestigatorCount = 0;
             form.ReviewCompletedInvestigatorCount = 0;
+            form.ExtractedInvestigatorCount = 0;
 
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
@@ -370,10 +372,12 @@ namespace DDAS.Services.Search
                     ReviewCompletedInvestigatorCount += 1;
                 }
             }
+
             form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
             form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
             form.IssuesFoundInvestigatorCount = IssuesFoundInvestigatorCount;
             form.ReviewCompletedInvestigatorCount = ReviewCompletedInvestigatorCount;
+            form.ExtractedInvestigatorCount = 0;
 
             return form;
         }
