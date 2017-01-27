@@ -315,9 +315,14 @@ export class SearchList{
         SponsorProtocolNumber: string;
         SearchedOnFrom: Date;
         SearchedOnTo: Date;
+       
         Country: string;
         Status: ComplianceFormStatusEnum
     }
      
+    export class CalenderDate
+    {
+         date: { year: number, month: number, day: number} 
+    } 
 
   

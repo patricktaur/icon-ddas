@@ -31,7 +31,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let item of myLoginHistoryDetails" class="active">
+							<tr *ngFor="let item of myLoginHistoryDetails | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 								<td class="text-center">
 									{{item.LoginAttemptTime | date: 'dd MMM yyyy hh:mm a'}}
 								</td>
@@ -42,6 +42,7 @@
 							</tr>
 						</tbody>
 					</table>
+					 <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
 				<div class="col-lg-8">
                     

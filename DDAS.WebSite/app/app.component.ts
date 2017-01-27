@@ -13,6 +13,7 @@ import { AuthService } from './auth/auth.service';
   moduleId: module.id,
   selector: 'ddas-app',
   templateUrl: 'app.component.html',
+  styleUrls: ['vertical-menu.css']
   
 })
 // #enddocregion metadata

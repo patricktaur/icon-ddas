@@ -42,7 +42,8 @@ export class LoginComponent implements OnInit{
             .subscribe(
                 data => {
                     if (this.authService.isAdmin){
-                        this.router.navigate(['/users']);
+                       this.router.navigate(['/']);
+                       // this.router.navigate(['/users']);
                     }
                     else{
                       if (this.authService.isUser){

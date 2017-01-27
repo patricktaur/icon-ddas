@@ -719,10 +719,17 @@ namespace DDAS.Services.Search
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter)
         {
+
+            if (CompFormFilter == null)
+            {
+                throw new Exception("Invalid CompFormFilter");
+            }
+
             var Filter = _UOW.ComplianceFormRepository.GetAll();
             var Filter1 = Filter;
 
-            if(CompFormFilter.InvestigatorName != null && 
+
+            if (CompFormFilter.InvestigatorName != null && 
                 CompFormFilter.InvestigatorName != "")
             {
                 var tempFilter = Filter1.Select(x => x.InvestigatorDetails.Where(inv =>
@@ -751,21 +758,28 @@ namespace DDAS.Services.Search
 
             var Filter4 = Filter3;
 
-            if (CompFormFilter.SearchedOnFrom != null)
+            
+            
+            if (CompFormFilter.SearchedOnFrom != null )
+                
             {
+                DateTime startDate;
+                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
                 Filter4 = Filter3.Where(x =>
-                x.SearchStartedOn >=
-                CompFormFilter.SearchedOnFrom)
-                .ToList();
+               x.SearchStartedOn >= startDate)
+               .ToList();
             }
 
             var Filter5 = Filter4;
 
-            if(CompFormFilter.SearchedOnTo != null)
+            if (CompFormFilter.SearchedOnTo != null)
             {
+
+                DateTime endDate ;
+                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
                 Filter5 = Filter4.Where(x =>
-                x.SearchStartedOn >=
-                CompFormFilter.SearchedOnTo)
+                x.SearchStartedOn <
+                endDate)
                 .ToList();
             }
 

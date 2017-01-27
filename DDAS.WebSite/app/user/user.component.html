@@ -21,7 +21,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let item of Users">
+							<tr *ngFor="let item of Users | paginate: { itemsPerPage: 10, currentPage: pageNumber}">
 								<td >
 									<div class="text-left">
 											{{item.UserName}}
@@ -38,9 +38,9 @@
                                   </td>
 								
 								<td>
-									<button class="btn btn-primary" (click)="OpenForEdit(item.UserId)">Edit</button>
+									<button class="btn btn-primary" (click)="OpenForEdit(item.UserId)" [disabled]="item.UserName == loggedInUserName" [title]="getEditButtonTitle(item.UserName)">Edit</button>
 									<button class="btn btn-primary" (click)="ResetPassword(item.UserId)">Reset Password</button>
-									<button class="btn btn-danger" (click)="setUserToDelete(item); DeleteUserModal.open()">Delete</button>
+									<button class="btn btn-danger" (click)="setUserToDelete(item); DeleteUserModal.open()" [disabled]="item.UserName == loggedInUserName" [title]="getDeleteButtonTitle(item.UserName)">Delete</button>
 								</td>
 							</tr>
 							<tr>
@@ -59,6 +59,7 @@
 							</tr>
 						</tbody>
 					</table>
+					 <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
 			</div>
 		</div>

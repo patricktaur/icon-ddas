@@ -29,6 +29,7 @@ export class ManageICFsComponent implements OnInit {
     public ComplianceFormFilter: CompFormFilter;
     public Users: any[];
 
+    public pageNumber: number;
  constructor(
         private route: ActivatedRoute,
         private router: Router,

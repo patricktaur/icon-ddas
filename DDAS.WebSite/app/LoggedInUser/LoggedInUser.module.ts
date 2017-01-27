@@ -8,12 +8,14 @@ import {myLoginHistoryComponent}  from './my-loginhistory.component';
 import {LoggedInUserRouting} from './LoggedInUser.Routing';
 
 import {loggedinuserService} from './loggedinuser.service';
+import {SharedModule} from '../shared/shared.module'
 
 @NgModule({ 
   imports: [
       LoggedInUserRouting,
       CommonModule,
-      FormsModule
+      FormsModule,
+      SharedModule
   ],
   declarations: [
       AboutDDASComponent,
