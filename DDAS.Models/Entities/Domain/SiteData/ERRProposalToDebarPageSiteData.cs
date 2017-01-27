@@ -24,6 +24,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string center { get; set; }
         public string date { get; set; }
         public string IssuingOffice { get; set; }
+
         public override string FullName {
             get {
                 return Name;
@@ -40,6 +41,17 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Center: " + center + "~" +
                     "Date: " + date + "~" +
                     "Issuing Office: " + IssuingOffice;
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (date == "")
+                    return null;
+
+                return DateTime.ParseExact(date,
+                    "M'/'d'/'yyyy", null,
+                    System.Globalization.DateTimeStyles.None);
             }
         }
     }

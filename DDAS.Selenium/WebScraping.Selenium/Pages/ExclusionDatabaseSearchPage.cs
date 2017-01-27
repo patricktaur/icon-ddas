@@ -122,7 +122,7 @@ namespace WebScraping.Selenium.Pages
                     //ExclusionList.State = RecordDetails[11];
                     //ExclusionList.Zip = RecordDetails[12];
                     ExclusionList.ExclusionType = RecordDetails[13];
-                    //ExclusionList.ExclusionDate = RecordDetails[14];
+                    ExclusionList.ExclusionDate = RecordDetails[14];
                     //ExclusionList.WaiverDate = RecordDetails[16];
                     //ExclusionList.WaiverState = RecordDetails[17];
 

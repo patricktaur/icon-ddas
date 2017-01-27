@@ -482,6 +482,7 @@ namespace DDAS.Models.Entities.Domain
         public int MatchCount { get; set; }
         public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
+        public DateTime? DateOfInspection { get; set; }
         public List<Link> Links { get; set; }
     }
 

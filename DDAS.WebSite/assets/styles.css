@@ -21,6 +21,10 @@ a {
   cursor: pointer;
   cursor: hand;
 }
+a :hover{
+  cursor: hand;
+}
+
 button {
   font-family: Arial;
   background-color: #eee;

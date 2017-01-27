@@ -37,7 +37,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
         }
 
-        //Patrick 28Nov2016
         public override string RecordDetails
         {
             get
@@ -53,6 +52,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Retraction Of Article(s): " + RetractionOfArticle + "~" +
                     "Correction Of Article(s): " + CorrectionOfArticle + "~" +
                     "Memo: " + Memo;
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                return null;
+                //No date field available
+                //return DateTime.ParseExact(,
+                //    "M'/'d'/'yyyy", null,
+                //    System.Globalization.DateTimeStyles.None);
             }
         }
     }

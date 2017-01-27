@@ -45,5 +45,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Comments: " + Comments;
             }
         }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (ActionDate == "")
+                    return null;
+
+                return DateTime.ParseExact(ActionDate, "M'/'d'/'yyyy", null,
+                    System.Globalization.DateTimeStyles.None);
+            }
+        }
     }
 }

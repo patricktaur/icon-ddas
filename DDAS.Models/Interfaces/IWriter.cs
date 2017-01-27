@@ -8,24 +8,21 @@ namespace DDAS.Models.Interfaces
 {
     public interface IWriter
     {
-        void Initialize(string TemplateFolder);
+        void Initialize(string TemplateFolder, string ComplianceFormFolder);
+
         void WriteParagraph(string Text);
 
         void AddFormHeaders(string ProjectNumber, string SponsorProtocolNumber,
             string InstituteName, string Address);
 
-        void AddTableHeaders(string[] Headers, int Columns);
+        void AddTableHeaders(string[] Headers, int Columns, int TableIndex);
 
-        void FillUpTable(int RowIndex, 
-            int ColumnIndex, 
-            int TableIndex,
-            string Text);
+        void FillUpTable(string[] CellValues);
 
-        //void AddInvestigatorDetailsTable();
-        //void AddSitesTable();
-        //void AddAdditionalSitesTable();
-        //void AddFindingsTable();
         void AddSearchedBy(string SearchedBy, string Date);
+
+        void SaveChanges();
+
         void CloseDocument();
     }
 }

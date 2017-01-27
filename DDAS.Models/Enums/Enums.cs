@@ -14,7 +14,7 @@
         CorporateIntegrityAgreementsListPage,
         SystemForAwardManagementPage,
         SpeciallyDesignedNationalsListPage,
-        
+
         //16Dec2016 Pradeep SponsorSpecificSites
         PfizerDMCChecksPage,
         PfizerUnavailableChecksPage,
@@ -38,7 +38,8 @@
         OrganizacionMedicaColegialDeEspanaPage,
         SingaporeMedicalCouncilPage,
         SriLankaMedicalCouncilPage,
-        HealthGuideUSAPage
+        HealthGuideUSAPage,
+        WorldCheckPage //27Jan2017 Pradeep
     };
 
   

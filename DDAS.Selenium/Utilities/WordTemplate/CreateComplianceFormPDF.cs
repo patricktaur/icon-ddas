@@ -73,7 +73,7 @@ namespace Utilities.WordTemplate
         {
             var PDFCell = new PdfPCell(new Phrase(Text));
             PDFCell.HorizontalAlignment = Element.ALIGN_CENTER;
-            PDFCell.VerticalAlignment = Element.ALIGN_CENTER;
+            PDFCell.VerticalAlignment = Element.ALIGN_MIDDLE;
             return PDFCell;
         }
 
@@ -138,14 +138,14 @@ namespace Utilities.WordTemplate
             table.AddCell(cell);
         }
 
-        public void Initialize(string FilePath)
+        public void Initialize(string TemplateFolder, string ComplianceFormFolder)
         {
             _document = new Document(PageSize.LETTER, 10, 10, 42, 35);
 
-            if (File.Exists(FilePath))
-                File.Delete(FilePath);
+            if (File.Exists(ComplianceFormFolder))
+                File.Delete(ComplianceFormFolder);
 
-            _stream = new FileStream(FilePath, FileMode.CreateNew);
+            _stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
 
             _writer = PdfWriter.GetInstance(_document,
                 _stream);
@@ -156,47 +156,69 @@ namespace Utilities.WordTemplate
 
         public void WriteParagraph(string Text)
         {
+            _document.Add(new Chunk("\n"));
             _document.Add(
                 ParagraphCenterAlign(
                     Text));
+            //_document.Add(new Chunk("\n"));
         }
 
         public void AddFormHeaders(string ProjectNumber, 
             string SponsorProtocolNumber, string InstituteName, string Address)
         {
-            PdfPTable table = new PdfPTable(4);
+            _table = new PdfPTable(4);
 
-            table.AddCell(PDFCellWithCenterAlign("ICON Project Number:"));
-            table.AddCell(PDFCellWithCenterAlign(ProjectNumber));
-            table.AddCell(PDFCellWithCenterAlign("Sponsor Protocol No.:"));
-            table.AddCell(PDFCellWithCenterAlign(SponsorProtocolNumber));
+            _table.AddCell(PDFCellWithCenterAlign("ICON Project Number:"));
+            _table.AddCell(PDFCellWithCenterAlign(ProjectNumber));
+            _table.AddCell(PDFCellWithCenterAlign("Sponsor Protocol No.:"));
+            _table.AddCell(PDFCellWithCenterAlign(SponsorProtocolNumber));
 
-            table.AddCell(PDFCellWithCenterAlign("Institution Name:"));
-            table.AddCell(PDFCellWithCenterAlign(InstituteName));
-            table.AddCell(PDFCellWithCenterAlign("Address:"));
-            table.AddCell(PDFCellWithCenterAlign(Address));
+            _table.AddCell(PDFCellWithCenterAlign("Institution Name:"));
+            _table.AddCell(PDFCellWithCenterAlign(InstituteName));
+            _table.AddCell(PDFCellWithCenterAlign("Address:"));
+            _table.AddCell(PDFCellWithCenterAlign(Address));
 
-            _document.Add(table);
+            _document.Add(_table);
+            //_document.Add(new Chunk("\n"));
         }
 
-        public void AddTableHeaders(string[] Headers, int Columns)
+        public void AddTableHeaders(string[] Headers, int Columns, int TableIndex)
         {
-            _table = new PdfPTable(Columns);
+            //_document.Add(new Chunk("\n"));
 
+            _table = new PdfPTable(Columns);
+            
             for (int Index = 0; Index < Columns; Index++)
             {
-                _table.AddCell(Headers[Index]);
+                _table.AddCell(PDFCellWithCenterAlign(Headers[Index]));
             }
         }
 
-        public void FillUpTable(int RowIndex, int ColumnIndex, int TableIndex, string Text)
+        public void FillUpTable(string[] CellValues)
         {
-            _table.AddCell(PDFCellWithCenterAlign(Text));
+            foreach(string Value in CellValues)
+            {
+                _table.AddCell(PDFCellWithCenterAlign(Value));
+            }
         }
 
         public void AddSearchedBy(string SearchedBy, string Date)
         {
+            _document.Add(new Chunk("\n"));
 
+            _table = new PdfPTable(2);
+            _table.AddCell(PDFCellWithCenterAlign("Printed Name: " + SearchedBy));
+
+            var cell = new PdfPCell(new Phrase("Signature:"));
+            cell.Rowspan = 2;
+            _table.AddCell(cell);
+
+            _table.AddCell(PDFCellWithCenterAlign("Date: " + Date));
+        }
+
+        public void SaveChanges()
+        {
+            _document.Add(_table);
         }
         public void CloseDocument()
         {

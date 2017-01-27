@@ -63,6 +63,7 @@ export class AllISCFsComponent implements OnInit {
   }
 
   LoadPrincipalInvestigators() {
+    console.log("Filters: " + this.ComplianceFormFilter);
     this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
     .subscribe((item: any) => {
         console.log("item :" + item);

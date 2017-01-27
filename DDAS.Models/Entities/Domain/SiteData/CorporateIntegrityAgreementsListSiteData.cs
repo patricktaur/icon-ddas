@@ -44,5 +44,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Effective: " + Effective;
             }
         }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (Effective == "")
+                    return null;
+
+                return DateTime.ParseExact(Effective, "M'/'d'/'yyyy", null,
+                    System.Globalization.DateTimeStyles.None);
+            }
+        }
     }
 }

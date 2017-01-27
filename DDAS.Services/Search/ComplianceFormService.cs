@@ -255,6 +255,7 @@ namespace DDAS.Services.Search
                 MatchedRecord.MatchCount = record.Matched;
                 MatchedRecord.RecordDetails = record.RecordDetails;
                 MatchedRecord.Links = record.Links;
+                MatchedRecord.DateOfInspection = record.DateOfInspection;
                 MatchedRecords.Add(MatchedRecord);
             }
             return MatchedRecords;
@@ -454,9 +455,8 @@ namespace DDAS.Services.Search
                                 finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
 
-                                //Patrick 04Dec2016
                                 finding.IsMatchedRecord = true;
-                                finding.DateOfInspection = siteSource.SiteSourceUpdatedOn;
+                                finding.DateOfInspection = rec.DateOfInspection;
                                 finding.InvestigatorName = inv.Name;
                                 finding.Links = rec.Links;
  
@@ -802,47 +802,38 @@ namespace DDAS.Services.Search
         public string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplateFolder, 
             string DownloadFolder)
         {
-            IWriter wri = new CreateComplianceFormPDF();
-
-            GenerateComplianceForm(DownloadFolder, ComplianceFormId, wri);
-
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            var UtilitiesObject = new CreateComplianceFormWord();
+            IWriter writer = new CreateComplianceFormWord();
 
-            var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
+            GenerateComplianceForm(DownloadFolder, TemplateFolder, 
+                ComplianceFormId, writer,
+                ".docx");
+            //var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
 
-            var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+            //var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
 
-            var GeneratedFileName = ProjectNumber + "_" + PI + ".docx";
+            //var GeneratedFileName = ProjectNumber + "_" + PI + ".docx";
 
-            var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
+            //var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
 
-            var stream = UtilitiesObject.CreateComplianceForm(form, TemplateFolder, GeneratedFileNameNPath);
+            //var stream = UtilitiesObject.CreateComplianceForm(form, TemplateFolder, GeneratedFileNameNPath);
 
-            //The following path does not work, client unable to download the file:
+            ////The following path does not work, client unable to download the file:
 
-            //return @"App_Data\Data\Downloads\" + GeneratedFileName;
-            //threfore: 
+            ////return @"App_Data\Data\Downloads\" + GeneratedFileName;
+            ////threfore: 
 
-            return DownloadFolder + GeneratedFileName;
-        }
-        #endregion
-
-        #region ComplianceFormGeneration-PDF
-        public string GenerateComplianceFormPDF(string DownloadFolder)
-        {
-            var PDFformObject = new CreateComplianceFormPDF();
-
-            var stream = PDFformObject.CreateComplianceForm();
-
-            return @"\DataFiles\pdf_trial.pdf";
+            //return DownloadFolder + GeneratedFileName;
+            return DownloadFolder;
         }
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
         public string GenerateComplianceForm(
-            string DownloadFolder, Guid? ComplianceFormId, IWriter writer)
+            string DownloadFolder, string TemplateFolder,
+            Guid? ComplianceFormId, IWriter writer, 
+            string FileExtension)
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -850,19 +841,180 @@ namespace DDAS.Services.Search
 
             var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
 
-            var GeneratedFileName = ProjectNumber + "_" + PI + ".docx";
+            var GeneratedFileName = ProjectNumber + "_" + PI + FileExtension;
 
             var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
 
-            writer.Initialize(GeneratedFileNameNPath);
+            writer.Initialize(TemplateFolder, GeneratedFileNameNPath);
 
             writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
             writer.AddFormHeaders(form.ProjectNumber, form.SponsorProtocolNumber,
                 form.Institute, form.Address);
 
+            //InvestigatorDetailsTable
+            writer.WriteParagraph("Investigators:");
+
+            string[] TableHeaders = InvestigatorTableHeaders();
+
+            writer.AddTableHeaders(TableHeaders, 4, 1);
+
+            foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+            {
+                string[] CellValues = new string[]
+                {
+                    Investigator.Name,
+                    Investigator.Qualification,
+                    Investigator.MedicalLiceseNumber,
+                    Investigator.Role
+                };
+                writer.FillUpTable(CellValues);
+            }
+            writer.SaveChanges();
+
+            //SitesTable
+            writer.WriteParagraph(
+                "Relevant sources of Investigator information, " +
+                "against which this Investigator has been checked.");
+
+            TableHeaders = SitesTableHeaders();
+            writer.AddTableHeaders(TableHeaders, 5, 2);
+
+            int ColumnIndex = 1;
+            int RowIndex = 1;
+            foreach(SiteSource Site in form.SiteSources)
+            {
+                if (!Site.IsMandatory)
+                    continue;
+
+                if (Site.SiteSourceUpdatedOn == null)
+                    Site.SiteSourceUpdatedOn = DateTime.Now;
+
+                string[] CellValues = new string[]
+                {
+                    RowIndex.ToString(),
+                    Site.SiteName,
+                    Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
+                    Site.SiteUrl,
+                    Site.IssuesIdentified ? "Yes" : "No"
+                };
+
+                writer.FillUpTable(CellValues);
+
+                RowIndex += 1;
+                ColumnIndex += 1;
+            }
+            writer.SaveChanges();
+
+            //AdditionalSitesTable
+            writer.WriteParagraph("Addtional sources:");
+            TableHeaders = SitesTableHeaders();
+            writer.AddTableHeaders(TableHeaders, 5, 3);
+
+            foreach(SiteSource Site in form.SiteSources)
+            {
+                if(!Site.IsMandatory)
+                {
+                    string[] CellValues = new string[]
+                    {
+                        RowIndex.ToString(),
+                        Site.SiteName,
+                        Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
+                        Site.SiteUrl,
+                        Site.IssuesIdentified ? "Yes" : "No"
+                    };
+                    writer.FillUpTable(CellValues);
+                }
+            }
+
+            //if(form.SiteSources.Count > 12)
+            //{
+            //    for(int Index = 12; Index < form.SiteSources.Count; Index++)
+            //    {
+            //        string[] CellValues = new string[]
+            //        {
+            //            RowIndex.ToString(),
+            //            form.SiteSources[Index].SiteName,
+            //            form.SiteSources[Index].SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
+            //            form.SiteSources[Index].SiteUrl,
+            //            form.SiteSources[Index].IssuesIdentified ? "Yes" : "No"
+            //        };
+
+            //        writer.FillUpTable(CellValues);
+            //    }
+            //}
+            writer.SaveChanges();
+
+            //FindingsTable
+            writer.WriteParagraph(
+                "Additional details for issues (Yes) identified above:");
+
+            TableHeaders = FindingsTableHeaders();
+            writer.AddTableHeaders(TableHeaders, 4, 4);
+
+            foreach(Finding finding in form.Findings)
+            {
+                //finding.DateOfInspection = DateTime.Now; //refactor
+
+                if (finding.Selected)
+                {
+                    string[] CellValues = new string[]
+                    {
+                        finding.SourceNumber.ToString(),
+                        finding.InvestigatorName,
+                        finding.DateOfInspection.Value.ToString("dd MMM yyyy"),
+                        finding.Observation
+                    };
+                    writer.FillUpTable(CellValues);
+                }
+            }
+            writer.SaveChanges();
+
+            //SearchedByTable
+            writer.WriteParagraph("Search Performed By:");
+            writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
+
+            writer.SaveChanges();
+
+            writer.CloseDocument();
+
             return DownloadFolder + GeneratedFileName;
         }
+
+        private string[] InvestigatorTableHeaders()
+        {
+            return new string[]
+            {
+                "Investigator Name",
+                "Qualification",
+                "Medical License Number",
+                "Role"
+            };
+        }
+
+        private string[] SitesTableHeaders()
+        {
+            return new string[]
+            {
+                "Source #",
+                "Source Name",
+                "Source Date",
+                "WebLink",
+                "Issues Identified"
+            };
+        }
+
+        private string[] FindingsTableHeaders()
+        {
+            return new string[]
+            {
+                "Source#",
+                "Investigator Name",
+                "Date Of Inspection/Action",
+                "Description of findings"
+            };
+        }
+
         #endregion
 
         #region ByPatrick
