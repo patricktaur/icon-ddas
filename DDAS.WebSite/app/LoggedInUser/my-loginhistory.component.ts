@@ -11,6 +11,7 @@ export class myLoginHistoryComponent implements OnInit {
     public myLoginHistoryDetails: any[];
     public loggedInUserName: string = '';
 
+    public pageNumber: number;
     constructor(
         private service: loggedinuserService
     ) { }

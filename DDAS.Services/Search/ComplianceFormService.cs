@@ -719,10 +719,17 @@ namespace DDAS.Services.Search
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter)
         {
+
+            if (CompFormFilter == null)
+            {
+                throw new Exception("Invalid CompFormFilter");
+            }
+
             var Filter = _UOW.ComplianceFormRepository.GetAll();
             var Filter1 = Filter;
 
-            if(CompFormFilter.InvestigatorName != null && 
+
+            if (CompFormFilter.InvestigatorName != null && 
                 CompFormFilter.InvestigatorName != "")
             {
                 var tempFilter = Filter1.Select(x => x.InvestigatorDetails.Where(inv =>
@@ -751,21 +758,28 @@ namespace DDAS.Services.Search
 
             var Filter4 = Filter3;
 
-            if (CompFormFilter.SearchedOnFrom != null)
+            
+            
+            if (CompFormFilter.SearchedOnFrom != null )
+                
             {
+                DateTime startDate;
+                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
                 Filter4 = Filter3.Where(x =>
-                x.SearchStartedOn >=
-                CompFormFilter.SearchedOnFrom)
-                .ToList();
+               x.SearchStartedOn >= startDate)
+               .ToList();
             }
 
             var Filter5 = Filter4;
 
-            if(CompFormFilter.SearchedOnTo != null)
+            if (CompFormFilter.SearchedOnTo != null)
             {
+
+                DateTime endDate ;
+                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
                 Filter5 = Filter4.Where(x =>
-                x.SearchStartedOn >=
-                CompFormFilter.SearchedOnTo)
+                x.SearchStartedOn <
+                endDate)
                 .ToList();
             }
 
@@ -1432,6 +1446,21 @@ namespace DDAS.Services.Search
             string ValidationMessage = null;
 
             //foreach(List<string> Data in ExcelInputRows)
+
+            if (ExcelInputRows.Count == 0)
+            {
+                ValidationMessage = "No records in the file!";
+                ValidationMessages.Add(ValidationMessage);
+                return ValidationMessages;
+            }
+            else if (ExcelInputRows == null)
+            {
+                ValidationMessage = "Invalid data";
+                ValidationMessages.Add(ValidationMessage);
+                return ValidationMessages;
+            }
+
+            int Row = 1;
             for(int Counter = 0; Counter < ExcelInputRows.Count; Counter++)
             {
                 var DetailsInEachRow = ExcelInputRows[Counter];
@@ -1440,89 +1469,126 @@ namespace DDAS.Services.Search
 
                 if(DetailsInEachRow[0] == "")
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 + 
+                    ValidationMessage = "RowNumber: " + Row + 
                         " Principal Investigator Name is null!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if(DetailsInEachRow[0].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[0]);
+                }
                 if(PrincipalInv <= 1)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Principal Investigator Name must have atleast two components " +
                         "separated with a space!";
                     ValidationMessages.Add(ValidationMessage);
                 }
                 if(IsAlpha(DetailsInEachRow[0]))
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Principal Investigator Name should not have any " +
                         "numbers or special characters!";
                     ValidationMessages.Add(ValidationMessage);
                 }
                 if(DetailsInEachRow[0].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Principal Investigator Name exceeds max character(100) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
                 if(DetailsInEachRow[1].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Principal Investigator ML Number exceeds max character(100) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if (DetailsInEachRow[1].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[1]);
+                }
                 if (DetailsInEachRow[2].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Principal Investigator Qualification exceeds max character(100) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if (DetailsInEachRow[2].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[2]);
+                }
+                if (DetailsInEachRow[3].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[3]);
+                }
                 if (DetailsInEachRow[3] == "")
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Project Number is mandatory!";
                     ValidationMessages.Add(ValidationMessage);
                 }
                 if(DetailsInEachRow[3].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Project Number exceeds max character(100) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
                 if(HasSpecialCharacters(DetailsInEachRow[3]))
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Project Number should not have any special characters!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if (DetailsInEachRow[4].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[4]);
+                }
                 if (DetailsInEachRow[4].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Sponsor protocol number exceeds max character(100) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if (DetailsInEachRow[5].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[5]);
+                }
                 if (DetailsInEachRow[5].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Institute Name exceeds max character(100) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if (DetailsInEachRow[6].ToLower().Contains("cannot find column"))
+                {
+                    ValidationMessages.Add(DetailsInEachRow[6]);
+                }
                 if (DetailsInEachRow[6].Length > 100)
                 {
-                    ValidationMessage = "RowNumber: " + Counter + 1 +
+                    ValidationMessage = "RowNumber: " + Row +
                         " Address exceeds max character(500) limit!";
                     ValidationMessages.Add(ValidationMessage);
                 }
-                for(int counter = 8; counter < DetailsInEachRow.Count(); counter++)
+                if (DetailsInEachRow[7].ToLower().Contains("cannot find column"))
                 {
-                    if(DetailsInEachRow[counter] != "" &&
-                        HasSpecialCharacters(DetailsInEachRow[counter]) ||
+                    ValidationMessages.Add(DetailsInEachRow[7]);
+                }
+
+                for (int counter = 8; counter < DetailsInEachRow.Count(); counter++)
+                {
+                    if(HasSpecialCharacters(DetailsInEachRow[counter]) ||
                         DetailsInEachRow[counter].Length > 100)
                     {
-                        ValidationMessage = "RowNumber: " + Counter + 1 +
+                        ValidationMessage = "RowNumber: " + Row +
                             " Sub Investigator name/ML#/Qualification has invalid inputs!";
                         ValidationMessages.Add(ValidationMessage);
                     }
+                    if (DetailsInEachRow[counter].ToLower().Contains("cannot find column"))
+                    {
+                        ValidationMessages.Add(DetailsInEachRow[counter]);
+                    }
                 }
+                Row += 1;
             }
             return ValidationMessages;
         }

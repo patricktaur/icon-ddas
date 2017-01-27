@@ -20,6 +20,9 @@ export class DueDiligenceCheckComponent implements OnInit {
     public response: any = {};
     public Loading: boolean = false;
     public uploadUrl: string;
+    public validationMessage: string;
+   
+
     private error: any;
 
     public downloadUrl: string;
@@ -31,8 +34,10 @@ export class DueDiligenceCheckComponent implements OnInit {
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
 
+
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
+    public pageNumber: number;
 
     constructor(
         private route: ActivatedRoute,
@@ -59,6 +64,9 @@ export class DueDiligenceCheckComponent implements OnInit {
         this.route.params.forEach((params: Params) => {
         });
         this.LoadPrincipalInvestigators();
+
+        // this.validationMessages.push("aaa");
+        // this.validationMessages.push("bbb");
     }
 
     LoadPrincipalInvestigators() {
@@ -85,23 +93,11 @@ export class DueDiligenceCheckComponent implements OnInit {
     }
 
     UploadFile() {
+        this.validationMessage = null;
         this.Loading = false;
     }
 
-    // GenerateComplianceForm(inv: PrincipalInvestigatorDetails) {   //(formid: string){
 
-    //     this.ComplianceFormGenerationError = "";
-    //     let formid = inv.RecId;
-    //     this.PrincipalInvestigatorNameToDownload = inv.Name;
-    //     this.downloadUrl = "";
-    //     this.service.generateComplianceForm(formid)
-    //         .subscribe((item: any) => {
-    //             this.downloadUrl = this.configService.getApiHost() +  item;
-    //          },
-    //         error => {
-    //             this.ComplianceFormGenerationError = "Error: Compliance Form could not be generated."
-    //         });
-    // }
 
     handleUpload(data: any): void {
         this.Loading = true;
@@ -112,8 +108,18 @@ export class DueDiligenceCheckComponent implements OnInit {
             }
             else {
                 this.Loading = false;
-                this.modal.close();
-                this.LoadPrincipalInvestigators();
+                
+                this.validationMessage = data.response; 
+                
+                
+                if (this.validationMessage.length == 0){
+                    this.modal.close();
+                    this.LoadPrincipalInvestigators();
+                }
+                else{
+                    
+                }
+   
             }
 
             this.progress = data.progress.percent / 100;
@@ -131,34 +137,7 @@ export class DueDiligenceCheckComponent implements OnInit {
             });
     }
 
-    // getBackgroundColor(color: number) {
-    //     let retColor: string;
+ 
 
-    //     switch (color) {
-    //         case 0:
-    //             retColor = "grey"; //Grey
-    //             break;
-    //         case 1:
-    //             retColor = "green";
-    //             //retColor = "#00b300";
-    //             break;
-    //         case 2:
-    //             retColor = "lawngreen";
-    //             //retColor = "#00ff00";
-    //             break;
-    //         case 3:
-    //             retColor = "red";
-    //             //retColor = "#b30000";
-    //             break;
-    //         case 4:
-    //             retColor = "lightcoral";
-    //             //retColor = "#ff0000";
-    //             break;
-    //         default: retColor = "grey";
-    //     }
-    //     return retColor;
-
-    // }
-
-    get diagnostic() { return JSON.stringify(this.response); }
+    get diagnostic() { return JSON.stringify(this.validationMessage); }
 }

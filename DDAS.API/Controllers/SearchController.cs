@@ -88,18 +88,24 @@ namespace DDAS.API.Controllers
 
                 var complianceForms = new List<ComplianceForm>();
 
+                List<string> ValidationMessages = new List<string>();
+                
+
                 foreach (MultipartFileData file in provider.FileData)
                 {
                     var DataInExcelFile = 
                         _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    var ValidationMessages = 
+                    ValidationMessages = 
                         _SearchService.ValidateExcelInputs(DataInExcelFile);
 
                     if (ValidationMessages.Count > 0)
+                   
+                    {
+                        //unable to make the uploader handle list of strings, therefore this workaround:
                         return 
-                            Request.CreateResponse(HttpStatusCode.Forbidden,
-                            ValidationMessages);
+                            Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
+                    }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
                         _log, userName, file.LocalFileName);
@@ -110,7 +116,9 @@ namespace DDAS.API.Controllers
                             _SearchService.ScanUpdateComplianceForm(form, _log));
                     }
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
+                //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
+                return Request.CreateResponse(HttpStatusCode.OK, ValidationMessages);
+
             }
             catch (Exception e)
             {
@@ -417,6 +425,16 @@ namespace DDAS.API.Controllers
             return Ok(SearchSites.GetNewSearchQuery());
         }
 
+        string ListToString(List<string> lst)
+        {
+            string retValue = "";
+            foreach(string l in lst)
+            {
+                retValue += l + "---";
+            }
+            return retValue;
+        }
+
     }
 
     public class UserDetails
@@ -427,5 +445,7 @@ namespace DDAS.API.Controllers
         public List<IdentityRole> Role { get; set; }
 
     }
+
+    
 
 }

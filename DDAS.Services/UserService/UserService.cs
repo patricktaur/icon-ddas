@@ -25,6 +25,7 @@ namespace DDAS.Services.UserService
         public UserViewModel GetNewUser()
         {
             var retUser = new UserViewModel();
+            retUser.Active = true;
             //AddRoles:
             var Roles = _UOW.RoleRepository.GetAll();
             foreach (Role role in Roles)

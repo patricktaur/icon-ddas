@@ -7,6 +7,7 @@ import {UserInputComponent} from './user-input.component';
 import { UserRouting } from './user.routing';
 import {UserService} from './user-service';
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
+import {SharedModule} from '../shared/shared.module'
 //import {ModalModule} from "ng2-modal";
 
 @NgModule({ 
@@ -14,7 +15,8 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
     CommonModule,
     FormsModule,
     UserRouting,
-    Ng2Bs3ModalModule
+    Ng2Bs3ModalModule,
+    SharedModule
     
   ],
   declarations: [

@@ -10,6 +10,7 @@ import {LoginHistoryService} from './all-loginhistory.service';
 export class LoginHistoryComponent implements OnInit {
     public loginHistoryDetails: any[];
 
+    public pageNumber: number;
     constructor(
         private service: LoginHistoryService
     ) { }

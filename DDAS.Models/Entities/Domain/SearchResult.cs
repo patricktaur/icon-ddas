@@ -84,7 +84,7 @@ namespace DDAS.Models.Entities.Domain
         public bool HasErrors { get; set; } = false;
         public string ErrorDescription { get; set; }
     }
-    
+
     public class MatchResult
     {
         public string MatchName { get; set; }
@@ -137,7 +137,7 @@ namespace DDAS.Models.Entities.Domain
     #endregion
 
     #region ComplianceFormDetails
-    
+
     public class ComplianceForm
     {
         public ComplianceForm()
@@ -146,7 +146,7 @@ namespace DDAS.Models.Entities.Domain
             SiteSources = new List<SiteSource>();
             Findings = new List<Finding>();
         }
-        
+
         public Guid? RecId { get; set; }
         public string AssignedTo { get; set; }
         public bool Active { get; set; } = true;
@@ -171,20 +171,28 @@ namespace DDAS.Models.Entities.Domain
         //patrick 31Dec2016
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
-        public string Status { get {
+        public string Status
+        {
+            get
+            {
                 if (_Status == null)
                 {
                     setStatusNStatusEnum();
                 }
                 return _Status;
-            } }
-        public ComplianceFormStatusEnum StatusEnum { get {
+            }
+        }
+        public ComplianceFormStatusEnum StatusEnum
+        {
+            get
+            {
                 if (_Status == null)
                 {
                     setStatusNStatusEnum();
                 }
                 return _StatusEnum;
-            } }
+            }
+        }
         private void setStatusNStatusEnum()
         {
             var ReviewCompleted = false;
@@ -243,7 +251,7 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
     }
 
-    
+
     //Patrick 03Dec2016 modified.
     public class InvestigatorSearched
     {
@@ -346,7 +354,7 @@ namespace DDAS.Models.Entities.Domain
         }
     }
 
-  
+
     //Patrick 01Dec2016 - new props added:
     public class SiteSearchStatus
     {
@@ -472,7 +480,7 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public string HiddenStatus { get; set; }
     }
-    
+
     #endregion
 
     #region ByPatrick
@@ -510,7 +518,7 @@ namespace DDAS.Models.Entities.Domain
     {
         //Patrick 04Dec2016:
         //public int SiteSourceId { get; set; }
-        
+
         //Pradeep 2Dec2016
         public SiteEnum SiteEnum { get; set; }
 
@@ -523,14 +531,14 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         ////Patrick 04Dec2016: no longer required, can be deleted.  Comp Form collection in MOngodB has to be dropped.
         public string HiddenStatus { get; set; }
-        
+
         //Patrick 04Dec2016 added:
         public bool Selected { get; set; }
         public bool IsMatchedRecord { get; set; }
         public int SourceNumber { get; set; }
         public DateTime? DateOfInspection { get; set; }
         public string InvestigatorName { get; set; }
-        public bool IsAnIssue { get;  set;}
+        public bool IsAnIssue { get; set; }
 
         public List<Link> Links { get; set; } = new List<Link>();
     }
@@ -542,11 +550,11 @@ namespace DDAS.Models.Entities.Domain
         public bool Active { get; set; }
     }
     #endregion
-    
-        #region Save Results
+
+    #region Save Results
 
     #region ComplianceFormFilter
-    
+
     public class ComplianceFormFilter
     {
         public string InvestigatorName { get; set; }
@@ -554,6 +562,8 @@ namespace DDAS.Models.Entities.Domain
         public string SponsorProtocolNumber { get; set; }
         public DateTime? SearchedOnFrom { get; set; }
         public DateTime? SearchedOnTo { get; set; }
+
+      
         public string Country { get; set; }
         public ComplianceFormStatusEnum Status { get; set; }
     }
@@ -562,7 +572,7 @@ namespace DDAS.Models.Entities.Domain
 
 
 
-        public class SaveSearchResult
+    public class SaveSearchResult
     {
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -634,7 +644,7 @@ namespace DDAS.Models.Entities.Domain
         public string Name { get; set; }
         #endregion
 
-        public Role(){}
+        public Role() { }
         public Role(string roleName)
         {
             Name = roleName;
@@ -647,7 +657,7 @@ namespace DDAS.Models.Entities.Domain
         }
     }
 
-    
+
     public class UserRole
     {
         public Guid Id { get; set; } //for Mongo mapping
@@ -656,4 +666,8 @@ namespace DDAS.Models.Entities.Domain
     }
     #endregion
 
+    public class ValidationError
+    {
+        public string ErrorMessage { get; set; }
+    }
 }

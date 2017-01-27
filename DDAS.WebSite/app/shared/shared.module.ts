@@ -11,6 +11,7 @@ import { CircleComponent }  from './components/circle.component';
   //import { MyDatePickerModule } from 'mydatepicker/dist/my-date-picker.module';
 import { MyDatePickerModule } from './utils/my-date-picker/my-date-picker.module';
 import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination'; 
+ 
 
 @NgModule({
   imports:     

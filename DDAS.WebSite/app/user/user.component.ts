@@ -7,6 +7,7 @@ import {UserViewModel} from './user.classes';
 
 import { ActivatedRoute, Params } from '@angular/router';
 import { ConfigService } from '../shared/utils/config.service';
+import { AuthService }      from '../auth/auth.service';
 @Component({
   moduleId: module.id,
   selector: 'User',
@@ -18,12 +19,21 @@ export class UserComponent {
     private userIdToDelete: string;
     public userNameToDelete: string;
     public passwordReset: boolean; // temp until email is ready.
+    public loggedInUserName: string;
 
-    constructor(private router: Router, private route: ActivatedRoute,private service:UserService){}
+    public pageNumber: number;
+    constructor(
+        private router: Router, 
+        private route: ActivatedRoute,
+        private service:UserService,
+        private authService: AuthService
+    
+    ){}
     
     ngOnInit(){
         this.LoadUsers();
         this.passwordReset = false;
+        this.loggedInUserName = this.authService.userName;
     }
     
     LoadUsers()
@@ -82,6 +92,20 @@ export class UserComponent {
        return retRoles;
    }
    
+   getEditButtonTitle(userName: string){
+       if (userName == this.loggedInUserName){
+           return "You cannot edit your own record. Request another user to modify the record";
+       }
+
+   }
+
+getDeleteButtonTitle(userName: string){
+    if (userName == this.loggedInUserName){
+        return "You cannot delete your own record. Request another user to delete the record";
+    }
+       
+   }
+
     get diagnostic() { return JSON.stringify(this.Users); }
         
 }

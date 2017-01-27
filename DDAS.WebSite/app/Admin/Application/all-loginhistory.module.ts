@@ -7,12 +7,14 @@ import {LoginHistoryComponent} from './all-loginhistory.component';
 import {LoginHistoryRouting} from './all-loginhistory.Routing';
 
 import {LoginHistoryService} from './all-loginhistory.service';
+import {SharedModule} from '../../shared/shared.module'
 
 @NgModule({ 
   imports: [
       LoginHistoryRouting,
       CommonModule,
-      FormsModule
+      FormsModule,
+      SharedModule
   ],
   declarations: [
       LoginHistoryComponent

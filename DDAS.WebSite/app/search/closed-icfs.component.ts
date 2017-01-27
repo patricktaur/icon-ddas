@@ -36,6 +36,7 @@ export class ClosedICFsComponent implements OnInit {
     private makeActiveCompFormId: string;
     public makeActivePrincipalInvestigatorName: string
 
+    public p: number;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
