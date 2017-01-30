@@ -158,6 +158,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime SearchStartedOn { get; set; }
         public string UploadedFileName { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public int ExtractedInvestigatorCount { get; set; }
         public int FullMatchesFoundInvestigatorCount { get; set; }
@@ -211,11 +212,25 @@ namespace DDAS.Models.Entities.Domain
                     _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;
                 }
             }
-            else if (ExtractedOn == null)
+            else if (ExtractionPendingInvestigatorCount > 0)
             {
-                _Status = "Data not extracted";
-                _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+                if (ExtractionErrorInvestigatorCount > 0)
+                {
+                    _Status = "Data Extraction Error";
+                    _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+                }
+                else
+                {
+                    _Status = "Data not extracted";
+                    _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+                }
+               
             }
+            //else if (ExtractedOn == null)
+            //{
+            //    _Status = "Data not extracted";
+            //    _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+            //}
             else
             {
                 if (FullMatchesFoundInvestigatorCount > 0)
@@ -250,6 +265,18 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
         public string AssignedTo { get; set; }
+        public bool ReviewCompleted { get {
+                if (StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified 
+                    || StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                    
+            } }
     }
 
 
@@ -272,6 +299,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
         public bool HasExtractionError { get; set; }
         public int ExtractionErrorSiteCount { get; set; }
+        public int ExtractionPendingSiteCount { get; set; }
         //public int MatchesFoundSiteCount { get; set; }
 
         public int Sites_FullMatchCount { get; set; }
@@ -329,10 +357,24 @@ namespace DDAS.Models.Entities.Domain
                     _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;
                 }
             }
-            else if (ExtractedOn == null)
+            //else if (ExtractedOn == null)
+            //{
+            //    _Status = "Data not extracted";
+            //    _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+            //}
+            else if (ExtractionPendingSiteCount> 0)
             {
-                _Status = "Data not extracted";
-                _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+                if (ExtractionErrorSiteCount > 0)
+                {
+                    _Status = "Data Extraction Error";
+                    _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+                }
+                else
+                {
+                    _Status = "Data not extracted";
+                    _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+                }
+               
             }
             else
             {
@@ -363,6 +405,7 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum siteEnum { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
+        public bool ExtractionPending { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' or has errors.
         public bool HasExtractionError { get; set; }
         public string ExtractionErrorMessage { get; set; }
@@ -418,6 +461,13 @@ namespace DDAS.Models.Entities.Domain
                 _Status = "Manual Search Site, Review Pending";
                 _StatusEnum = ComplianceFormStatusEnum.ManualSearchSiteReviewPending;
             }
+
+          
+            else if (HasExtractionError == true)
+            {
+                _Status = ExtractionErrorMessage;
+                _StatusEnum = ComplianceFormStatusEnum.NotScanned;
+             }
             else if (ExtractedOn == null)
             {
                 _Status = "Data not extracted";
@@ -491,6 +541,7 @@ namespace DDAS.Models.Entities.Domain
         public int MatchCount { get; set; }
         public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
+        public DateTime? DateOfInspection { get; set; }
         public List<Link> Links { get; set; }
     }
 

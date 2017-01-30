@@ -13,8 +13,24 @@ namespace Utilities
         {
             SLDocument doc = new SLDocument(FilePath);
 
+            var ValidationMessages = new List<string>();
+
             if (doc.GetCellValueAsString("A1").ToLower() != "pi name")
-                return null;
+                ValidationMessages.Add("cannot find column - PI Name in cell A1");
+            if (doc.GetCellValueAsString("B1").ToLower() != ("pi medical license #"))
+                ValidationMessages.Add("cannot find column - PI Medical license # in cell B1");
+            if (doc.GetCellValueAsString("C1").ToLower() != "pi qualification")
+                ValidationMessages.Add("cannot find column - PI Qualification in cell C1");
+            if (doc.GetCellValueAsString("D1").ToLower() != "project number")
+                ValidationMessages.Add("cannot find column - Project Number in cell D1");
+            if (doc.GetCellValueAsString("E1").ToLower() != "sponsor protocol #")
+                ValidationMessages.Add("cannot find column - Sponsor Protocol # in cell E1");
+            if (doc.GetCellValueAsString("F1").ToLower() != "institute name")
+                ValidationMessages.Add("cannot find column - Institute Name in cell F1");
+            if (doc.GetCellValueAsString("G1").ToLower() != "address")
+                ValidationMessages.Add("cannot find column - Address in cell G1");
+            if (doc.GetCellValueAsString("H1").ToLower() != "country")
+                ValidationMessages.Add("cannot find column - Country in cell H1");
 
             int RowIndex = 2;
 
@@ -41,8 +57,22 @@ namespace Utilities
                 int ColumnIndex = 9;
                 while (doc.HasCellValue(RowIndex, ColumnIndex) == true)
                 {
+                    if (doc.GetCellValueAsString(1, ColumnIndex).ToLower() !=
+                        "sub investigator")
+                        ValidationMessages.Add("cannot find column - Sub Investigator");
+
                     DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex)); //SI Name
+
+                    if (doc.GetCellValueAsString(1, ColumnIndex + 1).ToLower() !=
+                        "sub investigator ml#")
+                        ValidationMessages.Add("cannot find column - Sub Investigator ML#");
+
                     DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 1)); //ML#
+
+                    if (doc.GetCellValueAsString(1, ColumnIndex).ToLower() !=
+                        "si qualification")
+                        ValidationMessages.Add("cannot find column - SI Qualification");
+
                     DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 2)); //Qualification
 
                     ColumnIndex += 3;
@@ -50,7 +80,13 @@ namespace Utilities
                 //RowData.Add(DataFromEachRow);
                 //ListOfRows.Add(RowData);
 
-                ListOfRows.Add(DataFromEachRow);
+                if (ValidationMessages.Count > 0)
+                {
+                    ListOfRows.Add(ValidationMessages);
+                    break;
+                }
+                else
+                    ListOfRows.Add(DataFromEachRow);
 
                 RowIndex += 1;
             }

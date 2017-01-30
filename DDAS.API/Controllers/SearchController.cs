@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using DDAS.Services.Search;
 using System.Collections.Generic;
 using System.Web;
+using Utilities.WordTemplate;
 
 namespace DDAS.API.Controllers
 {
@@ -95,16 +96,16 @@ namespace DDAS.API.Controllers
                     var DataInExcelFile = 
                         _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    ValidationMessages = 
-                        _SearchService.ValidateExcelInputs(DataInExcelFile);
+                    //ValidationMessages = 
+                    //    _SearchService.ValidateExcelInputs(DataInExcelFile);
 
-                    if (ValidationMessages.Count > 0)
+                    //if (ValidationMessages.Count > 0)
                    
-                    {
-                        //unable to make the uploader handle list of strings, therefore this workaround:
-                        return 
-                            Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
-                    }
+                    //{
+                    //    //unable to make the uploader handle list of strings, therefore this ListToString workaround:
+                    //    return
+                    //        Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
+                    //}
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
                         _log, userName, file.LocalFileName);
@@ -163,6 +164,15 @@ namespace DDAS.API.Controllers
          }
 
 
+        [Route("GetMyReviewPendingPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyReviewPendingPrincipalInvestigators()
+        {
+            var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, true, false));
+        }
+
         [Route("GetMyClosedPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyClosedPrincipalInvestigators()
@@ -171,6 +181,16 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.getPrincipalInvestigators(UserName, false));
         }
+
+        [Route("GetMyReviewCompletedPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyReviewCompletedPrincipalInvestigators()
+        {
+            var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, true, true));
+        }
+
 
         [Route("GetInvestigatorSiteSummary")]
         [HttpGet]
@@ -259,8 +279,14 @@ namespace DDAS.API.Controllers
                
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
-                var FilePath = _SearchService.GenerateComplianceFormAlt(
-                    RecId, WordTemplateFolder, ComplianceFormFolder);
+                //var FilePath = _SearchService.GenerateComplianceFormAlt(
+                //    RecId, WordTemplateFolder, ComplianceFormFolder);
+
+                IWriter writer = new CreateComplianceFormWord();
+
+                var FilePath = _SearchService.GenerateComplianceForm(
+                    ComplianceFormFolder, WordTemplateFolder, RecId,
+                    writer, ".docx");
 
                 string path = FilePath.Replace(RootPath, "");
 
@@ -274,6 +300,37 @@ namespace DDAS.API.Controllers
                 return  Content(HttpStatusCode.BadRequest, e.Message);
             }
         
+        }
+
+        [Route("GenerateComplianceFormPDF")]
+        [HttpGet]
+        public IHttpActionResult GenerateComplianceFormPDF(string ComplianceFormId)
+        {
+            try
+            {
+
+                Guid? RecId = Guid.Parse(ComplianceFormId);
+
+                //var FilePath = _SearchService.GenerateComplianceFormAlt(
+                //    RecId, WordTemplateFolder, ComplianceFormFolder);
+
+                IWriter writer = new CreateComplianceFormPDF();
+
+                var FilePath = _SearchService.GenerateComplianceForm(
+                    ComplianceFormFolder, WordTemplateFolder, RecId,
+                    writer, ".pdf");
+
+                string path = FilePath.Replace(RootPath, "");
+
+                return Ok(path);
+
+            }
+            catch (Exception e)
+            {
+                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                //    "Error Details: " + e.Message);
+                return Content(HttpStatusCode.BadRequest, e.Message);
+            }
         }
 
         //3Dec2016

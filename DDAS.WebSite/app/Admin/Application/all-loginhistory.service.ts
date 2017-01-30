@@ -20,6 +20,8 @@ export class LoginHistoryService {
     _controller: string = '';
     _options: RequestOptions;
 
+     
+
     constructor(private http: Http,
         private configService: ConfigService,
         private authService: AuthService
@@ -31,9 +33,12 @@ export class LoginHistoryService {
             this._options = new RequestOptions({headers: headers});
     }
 
-    getLoginHistory(){
-        //return this.http.get(this._baseUrl + 'Account/GetAllLoginHistory', this._options)
-                return this.http.get(this._baseUrl + 'Account/getLogHistory', this._options)
+    getLoginHistory(from:Date, to: Date){
+        
+                return this.http.get(this._baseUrl + 'Account/getLogHistory'
+                + '?DateFrom=' + from.toISOString().substring(0, 10)
+                + '&DateTo=' + to.toISOString().substring(0, 10)
+                , this._options)
             .map((res: Response) => {
                 return res.json();
             })

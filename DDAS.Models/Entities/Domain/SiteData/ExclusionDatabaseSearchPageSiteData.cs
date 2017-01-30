@@ -34,7 +34,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         //public string State { get; set; }
         //public string Zip { get; set; }
         public string ExclusionType { get; set; }
-        //public string ExclusionDate { get; set; }
+        public string ExclusionDate { get; set; }
         //public string WaiverDate { get; set; }
         //public string WaiverState { get; set; }
         //public string SSNorEIN { get; set; }
@@ -57,6 +57,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "General: " + General + "~" +
                     "Specialty: " + Specialty + "~" +
                     "Exclusion Type: " + ExclusionType;
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (ExclusionDate == "")
+                    return null;
+
+                return DateTime.ParseExact(ExclusionDate, "yyyyMMdd", null,
+                    System.Globalization.DateTimeStyles.None);
             }
         }
     }

@@ -59,5 +59,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Deficiency Code: " + DeficiencyCode; ;
             }
         }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (InspectionDate == "")
+                    return null;
+
+                return DateTime.ParseExact(InspectionDate,
+                    "M'/'d'/'yyyy", null,
+                    System.Globalization.DateTimeStyles.None);
+            }
+        }
     }
 }

@@ -10,9 +10,9 @@
 					</div>
 					<div class="col-lg-4 text-right">
 						<!--not working: -->
-						<div *ngIf="true" statusCircle status="5" size=24 [title]="CompForm.Status"></div>
-						{{CompForm.StatusEnum}}
-						<div statusCircle size=24 [status]="comFormColor" ></div>
+						<div *ngIf="false" statusCircle [status]="CompForm.StatusEnum" size=24 [title]="CompForm.Status"></div>
+						
+						<div *ngIf="false" statusCircle size=24 [status]="comFormColor" ></div>
 						
 					</div>
 				</div>
@@ -144,7 +144,7 @@
 
 							<button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="Save()">Save</button>
 							<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending">Search</button>
-							<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>
+							<!--<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>-->
 							<p *ngIf="searchInProgress">Search in progress ... </p>
 						</div>
 

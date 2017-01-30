@@ -37,7 +37,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
         }
 
-        //Patrick 28Nov2016
         public override string RecordDetails
         {
             get
@@ -49,6 +48,17 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Subject: " + Subject + "~" +
                     "Response Letter Posted: " + ResponseLetterPosted + "~" +
                     "Closeout Date: " + CloseoutDate;
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (LetterIssued == "")
+                    return null;
+
+                return DateTime.ParseExact(LetterIssued,
+                    "M'/'d'/'yyyy", null,
+                    System.Globalization.DateTimeStyles.None);
             }
         }
     }

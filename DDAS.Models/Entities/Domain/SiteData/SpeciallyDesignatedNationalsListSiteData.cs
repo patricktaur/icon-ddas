@@ -31,7 +31,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
         }
 
-        //Patrick 28Nov2016
         public override string RecordDetails
         {
             get
@@ -41,6 +40,15 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Page Number: " + PageNumber + "~" +
                     "Record Number: " + RecordNumber + "~" +
                     "Words Matched: " + WordsMatched;  //???? Pradeep 14Dec2016
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                return null;
+                //return DateTime.ParseExact(InspectionStartAndEndDate.Split('-')[0],
+                //    "M'/'d'/'yyyy", null,
+                //    System.Globalization.DateTimeStyles.None);
             }
         }
     }

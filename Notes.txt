@@ -1,3 +1,163 @@
+29Jan2017
+For Pradeep:
+1. File upload validation - refactor, can combine in the readexcel data routine.
+	include validation for Project No: 0000/0000
+2. Collect sample data from all sites and build excel upload file.
+	project no: first two digits to denote site no where the PI is found
+				second two digits to denote the site no where first SI is found 
+				similarly, third and 4th set of two digits
+				Example: 0300/0000  PI is found in the third site
+						 0105/0000  PI from site 1, SI from site 5
+						 0303/0507  
+3. SysgtemForAwardmanagementPage - records not found - must be a posetive value.  
+	must match: "No records found for current search."
+4. Principal Investigator List - attach sub Investigators, Status and StatusEnum
+
+28Jan2017
+
+
+
+RollUp Logic:
+CompForm
+	public Guid? RecId { get; set; }
+    public string AssignedTo { get; set; }
+    public bool Active { get; set; } = true;
+    public string SponsorProtocolNumber { get; set; }
+    public string Country { get; set; }
+    public string Address { get; set; }
+    public string ProjectNumber { get; set; }
+    public string Institute { get; set; }
+    public DateTime SearchStartedOn { get; set; }
+    public string UploadedFileName { get; set; }
+	public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+    public int ExtractionPendingInvestigatorCount { get; set; }
+		-- rollup
+	public int ExtractionErrorInvestigatorCount { get; set; }
+		-- rollup
+	public int ExtractedInvestigatorCount { get; set; }
+		-- rollup new
+    public int FullMatchesFoundInvestigatorCount { get; set; }
+		-- rollup
+    public int PartialMatchesFoundInvestigatorCount { get; set; }
+		-- rollup
+    public int IssuesFoundInvestigatorCount { get; set; }
+		-- rollup
+    public int ReviewCompletedInvestigatorCount { get; set; }
+		-- rollup
+    public List<InvestigatorSearched> InvestigatorDetails { get; set; }
+	===================================================================
+		public int Id { get; set; }
+        public int DisplayPosition { get; set; }
+        public string Name { get; set; }
+        public string Role { get; set; }
+        public string Qualification { get; set; }
+        public string MedicalLiceseNumber { get; set; }
+        public string InvestigatorId { get; set; }
+        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        public bool HasExtractionError { get; set; }
+			AddMatchingRecords 
+        public int ExtractionErrorSiteCount { get; set; }
+			AddMatchingRecords 
+        public int Sites_FullMatchCount { get; set; }
+			-- rollup 
+        public int Sites_PartialMatchCount { get; set; }
+			-- rollup 
+        public int IssuesFoundSiteCount { get; set; }
+			-- rollup 
+        public int ReviewCompletedSiteCount { get; set; }
+			-- rollup 
+        public int TotalIssuesFound { get; set; }
+			-- rollup 
+        public int ReviewCompletedCount { get; set; }
+			-- not updated?
+		public List<SitesIncludedInSearch> SiteDetails { get; set; }
+        
+        
+		public List<SiteSearchStatus> SitesSearched { get; set; }
+		==========================================================
+			public int DisplayPosition { get; set; }
+			public SiteEnum siteEnum { get; set; }
+			public string SiteName { get; set; }
+			public string SiteUrl { get; set; }
+			public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' or has errors.
+			public bool HasExtractionError { get; set; }
+				-- AddMatchingRecords - exception:
+			public string ExtractionErrorMessage { get; set; }
+				-- AddMatchingRecords - exception:
+			public int FullMatchCount { get; set; }
+				-- AddMatchingRecords
+			public int PartialMatchCount { get; set; }
+				-- AddMatchingRecords
+			public int IssuesFound { get; set; }
+				-- roll up --  foreach (Finding Finding in Findings) - if (Finding != null && Finding.IsAnIssue &&
+                            Finding.InvestigatorSearchedId == Investigator.Id) - IssuesFound += 1;
+			public bool ReviewCompleted { get; set; }
+				-- User Inputs
+			public DateTime? SiteSourceUpdatedOn { get; set; }
+			public string ExtractionMode { get; set; }
+			private ComplianceFormStatusEnum _StatusEnum;
+			public string Status
+			public ComplianceFormStatusEnum StatusEnum
+  
+        public bool Deleted { get; set; }
+		private string _Status;
+        private ComplianceFormStatusEnum _StatusEnum;
+        public string Status
+  
+    
+    public List<SiteSource> SiteSources { get; set; }
+
+	    public int SourceNumber { get; set; }
+        public string SiteName { get; set; }
+        public DateTime DataExtractedOn { get; set; }
+        public DateTime SiteSourceUpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string ExtractionMode { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        public string SiteUrl { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public int FullMatchCount { get; set; }
+        public int PartialMatchCount { get; set; }
+        public string MatchStatus { get; set; }
+        public bool IssuesIdentified { get; set; }
+			-- rollup-- if (IssuesFound > 0 && Investigator.Id == InvId)
+        public int IssuesFound { get; set; }
+			-- roll up -- not updated?
+        public string IssuesFoundStatus { get; set; }
+			-- roll up -- not updated?
+        public bool HasExtractionError { get; set; }
+			-- roll up -- not updated?
+        public string ExtractionErrorMessage { get; set; }
+			-- roll up -- not updated?
+		public bool ReviewCompleted { get; set; }
+			-- roll up -- not updated?
+        public List<MatchedRecordsPerSite> MatchedRecords { get; set; }
+    
+	public List<Finding> Findings { get; set; }
+
+	    public SiteEnum SiteEnum { get; set; }
+        public int InvestigatorSearchedId { get; set; }
+        public int MatchCount { get; set; }
+        public int RowNumberInSource { get; set; }
+        public string Observation { get; set; }
+        public string RecordDetails { get; set; }
+        public string Status { get; set; }
+        public string HiddenStatus { get; set; }
+        public bool Selected { get; set; }
+        public bool IsMatchedRecord { get; set; }
+        public int SourceNumber { get; set; }
+        public DateTime? DateOfInspection { get; set; }
+        public string InvestigatorName { get; set; }
+        public bool IsAnIssue { get; set; }
+        public List<Link> Links { get; set; } = new List<Link>();
+   
+    private string _Status;
+    private ComplianceFormStatusEnum _StatusEnum;
+    public string Status
+    public ComplianceFormStatusEnum StatusEnum
+
+
+
 30Dec2016
 Patrick:
 DDAS.Models.Entities.Domain.SiteData.AdequateAssuranceListSiteData: Element 'Links' does not match any field or property of class DDAS.Models.Entities.Domain.SiteData.AdequateAssuranceList.

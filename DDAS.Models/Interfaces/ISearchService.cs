@@ -15,6 +15,7 @@ namespace DDAS.Models.Interfaces
 
         List<PrincipalInvestigator> getAllPrincipalInvestigators();
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
+        List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
 
         //Patrick 27Nov2016
         ComplianceForm GetNewComplianceForm(ILog log, string UserName);
@@ -47,5 +48,11 @@ namespace DDAS.Models.Interfaces
         List<List<string>> ReadDataFromExcelFile(string FilePath);
         List<ComplianceForm> ReadUploadedFileData(List<List<string>> ExcelInputData, 
             ILog log, string UserName, string FilePath);
+
+        //24Jan2017
+        string GenerateComplianceForm(
+            string DownloadFolder, string TemplateFolder,
+            Guid? ComplianceFormId, IWriter writer,
+            string FileExtension);
     }
 }

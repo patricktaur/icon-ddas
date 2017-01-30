@@ -26,6 +26,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string InstituteAndAddress { get; set; }
         public string InspectionStartAndEndDate { get; set; }
         public string Classification { get; set; }
+
         public override string FullName {
             get {
                 return Name;
@@ -42,6 +43,22 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Institute/Address: " + InstituteAndAddress + "~" +
                     "Inspection Start/End Date: " + InspectionStartAndEndDate + "~" +
                     "Classification: " + Classification;
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (InspectionStartAndEndDate.Contains("-")) {
+                    return DateTime.ParseExact(InspectionStartAndEndDate.Split('-')[0],
+                        "M'/'d'/'yyyy", null,
+                        System.Globalization.DateTimeStyles.None);
+                }
+                else if (InspectionStartAndEndDate != "")
+                    return DateTime.ParseExact(InspectionStartAndEndDate,
+                        "M'/'d'/'yyyy", null,
+                        System.Globalization.DateTimeStyles.None);
+                else
+                    return null;
             }
         }
     }

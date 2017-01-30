@@ -1,5 +1,6 @@
 ﻿//using DocumentFormat.OpenXml.Drawing;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
@@ -8,9 +9,15 @@ using System.Linq;
 
 namespace Utilities.WordTemplate
 {
-    public class CreateComplianceForm
+    public class CreateComplianceFormWord : IWriter
     {
-        public MemoryStream ReplaceTextFromWord(ComplianceForm form, string TemplateFolder, string fileName = "")
+        private FileStream _stream;
+        private WordprocessingDocument _document;
+        private Table _table;
+        private TableRow _row;
+
+        #region Existing working code
+        public MemoryStream CreateComplianceForm(ComplianceForm form, string TemplateFolder, string fileName = "")
         {
             string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
 
@@ -249,6 +256,17 @@ namespace Utilities.WordTemplate
             HeaderTable.Append(tr);
         }
 
+        private void AddTableCell(string Text)
+        {
+            var TableCell = CellWithVerticalAlign();
+            var paragraph = ParagraphWithCenterAlign();
+
+            paragraph.Append(new Run(new Text(Text)));
+
+            TableCell.Append(paragraph);
+            _row.Append(TableCell);
+        }
+
         public void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
             string SourceDate, string WebLink, string IssueIdentified)
         {
@@ -403,5 +421,101 @@ namespace Utilities.WordTemplate
             if (DefaultStatus.Val.Value != CheckOrUnCheck)
                 DefaultStatus.Val.Value = CheckOrUnCheck;
         }
+        #endregion
+
+        public void Temp(ComplianceForm form, string TemplateFolder, string fileName = "")
+        {
+            string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
+
+            byte[] byteArray = File.ReadAllBytes(
+                TemplateFile);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                stream.Write(byteArray, 0, byteArray.Length);
+
+                using (WordprocessingDocument doc =
+                   WordprocessingDocument.Open(
+                    stream, true))
+                {
+                    var body = doc.MainDocumentPart.Document.Body;
+                    Table table = new Table();
+                    AddInvestigatorDetails(table, "Pradeep", "MD", "#221145", "Sub");
+                    body.Append(table);
+                }
+            }
+        }
+        
+        #region IWriter Implementation
+
+        public void Initialize(string TemplateFolder, string ComplianceFormFolder)
+        {
+            if (File.Exists(ComplianceFormFolder))
+                File.Delete(ComplianceFormFolder);
+
+            byte[] ByteArray = File.ReadAllBytes(
+                TemplateFolder + "ComplianceFormTemplate.docx");
+
+            _stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+
+            _stream.Write(ByteArray, 0, ByteArray.Length);
+
+            _document = WordprocessingDocument.Open(_stream, true);
+        }
+
+        public void AddFormHeaders(string ProjectNumber,
+            string SponsorProtocolNumber, string InstituteName, string Address)
+        {
+            var body = _document.MainDocumentPart.Document.Body;
+
+            var HeaderTable = body.Descendants<Table>().ElementAt(0);
+
+            UpdateTable(HeaderTable, 0, 1, ProjectNumber);
+            UpdateTable(HeaderTable, 0, 3, SponsorProtocolNumber);
+            UpdateTable(HeaderTable, 1, 1, InstituteName);
+            UpdateTable(HeaderTable, 1, 3, Address);
+        }
+
+        public void AddTableHeaders(string[] Headers, int Columns, int TableIndex)
+        {
+            var body = _document.MainDocumentPart.Document.Body;
+            _table = body.Descendants<Table>().ElementAt(TableIndex);
+        }
+
+        public void FillUpTable(string[] CellValues)
+        {
+            _row = new TableRow();
+            foreach (string Value in CellValues)
+            {
+                AddTableCell(Value);
+            }
+            _table.Append(_row);
+        }
+
+        public void WriteParagraph(string Text)
+        {
+            
+        }
+
+        public void AddSearchedBy(string SearchedBy, string Date)
+        {
+            var body = _document.MainDocumentPart.Document.Body;
+            var SearchedByTable = body.Descendants<Table>().ElementAt(5);
+            AddSearchedByDetails(SearchedByTable, SearchedBy, 0, 0);
+            AddSearchedByDetails(SearchedByTable, Date,
+                1, 0);
+        }
+
+        public void SaveChanges()
+        {
+            
+        }
+
+        public void CloseDocument()
+        {
+            _document.Close();
+            _stream.Close();
+        }
+        #endregion
     }
 }

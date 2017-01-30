@@ -35,6 +35,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\Libraries1\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="SpreadsheetLight, Version=3.4.8.0, Culture=neutral, PublicKeyToken=32fbb46dc1730c57, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SpreadsheetLight.3.4.8\lib\SpreadsheetLight.dll</HintPath>
       <Private>True</Private>
@@ -58,7 +61,8 @@
     <Compile Include="LogText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadUploadedExcelFile.cs" />
-    <Compile Include="WordTemplate\CreateComplianceForm.cs" />
+    <Compile Include="WordTemplate\CreateComplianceFormWord.cs" />
+    <Compile Include="WordTemplate\CreateComplianceFormPDF.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DDAS.Models\DDAS.Models.csproj">

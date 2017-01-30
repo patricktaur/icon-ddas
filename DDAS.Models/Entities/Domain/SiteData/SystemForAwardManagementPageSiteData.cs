@@ -29,7 +29,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string DoDAAC { get; set; }
         public string DelinquentFederalDebt { get; set; }
         public string Classification { get; set; }
-        public string ActivationDate { get; set; }
+        public string ActivationDate { get; set; } = "";
         public string TerminationDate { get; set; }
 
         public override string FullName {
@@ -38,7 +38,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
         }
 
-        //Patrick 28Nov2016
         public override string RecordDetails
         {
             get
@@ -55,6 +54,17 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Classification: " + HasActiveExclusion + "~" +
                     "Activation Date: " + HasActiveExclusion + "~" +
                     "Termination Date: " + HasActiveExclusion;
+            }
+        }
+
+        public override DateTime? DateOfInspection {
+            get {
+                if (ActivationDate == "")
+                    return null;
+
+                return DateTime.ParseExact(ActivationDate,
+                    "M'/'d'/'yyyy", null,
+                    System.Globalization.DateTimeStyles.None);
             }
         }
     }
