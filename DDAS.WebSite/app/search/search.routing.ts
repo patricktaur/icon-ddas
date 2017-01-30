@@ -52,13 +52,12 @@ const searchRoutes: Routes = [
     ]
   },
   {
-    path: 'closed-icfs', component: ClosedICFsComponent
-    , canActivate: [AuthGuard]
+    path: 'closed-icfs1', component: ClosedICFsComponent
+    , canActivate: [AuthGuard],
+
   },
-  {
-    path: 'open-compliance-forms', component: OpenComplianceFormsComponent
-    , canActivate: [AuthGuard]
-  },
+  
+  
   {
     path: 'manage-compliance-forms', component: SearchComponent
     , canActivate: [AuthGuard],
@@ -86,7 +85,27 @@ const searchRoutes: Routes = [
     , canActivate: [AuthGuard]
 },
     
-  
+ {
+    path: 'closed-icfs', component: SearchComponent
+    , canActivate: [AuthGuard],
+    children: [
+
+      { path: '', component: ClosedICFsComponent },
+
+      {
+        path: 'complianceform/:formid',
+        component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'investigator-summary/:formid/:investigatorid',
+        component: InvestigatorSummaryComponent,
+      },
+      {
+        path: 'findings/:formid/:investigatorid/:siteenum',
+        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+      }
+    ]
+  }, 
    
 ];
 

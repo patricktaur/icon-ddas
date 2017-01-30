@@ -65,7 +65,7 @@ export class ClosedICFsComponent implements OnInit {
     }
 
     LoadPrincipalInvestigators() {
-        this.service.getMyClosedPrincipalInvestigators()
+        this.service.getMyReviewCompletedPrincipalInvestigators()
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
             },
@@ -93,6 +93,12 @@ export class ClosedICFsComponent implements OnInit {
 
     OpenNew() {
         this.router.navigate(['complianceform', ""], { relativeTo: this.route });
+    }
+
+    OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
+
+        this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+
     }
 
     UploadFile() {

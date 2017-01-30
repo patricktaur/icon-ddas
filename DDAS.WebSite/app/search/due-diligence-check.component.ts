@@ -70,7 +70,7 @@ export class DueDiligenceCheckComponent implements OnInit {
     }
 
     LoadPrincipalInvestigators() {
-        this.service.getMyActivePrincipalInvestigators()
+        this.service.getMyReviewPendingPrincipalInvestigators()
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
             },

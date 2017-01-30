@@ -39,14 +39,17 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        
+
         public IWebElement SAMCheckResult {
             get {
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                try {
+                
+                try
+                {
                     IWebElement Result = driver.FindElement(By.Id("its_docs"));
                     return Result;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     throw new Exception("Unable to get count of search result!");
                 }

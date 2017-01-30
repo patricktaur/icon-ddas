@@ -124,24 +124,26 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    getMyActivePrincipalInvestigators() {
+    getMyReviewPendingPrincipalInvestigators() {
          
-        return this.http.get(this._baseUrl + 'search/GetMyActivePrincipalInvestigators', this._options)
+        return this.http.get(this._baseUrl + 'search/GetMyReviewPendingPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
     }
 
-    getMyClosedPrincipalInvestigators() {
+    getMyReviewCompletedPrincipalInvestigators() {
          
-        return this.http.get(this._baseUrl + 'search/GetMyClosedPrincipalInvestigators', this._options)
+        return this.http.get(this._baseUrl + 'search/GetMyReviewCompletedPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
     }
 
+    
+    
     getComplianceForm(formId: string): Observable<ComplianceFormA> {
         
         return this.http.get(this._baseUrl + 'search/GetComplianceFormA/?formId=' + formId, this._options)

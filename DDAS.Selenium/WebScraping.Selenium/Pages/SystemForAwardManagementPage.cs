@@ -174,22 +174,49 @@ namespace WebScraping.Selenium.Pages
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-            if (SAMCheckResult != null)
+            try
             {
-                return true;
-            }
-            else
-            {
-                //IWebElement ClearSearch = SAMClearSearch;
-                SAMClearSearch.Click();
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                //ClearSearch.Click();
-                //ClearSearch.SendKeys(Keys.Enter);
+                
+                if (SAMCheckResult != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    
+                    SAMClearSearch.Click();
+                    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                      driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
 
                 return false;
             }
+            if (SAMCheckResult != null)
+            {
+
+            }
+
+            //if (SAMCheckResult != null)
+            //{
+            //    return true;
+            //}
+            //else
+            //{
+            //    //IWebElement ClearSearch = SAMClearSearch;
+            //    SAMClearSearch.Click();
+            //    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            //    //ClearSearch.Click();
+            //    //ClearSearch.SendKeys(Keys.Enter);
+
+            //    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
+            //    return false;
+            //}
         }
 
         public override void LoadContent(string DownloadsFolder)

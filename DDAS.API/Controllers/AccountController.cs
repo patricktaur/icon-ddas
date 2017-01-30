@@ -13,6 +13,7 @@ using DDAS.Models.ViewModels;
 using DDAS.Models.Entities.Identity;
 using Utilities.EMail;
 using System.Linq;
+using System.Globalization;
 
 namespace DDAS.API.Controllers
 {
@@ -159,20 +160,46 @@ namespace DDAS.API.Controllers
                 
         [Route("getLogHistory")]
         [HttpGet]
-        public IHttpActionResult GetAllLoginHistory()
+        public IHttpActionResult GetAllLoginHistory(string DateFrom, string DateTo)
         {
-            var AllLoginHistory = _userService.GetAllLoginHistory();
+            DateTime from;
+            DateTime to;
+            DateTime toPlusOne;
+            DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
+                System.Globalization.DateTimeStyles.None, out from);
+            DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
+              System.Globalization.DateTimeStyles.None, out to);
+            toPlusOne = to.AddDays(1);
+            var AllLoginHistory = _userService.GetAllLoginHistory()
+                .Where(x =>  x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
+            )
+            .OrderByDescending(d => d.LoginAttemptTime);
+            
             return Ok(AllLoginHistory);
+
         }
 
         [Route("getMyLogHistory")]
         [HttpGet]
-        public IHttpActionResult GetMyLoginHistory(string UserName)
+        public IHttpActionResult GetMyLoginHistory(string UserName, string DateFrom, string DateTo)
         {
+            DateTime from;
+            DateTime to;
+            DateTime toPlusOne;
+            DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
+                System.Globalization.DateTimeStyles.None, out from);
+
+            DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
+               System.Globalization.DateTimeStyles.None, out to);
+            toPlusOne = to.AddDays(1);
             var AllLoginHistory = _userService.GetAllLoginHistory();
 
+
             var MyLoginHistory = AllLoginHistory.Where(x =>
-            x.UserName.ToLower() == UserName.ToLower());
+            x.UserName.ToLower() == UserName.ToLower()
+            & x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
+            )
+            .OrderByDescending(d => d.LoginAttemptTime);
 
             return Ok(MyLoginHistory);
         }

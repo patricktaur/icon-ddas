@@ -29,7 +29,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string DoDAAC { get; set; }
         public string DelinquentFederalDebt { get; set; }
         public string Classification { get; set; }
-        public string ActivationDate { get; set; }
+        public string ActivationDate { get; set; } = "";
         public string TerminationDate { get; set; }
 
         public override string FullName {

@@ -64,13 +64,13 @@
 			</div>
 
 		</div>
-		<div statusCircle-Legend-Horizontal></div>
+		
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th class="col-md-3 ">Principal Investigator </th>
 					<th class="col-md-2 text-left">ICON Project Number</th>
-					<th class="col-md-1 text-left">Active</th>
+					<th class="col-md-1 text-left">Review Completed</th>
 					<th class="col-md-1 text-left">Assigned To</th>
 					<th class="col-md-1 text-center">Searched on</th>
 
@@ -87,7 +87,7 @@
 						{{item.ProjectNumber}}
 					</td>
 					<td>
-						{{item.Active | boolToYesNo}}
+						{{item.ReviewCompleted | boolToYesNo}}
 					</td>
 					<td class="text-left">
 						{{item.AssignedTo}}
@@ -142,8 +142,8 @@
 			</div>
 			<div class="col-md-2">
 				<div>
-					<label for="Active">Open:</label>
-					<input type="checkbox" [(ngModel)]="Active">
+					<!--<label for="Active">Open:</label>
+					<input type="checkbox" [(ngModel)]="Active">-->
 				</div>
 			</div>
 			<div class="col-md-4">

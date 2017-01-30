@@ -45,8 +45,12 @@ export class loggedinuserService {
 
     }
 
-    getMyLoginHistory(userName: string){
-        return this.http.get(this._baseUrl + 'Account/getMyLogHistory?UserName=' + userName, this._options)
+    getMyLoginHistory(userName: string, from:Date, to: Date){
+        return this.http.get(this._baseUrl + 'Account/getMyLogHistory'
+        + '?UserName=' + userName
+        + '&DateFrom=' + from.toISOString().substring(0, 10)
+        + '&DateTo=' + to.toISOString().substring(0, 10)
+        , this._options)
             .map((res: Response) => {
                 return res.json();
             })

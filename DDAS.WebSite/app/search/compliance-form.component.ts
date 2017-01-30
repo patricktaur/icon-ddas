@@ -24,7 +24,8 @@ export class ComplianceFormComponent implements OnInit {
      public InvestigatorToRemove: InvestigatorSearched = new InvestigatorSearched;
      public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
     private pageChanged: boolean= false;
-     
+   
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -189,7 +190,7 @@ export class ComplianceFormComponent implements OnInit {
                     inv.CanEdit = false;
                 }
             }
-
+            
             this.CompForm.SearchPending = SearchPending;
         }
     }
@@ -251,6 +252,12 @@ export class ComplianceFormComponent implements OnInit {
    InvestigatorRemove(){
        // item.Deleted = true;
         this.InvestigatorToRemove.Deleted = true;
+
+        var index = this.CompForm.InvestigatorDetails.indexOf(this.InvestigatorToRemove);
+        if (index > -1) {
+            this.CompForm.InvestigatorDetails.splice(index, 1);
+        }
+
         this.SetInvestigatorRole();
         this.Initialize();
         this.pageChanged = true;
@@ -291,47 +298,15 @@ export class ComplianceFormComponent implements OnInit {
    move(idx: number, step: number) {
     
     var tmp = this.CompForm.InvestigatorDetails[idx];
-     //var tmp = this.Investigators[idx];
-    
-    //find non deleted item and then swap:
-    let index:number = 0
-  
-    
-    console.log("idx:" + idx);
-    console.log("step:" + step);
-    console.log("len:" + this.CompForm.InvestigatorDetails.length);
-    let deletedCount: number = 0;
-    for (let  _i = idx - step; _i < this.CompForm.InvestigatorDetails.length && _i >= 0; _i += -step){
-          console.log( " _i:" + _i);
-           console.log( " Deleted:" + this.CompForm.InvestigatorDetails[_i].Deleted);
-          if (this.CompForm.InvestigatorDetails[_i].Deleted == false){
-                //  this.CompForm.InvestigatorDetails[idx] = this.CompForm.InvestigatorDetails[_i];
-                // this.CompForm.InvestigatorDetails[_i ] = tmp;
-                 
-                  this.CompForm.InvestigatorDetails[idx + 1] = this.CompForm.InvestigatorDetails[_i + deletedCount];
-                this.CompForm.InvestigatorDetails[_i + deletedCount ] = tmp;
-                 
-                 console.log( " swapped idx, _i" );
-                break;
-          }
-          else{
-              deletedCount +=1;
-          }
-     }
-    
- 
 
-    //  this.Investigators[idx] = this.Investigators[idx - step];
-    // this.Investigators[idx - step] = tmp;
     
-    // this.CompForm.InvestigatorDetails[idx] = this.CompForm.InvestigatorDetails[idx - step];
-    // this.CompForm.InvestigatorDetails[idx - step] = tmp;
-    this.SetInvestigatorRole();
+     this.CompForm.InvestigatorDetails[idx] = this.CompForm.InvestigatorDetails[idx - step];
+     this.CompForm.InvestigatorDetails[idx - step] = tmp;
+     this.SetInvestigatorRole();
     
     }
     
 
- 
   
   moveA(inv: InvestigatorSearched, step: number) {
       var tmp = inv;

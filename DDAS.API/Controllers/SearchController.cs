@@ -96,14 +96,13 @@ namespace DDAS.API.Controllers
                     var DataInExcelFile = 
                         _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    ValidationMessages = 
+                    ValidationMessages =
                         _SearchService.ValidateExcelInputs(DataInExcelFile);
 
                     if (ValidationMessages.Count > 0)
-                   
                     {
-                        //unable to make the uploader handle list of strings, therefore this workaround:
-                        return 
+                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
+                        return
                             Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
                     }
 
@@ -164,6 +163,15 @@ namespace DDAS.API.Controllers
          }
 
 
+        [Route("GetMyReviewPendingPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyReviewPendingPrincipalInvestigators()
+        {
+            var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, true, false));
+        }
+
         [Route("GetMyClosedPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyClosedPrincipalInvestigators()
@@ -172,6 +180,16 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.getPrincipalInvestigators(UserName, false));
         }
+
+        [Route("GetMyReviewCompletedPrincipalInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetMyReviewCompletedPrincipalInvestigators()
+        {
+            var UserName = User.Identity.GetUserName();
+            return Ok(
+                _SearchService.getPrincipalInvestigators(UserName, true, true));
+        }
+
 
         [Route("GetInvestigatorSiteSummary")]
         [HttpGet]
@@ -257,7 +275,6 @@ namespace DDAS.API.Controllers
         {
             try
             {
-               
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
                 //var FilePath = _SearchService.GenerateComplianceFormAlt(
@@ -445,7 +462,4 @@ namespace DDAS.API.Controllers
         public List<IdentityRole> Role { get; set; }
 
     }
-
-    
-
 }

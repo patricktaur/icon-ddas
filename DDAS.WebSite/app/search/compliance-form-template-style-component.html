@@ -11,6 +11,9 @@
 					<div class="col-lg-4 text-right">
 						<!--not working: -->
 						<div *ngIf="false" statusCircle [status]="CompForm.StatusEnum" size=24 [title]="CompForm.Status"></div>
+						
+						<div *ngIf="false" statusCircle size=24 [status]="comFormColor" ></div>
+						
 					</div>
 				</div>
 				<br>
@@ -20,7 +23,6 @@
 							<label for="ProjectNumber">ICON Project Number (1234/1234):</label>
 							<input type="text" class="form-control" name="projNumber" [(ngModel)]="CompForm.ProjectNumber" 
 							#projNumber="ngModel" required pattern="\d{4}/\d{4}"	>
-
 
 							<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
             					Project Number format 9999/9999 expected.
@@ -83,7 +85,7 @@
 												
 												<div *ngIf="inv.CanEdit">
 													<input type="text" name="invName"  [(ngModel)]="inv.Name" class="form-control"
-												   required minlength="3"  #invName="ngModel">
+												     #invName="ngModel">
 												</div>
 												<div *ngIf="!inv.CanEdit" class="text-left">{{inv.Name}}</div>
 					
@@ -111,8 +113,8 @@
 											</td>
 
 											<td>
-												<!--<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>-->
-												<!--<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>-->
+												<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
+												<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
 												<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
 													title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
 												<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
@@ -141,8 +143,8 @@
 							<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
 							<button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="Save()">Save</button>
-							<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!CompForm.SearchPending">Search</button>
-							<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>
+							<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending">Search</button>
+							<!--<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>-->
 							<p *ngIf="searchInProgress">Search in progress ... </p>
 						</div>
 
