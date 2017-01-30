@@ -1523,7 +1523,7 @@ namespace DDAS.Services.Search
 
                 var PrincipalInv = DetailsInEachRow[0].Split(' ').Count();
 
-                if(DetailsInEachRow[0] == "")
+                if(DetailsInEachRow[0].Trim() == "")
                 {
                     ValidationMessage = "RowNumber: " + Row + 
                         " Principal Investigator Name is null!";
@@ -1619,7 +1619,7 @@ namespace DDAS.Services.Search
                 {
                     ValidationMessages.Add(DetailsInEachRow[6]);
                 }
-                if (DetailsInEachRow[6].Length > 100)
+                if (DetailsInEachRow[6].Length > 500)
                 {
                     ValidationMessage = "RowNumber: " + Row +
                         " Address exceeds max character(500) limit!";
@@ -1633,24 +1633,20 @@ namespace DDAS.Services.Search
                 int TempCounter = 8;
                 while(TempCounter < DetailsInEachRow.Count())
                 {
-                    int ComponentsInSIName = DetailsInEachRow[TempCounter].Split(' ').Count();
-                    if (DetailsInEachRow[TempCounter] == "")
-                    {
-                        ValidationMessage = "Row: " + Row +
-                            " Column: " + (TempCounter + 1) +
-                            " - Sub investigator name cannot be empty, It must have atleast "
-                            + "two components separated with a space!";
-                        ValidationMessages.Add(ValidationMessage);
-                    }
+                    int ComponentsInSIName = DetailsInEachRow[TempCounter].Trim().Split(' ').Count();
+                    //if (DetailsInEachRow[TempCounter].Trim() == "")
+                    //{
+                    //    ValidationMessage = "Row: " + Row +
+                    //        " Column: " + (TempCounter + 1) +
+                    //        " - Sub investigator name cannot be empty, It must have atleast "
+                    //        + "two components separated with a space!";
+                    //    ValidationMessages.Add(ValidationMessage);
+                    //}
                     if (DetailsInEachRow[TempCounter] == " ")
                     {
-                        ValidationMessage = "Row: " + Row +
-                            " Column: " + (TempCounter + 1) +
-                            " - Sub investigator name cannot be empty, It must have atleast "
-                            + "two components separated with a space!";
-                        ValidationMessages.Add(ValidationMessage);
+
                     }
-                    if (ComponentsInSIName < 2)
+                    else if (ComponentsInSIName < 2)
                     {
                         ValidationMessage = "Row: " + Row +
                             " Column: " + (TempCounter + 1) +
@@ -1705,6 +1701,7 @@ namespace DDAS.Services.Search
                         ValidationMessages.Add(DetailsInEachRow[TempCounter]);
                     }
                     TempCounter += 3;
+                    Row += 1;
                 }
             }
             return ValidationMessages;
