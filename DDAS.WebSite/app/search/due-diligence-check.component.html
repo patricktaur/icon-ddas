@@ -2,7 +2,7 @@
 	<div class="col-lg-12">
 		<div class="well">
 			<h3 class="no-margin-top">Due Diligence Search</h3>
-			<br> 
+			<br>
 			<div class="row text-left">
 
 				<div class="col-md-8">
@@ -17,7 +17,7 @@
 					<div class="text-right vertical-center">
 						<a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Batch Upload Template</a>
 
-
+							
 					</div>
 
 				</div>
@@ -28,7 +28,7 @@
 </div>
 
 <div class="table-responsive">
-<div statusCircle-Legend-Horizontal></div>
+	<div statusCircle-Legend-Horizontal></div>
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
 
@@ -47,7 +47,11 @@
 			<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 
 				<td class="text-left">
-					{{item.Name}}
+					{{item.Name}} <span toggle-show *ngIf="item.SubInvestigators.length > 0"> 
+							<ul class="list-unstyled " style="white-space: nowrap">
+							<li *ngFor="let inv of item.SubInvestigators" >{{inv.Name}}</li>
+						</ul>
+					</span>
 				</td>
 				<td class="text-center">
 					{{item.ProjectNumber}}
