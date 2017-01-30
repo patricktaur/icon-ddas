@@ -763,6 +763,18 @@ namespace DDAS.Services.Search
             item.AssignedTo = compForm.AssignedTo;
             item.Status = compForm.Status;
             item.StatusEnum = compForm.StatusEnum;
+
+            foreach(InvestigatorSearched Investigator in compForm.InvestigatorDetails)
+            {
+                if(Investigator.Role.ToLower() == "sub")
+                {
+                    var SubInv = new SubInvestigator();
+                    SubInv.Name = Investigator.Name;
+                    SubInv.Status = Investigator.Status;
+                    SubInv.StatusEnum = Investigator.StatusEnum;
+                    item.SubInvestigators.Add(SubInv);
+                }
+            }
             return item;
         }
 
@@ -1535,7 +1547,7 @@ namespace DDAS.Services.Search
                         "separated with a space!";
                     ValidationMessages.Add(ValidationMessage);
                 }
-                if(IsAlpha(DetailsInEachRow[0]))
+                if(IsNumeric(DetailsInEachRow[0]))
                 {
                     ValidationMessage = "RowNumber: " + Row +
                         " Principal Investigator Name should not have any " +
@@ -1625,26 +1637,62 @@ namespace DDAS.Services.Search
                     ValidationMessages.Add(DetailsInEachRow[7]);
                 }
 
-                for (int counter = 8; counter < DetailsInEachRow.Count(); counter++)
+                int TempCounter = 8;
+                while(TempCounter < DetailsInEachRow.Count())
                 {
-                    if(HasSpecialCharacters(DetailsInEachRow[counter]) ||
-                        DetailsInEachRow[counter].Length > 100)
+                    int ComponentsInSIName = DetailsInEachRow[TempCounter].Split(' ').Count();
+                    if (ComponentsInSIName < 2)
                     {
-                        ValidationMessage = "RowNumber: " + Row +
-                            " Sub Investigator name/ML#/Qualification has invalid inputs!";
+                        ValidationMessage = "Row Number: " + Row +
+                            " - Sub investigator name must have atleast two components" +
+                            " separated with a space!";
                         ValidationMessages.Add(ValidationMessage);
                     }
-                    if (DetailsInEachRow[counter].ToLower().Contains("cannot find column"))
+                    if (IsNumeric(DetailsInEachRow[TempCounter]))
                     {
-                        ValidationMessages.Add(DetailsInEachRow[counter]);
+                        ValidationMessage = "Row Number: " + Row +
+                            " - Sub investigator name should not have any special characters!";
+                        ValidationMessages.Add(ValidationMessage);
                     }
+                    if(DetailsInEachRow[TempCounter].Length > 100)
+                    {
+                        ValidationMessage = "Row Number: " + Row +
+                            " - Sub investigator name exceeds max character(500) limit!";
+                        ValidationMessages.Add(ValidationMessage);
+                    }
+                    if (DetailsInEachRow[TempCounter].ToLower().Contains("cannot find column"))
+                    {
+                        ValidationMessages.Add(DetailsInEachRow[TempCounter]);
+                    }
+                    if (DetailsInEachRow[TempCounter + 1].Length > 100)
+                    {
+                        ValidationMessage = "Row Number: " + Row +
+                            " - Sub investigator ML # exceeds max character(500) limit!";
+                        ValidationMessages.Add(ValidationMessage);
+                    }
+                    if (DetailsInEachRow[TempCounter + 1].ToLower().
+                        Contains("cannot find column"))
+                    {
+                        ValidationMessages.Add(DetailsInEachRow[TempCounter]);
+                    }
+                    if (DetailsInEachRow[TempCounter + 2].Length > 100)
+                    {
+                        ValidationMessage = "Row Number: " + Row +
+                            " - Sub investigator qualification exceeds max character(500) limit!";
+                        ValidationMessages.Add(ValidationMessage);
+                    }
+                    if (DetailsInEachRow[TempCounter + 2].ToLower().
+                        Contains("cannot find column"))
+                    {
+                        ValidationMessages.Add(DetailsInEachRow[TempCounter]);
+                    }
+                    TempCounter += 3;
                 }
-                Row += 1;
             }
             return ValidationMessages;
         }
 
-        private bool IsAlpha(string Value)
+        private bool IsNumeric(string Value)
         {
             foreach (char c in Value)
             {

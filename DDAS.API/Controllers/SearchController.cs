@@ -96,16 +96,15 @@ namespace DDAS.API.Controllers
                     var DataInExcelFile = 
                         _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    //ValidationMessages = 
-                    //    _SearchService.ValidateExcelInputs(DataInExcelFile);
+                    ValidationMessages =
+                        _SearchService.ValidateExcelInputs(DataInExcelFile);
 
-                    //if (ValidationMessages.Count > 0)
-                   
-                    //{
-                    //    //unable to make the uploader handle list of strings, therefore this ListToString workaround:
-                    //    return
-                    //        Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
-                    //}
+                    if (ValidationMessages.Count > 0)
+                    {
+                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
+                        return
+                            Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
+                    }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
                         _log, userName, file.LocalFileName);
@@ -276,7 +275,6 @@ namespace DDAS.API.Controllers
         {
             try
             {
-               
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
                 //var FilePath = _SearchService.GenerateComplianceFormAlt(
@@ -464,7 +462,4 @@ namespace DDAS.API.Controllers
         public List<IdentityRole> Role { get; set; }
 
     }
-
-    
-
 }

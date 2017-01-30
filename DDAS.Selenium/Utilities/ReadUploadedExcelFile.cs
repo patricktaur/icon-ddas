@@ -69,7 +69,7 @@ namespace Utilities
 
                     DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 1)); //ML#
 
-                    if (doc.GetCellValueAsString(1, ColumnIndex).ToLower() !=
+                    if (doc.GetCellValueAsString(1, ColumnIndex + 2).ToLower() !=
                         "si qualification")
                         ValidationMessages.Add("cannot find column - SI Qualification");
 

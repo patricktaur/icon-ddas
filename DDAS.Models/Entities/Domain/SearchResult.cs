@@ -265,7 +265,8 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
         public string AssignedTo { get; set; }
-        public bool ReviewCompleted { get {
+        public bool ReviewCompleted {
+            get {
                 if (StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified 
                     || StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                 {
@@ -274,11 +275,20 @@ namespace DDAS.Models.Entities.Domain
                 else
                 {
                     return false;
-                }
-                    
-            } }
+                }     
+            }
+        }
+        public List<SubInvestigator> SubInvestigators { get; set; } =
+            new List<SubInvestigator>();
     }
 
+    //Pradeep30Jan2017
+    public class SubInvestigator
+    {
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public ComplianceFormStatusEnum StatusEnum { get; set; }
+    }
 
     //Patrick 03Dec2016 modified.
     public class InvestigatorSearched
