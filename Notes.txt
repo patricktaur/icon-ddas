@@ -9,7 +9,7 @@ For Pradeep:
 				Example: 0300/0000  PI is found in the third site
 						 0105/0000  PI from site 1, SI from site 5
 						 0303/0507  
-3. SysgtemForAwardmanagementPage - records not found - must be a posetive value.  
+3. SystemForAwardmanagementPage - records not found - must be a posetive value.  
 	must match: "No records found for current search."
 4. Principal Investigator List - attach sub Investigators, Status and StatusEnum
 
