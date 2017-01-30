@@ -693,8 +693,6 @@ namespace DDAS.Services.Search
                 retList.Add(item);
             }
             return retList;
-
-            
         }
 
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active=true, bool ReviewCompleted = false)
@@ -704,11 +702,7 @@ namespace DDAS.Services.Search
             retList = getPrincipalInvestigators(AssignedTo, Active);
 
             return retList.Where(x =>  x.ReviewCompleted == ReviewCompleted).ToList();
-
         }
-
-
-
 
         public List<PrincipalInvestigator> getPrincipalInvestigatorsByFilters(string AssignedTo, string PricipalInvestigatorName = "")
         {
@@ -777,7 +771,6 @@ namespace DDAS.Services.Search
             }
             return item;
         }
-
 
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter)
@@ -1641,22 +1634,45 @@ namespace DDAS.Services.Search
                 while(TempCounter < DetailsInEachRow.Count())
                 {
                     int ComponentsInSIName = DetailsInEachRow[TempCounter].Split(' ').Count();
+                    if (DetailsInEachRow[TempCounter] == "")
+                    {
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 1) +
+                            " - Sub investigator name cannot be empty, It must have atleast "
+                            + "two components separated with a space!";
+                        ValidationMessages.Add(ValidationMessage);
+                    }
+                    if (DetailsInEachRow[TempCounter] == " ")
+                    {
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 1) +
+                            " - Sub investigator name cannot be empty, It must have atleast "
+                            + "two components separated with a space!";
+                        ValidationMessages.Add(ValidationMessage);
+                    }
                     if (ComponentsInSIName < 2)
                     {
-                        ValidationMessage = "Row Number: " + Row +
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 1) +
                             " - Sub investigator name must have atleast two components" +
                             " separated with a space!";
                         ValidationMessages.Add(ValidationMessage);
                     }
                     if (IsNumeric(DetailsInEachRow[TempCounter]))
                     {
-                        ValidationMessage = "Row Number: " + Row +
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 1) +
                             " - Sub investigator name should not have any special characters!";
                         ValidationMessages.Add(ValidationMessage);
                     }
+                    if(DetailsInEachRow[TempCounter].ToLower().Contains("sub investigator name is empty"))
+                    {
+                        ValidationMessages.Add(DetailsInEachRow[TempCounter]);
+                    }
                     if(DetailsInEachRow[TempCounter].Length > 100)
                     {
-                        ValidationMessage = "Row Number: " + Row +
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 1) +
                             " - Sub investigator name exceeds max character(500) limit!";
                         ValidationMessages.Add(ValidationMessage);
                     }
@@ -1666,7 +1682,8 @@ namespace DDAS.Services.Search
                     }
                     if (DetailsInEachRow[TempCounter + 1].Length > 100)
                     {
-                        ValidationMessage = "Row Number: " + Row +
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 1) +
                             " - Sub investigator ML # exceeds max character(500) limit!";
                         ValidationMessages.Add(ValidationMessage);
                     }
@@ -1677,7 +1694,8 @@ namespace DDAS.Services.Search
                     }
                     if (DetailsInEachRow[TempCounter + 2].Length > 100)
                     {
-                        ValidationMessage = "Row Number: " + Row +
+                        ValidationMessage = "Row: " + Row +
+                            " Column: " + (TempCounter + 2) +
                             " - Sub investigator qualification exceeds max character(500) limit!";
                         ValidationMessages.Add(ValidationMessage);
                     }
@@ -1708,7 +1726,7 @@ namespace DDAS.Services.Search
             {
                 if (c == '?' || c == '\\' ||
                     c == '$' || c == '#' ||
-                    c == '.' || c == '*' || 
+                    c == '*' || 
                     c == '_' || c == '&' || 
                     c == '@' || c == '!' || 
                     c == '%' || c == '^')

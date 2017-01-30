@@ -1,9 +1,5 @@
-﻿using DDAS.Models.Entities.Domain;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using SpreadsheetLight;
+﻿using SpreadsheetLight;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Utilities
 {
@@ -14,6 +10,7 @@ namespace Utilities
             SLDocument doc = new SLDocument(FilePath);
 
             var ValidationMessages = new List<string>();
+            var ListOfRows = new List<List<string>>();
 
             if (doc.GetCellValueAsString("A1").ToLower() != "pi name")
                 ValidationMessages.Add("cannot find column - PI Name in cell A1");
@@ -32,17 +29,36 @@ namespace Utilities
             if (doc.GetCellValueAsString("H1").ToLower() != "country")
                 ValidationMessages.Add("cannot find column - Country in cell H1");
 
-            int RowIndex = 2;
+            int Column = 9;
 
-            var ListOfRows = new List<List<string>>();
-            
-            //var ListOfRows = new List<RowData>();
+            while(doc.HasCellValue(1, Column) == true)
+            {
+                if (doc.GetCellValueAsString(1, Column).ToLower() !=
+                    "sub investigator")
+                    ValidationMessages.Add("cannot find column - Sub Investigator");
+
+                if (doc.GetCellValueAsString(1, Column + 1).ToLower() !=
+                    "sub investigator ml#")
+                    ValidationMessages.Add("cannot find column - Sub Investigator ML#");
+
+                if (doc.GetCellValueAsString(1, Column + 2).ToLower() !=
+                    "si qualification")
+                    ValidationMessages.Add("cannot find column - SI Qualification");
+
+                Column += 3;
+            }
+
+            if (ValidationMessages.Count > 0)
+            {
+                ListOfRows.Add(ValidationMessages);
+                return ListOfRows;
+            }
+
+            int TotalColumns = Column - 1;
+            int RowIndex = 2;
 
             while (doc.HasCellValue("A" + RowIndex))
             {
-                //var RowData = new RowData();
-                //var RowData = new List<string>();
-
                 var DataFromEachRow = new List<string>();
 
                 DataFromEachRow.Add(doc.GetCellValueAsString("A" + RowIndex));
@@ -55,30 +71,27 @@ namespace Utilities
                 DataFromEachRow.Add(doc.GetCellValueAsString("H" + RowIndex));
 
                 int ColumnIndex = 9;
-                while (doc.HasCellValue(RowIndex, ColumnIndex) == true)
+                while (ColumnIndex <= TotalColumns)
                 {
-                    if (doc.GetCellValueAsString(1, ColumnIndex).ToLower() !=
-                        "sub investigator")
-                        ValidationMessages.Add("cannot find column - Sub Investigator");
+                    //if (!doc.HasCellValue(RowIndex, ColumnIndex) &&
+                    //    (doc.HasCellValue(RowIndex, ColumnIndex + 1) ||
+                    //    doc.HasCellValue(RowIndex, ColumnIndex + 2)))
+                    //    ValidationMessages.Add("Sub Investigator Name is empty " +
+                    //        "at row:" + RowIndex +
+                    //        " and column: " + ColumnIndex);
+                    if (doc.HasCellValue(RowIndex, ColumnIndex))
+                    {
+                        DataFromEachRow.Add(
+                            doc.GetCellValueAsString(RowIndex, ColumnIndex)); //SI Name
 
-                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex)); //SI Name
+                        DataFromEachRow.Add(
+                            doc.GetCellValueAsString(RowIndex, ColumnIndex + 1)); //ML#
 
-                    if (doc.GetCellValueAsString(1, ColumnIndex + 1).ToLower() !=
-                        "sub investigator ml#")
-                        ValidationMessages.Add("cannot find column - Sub Investigator ML#");
-
-                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 1)); //ML#
-
-                    if (doc.GetCellValueAsString(1, ColumnIndex + 2).ToLower() !=
-                        "si qualification")
-                        ValidationMessages.Add("cannot find column - SI Qualification");
-
-                    DataFromEachRow.Add(doc.GetCellValueAsString(RowIndex, ColumnIndex + 2)); //Qualification
-
+                        DataFromEachRow.Add(
+                            doc.GetCellValueAsString(RowIndex, ColumnIndex + 2)); //Qualification
+                    }
                     ColumnIndex += 3;
                 }
-                //RowData.Add(DataFromEachRow);
-                //ListOfRows.Add(RowData);
 
                 if (ValidationMessages.Count > 0)
                 {
