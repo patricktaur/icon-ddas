@@ -116,7 +116,7 @@ namespace DDAS.API.Controllers
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
-                return Request.CreateResponse(HttpStatusCode.OK, ValidationMessages);
+                return Request.CreateResponse(HttpStatusCode.OK, "");
 
             }
             catch (Exception e)

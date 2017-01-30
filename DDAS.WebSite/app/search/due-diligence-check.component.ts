@@ -110,8 +110,7 @@ export class DueDiligenceCheckComponent implements OnInit {
                 this.Loading = false;
                 
                 this.validationMessage = data.response; 
-                
-                
+ 
                 if (this.validationMessage.length == 0){
                     this.modal.close();
                     this.LoadPrincipalInvestigators();
