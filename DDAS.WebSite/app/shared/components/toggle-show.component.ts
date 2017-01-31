@@ -14,7 +14,7 @@ import { Component, Input, OnInit  } from '@angular/core';
  })
 export class ToggleShowComponent implements OnInit {
     
-    private show: Boolean;
+    public show: Boolean;
      ngOnInit() { }
 
      onClick(){

@@ -109,14 +109,15 @@ namespace DDAS.API.Controllers
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
                         _log, userName, file.LocalFileName);
 
-                    foreach(ComplianceForm form in forms)
+                    foreach (ComplianceForm form in forms)
                     {
                         complianceForms.Add(
                             _SearchService.ScanUpdateComplianceForm(form, _log));
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
-                return Request.CreateResponse(HttpStatusCode.OK, "");
+                
+                return Request.CreateResponse(HttpStatusCode.OK, "ok");
 
             }
             catch (Exception e)

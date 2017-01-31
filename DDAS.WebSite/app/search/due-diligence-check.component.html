@@ -9,7 +9,7 @@
 
 					<button type="button" class="btn-lg btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form">Manual Search</button>
 
-					<button type="button" class="btn-lg btn-primary" (click)="UploadComplianceFormInputsModal.open()" title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created.">Batch Upload</button>
+					<button type="button" class="btn-lg btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()" title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created.">Batch Upload</button>
 
 				</div>
 				<div class="col-md-4 ">
@@ -112,7 +112,7 @@
 		</form>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="UploadFile(); UploadComplianceFormInputsModal.close()">Close</button>
+		<button type="button" class="btn btn-default" (click)=" UploadComplianceFormInputsModal.close()">Close</button>
 	</modal-footer>
 </modal>
 

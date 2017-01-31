@@ -8,45 +8,45 @@
 			<div class="logo-area">
 				<img src="assets\images\ICON-logo.gif" width="60%" class="img-responsive">
 			</div>
-	
+
 			<div class="navbar-collapse collapse sidebar-navbar-collapse">
-				<ul class="nav navbar-nav" >
-					<li class="active" >
+				<ul class="nav navbar-nav">
+					<li class="active">
 						<a data-toggle="collapse" data-target="#loggedInAccount" data-parent="#sidenav01" class="collapsed">
 						 Logged in: {{authService.userName}} <span class="caret pull-right"></span>
 						</a>
 						<div class="collapse " id="loggedInAccount" style="height: 0px;">
 							<ul class="nav nav-list  panel-body">
 								<p>My roles: {{authService.roles}} </p>
-								<li class="active" > <a routerLink="/my-loginhistory" routerLinkActive="active">My Login History</a></li>
-								<li class="active" > <a routerLink="/changepassword" routerLinkActive="active">Change Password</a></li>
-								
-								<li class="active" > <a (click)="logout()" routerLinkActive="active">Logout</a></li>
+								<li class="active"> <a routerLink="/my-loginhistory" routerLinkActive="active">My Login History</a></li>
+								<li class="active"> <a routerLink="/changepassword" routerLinkActive="active">Change Password</a></li>
+
+								<li class="active"> <a (click)="logout()" routerLinkActive="active">Logout</a></li>
 							</ul>
 						</div>
-					<li>	
-					
-					<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
-					<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews      </a></li>
-					<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches     </a></li>
-					<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-compliance-forms" routerLinkActive="active">Manage Reassignments</a></li>		
-					
+						<li>
 
-					<li class="active" *ngIf="authService.isAdmin">
-						<a data-toggle="collapse" data-target="#adminMenu" data-parent="#sidenav01" class="collapsed">
-						 Application Users<span class="caret pull-right"></span>
-					</a>
-						<div class="collapse" id="adminMenu" style="height: 0px;">
-							<ul class="nav nav-list  panel-body">
-								<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
-								
-								<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews      </a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches     </a></li>
+							<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-compliance-forms" routerLinkActive="active">Manage Reassignments</a></li>
 
-							</ul>
-						</div>
-					<li>
 
-					
+							<li class="active" *ngIf="authService.isAdmin">
+								<a data-toggle="collapse" data-target="#adminMenu" data-parent="#sidenav01" class="collapsed">
+						 			Application Users<span class="caret pull-right"></span>
+								</a>
+								<div class="collapse" id="adminMenu" style="height: 0px;">
+									<ul class="nav nav-list  panel-body">
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
+
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
+
+									</ul>
+								</div>
+								<li>
+
+									<li class="active" > <a routerLink="about-ddas" routerLinkActive="active">About DDAS</a></li>
 				</ul>
 
 			</div>
