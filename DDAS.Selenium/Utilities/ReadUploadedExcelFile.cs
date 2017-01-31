@@ -73,7 +73,7 @@ namespace Utilities
                 int ColumnIndex = 9;
                 while (ColumnIndex <= TotalColumns)
                 {
-                    //if (!doc.HasCellValue(RowIndex, ColumnIndex) &&
+                     //if (!doc.HasCellValue(RowIndex, ColumnIndex) &&
                     //    (doc.HasCellValue(RowIndex, ColumnIndex + 1) ||
                     //    doc.HasCellValue(RowIndex, ColumnIndex + 2)))
                     //    ValidationMessages.Add("Sub Investigator Name is empty " +

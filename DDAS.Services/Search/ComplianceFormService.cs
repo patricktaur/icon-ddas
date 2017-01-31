@@ -1206,23 +1206,13 @@ namespace DDAS.Services.Search
         //    return form;
         //}
 
-        public List<MatchedRecord> GetFindings(Guid? SiteDataId,
-            string InvestigatorName,
-            int ComponentsInInvestigatorName)
-        {
-
-            return null;
-        }
-
 
         public List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName)
         {
-    
             FDADebarPageSiteData FDASearchResult =
                 _UOW.FDADebarPageRepository.FindById(SiteDataId);
-
 
             UpdateMatchStatus(
                 FDASearchResult.DebarredPersons,
