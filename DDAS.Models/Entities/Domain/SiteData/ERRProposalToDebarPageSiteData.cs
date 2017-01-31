@@ -46,11 +46,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override DateTime? DateOfInspection {
             get {
-                if (date == "")
+                if (date == "" || date == null)
                     return null;
 
                 return DateTime.ParseExact(date,
-                    "M'/'d'/'yyyy", null,
+                    "M'/'d'/'yy", null,
                     System.Globalization.DateTimeStyles.None);
             }
         }

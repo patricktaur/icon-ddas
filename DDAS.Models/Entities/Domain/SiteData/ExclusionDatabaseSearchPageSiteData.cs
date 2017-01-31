@@ -62,7 +62,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override DateTime? DateOfInspection {
             get {
-                if (ExclusionDate == "")
+                if (ExclusionDate == "" || ExclusionDate == null)
                     return null;
 
                 return DateTime.ParseExact(ExclusionDate, "yyyyMMdd", null,

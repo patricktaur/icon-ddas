@@ -552,7 +552,7 @@ namespace DDAS.Models.Entities.Domain
         public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
         public DateTime? DateOfInspection { get; set; }
-        public List<Link> Links { get; set; }
+        public List<Link> Links { get; set; } = new List<Link>();
     }
 
     public class SiteSource
