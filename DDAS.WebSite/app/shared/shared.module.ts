@@ -5,6 +5,8 @@ import { AwesomePipe }         from './awesome.pipe';
 import { HighlightDirective }  from './highlight.directive';
 
 import { CircleComponent }  from './components/circle.component';
+import { ToggleShowComponent }  from './components/toggle-show.component';
+
  import { BoolToYesNoPipe }  from './pipes/bool-yes-no.pipe'; 
   import { PadPipe }  from './pipes/pad.pipe'; 
   
@@ -23,7 +25,8 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
   HighlightDirective, 
   CircleComponent,
   BoolToYesNoPipe,
-  PadPipe
+  PadPipe,
+  ToggleShowComponent
   
    ],
   exports:      [ 
@@ -34,6 +37,7 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
     CircleComponent, 
     BoolToYesNoPipe,
     PadPipe,
+    ToggleShowComponent,
     MyDatePickerModule,
     Ng2PaginationModule
                    ]

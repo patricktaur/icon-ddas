@@ -247,9 +247,9 @@
 											{{item.DateOfInspection |date:'dd/MMM/yyyy' }}
 										</td>
 										<td align="left">
-											<div *ngFor="let SplitItem of Split(item.RecordDetails)" align="left">
+											<!--<div *ngFor="let SplitItem of Split(item.RecordDetails)" align="left">
 												{{SplitItem}}
-											</div>
+											</div>-->
 											<div *ngIf="item.RecordDetails"><br> </div>
 											{{item.Observation}}
 										</td>

@@ -92,7 +92,7 @@ export class DueDiligenceCheckComponent implements OnInit {
         this.router.navigate(['complianceform', ""], { relativeTo: this.route });
     }
 
-    UploadFile() {
+    CleanUpValidationMessage() {
         this.validationMessage = null;
         this.Loading = false;
     }
@@ -110,9 +110,8 @@ export class DueDiligenceCheckComponent implements OnInit {
                 this.Loading = false;
                 
                 this.validationMessage = data.response; 
-                
-                
-                if (this.validationMessage.length == 0){
+                let ok = "\"ok\"";
+                if (this.validationMessage == ok){
                     this.modal.close();
                     this.LoadPrincipalInvestigators();
                 }

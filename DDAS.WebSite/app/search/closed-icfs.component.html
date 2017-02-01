@@ -33,6 +33,11 @@
 
 				<td class="text-left">
 					{{item.Name}}
+					<span toggle-show *ngIf="item.SubInvestigators.length > 0"> 
+							<ul class="list-unstyled " style="white-space: nowrap">
+							<li *ngFor="let inv of item.SubInvestigators" >{{inv.Name}}</li>
+						</ul>
+					</span>
 				</td>
 				<td class="text-center">
 					{{item.ProjectNumber}}
