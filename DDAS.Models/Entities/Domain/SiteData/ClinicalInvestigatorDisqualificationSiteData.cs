@@ -56,7 +56,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (DateOfStatus == "" || DateOfStatus == null)
                     return null;
 
-                return DateTime.ParseExact(DateOfStatus,
+                return DateTime.ParseExact(DateOfStatus.Trim(),
                     "M'/'d'/'yyyy", null,
                     System.Globalization.DateTimeStyles.None);
             }

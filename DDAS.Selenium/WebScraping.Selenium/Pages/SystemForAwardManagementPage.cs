@@ -158,47 +158,38 @@ namespace WebScraping.Selenium.Pages
         {
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-            //IWebElement Anchor = SAMAnchorTag;
             SAMAnchorTag.Click();
-            //Anchor.SendKeys(Keys.Enter);
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
             IWebElement TextBox = SAMInputTag;
             TextBox.SendKeys(NameToSearch);
 
-            //IWebElement Submit = SAMSubmitButton;
-            SAMSubmitButton.Click();
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-            //Submit.SendKeys(Keys.Enter);
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(3));
+            //SAMSubmitButton.Click();
+            //SAMSubmitButton.Submit();
+            SAMSubmitButton.SendKeys(Keys.Enter);
 
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
             try
             {
-                
                 if (SAMCheckResult != null)
                 {
                     return true;
                 }
                 else
                 {
-                    
                     SAMClearSearch.Click();
                     driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                      driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
+                    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                    
                     return false;
                 }
             }
             catch (Exception)
             {
-
                 return false;
-            }
-            if (SAMCheckResult != null)
-            {
-
             }
 
             //if (SAMCheckResult != null)

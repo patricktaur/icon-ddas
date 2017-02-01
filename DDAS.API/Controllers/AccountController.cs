@@ -187,10 +187,10 @@ namespace DDAS.API.Controllers
             DateTime to;
             DateTime toPlusOne;
             DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
-                System.Globalization.DateTimeStyles.None, out from);
+                DateTimeStyles.None, out from);
 
             DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
-               System.Globalization.DateTimeStyles.None, out to);
+               DateTimeStyles.None, out to);
             toPlusOne = to.AddDays(1);
             var AllLoginHistory = _userService.GetAllLoginHistory();
 

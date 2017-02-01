@@ -65,7 +65,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (InspectionDate == "" || InspectionDate == null)
                     return null;
 
-                return DateTime.ParseExact(InspectionDate,
+                return DateTime.ParseExact(InspectionDate.Trim(),
                     "M'/'d'/'yyyy", null,
                     System.Globalization.DateTimeStyles.None);
             }

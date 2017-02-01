@@ -48,12 +48,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override DateTime? DateOfInspection {
             get {
                 if (InspectionStartAndEndDate.Contains("-")) {
-                    return DateTime.ParseExact(InspectionStartAndEndDate.Split('-')[0],
+                    return 
+                        DateTime.ParseExact(InspectionStartAndEndDate.Split('-')[0].Trim(),
                         "M'/'d'/'yyyy", null,
                         System.Globalization.DateTimeStyles.None);
                 }
                 else if (InspectionStartAndEndDate != "")
-                    return DateTime.ParseExact(InspectionStartAndEndDate,
+                    return DateTime.ParseExact(InspectionStartAndEndDate.Trim(),
                         "M'/'d'/'yyyy", null,
                         System.Globalization.DateTimeStyles.None);
                 else
