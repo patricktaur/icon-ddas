@@ -105,7 +105,7 @@ export class SearchService {
     //Pradeep 5Jan2017
     getPrincipalInvestigatorsByFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]> {
        let Filter1 = JSON.stringify(Filters);
-       console.log(Filter1);
+      
         return this.http.post(this._baseUrl + 'search/ComplianceFormFilters', Filter1,  this._options)
             .map((res: Response) => {
                 return res.json();
@@ -116,7 +116,7 @@ export class SearchService {
 
     getAllUsers()
     {
-        console.log("Account/GetUsers");
+        
         return this.http.get(this._baseUrl + 'Account/GetUsers', this._options)
             .map((res: Response) => {
                 return res.json();

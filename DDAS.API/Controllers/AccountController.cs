@@ -165,10 +165,12 @@ namespace DDAS.API.Controllers
             DateTime from;
             DateTime to;
             DateTime toPlusOne;
-            DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
-                System.Globalization.DateTimeStyles.None, out from);
-            DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
-              System.Globalization.DateTimeStyles.None, out to);
+            //DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
+            //    System.Globalization.DateTimeStyles.None, out from);
+            DateTime.TryParse(DateFrom, out from);
+            //DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
+            //  System.Globalization.DateTimeStyles.None, out to);
+            DateTime.TryParse(DateTo, out to);
             toPlusOne = to.AddDays(1);
             var AllLoginHistory = _userService.GetAllLoginHistory()
                 .Where(x =>  x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
@@ -186,12 +188,19 @@ namespace DDAS.API.Controllers
             DateTime from;
             DateTime to;
             DateTime toPlusOne;
-            DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
-                System.Globalization.DateTimeStyles.None, out from);
+            //"M'/'d'/'yyyy"
+            //DateTime.TryParseExact(DateFrom, "yyyy-mm-dd",   System.Globalization.CultureInfo.InvariantCulture,
+            //    System.Globalization.DateTimeStyles.None, out from);
 
-            DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
-               System.Globalization.DateTimeStyles.None, out to);
+            DateTime.TryParse(DateFrom, out from);
+
+            //DateTime.TryParseExact(DateTo, "yyyy-mm-dd", System.Globalization.CultureInfo.InvariantCulture,
+            //   System.Globalization.DateTimeStyles.None, out to);
+
+            DateTime.TryParse(DateTo, out to);
+
             toPlusOne = to.AddDays(1);
+
             var AllLoginHistory = _userService.GetAllLoginHistory();
 
 

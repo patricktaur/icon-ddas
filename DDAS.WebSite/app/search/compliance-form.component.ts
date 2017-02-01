@@ -37,7 +37,8 @@ export class ComplianceFormComponent implements OnInit {
 
     ngOnInit() {
         //this.buildForm();
-
+        // console.log("this.route.parent:" + this.route.parent);
+        // console.log("this.route.parent:" + this.route.parent.url);
        
           this.route.params.forEach((params: Params) => {
             this.ComplianceFormId = params['formid'];
@@ -494,6 +495,9 @@ gotoInvestigatorSummaryResult(inv: InvestigatorSearched){
 
     goBack() {
         this._location.back();
+        
+        this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id],
+        //this.router.navigate(['/heroes', { id: heroId, foo: 'foo' }]);
     }
     
 Split = (RecordDetails: string) => {

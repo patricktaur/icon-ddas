@@ -38,6 +38,7 @@ export class ManageICFsComponent implements OnInit {
         private authService: AuthService
     ) { }
   ngOnInit(){
+            
             this.ComplianceFormFilter = new CompFormFilter;
             this.SetDefaultFilterValues();
             this.LoadPrincipalInvestigators();
@@ -140,7 +141,7 @@ export class ManageICFsComponent implements OnInit {
  }
 
   OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
-
+        
         this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
 
     }
