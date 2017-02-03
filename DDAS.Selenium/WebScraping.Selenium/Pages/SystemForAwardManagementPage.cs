@@ -182,8 +182,6 @@ namespace WebScraping.Selenium.Pages
                 {
                     SAMClearSearch.Click();
                     driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                    
                     return false;
                 }
             }

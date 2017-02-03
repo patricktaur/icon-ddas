@@ -1437,9 +1437,11 @@ namespace DDAS.Services.Search
             SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
 
+            var InvName = InvestigatorName.Replace(" ", "");
+
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,
-                InvestigatorName);  //updates list with match count
+                InvName);
 
             var SDNList = SDNSearchResult.SDNListSiteData.Where(
                SDNData => SDNData.Matched > 0).ToList();

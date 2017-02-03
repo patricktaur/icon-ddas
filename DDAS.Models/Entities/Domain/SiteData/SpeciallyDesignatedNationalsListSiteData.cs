@@ -38,8 +38,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 return
                     "Name: " + Name + "~" +
                     "Page Number: " + PageNumber + "~" +
-                    "Record Number: " + RecordNumber + "~" +
-                    "Words Matched: " + WordsMatched;  //???? Pradeep 14Dec2016
+                    "Record Number: " + RecordNumber;
             }
         }
 
