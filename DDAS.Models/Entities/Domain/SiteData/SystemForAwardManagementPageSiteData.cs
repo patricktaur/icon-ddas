@@ -59,10 +59,11 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override DateTime? DateOfInspection {
             get {
-                if (ActivationDate == "" || ActivationDate == null)
+                if (ActivationDate == "" || ActivationDate == null ||
+                    ActivationDate.Length < 3)
                     return null;
 
-                return DateTime.ParseExact(ActivationDate,
+                return DateTime.ParseExact(ActivationDate.Trim(),
                     "M'/'d'/'yyyy", null,
                     System.Globalization.DateTimeStyles.None);
             }

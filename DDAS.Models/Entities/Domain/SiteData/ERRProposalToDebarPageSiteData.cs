@@ -49,7 +49,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (date == "" || date == null)
                     return null;
 
-                return DateTime.ParseExact(date,
+                return DateTime.ParseExact(date.Trim(),
                     "M'/'d'/'yy", null,
                     System.Globalization.DateTimeStyles.None);
             }

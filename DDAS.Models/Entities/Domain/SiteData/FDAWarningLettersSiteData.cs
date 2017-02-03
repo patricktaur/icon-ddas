@@ -56,7 +56,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (LetterIssued == "" || LetterIssued == null)
                     return null;
 
-                return DateTime.ParseExact(LetterIssued,
+                return DateTime.ParseExact(LetterIssued.Trim(),
                     "M'/'d'/'yyyy", null,
                     System.Globalization.DateTimeStyles.None);
             }

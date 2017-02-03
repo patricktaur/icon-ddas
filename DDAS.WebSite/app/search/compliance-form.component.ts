@@ -25,6 +25,8 @@ export class ComplianceFormComponent implements OnInit {
      public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
     private pageChanged: boolean= false;
    
+    private retPath: string;
+    private page: number;
 
     constructor(
         private route: ActivatedRoute,
@@ -32,16 +34,19 @@ export class ComplianceFormComponent implements OnInit {
         private _location: Location,
         private service: SearchService,
         private fb: FormBuilder
-
     ) { }
 
     ngOnInit() {
+        
         //this.buildForm();
         // console.log("this.route.parent:" + this.route.parent);
         // console.log("this.route.parent:" + this.route.parent.url);
        
           this.route.params.forEach((params: Params) => {
-            this.ComplianceFormId = params['formid'];
+            this.ComplianceFormId = params['formId'];
+            this.retPath = params['retPath'];
+            this.page =  +params['page'];
+ 
             this.LoadOpenComplainceForm();
         });
     
@@ -141,7 +146,7 @@ export class ComplianceFormComponent implements OnInit {
   };
     
     SaveReactiveForm() {
-             console.log("Inside Save");
+             
 
               (<FormGroup>this.compFormForm)
              .setValue(this.CompForm, { onlySelf: true });
@@ -454,7 +459,7 @@ export class ComplianceFormComponent implements OnInit {
   
       Save() {
              
-             console.log("Save called");
+             
              this.service.saveComplianceForm(this.CompForm)
             .subscribe((item: ComplianceFormA) => {
                 //this.CompForm = item;
@@ -494,10 +499,14 @@ gotoInvestigatorSummaryResult(inv: InvestigatorSearched){
 }
 
     goBack() {
-        this._location.back();
-        
-        this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id],
-        //this.router.navigate(['/heroes', { id: heroId, foo: 'foo' }]);
+  
+        if (this.retPath == null){
+            this._location.back();
+        }
+        else{
+            this.router.navigate([this.retPath, { id: this.ComplianceFormId, page: this.page }]);
+        }
+       
     }
     
 Split = (RecordDetails: string) => {

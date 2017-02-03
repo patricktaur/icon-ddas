@@ -65,7 +65,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (ExclusionDate == "" || ExclusionDate == null)
                     return null;
 
-                return DateTime.ParseExact(ExclusionDate, "yyyyMMdd", null,
+                return DateTime.ParseExact(ExclusionDate.Trim(), "yyyyMMdd", null,
                     System.Globalization.DateTimeStyles.None);
             }
         }

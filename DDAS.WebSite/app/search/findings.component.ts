@@ -34,9 +34,9 @@ export class FindingsComponent implements OnInit {
     ngOnInit() {
  
         this.route.params.forEach((params: Params) => {
-            this.ComplianceFormId = params['formid'];
-            this.InvestigatorId = +params['investigatorid'];
-            this.SiteEnum = +params['siteenum'];
+            this.ComplianceFormId = params['formId'];
+            this.InvestigatorId = +params['investigatorId'];
+            this.SiteEnum = +params['siteEnum'];
             this.LoadOpenComplainceForm();
             
         });
@@ -228,7 +228,10 @@ export class FindingsComponent implements OnInit {
     }
     
     goBack() {
-        this._location.back();
+       // this._location.back();
+       // this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id], { relativeTo: this.route.parent});
+        this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum}], { relativeTo: this.route.parent});
+      
     }
     
     get diagnostic() { return JSON.stringify(this.CompForm.Findings); }

@@ -39,19 +39,26 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        
-
         public IWebElement SAMCheckResult {
             get {
-                
                 try
                 {
-                    IWebElement Result = driver.FindElement(By.Id("its_docs"));
-                    return Result;
+                    IList<IWebElement> Result = driver.FindElements(By.XPath("//h4"));
+
+                    foreach(IWebElement Element in Result)
+                    {
+                        if (Element.Text.ToLower().Contains(
+                            "no records found for current search"))
+                            return Element;
+                        else if (Element.Text.ToLower().Contains(
+                            "returned the following results"))
+                            return Element;
+                    }
+                    throw new Exception("Unable to check search results");
                 }
                 catch (Exception)
                 {
-                    throw new Exception("Unable to get count of search result!");
+                    throw new Exception("Unable to check search results");
                 }
             }
         }

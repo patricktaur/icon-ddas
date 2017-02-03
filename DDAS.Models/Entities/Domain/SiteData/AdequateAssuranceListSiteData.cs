@@ -51,7 +51,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (ActionDate == "" || ActionDate == null)
                     return null;
 
-                return DateTime.ParseExact(ActionDate, "M'/'d'/'yyyy", null,
+                return DateTime.ParseExact(ActionDate.Trim(), "dd-MMM-yyyy", null,
                     System.Globalization.DateTimeStyles.None);
             }
         }

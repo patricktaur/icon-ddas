@@ -268,6 +268,7 @@ namespace DDAS.Services.Search
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
 
+            int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
 
@@ -365,17 +366,19 @@ namespace DDAS.Services.Search
                 {
                     PartialMatchesFoundInvestigatorCount += 1;
                 }
+               
 
                 if (Investigator.Sites_FullMatchCount > 0)
                 {
                     FullMatchesFoundInvestigatorCount += 1;
                 }
+               
 
                 if (Investigator.IssuesFoundSiteCount > 0)
                 {
                     IssuesFoundInvestigatorCount += 1;
                 }
-                if (Investigator.ReviewCompletedSiteCount > 0)
+                if (Investigator.ReviewCompletedSiteCount == SiteCount)
                 {
                     ReviewCompletedInvestigatorCount += 1;
                 }
@@ -452,7 +455,8 @@ namespace DDAS.Services.Search
                         searchRequired = true;
                     }
 
-                    if (searchRequired == true)
+                    if (searchRequired == true && 
+                        siteSource.ExtractionMode.ToLower() != "manual")
                     {
                         try
                         {
@@ -511,11 +515,10 @@ namespace DDAS.Services.Search
                             HasExtractionError = true;  //for rollup to investigator
                             ExtractionErrorSiteCount += 1;
                             searchStatus.HasExtractionError = true;
-                            searchStatus.ExtractionErrorMessage = "Data Extraction not successful";
+                            searchStatus.ExtractionErrorMessage = 
+                                "Data Extraction not successful - " + ex.Message;
                             log.WriteLog("Data extraction failed. Details: " + ex.Message);
                             // Log -- ex.Message + ex.InnerException.Message
-
-
                         }
                         finally
                         {
@@ -1585,6 +1588,12 @@ namespace DDAS.Services.Search
                         " Project Number should not have any special characters!";
                     ValidationMessages.Add(ValidationMessage);
                 }
+                if (!IsValidProjectNumber(DetailsInEachRow[3]))
+                {
+                    ValidationMessage = "RowNumber: " + Row +
+                        " Change the project number format to - \"1234/5678\"";
+                    ValidationMessages.Add(ValidationMessage);
+                }
                 if (DetailsInEachRow[4].ToLower().Contains("cannot find column"))
                 {
                     ValidationMessages.Add(DetailsInEachRow[4]);
@@ -1691,8 +1700,8 @@ namespace DDAS.Services.Search
                         ValidationMessages.Add(DetailsInEachRow[TempCounter]);
                     }
                     TempCounter += 3;
-                    Row += 1;
                 }
+                Row += 1;
             }
             return ValidationMessages;
         }
@@ -1720,6 +1729,11 @@ namespace DDAS.Services.Search
                     return true;
             }
             return false;
+        }
+
+        private bool IsValidProjectNumber(string Value)
+        {
+            return Regex.IsMatch(Value, "\\d{4}/\\d{4}");
         }
         #endregion
     }

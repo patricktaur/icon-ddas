@@ -68,7 +68,7 @@ export class myLoginHistoryComponent implements OnInit {
 
         this.service.getMyLoginHistory(this.loggedInUserName, frm, to)
         .subscribe((item: any[]) => {
-            console.log("item :" + item);
+            //console.log("item :" + item);
             this.myLoginHistoryDetails = item;
         });
     }
