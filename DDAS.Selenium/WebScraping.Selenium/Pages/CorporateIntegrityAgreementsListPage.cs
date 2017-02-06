@@ -139,40 +139,6 @@ namespace WebScraping.Selenium.Pages
                 System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
 
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
-            //var ExistingCIASiteData = 
-            //    _UOW.CorporateIntegrityAgreementRepository.GetAll();
-
-            //CorporateIntegrityAgreementListSiteData CIASiteData = null;
-
-            //if (ExistingCIASiteData.Count == 0)
-            //{
-            //    _CIASiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //    _CIASiteData.DataExtractionRequired = true;
-            //}
-            //else
-            //{
-            //    CIASiteData = ExistingCIASiteData.OrderByDescending(
-            //        x => x.CreatedOn).First();
-
-            //    if (RecentLastUpdatedDate > CIASiteData.SiteLastUpdatedOn)
-            //    {
-            //        _CIASiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //        _CIASiteData.DataExtractionRequired = true;
-            //    }
-            //    else
-            //    {
-            //        _CIASiteData.SiteLastUpdatedOn =
-            //            CIASiteData.SiteLastUpdatedOn;
-            //        _CIASiteData.DataExtractionRequired = false;
-            //    }
-            //}
-
-            //if (!_CIASiteData.DataExtractionRequired)
-            //    _CIASiteData.ReferenceId = CIASiteData.RecId;
-            //else
-            //    _CIASiteData.ReferenceId =
-            //        _CIASiteData.RecId;
         }
 
         private void AssignReferenceIdOfPreviousDocument()

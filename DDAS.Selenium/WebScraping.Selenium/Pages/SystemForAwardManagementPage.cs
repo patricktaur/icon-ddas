@@ -158,22 +158,22 @@ namespace WebScraping.Selenium.Pages
         {
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-            SAMAnchorTag.Click();
-
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
-            IWebElement TextBox = SAMInputTag;
-            TextBox.SendKeys(NameToSearch);
-
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(3));
-            //SAMSubmitButton.Click();
-            //SAMSubmitButton.Submit();
-            SAMSubmitButton.SendKeys(Keys.Enter);
-
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
             try
             {
+                SAMAnchorTag.Click();
+
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
+                IWebElement TextBox = SAMInputTag;
+                TextBox.SendKeys(NameToSearch);
+
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(3));
+                //SAMSubmitButton.Click();
+                //SAMSubmitButton.Submit();
+                SAMSubmitButton.SendKeys(Keys.Enter);
+
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+
                 if (SAMCheckResult != null)
                 {
                     return true;
@@ -185,27 +185,11 @@ namespace WebScraping.Selenium.Pages
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception("Could not enter search name. Error details: " +
+                    e.Message);
             }
-
-            //if (SAMCheckResult != null)
-            //{
-            //    return true;
-            //}
-            //else
-            //{
-            //    //IWebElement ClearSearch = SAMClearSearch;
-            //    SAMClearSearch.Click();
-            //    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-            //    //ClearSearch.Click();
-            //    //ClearSearch.SendKeys(Keys.Enter);
-
-            //    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
-            //    return false;
-            //}
         }
 
         public override void LoadContent(string DownloadsFolder)
@@ -226,8 +210,7 @@ namespace WebScraping.Selenium.Pages
                         while (CheckForAnchorTagNext())
                         {
                             LoadSAMList();
-
-                            LoadNextRecord();
+                            LoadNextSetOfRecords();
                         }
                         LoadSAMList();
                     }
@@ -267,7 +250,7 @@ namespace WebScraping.Selenium.Pages
                 return false;
         }
 
-        private void LoadNextRecord()
+        private void LoadNextSetOfRecords()
         {
             IList<IWebElement> AnchorsInPagination = 
                 SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));

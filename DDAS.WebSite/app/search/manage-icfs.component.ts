@@ -38,10 +38,22 @@ export class ManageICFsComponent implements OnInit {
         private authService: AuthService
     ) { }
   ngOnInit(){
-            this.ComplianceFormFilter = new CompFormFilter;
-            this.SetDefaultFilterValues();
-            this.LoadPrincipalInvestigators();
-            this.LoadUsers();
+            
+    this.route.params.forEach((params: Params) => {
+
+        let page = +params['page'];
+        if (page != null){
+            this.pageNumber = page;
+        }
+
+    });
+      
+            
+    this.ComplianceFormFilter = new CompFormFilter;
+    this.SetDefaultFilterValues();
+    this.LoadPrincipalInvestigators();
+    this.LoadUsers();
+
   }
  
   SetDefaultFilterValues()
@@ -59,7 +71,7 @@ export class ManageICFsComponent implements OnInit {
   {
     this.service.getAllUsers()
     .subscribe((item: any[]) => {
-        console.log("item :" + item);
+       
         this.Users = item;
     });
   }
@@ -141,7 +153,9 @@ export class ManageICFsComponent implements OnInit {
 
   OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
-        this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+  
+        this.router.navigate(['complianceform', DataItem.RecId, {retPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
+
 
     }
 

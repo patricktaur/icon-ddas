@@ -12,6 +12,14 @@ import {InvestigatorSearched, ComplianceFormA, SiteSource,
 @Component({
   moduleId: module.id,
   templateUrl: 'investigator-summary.component.html',
+ 
+  styles: [
+  `
+  .selected {
+    background-color: yellow;
+  }
+  `
+  ]
 })
 export class InvestigatorSummaryComponent { 
   
@@ -21,6 +29,7 @@ export class InvestigatorSummaryComponent {
 
    processing: boolean;
    public CompForm: ComplianceFormA = new ComplianceFormA;
+   public retSiteEnum: number;
 
    constructor(private service: SearchService,
        private route: ActivatedRoute,
@@ -32,10 +41,14 @@ export class InvestigatorSummaryComponent {
     ngOnInit() {
         
         this.route.params.forEach((params: Params) => {
-        this.ComplianceFormId = params['formid'];
-        this.InvestigatorId = +params['investigatorid'];
-        
-        //this.loadMockInvestigatorSummary();
+        this.ComplianceFormId = params['formId'];
+        this.InvestigatorId = +params['investigatorId'];
+        this.retSiteEnum =  +params['siteEnum'];
+
+        console.log('this.ComplianceFormId' + this.ComplianceFormId);
+         console.log('this.InvestigatorId' + this.InvestigatorId);
+          console.log('this.retSiteEnum' + this.retSiteEnum);
+
         this.LoadOpenComplainceForm();
 
         
@@ -195,7 +208,9 @@ gotoSiteDetails(siteEnum: number){
 }
  
 goBack() {
-    this._location.back();
+
+    //this._location.back();
+    this.router.navigate(['complianceform', this.ComplianceFormId], { relativeTo: this.route.parent});
 }
 
 BoolYesNo (value: boolean): string   {

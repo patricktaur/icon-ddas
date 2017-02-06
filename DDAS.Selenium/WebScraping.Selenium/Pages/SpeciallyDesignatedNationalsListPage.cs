@@ -96,7 +96,7 @@ namespace WebScraping.Selenium.Pages
 
         private List<SDNList> GetTextFromPDF(string NameToSearch, string DownloadFolder)
         {
-            string tempSiteDate = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "");
+            string tempSiteDate = PageLastUpdatedElement.Text.Replace("Last Updated: ", "");
 
             DateTime SiteDateTime;
 
@@ -188,7 +188,7 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadSiteLastUpdatedDateFromPage()
         {
-            string temp = SDNSiteUpdatedDate.Text.Replace("Last Updated: ", "").Trim();
+            string temp = PageLastUpdatedElement.Text.Replace("Last Updated: ", "").Trim();
 
             DateTime CurrentSiteUpdatedDate;
 

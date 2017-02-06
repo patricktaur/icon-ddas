@@ -21,21 +21,35 @@ namespace WebScraping.Selenium.Pages
                     if (Anchor.GetAttribute("title").ToLower() == "search records")
                         return Anchor;
                 }
-                return null;
+                throw new Exception("Could not find SAMAchorTag");
             }
         }
 
         public IWebElement SAMInputTag {
             get {
-                IList<IWebElement> InputTags = driver.FindElements(By.Id("q"));
-                return InputTags[0];
+                try
+                {
+                    IList<IWebElement> InputTags = driver.FindElements(By.Id("q"));
+                    return InputTags[0];
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find SAMInputTag");
+                }
             }
         }
 
         public IWebElement SAMSubmitButton {
             get {
-                IWebElement Submit = driver.FindElement(By.Id("RegSearchButton"));
-                return Submit;
+                try
+                {
+                    IWebElement Submit = driver.FindElement(By.Id("RegSearchButton"));
+                    return Submit;
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find SAMSubmitButton");
+                }
             }
         }
 
@@ -65,16 +79,30 @@ namespace WebScraping.Selenium.Pages
 
         public IWebElement SAMSearchResult {
             get {
-                IWebElement element = driver.FindElement(By.Id("search_results"));
-                return element;
+                try
+                {
+                    IWebElement element = driver.FindElement(By.Id("search_results"));
+                    return element;
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find Element 'search_results'");
+                }
             }
         }
 
         public IWebElement SAMClearSearch {
             get {
-                IList<IWebElement> ClearSearchElement = 
-                    driver.FindElements(By.CssSelector("input[type='submit']"));
-                return ClearSearchElement[0];
+                try
+                {
+                    IList<IWebElement> ClearSearchElement =
+                        driver.FindElements(By.CssSelector("input[type='submit']"));
+                    return ClearSearchElement[0];
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find SAMClearSearch Element");
+                }
             }
         }
 
@@ -99,9 +127,16 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                string XPathValue = "//div[@id='foot']/div/p";
-                IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
-                return Elements[1];
+                try
+                {
+                    string XPathValue = "//div[@id='foot']/div/p";
+                    IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
+                    return Elements[1];
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find PageLastUpdatedTextElement");
+                }
             }
         }
     }

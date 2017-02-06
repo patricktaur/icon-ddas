@@ -209,7 +209,7 @@ namespace WebScraping.Selenium.Pages
 
                     if (ComponentGreaterThanTwoCharacters &&
                         SearchTerms(WordsInNameToSearch[counter]) &&
-                        _DisqualificationSiteData.DisqualifiedInvestigatorList.Count() == 0)
+                        _DisqualificationSiteData.DisqualifiedInvestigatorList.Count == 0)
                         LoadDisqualificationProceedingsList(NameToSearch,
                             MatchCountLowerLimit);
                 }

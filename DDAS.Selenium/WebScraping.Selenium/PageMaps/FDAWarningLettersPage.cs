@@ -16,8 +16,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Element = driver.FindElement(By.Id("qryStr"));
-                return Element;
+                try
+                {
+                    IWebElement Element = driver.FindElement(By.Id("qryStr"));
+                    return Element;
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find FDASearchTextBox");
+                }
             }
         }
         public IWebElement FDASearchButton
@@ -35,7 +42,7 @@ namespace WebScraping.Selenium.Pages
                     if (element.GetAttribute("value").ToLower() == "search")
                         return element;
                 }
-                throw new Exception("Unable to click on Search Button");
+                throw new Exception("Could not click on Search Button");
             }
         }
 
@@ -52,8 +59,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
-                return Element;
+                try
+                {
+                    IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                    return Element;
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find PageLastUpdatedElement");
+                }
             }
         }
     }

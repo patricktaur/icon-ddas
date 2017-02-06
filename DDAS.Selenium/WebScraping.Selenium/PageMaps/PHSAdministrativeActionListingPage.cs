@@ -21,8 +21,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Element = driver.FindElement(By.XPath("//h1"));
-                return Element;
+                try
+                {
+                    IWebElement Element = driver.FindElement(By.XPath("//h1"));
+                    return Element;
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Could not find PageLastUpdatedElement");
+                }
             }
         }
     }

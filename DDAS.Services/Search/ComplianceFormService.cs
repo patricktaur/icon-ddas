@@ -268,6 +268,7 @@ namespace DDAS.Services.Search
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
 
+            int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
 
@@ -365,17 +366,19 @@ namespace DDAS.Services.Search
                 {
                     PartialMatchesFoundInvestigatorCount += 1;
                 }
+               
 
                 if (Investigator.Sites_FullMatchCount > 0)
                 {
                     FullMatchesFoundInvestigatorCount += 1;
                 }
+               
 
                 if (Investigator.IssuesFoundSiteCount > 0)
                 {
                     IssuesFoundInvestigatorCount += 1;
                 }
-                if (Investigator.ReviewCompletedSiteCount > 0)
+                if (Investigator.ReviewCompletedSiteCount == SiteCount)
                 {
                     ReviewCompletedInvestigatorCount += 1;
                 }
@@ -789,7 +792,7 @@ namespace DDAS.Services.Search
                 CompFormFilter.InvestigatorName != "")
             {
                 var tempFilter = Filter1.Select(x => x.InvestigatorDetails.Where(inv =>
-                inv.Name == CompFormFilter.InvestigatorName)).ToList();
+                inv.Name == CompFormFilter.InvestigatorName).ToList()).ToList();
             }
 
             var Filter2 = Filter1;
@@ -814,10 +817,7 @@ namespace DDAS.Services.Search
 
             var Filter4 = Filter3;
 
-            
-            
-            if (CompFormFilter.SearchedOnFrom != null )
-                
+            if (CompFormFilter.SearchedOnFrom != null) 
             {
                 DateTime startDate;
                 startDate = CompFormFilter.SearchedOnFrom.Value.Date;

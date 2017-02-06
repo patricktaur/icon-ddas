@@ -31,11 +31,13 @@ namespace WebScraping.Selenium.BaseClasses
                         IsPageLoaded = true;
                     }
                 }
-                catch (WebDriverTimeoutException)
+                catch (Exception)
                 {
-                    //
+                    //throw new Exception("Unable to load the page");
                 }
             }
+            if(!IsPageLoaded)
+                throw new Exception("Unable to load the page");
         }
 
         public bool IsElementPresent(IWebElement elem, By by)

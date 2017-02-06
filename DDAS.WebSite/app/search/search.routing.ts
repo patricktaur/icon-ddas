@@ -38,15 +38,15 @@ const searchRoutes: Routes = [
       { path: '', component: DueDiligenceCheckComponent },
 
       {
-        path: 'complianceform/:formid',
+        path: 'complianceform/:formId',
         component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'investigator-summary/:formid/:investigatorid',
+        path: 'investigator-summary/:formId/:investigatorId',
         component: InvestigatorSummaryComponent,
       },
       {
-        path: 'findings/:formid/:investigatorid/:siteenum',
+        path: 'findings/:formId/:investigatorId/:siteEnum',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]
@@ -66,15 +66,15 @@ const searchRoutes: Routes = [
       { path: '', component: ManageICFsComponent },
 
       {
-        path: 'complianceform/:formid',
+        path: 'complianceform/:formId',
         component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'investigator-summary/:formid/:investigatorid',
+        path: 'investigator-summary/:formId/:investigatorId',
         component: InvestigatorSummaryComponent,
       },
       {
-        path: 'findings/:formid/:investigatorid/:siteenum',
+        path: 'findings/:formId/:investigatorId/:siteEnum',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]
@@ -93,15 +93,15 @@ const searchRoutes: Routes = [
       { path: '', component: ClosedICFsComponent },
 
       {
-        path: 'complianceform/:formid',
+        path: 'complianceform/:formId',
         component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'investigator-summary/:formid/:investigatorid',
+        path: 'investigator-summary/:formId/:investigatorId',
         component: InvestigatorSummaryComponent,
       },
       {
-        path: 'findings/:formid/:investigatorid/:siteenum',
+        path: 'findings/:formId/:investigatorid/:siteEnum',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]
