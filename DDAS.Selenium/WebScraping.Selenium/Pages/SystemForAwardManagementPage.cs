@@ -160,7 +160,8 @@ namespace WebScraping.Selenium.Pages
 
             try
             {
-                SAMAnchorTag.Click();
+                //SAMAnchorTag.Click();
+                SAMAnchorTag.SendKeys(Keys.Enter);
 
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
@@ -175,12 +176,11 @@ namespace WebScraping.Selenium.Pages
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
                 if (SAMCheckResult != null)
-                {
                     return true;
-                }
                 else
                 {
-                    SAMClearSearch.Click();
+                    //SAMClearSearch.Click();
+                    SAMClearSearch.SendKeys(Keys.Enter);
                     driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
                     return false;
                 }

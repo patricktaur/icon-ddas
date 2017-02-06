@@ -80,8 +80,8 @@ namespace WebScraping.Selenium.Pages
                 driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
                 IWebElement Search = FDASearchButton;
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                Search.Click();
+                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                Search.SendKeys(Keys.Enter);
             }
             catch(Exception e) when (e is WebDriverTimeoutException ||
             e is WebDriverException)

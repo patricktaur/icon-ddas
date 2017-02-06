@@ -63,7 +63,7 @@ namespace WebScraping.Selenium.Pages
                     {
                         if (Element.Text.ToLower().Contains(
                             "no records found for current search"))
-                            return Element;
+                            return null;
                         else if (Element.Text.ToLower().Contains(
                             "returned the following results"))
                             return Element;
@@ -110,7 +110,8 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> PaginationElement = driver.FindElements(By.ClassName("pagination"));
+                IList<IWebElement> PaginationElement = 
+                    driver.FindElements(By.ClassName("pagination"));
 
                 foreach(IWebElement element in PaginationElement)
                 {
