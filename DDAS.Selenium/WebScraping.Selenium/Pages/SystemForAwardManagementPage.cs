@@ -185,7 +185,8 @@ namespace WebScraping.Selenium.Pages
                     return false;
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (e is WebDriverTimeoutException ||
+            e is WebDriverException)
             {
                 throw new Exception("Could not enter search name. Error details: " +
                     e.Message);
