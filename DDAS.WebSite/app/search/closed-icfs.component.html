@@ -29,7 +29,7 @@
 		</thead>
 
 		<tbody>
-			<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: p}" class="active">
+			<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 
 				<td class="text-left">
 					{{item.Name}}
@@ -66,7 +66,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<pagination-controls (pageChange)="p = $event"></pagination-controls>
+	<pagination-controls ></pagination-controls>
 </div>
 
 

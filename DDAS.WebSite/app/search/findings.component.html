@@ -2,6 +2,11 @@
 	<div class="col-lg-12">
 
 		<div class="well">
+
+			<div class="alert alert-info" *ngIf="loading">
+				<strong>Loading ...</strong>
+			</div>
+
 			<div class="row">
 				<div class="col-lg-12">
 					<h3 class="align-left no-margin-top">
@@ -25,7 +30,7 @@
 
 	<div class="row ">
 		<div class="col-lg-12 well">
-			<div >
+			<div>
 				<h4>
 					Summary:
 				</h4>
@@ -134,7 +139,8 @@
 	<p align="center">
 
 		<button type="button" class="btn btn-primary" (click)="Add()">Add</button>
-		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0" (click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Add from site's  matching records</button>
+		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
+			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Add from site's  matching records</button>
 		<br/>
 	</p>
 	<p align="center">
@@ -144,7 +150,7 @@
 	<p align="center">
 		<!--<label>Review completed: <input type="checkbox"  name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" ></label>-->
 		<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
-		<button type="button" class="btn btn-primary" (click)="Save()">Save and Continue</button>
+		<button type="button" class="btn btn-primary" (click)="Save()">Save</button>
 		<button type="button" class="btn btn-primary" (click)="SaveAndClose()">Save and Close</button>
 	</p>
 
@@ -160,7 +166,7 @@
 						<tr>
 							<th class="col-md-2">Select</th>
 							<th class="col-md-8">Record Details</th>
-							<th class="col-md-2">Record Location (Row Number)</th>
+							<th class="col-md-2">Match Count</th>
 						</tr>
 					</thead>
 
@@ -180,7 +186,7 @@
 							</td>
 							<td>
 
-								{{finding.RowNumberInSource}}
+								{{finding.MatchCount}}
 
 							</td>
 						</tr>
@@ -197,15 +203,15 @@
 
 	</modal>
 
-<modal #IgnoreChangesConfirmModal>
-	<modal-header>
-		<h4 class="modal-title">Changes not saved.</h4>
-	</modal-header>
-	<modal-body>
-		<p class="help-block">Changes </p>
-	</modal-body>
-	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="setDeactivateValue(); IgnoreChangesConfirmModal.close()">Ignore Changes</button>
-		<button type="button" class="btn btn-default" (click)=" IgnoreChangesConfirmModal.close()">Cancel</button>
-	</modal-footer>
-</modal>
+	<modal #IgnoreChangesConfirmModal>
+		<modal-header>
+			<h4 class="modal-title">Changes not saved.</h4>
+		</modal-header>
+		<modal-body>
+			<p class="help-block">Changes </p>
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="setDeactivateValue(); IgnoreChangesConfirmModal.close()">Ignore Changes</button>
+			<button type="button" class="btn btn-default" (click)=" IgnoreChangesConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>

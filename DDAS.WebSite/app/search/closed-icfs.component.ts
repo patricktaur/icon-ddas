@@ -36,7 +36,7 @@ export class ClosedICFsComponent implements OnInit {
     private makeActiveCompFormId: string;
     public makeActivePrincipalInvestigatorName: string
 
-    public p: number;
+    public pageNumber: number;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -60,6 +60,10 @@ export class ClosedICFsComponent implements OnInit {
         };
 
         this.route.params.forEach((params: Params) => {
+             let page = +params['page'];
+            if (page != null){
+                this.pageNumber = page;
+            }
         });
         this.LoadPrincipalInvestigators();
     }
@@ -92,12 +96,14 @@ export class ClosedICFsComponent implements OnInit {
      }
 
     OpenNew() {
-        this.router.navigate(['complianceform', ""], { relativeTo: this.route });
+        this.router.navigate(['complianceform', "", {rootPath:'closed-icfs', page:this.pageNumber}], { relativeTo: this.route });
     }
 
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
-        this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+        //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+         this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'closed-icfs', page:this.pageNumber}], { relativeTo: this.route });
+         
 
     }
 

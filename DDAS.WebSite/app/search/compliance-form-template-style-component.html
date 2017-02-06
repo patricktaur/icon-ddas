@@ -17,279 +17,292 @@
 				</div>
 			</div>
 			<br>
-			<form #f="ngForm" novalidate>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="form-group">
-							<label for="ProjectNumber">ICON Project Number (1234/1234):</label>
-							<input type="text" class="form-control" name="projNumber" [(ngModel)]="CompForm.ProjectNumber" #projNumber="ngModel" required
-								pattern="\d{4}/\d{4}">
+			<div class="alert alert-info" *ngIf="formLoading">
+				<strong>Loading ...</strong>
+			</div>
+			<div *ngIf="!formLoading">
+				<form #f="ngForm" novalidate>
 
-							<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="ProjectNumber">ICON Project Number (1234/1234):</label>
+								<input type="text" class="form-control" name="projNumber" [(ngModel)]="CompForm.ProjectNumber" #projNumber="ngModel" required
+									pattern="\d{4}/\d{4}">
+
+								<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
             					Project Number format 9999/9999 expected.
  							</small>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
+								<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber">
+							</div>
 						</div>
 					</div>
-					<div class="col-lg-6">
-						<div class="form-group">
-							<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
-							<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="Country">Institute:</label>
+								<input type="text" class="form-control" name="Institute" [(ngModel)]="CompForm.Institute">
+							</div>
+							<div class="form-group">
+								<label for="Country">Country:</label>
+								<input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country">
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label for="NameToSeaICONrch">Address:</label>
+								<textarea name="Address" class="form-control" id="Address" rows="5" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"></textarea>
+							</div>
 						</div>
 					</div>
-				</div>
+
+				</form>
 				<div class="row">
-					<div class="col-lg-6">
+					<div class="col-lg-12">
 						<div class="form-group">
-							<label for="Country">Institute:</label>
-							<input type="text" class="form-control" name="Institute" [(ngModel)]="CompForm.Institute">
-						</div>
-						<div class="form-group">
-							<label for="Country">Country:</label>
-							<input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country">
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="form-group">
-							<label for="NameToSeaICONrch">Address:</label>
-							<textarea name="Address" class="form-control" id="Address" rows="5" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"></textarea>
-						</div>
-					</div>
-				</div>
-			</form>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="form-group">
-						<h4>Investigators:</h4>
-						<div class="table-responsive">
+							<h4>Investigators:</h4>
+							<div class="table-responsive">
 
-							<table class="table table-bordered table-hover table-striped">
-								<thead>
-									<tr>
-										<th class="col-md-3 text-left">Name</th>
-										<th class="col-md-2">Qualifications</th>
-										<th class="col-md-1">Med. Lic No. / ML#</th>
-										<th class="col-md-1">Inv. Id</th>
-										<th class="col-md-1">Role</th>
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th class="col-md-3 text-left">Name</th>
+											<th class="col-md-2">Qualifications</th>
+											<th class="col-md-1">Med. Lic No. / ML#</th>
+											<th class="col-md-1">Inv. Id</th>
+											<th class="col-md-1">Role</th>
 
-										<th class="col-md-1">Status</th>
-										<!--<th class="col-md-1">Status</th>-->
+											<th class="col-md-1">Status</th>
+											<!--<th class="col-md-1">Status</th>-->
 
-										<th class="col-md-3">Actions</th>
+											<th class="col-md-3">Actions</th>
 
-									</tr>
-								</thead>
-								<tbody>
-									<tr *ngFor="let inv of Investigators; let idx=index">
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let inv of Investigators; let idx=index">
 
 
-										<td>
+											<td>
 
-											<div *ngIf="inv.CanEdit">
-												<input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control">
-											</div>
-											<div *ngIf="!inv.CanEdit" class="text-left">{{inv.Name}}</div>
-
-
-										</td>
-										<td>
-											<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>
-
-										</td>
-										<td>
-											<div><input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control"></div>
-
-										</td>
-										<td>
-											<div><input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control"></div>
-
-										</td>
-										<td>
-											{{inv.Role}}
-										</td>
+												<div *ngIf="inv.CanEdit">
+													<input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control">
+												</div>
+												<div *ngIf="!inv.CanEdit" class="text-left">{{inv.Name}}</div>
 
 
-										<td align="center">
-											<div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
-										</td>
+											</td>
+											<td>
+												<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>
 
-										<td>
-											<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
-											<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
-											<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-												title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-											<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
-										</td>
+											</td>
+											<td>
+												<div><input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control"></div>
 
-									</tr>
-									<tr>
-										<td style="align-left" colspan="7">
-											<!--<small [hidden]="invName.valid || (invName.pristine && !f.submitted)" class="text-danger">
+											</td>
+											<td>
+												<div><input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control"></div>
+
+											</td>
+											<td>
+												{{inv.Role}}
+											</td>
+
+
+											<td align="center">
+												<div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
+											</td>
+
+											<td>
+												<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
+												<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
+												<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+													title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+												<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+											</td>
+
+										</tr>
+										<tr>
+											<td style="align-left" colspan="7">
+												<!--<small [hidden]="invName.valid || (invName.pristine && !f.submitted)" class="text-danger">
             											Name is required (minimum 3 characters).
  												</small>-->
 
-											<div class="text-left">
-												<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-												<!--<button type="button" class="btn btn-primary" >Undo</button>-->
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+												<div class="text-left">
+													<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
+													<!--<button type="button" class="btn btn-primary" >Undo</button>-->
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
 
 
+							</div>
 						</div>
-					</div>
-					<div class="well">
-						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+						<div class="well">
+							<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
-						<button type="button" class="btn btn-primary" [disabled]="!f.valid" (click)="Save()">Save</button>
-						<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending">Search</button>
-						<!--<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>-->
-						<p *ngIf="searchInProgress">Search in progress ... </p>
-					</div>
+							<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
+							<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending ">Search</button>
+							<!--<button type="button" class="btn btn-primary" (click)="ConfirmCloseForEditModal.open()" title="Close Compliance Form">Close for edit</button>-->
 
+							<div class="alert alert-info" *ngIf="searchInProgress">
+								<strong>Scanning Sources for Investigator Names ...</strong>
+								<p class="help-block">Processing will take a while... </p>
+								<p class="help-block">You can use Back button to move to other sections.</p>
+								<p class="help-block">The process will continue in the background.</p>
+							</div>
+						</div>
+
+					</div>
 				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="form-group">
-						<br>
-						<h4>Sites participating in the search:</h4>
-						<div class="table-responsive">
-							<table class="table table-bordered table-hover table-striped">
-								<thead>
-									<tr>
-										<th class="">#</th>
-										<th class="">Source Name</th>
-										<!--<th class="">Extracted On</th>-->
-										<!--<th class="">Site Source Updated On</th>-->
-										<th class="">Extraction Mode</th>
-										<th class="">Issues Identified</th>
-										<th class="">Remove</th>
-										<!--<th class="col-md-1">#</th>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<br>
+							<h4>Sites participating in the search:</h4>
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th class="">#</th>
+											<th class="">Source Name</th>
+											<!--<th class="">Extracted On</th>-->
+											<!--<th class="">Site Source Updated On</th>-->
+											<th class="">Extraction Mode</th>
+											<th class="">Issues Identified</th>
+											<th class="">Remove</th>
+											<!--<th class="col-md-1">#</th>
 										<th class="col-md-4">Source Name</th>
 										<th class="col-md-2">DataExtractedOn</th>
 										<th class="col-md-2">SiteSourceUpdatedOn</th>
 										<th class="col-md-1">ExtractionMode</th>
 										<th class="col-md-1">Issues Identified</th>
 										<th class="col-md-1">Remove</th>-->
-									</tr>
-								</thead>
-								<tbody>
-									<tr class="active" *ngFor="let item of SitesParticpatingInSearch; let idx = index;">
-										<td>{{item.DisplayPosition}}</td>
-										<td>
-											<div class="text-left">
-												<a target="_blank" [href]="item.SiteUrl">
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="active" *ngFor="let item of SitesParticpatingInSearch; let idx = index;">
+											<td>{{item.DisplayPosition}}</td>
+											<td>
+												<div class="text-left">
+
+													<a target="_blank" [href]="sanitize(item.SiteUrl)">
                                                  {{item.SiteName}}
                                             </a>
-											</div>
+												</div>
 
-										</td>
-										<td>
-											{{item.ExtractionMode}}
-										</td>
-										<td>
-											{{item.IssuesIdentified | boolToYesNo}}
-											<!--{{BoolYesNo(item.IssuesIdentified)}}-->
-										</td>
-										<td>
-											<button type="button" class="btn btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="5">
-											<div class="text-left"><button type="button" class="btn btn-primary" (click)="AddSiteModal.open()">Add</button> </div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+											</td>
+											<td>
+												{{item.ExtractionMode}}
+											</td>
+											<td>
+												{{item.IssuesIdentified | boolToYesNo}}
+												<!--{{BoolYesNo(item.IssuesIdentified)}}-->
+											</td>
+											<td>
+												<button type="button" class="btn btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="5">
+												<div class="text-left"><button type="button" class="btn btn-primary" (click)="AddSiteModal.open()">Add</button> </div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row" *ngIf="false">
-				<h4>Summary:</h4>
-				<p>ExtractedOn: {{CompForm.ExtractedOn}} </p>
-				<p>ExtractionErrorInvestigatorCount: {{CompForm.ExtractionErrorInvestigatorCount}} </p>
-				<p>PartialMatchesFoundInvestigatorCount: {{CompForm.PartialMatchesFoundInvestigatorCount}} </p>
-				<p>FullMatchesFoundInvestigatorCount: {{CompForm.FullMatchesFoundInvestigatorCount}} </p>
-				<p>IssuesFoundInvestigatorCount: {{CompForm.IssuesFoundInvestigatorCount}} </p>
-				<p>ReviewCompletedInvestigatorCount: {{CompForm.ReviewCompletedInvestigatorCount}} </p>
-			</div>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="form-group">
-						<h4>Findings (Issues identified):</h4>
-						<div class="table-responsive">
-							<table class="table table-bordered table-hover table-striped">
-								<thead>
-									<tr>
-										<th class="col-md-1">Source #</th>
-										<th class="col-md-3">Investigator</th>
-										<th class="col-md-2">Date of Inspection / Action</th>
-										<th class="col-md-6">Description of Findings</th>
+				<div class="row" *ngIf="false">
+					<h4>Summary:</h4>
+					<p>ExtractedOn: {{CompForm.ExtractedOn}} </p>
+					<p>ExtractionErrorInvestigatorCount: {{CompForm.ExtractionErrorInvestigatorCount}} </p>
+					<p>PartialMatchesFoundInvestigatorCount: {{CompForm.PartialMatchesFoundInvestigatorCount}} </p>
+					<p>FullMatchesFoundInvestigatorCount: {{CompForm.FullMatchesFoundInvestigatorCount}} </p>
+					<p>IssuesFoundInvestigatorCount: {{CompForm.IssuesFoundInvestigatorCount}} </p>
+					<p>ReviewCompletedInvestigatorCount: {{CompForm.ReviewCompletedInvestigatorCount}} </p>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<h4>Findings (Issues identified):</h4>
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th class="col-md-1">Source #</th>
+											<th class="col-md-3">Investigator</th>
+											<th class="col-md-2">Date of Inspection / Action</th>
+											<th class="col-md-6">Description of Findings</th>
 
-									</tr>
-								</thead>
-								<tbody>
-									<tr class="active" *ngFor="let item of Findings; ">
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="active" *ngFor="let item of Findings; ">
 
 
-										<td>
-											{{item.SourceNumber}}
-										</td>
-										<td align="left">
-											{{item.InvestigatorName}}
-										</td>
-										<td>
-											{{item.DateOfInspection |date:'dd/MMM/yyyy' }}
-										</td>
-										<td align="left">
-											<!--<div *ngFor="let SplitItem of Split(item.RecordDetails)" align="left">
+											<td>
+												{{item.SourceNumber}}
+											</td>
+											<td align="left">
+												{{item.InvestigatorName}}
+											</td>
+											<td>
+												{{item.DateOfInspection |date:'dd/MMM/yyyy' }}
+											</td>
+											<td align="left">
+												<!--<div *ngFor="let SplitItem of Split(item.RecordDetails)" align="left">
 												{{SplitItem}}
 											</div>-->
-											<div *ngIf="item.RecordDetails"><br> </div>
-											{{item.Observation}}
-										</td>
-									</tr>
-								</tbody>
-							</table>
+												<div *ngIf="item.RecordDetails"><br> </div>
+												{{item.Observation}}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
-					</div>
 
+
+					</div>
 
 				</div>
 
-			</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<h4>Search Performed By:</h4>
+							<div class="row">
+								<div class="col-lg-6">
+									<label for="NameToSeaICONrch">Searched By:</label>
+									<label class="form-control">{{CompForm.AssignedTo}}</label>
 
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="form-group">
-						<h4>Search Performed By:</h4>
-						<div class="row">
-							<div class="col-lg-6">
-								<label for="NameToSeaICONrch">Searched By:</label>
-								<label class="form-control">{{CompForm.AssignedTo}}</label>
+								</div>
+								<div class="col-lg-6">
+									<label for="NameToSeaICONrch">Searched On:</label>
+									<label class="form-control">{{CompForm.SearchStartedOn | date: 'dd/MMM/yyyy'}}</label>
 
-							</div>
-							<div class="col-lg-6">
-								<label for="NameToSeaICONrch">Searched On:</label>
-								<label class="form-control">{{CompForm.SearchStartedOn | date: 'dd/MMM/yyyy'}}</label>
-
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
 
-			<!--<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+				<!--<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>-->
-			<button type="button" class="btn btn-primary" (click)="ScanNSave()">Search</button>
+				<button type="button" class="btn btn-primary" (click)="ScanNSave()">Search</button>
 
-
+			</div>
 		</div>
 	</div>
 
@@ -316,7 +329,7 @@
 						</td>
 						<td>
 							<div class="text-left">
-								<a target="_blank" [href]="item.SiteUrl">
+								<a target="_blank" [href]="sanitize(item.SiteUrl)">
 								{{item.SiteName}}
 								</a>
 							</div>

@@ -101,7 +101,8 @@ const searchRoutes: Routes = [
         component: InvestigatorSummaryComponent,
       },
       {
-        path: 'findings/:formId/:investigatorid/:siteEnum',
+        
+        path: 'findings/:formId/:investigatorId/:siteEnum',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]
