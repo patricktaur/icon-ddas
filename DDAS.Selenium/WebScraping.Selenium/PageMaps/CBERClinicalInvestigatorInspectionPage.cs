@@ -25,8 +25,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> Elements = driver.FindElements(By.XPath("//small"));
-                return Elements[0];
+                try
+                {
+                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//small"));
+                    return Elements[0];
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Unable to find PageLastUpdatedElement");
+                }
             }
         }
     }

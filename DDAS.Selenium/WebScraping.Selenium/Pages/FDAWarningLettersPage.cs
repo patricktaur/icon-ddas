@@ -71,14 +71,23 @@ namespace WebScraping.Selenium.Pages
         {
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
-            IWebElement Input = FDASearchTextBox;
-            Input.Clear();
-            Input.SendKeys(Name);
+            try
+            {
+                IWebElement Input = FDASearchTextBox;
+                Input.Clear();
+                Input.SendKeys(Name);
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
-            IWebElement Search = FDASearchButton;
-            Search.Click();
+                IWebElement Search = FDASearchButton;
+                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                Search.Click();
+            }
+            catch(Exception e) when (e is WebDriverTimeoutException ||
+            e is WebDriverException)
+            {
+                throw new Exception("Could not click on submit button");
+            }
 
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
@@ -153,7 +162,9 @@ namespace WebScraping.Selenium.Pages
                 {
                     for (int Counter = 0; Counter < FullName.Length; Counter++)
                     {
-                        if (FullName[Counter].Length > 1 && SearchTerms(FullName[Counter]))
+                        if (FullName[Counter].Length > 1 &&
+                            _FDAWarningSiteData.FDAWarningLetterList.Count > 0 &&
+                            SearchTerms(FullName[Counter]))
                             LoadFDAWarningLetters();
                     }
                 }

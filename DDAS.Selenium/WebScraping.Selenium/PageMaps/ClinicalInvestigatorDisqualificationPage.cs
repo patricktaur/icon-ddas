@@ -17,8 +17,16 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement SearchTextBox = driver.FindElement(By.Id("filter"));
-                return SearchTextBox;
+                try
+                {
+                    IWebElement SearchTextBox = driver.FindElement(By.Id("filter"));
+                    return SearchTextBox;
+                }
+                catch(Exception)
+                {
+                    throw new Exception(
+                        "Unable to find DisqualifiedInvestigatorSearchTextBox");
+                }
             }
         }
 
@@ -60,8 +68,17 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
-                return Element;
+                try
+                {
+                    IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                    return Element;
+                }
+                catch (Exception)
+                {
+                    throw new Exception(
+                        "Unable to find PageLastUpdatedTextElement");
+                }
+
             }
         }
     }

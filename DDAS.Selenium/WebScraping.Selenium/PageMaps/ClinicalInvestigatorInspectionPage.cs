@@ -116,7 +116,7 @@ namespace WebScraping.Selenium.Pages
                         "clinical investigator inspection list zip file"))
                         return Anchor;
                 }
-                throw new Exception("Could not download ciil list!");
+                throw new Exception("Unable to download ciil zip file!");
             }
         }
 
@@ -124,8 +124,16 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> Elements = driver.FindElements(By.XPath("//div/ul/li"));
-                return Elements[28];
+                try
+                {
+                    IList<IWebElement> Elements = 
+                        driver.FindElements(By.XPath("//div/ul/li"));
+                    return Elements[28];
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Unable to find DatabaseLastUpdatedElement");
+                }
             }
         }
     }

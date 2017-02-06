@@ -24,8 +24,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IWebElement Element = driver.FindElement(By.Id("updated-list"));
-                return Element;
+                try
+                {
+                    IWebElement Element = driver.FindElement(By.Id("updated-list"));
+                    return Element;
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Unable to find PageLastUpdatedElement");
+                }
             }
         }
     }

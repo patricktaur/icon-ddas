@@ -10,13 +10,20 @@ namespace WebScraping.Selenium.Pages
     public partial class SpeciallyDesignatedNationalsListPage : 
         BaseClasses.BasePage
     {
-        public IWebElement SDNSiteUpdatedDate
+        public IWebElement PageLastUpdatedElement
         {
             get
             {
-                IList<IWebElement> Divs = 
-                    driver.FindElements(By.ClassName("updated"));
-                return Divs[0];
+                try
+                {
+                    IList<IWebElement> Divs =
+                        driver.FindElements(By.ClassName("updated"));
+                    return Divs[0];
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Could not find PageLastUpdatedElement");
+                }
             }
         }
     }

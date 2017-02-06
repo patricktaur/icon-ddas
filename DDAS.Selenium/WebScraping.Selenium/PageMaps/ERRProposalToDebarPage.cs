@@ -24,9 +24,16 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                string XPathValue = "//div[@id='pagetools_right']/p";
-                IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
-                return Elements[0];
+                try
+                {
+                    string XPathValue = "//div[@id='pagetools_right']/p";
+                    IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
+                    return Elements[0];
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Unable to find PageLastUpdatedElement");
+                }
             }
         }
     }

@@ -795,7 +795,7 @@ namespace DDAS.Services.Search
                 CompFormFilter.InvestigatorName != "")
             {
                 var tempFilter = Filter1.Select(x => x.InvestigatorDetails.Where(inv =>
-                inv.Name == CompFormFilter.InvestigatorName)).ToList();
+                inv.Name == CompFormFilter.InvestigatorName).ToList()).ToList();
             }
 
             var Filter2 = Filter1;
@@ -820,10 +820,7 @@ namespace DDAS.Services.Search
 
             var Filter4 = Filter3;
 
-            
-            
-            if (CompFormFilter.SearchedOnFrom != null )
-                
+            if (CompFormFilter.SearchedOnFrom != null) 
             {
                 DateTime startDate;
                 startDate = CompFormFilter.SearchedOnFrom.Value.Date;
@@ -1443,9 +1440,11 @@ namespace DDAS.Services.Search
             SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
 
+            var InvName = InvestigatorName.Replace(" ", "");
+
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,
-                InvestigatorName);  //updates list with match count
+                InvName);
 
             var SDNList = SDNSearchResult.SDNListSiteData.Where(
                SDNData => SDNData.Matched > 0).ToList();

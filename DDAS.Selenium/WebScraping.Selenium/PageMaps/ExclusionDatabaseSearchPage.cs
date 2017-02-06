@@ -80,8 +80,15 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> Elements = driver.FindElements(By.XPath("//h2"));
-                return Elements[1];
+                try
+                {
+                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//h2"));
+                    return Elements[1];
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Unable to find PageLastUpdatedElement");
+                }
             }
         }
     }
