@@ -160,7 +160,8 @@ namespace WebScraping.Selenium.Pages
 
             try
             {
-                SAMAnchorTag.Click();
+                //SAMAnchorTag.Click();
+                SAMAnchorTag.SendKeys(Keys.Enter);
 
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
@@ -174,18 +175,23 @@ namespace WebScraping.Selenium.Pages
 
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-                if (SAMCheckResult != null)
-                {
+                //if (SAMCheckResult == null)
+                //    return false;
+
+                var TotalRecords = SAMCheckResult.Text.Split(':');
+
+                if (Convert.ToInt32(TotalRecords[1].Trim()) > 0)
                     return true;
-                }
                 else
                 {
-                    SAMClearSearch.Click();
+                    //SAMClearSearch.Click();
+                    SAMClearSearch.SendKeys(Keys.Enter);
                     driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
                     return false;
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (e is WebDriverTimeoutException ||
+            e is WebDriverException)
             {
                 throw new Exception("Could not enter search name. Error details: " +
                     e.Message);

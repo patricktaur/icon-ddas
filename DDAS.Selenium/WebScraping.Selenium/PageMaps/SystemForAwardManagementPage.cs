@@ -57,22 +57,31 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
-                    IList<IWebElement> Result = driver.FindElements(By.XPath("//h4"));
+                    //IList<IWebElement> CheckHeader4 = driver.FindElements(By.XPath("//h4"));
 
-                    foreach(IWebElement Element in Result)
+                    //foreach (IWebElement Element in CheckHeader4)
+                    //{
+                    //    if (Element.Text.ToLower().Contains(
+                    //        "no records found for current search"))
+                    //        return null;
+                    //    else if (Element.Text.ToLower().Contains(
+                    //        "returned the following results"))
+                    //        return Element;
+                    //}
+
+                    IList<IWebElement> CheckHeader3 = driver.FindElements(By.XPath("//h3"));
+
+                    foreach (IWebElement Element in CheckHeader3)
                     {
                         if (Element.Text.ToLower().Contains(
-                            "no records found for current search"))
-                            return Element;
-                        else if (Element.Text.ToLower().Contains(
-                            "returned the following results"))
+                            "total records"))
                             return Element;
                     }
-                    throw new Exception("Unable to check search results");
+                    throw new Exception("Could not find 'Total Records' header");
                 }
                 catch (Exception)
                 {
-                    throw new Exception("Unable to check search results");
+                    throw new Exception("Could not find 'Total Records' header, Selenium/PageMaps");
                 }
             }
         }
@@ -110,7 +119,8 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> PaginationElement = driver.FindElements(By.ClassName("pagination"));
+                IList<IWebElement> PaginationElement = 
+                    driver.FindElements(By.ClassName("pagination"));
 
                 foreach(IWebElement element in PaginationElement)
                 {
