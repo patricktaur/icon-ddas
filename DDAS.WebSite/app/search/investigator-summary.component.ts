@@ -16,7 +16,8 @@ import {InvestigatorSearched, ComplianceFormA, SiteSource,
   styles: [
   `
   .selected {
-    background-color: yellow;
+    border: 2px solid blue;  
+   
   }
   `
   ]
@@ -27,10 +28,11 @@ export class InvestigatorSummaryComponent {
    private ComplianceFormId: string;
    public InvestigatorSummary : InvestigatorSearched = new InvestigatorSearched;
 
-   processing: boolean;
+   public loading: boolean;
    public CompForm: ComplianceFormA = new ComplianceFormA;
+   
    public retSiteEnum: number;
-
+   private rootPath: string;
    constructor(private service: SearchService,
        private route: ActivatedRoute,
        private _location: Location,
@@ -44,10 +46,7 @@ export class InvestigatorSummaryComponent {
         this.ComplianceFormId = params['formId'];
         this.InvestigatorId = +params['investigatorId'];
         this.retSiteEnum =  +params['siteEnum'];
-
-        console.log('this.ComplianceFormId' + this.ComplianceFormId);
-         console.log('this.InvestigatorId' + this.InvestigatorId);
-          console.log('this.retSiteEnum' + this.retSiteEnum);
+        this.rootPath =  params['rootPath'];
 
         this.LoadOpenComplainceForm();
 
@@ -57,13 +56,16 @@ export class InvestigatorSummaryComponent {
   }
   
     LoadOpenComplainceForm() {
+        this.loading = true;
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
                 //this.IntiliazeRecords();
+                this.loading = false;
                 
               },
             error => {
+                this.loading = false;
             });
     }
   
@@ -203,14 +205,15 @@ get Summary(){
 }
  
 gotoSiteDetails(siteEnum: number){
-    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteEnum], 
+ 
+    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteEnum, {rootPath:this.rootPath}], 
     { relativeTo: this.route.parent});
 }
  
 goBack() {
 
     //this._location.back();
-    this.router.navigate(['complianceform', this.ComplianceFormId], { relativeTo: this.route.parent});
+    this.router.navigate(['complianceform', this.ComplianceFormId, {rootPath: this.rootPath}], { relativeTo: this.route.parent});
 }
 
 BoolYesNo (value: boolean): string   {

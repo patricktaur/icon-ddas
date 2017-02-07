@@ -62,6 +62,10 @@ export class DueDiligenceCheckComponent implements OnInit {
         };
 
         this.route.params.forEach((params: Params) => {
+            let page = +params['page'];
+            if (page != null){
+                this.pageNumber = page;
+            }
         });
         this.LoadPrincipalInvestigators();
 
@@ -84,7 +88,9 @@ export class DueDiligenceCheckComponent implements OnInit {
 
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
-        this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+        //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
+        this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
+
 
     }
 

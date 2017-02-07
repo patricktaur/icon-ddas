@@ -20,6 +20,8 @@ export class FindingsComponent implements OnInit {
     public searchInProgress: boolean = false;
 
     private pageChanged: boolean= false;
+     private rootPath: string;
+     public loading: boolean;
     
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
@@ -37,20 +39,25 @@ export class FindingsComponent implements OnInit {
             this.ComplianceFormId = params['formId'];
             this.InvestigatorId = +params['investigatorId'];
             this.SiteEnum = +params['siteEnum'];
+            this.rootPath =  params['rootPath'];
             this.LoadOpenComplainceForm();
+
+            
             
         });
      
     }
 
     LoadOpenComplainceForm() {
+        this.loading = true;
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
                 //this.IntiliazeRecords();
-                
+                 this.loading = false;
               },
             error => {
+                 this.loading = false;
             });
     }
 
@@ -100,7 +107,7 @@ export class FindingsComponent implements OnInit {
     
     get MatchedSiteRecords(){
         //return this.Findings;
-        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true);
+        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true).sort().reverse();
     }
   
    
@@ -152,6 +159,8 @@ export class FindingsComponent implements OnInit {
     
     RemoveFromSelected(selectedRecord: Finding){
         this.pageChanged = true;
+        selectedRecord.IsAnIssue = false;
+        selectedRecord.Observation = "";
         selectedRecord.Selected = false;
     } 
     
@@ -186,7 +195,8 @@ export class FindingsComponent implements OnInit {
                this.service.saveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
                 this.pageChanged = false;
-                this._location.back();
+                this.goBack()
+                //this._location.back();
                  },
             error => {
 
@@ -230,7 +240,7 @@ export class FindingsComponent implements OnInit {
     goBack() {
        // this._location.back();
        // this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id], { relativeTo: this.route.parent});
-        this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum}], { relativeTo: this.route.parent});
+        this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
       
     }
     

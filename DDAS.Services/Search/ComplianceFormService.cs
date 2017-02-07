@@ -321,13 +321,16 @@ namespace DDAS.Services.Search
                     foreach (Finding Finding in Findings)
                     {
                         if (Finding != null && Finding.IsAnIssue &&
-                            Finding.InvestigatorSearchedId == Investigator.Id)
+                            Finding.InvestigatorSearchedId == Investigator.Id 
+                            //&& Finding.SiteEnum == searchStatus.siteEnum
+                            )
                         {
                             InvId = Finding.InvestigatorSearchedId;
                             IssuesFound += 1;
-                            searchStatus.IssuesFound = IssuesFound;
+                            
                         }
                     }
+                    searchStatus.IssuesFound = IssuesFound;
                     Investigator.TotalIssuesFound += IssuesFound;
 
                     var Site = form.SiteSources.Find
@@ -380,7 +383,7 @@ namespace DDAS.Services.Search
                 }
                 if (Investigator.ReviewCompletedSiteCount == SiteCount)
                 {
-                    ReviewCompletedInvestigatorCount += 1;
+                     ReviewCompletedInvestigatorCount += 1;
                 }
                 if (Investigator.ExtractedOn != null)
                 {

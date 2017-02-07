@@ -52,5 +52,7 @@
         PartialMatchFoundReviewPending,
         NoMatchFoundReviewPending,
         ManualSearchSiteReviewPending,
+        IssuesIdentifiedReviewPending,
+        HasExtractionErrors
     }
 }

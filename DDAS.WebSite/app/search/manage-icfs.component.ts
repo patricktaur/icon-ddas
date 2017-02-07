@@ -79,7 +79,7 @@ export class ManageICFsComponent implements OnInit {
   LoadPrincipalInvestigators() {
     this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
     .subscribe((item: any) => {
-        console.log("item :" + item);
+        
         this.PrincipalInvestigators = item;
     });
   }
@@ -133,17 +133,17 @@ export class ManageICFsComponent implements OnInit {
    }
 
   setComplianceFormToManage(Investigator: PrincipalInvestigatorDetails){
-      console.log("RecId: " + Investigator.RecId + ", Name: " + Investigator.Name);
+      
       this.setSelectedRecordDetails(Investigator);
       this.AssignedTo = Investigator.AssignedTo;
       this.Active = Investigator.Active;
   }
 
   manageComplianceForm(){
-      console.log(this.AssignedTo + ", " + this.Active + ", " + this.SelectedComplianceFormId);
+      
       this.service.SaveAssignedTo(this.AssignedTo, this.Active, this.SelectedComplianceFormId)
         .subscribe((item: boolean) => {
-        console.log("Loading PrincipalInvestigators");
+        
         this.LoadPrincipalInvestigators();
         },
         error => {
@@ -154,7 +154,7 @@ export class ManageICFsComponent implements OnInit {
   OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
   
-        this.router.navigate(['complianceform', DataItem.RecId, {retPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
+        this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
 
 
     }

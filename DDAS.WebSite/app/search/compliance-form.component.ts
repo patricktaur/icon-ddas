@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray} from '@angular/forms';
 
@@ -15,6 +16,7 @@ import { Location } from '@angular/common';
 })
 export class ComplianceFormComponent implements OnInit {
     compFormForm: FormGroup;
+    public formLoading: boolean;
 
     public CompForm: ComplianceFormA = new ComplianceFormA;
     private ComplianceFormId: string;
@@ -25,7 +27,7 @@ export class ComplianceFormComponent implements OnInit {
      public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
     private pageChanged: boolean= false;
    
-    private retPath: string;
+    private rootPath: string;
     private page: number;
 
     constructor(
@@ -33,7 +35,8 @@ export class ComplianceFormComponent implements OnInit {
         private router: Router,
         private _location: Location,
         private service: SearchService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private sanitizer:DomSanitizer
     ) { }
 
     ngOnInit() {
@@ -44,7 +47,7 @@ export class ComplianceFormComponent implements OnInit {
        
           this.route.params.forEach((params: Params) => {
             this.ComplianceFormId = params['formId'];
-            this.retPath = params['retPath'];
+            this.rootPath = params['rootPath'];
             this.page =  +params['page'];
  
             this.LoadOpenComplainceForm();
@@ -164,6 +167,7 @@ export class ComplianceFormComponent implements OnInit {
     }
 
     LoadOpenComplainceForm() {
+        this.formLoading = true;
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
@@ -172,8 +176,10 @@ export class ComplianceFormComponent implements OnInit {
                 this.SetInvestigatorsSavedFlag();
                 this.pageChanged = false;
                 this.buildForm();
+                this.formLoading = false;
                 },
             error => {
+                this.formLoading = false;
             });
     }
 
@@ -258,6 +264,9 @@ export class ComplianceFormComponent implements OnInit {
    InvestigatorRemove(){
        // item.Deleted = true;
         this.InvestigatorToRemove.Deleted = true;
+
+        //Remove from Findings:
+        this.CompForm.Findings = this.CompForm.Findings.filter(x => x.InvestigatorSearchedId != this.InvestigatorToRemove.Id)
 
         var index = this.CompForm.InvestigatorDetails.indexOf(this.InvestigatorToRemove);
         if (index > -1) {
@@ -493,18 +502,18 @@ export class ComplianceFormComponent implements OnInit {
 
 gotoInvestigatorSummaryResult(inv: InvestigatorSearched){
 
-    this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id], 
+    this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, {rootPath: this.rootPath}], 
     { relativeTo: this.route.parent});
  
 }
 
     goBack() {
   
-        if (this.retPath == null){
+        if (this.rootPath == null){
             this._location.back();
         }
         else{
-            this.router.navigate([this.retPath, { id: this.ComplianceFormId, page: this.page }]);
+            this.router.navigate([this.rootPath, { id: this.ComplianceFormId, page: this.page }]);
         }
        
     }
@@ -528,6 +537,10 @@ Split = (RecordDetails: string) => {
         //this.IgnoreChangesConfirmModal.open();
         //return this.canDeactivateValue;
         return window.confirm("Changes not saved. Ignore changes?");//this.dialogService.confirm('Discard changes?');
+    }
+
+    sanitize(url:string){
+        return this.sanitizer.bypassSecurityTrustUrl(url);
     }
     
 // BoolYesNo (value: boolean): string   {

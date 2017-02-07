@@ -150,7 +150,7 @@
 										<td>{{item.DisplayPosition}}</td>
 										<td>
 											<div class="text-left">
-												<a target="_blank" [href]="item.SiteUrl">
+												<a target="_blank" [href]=sanitize("item.SiteUrl");>
                                                  {{item.SiteName}}
                                             </a>
 											</div>
@@ -285,7 +285,7 @@
 						</td>
 						<td>
 							<div class="text-left">
-								<a target="_blank" [href]="item.SiteUrl">
+								<a target="_blank" [href]=sanitize("item.SiteUrl");>
 								{{item.SiteName}}
 								</a>
 							</div>
