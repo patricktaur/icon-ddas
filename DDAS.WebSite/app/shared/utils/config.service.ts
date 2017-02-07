@@ -15,11 +15,11 @@ export class ConfigService {
         //this._apiURI = 'http://192.168.137.1/demoddas/api/'; //from server
 
         //development:
-        //this._apiURI = 'http://localhost:56846/api/'; //
+        this._apiURI = 'http://localhost:56846/api/'; //
        
         
         //for  demo version on Clarity Server:
-        this._apiURI = 'api/';
+        //this._apiURI = 'api/';
         
         
     }
