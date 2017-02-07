@@ -93,14 +93,19 @@ namespace WebScraping.Selenium.Pages
 
             IWebElement Table = FDASortTable;
 
-            string[] Text = Table.Text.Split(':');
+            IList<IWebElement> TR = Table.FindElements(By.XPath("tbody/tr"));
 
-            if (Text[1].Trim() == "0")
+            if(TR.Count <= 1)
+            {
                 return false;
+            }
+
+            //string[] Text = Table.Text.Split(':');
+
+            //if (Text[1].Trim() == "0")
+            //    return false;
             else
             {
-                IList<IWebElement> TR = Table.FindElements(By.XPath("//tbody/tr"));
-
                 IWebElement TD = TR[TR.Count - 1].FindElement(By.XPath("td"));
 
                 IList<IWebElement> AnchorTags = TD.FindElements(By.XPath("a"));
@@ -163,7 +168,7 @@ namespace WebScraping.Selenium.Pages
                     for (int Counter = 0; Counter < FullName.Length; Counter++)
                     {
                         if (FullName[Counter].Length > 1 &&
-                            _FDAWarningSiteData.FDAWarningLetterList.Count > 0 &&
+                            _FDAWarningSiteData.FDAWarningLetterList.Count == 0 &&
                             SearchTerms(FullName[Counter]))
                             LoadFDAWarningLetters();
                     }

@@ -175,7 +175,12 @@ namespace WebScraping.Selenium.Pages
 
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-                if (SAMCheckResult != null)
+                //if (SAMCheckResult == null)
+                //    return false;
+
+                var TotalRecords = SAMCheckResult.Text.Split(':');
+
+                if (Convert.ToInt32(TotalRecords[1].Trim()) > 0)
                     return true;
                 else
                 {

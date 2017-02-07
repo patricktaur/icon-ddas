@@ -51,7 +51,10 @@ namespace WebScraping.Selenium.Pages
             get
             {
                 IList<IWebElement> Table = driver.FindElements(By.XPath("//table"));
-                return Table[7];
+
+                IWebElement SortTable = driver.FindElement(By.Id("fd-table-2"));
+
+                return SortTable; //Table[7];
             }
         }
 
