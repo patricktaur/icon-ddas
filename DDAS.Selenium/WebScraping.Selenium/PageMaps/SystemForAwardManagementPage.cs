@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,9 @@ namespace WebScraping.Selenium.Pages
                     //        return Element;
                     //}
 
+                   
+
+
                     IList<IWebElement> CheckHeader3 = driver.FindElements(By.XPath("//h3"));
 
                     foreach (IWebElement Element in CheckHeader3)
@@ -99,6 +103,52 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
+
+        private IWebElement Test
+        {
+            get
+            {
+                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                Func<IWebDriver, bool> waitForElement = new Func<IWebDriver, bool>((IWebDriver Web) =>
+                {
+                    IWebElement element = Web.FindElement(By.Id("target"));
+                    if (element.GetAttribute("style").Contains("red"))
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+                wait.Until(waitForElement);
+                return null;
+            }
+        }
+
+
+        private string Test1{
+            get {
+               
+        {
+                  WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMinutes(1));
+                    Func<IWebDriver, IWebElement> waitForElement = new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        Console.WriteLine("Waiting for color to change");
+                        IWebElement element = Web.FindElement(By.Id("target"));
+                        if (element.GetAttribute("style").Contains("red"))
+                        {
+                            return element;
+                        }
+                        return null;
+                    });
+
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    Console.WriteLine("Inner HTML of element is " + targetElement.GetAttribute("innerHTML"));
+                    return null;
+                }
+
+            }
+            
+            }
+
 
         public IWebElement SAMClearSearch {
             get {
