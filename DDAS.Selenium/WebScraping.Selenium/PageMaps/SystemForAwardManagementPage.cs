@@ -53,31 +53,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public IWebElement SAMCheckResult {
+        public bool SAMCheckResult {
             get {
                 try
                 {
-                    //IList<IWebElement> CheckHeader4 = driver.FindElements(By.XPath("//h4"));
-
-                    //foreach (IWebElement Element in CheckHeader4)
-                    //{
-                    //    if (Element.Text.ToLower().Contains(
-                    //        "no records found for current search"))
-                    //        return null;
-                    //    else if (Element.Text.ToLower().Contains(
-                    //        "returned the following results"))
-                    //        return Element;
-                    //}
-
-                    IList<IWebElement> CheckHeader3 = driver.FindElements(By.XPath("//h3"));
-
-                    foreach (IWebElement Element in CheckHeader3)
-                    {
-                        if (Element.Text.ToLower().Contains(
-                            "total records"))
-                            return Element;
-                    }
-                    throw new Exception("Could not find 'Total Records' header");
+                    return
+                    driver.PageSource.ToLower().Contains("total records: 0") ? true : false;
                 }
                 catch (Exception)
                 {
@@ -90,12 +71,12 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
-                    IWebElement element = driver.FindElement(By.Id("search_results"));
+                    IWebElement element = driver.FindElement(By.Id("its_docs"));
                     return element;
                 }
                 catch(Exception)
                 {
-                    throw new Exception("Could not find Element 'search_results'");
+                    throw new Exception("Could not find Element 'its_docs'");
                 }
             }
         }
