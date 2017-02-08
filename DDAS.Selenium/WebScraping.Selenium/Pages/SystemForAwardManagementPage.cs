@@ -71,7 +71,7 @@ namespace WebScraping.Selenium.Pages
         private void LoadSAMList()
         {
             IList<IWebElement> TableThatContainsRecords =
-                SAMCheckResult.FindElements
+                SAMSearchResult.FindElements
                 (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table"));
 
             foreach (IWebElement RecordsTable in TableThatContainsRecords)
@@ -156,8 +156,6 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string NameToSearch)
         {
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
             try
             {
                 //SAMAnchorTag.Click();
@@ -175,20 +173,26 @@ namespace WebScraping.Selenium.Pages
 
                 driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-                //if (SAMCheckResult == null)
-                //    return false;
-
-                var TotalRecords = SAMCheckResult.Text.Split(':');
-
-                if (Convert.ToInt32(TotalRecords[1].Trim()) > 0)
+                if (!SAMCheckResult) //string 'Total Records: 0' is not found. Get records
                     return true;
                 else
                 {
-                    //SAMClearSearch.Click();
                     SAMClearSearch.SendKeys(Keys.Enter);
                     driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
                     return false;
                 }
+
+                //var TotalRecords = SAMCheckResult.Text.Split(':');
+
+                //if (Convert.ToInt32(TotalRecords[1].Trim()) > 0)
+                //    return true;
+                //else
+                //{
+                //    //SAMClearSearch.Click();
+                //    SAMClearSearch.SendKeys(Keys.Enter);
+                //    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                //    return false;
+                //}
             }
             catch (Exception e) when (e is WebDriverTimeoutException ||
             e is WebDriverException)
