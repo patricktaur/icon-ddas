@@ -58,7 +58,8 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
-
+                    
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     return
                     driver.PageSource.ToLower().Contains("total records: 0") ? true : false;
 
@@ -74,12 +75,14 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(20));
                     IWebElement element = driver.FindElement(By.Id("its_docs"));
                     return element;
                 }
                 catch(Exception)
                 {
-                    throw new Exception("Could not find Element 'its_docs'");
+                    return null;
+                    //throw new Exception("Could not find Element 'its_docs'");
                 }
             }
         }
@@ -88,7 +91,8 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 Func<IWebDriver, bool> waitForElement = new Func<IWebDriver, bool>((IWebDriver Web) =>
                 {
                     IWebElement element = Web.FindElement(By.Id("target"));
@@ -104,24 +108,26 @@ namespace WebScraping.Selenium.Pages
         }
 
 
-        private string Test1{
+        private IWebElement Test1{
             get {
                
         {
-                  WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMinutes(1));
+                  WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                     Func<IWebDriver, IWebElement> waitForElement = new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
-                        Console.WriteLine("Waiting for color to change");
-                        IWebElement element = Web.FindElement(By.Id("target"));
-                        if (element.GetAttribute("style").Contains("red"))
-                        {
-                            return element;
-                        }
-                        return null;
+                        //Console.WriteLine("Waiting for color to change");
+                        IWebElement element = Web.FindElement(By.Id("its_docs"));
+                        return element;
+
+                        //if (element.GetAttribute("class").Contains("red"))
+                        //{
+                        //    return element;
+                        //}
+                        //return null;
                     });
 
                     IWebElement targetElement = wait.Until(waitForElement);
-                    Console.WriteLine("Inner HTML of element is " + targetElement.GetAttribute("innerHTML"));
+                    //Console.WriteLine("Inner HTML of element is " + targetElement.GetAttribute("innerHTML"));
                     return null;
                 }
 

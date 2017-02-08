@@ -161,25 +161,25 @@ namespace WebScraping.Selenium.Pages
                 //SAMAnchorTag.Click();
                 SAMAnchorTag.SendKeys(Keys.Enter);
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                //driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(20));
 
                 IWebElement TextBox = SAMInputTag;
                 TextBox.SendKeys(NameToSearch);
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(3));
+                //driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(3));
                 //SAMSubmitButton.Click();
                 //SAMSubmitButton.Submit();
+                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(30));
                 SAMSubmitButton.SendKeys(Keys.Enter);
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                //driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
 
-                if (!SAMCheckResult) //string 'Total Records: 0' is not found. Get records
-                    return true;
+                if (SAMSearchResult == null) //string 'Total Records: 0' is not found. Get records
+                    return false;
                 else
                 {
-                    SAMClearSearch.SendKeys(Keys.Enter);
-                    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                    return false;
+                    //SAMClearSearch.SendKeys(Keys.Enter);
+                    return true;
                 }
 
                 //var TotalRecords = SAMCheckResult.Text.Split(':');
