@@ -161,41 +161,23 @@ namespace WebScraping.Selenium.Pages
                 //SAMAnchorTag.Click();
                 SAMAnchorTag.SendKeys(Keys.Enter);
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
                 IWebElement TextBox = SAMInputTag;
                 TextBox.SendKeys(NameToSearch);
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(3));
                 //SAMSubmitButton.Click();
                 //SAMSubmitButton.Submit();
                 SAMSubmitButton.SendKeys(Keys.Enter);
 
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
-                if (!SAMCheckResult) //string 'Total Records: 0' is not found. Get records
-                    return true;
-                else
+                if (SAMSearchResult == null)
                 {
                     SAMClearSearch.SendKeys(Keys.Enter);
-                    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
                     return false;
                 }
-
-                //var TotalRecords = SAMCheckResult.Text.Split(':');
-
-                //if (Convert.ToInt32(TotalRecords[1].Trim()) > 0)
-                //    return true;
-                //else
-                //{
-                //    //SAMClearSearch.Click();
-                //    SAMClearSearch.SendKeys(Keys.Enter);
-                //    driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                //    return false;
-                //}
+                else
+                    return true;
             }
-            catch (Exception e) when (e is WebDriverTimeoutException ||
-            e is WebDriverException)
+            catch (Exception e) //when (e is WebDriverTimeoutException ||
+            //e is WebDriverException)
             {
                 throw new Exception("Could not enter search name. Error details: " +
                     e.Message);

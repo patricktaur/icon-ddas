@@ -176,8 +176,6 @@ namespace WebScraping.Selenium.Pages
             IWebElement SubmitButton = DisqualifiedInvestigatorSubmitButton;
             SubmitButton.Click();
 
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-
             IWebElement Table = DisqualifiedInvestigatorCountTable;
 
             IList<IWebElement> TRs = Table.FindElements(By.XPath("tbody/tr"));

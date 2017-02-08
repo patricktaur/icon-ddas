@@ -69,41 +69,28 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string Name)
         {
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
             try
             {
                 IWebElement Input = FDASearchTextBox;
                 Input.Clear();
                 Input.SendKeys(Name);
 
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
                 IWebElement Search = FDASearchButton;
-                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                 Search.SendKeys(Keys.Enter);
             }
-            catch(Exception e) when (e is WebDriverTimeoutException ||
-            e is WebDriverException)
+            catch(Exception e) //when (e is WebDriverTimeoutException ||
+            //e is WebDriverException)
             {
-                throw new Exception("Could not click on submit button");
+                throw new Exception("Could not click on submit button. Error Details: "
+                    + e.Message);
             }
-
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
             IWebElement Table = FDASortTable;
 
             IList<IWebElement> TR = Table.FindElements(By.XPath("tbody/tr"));
 
             if(TR.Count <= 1)
-            {
                 return false;
-            }
-
-            //string[] Text = Table.Text.Split(':');
-
-            //if (Text[1].Trim() == "0")
-            //    return false;
             else
             {
                 IWebElement TD = TR[TR.Count - 1].FindElement(By.XPath("td"));
@@ -112,9 +99,6 @@ namespace WebScraping.Selenium.Pages
 
                 if (AnchorTags.Count > 0)
                     AnchorTags[AnchorTags.Count - 1].Click();
-
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-
                 return true;
             }
         }

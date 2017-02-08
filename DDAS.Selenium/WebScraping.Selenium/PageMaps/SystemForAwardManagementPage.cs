@@ -12,7 +12,7 @@ namespace WebScraping.Selenium.Pages
     {
         public IWebElement SAMAnchorTag {
             get {
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
 
                 IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
                 
@@ -29,6 +29,7 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     IList<IWebElement> InputTags = driver.FindElements(By.Id("q"));
                     return InputTags[0];
                 }
@@ -43,6 +44,7 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     IWebElement Submit = driver.FindElement(By.Id("RegSearchButton"));
                     return Submit;
                 }
@@ -57,6 +59,7 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     return
                     driver.PageSource.ToLower().Contains("total records: 0") ? true : false;
                 }
@@ -71,12 +74,13 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     IWebElement element = driver.FindElement(By.Id("its_docs"));
                     return element;
                 }
                 catch(Exception)
                 {
-                    throw new Exception("Could not find Element 'its_docs'");
+                    return null;
                 }
             }
         }

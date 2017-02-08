@@ -19,6 +19,7 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     IWebElement SearchTextBox = driver.FindElement(By.Id("filter"));
                     return SearchTextBox;
                 }
@@ -50,6 +51,7 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
+                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                 IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
                 return Tables[2];
             }
@@ -59,6 +61,7 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
+                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                 IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
                 return Tables[3];
             }
@@ -70,6 +73,7 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
+                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
                     return Element;
                 }
