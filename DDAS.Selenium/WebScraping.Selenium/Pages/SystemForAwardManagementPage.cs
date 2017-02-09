@@ -156,32 +156,31 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string NameToSearch)
         {
-            try
+            var AnchorTag = SAMAnchorTag;
+            if (AnchorTag == null)
+                throw new Exception("Could not find element: SAMAnchorTag");
+            SAMAnchorTag.SendKeys(Keys.Enter);
+
+            IWebElement TextBox = SAMInputTag;
+            if (TextBox == null)
+                throw new Exception("Could not find element: SAMInputTag");
+
+            TextBox.SendKeys(NameToSearch);
+
+            //SAMSubmitButton.Click();
+            //SAMSubmitButton.Submit();
+            var SubmitButton = SAMSubmitButton;
+            if (SubmitButton == null)
+                throw new Exception("Could not find element: SAMSubmitButton");
+            SAMSubmitButton.SendKeys(Keys.Enter);
+
+            if (SAMSearchResult == null) //No records found
             {
-                //SAMAnchorTag.Click();
-                SAMAnchorTag.SendKeys(Keys.Enter);
-
-                IWebElement TextBox = SAMInputTag;
-                TextBox.SendKeys(NameToSearch);
-
-                //SAMSubmitButton.Click();
-                //SAMSubmitButton.Submit();
-                SAMSubmitButton.SendKeys(Keys.Enter);
-
-                if (SAMSearchResult == null)
-                {
-                    SAMClearSearch.SendKeys(Keys.Enter);
-                    return false;
-                }
-                else
-                    return true;
+                SAMClearSearch.SendKeys(Keys.Enter);
+                return false;
             }
-            catch (Exception e) //when (e is WebDriverTimeoutException ||
-            //e is WebDriverException)
-            {
-                throw new Exception("Could not enter search name. Error details: " +
-                    e.Message);
-            }
+            else
+                return true;
         }
 
         public override void LoadContent(string DownloadsFolder)

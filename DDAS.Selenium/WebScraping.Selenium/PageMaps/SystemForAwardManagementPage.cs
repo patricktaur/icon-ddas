@@ -1,9 +1,7 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebScraping.Selenium.BaseClasses;
 
 namespace WebScraping.Selenium.Pages
@@ -12,46 +10,58 @@ namespace WebScraping.Selenium.Pages
     {
         public IWebElement SAMAnchorTag {
             get {
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                //IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
 
-                IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
-                
-                foreach(IWebElement Anchor in Anchors)
-                {
-                    if (Anchor.GetAttribute("title").ToLower() == "search records")
-                        return Anchor;
-                }
-                throw new Exception("Could not find SAMAchorTag");
+                //foreach(IWebElement Anchor in Anchors)
+                //{
+                //    if (Anchor.GetAttribute("title").ToLower() == "search records")
+                //        return Anchor;
+                //}
+                //throw new Exception("Could not find SAMAchorTag");
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
+
+                        foreach (IWebElement Anchor in Anchors)
+                        {
+                            if (Anchor.GetAttribute("title").ToLower() == "search records")
+                                return Anchor;
+                        }
+                        throw new Exception("Could not find SAMAchorTag");
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
             }
         }
 
         public IWebElement SAMInputTag {
             get {
-                try
-                {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                    IList<IWebElement> InputTags = driver.FindElements(By.Id("q"));
-                    return InputTags[0];
-                }
-                catch(Exception)
-                {
-                    throw new Exception("Could not find SAMInputTag");
-                }
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IList<IWebElement> InputTags = Web.FindElements(By.Id("q"));
+                        return InputTags[0];
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
             }
         }
 
         public IWebElement SAMSubmitButton {
             get {
-                try
-                {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                    IWebElement Submit = driver.FindElement(By.Id("RegSearchButton"));
-                    return Submit;
-                }
-                catch(Exception)
-                {
-                    throw new Exception("Could not find SAMSubmitButton");
-                }
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IWebElement Submit = driver.FindElement(By.Id("RegSearchButton"));
+                        return Submit;
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
             }
         }
 
@@ -59,9 +69,10 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     return
                     driver.PageSource.ToLower().Contains("total records: 0") ? true : false;
+
                 }
                 catch (Exception)
                 {
@@ -74,7 +85,8 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(20));
+
                     IWebElement element = driver.FindElement(By.Id("its_docs"));
                     return element;
                 }
@@ -84,6 +96,38 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
+
+        private IWebElement Test
+        {
+            get
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                Func<IWebDriver, bool> waitForElement = new Func<IWebDriver, bool>((IWebDriver Web) =>
+                {
+                    IWebElement element = Web.FindElement(By.Id("target"));
+                    if (element.GetAttribute("style").Contains("red"))
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+                wait.Until(waitForElement);
+                return null;
+            }
+        }
+
+        private IWebElement Test1{
+            get {
+                  WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                    Func<IWebDriver, IWebElement> waitForElement = new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IWebElement element = Web.FindElement(By.Id("its_docs"));
+                        return element;
+                    });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return null;
+                }
+            }
 
         public IWebElement SAMClearSearch {
             get {

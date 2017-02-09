@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using OpenQA.Selenium.Support.UI;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -19,14 +20,24 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                    IWebElement SearchTextBox = driver.FindElement(By.Id("filter"));
-                    return SearchTextBox;
+                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                    //IWebElement SearchTextBox = driver.FindElement(By.Id("filter"));
+                    //return SearchTextBox;
+
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    Func<IWebDriver, IWebElement> waitForElement = 
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IWebElement element = Web.FindElement(By.Id("filter"));
+                        return element;
+                    });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
                 }
                 catch(Exception)
                 {
                     throw new Exception(
-                        "Unable to find DisqualifiedInvestigatorSearchTextBox");
+                        "Could not find DisqualifiedInvestigatorSearchTextBox");
                 }
             }
         }
@@ -35,15 +46,34 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                IList<IWebElement> SubmitButton = 
-                    driver.FindElements(By.CssSelector("input[type='submit']"));
+                //IList<IWebElement> SubmitButton = 
+                //    driver.FindElements(By.CssSelector("input[type='submit']"));
 
-                foreach(IWebElement Button in SubmitButton)
-                {
-                    if (Button.GetAttribute("value").ToLower() == "show items")
-                        return Button;
-                }
-                throw new Exception("Unable to find Submit button!");
+                //foreach(IWebElement Button in SubmitButton)
+                //{
+                //    if (Button.GetAttribute("value").ToLower() == "show items")
+                //        return Button;
+                //}
+                //throw new Exception("Could not find Submit button!");
+
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IList<IWebElement> SubmitButton =
+                        driver.FindElements(By.CssSelector("input[type='submit']"));
+                        
+                        foreach(IWebElement Button in SubmitButton)
+                        {
+                            if (Button.GetAttribute("value").ToLower() == "show items")
+                                return Button;
+                        }
+                        throw new Exception("Could not find button: " +
+                            "DisqualifiedInvestigatorSubmitButton in PageMaps");
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
             }
         }
 
@@ -51,9 +81,24 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
-                return Tables[2];
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IList<IWebElement> Tables = Web.FindElements(By.XPath("//table"));
+                            return Tables[2];
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception(
+                        "Could not find Table with search count. Error Message: " +
+                        ex.Message);
+                }
             }
         }
 
@@ -61,9 +106,28 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
-                return Tables[3];
+                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                //IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
+                //return Tables[3];
+
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IList<IWebElement> Tables = Web.FindElements(By.XPath("//table"));
+                            return Tables[3];
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(
+                        "Could not find Table with search count. Error Message: " +
+                        ex.Message);
+                }
             }
         }
 
@@ -73,16 +137,27 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                    IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
-                    return Element;
+                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(20));
+                    //IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                    //return Element;
+
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IWebElement Element = 
+                            Web.FindElement(By.Id("pagetools_right"));
+                            return Element;
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     throw new Exception(
-                        "Unable to find PageLastUpdatedTextElement");
+                        "Unable to find PageLastUpdatedTextElement. Error Message: " +
+                        ex.Message);
                 }
-
             }
         }
     }

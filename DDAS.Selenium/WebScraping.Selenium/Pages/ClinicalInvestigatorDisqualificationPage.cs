@@ -80,6 +80,10 @@ namespace WebScraping.Selenium.Pages
         private void LoadDisqualificationProceedingsList(string NameToSearch,
             int MatchCountLowerLimit)
         {
+            if (DisqualifiedInvestigatorTable == null)
+                throw new Exception(
+                    "Could not find DisqualifiedInvestigatorTable in " +
+                    "LoadDisqualificationProceedingsList()");
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -170,13 +174,23 @@ namespace WebScraping.Selenium.Pages
         private bool SearchTerms(string NameToSearch)
         {
             IWebElement SearchTextBox = DisqualifiedInvestigatorSearchTextBox;
+            if (SearchTextBox == null)
+                throw new Exception("Could not find element: " +
+                    "DisqualifiedInvestigatorSearchTextBox");
             SearchTextBox.Clear();
             SearchTextBox.SendKeys(NameToSearch);
 
             IWebElement SubmitButton = DisqualifiedInvestigatorSubmitButton;
-            SubmitButton.Click();
+            if (SubmitButton == null)
+                throw new Exception("Could not find element: " +
+                    "DisqualifiedInvestigatorSubmitButton");
+            //SubmitButton.Click();
+            SubmitButton.SendKeys(Keys.Enter);
 
             IWebElement Table = DisqualifiedInvestigatorCountTable;
+            if (Table == null)
+                throw new Exception("Could not find element: " +
+                    "DisqualifiedInvestigatorCountTable");
 
             IList<IWebElement> TRs = Table.FindElements(By.XPath("tbody/tr"));
 

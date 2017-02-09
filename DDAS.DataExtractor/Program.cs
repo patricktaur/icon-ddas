@@ -24,7 +24,6 @@ namespace DDAS.DataExtractor
 
         static void Main(string[] args)
         {
-   
             int? SiteNum = null;
             if (args.Length != 0)
             {

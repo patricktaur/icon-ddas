@@ -7,6 +7,7 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
+using OpenQA.Selenium.Support.UI;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -18,9 +19,20 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
-                    IWebElement Element = driver.FindElement(By.Id("qryStr"));
-                    return Element;
+                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(20));
+
+                    //IWebElement Element = driver.FindElement(By.Id("qryStr"));
+                    //return Element;
+
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IWebElement element = Web.FindElement(By.Id("qryStr"));
+                            return element;
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
                 }
                 catch(Exception)
                 {
@@ -32,17 +44,34 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                //IList<IWebElement> SearchButtons =
+                //    driver.FindElements(By.TagName("input"));
 
-                IList<IWebElement> SearchButtons =
-                    driver.FindElements(By.TagName("input"));
+                //foreach (IWebElement element in SearchButtons)
+                //{
+                //    if (element.GetAttribute("value").ToLower() == "search")
+                //        return element;
+                //}
+                //throw new Exception("Could not click on Search Button");
 
-                foreach (IWebElement element in SearchButtons)
-                {
-                    if (element.GetAttribute("value").ToLower() == "search")
-                        return element;
-                }
-                throw new Exception("Could not click on Search Button");
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IList<IWebElement> Elements = Web.FindElements(By.TagName("input"));
+
+                        foreach(IWebElement element in Elements)
+                        {
+                            if (element.GetAttribute("value").ToLower() =="search")
+                            {
+                                return element;
+                            }
+                        }
+                        throw new Exception("Could not find 'Search' button");
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
             }
         }
 
@@ -50,7 +79,8 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
+
                 IList<IWebElement> Table = driver.FindElements(By.XPath("//table"));
 
                 IWebElement SortTable = driver.FindElement(By.Id("fd-table-2"));
@@ -59,13 +89,37 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private IWebElement SortTableTest1
+        {
+            get
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IWebElement element = Web.FindElement(By.Id("fd-table-2"));
+                            return element;
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
+                }
+                catch
+                {
+                    throw new Exception("Unable to find table with id 'fd-table-2'");
+                }
+
+            }
+        }
+
+
         public IWebElement PageLastUpdatedTextElement
         {
             get
             {
                 try
                 {
-                    driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
                     IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
                     return Element;
                 }

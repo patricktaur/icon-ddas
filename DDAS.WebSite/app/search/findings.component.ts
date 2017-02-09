@@ -107,7 +107,7 @@ export class FindingsComponent implements OnInit {
     
     get MatchedSiteRecords(){
         //return this.Findings;
-        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true).sort().reverse();
+        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true).sort(s=> s.MatchCount).reverse();
     }
   
    

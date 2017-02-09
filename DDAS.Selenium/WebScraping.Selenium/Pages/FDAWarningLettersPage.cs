@@ -69,23 +69,21 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string Name)
         {
-            try
-            {
-                IWebElement Input = FDASearchTextBox;
-                Input.Clear();
-                Input.SendKeys(Name);
+            IWebElement Input = FDASearchTextBox;
+            if (Input == null)
+                throw new Exception("Could not find element: FDASearchTextBox");
+            Input.Clear();
+            Input.SendKeys(Name);
 
-                IWebElement Search = FDASearchButton;
-                Search.SendKeys(Keys.Enter);
-            }
-            catch(Exception e) //when (e is WebDriverTimeoutException ||
-            //e is WebDriverException)
-            {
-                throw new Exception("Could not click on submit button. Error Details: "
-                    + e.Message);
-            }
+            IWebElement Search = FDASearchButton;
+            if (Search == null)
+                throw new Exception("Could not find element: FDASearchButton");
+            Search.SendKeys(Keys.Enter);
 
-            IWebElement Table = FDASortTable;
+            IWebElement Table = SortTableTest1;
+
+            if (Table == null)
+                throw new Exception("FDASortTable is null");
 
             IList<IWebElement> TR = Table.FindElements(By.XPath("tbody/tr"));
 
@@ -98,7 +96,7 @@ namespace WebScraping.Selenium.Pages
                 IList<IWebElement> AnchorTags = TD.FindElements(By.XPath("a"));
 
                 if (AnchorTags.Count > 0)
-                    AnchorTags[AnchorTags.Count - 1].Click();
+                    AnchorTags[AnchorTags.Count - 1].SendKeys(Keys.Enter);
                 return true;
             }
         }
