@@ -104,8 +104,6 @@ namespace WebScraping.Selenium.Pages
                     DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
                     DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
 
-                    
-
                     if(IsElementPresent(TDs[0], By.XPath("a")))
                     {
                         Link link = new Link();

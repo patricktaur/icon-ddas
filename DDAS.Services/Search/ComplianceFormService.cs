@@ -162,7 +162,6 @@ namespace DDAS.Services.Search
 
                 var siteSourceToAdd = new SiteSource();
 
-
                 if (site.ExtractionMode.ToLower() == "db")
                     //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
                     siteScan = ScanData.GetSiteScanData(site.SiteEnum, "", log);
@@ -285,6 +284,9 @@ namespace DDAS.Services.Search
             form.ReviewCompletedInvestigatorCount = 0;
             form.ExtractedInvestigatorCount = 0;
 
+            var AllSites = form.SiteSources;
+            AllSites.ToList().ForEach(x => x.IssuesIdentified = false);
+
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 Investigator.TotalIssuesFound = 0;
@@ -301,7 +303,6 @@ namespace DDAS.Services.Search
                 Investigator.IssuesFoundSiteCount = 0;
                 Investigator.ReviewCompletedSiteCount = 0;
 
-                
                 foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched)
                 {
                     if ((searchStatus.ExtractionMode.ToLower() == "db" || searchStatus.ExtractionMode.ToLower() == "live") && searchStatus.ExtractedOn == null)
@@ -321,13 +322,10 @@ namespace DDAS.Services.Search
                     foreach (Finding Finding in Findings)
                     {
                         if (Finding != null && Finding.IsAnIssue &&
-                            Finding.InvestigatorSearchedId == Investigator.Id 
-                            //&& Finding.SiteEnum == searchStatus.siteEnum
-                            )
+                            Finding.InvestigatorSearchedId == Investigator.Id)
                         {
                             InvId = Finding.InvestigatorSearchedId;
                             IssuesFound += 1;
-                            
                         }
                     }
                     searchStatus.IssuesFound = IssuesFound;
@@ -338,8 +336,8 @@ namespace DDAS.Services.Search
 
                     if (IssuesFound > 0 && Investigator.Id == InvId)
                         Site.IssuesIdentified = true;
-                    else
-                        Site.IssuesIdentified = false;
+                    //else
+                    //    Site.IssuesIdentified = false;
 
                     //Rollup summary:
                     if (searchStatus.PartialMatchCount > 0)
@@ -988,6 +986,8 @@ namespace DDAS.Services.Search
             {
                 if(!Site.IsMandatory)
                 {
+                    Site.SiteSourceUpdatedOn = DateTime.Now;
+
                     string[] CellValues = new string[]
                     {
                         RowIndex.ToString(),
@@ -999,23 +999,6 @@ namespace DDAS.Services.Search
                     writer.FillUpTable(CellValues);
                 }
             }
-
-            //if(form.SiteSources.Count > 12)
-            //{
-            //    for(int Index = 12; Index < form.SiteSources.Count; Index++)
-            //    {
-            //        string[] CellValues = new string[]
-            //        {
-            //            RowIndex.ToString(),
-            //            form.SiteSources[Index].SiteName,
-            //            form.SiteSources[Index].SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
-            //            form.SiteSources[Index].SiteUrl,
-            //            form.SiteSources[Index].IssuesIdentified ? "Yes" : "No"
-            //        };
-
-            //        writer.FillUpTable(CellValues);
-            //    }
-            //}
             writer.SaveChanges();
 
             //FindingsTable
@@ -1028,6 +1011,12 @@ namespace DDAS.Services.Search
             foreach(Finding finding in form.Findings)
             {
                 //finding.DateOfInspection = DateTime.Now; //refactor
+                string DateOfInspection = null;
+                if (finding.DateOfInspection == null)
+                    DateOfInspection = "-";
+                else
+                    DateOfInspection = 
+                        finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
                 if (finding.Selected)
                 {
@@ -1035,7 +1024,7 @@ namespace DDAS.Services.Search
                     {
                         finding.SourceNumber.ToString(),
                         finding.InvestigatorName,
-                        finding.DateOfInspection.Value.ToString("dd MMM yyyy"),
+                        DateOfInspection,
                         finding.Observation
                     };
                     writer.FillUpTable(CellValues);
@@ -1440,11 +1429,11 @@ namespace DDAS.Services.Search
             SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
 
-            var InvName = InvestigatorName.Replace(" ", "");
+            //var InvName = InvestigatorName.Replace(" ", "");
 
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,
-                InvName);
+                InvestigatorName);
 
             var SDNList = SDNSearchResult.SDNListSiteData.Where(
                SDNData => SDNData.Matched > 0).ToList();

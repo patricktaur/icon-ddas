@@ -19,11 +19,6 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(20));
-
-                    //IWebElement Element = driver.FindElement(By.Id("qryStr"));
-                    //return Element;
-
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
@@ -44,17 +39,6 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                //IList<IWebElement> SearchButtons =
-                //    driver.FindElements(By.TagName("input"));
-
-                //foreach (IWebElement element in SearchButtons)
-                //{
-                //    if (element.GetAttribute("value").ToLower() == "search")
-                //        return element;
-                //}
-                //throw new Exception("Could not click on Search Button");
-
-
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
@@ -75,27 +59,13 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public IWebElement FDASortTable
-        {
-            get
-            {
-                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
-
-                IList<IWebElement> Table = driver.FindElements(By.XPath("//table"));
-
-                IWebElement SortTable = driver.FindElement(By.Id("fd-table-2"));
-
-                return SortTable; //Table[7];
-            }
-        }
-
         private IWebElement SortTableTest1
         {
             get
             {
                 try
                 {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
@@ -112,7 +82,6 @@ namespace WebScraping.Selenium.Pages
 
             }
         }
-
 
         public IWebElement PageLastUpdatedTextElement
         {

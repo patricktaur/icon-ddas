@@ -107,7 +107,7 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadFDAWarningLetters()
         {
-            IList<IWebElement> TR = FDASortTable.FindElements(By.XPath("//tbody/tr"));
+            IList<IWebElement> TR = SortTableTest1.FindElements(By.XPath("//tbody/tr"));
 
             for (int tableRow = 12; tableRow < TR.Count - 1; tableRow++)
             {

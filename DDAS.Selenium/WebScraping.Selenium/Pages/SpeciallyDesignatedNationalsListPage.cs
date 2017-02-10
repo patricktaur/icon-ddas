@@ -13,6 +13,7 @@ using DDAS.Models;
 using OpenQA.Selenium;
 using DDAS.Models.Entities.Domain;
 using System.Globalization;
+using System.IO;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -77,31 +78,28 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private void DownloadSDNList(string DownloadFolder)
+        private string DownloadSDNList(string DownloadFolder)
         {
-            //string fileName = _folderPath + @"\test.pdf"; // "c:\\development\\temp\\test.pdf";
-
-            string fileName = DownloadFolder + "\\SDNList.pdf";
+            string fileName = DownloadFolder + "\\SDNList.txt";
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
+            
             // Concatenate the domain with the Web resource filename.
-            string myStringWebResource = "https://www.treasury.gov/ofac/downloads/sdnlist.pdf";
+            // PDF file path --> https://www.treasury.gov/ofac/downloads/sdnlist.pdf
+
+            string myStringWebResource = "https://www.treasury.gov/ofac/downloads/sdnlist.txt";
             Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", fileName, myStringWebResource);
             // Download the Web resource and save it into the current filesystem folder.
             myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            return fileName;
         }
 
         private SpeciallyDesignatedNationalsListSiteData _SDNSiteData;
 
         private List<SDNList> GetTextFromPDF(string NameToSearch, string DownloadFolder)
         {
-            string tempSiteDate = PageLastUpdatedElement.Text.Replace("Last Updated: ", "");
-
-            DateTime SiteDateTime;
-
-            DateTime.TryParse(tempSiteDate, out SiteDateTime);
-
             List<SDNList> Names = new List<SDNList>();
 
             StringBuilder text = new StringBuilder();
@@ -117,8 +115,6 @@ namespace WebScraping.Selenium.Pages
 
                     ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy(); 
                     PageContent = PdfTextExtractor.GetTextFromPage(reader, i, strategy);
-
-                    //Console.WriteLine(PageContent.Length);
 
                     string[] SplitNames = PageContent.Split(']');
 
@@ -142,6 +138,25 @@ namespace WebScraping.Selenium.Pages
                 }
             }
             return Names;
+        }
+
+        private void LoadSDNList(string DownloadFolder)
+        {
+            string AllRecords = File.ReadAllText(DownloadFolder);
+
+            string[] Records = 
+                AllRecords.Split(new string[] { "\n\n" }, StringSplitOptions.None);
+
+            int RecordNumber = 1;
+            foreach(string Record in Records)
+            {
+                SDNList SDNRecord = new SDNList();
+                SDNRecord.Name = Record;
+                SDNRecord.RecordNumber = RecordNumber;
+
+                _SDNSiteData.SDNListSiteData.Add(SDNRecord);
+                RecordNumber += 1;
+            }
         }
 
         private bool CheckSiteUpdatedDate()
@@ -204,8 +219,9 @@ namespace WebScraping.Selenium.Pages
             try
             {
                 _SDNSiteData.DataExtractionRequired = true;
-                DownloadSDNList(DownloadFolder);
-                GetTextFromPDF("", DownloadFolder);
+                var FilePath = DownloadSDNList(DownloadFolder);
+                //GetTextFromPDF("", DownloadFolder);
+                LoadSDNList(FilePath);
                 _SDNSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
