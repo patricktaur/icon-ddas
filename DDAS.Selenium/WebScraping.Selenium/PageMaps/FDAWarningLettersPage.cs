@@ -8,11 +8,71 @@ using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.ObjectModel;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
+
+        public string CheckForFeedbackWindow
+        {
+            get
+            {
+                try
+                {
+                    string currentHandle = driver.CurrentWindowHandle;
+                    ReadOnlyCollection<string> originalHandles = driver.WindowHandles;
+
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                    string popupWindowHandle = wait.Until((d) =>
+                    {
+                        string foundHandle = null;
+
+                        // Subtract out the list of known handles. In the case of a single
+                        // popup, the newHandles list will only have one value.
+                        List<string> newHandles = 
+                        driver.WindowHandles.Except(originalHandles).ToList();
+
+                        if (newHandles.Count > 0)
+                        {
+                            SaveScreenShot(
+                                @"c:\Development\p926-ddas\documents\technical\images\" +
+                                "FDAWarningsLetter_" + 
+                                 DateTime.Now.ToString("dd MMM yyyy hh_mm") 
+                                 + ".png");
+
+                            foundHandle = newHandles[0];
+                        }
+                        return foundHandle;
+                    });
+
+                    if (popupWindowHandle == null)
+                        return null;
+                    else
+                    {
+                        driver.SwitchTo().Window(popupWindowHandle);
+
+                        // Do whatever you need to on the popup browser, then...
+                        driver.Close();
+                        driver.SwitchTo().Window(currentHandle);
+
+                        SaveScreenShot(
+                            @"c:\Development\p926-ddas\documents\technical\images\" +
+                            "FDAWarningsLetter_"
+                            + DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                            + ".png");
+
+                        return null;
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
+
         public IWebElement FDASearchTextBox
         {
             get
@@ -79,7 +139,6 @@ namespace WebScraping.Selenium.Pages
                 {
                     throw new Exception("Unable to find table with id 'fd-table-2'");
                 }
-
             }
         }
 

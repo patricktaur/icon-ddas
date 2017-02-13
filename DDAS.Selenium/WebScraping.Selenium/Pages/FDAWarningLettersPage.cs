@@ -69,23 +69,28 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string Name)
         {
+            if (CheckForFeedbackWindow != null)
+                throw new Exception("Could not close Feedback window");
+
             IWebElement Input = FDASearchTextBox;
             if (Input == null)
                 throw new Exception("Could not find element: FDASearchTextBox");
-            Input.Clear();
-            Input.SendKeys(Name);
+            //Input.Clear();
+            //Input.SendKeys(Name);
+            FDASearchTextBox.Clear();
+            FDASearchTextBox.SendKeys(Name);
 
             IWebElement Search = FDASearchButton;
             if (Search == null)
                 throw new Exception("Could not find element: FDASearchButton");
-            Search.SendKeys(Keys.Enter);
+            FDASearchButton.SendKeys(Keys.Enter);
 
             IWebElement Table = SortTableTest1;
 
             if (Table == null)
                 throw new Exception("FDASortTable is null");
 
-            IList<IWebElement> TR = Table.FindElements(By.XPath("tbody/tr"));
+            IList<IWebElement> TR = SortTableTest1.FindElements(By.XPath("tbody/tr"));
 
             if(TR.Count <= 1)
                 return false;
@@ -160,6 +165,10 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
+                    "FDAWarningsLetter_" + DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png");
+
                 _FDAWarningSiteData.DataExtractionSucceeded = false;
                 _FDAWarningSiteData.DataExtractionErrorMessage = e.Message;
                 _FDAWarningSiteData.ReferenceId = null;

@@ -55,8 +55,8 @@ namespace WebScraping.Selenium.BaseClasses
 
         public void SaveScreenShot(string fileName)
         {
-            Screenshot ss = ((ITakesScreenshot)this.driver).GetScreenshot();
-            //ss.SaveAsFile(fileName, System.Drawing.Imaging.ImageFormat.Png);
+            Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
+            ss.SaveAsFile(fileName, System.Drawing.Imaging.ImageFormat.Png);
         }
 
         public void Dispose()

@@ -227,6 +227,11 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
+                    "DisqualificationProceedings_" + 
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm") 
+                    + ".png");
+
                 _DisqualificationSiteData.DataExtractionSucceeded = false;
                 _DisqualificationSiteData.DataExtractionErrorMessage = e.Message;
                 _DisqualificationSiteData.ReferenceId = null;

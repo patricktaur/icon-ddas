@@ -958,14 +958,17 @@ namespace DDAS.Services.Search
                 if (!Site.IsMandatory)
                     continue;
 
-                if (Site.SiteSourceUpdatedOn == null)
-                    Site.SiteSourceUpdatedOn = DateTime.Now;
+                string SiteSourceUpdatedOn = "";
+
+                if (Site.SiteSourceUpdatedOn != null)
+                    SiteSourceUpdatedOn =
+                        Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy");
 
                 string[] CellValues = new string[]
                 {
                     RowIndex.ToString(),
                     Site.SiteName,
-                    Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
+                    SiteSourceUpdatedOn,
                     Site.SiteUrl,
                     Site.IssuesIdentified ? "Yes" : "No"
                 };
@@ -986,13 +989,17 @@ namespace DDAS.Services.Search
             {
                 if(!Site.IsMandatory)
                 {
-                    Site.SiteSourceUpdatedOn = DateTime.Now;
+                    string SiteSourceUpdatedOn = "";
+
+                    if (Site.SiteSourceUpdatedOn != null)
+                        SiteSourceUpdatedOn =
+                            Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy");
 
                     string[] CellValues = new string[]
                     {
                         RowIndex.ToString(),
                         Site.SiteName,
-                        Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
+                        SiteSourceUpdatedOn,
                         Site.SiteUrl,
                         Site.IssuesIdentified ? "Yes" : "No"
                     };
@@ -1010,12 +1017,9 @@ namespace DDAS.Services.Search
 
             foreach(Finding finding in form.Findings)
             {
-                //finding.DateOfInspection = DateTime.Now; //refactor
-                string DateOfInspection = null;
+                string DateOfInspection = "";
                 if (finding.DateOfInspection == null)
-                    DateOfInspection = "-";
-                else
-                    DateOfInspection = 
+                    DateOfInspection =
                         finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
                 if (finding.Selected)
@@ -1037,7 +1041,6 @@ namespace DDAS.Services.Search
             writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
 
             writer.SaveChanges();
-
             writer.CloseDocument();
 
             return DownloadFolder + GeneratedFileName;
@@ -1442,7 +1445,6 @@ namespace DDAS.Services.Search
                 return null;
 
             return ConvertToMatchedRecords(SDNList);
-
         }
 
         #endregion
