@@ -478,7 +478,7 @@ namespace WebScraping.Selenium.SearchEngine
         }
 
         public IWebDriver Driver {
-            get {
+            get { 
                 if (_Driver == null)
                 {
                     PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
@@ -491,7 +491,7 @@ namespace WebScraping.Selenium.SearchEngine
 
                     _Driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(20));
 
-                    _Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
+                    _Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
 
                     return _Driver;
                 }
@@ -515,16 +515,11 @@ namespace WebScraping.Selenium.SearchEngine
             PhantomJSDriver
         };
 
-        ~SearchEngine()
-        {
-            Dispose();
-        }
-
         public void Dispose()
         {
             foreach (var process in Process.GetProcessesByName("phantomjs"))
             {
-                process.Dispose();
+                process.Kill();
             }
 
             if (_Driver != null)

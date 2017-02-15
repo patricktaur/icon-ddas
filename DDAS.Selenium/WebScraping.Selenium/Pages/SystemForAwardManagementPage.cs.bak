@@ -156,7 +156,7 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string NameToSearch)
         {
-  var AnchorTag = SAMAnchorTag;
+            var AnchorTag = SAMAnchorTag;
             if (AnchorTag == null)
                 throw new Exception("Could not find element: SAMAnchorTag");
             SAMAnchorTag.SendKeys(Keys.Enter);
@@ -164,8 +164,8 @@ namespace WebScraping.Selenium.Pages
             IWebElement TextBox = SAMInputTag;
             if (TextBox == null)
                 throw new Exception("Could not find element: SAMInputTag");
-            SAMInputTag.Clear();
-            SAMInputTag.SendKeys(NameToSearch);
+
+            TextBox.SendKeys(NameToSearch);
 
             //SAMSubmitButton.Click();
             //SAMSubmitButton.Submit();
@@ -176,7 +176,7 @@ namespace WebScraping.Selenium.Pages
 
             if (SAMSearchResult == null) //No records found
             {
-                //SAMClearSearch.SendKeys(Keys.Enter);
+                SAMClearSearch.SendKeys(Keys.Enter);
                 return false;
             }
             else
@@ -213,10 +213,6 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
-					SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
-                    "SAM_" + 
-                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png");
                 _SAMSiteData.DataExtractionSucceeded = false;
                 _SAMSiteData.DataExtractionErrorMessage = e.Message;
                 throw new Exception(e.ToString());

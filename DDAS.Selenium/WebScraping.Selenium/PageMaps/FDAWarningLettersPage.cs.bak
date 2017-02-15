@@ -8,77 +8,22 @@ using DDAS.Models.Enums;
 using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using OpenQA.Selenium.Support.UI;
-using System.Collections.ObjectModel;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
-       
-		public string CheckForFeedbackWindow
+        public IWebElement FDASearchTextBox
         {
             get
             {
                 try
                 {
-                    string currentHandle = driver.CurrentWindowHandle;
-                    ReadOnlyCollection<string> originalHandles = driver.WindowHandles;
+                    //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(20));
 
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-                    string popupWindowHandle = wait.Until((d) =>
-                    {
-                        string foundHandle = null;
+                    //IWebElement Element = driver.FindElement(By.Id("qryStr"));
+                    //return Element;
 
-                        // Subtract out the list of known handles. In the case of a single
-                        // popup, the newHandles list will only have one value.
-                        List<string> newHandles = 
-                        driver.WindowHandles.Except(originalHandles).ToList();
-
-                        if (newHandles.Count > 0)
-                        {
-                            SaveScreenShot(
-                                @"c:\Development\p926-ddas\documents\technical\images\" +
-                                "FDAWarningsLetter_" + 
-                                 DateTime.Now.ToString("dd MMM yyyy hh_mm") 
-                                 + ".png");
-
-                            foundHandle = newHandles[0];
-                        }
-                        return foundHandle;
-                    });
-
-                    if (popupWindowHandle == null)
-                        return null;
-                    else
-                    {
-                        driver.SwitchTo().Window(popupWindowHandle);
-
-                        // Do whatever you need to on the popup browser, then...
-                        driver.Close();
-                        driver.SwitchTo().Window(currentHandle);
-
-                        SaveScreenShot(
-                            @"c:\Development\p926-ddas\documents\technical\images\" +
-                            "FDAWarningsLetter_"
-                            + DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                            + ".png");
-
-                        return null;
-                    }
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-        } 
-      
-		public IWebElement FDASearchTextBox
-        {
-            get
-            {
-                try
-                {
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
@@ -99,7 +44,18 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                //IList<IWebElement> SearchButtons =
+                //    driver.FindElements(By.TagName("input"));
+
+                //foreach (IWebElement element in SearchButtons)
+                //{
+                //    if (element.GetAttribute("value").ToLower() == "search")
+                //        return element;
+                //}
+                //throw new Exception("Could not click on Search Button");
+
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
@@ -119,13 +75,27 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-         private IWebElement SortTableTest1
+        public IWebElement FDASortTable
         {
-           get
+            get
+            {
+                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
+
+                IList<IWebElement> Table = driver.FindElements(By.XPath("//table"));
+
+                IWebElement SortTable = driver.FindElement(By.Id("fd-table-2"));
+
+                return SortTable; //Table[7];
+            }
+        }
+
+        private IWebElement SortTableTest1
+        {
+            get
             {
                 try
                 {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
@@ -139,8 +109,9 @@ namespace WebScraping.Selenium.Pages
                 {
                     throw new Exception("Unable to find table with id 'fd-table-2'");
                 }
+
             }
-       }
+        }
 
 
         public IWebElement PageLastUpdatedTextElement

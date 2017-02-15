@@ -49,6 +49,7 @@
     <Compile Include="Search\ComplianceFormService.cs" />
     <Compile Include="Search\ExtractData.cs" />
     <Compile Include="Search\GenerateComplianceForm.cs" />
+    <Compile Include="Search\LiveScan.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchSites.cs" />
     <Compile Include="Search\SiteScanData.cs" />

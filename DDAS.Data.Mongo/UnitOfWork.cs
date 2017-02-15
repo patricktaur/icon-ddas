@@ -7,6 +7,7 @@ using DDAS.Models.Repository.Domain.SiteData;
 using DDAS.Data.Mongo.Repositories.SiteData;
 using MongoDB.Driver;
 using DDAS.Data.Mongo.Repositories;
+using DDAS.Models.Repository;
 
 namespace DDAS.Data.Mongo
 {
@@ -48,6 +49,8 @@ namespace DDAS.Data.Mongo
         private IUserRepository _UserRepository;
         private IUserRoleRepository _UserRoleRepository;
         private ILoginDetailsRepository _LoginDetailsRepository;
+        private ILogRepository _LogRepository;
+
         #endregion
 
         /*
@@ -252,7 +255,16 @@ namespace DDAS.Data.Mongo
                 return _ComplianceFormRepository ??
                     (_ComplianceFormRepository = new ComplianceFormRepository(_db));
             }
-        }        
+        }
+
+        public ILogRepository LogRepository
+        {
+            get
+            {
+                return _LogRepository ??
+                    (_LogRepository = new LogRepository(_db));
+            }
+        }
         #endregion
 
         private void InitializeMaps()

@@ -10,6 +10,15 @@ namespace WebScraping.Selenium.Pages
     {
         public IWebElement SAMAnchorTag {
             get {
+                //IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
+
+                //foreach(IWebElement Anchor in Anchors)
+                //{
+                //    if (Anchor.GetAttribute("title").ToLower() == "search records")
+                //        return Anchor;
+                //}
+                //throw new Exception("Could not find SAMAchorTag");
+
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
@@ -34,8 +43,17 @@ namespace WebScraping.Selenium.Pages
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
+                        //PatrickFeb122017
                         IList<IWebElement> InputTags = Web.FindElements(By.Id("q"));
-                        return InputTags[0];
+                        if (InputTags != null && InputTags.Count > 0)
+                        {
+                            return InputTags[0];
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                        
                     });
                 IWebElement targetElement = wait.Until(waitForElement);
                 return targetElement;

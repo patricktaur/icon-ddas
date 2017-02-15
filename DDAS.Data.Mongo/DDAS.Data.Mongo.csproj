@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Maps\MongoMap.cs" />
     <Compile Include="Repositories\ComplianceFormRepository.cs" />
+    <Compile Include="Repositories\LogRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\SiteData\AdequateAssuranceListRepository.cs" />

@@ -325,8 +325,6 @@ namespace DDAS.Services.Search
             form.ReviewCompletedInvestigatorCount = 0;
             form.ExtractedInvestigatorCount = 0;
 
-           var AllSites = form.SiteSources;
-            AllSites.ToList().ForEach(x => x.IssuesIdentified = false);
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 Investigator.TotalIssuesFound = 0;
@@ -364,7 +362,8 @@ namespace DDAS.Services.Search
                     {
                         if (Finding != null && Finding.IsAnIssue &&
                             Finding.InvestigatorSearchedId == Investigator.Id 
-                             )
+                            //&& Finding.SiteEnum == searchStatus.siteEnum
+                            )
                         {
                             InvId = Finding.InvestigatorSearchedId;
                             IssuesFound += 1;
@@ -379,8 +378,8 @@ namespace DDAS.Services.Search
 
                     if (IssuesFound > 0 && Investigator.Id == InvId)
                         Site.IssuesIdentified = true;
-                   //else
-                    //    Site.IssuesIdentified = false;
+                    else
+                        Site.IssuesIdentified = false;
 
                     //Rollup summary:
                     if (searchStatus.PartialMatchCount > 0)
@@ -811,8 +810,6 @@ namespace DDAS.Services.Search
             item.AssignedTo = compForm.AssignedTo;
             item.Status = compForm.Status;
             item.StatusEnum = compForm.StatusEnum;
-            item.ExtractionErrorInvestigatorCount = compForm.ExtractionErrorInvestigatorCount;
-            item.ExtractionPendingInvestigatorCount = compForm.ExtractionPendingInvestigatorCount;
 
             foreach(InvestigatorSearched Investigator in compForm.InvestigatorDetails)
             {
@@ -995,17 +992,14 @@ namespace DDAS.Services.Search
                 if (!Site.IsMandatory)
                     continue;
 
- 				string SiteSourceUpdatedOn = "";
-
-                if (Site.SiteSourceUpdatedOn != null)
-                    SiteSourceUpdatedOn =
-                        Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy");
+                if (Site.SiteSourceUpdatedOn == null)
+                    Site.SiteSourceUpdatedOn = DateTime.Now;
 
                 string[] CellValues = new string[]
                 {
                     RowIndex.ToString(),
                     Site.SiteName,
-                    SiteSourceUpdatedOn,
+                    Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
                     Site.SiteUrl,
                     Site.IssuesIdentified ? "Yes" : "No"
                 };
@@ -1026,17 +1020,11 @@ namespace DDAS.Services.Search
             {
                 if(!Site.IsMandatory)
                 {
-                    string SiteSourceUpdatedOn = "";
-
-                    if (Site.SiteSourceUpdatedOn != null)
-                        SiteSourceUpdatedOn =
-                            Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy");
-
                     string[] CellValues = new string[]
                     {
                         RowIndex.ToString(),
                         Site.SiteName,
-                        SiteSourceUpdatedOn,
+                        Site.SiteSourceUpdatedOn.Value.ToString("dd MMM yyyy"),
                         Site.SiteUrl,
                         Site.IssuesIdentified ? "Yes" : "No"
                     };
@@ -1055,10 +1043,7 @@ namespace DDAS.Services.Search
 
             foreach(Finding finding in form.Findings)
             {
-                string DateOfInspection = "";
-                if (finding.DateOfInspection == null)
-                    DateOfInspection =
-                        finding.DateOfInspection.Value.ToString("dd MMM yyyy");
+                //finding.DateOfInspection = DateTime.Now; //refactor
 
                 if (finding.Selected)
                 {
@@ -1066,7 +1051,7 @@ namespace DDAS.Services.Search
                     {
                         finding.SourceNumber.ToString(),
                         finding.InvestigatorName,
-                        DateOfInspection,
+                        finding.DateOfInspection.Value.ToString("dd MMM yyyy"),
                         finding.Observation
                     };
                     writer.FillUpTable(CellValues);

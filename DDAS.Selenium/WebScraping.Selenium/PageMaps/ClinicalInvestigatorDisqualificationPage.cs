@@ -57,7 +57,7 @@ namespace WebScraping.Selenium.Pages
                 //throw new Exception("Could not find Submit button!");
 
 
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
@@ -106,9 +106,13 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
+                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                //IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
+                //return Tables[3];
+
                 try
                 {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
@@ -137,7 +141,7 @@ namespace WebScraping.Selenium.Pages
                     //IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
                     //return Element;
 
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
