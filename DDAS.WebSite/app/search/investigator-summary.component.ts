@@ -33,6 +33,9 @@ export class InvestigatorSummaryComponent {
    
    public retSiteEnum: number;
    private rootPath: string;
+   public HideReviewCompletedSites: boolean;
+   private ShowMatchesFoundSites: boolean;
+
    constructor(private service: SearchService,
        private route: ActivatedRoute,
        private _location: Location,
@@ -41,7 +44,8 @@ export class InvestigatorSummaryComponent {
   
 
     ngOnInit() {
-        
+        this.HideReviewCompletedSites = true;
+ 
         this.route.params.forEach((params: Params) => {
         this.ComplianceFormId = params['formId'];
         this.InvestigatorId = +params['investigatorId'];
@@ -148,6 +152,17 @@ get InvestigatorSiteSummary(){
    
 }
 
+get FilteredInvestigatorSiteSummary(){
+
+    if (this.HideReviewCompletedSites == true){
+        return this.InvestigatorSiteSummary.filter(x => x.ReviewCompleted == false);
+    }
+    else{
+        return this.InvestigatorSiteSummary;
+    }
+    
+}
+
 get Investigator(): InvestigatorSearched{
   
     let inv:  InvestigatorSearched = new InvestigatorSearched;
@@ -158,6 +173,13 @@ get Investigator(): InvestigatorSearched{
     else{
         return inv1;
     }
+}
+
+
+
+
+get ReviewPendingCount(){
+    return (this.InvestigatorSiteSummary.length- this.Investigator.ReviewCompletedSiteCount);
 }
 
 get Summary(){

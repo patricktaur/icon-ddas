@@ -113,9 +113,9 @@
 												{{inv.Role}}
 											</td>
 
-
 											<td align="center">
 												<div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
+												<div *ngIf="inv.ExtractionPendingSiteCount > 0" class="glyphicon glyphicon-search"></div>
 											</td>
 
 											<td>

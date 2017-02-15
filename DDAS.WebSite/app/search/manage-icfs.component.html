@@ -98,7 +98,12 @@
 					</td>
 					<td class="text-center">
 						<button type="button" class="btn btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
-							title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
+							[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)"
+							[disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)"
+							>
+							<span class="glyphicon glyphicon-download-alt" ></span>
+							</button>
+						
 						<button type="button" class="btn btn-primary" (click)="OpenForEdit(item)" title="Open"> <span class="glyphicon glyphicon-folder-open"></span> </button>
 						<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-retweet"></span> </button>
 						<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>

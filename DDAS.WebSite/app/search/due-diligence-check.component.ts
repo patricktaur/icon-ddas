@@ -86,6 +86,16 @@ export class DueDiligenceCheckComponent implements OnInit {
         return this.PrincipalInvestigators;
     }
 
+    get extractionPendingRecordCount(): number {
+        if (this.PrincipalInvestigators == null){
+            return null;
+        }
+        else{
+            return this.PrincipalInvestigators.filter(x => x.ExtractionPendingInvestigatorCount > 0).length;
+        }
+        
+    }
+    
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
         //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
@@ -142,7 +152,10 @@ export class DueDiligenceCheckComponent implements OnInit {
             });
     }
 
- 
+  Reload(){
+
+      this.LoadPrincipalInvestigators();
+  }
 
     get diagnostic() { return JSON.stringify(this.validationMessage); }
 }

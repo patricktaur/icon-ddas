@@ -161,7 +161,17 @@ export class SearchList{
       AssignedTo: string;
       Active: boolean;
       StatusEnum: ComplianceFormStatusEnum;
-     
+      ReviewCompleted: boolean;
+      ExtractionPendingInvestigatorCount: number;
+      ExtractionErrorInvestigatorCount: number;
+      SubInvestigators:SubInvestigator[]= [] ;
+    }
+
+    export class SubInvestigator
+    {
+        Name: string;
+        Status: string;
+        StatusEnum: ComplianceFormStatusEnum;
     }
 
   export class ComplianceFormA{
@@ -218,6 +228,9 @@ export class SearchList{
       InvestigatorSiteStatus:string[];
      Status: string = "";
       StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
+
+     
+        ExtractionPendingSiteCount:number = 0;
 
         //---For client side Validations
       CanEdit:boolean = true;  //set to false when the name is searched.

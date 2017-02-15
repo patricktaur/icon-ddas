@@ -8,7 +8,8 @@ import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 @Component({
     moduleId: module.id,
     templateUrl: 'findings.component.html',
-
+   
+    
 })
 export class FindingsComponent implements OnInit {
     public CompForm: ComplianceFormA = new ComplianceFormA;
