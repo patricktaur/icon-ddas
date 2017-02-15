@@ -5,6 +5,7 @@ namespace Utilities
 {
     public class ReadUploadedExcelFile
     {
+        #region OldFormat
         public List<List<string>> ReadData(string FilePath)
         {
             SLDocument doc = new SLDocument(FilePath);
@@ -104,6 +105,49 @@ namespace Utilities
                 RowIndex += 1;
             }
             return ListOfRows;
+        }
+        #endregion
+
+        public List<string> ReadDataFromExcel(string FilePath, int RowIndex)
+        {
+            SLDocument doc = new SLDocument(FilePath);
+
+            var ValidationMessages = new List<string>();
+
+            if (doc.GetCellValueAsString("A1").ToLower() != "investigator name")
+                ValidationMessages.Add("cannot find column - Investigator Name in cell A1");
+            if (doc.GetCellValueAsString("B1").ToLower() != ("role (principal/sub)"))
+                ValidationMessages.Add("cannot find column - Role (Principal/Sub) in cell B1");
+            if (doc.GetCellValueAsString("C1").ToLower() != ("medical license number"))
+                ValidationMessages.Add("cannot find column - Medical license number in cell C1");
+            if (doc.GetCellValueAsString("D1").ToLower() != "qualification")
+                ValidationMessages.Add("cannot find column - Qualification in cell D1");
+            if (doc.GetCellValueAsString("E1").ToLower() != "project number")
+                ValidationMessages.Add("cannot find column - Project Number in cell E1");
+            if (doc.GetCellValueAsString("F1").ToLower() != "sponsor protocol number")
+                ValidationMessages.Add("cannot find column - Sponsor Protocol Number in cell F1");
+            if (doc.GetCellValueAsString("G1").ToLower() != "institute name")
+                ValidationMessages.Add("cannot find column - Institute Name in cell G1");
+            if (doc.GetCellValueAsString("H1").ToLower() != "address")
+                ValidationMessages.Add("cannot find column - Address in cell H1");
+            if (doc.GetCellValueAsString("I1").ToLower() != "country")
+                ValidationMessages.Add("cannot find column - Country in cell I1");
+
+            if (ValidationMessages.Count > 0)
+                return ValidationMessages;
+
+            var ComplianceForm = new List<string>();
+            ComplianceForm.Add(doc.GetCellValueAsString("A" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("B" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("C" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("D" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("E" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("F" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("G" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("H" + (RowIndex)));
+            ComplianceForm.Add(doc.GetCellValueAsString("I" + (RowIndex)));
+
+            return ComplianceForm;
         }
     }
 

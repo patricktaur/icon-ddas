@@ -46,17 +46,6 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                //IList<IWebElement> SubmitButton = 
-                //    driver.FindElements(By.CssSelector("input[type='submit']"));
-
-                //foreach(IWebElement Button in SubmitButton)
-                //{
-                //    if (Button.GetAttribute("value").ToLower() == "show items")
-                //        return Button;
-                //}
-                //throw new Exception("Could not find Submit button!");
-
-
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
@@ -88,7 +77,10 @@ namespace WebScraping.Selenium.Pages
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
                             IList<IWebElement> Tables = Web.FindElements(By.XPath("//table"));
-                            return Tables[2];
+                            if (Tables.Count > 0)
+                                return Tables[2];
+                            else
+                                return null;
                         });
                     IWebElement targetElement = wait.Until(waitForElement);
                     return targetElement;

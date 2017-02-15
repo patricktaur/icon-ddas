@@ -93,17 +93,20 @@ namespace DDAS.API.Controllers
 
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    var DataInExcelFile = 
-                        _SearchService.ReadDataFromExcelFile(file.LocalFileName);
+                    var DataInExcelFile =
+                            _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    ValidationMessages =
-                        _SearchService.ValidateExcelInputs(DataInExcelFile);
-
-                    if (ValidationMessages.Count > 0)
+                    if (DataInExcelFile.Count >= 0)
                     {
+                        var Values = DataInExcelFile[0];
+                        if (DataInExcelFile.Count == 0)
+                            return Request.CreateResponse(HttpStatusCode.OK,
+                                "No records found");
+                        if(Values.Count > 9 || Values.Count < 9)
                         //unable to make the uploader handle list of strings, therefore this ListToString workaround:
-                        return
-                            Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
+                            return
+                                Request.CreateResponse(HttpStatusCode.OK, 
+                                ListToString(DataInExcelFile));
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
@@ -442,12 +445,16 @@ namespace DDAS.API.Controllers
             return Ok(SearchSites.GetNewSearchQuery());
         }
 
-        string ListToString(List<string> lst)
+        string ListToString(List<List<string>> lst)
         {
             string retValue = "";
-            foreach(string l in lst)
+            foreach(List<string> l in lst)
             {
-                retValue += l + "---";
+                foreach(string s in l)
+                {
+                    retValue += s + "---";
+                }
+                //retValue += l + "---";
             }
             return retValue;
         }

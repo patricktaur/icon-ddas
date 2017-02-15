@@ -23,7 +23,7 @@ namespace WebScraping.Selenium.Pages
                 {
                     string currentHandle = driver.CurrentWindowHandle;
                     ReadOnlyCollection<string> originalHandles = driver.WindowHandles;
-
+                    
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
                     string popupWindowHandle = wait.Until((d) =>
                     {
@@ -95,6 +95,7 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
+
         public IWebElement FDASearchButton
         {
             get

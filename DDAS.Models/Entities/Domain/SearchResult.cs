@@ -167,6 +167,7 @@ namespace DDAS.Models.Entities.Domain
         public int ReviewCompletedInvestigatorCount { get; set; }
 
         public List<InvestigatorSearched> InvestigatorDetails { get; set; }
+
         //Patrick 27NOvb2016
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
