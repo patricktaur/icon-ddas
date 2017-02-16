@@ -69,8 +69,8 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string Name)
         {
-            if (CheckForFeedbackWindow != null)
-                throw new Exception("Could not close Feedback window");
+            //if (CheckForFeedbackWindow != null)
+            //    throw new Exception("Could not close Feedback window");
 
             IWebElement Input = FDASearchTextBox;
             if (Input == null)
@@ -120,21 +120,24 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> TDs = TR[tableRow].FindElements(By.XPath("td"));
 
-                FDAWarningList.RowNumber = RowNumber;
-                FDAWarningList.Company = TDs[0].Text;
-                FDAWarningList.LetterIssued = TDs[1].Text;
-                FDAWarningList.IssuingOffice = TDs[2].Text;
-                FDAWarningList.Subject = TDs[3].Text;
-                FDAWarningList.ResponseLetterPosted = TDs[4].Text;
-                FDAWarningList.CloseoutDate = TDs[5].Text;
-
-                if (IsElementPresent(TDs[0], By.XPath("a")))
+                if(TDs.Count > 1)
                 {
-                    IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
-                    Link link = new Link();
-                    link.Title = "Company";
-                    link.url = anchor.GetAttribute("href");
-                    FDAWarningList.Links.Add(link);
+                    FDAWarningList.RowNumber = RowNumber;
+                    FDAWarningList.Company = TDs[0].Text;
+                    FDAWarningList.LetterIssued = TDs[1].Text;
+                    FDAWarningList.IssuingOffice = TDs[2].Text;
+                    FDAWarningList.Subject = TDs[3].Text;
+                    FDAWarningList.ResponseLetterPosted = TDs[4].Text;
+                    FDAWarningList.CloseoutDate = TDs[5].Text;
+
+                    if (IsElementPresent(TDs[0], By.XPath("a")))
+                    {
+                        IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
+                        Link link = new Link();
+                        link.Title = "Company";
+                        link.url = anchor.GetAttribute("href");
+                        FDAWarningList.Links.Add(link);
+                    }
                 }
 
                 _FDAWarningSiteData.FDAWarningLetterList.Add(FDAWarningList);

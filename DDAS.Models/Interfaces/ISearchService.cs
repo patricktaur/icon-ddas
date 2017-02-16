@@ -40,13 +40,11 @@ namespace DDAS.Models.Interfaces
         //To be removed
         string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder);
 
-        //13Jan2017
-        List<string> ValidateExcelInputs(List<List<string>> ExcelInputRow);
+        List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row);
         List<List<string>> ReadDataFromExcelFile(string FilePath);
         List<ComplianceForm> ReadUploadedFileData(List<List<string>> ExcelInputData, 
             ILog log, string UserName, string FilePath);
 
-        //24Jan2017
         string GenerateComplianceForm(
             string DownloadFolder, string TemplateFolder,
             Guid? ComplianceFormId, IWriter writer,

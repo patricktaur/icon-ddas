@@ -103,6 +103,7 @@ namespace DDAS.API.Controllers
 
                     if (DataInExcelFile.Count >= 0)
                     {
+<<<<<<< HEAD
                         
                         if (DataInExcelFile.Count == 0)
                             return Request.CreateResponse(HttpStatusCode.OK,
@@ -120,6 +121,17 @@ namespace DDAS.API.Controllers
 
                         //if (Values.Count > 9 || Values.Count < 9)
                         //unable to make the uploader handle list of strings, therefore this ListToString workaround:
+=======
+                        var Values = DataInExcelFile[0];
+                        if (DataInExcelFile.Count == 0)
+                            return Request.CreateResponse(HttpStatusCode.OK,
+                                "No records found");
+                        if(Values.Count > 9 || Values.Count < 9)
+                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
+                            return
+                                Request.CreateResponse(HttpStatusCode.OK, 
+                                ListToString(DataInExcelFile));
+>>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,

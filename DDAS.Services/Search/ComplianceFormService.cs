@@ -100,11 +100,14 @@ namespace DDAS.Services.Search
                 }
                 ComplianceFormDetails.Add(ExcelRow);
             }
+<<<<<<< HEAD
             if(Validations.Count > 0)
             {
                 List<string> temp = new List<string>() {"errors found"};
                 Validations.Add(temp);
             }
+=======
+>>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
             return Validations.Count > 0 ? Validations : ComplianceFormDetails;
         }
 
@@ -1575,11 +1578,19 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add(ValidationMessage);
             }
             if(ExcelInputRow[0].ToLower().Contains("cannot find column"))
+<<<<<<< HEAD
             {
                 ValidationMessages.Add(ExcelInputRow[0]);
             }
             if(PrincipalInv <= 1)
             {
+=======
+            {
+                ValidationMessages.Add(ExcelInputRow[0]);
+            }
+            if(PrincipalInv <= 1)
+            {
+>>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
                 ValidationMessage = "RowNumber: " + Row +
                     " - Investigator Name must have atleast two components " +
                     "separated with a space!";
@@ -1636,10 +1647,13 @@ namespace DDAS.Services.Search
                     "numbers or special characters!";
                 ValidationMessages.Add(ValidationMessage);
             }
+<<<<<<< HEAD
 
             if (ExcelInputRow[1].ToLower() == "sub")
                 return ValidationMessages;
 
+=======
+>>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
             if (ExcelInputRow[4] == "")
             {
                 ValidationMessage = "RowNumber: " + Row +
