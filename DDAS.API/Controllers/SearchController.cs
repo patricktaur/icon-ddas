@@ -16,6 +16,7 @@ using DDAS.Services.Search;
 using System.Collections.Generic;
 using System.Web;
 using Utilities.WordTemplate;
+using System.Linq;
 
 namespace DDAS.API.Controllers
 {
@@ -32,7 +33,8 @@ namespace DDAS.API.Controllers
         private string UploadsFolder;
         private string ComplianceFormFolder;
         private string ExcelTemplateFolder;
-        
+        private string ErrorScreenCaptureFolder;
+
         private string RootPath;
         private string WordTemplateFolder;     
 
@@ -62,6 +64,9 @@ namespace DDAS.API.Controllers
 
             WordTemplateFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
+
+            ErrorScreenCaptureFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
         }
 
         [Route("Upload")]
@@ -93,17 +98,28 @@ namespace DDAS.API.Controllers
 
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    var DataInExcelFile = 
-                        _SearchService.ReadDataFromExcelFile(file.LocalFileName);
+                    var DataInExcelFile =
+                            _SearchService.ReadDataFromExcelFile(file.LocalFileName);
 
-                    ValidationMessages =
-                        _SearchService.ValidateExcelInputs(DataInExcelFile);
-
-                    if (ValidationMessages.Count > 0)
+                    if (DataInExcelFile.Count >= 0)
                     {
+                        
+                        if (DataInExcelFile.Count == 0)
+                            return Request.CreateResponse(HttpStatusCode.OK,
+                                "No records found");
+
+                        //var Values = DataInExcelFile[0];
+
+                        if(DataInExcelFile.SelectMany(x => x.Where( y => 
+                        y.ToLower().Contains("errors found"))).Count() > 0)
+                        {
+                            return
+                                Request.CreateResponse(HttpStatusCode.OK,
+                                ListToString(DataInExcelFile));
+                        }
+
+                        //if (Values.Count > 9 || Values.Count < 9)
                         //unable to make the uploader handle list of strings, therefore this ListToString workaround:
-                        return
-                            Request.CreateResponse(HttpStatusCode.OK, ListToString(ValidationMessages));
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
@@ -112,7 +128,8 @@ namespace DDAS.API.Controllers
                     foreach (ComplianceForm form in forms)
                     {
                         complianceForms.Add(
-                            _SearchService.ScanUpdateComplianceForm(form, _log));
+                            _SearchService.ScanUpdateComplianceForm(
+                                form, _log, ErrorScreenCaptureFolder));
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
@@ -251,7 +268,8 @@ namespace DDAS.API.Controllers
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
             _log.LogStart();
-            var result = _SearchService.ScanUpdateComplianceForm(form, _log);
+            var result = _SearchService.ScanUpdateComplianceForm(form, _log,
+                ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");
             _log.LogEnd();
             return Ok(result);
@@ -442,12 +460,16 @@ namespace DDAS.API.Controllers
             return Ok(SearchSites.GetNewSearchQuery());
         }
 
-        string ListToString(List<string> lst)
+        string ListToString(List<List<string>> lst)
         {
             string retValue = "";
-            foreach(string l in lst)
+            foreach(List<string> l in lst)
             {
-                retValue += l + "---";
+                foreach(string s in l)
+                {
+                    retValue += s + "---";
+                }
+                //retValue += l + "---";
             }
             return retValue;
         }
