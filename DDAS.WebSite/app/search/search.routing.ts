@@ -16,6 +16,7 @@ import { SearchComponent } from './search.component';
 //import { SearchDetailComponent }     from './search-detail.component';
 
 import { ComplianceFormComponent } from './compliance-form.component'
+import { CompFormEditComponent } from '../compliance-form/form/comp-form-edit.component'
 
 import { InvestigatorSummaryComponent } from './investigator-summary.component'
 import { FindingsComponent } from './findings.component'
@@ -41,6 +42,11 @@ const searchRoutes: Routes = [
         path: 'complianceform/:formId',
         component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
       },
+      {
+        path: 'comp-form-edit/:formId',
+        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
+      },
+     
       {
         path: 'investigator-summary/:formId/:investigatorId',
         component: InvestigatorSummaryComponent,
@@ -70,6 +76,10 @@ const searchRoutes: Routes = [
         component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
       },
       {
+        path: 'comp-form-edit/:formId',
+        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
         path: 'investigator-summary/:formId/:investigatorId',
         component: InvestigatorSummaryComponent,
       },
@@ -95,6 +105,10 @@ const searchRoutes: Routes = [
       {
         path: 'complianceform/:formId',
         component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
+      },
+        {
+        path: 'comp-form-edit/:formId',
+        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'investigator-summary/:formId/:investigatorId',

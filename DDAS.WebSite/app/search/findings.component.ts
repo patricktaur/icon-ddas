@@ -239,9 +239,9 @@ export class FindingsComponent implements OnInit {
     }
     
     goBack() {
-       // this._location.back();
-       // this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id], { relativeTo: this.route.parent});
+ 
         this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
+        //this.router.navigate(['comp-form-edit', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
       
     }
     

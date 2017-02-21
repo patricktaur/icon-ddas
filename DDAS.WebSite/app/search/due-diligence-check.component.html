@@ -9,17 +9,19 @@
 
 					<button type="button" class="btn-lg btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form">Manual Search</button>
 
-					<button type="button" class="btn-lg btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()" title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created.">Batch Upload</button>
+					<button type="button" class="btn-lg btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()"
+						title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created.">Batch Upload</button>
 
 				</div>
 				<div class="col-md-4 ">
 					<!--center	-->
 					<div class="text-right vertical-center">
 						<a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Batch Upload Template</a>
-						<p>Extraction Pending: {{extractionPendingRecordCount}} &nbsp;<button type="button" class="glyphicon glyphicon-refresh" title="Reload" (click)="Reload();"></button></p>
-						
+						<p>Extraction Pending: {{extractionPendingRecordCount}} &nbsp;<button type="button" class="glyphicon glyphicon-refresh"
+								title="Reload" (click)="Reload();"></button></p>
+
 					</div>
-					
+
 				</div>
 			</div>
 
@@ -47,14 +49,23 @@
 			<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 
 				<td class="text-left">
-					{{item.Name}} <span toggle-show *ngIf="item.SubInvestigators.length > 0"> 
-							<ul class="list-unstyled " style="white-space: nowrap">
-							<li *ngFor="let inv of item.SubInvestigators" >{{inv.Name}}</li>
+					<div class="dropdown">
+						<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border:none; background:none;">
+    						{{item.Name}}
+							
+    						<span class="caret" *ngIf="item.SubInvestigators.length > 0"></span>
+  						</button>
+						<ul class="dropdown-menu" aria-labelledby="dLabel" *ngIf="item.SubInvestigators.length > 0">
+							<li *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
 						</ul>
-					</span>
+					</div>
+
+
+
 				</td>
 				<td class="text-center">
 					{{item.ProjectNumber}}
+					
 				</td>
 				<td>
 					{{item.SponsorProtocolNumber}}
@@ -69,7 +80,7 @@
 				</td>
 				<td align="center">
 					<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
-					<div *ngIf="item.ExtractionPendingInvestigatorCount > 0" class="glyphicon glyphicon-search"></div>
+					<div *ngIf="item.ExtractionPendingInvestigatorCount > 0" class="glyphicon glyphicon-search" title="Data Extraction pending, Estimated:{{item.EstimatedExtractionCompletionWithin}}"></div>
 					<!--glyphicon glyphicon-transfer-->
 				</td>
 				<td>
@@ -94,12 +105,13 @@
 		<form>
 			<div class="form-group">
 				<div *ngIf="!validationMessage">
+					
 					<label for="fileupload">Upload a file - (.xlsx file with data to create compliance forms.)</label>
 					<input type="file" id="fileupload" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"
 						name="Upload">
 				</div>
 				<div *ngIf="Loading">
-					
+
 					<p class="help-block">Uploading and Scanning Sources for Investigator Names will take a while... </p>
 					<p class="help-block">You can close this Window if you wish to continue with other activities.</p>
 					<p class="help-block">The process will continue in the background.</p>

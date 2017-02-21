@@ -98,14 +98,14 @@ export class DueDiligenceCheckComponent implements OnInit {
     
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
-        //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
-        this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
+        //this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
+        this.router.navigate(['comp-form-edit', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
 
 
     }
 
     OpenNew() {
-        this.router.navigate(['complianceform', ""], { relativeTo: this.route });
+        this.router.navigate(['comp-form-edit', ""], { relativeTo: this.route });
     }
 
     CleanUpValidationMessage() {

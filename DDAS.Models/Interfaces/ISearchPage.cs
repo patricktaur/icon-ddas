@@ -10,7 +10,8 @@ namespace DDAS.Models.Interfaces
         void LoadContent(string DownloadFolder);
         void LoadContent(
             string NameToSearch, 
-            string DownloadFolder, 
+            string DownloadFolder,
+            string ErrorScreenCapture,
             int MatchCountLowerLimit);
         void SaveData();
         DateTime? SiteLastUpdatedDateFromPage { get; }

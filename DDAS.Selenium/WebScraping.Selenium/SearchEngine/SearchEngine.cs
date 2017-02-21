@@ -13,6 +13,7 @@ using DDAS.Services.Search;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -25,7 +26,10 @@ namespace WebScraping.Selenium.SearchEngine
         public SearchEngine(IUnitOfWork uow)
         {
             _uow = uow;
+            //_Driver = webDriver;
         }
+
+     
 
         #region To be deleted
         public SearchResult SearchByName(SearchQuery searchQuery)
@@ -52,7 +56,7 @@ namespace WebScraping.Selenium.SearchEngine
         {
                 NameToSearch = NameToSearch.Replace(",", "");
                 var PageObject = GetSearchPage(siteEnum);
-                PageObject.LoadContent(NameToSearch, "", 0);
+                PageObject.LoadContent(NameToSearch, "", "", 0);
                 PageObject.SaveData();
                 return true;
         }
@@ -111,7 +115,7 @@ namespace WebScraping.Selenium.SearchEngine
                 }
                 catch (Exception e)
                 {
-                    log.WriteLog("Enable to extract data for: " + site.SiteEnum +
+                    log.WriteLog("Unable to extract data for: " + site.SiteEnum +
                         "Error Details: " + e.ToString());
                     continue;
                     //throw new Exception(e.ToString());
@@ -131,7 +135,7 @@ namespace WebScraping.Selenium.SearchEngine
             SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
 
             if (ExtractData)
-                _searchPage.LoadContent(NameToSearch, DownloadFolder, 0);
+                _searchPage.LoadContent(NameToSearch, DownloadFolder, "", 0);
             else
             {
                 SiteData.CreatedOn = DateTime.Now;
@@ -478,7 +482,7 @@ namespace WebScraping.Selenium.SearchEngine
         }
 
         public IWebDriver Driver {
-            get { 
+            get {
                 if (_Driver == null)
                 {
                     PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
@@ -486,12 +490,15 @@ namespace WebScraping.Selenium.SearchEngine
                     service.SslProtocol = "any";
 
                     _Driver = new PhantomJSDriver(service);
+                    _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+                    _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                    //Patrick 16Feb2017
+                    //_Driver.Manage().Window.Maximize();
+                    //_Driver.Manage().Window.Size = new Size(1124, 850);
+                    //_Driver.Manage().Window.Size = new Size(800, 600);
+
 
                     //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
-
-                    _Driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(20));
-
-                    _Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(30));
 
                     return _Driver;
                 }
@@ -515,11 +522,16 @@ namespace WebScraping.Selenium.SearchEngine
             PhantomJSDriver
         };
 
+        ~SearchEngine()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
             foreach (var process in Process.GetProcessesByName("phantomjs"))
             {
-                process.Kill();
+                process.Dispose();
             }
 
             if (_Driver != null)
@@ -577,10 +589,12 @@ namespace WebScraping.Selenium.SearchEngine
             log.WriteLog(DateTime.Now.ToString(), "Data Saved");
         }
 
-        public void ExtractData(SiteEnum siteEnum, string NameToSearch, int MatchCountLowerLimit)
+        public void ExtractData(SiteEnum siteEnum, string NameToSearch,
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
         {
             _searchPage = GetSearchPage(siteEnum);
-            _searchPage.LoadContent(NameToSearch, "", MatchCountLowerLimit);
+            _searchPage.LoadContent(
+                NameToSearch, "", ErrorScreenCaptureFolder, MatchCountLowerLimit);
             _searchPage.SaveData();
         }
     }

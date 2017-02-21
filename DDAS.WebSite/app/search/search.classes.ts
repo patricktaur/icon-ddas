@@ -164,6 +164,7 @@ export class SearchList{
       ReviewCompleted: boolean;
       ExtractionPendingInvestigatorCount: number;
       ExtractionErrorInvestigatorCount: number;
+      EstimatedExtractionCompletionWithin: string;
       SubInvestigators:SubInvestigator[]= [] ;
     }
 
@@ -185,6 +186,11 @@ export class SearchList{
       AssignedTo: string = "";
       SearchStartedOn : Date ;
 
+        ExtractionQuePosition: number;
+        ExtractionQueStart : Date ;
+        ExtractionEstimatedCompletion : Date ;
+        EstimatedExtractionCompletionWithin: string;
+     
       ExtractedOn: Date;
       ExtractionErrorInvestigatorCount: number;
 
@@ -311,6 +317,8 @@ export class SearchList{
         Active : Boolean;
     }
     
+    
+       
    export enum ComplianceFormStatusEnum
     {
         NotScanned,
@@ -318,7 +326,10 @@ export class SearchList{
         ReviewCompletedIssuesNotIdentified,
         FullMatchFoundReviewPending,
         PartialMatchFoundReviewPending,
-        NoMatchFoundReviewPending
+        NoMatchFoundReviewPending,
+         ManualSearchSiteReviewPending,
+        IssuesIdentifiedReviewPending,
+        HasExtractionErrors
     } 
 
     export class CompFormFilter

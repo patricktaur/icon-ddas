@@ -23,6 +23,8 @@ import {SearchDetailComponent} from './search-detail.component';
  import {Ng2Uploader} from '../shared/utils/ng2-uploader1/ng2-uploader'
 
  import {ComplianceFormComponent} from './compliance-form.component'
+  import { CompFormEditComponent } from '../compliance-form/form/comp-form-edit.component'
+
  import {InvestigatorSummaryComponent} from './investigator-summary.component' 
  import {FindingsComponent} from './findings.component'
 
@@ -55,6 +57,7 @@ import {SearchDetailComponent} from './search-detail.component';
   ClosedICFsComponent,
   ManageICFsComponent,
   ComplianceFormComponent,
+  CompFormEditComponent,
   InvestigatorSummaryComponent,
   FindingsComponent,
   StatusCircleComponent,

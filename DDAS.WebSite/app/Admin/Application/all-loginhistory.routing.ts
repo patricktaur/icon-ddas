@@ -5,7 +5,9 @@ import { Routes, RouterModule }  from '@angular/router';
 import { LoginHistoryComponent }     from './all-loginhistory.component';
 
 export const LoggedInUserRoutes: Routes = [
-  { path: 'all-loginhistory', component: LoginHistoryComponent}
+  { path: 'all-loginhistory', component: LoginHistoryComponent},
+  //{ path: 'error-log', component: ErrorLogComponent},  
+
 ]
 
 

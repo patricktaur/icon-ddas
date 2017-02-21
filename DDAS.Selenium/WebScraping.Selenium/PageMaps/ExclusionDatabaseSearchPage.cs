@@ -10,8 +10,6 @@ namespace WebScraping.Selenium.Pages
         public IWebElement ExclusionDatabaseSearchFirstName
         {
             get {
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
-                
                 IWebElement FirstName = driver.FindElement(By.Id("ctl00_cpExclusions_txtSPFirstName"));
                 return FirstName;
             }

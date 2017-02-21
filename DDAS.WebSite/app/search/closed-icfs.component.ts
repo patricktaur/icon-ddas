@@ -102,7 +102,7 @@ export class ClosedICFsComponent implements OnInit {
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
         //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
-         this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'closed-icfs', page:this.pageNumber}], { relativeTo: this.route });
+         this.router.navigate(['comp-form-edit', DataItem.RecId, {rootPath:'closed-icfs', page:this.pageNumber}], { relativeTo: this.route });
          
 
     }

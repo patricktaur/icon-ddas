@@ -100,24 +100,21 @@ namespace DDAS.Services.Search
                 }
                 ComplianceFormDetails.Add(ExcelRow);
             }
-<<<<<<< HEAD
             if(Validations.Count > 0)
             {
                 List<string> temp = new List<string>() {"errors found"};
                 Validations.Add(temp);
             }
-=======
->>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
             return Validations.Count > 0 ? Validations : ComplianceFormDetails;
-        }
 
+        }
         //Pradeep 1Dec2016
         public List<ComplianceForm> ReadUploadedFileData(List<List<string>> DataFromExcelFile, 
             ILog log,
             string UserName, 
             string FilePath)
         {
-            var ComplianceForms = new List<ComplianceForm>();
+var ComplianceForms = new List<ComplianceForm>();
 
             for (int Counter = 0; Counter < DataFromExcelFile.Count; Counter++)
             {
@@ -161,8 +158,7 @@ namespace DDAS.Services.Search
                 }
                 ComplianceForms.Add(form);
             }
-            return ComplianceForms;
-        }
+            return ComplianceForms;        }
         #endregion
 
         public void UpdateAssignedToData(string AssignedTo, bool Active,
@@ -174,8 +170,7 @@ namespace DDAS.Services.Search
             _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
 
-        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,
-            string ErrorScreenCaptureFolder)
+        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,  string ErrorScreenCaptureFolder, string siteType = "db")
         {
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
@@ -183,15 +178,17 @@ namespace DDAS.Services.Search
 
             AddMissingSearchStatusRecords(frm);
             //Check and Search if required:
-            AddMatchingRecords(frm, log, ErrorScreenCaptureFolder);
+            AddMatchingRecords(frm, log,  ErrorScreenCaptureFolder, siteType);
+   
+            return SaveComplianceForm(frm);
 
-            RollUpSummary(frm);
+            //RollUpSummary(frm);
 
-            if (frm.RecId != null)
-                _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
-            else
-                _UOW.ComplianceFormRepository.Add(frm); //Insert
-            return frm;
+            //if (frm.RecId != null)
+            //    _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
+            //else
+            //    _UOW.ComplianceFormRepository.Add(frm); //Insert
+            //return frm;
         }
 
         public ComplianceForm UpdateComplianceForm(ComplianceForm frm)
@@ -202,8 +199,76 @@ namespace DDAS.Services.Search
 
             AddMissingSearchStatusRecords(frm);
 
+            return SaveComplianceForm(frm);
+
+            //RollUpSummary(frm);
+            ////Patrick 02Dec2016:
+            //if (frm.RecId == null)
+            //{
+            //    _UOW.ComplianceFormRepository.Add(frm);
+            //}
+            //else
+            //{
+            //    _UOW.ComplianceFormRepository.UpdateCollection(frm);
+            //}
+            //return frm;
+        }
+
+        private ComplianceForm SaveComplianceForm(ComplianceForm frm)
+        {
+
+            //retain Assignedto //
+            if (frm.RecId != null)
+            {
+                var formFromDB = _UOW.ComplianceFormRepository.FindById(frm.RecId);
+                if (formFromDB == null)
+                {
+                    throw new Exception("Compliance Form not found in data base: " + frm.ProjectNumber);
+                }
+                //AssignedTo can change after the form is downloaded by client.  
+                frm.AssignedTo = formFromDB.AssignedTo;
+
+                //REcords are found only when the form is returned from the client after the extractor saved the comp form.
+                var findingsFromLiveExtraction = formFromDB.Findings.Where(f => !frm.Findings.Any(f2 => (f2.Id == f.Id)));
+                frm.Findings.AddRange(findingsFromLiveExtraction);
+            }
+
+            //Guid added to findings added by client.  Null Guid identifies records that are added by client.
+            var findingsAddedByClient = frm.Findings.Where(f => f.Id == null).ToList();
+            findingsAddedByClient.ForEach(f => f.Id = Guid.NewGuid());
+            
+
             RollUpSummary(frm);
-            //Patrick 02Dec2016:
+
+            if (frm.ExtractionPendingInvestigatorCount == 0)
+            {
+                frm.ExtractionEstimatedCompletion = null;
+            }
+
+
+            //set frm.ExtractionEstimatedCompletion, will be overwritten when the form is added to the Queue
+            if (frm.ExtractionPendingInvestigatorCount > 0 && frm.ExtractionEstimatedCompletion == null)
+            {
+                var formWithMaxExtractionEstimatedDate = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(o => o.ExtractionEstimatedCompletion).FirstOrDefault();
+                
+                if (formWithMaxExtractionEstimatedDate != null)
+                {
+                    var maxDate = formWithMaxExtractionEstimatedDate.ExtractionEstimatedCompletion;
+                    var estimatedCompletionSecs = frm.ExtractionPendingInvestigatorCount * 3 * 15;
+                    DateTime baseDate;
+                    if (maxDate != null && maxDate > DateTime.Now)
+                    {
+                        baseDate = maxDate.Value;
+                    }
+                    else
+                    {
+                        baseDate = DateTime.Now;
+                    }
+                    var completionAt = baseDate.AddSeconds(estimatedCompletionSecs);
+                    frm.ExtractionEstimatedCompletion = completionAt;
+                }
+            }
+
             if (frm.RecId == null)
             {
                 _UOW.ComplianceFormRepository.Add(frm);
@@ -212,7 +277,17 @@ namespace DDAS.Services.Search
             {
                 _UOW.ComplianceFormRepository.UpdateCollection(frm);
             }
+           
             return frm;
+        }
+       
+        public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(formId);
+            form.ExtractionQuePosition = Position;
+            form.ExtractionQueStart = ExtractionStartedAt;
+            form.ExtractionEstimatedCompletion = ExtractionEstimatedCompletion;
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
 
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
@@ -230,6 +305,7 @@ namespace DDAS.Services.Search
                 var siteScan = new SiteScan();
 
                 var siteSourceToAdd = new SiteSource();
+
 
                 if (site.ExtractionMode.ToLower() == "db")
                     //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
@@ -260,6 +336,8 @@ namespace DDAS.Services.Search
                 compForm.SiteSources.Add(siteSourceToAdd);
             }
         }
+
+ 
 
         void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string NameToSearch)
         {
@@ -353,9 +431,8 @@ namespace DDAS.Services.Search
             form.ReviewCompletedInvestigatorCount = 0;
             form.ExtractedInvestigatorCount = 0;
 
-            var AllSites = form.SiteSources;
+           var AllSites = form.SiteSources;
             AllSites.ToList().ForEach(x => x.IssuesIdentified = false);
-
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 Investigator.TotalIssuesFound = 0;
@@ -372,9 +449,16 @@ namespace DDAS.Services.Search
                 Investigator.IssuesFoundSiteCount = 0;
                 Investigator.ReviewCompletedSiteCount = 0;
 
+                
                 foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched)
                 {
-                    if ((searchStatus.ExtractionMode.ToLower() == "db" || searchStatus.ExtractionMode.ToLower() == "live") && searchStatus.ExtractedOn == null)
+                    if (
+                        //searchStatus.ExtractionMode.ToLower() == "db" 
+                        //|| searchStatus.ExtractionMode.ToLower() == "live") && searchStatus.ExtractedOn == null
+                        searchStatus.ExtractedOn == null
+                        && searchStatus.ExtractionMode.ToLower() == "live"
+                        && !(searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                        )
                     {
                         searchStatus.ExtractionPending = true;
                         ExtractionPendingSiteCount += 1;
@@ -391,10 +475,12 @@ namespace DDAS.Services.Search
                     foreach (Finding Finding in Findings)
                     {
                         if (Finding != null && Finding.IsAnIssue &&
-                            Finding.InvestigatorSearchedId == Investigator.Id)
+                            Finding.InvestigatorSearchedId == Investigator.Id 
+                             )
                         {
                             InvId = Finding.InvestigatorSearchedId;
                             IssuesFound += 1;
+                            
                         }
                     }
                     searchStatus.IssuesFound = IssuesFound;
@@ -405,7 +491,7 @@ namespace DDAS.Services.Search
 
                     if (IssuesFound > 0 && Investigator.Id == InvId)
                         Site.IssuesIdentified = true;
-                    //else
+                   //else
                     //    Site.IssuesIdentified = false;
 
                     //Rollup summary:
@@ -479,8 +565,7 @@ namespace DDAS.Services.Search
             return form;
         }
 
-        private void AddMatchingRecords(ComplianceForm frm, ILog log,
-            string ErrorScreenCaptureFolder)
+        private void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType)
         {
             int InvestigatorId = 1;
             frm.ExtractedOn = DateTime.Now; //last extracted on
@@ -517,26 +602,25 @@ namespace DDAS.Services.Search
                             + frm.ProjectNumber + "-" + inv.Name);
                     }
 
-                    if (searchStatus.HasExtractionError == true)
+                    if (!(searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified ))
                     {
-                        searchRequired = true;
-                    }
-                    if (searchStatus.ExtractedOn == null)
-                    {
-                        searchRequired = true;
+                        if (searchStatus.HasExtractionError == true || searchStatus.ExtractedOn == null)
+                        {
+                            searchRequired = true;
+                        }
                     }
 
+                    //10Feb2017-todo: siteSource.ExtractionMode.ToLower() = "db") //get db Sites only, live sites are extracted through windows service
                     if (searchRequired == true && 
-                        siteSource.ExtractionMode.ToLower() != "manual")
+                        siteSource.ExtractionMode.ToLower() == siteType)
                     {
                         try
                         {
                             //clear previously added matching records.
                             frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
 
-                            var MatchedRecords = GetMatchedRecords(siteSource, 
-                                InvestigatorName, log,
-                                ErrorScreenCaptureFolder, ComponentsInInvestigatorName);
+                            var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
+                               ErrorScreenCaptureFolder,  ComponentsInInvestigatorName);
 
                             GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
 
@@ -551,10 +635,11 @@ namespace DDAS.Services.Search
                             foreach (MatchedRecord rec in MatchedRecords)
                             {
                                 var finding = new Finding();
+                                finding.Id = Guid.NewGuid();
                                 finding.MatchCount = rec.MatchCount;
                                 finding.InvestigatorSearchedId = inv.Id;
                                 finding.SourceNumber = siteSource.DisplayPosition;
-                                finding.SiteEnum = siteSource.SiteEnum; //Pradeep 2Dec2016
+                                finding.SiteEnum = siteSource.SiteEnum; 
 
                                 finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
@@ -580,6 +665,11 @@ namespace DDAS.Services.Search
                             searchStatus.ExtractionErrorMessage = "";
 
                             searchStatus.ExtractedOn = DateTime.Now;
+                            if (MatchedRecords.Count == 0)
+                            {
+                                searchStatus.ReviewCompleted = true;
+                            }
+
                             //ListOfSiteSearchStatus.Add(searchStatus);
                         }
                         catch (Exception ex)
@@ -648,7 +738,7 @@ namespace DDAS.Services.Search
             }
         }
  
-        public List<MatchedRecord> GetMatchedRecords(SiteSource site,
+       public List<MatchedRecord> GetMatchedRecords(SiteSource site,
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
@@ -835,8 +925,11 @@ namespace DDAS.Services.Search
             item.AssignedTo = compForm.AssignedTo;
             item.Status = compForm.Status;
             item.StatusEnum = compForm.StatusEnum;
+            item.ExtractionErrorInvestigatorCount = compForm.ExtractionErrorInvestigatorCount;
+            item.ExtractionPendingInvestigatorCount = compForm.ExtractionPendingInvestigatorCount;
+            item.EstimatedExtractionCompletionWithin = compForm.EstimatedExtractionCompletionWithin;
 
-            foreach(InvestigatorSearched Investigator in compForm.InvestigatorDetails)
+            foreach (InvestigatorSearched Investigator in compForm.InvestigatorDetails)
             {
                 if(Investigator.Role.ToLower() == "sub")
                 {
@@ -954,22 +1047,7 @@ namespace DDAS.Services.Search
             GenerateComplianceForm(DownloadFolder, TemplateFolder, 
                 ComplianceFormId, writer,
                 ".docx");
-            //var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
-
-            //var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
-
-            //var GeneratedFileName = ProjectNumber + "_" + PI + ".docx";
-
-            //var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
-
-            //var stream = UtilitiesObject.CreateComplianceForm(form, TemplateFolder, GeneratedFileNameNPath);
-
-            ////The following path does not work, client unable to download the file:
-
-            ////return @"App_Data\Data\Downloads\" + GeneratedFileName;
-            ////threfore: 
-
-            //return DownloadFolder + GeneratedFileName;
+ 
             return DownloadFolder;
         }
         #endregion
@@ -1032,7 +1110,7 @@ namespace DDAS.Services.Search
                 if (!Site.IsMandatory)
                     continue;
 
-                string SiteSourceUpdatedOn = "";
+ 				string SiteSourceUpdatedOn = "";
 
                 if (Site.SiteSourceUpdatedOn != null)
                     SiteSourceUpdatedOn =
@@ -1080,6 +1158,7 @@ namespace DDAS.Services.Search
                     writer.FillUpTable(CellValues);
                 }
             }
+
             writer.SaveChanges();
 
             //FindingsTable
@@ -1092,21 +1171,36 @@ namespace DDAS.Services.Search
             foreach(Finding finding in form.Findings)
             {
                 string DateOfInspection = "";
-                if (finding.DateOfInspection == null)
+                if (finding.DateOfInspection != null)
                     DateOfInspection =
                         finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
+                //if (finding.Selected)
+                //{
+                //    string[] CellValues = new string[]
+                //    {
+                //        finding.SourceNumber.ToString(),
+                //        finding.InvestigatorName,
+                //        DateOfInspection,
+                //        finding.Observation
+                //    };
+                //    writer.FillUpTable(CellValues);
+                //}
+                //Pradeep: 20Feb2017:
                 if (finding.Selected)
                 {
+                    string Observation = finding.Observation;
+
                     string[] CellValues = new string[]
                     {
                         finding.SourceNumber.ToString(),
                         finding.InvestigatorName,
                         DateOfInspection,
-                        finding.Observation
+                        Observation
                     };
                     writer.FillUpTable(CellValues);
                 }
+
             }
             writer.SaveChanges();
 
@@ -1115,6 +1209,7 @@ namespace DDAS.Services.Search
             writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
 
             writer.SaveChanges();
+
             writer.CloseDocument();
 
             return DownloadFolder + GeneratedFileName;
@@ -1383,7 +1478,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(AdequateAssuranceList);
         }
 
-        public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
+      public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
             Guid? SiteDataId, string NameToSearch, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
@@ -1482,7 +1577,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(CIAList);
         }
 
-        public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
+       public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch, string ErrorScreenCaptureFolder, 
             int ComponentsInIvestigatorName)
         {
@@ -1508,7 +1603,6 @@ namespace DDAS.Services.Search
             SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
 
-            //var InvName = InvestigatorName.Replace(" ", "");
 
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,
@@ -1521,6 +1615,7 @@ namespace DDAS.Services.Search
                 return null;
 
             return ConvertToMatchedRecords(SDNList);
+
         }
 
         #endregion
@@ -1578,19 +1673,11 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add(ValidationMessage);
             }
             if(ExcelInputRow[0].ToLower().Contains("cannot find column"))
-<<<<<<< HEAD
             {
                 ValidationMessages.Add(ExcelInputRow[0]);
             }
             if(PrincipalInv <= 1)
             {
-=======
-            {
-                ValidationMessages.Add(ExcelInputRow[0]);
-            }
-            if(PrincipalInv <= 1)
-            {
->>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
                 ValidationMessage = "RowNumber: " + Row +
                     " - Investigator Name must have atleast two components " +
                     "separated with a space!";
@@ -1647,13 +1734,10 @@ namespace DDAS.Services.Search
                     "numbers or special characters!";
                 ValidationMessages.Add(ValidationMessage);
             }
-<<<<<<< HEAD
 
             if (ExcelInputRow[1].ToLower() == "sub")
                 return ValidationMessages;
 
-=======
->>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
             if (ExcelInputRow[4] == "")
             {
                 ValidationMessage = "RowNumber: " + Row +
@@ -1744,6 +1828,8 @@ namespace DDAS.Services.Search
         {
             return Regex.IsMatch(Value, "\\d{4}/\\d{4}");
         }
+
+      
         #endregion
     }
 }

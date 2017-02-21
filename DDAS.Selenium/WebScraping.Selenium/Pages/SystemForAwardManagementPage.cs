@@ -156,7 +156,7 @@ namespace WebScraping.Selenium.Pages
 
         private bool SearchTerms(string NameToSearch)
         {
-  var AnchorTag = SAMAnchorTag;
+            var AnchorTag = SAMAnchorTag;
             if (AnchorTag == null)
                 throw new Exception("Could not find element: SAMAnchorTag");
             SAMAnchorTag.SendKeys(Keys.Enter);
@@ -189,6 +189,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder,
+            string ErrorScreenCaptureFolder,
             int MatchCountLowerLimit)
         {
             string[] Name = NameToSearch.Split(' ');
@@ -213,12 +214,14 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
-					SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
-                    "SAM_" + 
+                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\SAM_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png");
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _SAMSiteData.DataExtractionSucceeded = false;
-                _SAMSiteData.DataExtractionErrorMessage = e.Message;
+                _SAMSiteData.DataExtractionErrorMessage = e.Message +
+                    " - " + ErrorCaptureFilePath;
                 throw new Exception(e.ToString());
             }
             finally
@@ -250,12 +253,12 @@ namespace WebScraping.Selenium.Pages
             IList<IWebElement> AnchorsInPagination = 
                 SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));
 
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
 
             AnchorsInPagination[AnchorsInPagination.Count - 1].Click();
             //AnchorsInPagination[AnchorsInPagination.Count - 1].SendKeys(Keys.Enter);
 
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            //driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
         }
 
         public void ReadSiteLastUpdatedDateFromPage()

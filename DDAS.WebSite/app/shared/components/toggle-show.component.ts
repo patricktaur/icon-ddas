@@ -3,9 +3,13 @@ import { Component, Input, OnInit  } from '@angular/core';
     selector: '[toggle-show]',
     template: `
         
-        <span class="caret" (click)="onClick()">
+        <span class="caret" (click)="onClick()"  >
+            <div>
+            <ng-content *ngIf="show"></ng-content>
+            </div>
+            
+       
         
-        <ng-content *ngIf="show"></ng-content>
         </span>
         
     `,
