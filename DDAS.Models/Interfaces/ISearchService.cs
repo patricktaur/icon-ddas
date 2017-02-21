@@ -8,34 +8,34 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-        //ComplianceForm GetSearchSummary(ComplianceForm form, ILog log);
-
-        //ComplianceForm UpdateSingleSiteFromComplianceForm(string NameToSearch,
-        //    Guid? ComplianceFormId, SiteEnum Enum, ILog log);
-
+  
         List<PrincipalInvestigator> getAllPrincipalInvestigators();
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
 
-        //Patrick 27Nov2016
-        ComplianceForm GetNewComplianceForm(ILog log, string UserName);
 
+<<<<<<< HEAD
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log,
             string ErrorScreenCaptureFolder);
+=======
+        ComplianceForm GetNewComplianceForm(ILog log, string UserName);
+ 
+        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log, 
+            string ErrorScreenCaptureFolder, string siteType = "db");
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
+        void UpdateAssignedToData(string AssignedTo, bool Active, Guid? RecId);
+        void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 
-        //Pradeep 5Jan2017
         List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter);
 
-        void UpdateAssignedToData(string AssignedTo, bool Active,
-            Guid? RecId);
+  
 
-        //Patrick 03Dec2016
+
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
         
-        //Pradeep 1Dec2016
-        //List<ComplianceForm> ReadUploadedFileData(string FilePath, ILog log, string UserName);
+
 
         ComplianceForm RollUpSummary(ComplianceForm form);
 

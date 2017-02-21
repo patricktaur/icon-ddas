@@ -70,6 +70,8 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
             container.Register<ISearchEngine, SearchEngine>();
+            
+           
 
             //container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
@@ -77,6 +79,7 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
             container.Register<ISearchService, ComplianceFormService>();
+           
 
             //container.RegisterWebApiRequest<IUserService, UserService>();
             container.Register<IUserService, UserService>();

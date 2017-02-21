@@ -7,7 +7,12 @@ import {ErrorImagesComponent} from './error-images.component';
 
 export const LoggedInUserRoutes: Routes = [
   { path: 'all-loginhistory', component: LoginHistoryComponent},
+<<<<<<< HEAD
   { path: 'error-images', component: ErrorImagesComponent}
+=======
+  //{ path: 'error-log', component: ErrorLogComponent},  
+
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
 ]
 
 

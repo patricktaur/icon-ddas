@@ -52,11 +52,32 @@
 					</div>
 					<div class="col-lg-2  text-center">
 						<p>Full Match</p>
-						<p>{{SiteSearchStatus.FullMatchCount}} </p>
+						<p *ngIf="SiteSearchStatus.FullMatchCount > 0">
+							<a style="text-decoration: underline;" 
+							(click)="MatchedRecordsModal.open()" 
+						title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}" 
+						>
+						&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;</a>
+							</p>
+						<p *ngIf="SiteSearchStatus.FullMatchCount == 0">
+							{{SiteSearchStatus.FullMatchCount}}
+						</p>
 					</div>
 					<div class="col-lg-2   text-center">
 						<p>Partial Match </p>
-						<p> {{SiteSearchStatus.PartialMatchCount}} </p>
+						
+						<p *ngIf="SiteSearchStatus.PartialMatchCount > 0">
+							<a style="text-decoration: underline;" 
+							
+							(click)="MatchedRecordsModal.open()" 
+						title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}" 
+						>
+						&nbsp;{{SiteSearchStatus.PartialMatchCount}}&nbsp;</a>
+							</p>
+						<p *ngIf="SiteSearchStatus.PartialMatchCount == 0">
+							{{SiteSearchStatus.PartialMatchCount}}
+						</p>
+						
 					</div>
 					<div class="col-lg-2   text-center">
 						<p>Issues Identified </p>
@@ -138,9 +159,9 @@
 
 	<p align="center">
 
-		<button type="button" class="btn btn-primary" (click)="Add()">Add</button>
+		<button type="button" class="btn btn-primary" (click)="Add()">Add Additional Findings</button>
 		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
-			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Add from site's  matching records</button>
+			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
 		<br/>
 	</p>
 	<p align="center">

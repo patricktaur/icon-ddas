@@ -33,6 +33,9 @@ export class InvestigatorSummaryComponent {
    
    public retSiteEnum: number;
    private rootPath: string;
+   public HideReviewCompletedSites: boolean;
+   private ShowMatchesFoundSites: boolean;
+
    constructor(private service: SearchService,
        private route: ActivatedRoute,
        private _location: Location,
@@ -41,7 +44,8 @@ export class InvestigatorSummaryComponent {
   
 
     ngOnInit() {
-        
+        this.HideReviewCompletedSites = true;
+ 
         this.route.params.forEach((params: Params) => {
         this.ComplianceFormId = params['formId'];
         this.InvestigatorId = +params['investigatorId'];
@@ -70,72 +74,7 @@ export class InvestigatorSummaryComponent {
     }
   
 
- loadMockInvestigatorSummary(){
-
-    //    this.InvestigatorSummary =   { 
-    //         Id: 0,
-    //         DisplayPosition: 0,
-    //         //SourceNumber: 0,
-    //         Name:  "Inv - 1",
-    //         Role: "Principal",
-    //         Sites_FullMatchCount:  0,
-    //         Sites_PartialMatchCount:  0,
-    //         AllSitesProcessed:  false,
-    //         TotalIssuesFound:  0,
-    //         Deleted:  false,
-    //         SitesSearched: [
-    //                {
-    //                     siteEnum:  0,
-    //                     SiteName : "Site - 1",
-    //                     SiteUrl : "",    
-    //                     HasExtractionError : false,
-    //                     ExtractionErrorMessage : "",
-    //                     FullMatchCount :  0,
-    //                     PartialMatchCount :  0,
-    //                     IssuesFound :  0,
-    //                     ReviewCompleted :  false
-    //                } ,
-    //                {
-    //                     siteEnum:  0,
-    //                     SiteName : "Site - 2",
-    //                     SiteUrl : "",    
-    //                     HasExtractionError : false,
-    //                     ExtractionErrorMessage : "",
-    //                     FullMatchCount :  2,
-    //                     PartialMatchCount :  4,
-    //                     IssuesFound :  6,
-    //                     ReviewCompleted :  true
-    //                },
-    //                {
-    //                     siteEnum:  0,
-    //                     SiteName : "Site - 3",
-    //                     SiteUrl : "",    
-    //                     HasExtractionError : false,
-    //                     ExtractionErrorMessage : "",
-    //                     FullMatchCount :  3,
-    //                     PartialMatchCount :  9,
-    //                     IssuesFound :  18,
-    //                     ReviewCompleted :  false
-    //                } ,
-    //                {
-    //                     siteEnum:  0,
-    //                     SiteName : "Site - 4",
-    //                     SiteUrl : "",    
-    //                     HasExtractionError : false,
-    //                     ExtractionErrorMessage : "",
-    //                     FullMatchCount :  4,
-    //                     PartialMatchCount :  16,
-    //                     IssuesFound :  32,
-    //                     ReviewCompleted :  true
-    //                } 
-    //         ]
-    //     }
-       
-       
-      
- }
  
-
 get InvestigatorSiteSummary(){
  
     let sitesSearched:  SiteSearchStatus[];
@@ -148,6 +87,17 @@ get InvestigatorSiteSummary(){
    
 }
 
+get FilteredInvestigatorSiteSummary(){
+
+    if (this.HideReviewCompletedSites == true){
+        return this.InvestigatorSiteSummary.filter(x => x.ReviewCompleted == false);
+    }
+    else{
+        return this.InvestigatorSiteSummary;
+    }
+    
+}
+
 get Investigator(): InvestigatorSearched{
   
     let inv:  InvestigatorSearched = new InvestigatorSearched;
@@ -158,6 +108,13 @@ get Investigator(): InvestigatorSearched{
     else{
         return inv1;
     }
+}
+
+
+
+
+get ReviewPendingCount(){
+    return (this.InvestigatorSiteSummary.length- this.Investigator.ReviewCompletedSiteCount);
 }
 
 get Summary(){
@@ -213,7 +170,7 @@ gotoSiteDetails(siteEnum: number){
 goBack() {
 
     //this._location.back();
-    this.router.navigate(['complianceform', this.ComplianceFormId, {rootPath: this.rootPath}], { relativeTo: this.route.parent});
+    this.router.navigate(['comp-form-edit', this.ComplianceFormId, {rootPath: this.rootPath, tab:"invTab"}], { relativeTo: this.route.parent});
 }
 
 BoolYesNo (value: boolean): string   {

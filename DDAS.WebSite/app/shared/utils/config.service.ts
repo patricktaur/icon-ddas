@@ -13,6 +13,9 @@ export class ConfigService {
         //server - all servers:  // do not use - does not work for filedownload path correctly
         //this._apiURI = 'api/';
         //this._apiURI = 'http://192.168.137.1/demoddas/api/'; //from server
+        //this._apiURI = 'http://ddas.claritytechnologies.com/api'; //from server
+
+
 
         //development:
         this._apiURI = 'http://localhost:56846/api/'; //

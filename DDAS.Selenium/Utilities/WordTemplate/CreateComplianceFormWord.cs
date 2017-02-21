@@ -262,7 +262,11 @@ namespace Utilities.WordTemplate
             var TableCell = CellWithVerticalAlign();
             var paragraph = ParagraphWithCenterAlign();
 
+<<<<<<< HEAD
             if(Text != null && Text.Length > 0 && Text.Contains("\n"))
+=======
+            if(Text != null && Text.Length > 2 && Text.Contains("\n"))
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
             {
                 var Values = 
                     Text.Split('\n');

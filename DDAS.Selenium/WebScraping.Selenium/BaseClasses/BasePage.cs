@@ -26,7 +26,7 @@ namespace WebScraping.Selenium.BaseClasses
                 {
                     if (!IsPageLoaded)
                     {
-                        driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                        driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
                         driver.Navigate().GoToUrl(string.Concat(Url, part));
                         IsPageLoaded = true;
                     }
@@ -53,10 +53,24 @@ namespace WebScraping.Selenium.BaseClasses
             }
         }
 
+
+        public static bool isElementPresentAndDisplayed( IWebElement element)
+        {
+            try
+            {
+                 return element.Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
         public void SaveScreenShot(string fileName)
         {
-            Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
-            ss.SaveAsFile(fileName, System.Drawing.Imaging.ImageFormat.Png);
+            Screenshot ss = ((ITakesScreenshot)this.driver).GetScreenshot();
+            //ss.SaveAsFile(fileName, System.Drawing.Imaging.ImageFormat.Png);
+            ss.SaveAsFile(fileName, ScreenshotImageFormat.Png);
         }
 
         public void Dispose()

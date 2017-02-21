@@ -161,7 +161,18 @@ export class SearchList{
       AssignedTo: string;
       Active: boolean;
       StatusEnum: ComplianceFormStatusEnum;
-     
+      ReviewCompleted: boolean;
+      ExtractionPendingInvestigatorCount: number;
+      ExtractionErrorInvestigatorCount: number;
+      EstimatedExtractionCompletionWithin: string;
+      SubInvestigators:SubInvestigator[]= [] ;
+    }
+
+    export class SubInvestigator
+    {
+        Name: string;
+        Status: string;
+        StatusEnum: ComplianceFormStatusEnum;
     }
 
   export class ComplianceFormA{
@@ -175,6 +186,11 @@ export class SearchList{
       AssignedTo: string = "";
       SearchStartedOn : Date ;
 
+        ExtractionQuePosition: number;
+        ExtractionQueStart : Date ;
+        ExtractionEstimatedCompletion : Date ;
+        EstimatedExtractionCompletionWithin: string;
+     
       ExtractedOn: Date;
       ExtractionErrorInvestigatorCount: number;
 
@@ -218,6 +234,9 @@ export class SearchList{
       InvestigatorSiteStatus:string[];
      Status: string = "";
       StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
+
+     
+        ExtractionPendingSiteCount:number = 0;
 
         //---For client side Validations
       CanEdit:boolean = true;  //set to false when the name is searched.
@@ -298,6 +317,8 @@ export class SearchList{
         Active : Boolean;
     }
     
+    
+       
    export enum ComplianceFormStatusEnum
     {
         NotScanned,
@@ -305,7 +326,10 @@ export class SearchList{
         ReviewCompletedIssuesNotIdentified,
         FullMatchFoundReviewPending,
         PartialMatchFoundReviewPending,
-        NoMatchFoundReviewPending
+        NoMatchFoundReviewPending,
+         ManualSearchSiteReviewPending,
+        IssuesIdentifiedReviewPending,
+        HasExtractionErrors
     } 
 
     export class CompFormFilter

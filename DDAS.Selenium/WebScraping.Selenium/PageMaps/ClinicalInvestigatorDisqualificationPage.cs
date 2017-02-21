@@ -46,7 +46,18 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                //IList<IWebElement> SubmitButton = 
+                //    driver.FindElements(By.CssSelector("input[type='submit']"));
+
+                //foreach(IWebElement Button in SubmitButton)
+                //{
+                //    if (Button.GetAttribute("value").ToLower() == "show items")
+                //        return Button;
+                //}
+                //throw new Exception("Could not find Submit button!");
+
+
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
@@ -77,10 +88,7 @@ namespace WebScraping.Selenium.Pages
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
                             IList<IWebElement> Tables = Web.FindElements(By.XPath("//table"));
-                            if (Tables.Count > 0)
-                                return Tables[2];
-                            else
-                                return null;
+                            return Tables[2];
                         });
                     IWebElement targetElement = wait.Until(waitForElement);
                     return targetElement;
@@ -98,14 +106,23 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
+                //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+                //IList<IWebElement> Tables = driver.FindElements(By.XPath("//table"));
+                //return Tables[3];
+
                 try
                 {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {
                             IList<IWebElement> Tables = Web.FindElements(By.XPath("//table"));
-                            return Tables[3];
+                            //Patrick 16Feb2017:
+                            if (Tables.Count >= 4)
+                            {
+                                return Tables[3];
+                            }
+                            return null;
                         });
                     IWebElement targetElement = wait.Until(waitForElement);
                     return targetElement;
@@ -129,7 +146,7 @@ namespace WebScraping.Selenium.Pages
                     //IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
                     //return Element;
 
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                     Func<IWebDriver, IWebElement> waitForElement =
                         new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                         {

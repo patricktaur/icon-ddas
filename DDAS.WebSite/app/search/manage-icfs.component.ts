@@ -153,8 +153,9 @@ export class ManageICFsComponent implements OnInit {
 
   OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
-  
-        this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
+
+        //this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
+        this.router.navigate(['comp-form-edit', DataItem.RecId, {rootPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
 
 
     }

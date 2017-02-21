@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CountryList.cs" />
+    <Compile Include="DBLog.cs" />
     <Compile Include="DummyLog.cs" />
     <Compile Include="EMail\EMailService.cs" />
     <Compile Include="ExportList.cs" />

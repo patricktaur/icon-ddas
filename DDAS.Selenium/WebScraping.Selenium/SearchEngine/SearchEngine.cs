@@ -13,6 +13,7 @@ using DDAS.Services.Search;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -25,7 +26,10 @@ namespace WebScraping.Selenium.SearchEngine
         public SearchEngine(IUnitOfWork uow)
         {
             _uow = uow;
+            //_Driver = webDriver;
         }
+
+     
 
         #region To be deleted
         public SearchResult SearchByName(SearchQuery searchQuery)
@@ -485,12 +489,25 @@ namespace WebScraping.Selenium.SearchEngine
                     //service.IgnoreSslErrors = true;
                     //service.SslProtocol = "any";
 
+<<<<<<< HEAD
                     //_Driver = new PhantomJSDriver(service);
 
                     _Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries1\ChromeDriver\");
 
                     _Driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(20));
                     _Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
+=======
+                    _Driver = new PhantomJSDriver(service);
+                    _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+                    _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                    //Patrick 16Feb2017
+                    //_Driver.Manage().Window.Maximize();
+                    //_Driver.Manage().Window.Size = new Size(1124, 850);
+                    //_Driver.Manage().Window.Size = new Size(800, 600);
+
+
+                    //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
 
                     return _Driver;
                 }

@@ -1,4 +1,5 @@
-﻿using DDAS.Models.Repository.Domain.SiteData;
+﻿using DDAS.Models.Repository;
+using DDAS.Models.Repository.Domain.SiteData;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +39,8 @@ namespace DDAS.Models
         IComplianceFormRepository ComplianceFormRepository { get; }
         
         ILoginDetailsRepository LoginDetailsRepository { get; }
+
+        ILogRepository LogRepository { get; }
         #endregion
 
         #endregion

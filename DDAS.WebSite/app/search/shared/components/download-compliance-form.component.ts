@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from '../../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
-import { PrincipalInvestigatorDetails } from '../../search.classes';
+import { PrincipalInvestigatorDetails, ComplianceFormStatusEnum } from '../../search.classes';
 import { SearchService } from '../../search-service';
 import { ConfigService } from '../../../shared/utils/config.service';
 
@@ -70,7 +70,33 @@ export class DownloadComplianceFormComponent implements OnInit {
         this.modal.open();
         this.GenerateComplianceForm();
     }
+                        
+    canGenerate(status: ComplianceFormStatusEnum):boolean{
+        if (status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+            status == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            {
+               return true;     
+            }
+            else
+            {
+                return false;
+            }
+        
+    }
     
+    Info(status: ComplianceFormStatusEnum):string{
+        if (status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+            status == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            {
+               return "Generate and download Compliance Form";     
+            }
+            else
+            {
+                return "Review not completed.  Cannot generate Compliance Form";
+            }
+        
+    }
+
     close(){
         this.modal.close();
     }

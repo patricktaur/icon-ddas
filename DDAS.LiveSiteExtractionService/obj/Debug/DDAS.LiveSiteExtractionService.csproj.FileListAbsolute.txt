@@ -1,0 +1,17 @@
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.LiveSiteExtractionService.exe.config
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.LiveSiteExtractionService.exe
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.LiveSiteExtractionService.pdb
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.Services.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.Models.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\Utilities.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\SpreadsheetLight.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\itextsharp.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.Services.pdb
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.Models.pdb
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\Utilities.pdb
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\SpreadsheetLight.xml
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\itextsharp.xml
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csprojResolveAssemblyReference.cache
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.exe
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.pdb

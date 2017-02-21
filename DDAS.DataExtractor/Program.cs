@@ -11,6 +11,8 @@ using Utilities;
 using WebScraping.Selenium.SearchEngine;
 using System.Diagnostics;
 using System.IO;
+using OpenQA.Selenium;
+using OpenQA.Selenium.PhantomJS;
 
 namespace DDAS.DataExtractor
 {
@@ -19,6 +21,7 @@ namespace DDAS.DataExtractor
         //public static string ConfigurationManager { get; private set; }
 
         private static LogText _WriteLog;
+        private IWebDriver _Driver;
 
         public static string DownloadFolder; //= ConfigurationManager.AppSettings["DownloadFolder"];
 
@@ -60,6 +63,7 @@ namespace DDAS.DataExtractor
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             _WriteLog.LogStart();
             _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+
             ISearchEngine searchEngine = new SearchEngine(uow);
 
             var extractData = new ExtractData(searchEngine);
@@ -163,14 +167,33 @@ namespace DDAS.DataExtractor
             }
         }
 
-        //static void ForcedCleanUp()
-        //{
-        //    Process currentProcess = Process.GetCurrentProcess();
+        public IWebDriver Driver
+        {
+            get
+            {
+                if (_Driver == null)
+                {
+                    PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+                    service.IgnoreSslErrors = true;
+                    service.SslProtocol = "any";
 
-        //    currentProcess.CloseMainWindow();
+                    _Driver = new PhantomJSDriver(service);
+                    _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+                    _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                    //Patrick 16Feb2017
+                    //_Driver.Manage().Window.Maximize();
+                    //_Driver.Manage().Window.Size = new Size(1124, 850);
+                    //_Driver.Manage().Window.Size = new Size(800, 600);
 
-        //}
 
+                    //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
+
+                    return _Driver;
+                }
+                else
+                    return _Driver;
+            }
+        }
 
     }
 }

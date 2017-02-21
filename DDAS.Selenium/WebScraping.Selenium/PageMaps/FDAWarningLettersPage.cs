@@ -14,8 +14,8 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
-
-        public string CheckForFeedbackWindow
+       
+		public string CheckForFeedbackWindow
         {
             get
             {
@@ -23,7 +23,7 @@ namespace WebScraping.Selenium.Pages
                 {
                     string currentHandle = driver.CurrentWindowHandle;
                     ReadOnlyCollection<string> originalHandles = driver.WindowHandles;
-                    
+
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
                     string popupWindowHandle = wait.Until((d) =>
                     {
@@ -71,9 +71,9 @@ namespace WebScraping.Selenium.Pages
                     return null;
                 }
             }
-        }
-
-        public IWebElement FDASearchTextBox
+        } 
+      
+		public IWebElement FDASearchTextBox
         {
             get
             {
@@ -95,12 +95,11 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
-
         public IWebElement FDASearchButton
         {
             get
             {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
@@ -120,9 +119,9 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private IWebElement SortTableTest1
+         private IWebElement SortTableTest1
         {
-            get
+           get
             {
                 try
                 {
@@ -141,7 +140,8 @@ namespace WebScraping.Selenium.Pages
                     throw new Exception("Unable to find table with id 'fd-table-2'");
                 }
             }
-        }
+       }
+
 
         public IWebElement PageLastUpdatedTextElement
         {

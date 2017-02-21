@@ -214,7 +214,11 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
+<<<<<<< HEAD
                 var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\FDAWarningLetters_" +
+=======
+                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\SAM_" +
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".png";
                 SaveScreenShot(ErrorCaptureFilePath);
@@ -253,12 +257,12 @@ namespace WebScraping.Selenium.Pages
             IList<IWebElement> AnchorsInPagination = 
                 SAMPaginationElement.FindElements(By.XPath("table/tbody/tr/td/a"));
 
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
 
             AnchorsInPagination[AnchorsInPagination.Count - 1].Click();
             //AnchorsInPagination[AnchorsInPagination.Count - 1].SendKeys(Keys.Enter);
 
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
+            //driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
         }
 
         public void ReadSiteLastUpdatedDateFromPage()

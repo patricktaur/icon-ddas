@@ -64,12 +64,16 @@ namespace DDAS.API.Controllers
 
             WordTemplateFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
+<<<<<<< HEAD
 
             ErrorScreenCaptureFolder = RootPath +
+=======
+          ErrorScreenCaptureFolder = RootPath +
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
         }
 
-        [Route("Upload")]
+       [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
         {
@@ -267,7 +271,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
+<<<<<<< HEAD
             _log.LogStart();
+=======
+           _log.LogStart();
+>>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
             var result = _SearchService.ScanUpdateComplianceForm(form, _log,
                 ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");
@@ -459,7 +467,7 @@ namespace DDAS.API.Controllers
             return Ok(SearchSites.GetNewSearchQuery());
         }
 
-        string ListToString(List<List<string>> lst)
+       string ListToString(List<List<string>> lst)
         {
             string retValue = "";
             foreach(List<string> l in lst)
