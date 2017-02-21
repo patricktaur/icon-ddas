@@ -146,7 +146,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder,
-            int MatchCountLowerLimit)
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
         {
             string[] FullName = NameToSearch.Split(' ');
             try
@@ -168,12 +168,15 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
-                SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
-                    "FDAWarningsLetter_" + DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png");
+                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\FDAWarningLetters_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
 
                 _FDAWarningSiteData.DataExtractionSucceeded = false;
-                _FDAWarningSiteData.DataExtractionErrorMessage = e.Message;
+                _FDAWarningSiteData.DataExtractionErrorMessage = e.Message +
+                    " - " + ErrorCaptureFilePath;
+
                 _FDAWarningSiteData.ReferenceId = null;
                 throw new Exception(e.ToString());
             }

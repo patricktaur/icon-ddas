@@ -182,6 +182,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public void LoadContent(string NameToSearch, string DownloadFolder,
+            string ErrorScreenCaptureFolder,
             int MatchCountLowerLimit)
         {
             throw new NotImplementedException();

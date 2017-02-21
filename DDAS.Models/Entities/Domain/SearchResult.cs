@@ -626,7 +626,6 @@ namespace DDAS.Models.Entities.Domain
     #endregion
 
     #region ByPatrick
-    //Patrick 28Nov2016
     public class MatchedRecord
     {
         public int MatchCount { get; set; }
@@ -690,6 +689,15 @@ namespace DDAS.Models.Entities.Domain
     {
         public string AssignedTo { get; set; }
         public bool Active { get; set; }
+    }
+    #endregion
+
+    #region AppAdmin
+    
+    public class ErrorScreenCapture
+    {
+        public string FileName { get; set; }
+        public long FileSize { get; set; }
     }
     #endregion
 

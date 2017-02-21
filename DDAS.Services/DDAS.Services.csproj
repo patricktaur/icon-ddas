@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppAdminService\AppAdmin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\ComplianceFormService.cs" />
     <Compile Include="Search\ExtractData.cs" />

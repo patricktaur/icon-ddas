@@ -52,7 +52,7 @@ namespace WebScraping.Selenium.SearchEngine
         {
                 NameToSearch = NameToSearch.Replace(",", "");
                 var PageObject = GetSearchPage(siteEnum);
-                PageObject.LoadContent(NameToSearch, "", 0);
+                PageObject.LoadContent(NameToSearch, "", "", 0);
                 PageObject.SaveData();
                 return true;
         }
@@ -111,7 +111,7 @@ namespace WebScraping.Selenium.SearchEngine
                 }
                 catch (Exception e)
                 {
-                    log.WriteLog("Enable to extract data for: " + site.SiteEnum +
+                    log.WriteLog("Unable to extract data for: " + site.SiteEnum +
                         "Error Details: " + e.ToString());
                     continue;
                     //throw new Exception(e.ToString());
@@ -131,7 +131,7 @@ namespace WebScraping.Selenium.SearchEngine
             SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
 
             if (ExtractData)
-                _searchPage.LoadContent(NameToSearch, DownloadFolder, 0);
+                _searchPage.LoadContent(NameToSearch, DownloadFolder, "", 0);
             else
             {
                 SiteData.CreatedOn = DateTime.Now;
@@ -481,16 +481,15 @@ namespace WebScraping.Selenium.SearchEngine
             get {
                 if (_Driver == null)
                 {
-                    PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
-                    service.IgnoreSslErrors = true;
-                    service.SslProtocol = "any";
+                    //PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+                    //service.IgnoreSslErrors = true;
+                    //service.SslProtocol = "any";
 
-                    _Driver = new PhantomJSDriver(service);
+                    //_Driver = new PhantomJSDriver(service);
 
-                    //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
+                    _Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries1\ChromeDriver\");
 
                     _Driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(20));
-
                     _Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
 
                     return _Driver;
@@ -522,10 +521,10 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Dispose()
         {
-            foreach (var process in Process.GetProcessesByName("phantomjs"))
-            {
-                process.Dispose();
-            }
+            //foreach (var process in Process.GetProcessesByName("phantomjs"))
+            //{
+            //    process.Dispose();
+            //}
 
             if (_Driver != null)
             {
@@ -582,10 +581,12 @@ namespace WebScraping.Selenium.SearchEngine
             log.WriteLog(DateTime.Now.ToString(), "Data Saved");
         }
 
-        public void ExtractData(SiteEnum siteEnum, string NameToSearch, int MatchCountLowerLimit)
+        public void ExtractData(SiteEnum siteEnum, string NameToSearch,
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
         {
             _searchPage = GetSearchPage(siteEnum);
-            _searchPage.LoadContent(NameToSearch, "", MatchCountLowerLimit);
+            _searchPage.LoadContent(
+                NameToSearch, "", ErrorScreenCaptureFolder, MatchCountLowerLimit);
             _searchPage.SaveData();
         }
     }

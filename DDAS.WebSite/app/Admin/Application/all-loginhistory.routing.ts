@@ -1,11 +1,13 @@
-import { ModuleWithProviders }   from '@angular/core';
-import { Routes, RouterModule }  from '@angular/router';
+import { ModuleWithProviders } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 // import { routing,
 //          appRoutingProviders } from './app.routing';
-import { LoginHistoryComponent }     from './all-loginhistory.component';
+import { LoginHistoryComponent } from './all-loginhistory.component';
+import {ErrorImagesComponent} from './error-images.component';
 
 export const LoggedInUserRoutes: Routes = [
-  { path: 'all-loginhistory', component: LoginHistoryComponent}
+  { path: 'all-loginhistory', component: LoginHistoryComponent},
+  { path: 'error-images', component: ErrorImagesComponent}
 ]
 
 

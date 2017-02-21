@@ -97,7 +97,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder,
-            int MatchCountLowerLimit)
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }

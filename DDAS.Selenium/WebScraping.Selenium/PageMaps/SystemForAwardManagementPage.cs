@@ -35,7 +35,10 @@ namespace WebScraping.Selenium.Pages
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
                         IList<IWebElement> InputTags = Web.FindElements(By.Id("q"));
-                        return InputTags[0];
+                        if (InputTags.Count > 0)
+                            return InputTags[0];
+                        else
+                            return null;
                     });
                 IWebElement targetElement = wait.Until(waitForElement);
                 return targetElement;

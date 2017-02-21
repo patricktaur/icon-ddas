@@ -1,6 +1,7 @@
 ﻿//using DocumentFormat.OpenXml.Drawing;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
@@ -261,7 +262,23 @@ namespace Utilities.WordTemplate
             var TableCell = CellWithVerticalAlign();
             var paragraph = ParagraphWithCenterAlign();
 
-            paragraph.Append(new Run(new Text(Text)));
+            if(Text != null && Text.Length > 0 && Text.Contains("\n"))
+            {
+                var Values = 
+                    Text.Split('\n');
+
+                var run = new Run();
+                for(int Index = 0; Index < Values.Count(); Index++)
+                {
+                    if(Index > 0)
+                        run.Append(new Break());
+
+                    run.Append(new Text(Values[Index]));
+                }
+                paragraph.Append(run);
+            }
+            else
+                paragraph.Append(new Run(new Text(Text)));
 
             TableCell.Append(paragraph);
             _row.Append(TableCell);
@@ -487,9 +504,28 @@ namespace Utilities.WordTemplate
             _row = new TableRow();
             foreach (string Value in CellValues)
             {
+                //string[] temp = new string[] { };
+                //if(Value.Contains("\n"))
+                //{
+                //    temp = Value.Split('\n');
+                //    AddCellValue(temp);
+                //}
+                //else
                 AddTableCell(Value);
             }
             _table.Append(_row);
+        }
+
+        private void AddCellValue(string[] Values)
+        {
+            var TableCell = CellWithVerticalAlign();
+            var paragraph = ParagraphWithCenterAlign();
+
+            paragraph.Append(new Run(new Text(Values.ToString())
+            { Space = SpaceProcessingModeValues.Preserve }));
+
+            TableCell.Append(paragraph);
+            _row.Append(TableCell);
         }
 
         public void WriteParagraph(string Text)

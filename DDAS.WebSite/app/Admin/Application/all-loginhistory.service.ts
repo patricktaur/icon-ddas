@@ -45,6 +45,25 @@ export class LoginHistoryService {
             .catch(this.handleError);      
     }
 
+    getAllErrorImages(){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetErrorImages',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    deleteAllErrorImages(){
+        console.log("DeleteAllError888888888888");
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteAllErrorImages',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();
@@ -63,5 +82,4 @@ export class LoginHistoryService {
 
         return Observable.throw(applicationError || modelStateErrors || 'Server error');
     }
-
 }

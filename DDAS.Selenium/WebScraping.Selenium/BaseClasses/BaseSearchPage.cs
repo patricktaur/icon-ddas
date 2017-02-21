@@ -21,6 +21,7 @@ namespace WebScraping.Selenium.BaseClasses
         public abstract void LoadContent(
             string NameToSearch, 
             string DownloadFolder,
+            string ErrorScreenCapture,
             int MatchCountLowerLimit);
 
         public virtual void SavePageImage() {

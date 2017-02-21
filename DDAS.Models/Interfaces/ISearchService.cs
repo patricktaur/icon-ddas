@@ -20,7 +20,8 @@ namespace DDAS.Models.Interfaces
         //Patrick 27Nov2016
         ComplianceForm GetNewComplianceForm(ILog log, string UserName);
 
-        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log);
+        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log,
+            string ErrorScreenCaptureFolder);
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
 
         //Pradeep 5Jan2017

@@ -206,7 +206,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder,
-            int MatchCountLowerLimit)
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');
 
@@ -219,7 +219,7 @@ namespace WebScraping.Selenium.Pages
 
                     if (ComponentGreaterThanTwoCharacters &&
                         SearchTerms(WordsInNameToSearch[counter]) &&
-                        _DisqualificationSiteData.DisqualifiedInvestigatorList.Count == 0)
+                        _DisqualificationSiteData.DisqualifiedInvestigatorList.Count >= 0)
                         LoadDisqualificationProceedingsList(NameToSearch,
                             MatchCountLowerLimit);
                 }
@@ -227,13 +227,14 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
-                SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
-                    "DisqualificationProceedings_" + 
-                    DateTime.Now.ToString("dd MMM yyyy hh_mm") 
-                    + ".png");
+                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\DisqualificationProceedings_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
 
                 _DisqualificationSiteData.DataExtractionSucceeded = false;
-                _DisqualificationSiteData.DataExtractionErrorMessage = e.Message;
+                _DisqualificationSiteData.DataExtractionErrorMessage = e.Message +
+                    " - " + ErrorCaptureFilePath;
                 _DisqualificationSiteData.ReferenceId = null;
                 throw new Exception(e.ToString());
             }

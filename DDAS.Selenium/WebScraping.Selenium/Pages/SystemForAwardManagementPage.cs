@@ -189,6 +189,7 @@ namespace WebScraping.Selenium.Pages
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder,
+            string ErrorScreenCaptureFolder,
             int MatchCountLowerLimit)
         {
             string[] Name = NameToSearch.Split(' ');
@@ -213,13 +214,14 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
-                SaveScreenShot(@"c:\Development\p926-ddas\documents\technical\images\" +
-                    "SAM_" + 
+                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\FDAWarningLetters_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png");
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
 
                 _SAMSiteData.DataExtractionSucceeded = false;
-                _SAMSiteData.DataExtractionErrorMessage = e.Message;
+                _SAMSiteData.DataExtractionErrorMessage = e.Message +
+                    " - " + ErrorCaptureFilePath;
                 throw new Exception(e.ToString());
             }
             finally

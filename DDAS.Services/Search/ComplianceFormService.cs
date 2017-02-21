@@ -100,6 +100,11 @@ namespace DDAS.Services.Search
                 }
                 ComplianceFormDetails.Add(ExcelRow);
             }
+            if(Validations.Count > 0)
+            {
+                List<string> temp = new List<string>() {"errors found"};
+                Validations.Add(temp);
+            }
             return Validations.Count > 0 ? Validations : ComplianceFormDetails;
         }
 
@@ -166,7 +171,8 @@ namespace DDAS.Services.Search
             _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
 
-        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log)
+        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,
+            string ErrorScreenCaptureFolder)
         {
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
@@ -174,7 +180,7 @@ namespace DDAS.Services.Search
 
             AddMissingSearchStatusRecords(frm);
             //Check and Search if required:
-            AddMatchingRecords(frm, log);
+            AddMatchingRecords(frm, log, ErrorScreenCaptureFolder);
 
             RollUpSummary(frm);
 
@@ -470,7 +476,8 @@ namespace DDAS.Services.Search
             return form;
         }
 
-        private void AddMatchingRecords(ComplianceForm frm, ILog log)
+        private void AddMatchingRecords(ComplianceForm frm, ILog log,
+            string ErrorScreenCaptureFolder)
         {
             int InvestigatorId = 1;
             frm.ExtractedOn = DateTime.Now; //last extracted on
@@ -524,8 +531,9 @@ namespace DDAS.Services.Search
                             //clear previously added matching records.
                             frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
 
-                            var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
-                                ComponentsInInvestigatorName);
+                            var MatchedRecords = GetMatchedRecords(siteSource, 
+                                InvestigatorName, log,
+                                ErrorScreenCaptureFolder, ComponentsInInvestigatorName);
 
                             GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
 
@@ -638,7 +646,7 @@ namespace DDAS.Services.Search
         }
  
         public List<MatchedRecord> GetMatchedRecords(SiteSource site,
-            string NameToSearch, ILog log,
+            string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
             switch (site.SiteEnum)
@@ -656,6 +664,7 @@ namespace DDAS.Services.Search
                 case SiteEnum.FDAWarningLettersPage:
                     return GetFDAWarningLettersPageMatchedRecords(
                         site.SiteDataId, NameToSearch,
+                        ErrorScreenCaptureFolder,
                         ComponentsInInvestigatorName);
 
                 case SiteEnum.ERRProposalToDebarPage:
@@ -671,6 +680,7 @@ namespace DDAS.Services.Search
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
                     return GetClinicalInvestigatorDisqualificationPageMatchedRecords(
                         site.SiteDataId, NameToSearch,
+                        ErrorScreenCaptureFolder,
                         ComponentsInInvestigatorName);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
@@ -695,6 +705,7 @@ namespace DDAS.Services.Search
 
                 case SiteEnum.SystemForAwardManagementPage:
                     return GetSAMPageMatchedRecords(site.SiteDataId, NameToSearch,
+                        ErrorScreenCaptureFolder,
                         ComponentsInInvestigatorName);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
@@ -1078,18 +1089,20 @@ namespace DDAS.Services.Search
             foreach(Finding finding in form.Findings)
             {
                 string DateOfInspection = "";
-                if (finding.DateOfInspection == null)
+                if (finding.DateOfInspection != null)
                     DateOfInspection =
                         finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
                 if (finding.Selected)
                 {
+                    string Observation = finding.Observation;
+
                     string[] CellValues = new string[]
                     {
                         finding.SourceNumber.ToString(),
                         finding.InvestigatorName,
                         DateOfInspection,
-                        finding.Observation
+                        Observation
                     };
                     writer.FillUpTable(CellValues);
                 }
@@ -1304,11 +1317,12 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
-            string NameToSearch,
+            string NameToSearch, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
             _SearchEngine.ExtractData(
-                SiteEnum.FDAWarningLettersPage, NameToSearch, MatchCountLowerLimit);
+                SiteEnum.FDAWarningLettersPage, NameToSearch, 
+                ErrorScreenCaptureFolder, MatchCountLowerLimit);
 
             var siteData = _SearchEngine.SiteData;
 
@@ -1369,12 +1383,12 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
-            Guid? SiteDataId, string NameToSearch,
+            Guid? SiteDataId, string NameToSearch, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
             _SearchEngine.ExtractData(
-                SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch, 
-                MatchCountLowerLimit);
+                SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch,
+                ErrorScreenCaptureFolder, MatchCountLowerLimit);
 
             var siteData = _SearchEngine.SiteData;
 
@@ -1468,10 +1482,11 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
-            string NameToSearch, int ComponentsInIvestigatorName)
+            string NameToSearch, string ErrorScreenCaptureFolder, 
+            int ComponentsInIvestigatorName)
         {
             _SearchEngine.ExtractData(SiteEnum.SystemForAwardManagementPage, NameToSearch,
-                MatchCountLowerLimit);
+                ErrorScreenCaptureFolder, MatchCountLowerLimit);
 
             var siteData = _SearchEngine.SiteData;
 
@@ -1623,6 +1638,10 @@ namespace DDAS.Services.Search
                     "numbers or special characters!";
                 ValidationMessages.Add(ValidationMessage);
             }
+
+            if (ExcelInputRow[1].ToLower() == "sub")
+                return ValidationMessages;
+
             if (ExcelInputRow[4] == "")
             {
                 ValidationMessage = "RowNumber: " + Row +

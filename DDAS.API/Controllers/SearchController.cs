@@ -16,6 +16,7 @@ using DDAS.Services.Search;
 using System.Collections.Generic;
 using System.Web;
 using Utilities.WordTemplate;
+using System.Linq;
 
 namespace DDAS.API.Controllers
 {
@@ -32,7 +33,8 @@ namespace DDAS.API.Controllers
         private string UploadsFolder;
         private string ComplianceFormFolder;
         private string ExcelTemplateFolder;
-        
+        private string ErrorScreenCaptureFolder;
+
         private string RootPath;
         private string WordTemplateFolder;     
 
@@ -62,6 +64,9 @@ namespace DDAS.API.Controllers
 
             WordTemplateFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
+
+            ErrorScreenCaptureFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
         }
 
         [Route("Upload")]
@@ -98,15 +103,23 @@ namespace DDAS.API.Controllers
 
                     if (DataInExcelFile.Count >= 0)
                     {
-                        var Values = DataInExcelFile[0];
+                        
                         if (DataInExcelFile.Count == 0)
                             return Request.CreateResponse(HttpStatusCode.OK,
                                 "No records found");
-                        if(Values.Count > 9 || Values.Count < 9)
-                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
+
+                        //var Values = DataInExcelFile[0];
+
+                        if(DataInExcelFile.SelectMany(x => x.Where( y => 
+                        y.ToLower().Contains("errors found"))).Count() > 0)
+                        {
                             return
-                                Request.CreateResponse(HttpStatusCode.OK, 
+                                Request.CreateResponse(HttpStatusCode.OK,
                                 ListToString(DataInExcelFile));
+                        }
+
+                        //if (Values.Count > 9 || Values.Count < 9)
+                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
@@ -115,7 +128,8 @@ namespace DDAS.API.Controllers
                     foreach (ComplianceForm form in forms)
                     {
                         complianceForms.Add(
-                            _SearchService.ScanUpdateComplianceForm(form, _log));
+                            _SearchService.ScanUpdateComplianceForm(
+                                form, _log, ErrorScreenCaptureFolder));
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
@@ -254,7 +268,8 @@ namespace DDAS.API.Controllers
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
             _log.LogStart();
-            var result = _SearchService.ScanUpdateComplianceForm(form, _log);
+            var result = _SearchService.ScanUpdateComplianceForm(form, _log,
+                ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");
             _log.LogEnd();
             return Ok(result);
@@ -293,7 +308,6 @@ namespace DDAS.API.Controllers
                 string path = FilePath.Replace(RootPath, "");
 
                 return Ok(path);
-
             }
             catch (Exception e)
             {
@@ -458,7 +472,6 @@ namespace DDAS.API.Controllers
             }
             return retValue;
         }
-
     }
 
     public class UserDetails

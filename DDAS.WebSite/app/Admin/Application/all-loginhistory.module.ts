@@ -9,6 +9,8 @@ import {LoginHistoryRouting} from './all-loginhistory.Routing';
 import {LoginHistoryService} from './all-loginhistory.service';
 import {SharedModule} from '../../shared/shared.module'
 
+import {ErrorImagesComponent} from './error-images.component';
+
 @NgModule({ 
   imports: [
       LoginHistoryRouting,
@@ -17,7 +19,8 @@ import {SharedModule} from '../../shared/shared.module'
       SharedModule
   ],
   declarations: [
-      LoginHistoryComponent
+      LoginHistoryComponent,
+      ErrorImagesComponent
   ],
  
   providers: [      
