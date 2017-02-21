@@ -64,12 +64,11 @@ namespace DDAS.API.Controllers
 
             WordTemplateFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
-
-            ErrorScreenCaptureFolder = RootPath +
+          ErrorScreenCaptureFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
         }
 
-        [Route("Upload")]
+       [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
         {
@@ -103,7 +102,6 @@ namespace DDAS.API.Controllers
 
                     if (DataInExcelFile.Count >= 0)
                     {
-<<<<<<< HEAD
                         
                         if (DataInExcelFile.Count == 0)
                             return Request.CreateResponse(HttpStatusCode.OK,
@@ -121,17 +119,6 @@ namespace DDAS.API.Controllers
 
                         //if (Values.Count > 9 || Values.Count < 9)
                         //unable to make the uploader handle list of strings, therefore this ListToString workaround:
-=======
-                        var Values = DataInExcelFile[0];
-                        if (DataInExcelFile.Count == 0)
-                            return Request.CreateResponse(HttpStatusCode.OK,
-                                "No records found");
-                        if(Values.Count > 9 || Values.Count < 9)
-                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
-                            return
-                                Request.CreateResponse(HttpStatusCode.OK, 
-                                ListToString(DataInExcelFile));
->>>>>>> ad200701a60886e10949b14b73b1d7f9c2fb70ac
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
@@ -279,7 +266,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
-            _log.LogStart();
+           _log.LogStart();
             var result = _SearchService.ScanUpdateComplianceForm(form, _log,
                 ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");
@@ -472,7 +459,7 @@ namespace DDAS.API.Controllers
             return Ok(SearchSites.GetNewSearchQuery());
         }
 
-        string ListToString(List<List<string>> lst)
+       string ListToString(List<List<string>> lst)
         {
             string retValue = "";
             foreach(List<string> l in lst)
