@@ -85,12 +85,12 @@ namespace WebScraping.Selenium.Pages
                 throw new Exception("Could not find element: FDASearchButton");
             FDASearchButton.SendKeys(Keys.Enter);
 
-            IWebElement Table = SortTableTest1;
+            IWebElement Table = FDAWarningSortTable;
 
             if (Table == null)
                 throw new Exception("FDASortTable is null");
 
-            IList<IWebElement> TR = SortTableTest1.FindElements(By.XPath("tbody/tr"));
+            IList<IWebElement> TR = FDAWarningSortTable.FindElements(By.XPath("tbody/tr"));
 
             if(TR.Count <= 1)
                 return false;
@@ -112,7 +112,7 @@ namespace WebScraping.Selenium.Pages
 
         public void LoadFDAWarningLetters()
         {
-            IList<IWebElement> TR = SortTableTest1.FindElements(By.XPath("//tbody/tr"));
+            IList<IWebElement> TR = FDAWarningSortTable.FindElements(By.XPath("//tbody/tr"));
 
             for (int tableRow = 12; tableRow < TR.Count - 1; tableRow++)
             {

@@ -119,7 +119,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-         private IWebElement SortTableTest1
+         private IWebElement FDAWarningSortTable
         {
            get
             {
@@ -135,7 +135,7 @@ namespace WebScraping.Selenium.Pages
                     IWebElement targetElement = wait.Until(waitForElement);
                     return targetElement;
                 }
-                catch
+                catch (Exception)
                 {
                     throw new Exception("Unable to find table with id 'fd-table-2'");
                 }
