@@ -165,13 +165,6 @@
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
       <Private>True</Private>
     </Reference>
-<<<<<<< HEAD
-    <Reference Include="WebDriver, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Selenium.WebDriver.3.1.0\lib\net40\WebDriver.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-=======
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http.Formatting">

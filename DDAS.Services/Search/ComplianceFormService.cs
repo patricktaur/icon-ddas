@@ -42,7 +42,7 @@ namespace DDAS.Services.Search
 
         #region ByPradeep
         //13Jan2017
-        public List<List<string>> ReadDataFromExcelFile(string FilePath)
+        public List<List<string>> ReadDataFromExcelFile(string FilePathWithGUID)
         {
             var readExcelData = new ReadUploadedExcelFile();
 
@@ -53,7 +53,7 @@ namespace DDAS.Services.Search
             int RowIndex = 2;
             while (true)
             {
-                var ExcelRow = readExcelData.ReadDataFromExcel(FilePath, RowIndex);
+                var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
                 if(ExcelRow.Where(x => x.Contains("cannot find column")).Count() > 0)
                 {
@@ -78,7 +78,7 @@ namespace DDAS.Services.Search
                 if(ExcelRow[1].ToLower() == "principal")
                 {
                     RowIndex += 1;
-                    var SubInvestigator = readExcelData.ReadDataFromExcel(FilePath, RowIndex);
+                    var SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
                     while (SubInvestigator[1].ToLower() == "sub")
                     {
@@ -95,7 +95,7 @@ namespace DDAS.Services.Search
                             ExcelRow.Add(Inv);
                         }
                         RowIndex += 1;
-                        SubInvestigator = readExcelData.ReadDataFromExcel(FilePath, RowIndex);
+                        SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
                     }
                 }
                 ComplianceFormDetails.Add(ExcelRow);
@@ -112,9 +112,10 @@ namespace DDAS.Services.Search
         public List<ComplianceForm> ReadUploadedFileData(List<List<string>> DataFromExcelFile, 
             ILog log,
             string UserName, 
-            string FilePath)
+            string FilePathWithGUID,
+            string UploadedFileName)
         {
-var ComplianceForms = new List<ComplianceForm>();
+            var ComplianceForms = new List<ComplianceForm>();
 
             for (int Counter = 0; Counter < DataFromExcelFile.Count; Counter++)
             {
@@ -124,8 +125,8 @@ var ComplianceForms = new List<ComplianceForm>();
 
                 var form = GetNewComplianceForm(log, UserName);
                 form.AssignedTo = UserName;
-                form.UploadedFileName = Path.GetFileName(FilePath);
-
+                form.UploadedFileName = UploadedFileName;
+                form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
                 form.ProjectNumber = DetailsInEachRow[4];
                 form.SponsorProtocolNumber = DetailsInEachRow[5];
                 form.Institute = DetailsInEachRow[6];
@@ -158,7 +159,8 @@ var ComplianceForms = new List<ComplianceForm>();
                 }
                 ComplianceForms.Add(form);
             }
-            return ComplianceForms;        }
+            return ComplianceForms;
+        }
         #endregion
 
         public void UpdateAssignedToData(string AssignedTo, bool Active,
@@ -170,12 +172,7 @@ var ComplianceForms = new List<ComplianceForm>();
             _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
 
-<<<<<<< HEAD
-        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,
-            string ErrorScreenCaptureFolder)
-=======
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,  string ErrorScreenCaptureFolder, string siteType = "db")
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
         {
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
@@ -183,13 +180,9 @@ var ComplianceForms = new List<ComplianceForm>();
 
             AddMissingSearchStatusRecords(frm);
             //Check and Search if required:
-<<<<<<< HEAD
-            AddMatchingRecords(frm, log, ErrorScreenCaptureFolder);
-=======
             AddMatchingRecords(frm, log,  ErrorScreenCaptureFolder, siteType);
    
             return SaveComplianceForm(frm);
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
 
             //RollUpSummary(frm);
 
@@ -346,14 +339,10 @@ var ComplianceForms = new List<ComplianceForm>();
             }
         }
 
- 
-
         void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string NameToSearch)
         {
-            //0020 - 007E,
-            //var name = Regex.Replace(NameToSearch, @"[^\u0020-\u007E]+", string.Empty);
             NameToSearch = RemoveExtraCharacters(NameToSearch);
-            string[] Names = NameToSearch.Split(' ');
+            string[] Name = NameToSearch.Split(' ');
             foreach (SiteDataItemBase item in items)
             {
                 if (item.FullName != null)
@@ -362,29 +351,31 @@ var ComplianceForms = new List<ComplianceForm>();
                     //{
                     string FullName = RemoveExtraCharacters(item.FullName);
                     int Count = 0;
-                    string[] TempName = FullName.Split(' ');
+                    string[] FullNameDB = FullName.Split(' ');
 
-                    for (int Index = 0; Index < Names.Length; Index++)
+                    for (int Index = 0; Index < Name.Length; Index++)
                     {
-                        var temp = Names[Index];
+                        var temp = Name[Index];
                         if (temp != null)
                         {
                             if (temp != "")
                             {
-                                for (int Counter = 0; Counter < TempName.Length; Counter++)
+                                for (int Counter = 0; Counter < FullNameDB.Length; Counter++)
                                 {
-                                    TempName[Counter] = RemoveExtraCharacters(TempName[Counter]);
+                                    FullNameDB[Counter] = RemoveExtraCharacters(FullNameDB[Counter]);
 
                                     bool FullNameComponentIsEqualsToNameComponentAndIsNotNull =
-                                    (TempName[Counter].ToLower().Equals(Names[Index].ToLower())
-                                    && TempName[Counter] != null);
+                                    (FullNameDB[Counter] != null && 
+                                    FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower())
+                                    );
 
-                                    bool FullNameComponentStartWith = (TempName[Counter].ToLower().
-                                    StartsWith(Names[Index].ToLower()));
+                                    bool FullNameComponentStartWith = (FullNameDB[Counter].ToLower().
+                                    StartsWith(Name[Index].ToLower()));
 
                                     if (FullNameComponentIsEqualsToNameComponentAndIsNotNull)
                                     {
                                         Count += 1;
+                                        break;
                                     }
                                 }
                             }
@@ -574,12 +565,7 @@ var ComplianceForms = new List<ComplianceForm>();
             return form;
         }
 
-<<<<<<< HEAD
-        private void AddMatchingRecords(ComplianceForm frm, ILog log,
-            string ErrorScreenCaptureFolder)
-=======
         private void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType)
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
         {
             int InvestigatorId = 1;
             frm.ExtractedOn = DateTime.Now; //last extracted on
@@ -590,7 +576,7 @@ var ComplianceForms = new List<ComplianceForm>();
                 var InvestigatorName = RemoveExtraCharacters(inv.Name);
 
                 var ComponentsInInvestigatorName =
-                    InvestigatorName.Split(' ').Count();
+                    InvestigatorName.Trim().Split(' ').Count();
 
                 inv.ExtractedOn = DateTime.Now;
                 inv.HasExtractionError = true; // until set to false.
@@ -633,14 +619,9 @@ var ComplianceForms = new List<ComplianceForm>();
                             //clear previously added matching records.
                             frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
 
-<<<<<<< HEAD
-                            var MatchedRecords = GetMatchedRecords(siteSource, 
-                                InvestigatorName, log,
-                                ErrorScreenCaptureFolder, ComponentsInInvestigatorName);
-=======
+
                             var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
                                ErrorScreenCaptureFolder,  ComponentsInInvestigatorName);
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
 
                             GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
 
@@ -757,12 +738,8 @@ var ComplianceForms = new List<ComplianceForm>();
                 }
             }
         }
- 
-<<<<<<< HEAD
-        public List<MatchedRecord> GetMatchedRecords(SiteSource site,
-=======
+
        public List<MatchedRecord> GetMatchedRecords(SiteSource site,
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
@@ -1502,11 +1479,7 @@ var ComplianceForms = new List<ComplianceForm>();
             return ConvertToMatchedRecords(AdequateAssuranceList);
         }
 
-<<<<<<< HEAD
-        public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
-=======
       public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
             Guid? SiteDataId, string NameToSearch, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {
@@ -1605,11 +1578,7 @@ var ComplianceForms = new List<ComplianceForm>();
             return ConvertToMatchedRecords(CIAList);
         }
 
-<<<<<<< HEAD
-        public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
-=======
        public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
             string NameToSearch, string ErrorScreenCaptureFolder, 
             int ComponentsInIvestigatorName)
         {
@@ -1647,7 +1616,6 @@ var ComplianceForms = new List<ComplianceForm>();
                 return null;
 
             return ConvertToMatchedRecords(SDNList);
-
         }
 
         #endregion

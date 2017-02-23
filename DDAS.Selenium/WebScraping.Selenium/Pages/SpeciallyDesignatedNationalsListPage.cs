@@ -128,7 +128,7 @@ namespace WebScraping.Selenium.Pages
                         NamesFromPDF.RowNumber = RowNumber;
                         NamesFromPDF.Name = TempRecord;
                         NamesFromPDF.RecordNumber = RecordNumber;
-                        NamesFromPDF.PageNumber = i;
+                        //NamesFromPDF.PageNumber = i;
                         NamesFromPDF.WordsMatched = WordsMatched;
                         _SDNSiteData.SDNListSiteData.Add(NamesFromPDF);
 

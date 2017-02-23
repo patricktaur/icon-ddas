@@ -54,9 +54,35 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
+    deleteErrorImage(FileName: string){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteErrorImage?FileName=' + FileName,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     deleteAllErrorImages(){
-        console.log("DeleteAllError888888888888");
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteAllErrorImages',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getExtractionHistory(){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetDataExtractionHistory',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getErrorImageFolderPath(){
+        return this.http.get(this._baseUrl + 'AppAdmin/DownloadErrorImage',
         this._options)
         .map((res: Response) => {
             return res.json();

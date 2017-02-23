@@ -157,6 +157,7 @@ namespace DDAS.Models.Entities.Domain
         public string Institute { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public string UploadedFileName { get; set; }
+        public string GeneratedFileName { get; set; }
         //Patrick 19Feb2017:
         public int ExtractionQuePosition { get; set; }
         public DateTime? ExtractionQueStart { get; set; }
@@ -844,10 +845,7 @@ namespace DDAS.Models.Entities.Domain
     #endregion
 
     #region ByPatrick
-<<<<<<< HEAD
-=======
-   
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
+
     public class MatchedRecord
     {
         public int MatchCount { get; set; }
@@ -904,7 +902,6 @@ namespace DDAS.Models.Entities.Domain
         public List<Link> Links { get; set; } = new List<Link>();
     }
 
-
     public class ComplianceFormManage
     {
         public string AssignedTo { get; set; }
@@ -918,6 +915,19 @@ namespace DDAS.Models.Entities.Domain
     {
         public string FileName { get; set; }
         public long FileSize { get; set; }
+    }
+    #endregion
+
+    #region DataExtractionView
+    public class DataExtractionHistory
+    {
+        //public string SiteName { get; set; }
+        public int SiteNumber { get; set; }
+        public SiteEnum Enum { get; set; }
+        public DateTime ExtractionDate { get; set; }
+        public DateTime? SiteLastUpdatedOn { get; set; }
+        public string ErrorDescription { get; set; }
+        public string ExtractionMessage { get; set; }
     }
     #endregion
 

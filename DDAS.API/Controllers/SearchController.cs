@@ -64,16 +64,12 @@ namespace DDAS.API.Controllers
 
             WordTemplateFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
-<<<<<<< HEAD
 
-            ErrorScreenCaptureFolder = RootPath +
-=======
           ErrorScreenCaptureFolder = RootPath +
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
         }
 
-       [Route("Upload")]
+        [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
         {
@@ -97,17 +93,26 @@ namespace DDAS.API.Controllers
 
                 var complianceForms = new List<ComplianceForm>();
 
-                List<string> ValidationMessages = new List<string>();
-                
+                List<string> ValidationMessages = new List<string>();                
 
                 foreach (MultipartFileData file in provider.FileData)
                 {
+                    string FilePathWithGUID = file.LocalFileName;
+                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                    {
+                        UploadedFileName = UploadedFileName.Trim('"');
+                    }
+                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                    {
+                        UploadedFileName = Path.GetFileName(UploadedFileName);
+                    }
+
                     var DataInExcelFile =
-                            _SearchService.ReadDataFromExcelFile(file.LocalFileName);
+                            _SearchService.ReadDataFromExcelFile(FilePathWithGUID);
 
                     if (DataInExcelFile.Count >= 0)
                     {
-                        
                         if (DataInExcelFile.Count == 0)
                             return Request.CreateResponse(HttpStatusCode.OK,
                                 "No records found");
@@ -127,7 +132,7 @@ namespace DDAS.API.Controllers
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
-                        _log, userName, file.LocalFileName);
+                        _log, userName, FilePathWithGUID, UploadedFileName);
 
                     foreach (ComplianceForm form in forms)
                     {
@@ -163,7 +168,6 @@ namespace DDAS.API.Controllers
                 return headers.ContentDisposition.FileName.Replace("\"", string.Empty);
             }
         }
-
 
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
@@ -212,7 +216,6 @@ namespace DDAS.API.Controllers
                 _SearchService.getPrincipalInvestigators(UserName, true, true));
         }
 
-
         [Route("GetInvestigatorSiteSummary")]
         [HttpGet]
         public IHttpActionResult GetInvestigatorSiteSummary(string formId, int investigatorId)
@@ -222,7 +225,6 @@ namespace DDAS.API.Controllers
                     getInvestigatorSiteSummary(formId, investigatorId));
         }
 
-        //Pradeep 4Jan2017
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
@@ -236,10 +238,6 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
-            //Patrick 02Dec2016
-            //_log.LogStart();
-            //try
-            //{
             var UserName = User.Identity.GetUserName();
             if (formId == null)
             {
@@ -271,11 +269,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
-<<<<<<< HEAD
-            _log.LogStart();
-=======
            _log.LogStart();
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
             var result = _SearchService.ScanUpdateComplianceForm(form, _log,
                 ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");
@@ -283,7 +277,6 @@ namespace DDAS.API.Controllers
             return Ok(result);
         }
         #endregion
-
 
         [Route("SaveAssignedToData")]
         [HttpGet]
@@ -319,11 +312,8 @@ namespace DDAS.API.Controllers
             }
             catch (Exception e)
             {
-                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
-                //    "Error Details: " + e.Message);
                 return  Content(HttpStatusCode.BadRequest, e.Message);
             }
-        
         }
 
         [Route("GenerateComplianceFormPDF")]
@@ -413,15 +403,11 @@ namespace DDAS.API.Controllers
             }
             return result;
         }
-
-       
+     
         [Route("CloseComplianceForm")]
         [HttpPut]
         public IHttpActionResult CloseComplianceForm(Guid ComplianceFormId)
         {
-            //compare AssignedTo to loggedInUser
-            //validation: all reviews must be completed.
-
             ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             form.Active = false;

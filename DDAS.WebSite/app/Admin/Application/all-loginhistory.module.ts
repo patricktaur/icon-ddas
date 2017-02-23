@@ -10,6 +10,7 @@ import {LoginHistoryService} from './all-loginhistory.service';
 import {SharedModule} from '../../shared/shared.module'
 
 import {ErrorImagesComponent} from './error-images.component';
+import {ExtractionHistoryComponent} from './data-extraction-history.component';
 
 @NgModule({ 
   imports: [
@@ -20,7 +21,8 @@ import {ErrorImagesComponent} from './error-images.component';
   ],
   declarations: [
       LoginHistoryComponent,
-      ErrorImagesComponent
+      ErrorImagesComponent,
+      ExtractionHistoryComponent
   ],
  
   providers: [      

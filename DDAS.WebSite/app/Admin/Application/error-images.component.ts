@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
 import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
+import { ConfigService } from '../../shared/utils/config.service';
 
 @Component({
     moduleId: module.id,
@@ -10,12 +11,17 @@ import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 })
 export class ErrorImagesComponent implements OnInit {
     public ErrorImages: any[];
-
+    public ApiHost: string;
     constructor(
-        private service: LoginHistoryService
+        private service: LoginHistoryService,
+        private configService: ConfigService
     ) { }
 
     ngOnInit(){
+        this.service.getErrorImageFolderPath()
+        .subscribe((item : any[]) => {
+        this.ApiHost = this.configService.getApiHost() + item;    
+        });
         this.LoadErrorImages();
     }
 
@@ -23,7 +29,14 @@ export class ErrorImagesComponent implements OnInit {
         this.service.getAllErrorImages()
         .subscribe((item : any[]) => {
             this.ErrorImages = item;
-        });   
+        });
+    }
+
+    DeleteErrorImage(FileName: string){
+        this.service.deleteErrorImage(FileName)
+        .subscribe((item : any[]) => {
+            this.LoadErrorImages();
+        });        
     }
 
     deleteAllErrorImages(){

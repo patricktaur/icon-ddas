@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDAS.Models.Entities.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace DDAS.Models.Interfaces
 {
     public interface IAppAdmin
     {
-         
+        List<DataExtractionHistory> GetDataExtractionHistory();
     }
 }

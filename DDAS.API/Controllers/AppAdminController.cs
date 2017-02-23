@@ -15,14 +15,13 @@ namespace DDAS.API.Controllers
     [RoutePrefix("api/AppAdmin")]
     public class AppAdminController : ApiController
     {
-        private ISearchService _SearchService;
-
+        private IAppAdmin _AppAdmin;
         private string ErrorScreenCaptureFolder;
         private string RootPath;
 
-        public AppAdminController(ISearchService SearchService)
+        public AppAdminController(IAppAdmin AppAdmin)
         {
-            _SearchService = SearchService;
+            _AppAdmin = AppAdmin;
 
             RootPath = HttpRuntime.AppDomainAppPath;
 
@@ -49,7 +48,7 @@ namespace DDAS.API.Controllers
             }
             return ListOfErrorImages;
         }
-              //DeleteAllErrorImages
+        
         [Route("DeleteAllErrorImages")]
         [HttpGet]
         public IHttpActionResult DeleteAllErrorImages()
@@ -61,6 +60,31 @@ namespace DDAS.API.Controllers
                 File.Delete(file);
             }
             return Ok(true);
+        }
+
+        [Route("DeleteErrorImage")]
+        [HttpGet]
+        public IHttpActionResult DeleteErrorImage(string FileName)
+        {
+            if(File.Exists(ErrorScreenCaptureFolder + FileName))
+                File.Delete(ErrorScreenCaptureFolder + FileName);
+            return Ok(true);
+        }
+
+        [Route("GetDataExtractionHistory")]
+        [HttpGet]
+        public IHttpActionResult GetDataExtractionHistory()
+        {
+            return Ok(_AppAdmin.GetDataExtractionHistory());
+        }
+
+        [Route("DownloadErrorImage")]
+        [HttpGet]
+        public IHttpActionResult DownloadErrorImage()
+        {
+            string FilePath = ErrorScreenCaptureFolder;
+            string path = FilePath.Replace(RootPath, "");
+            return Ok(path);
         }
     }
 }

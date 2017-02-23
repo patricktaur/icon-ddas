@@ -5,49 +5,57 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<h3 class="align-left no-margin-top">
-						Error Images
+						Live Data Extraction Error Images
 					</h3>
 				</div>
 			</div>			
 		</div>
 
-		<div class="well">			
-			<div class="row">
-				<div class="col-md-8">
-					<button type="button" class="btn btn-primary" (click)="deleteAllErrorImages()">Delete All</button>
-				</div>
-				<div class="col-md-4">
-
-				</div>                
-			</div>    
-			<div class="row">
-				<div class="col-lg-8">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th>File Name</th>
-								<th>Size (in KB)</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
-							<tr *ngFor="let item of ErrorImages" class="active">
-								<td class="text-center">
-									{{item.FileName}}
-								</td>
-								<td class="text-center">
-									{{item.FileSize}}
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					 <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
-				</div>
-				<div class="col-lg-4">
-                    
-				</div>
-			</div>
+		<div class="alert alert-info" *ngIf="formLoading">
+			<strong>Loading ...</strong>
 		</div>
+		<div *ngIf="!formLoading">
+			<div class="well">			
+				<div class="row">
+					<div class="col-md-8">
+						<button type="button" class="btn btn-primary" (click)="deleteAllErrorImages()">Delete All</button>
+					</div>
+					<div class="col-md-4">
 
+					</div>                
+				</div>    
+				<div class="row">
+					<div class="col-lg-8">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>File Name</th>
+									<th>Size (in KB)</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
+								<tr *ngFor="let item of ErrorImages" class="active">
+									<td class="text-center">
+										<a href="{{ApiHost}}{{item.FileName}}">{{item.FileName}}</a>
+									</td>
+									<td class="text-center">
+										{{item.FileSize}}
+									</td>
+									<td>
+										<button type="button" class="btn btn-primary" (click)="DeleteErrorImage(item.FileName)" title="Delete Error Image"> <span class="glyphicon glyphicon-remove"></span> </button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+					</div>
+					<div class="col-lg-4">
+						
+					</div>
+				</div>
+			</div>		
+		</div>
 	</div>
 </div>

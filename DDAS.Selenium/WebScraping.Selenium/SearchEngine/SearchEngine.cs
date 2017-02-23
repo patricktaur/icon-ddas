@@ -485,19 +485,11 @@ namespace WebScraping.Selenium.SearchEngine
             get {
                 if (_Driver == null)
                 {
-                    //PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
-                    //service.IgnoreSslErrors = true;
-                    //service.SslProtocol = "any";
-
-<<<<<<< HEAD
-                    //_Driver = new PhantomJSDriver(service);
-
-                    _Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries1\ChromeDriver\");
-
-                    _Driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(20));
-                    _Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
-=======
+                    PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
+                    service.IgnoreSslErrors = true;
+                    service.SslProtocol = "any";
                     _Driver = new PhantomJSDriver(service);
+
                     _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
                     _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
                     //Patrick 16Feb2017
@@ -505,9 +497,7 @@ namespace WebScraping.Selenium.SearchEngine
                     //_Driver.Manage().Window.Size = new Size(1124, 850);
                     //_Driver.Manage().Window.Size = new Size(800, 600);
 
-
                     //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
 
                     return _Driver;
                 }

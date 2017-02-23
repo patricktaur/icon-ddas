@@ -214,11 +214,7 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
-<<<<<<< HEAD
-                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\FDAWarningLetters_" +
-=======
                 var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\SAM_" +
->>>>>>> a581a415be30b4f10a7e9b73f5bcd2960dab82dc
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".png";
                 SaveScreenShot(ErrorCaptureFilePath);
