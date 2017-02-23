@@ -17,6 +17,7 @@ using DDAS.Services.Search;
 using DDAS.Services.UserService;
 using Utilities.EMail;
 using DDAS.Models.Entities.Domain;
+using DDAS.Services.AppAdminService;
 
 namespace DDAS.API.App_Start
 {
@@ -93,6 +94,8 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<IEMailService>(() => new EMailService(cred));
             container.Register<IEMailService>(() => new EMailService(cred));
+
+            container.Register<IAppAdmin, AppAdmin>();
         }
     }
 }

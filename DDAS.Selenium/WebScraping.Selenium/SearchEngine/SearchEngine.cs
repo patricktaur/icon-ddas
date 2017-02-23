@@ -488,15 +488,14 @@ namespace WebScraping.Selenium.SearchEngine
                     PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
                     service.IgnoreSslErrors = true;
                     service.SslProtocol = "any";
-
                     _Driver = new PhantomJSDriver(service);
+
                     _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
                     _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
                     //Patrick 16Feb2017
                     //_Driver.Manage().Window.Maximize();
                     //_Driver.Manage().Window.Size = new Size(1124, 850);
                     //_Driver.Manage().Window.Size = new Size(800, 600);
-
 
                     //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries\ChromeDriver");
 
@@ -529,10 +528,10 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Dispose()
         {
-            foreach (var process in Process.GetProcessesByName("phantomjs"))
-            {
-                process.Dispose();
-            }
+            //foreach (var process in Process.GetProcessesByName("phantomjs"))
+            //{
+            //    process.Dispose();
+            //}
 
             if (_Driver != null)
             {

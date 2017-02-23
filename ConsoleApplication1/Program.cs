@@ -1,7 +1,4 @@
-﻿
-
-
-using DDAS.Data.Mongo;
+﻿using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
@@ -38,7 +35,7 @@ namespace ConsoleApplication1
                 Console.WriteLine("After StartLiveScan");
                 //Console.ReadLine();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 _WriteLog = new LogText(exePath + @"\ERROR-LIVE-SCAN.log", true);

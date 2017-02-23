@@ -13,11 +13,11 @@ namespace DDAS.Models.Interfaces
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
 
-
         ComplianceForm GetNewComplianceForm(ILog log, string UserName);
  
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log, 
             string ErrorScreenCaptureFolder, string siteType = "db");
+
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
         void UpdateAssignedToData(string AssignedTo, bool Active, Guid? RecId);
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
@@ -25,12 +25,7 @@ namespace DDAS.Models.Interfaces
         List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter);
 
-  
-
-
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
-        
-
 
         ComplianceForm RollUpSummary(ComplianceForm form);
 
@@ -40,9 +35,9 @@ namespace DDAS.Models.Interfaces
         string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder);
 
         List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row);
-        List<List<string>> ReadDataFromExcelFile(string FilePath);
+        List<List<string>> ReadDataFromExcelFile(string FilePathWithGUID);
         List<ComplianceForm> ReadUploadedFileData(List<List<string>> ExcelInputData, 
-            ILog log, string UserName, string FilePath);
+            ILog log, string UserName, string FilePathWithGUID, string UploadedFileName);
 
         string GenerateComplianceForm(
             string DownloadFolder, string TemplateFolder,

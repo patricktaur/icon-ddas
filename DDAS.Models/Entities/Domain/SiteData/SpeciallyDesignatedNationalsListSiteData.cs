@@ -22,7 +22,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string Status { get; set; }
         //public int RecordNumber { get; set; }
         public string Name { get; set; }
-        public int PageNumber { get; set; }
+        //public int PageNumber { get; set; }
         public string WordsMatched { get; set; }
         
         public override string FullName {
@@ -37,7 +37,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
             {
                 return
                     "Name: " + Name + "~" +
-                    "Page Number: " + PageNumber + "~" +
+                    //"Page Number: " + PageNumber + "~" +
                     "Record Number: " + RecordNumber;
             }
         }
