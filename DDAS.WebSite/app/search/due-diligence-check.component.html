@@ -17,8 +17,10 @@
 					<!--center	-->
 					<div class="text-right vertical-center">
 						<a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Batch Upload Template</a>
-						<p>Extraction Pending: {{extractionPendingRecordCount}} &nbsp;<button type="button" class="glyphicon glyphicon-refresh"
+						<p>Review Pending Pending: {{reviewPendingRecordCount}}</p>		
+						<p>Extraction Pending: {{extractionPendingRecordCount}} &nbsp;<button type="button" *ngIf="extractionPendingRecordCount > 0" class="glyphicon glyphicon-refresh"
 								title="Reload" (click)="Reload();"></button></p>
+						
 
 					</div>
 

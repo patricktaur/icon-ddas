@@ -348,7 +348,11 @@ namespace DDAS.Models.Entities.Domain
         {
             get
             {
-                if (ExtractionPendingInvestigatorCount > 0)
+                if (ExtractionErrorInvestigatorCount > 0)
+                {
+                    return string.Format("Extraction Errors for {0} investigators. Scanning will be rescheduled.", ExtractionErrorInvestigatorCount);
+                }
+                else if (ExtractionPendingInvestigatorCount > 0)
                 {
                     if (ExtractionEstimatedCompletion.HasValue)
                     {
@@ -356,17 +360,12 @@ namespace DDAS.Models.Entities.Domain
                         {
                             var InSeconds = (ExtractionEstimatedCompletion.Value - DateTime.Now).TotalSeconds;
 
-                            TimeSpan t = TimeSpan.FromSeconds(InSeconds);
-
-                            string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",
-                                            t.Hours,
-                                            t.Minutes,
-                                            t.Seconds);
-                            return answer;
+                            return getTimeValue(InSeconds);
+                            
                         }
                         else
                         {
-                            return "";
+                            return "Taking longer than estimated.";
                         }
                     }
                     else
@@ -374,70 +373,70 @@ namespace DDAS.Models.Entities.Domain
                         return "";
                     }
 
-                        //    if (ExtractionEstimatedCompletion.HasValue)
-                        //    {
-                        //        if (ExtractionEstimatedCompletion > DateTime.Now)
-                        //        {
-                        //            //(EndDate - StartDate).TotalDays
-                        //            var InSeconds = (ExtractionEstimatedCompletion.Value - DateTime.Now).TotalSeconds;
 
-                        //            TimeSpan t = TimeSpan.FromSeconds(InSeconds);
-
-                        //            string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",
-                        //                            t.Hours,
-                        //                            t.Minutes,
-                        //                            t.Seconds);
-                        //            return answer;
-
-                        //        }
-                        //        else
-                        //        {
-                        //            return "";
-                        //        }
                     }
                 else
                 {
                     return "";
                 }
-                //if (ExtractionPendingInvestigatorCount > 0)
-                //{
-                //    if (ExtractionEstimatedCompletion.HasValue)
-                //    {
-                //        if (ExtractionEstimatedCompletion > DateTime.Now)
-                //        {
-                //            //(EndDate - StartDate).TotalDays
-                //            var InSeconds = (ExtractionEstimatedCompletion.Value - DateTime.Now).TotalSeconds;
-
-                //            TimeSpan t = TimeSpan.FromSeconds(InSeconds);
-
-                //            string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",
-                //                            t.Hours,
-                //                            t.Minutes,
-                //                            t.Seconds);
-                //            return answer;
-
-                //        }
-                //        else
-                //        {
-                //            return "";
-                //        }
-
-                //    }
-                //    else
-                //    {
-                //        return "";
-                //    }
-                //}
-                //else
-                //{
-                //    return "";
-                //}
-                //}
+  
 
             }
         }
 
+        private string getTimeValue(double ValueInSeconds)
+        {
+            TimeSpan t = TimeSpan.FromSeconds(ValueInSeconds);
 
+            //string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",
+            //                t.Hours,
+            //                t.Minutes,
+            //                t.Seconds);
+
+            string hrs = "";
+            if (t.Hours > 0)
+            {
+                hrs = t.Hours + " Hour";
+            }
+            if (t.Hours > 1)
+            {
+                hrs += "s";
+            }
+            if (hrs.Length > 0)
+            {
+                hrs += " ";
+            }
+
+            string mins = "";
+            if (t.Minutes > 0)
+            {
+                mins = t.Minutes + " Minute";
+            }
+            if (t.Minutes > 1)
+            {
+                mins += "s";
+            }
+            if (mins.Length > 0)
+            {
+                mins += " ";
+            }
+
+            string secs = "";
+            if (t.Seconds > 0)
+            {
+                secs = t.Seconds + " Second";
+            }
+            if (t.Seconds > 1)
+            {
+                secs += "s";
+            }
+            if (secs.Length > 0)
+            {
+                secs += " ";
+            }
+
+            return (hrs + mins + secs) ;
+        }
     }
 
     public class PrincipalInvestigator
@@ -1023,6 +1022,7 @@ namespace DDAS.Models.Entities.Domain
         public Guid UserId { get; set; }
     }
     #endregion
+
 
     public class ValidationError
     {

@@ -90,7 +90,7 @@ namespace DDAS.Services.Search
                 //frm.InvestigatorDetails.ForEach(inv => inv.SitesSearched.ForEach(s => (s.ExtractionPending == true){ }))
 
                 estimatedCompletionSecs += extractionPendingSites * _avgScanTimeInSecs ;  //_avgScanTimeInSecs for each form of 3 live scans.
-                var completionAt = DateTime.Now.AddSeconds(estimatedCompletionSecs * 1.25);  //extra 35%
+                var completionAt = DateTime.Now.AddSeconds(estimatedCompletionSecs * 1.30);  //extra 25%
 
                 Guid id = frm.RecId.Value;
                
