@@ -1,26 +1,27 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
-			<h3 class="no-margin-top">Due Diligence Search</h3>
-			<br>
 			<div class="row text-left">
 
-				<div class="col-md-8">
-
+				<div class="col-md-4">
+					<h3 class="no-margin-top">Due Diligence Search</h3>
+					<br>
 					<button type="button" class="btn-lg btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form">Manual Search</button>
 
 					<button type="button" class="btn-lg btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()"
 						title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created.">Batch Upload</button>
 
 				</div>
-				<div class="col-md-4 ">
+				<div class="col-md-8 ">
 					<!--center	-->
 					<div class="text-right vertical-center">
-						<a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Batch Upload Template</a>
-						<p>Review Pending Pending: {{reviewPendingRecordCount}}</p>		
-						<p>Extraction Pending: {{extractionPendingRecordCount}} &nbsp;<button type="button" *ngIf="extractionPendingRecordCount > 0" class="glyphicon glyphicon-refresh"
-								title="Reload" (click)="Reload();"></button></p>
-						
+						<p><a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Batch Upload Template</a></p>
+						<p>Review Pending: {{reviewPendingRecordCount}} </p>						
+						<p>Extraction Pending: {{extractionPendingRecordCount}} 
+							<span *ngIf="extractionPendingRecordCount > 0">&nbsp;</span>
+							<button type="button"
+								*ngIf="extractionPendingRecordCount > 0" class="glyphicon glyphicon-refresh" title="Reload" (click)="Reload();"></button></p>
+
 
 					</div>
 
@@ -67,7 +68,7 @@
 				</td>
 				<td class="text-center">
 					{{item.ProjectNumber}}
-					
+
 				</td>
 				<td>
 					{{item.SponsorProtocolNumber}}
@@ -107,7 +108,7 @@
 		<form>
 			<div class="form-group">
 				<div *ngIf="!validationMessage">
-					
+
 					<label for="fileupload">Upload a file - (.xlsx file with data to create compliance forms.)</label>
 					<input type="file" id="fileupload" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"
 						name="Upload">

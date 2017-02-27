@@ -29,6 +29,7 @@
 						<table class="table table-bordered">
 							<thead>
 								<tr>
+									<th>Created</th>
 									<th>File Name</th>
 									<th>Size (in KB)</th>
 									<th>Action</th>
@@ -36,9 +37,12 @@
 							</thead>
 							<tbody>
 								<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
-								<tr *ngFor="let item of ErrorImages" class="active">
+								<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 									<td class="text-center">
-										<a href="{{ApiHost}}{{item.FileName}}">{{item.FileName}}</a>
+										{{item.Created | date: 'dd MMM yyyy HH:mm'}}
+									</td>
+									<td class="text-center">
+										<a href="{{ApiHost}}{{item.FileName}}" target="_blank">{{item.FileName}}</a>
 									</td>
 									<td class="text-center">
 										{{item.FileSize}}

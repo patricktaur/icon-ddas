@@ -30,11 +30,12 @@
 
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
-						<!--<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>-->
+						
 						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending ">Search</button>-->
 							
 						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-						<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Save</button>
+						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
+						<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -363,6 +364,7 @@
 
 									<p>Search Started On: {{CompForm.SearchStartedOn | date: 'dd/MMM/yyyy H:m'}} </p>
 									<p>Extraction Pending for {{CompForm.ExtractionPendingInvestigatorCount}} Investigator(s)</p>
+									<p>Extraction Que : {{CompForm.ExtractionQueue}} </p>
 									<p>Extraction Que Position: {{CompForm.ExtractionQuePosition}} </p>
 									<p>Extraction Que Started At: {{CompForm.ExtractionQueStart | date: 'dd/MMM/yyyy H:m'}} </p>
 									<p>Estimated Extraction Completion within: {{CompForm.EstimatedExtractionCompletionWithin}} </p>
@@ -387,8 +389,10 @@
 					</div>
 					<div class="well">
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+						
 						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-					 <button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Save</button>
+						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
+					 <button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">

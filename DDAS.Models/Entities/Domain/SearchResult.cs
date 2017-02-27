@@ -148,6 +148,8 @@ namespace DDAS.Models.Entities.Domain
         }
 
         public Guid? RecId { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public string UpdatedBy { get; set; }
         public string AssignedTo { get; set; }
         public bool Active { get; set; } = true;
         public string SponsorProtocolNumber { get; set; }
@@ -159,7 +161,9 @@ namespace DDAS.Models.Entities.Domain
         public string UploadedFileName { get; set; }
         public string GeneratedFileName { get; set; }
         //Patrick 19Feb2017:
+        public int ExtractionQueue { get; set; }
         public int ExtractionQuePosition { get; set; }
+        public int ExtractionAttempt { get; set; }
         public DateTime? ExtractionQueStart { get; set; }
         public DateTime? ExtractionEstimatedCompletion { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
@@ -914,6 +918,7 @@ namespace DDAS.Models.Entities.Domain
     {
         public string FileName { get; set; }
         public long FileSize { get; set; }
+        public DateTime Created { get; set; }
     }
     #endregion
 

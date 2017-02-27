@@ -1,3 +1,74 @@
+26Feb2017:
+Analysing ComFormUpdates:
+
+Update Operations:
+1. UpdateAssignedToData
+2. UpdateExtractionEstimatedCompletion
+
+2. SaveCompForm
+	a. GeneralInfo
+	b.Investigator collection - add, delete
+	c. Site Collection - add, delete
+
+1. UpdateComplianceForm
+	 RemoveDeleteMarkedItemsFromFormCollections(frm);
+     AddMissingSearchStatusRecords(frm);
+     return SaveComplianceForm(frm);
+2. ScanUpdateComplianceForm
+		RemoveDeleteMarkedItemsFromFormCollections(frm);
+        AddMissingSearchStatusRecords(frm);
+            //Check and Search if required:
+        AddMatchingRecords(frm, log,  ErrorScreenCaptureFolder, siteType);
+         return SaveComplianceForm(frm);	
+
+4.  UpdateComplianceFormNIgnoreIfNotFound
+
+5. SaveComplianceForm
+	 if (frm.RecId != null)
+            GetForm
+			//AssignedTo can change after the form is downloaded by client.  
+                frm.AssignedTo = formFromDB.AssignedTo;
+
+                //REcords are found only when the form is returned from the client after the extractor saved the comp form.
+                var findingsFromLiveExtraction = formFromDB.Findings.Where(f => !frm.Findings.Any(f2 => (f2.Id == f.Id)));
+                frm.Findings.AddRange(findingsFromLiveExtraction);
+	
+	//Guid added to findings added by client.  Null Guid identifies records that are added by client.
+    var findingsAddedByClient = frm.Findings.Where(f => f.Id == null).ToList();
+    findingsAddedByClient.ForEach(f => f.Id = Guid.NewGuid());
+
+	RollUpSummary(frm);
+
+    if (frm.ExtractionPendingInvestigatorCount == 0)
+    {
+        frm.ExtractionEstimatedCompletion = null;
+    }
+
+    //set frm.ExtractionEstimatedCompletion, will be overwritten when the form is added to the Queue
+    if (frm.ExtractionPendingInvestigatorCount > 0 && frm.ExtractionEstimatedCompletion == null)
+    {
+        var formWithMaxExtractionEstimatedDate = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(o => o.ExtractionEstimatedCompletion).FirstOrDefault();
+                
+        if (formWithMaxExtractionEstimatedDate != null)
+        {
+            var maxDate = formWithMaxExtractionEstimatedDate.ExtractionEstimatedCompletion;
+            var estimatedCompletionSecs = frm.ExtractionPendingInvestigatorCount * 3 * 15;
+            DateTime baseDate;
+            if (maxDate != null && maxDate > DateTime.Now)
+            {
+                baseDate = maxDate.Value;
+            }
+            else
+            {
+                baseDate = DateTime.Now;
+            }
+            var completionAt = baseDate.AddSeconds(estimatedCompletionSecs);
+            frm.ExtractionEstimatedCompletion = completionAt;
+        }
+    }
+
+	_UOW Add or Update.
+
 29Jan2017
 For Pradeep:
 1. File upload validation - refactor, can combine in the readexcel data routine.

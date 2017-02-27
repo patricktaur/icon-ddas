@@ -46,11 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppAdminService\AppAdmin.cs" />
+    <Compile Include="LiveScan\ExtractionQueries.cs" />
+    <Compile Include="LiveScan\LIveScanQueueDistributor.cs" />
+    <Compile Include="LiveScan\LIveScanQueueProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\ComplianceFormService.cs" />
     <Compile Include="Search\ExtractData.cs" />
     <Compile Include="Search\GenerateComplianceForm.cs" />
-    <Compile Include="Search\LiveScan.cs" />
+    <Compile Include="LiveScan\LiveScan.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchSites.cs" />
     <Compile Include="Search\SiteScanData.cs" />

@@ -134,11 +134,16 @@ namespace DDAS.API.Controllers
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
                         _log, userName, FilePathWithGUID, UploadedFileName);
 
+                    var extQuery = new Services.LiveScan.ExtractionQueries(_UOW, 2);
+                    DateTime nextEstimatedLiveScanCompletion = extQuery.getNextExtractionCompletion();
+                   
                     foreach (ComplianceForm form in forms)
                     {
+                        form.ExtractionEstimatedCompletion = nextEstimatedLiveScanCompletion;
                         complianceForms.Add(
                             _SearchService.ScanUpdateComplianceForm(
                                 form, _log, ErrorScreenCaptureFolder));
+                        nextEstimatedLiveScanCompletion = nextEstimatedLiveScanCompletion.AddSeconds(extQuery.AverageExtractionTimeInSecs * 3);
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
