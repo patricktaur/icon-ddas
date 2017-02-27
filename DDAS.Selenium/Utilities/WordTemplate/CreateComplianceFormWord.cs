@@ -17,7 +17,7 @@ namespace Utilities.WordTemplate
         private Table _table;
         private TableRow _row;
 
-        #region Existing working code
+        #region Old working code
         public MemoryStream CreateComplianceForm(ComplianceForm form, string TemplateFolder, string fileName = "")
         {
             string TemplateFile = TemplateFolder + @"\ComplianceFormTemplate.docx";
@@ -469,7 +469,7 @@ namespace Utilities.WordTemplate
         {
             if (File.Exists(ComplianceFormFolder))
                 File.Delete(ComplianceFormFolder);
-
+            
             byte[] ByteArray = File.ReadAllBytes(
                 TemplateFolder + "ComplianceFormTemplate.docx");
 
