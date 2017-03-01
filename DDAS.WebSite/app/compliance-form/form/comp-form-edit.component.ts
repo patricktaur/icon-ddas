@@ -548,7 +548,7 @@ export class CompFormEditComponent implements OnInit {
         this.searchInProgress = true;
         this.service.scanSaveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
-
+                 this.ComplianceFormId = item.RecId;
                 this.searchInProgress = false;
                 this.LoadOpenComplainceForm();
 

@@ -27,24 +27,29 @@ namespace DDAS.API.Controllers
 
             ErrorScreenCaptureFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
+            //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
+
         }
 
         [Route("GetErrorImages")]
         [HttpGet]
         public List<ErrorScreenCapture> GetAllErrorImages()
         {
-            var ErrorImages = Directory.GetFiles(ErrorScreenCaptureFolder);
-
+  
             var ListOfErrorImages = new List<ErrorScreenCapture>();
 
-            foreach(string File in ErrorImages)
+            DirectoryInfo info = new DirectoryInfo(ErrorScreenCaptureFolder);
+            FileInfo[] files = info.GetFiles().OrderByDescending(o => o.CreationTime).ToArray();
+
+            foreach (FileInfo File in files)
             {
                 var ErrorImage = new ErrorScreenCapture();
 
-                FileInfo info = new FileInfo(File);
-                ErrorImage.FileName = info.Name;
-                ErrorImage.FileSize = info.Length / 1024;
+                ErrorImage.FileName = File.Name;
+                ErrorImage.FileSize = File.Length / 1024;
+                ErrorImage.Created = File.CreationTime;
                 ListOfErrorImages.Add(ErrorImage);
+
             }
             return ListOfErrorImages;
         }

@@ -151,7 +151,14 @@ body{ background: #fff}
 }
 
 
-.main{ padding: 2em !important; }
+.main{ 
+  padding: 0em !important;
+  margin:1em;
+ background: #f2f2f2 }
+ .mainLogin{
+ background: #f2f2f2;
+ height: 100vh
+ }
 .header-top{ background: #188574; color: white; padding: 2em; margin: -2em}
 .header-top .page-header{ border: 0; padding-bottom: 2em; margin: 0}
 .well-top{ margin-top: -5em}
@@ -159,14 +166,47 @@ body{ background: #fff}
   display: none;
 }*/
 .sidebar-white{ background: white; height: 10vh}
+.collapse .panel-body{ padding: 0 15px}
 .logo-area {
     background: white;  padding: 1em; text-align: center;  margin: -2em -2em 0;
 }
 .logo-area img{ margin: 2em auto 1em}
 
+.sidebar .navbar-nav>li{ width: 100%}
+.sidebar .nav>li>a{ font-size: 1em}
 
+.table>tbody>tr.active>td, .table>tbody>tr.active>th, .table>tbody>tr>td.active, .table>tbody>tr>th.active, .table>tfoot>tr.active>td, .table>tfoot>tr.active>th, .table>tfoot>tr>td.active, .table>tfoot>tr>th.active, .table>thead>tr.active>td, .table>thead>tr.active>th, .table>thead>tr>td.active, .table>thead>tr>th.active{ background-color: white !important}
 
+.ng2-pagination{ padding-left: 0}
+.ng2-pagination .current{ background: #188574}
+/*.dropdown span.caret {
+    float: right;
+    margin-right: 1em;
+    line-height: 1;
+    vertical-align: middle;
+}*/
 
+li svg {
+    padding-right: 1em;
+    margin-right: .5em;
+    margin-bottom: 1em;}
+
+td .form-control{ margin-bottom: 0; background: transparent;}
+
+.dropdown .panel-group{
+  margin-bottom: 0
+}
+
+.dropdown .panel{ box-shadow: none}
+.plus-glyphicon {
+    float: right;
+    margin-right: .5em;
+}
+
+.login-back{
+  background: #f2f2f2;
+  /*background: rebeccapurple;*/
+}
 
 @media (min-width: 768px) {
   /*.sidebar {

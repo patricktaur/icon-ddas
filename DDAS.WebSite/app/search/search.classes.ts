@@ -186,6 +186,7 @@ export class SearchList{
       AssignedTo: string = "";
       SearchStartedOn : Date ;
 
+        ExtractionQueue: number;
         ExtractionQuePosition: number;
         ExtractionQueStart : Date ;
         ExtractionEstimatedCompletion : Date ;

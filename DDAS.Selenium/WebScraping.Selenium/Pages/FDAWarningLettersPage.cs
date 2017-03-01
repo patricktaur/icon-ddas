@@ -18,7 +18,11 @@ namespace WebScraping.Selenium.Pages
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
             _UOW = uow;
-            Open();
+            if (driver == null)
+                Open();
+            else if (driver.Url.Contains("WarningLetters")) { }
+            else
+                Open();
             _FDAWarningSiteData = new FDAWarningLettersSiteData();
             _FDAWarningSiteData.Source = driver.Url;
         }

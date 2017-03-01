@@ -6,6 +6,7 @@ import { HighlightDirective }  from './highlight.directive';
 
 import { CircleComponent }  from './components/circle.component';
 import { ToggleShowComponent }  from './components/toggle-show.component';
+import { ConfirmDialogComponent }  from './components/confirm-dialog.component';
 
  import { BoolToYesNoPipe }  from './pipes/bool-yes-no.pipe'; 
   import { PadPipe }  from './pipes/pad.pipe'; 
@@ -26,7 +27,8 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
   CircleComponent,
   BoolToYesNoPipe,
   PadPipe,
-  ToggleShowComponent
+  ToggleShowComponent,
+  ConfirmDialogComponent
   
    ],
   exports:      [ 
@@ -39,7 +41,8 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
     PadPipe,
     ToggleShowComponent,
     MyDatePickerModule,
-    Ng2PaginationModule
+    Ng2PaginationModule,
+    ConfirmDialogComponent
                    ]
 })
 export class SharedModule { }

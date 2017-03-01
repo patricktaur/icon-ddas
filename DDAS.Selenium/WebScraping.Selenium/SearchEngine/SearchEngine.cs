@@ -29,8 +29,6 @@ namespace WebScraping.Selenium.SearchEngine
             //_Driver = webDriver;
         }
 
-     
-
         #region To be deleted
         public SearchResult SearchByName(SearchQuery searchQuery)
         {

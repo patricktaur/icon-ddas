@@ -1,9 +1,7 @@
-<div class="container-fluid">
+<div [ngClass]="authService.isLoggedIn?'container-fluid':'container-fluid mainLogin'">
 	<div class="row">
 
 		<div class="col-lg-2 sidebar" *ngIf="authService.isLoggedIn">
-
-
 
 			<div class="logo-area">
 				<img src="assets\images\ICON-logo.gif" width="60%" class="img-responsive">
@@ -13,7 +11,7 @@
 				<ul class="nav navbar-nav">
 					<li class="active">
 						<a data-toggle="collapse" data-target="#loggedInAccount" data-parent="#sidenav01" class="collapsed">
-						 Logged in: {{authService.userName}} <span class="caret pull-right"></span>
+						 Logged in: {{authService.userName}} <span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
 						</a>
 						<div class="collapse " id="loggedInAccount" style="height: 0px;">
 							<ul class="nav nav-list  panel-body">
@@ -34,7 +32,7 @@
 
 							<li class="active" *ngIf="authService.isAdmin">
 								<a data-toggle="collapse" data-target="#adminMenu" data-parent="#sidenav01" class="collapsed">
-						 			Application Users<span class="caret pull-right"></span>
+						 			Application Users<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
 								</a>
 								<div class="collapse" id="adminMenu" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
@@ -54,21 +52,17 @@
 
 			</div>
 
-
-
 		</div>
-		<div class="col-lg-10">
-			<!--<h1>test</h1>-->
-			<div class="main">
-				<div class="header-top" *ngIf="authService.isLoggedIn">
-					<h1 class="page-header">Due Diligence Automation System</h1>
-
+		
+			<div class="col-lg-10" style="background-color: #f2f2f2">
+				<div class="main">
+					<div class="header-top" *ngIf="authService.isLoggedIn">
+						<h1 class="page-header">Due Diligence Automation System</h1>
+					</div>
+					<div class="well-top">
+						<router-outlet> </router-outlet>
+					</div>
 				</div>
-				<div class="well-top">
-					<router-outlet> </router-outlet>
-				</div>
-
-			</div>
 		</div>
 	</div>
 </div>

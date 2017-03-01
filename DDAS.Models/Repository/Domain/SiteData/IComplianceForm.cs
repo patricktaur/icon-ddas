@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,5 +12,9 @@ namespace DDAS.Models.Repository.Domain.SiteData
         List<ComplianceForm> FindActiveComplianceForms(bool value);
         Task UpdateCollection(ComplianceForm form);
         bool DropComplianceForm(object ComplianceFormId);
+
+        bool UpdateAssignedTo(Guid id, string AssignedTo);
+        bool UpdateComplianceForm(Guid id, ComplianceForm form);
+        bool UpdateFindings(Guid id, SiteEnum siteEnum, int InvestigatorId, List<Finding> Findings);
     }
 }

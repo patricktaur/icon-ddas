@@ -14,12 +14,16 @@ namespace DDAS.Models.Interfaces
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
 
         ComplianceForm GetNewComplianceForm(ILog log, string UserName);
- 
+
+        void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType);
+
         ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log, 
             string ErrorScreenCaptureFolder, string siteType = "db");
 
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
+        bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form);
         void UpdateAssignedToData(string AssignedTo, bool Active, Guid? RecId);
+       
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 
         List<PrincipalInvestigator> GetComplianceFormsFromFilters(

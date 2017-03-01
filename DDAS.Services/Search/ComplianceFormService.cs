@@ -166,12 +166,16 @@ namespace DDAS.Services.Search
         public void UpdateAssignedToData(string AssignedTo, bool Active,
             Guid? RecId)
         {
-            var form = _UOW.ComplianceFormRepository.FindById(RecId);
-            form.AssignedTo = AssignedTo;
-            form.Active = Active;
-            _UOW.ComplianceFormRepository.UpdateCollection(form);
+            //var form = _UOW.ComplianceFormRepository.FindById(RecId);
+            //form.AssignedTo = AssignedTo;
+            //form.Active = Active;
+            //_UOW.ComplianceFormRepository.UpdateCollection(form);
+
+            _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
+
         }
 
+    
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,  string ErrorScreenCaptureFolder, string siteType = "db")
         {
             //Creates or Updates form
@@ -193,6 +197,8 @@ namespace DDAS.Services.Search
             //return frm;
         }
 
+
+        //Used by Client Save button, updates - general section, Inviestigators and Sites collection.
         public ComplianceForm UpdateComplianceForm(ComplianceForm frm)
         {
             //Creates or Updates form
@@ -200,20 +206,35 @@ namespace DDAS.Services.Search
             RemoveDeleteMarkedItemsFromFormCollections(frm);
 
             AddMissingSearchStatusRecords(frm);
-
             return SaveComplianceForm(frm);
-
-            //RollUpSummary(frm);
-            ////Patrick 02Dec2016:
-            //if (frm.RecId == null)
+            //if (frm.RecId != null)
             //{
-            //    _UOW.ComplianceFormRepository.Add(frm);
+            //    _UOW.ComplianceFormRepository.UpdateComplianceForm(frm.RecId.Value, frm);
             //}
             //else
             //{
-            //    _UOW.ComplianceFormRepository.UpdateCollection(frm);
+            //    _UOW.ComplianceFormRepository.Add(frm);
             //}
             //return frm;
+        }
+
+
+
+        public bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form) {
+            //Check if Form exists.
+            //Forms can get deleted by other operations
+            //Therefore ignore if not found.
+            var formToUpdate = _UOW.ComplianceFormRepository.FindById(form.RecId);
+           
+            if (formToUpdate == null)
+            {
+                return false;
+            }
+            else
+            {
+                 _UOW.ComplianceFormRepository.UpdateCollection(form);
+                return true;
+            }
         }
 
         private ComplianceForm SaveComplianceForm(ComplianceForm frm)
@@ -242,10 +263,10 @@ namespace DDAS.Services.Search
 
             RollUpSummary(frm);
 
-            if (frm.ExtractionPendingInvestigatorCount == 0)
-            {
-                frm.ExtractionEstimatedCompletion = null;
-            }
+            //if (frm.ExtractionPendingInvestigatorCount == 0)
+            //{
+            //    frm.ExtractionEstimatedCompletion = null;
+            //}
 
 
             //set frm.ExtractionEstimatedCompletion, will be overwritten when the form is added to the Queue
@@ -282,7 +303,9 @@ namespace DDAS.Services.Search
            
             return frm;
         }
-       
+
+    
+
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {
             var form = _UOW.ComplianceFormRepository.FindById(formId);
@@ -565,7 +588,7 @@ namespace DDAS.Services.Search
             return form;
         }
 
-        private void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType)
+        public void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType)
         {
             int InvestigatorId = 1;
             frm.ExtractedOn = DateTime.Now; //last extracted on

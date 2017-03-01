@@ -2,8 +2,6 @@
 	<div class="col-lg-12">
 		<div class="well">
 			<h3 class="no-margin-top">Closed Reviews</h3>
-
-			<br>
 		</div>
 	</div>
 </div>
@@ -20,11 +18,11 @@
 			<tr>
 				<th class="col-md-3 text-left">Principal Investigator </th>
 				<th class="col-md-2 text-left">ICON Project Number</th>
-				<th class="col-md-1 text-left">Sponsor Protocol Number</th>
-				<th class="col-md-2 text-left">Country</th>
-				<th class="col-md-1 text-center">Searched on</th>
-				<th class="col-md-1 text-left">Status</th>
-				<th class="col-md-2 text-center">Actions</th>
+				<th class="text-left">Sponsor Protocol Number</th>
+				<th class="text-left">Country</th>
+				<th class="text-center">Searched on</th>
+				<th class="text-left">Status</th>
+				<th class="text-center">Actions</th>
 			</tr>
 		</thead>
 
@@ -50,18 +48,19 @@
 
 				</td>
 				<td class="text-left">
-					{{item.SearchStartedOn | date: 'dd/MMM/yyyy'}}
+					{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
 
 				</td>
 				<td align="center">
 					<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
 				</td>
 				<td>
-
-					<button type="button" class="btn btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
-						title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
-					<button type="button" class="btn btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open" ></span></button>
-					 <!--<button type="button" class="btn btn-primary" (click)="setCompFormActiveValue(item); ConfirmOpenForEditModal.open()" title="Open Compliance Form"><span class="glyphicon glyphicon-edit" ></span></button>-->
+					<div class="btn-group">
+						<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
+							title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
+						<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open" ></span></button>
+						 <!--<button type="button" class="btn btn-primary" (click)="setCompFormActiveValue(item); ConfirmOpenForEditModal.open()" title="Open Compliance Form"><span class="glyphicon glyphicon-edit" ></span></button>-->
+					</div>
 				</td>
 			</tr>
 		</tbody>

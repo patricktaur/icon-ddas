@@ -18,34 +18,34 @@ export class StatusCircleComponent implements OnInit {
         
         switch (this.status) {
         case 0:
-            this.color ="grey";
+            this.color ="#BDBDBD";
             break;
         case 1:
-            this.color ="red";
-            break;   
+            this.color = "#BF360C"; //"red";
+            break;
         case 2:
-            this.color ="green";
-            break;   
+            this.color = "#388e3c";//"green";
+            break;
         case 3:
-            this.color ="lightcoral";
+            this.color ="#F44336";
             break;   
         case 4:
-            this.color ="lightcoral";
+            this.color ="#F44336";
             break;   
         case 5:
-            this.color ="lawngreen";
+            this.color = "#cddc39"; //"lawngreen";
             break;   
          case 6:
-            this.color ="grey";
+            this.color ="#BDBDBD";
             break; 
         case 7:
-            this.color ="lightcoral";
+            this.color ="#F44336";
             break; 
         case 8:
-            this.color ="grey";
+            this.color ="#BDBDBD";
             break; 
         default:
-            this.color ="black";
+            this.color ="#212121";
             break;
         }
 

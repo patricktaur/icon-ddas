@@ -9,10 +9,12 @@ namespace DDAS.Data.Mongo
     {
         private IUnitOfWork _UOW;
         private string _LogStartedBy;
-        public DBLog(IUnitOfWork uow, string LogStartedBy)
+        private bool _showMessage;
+        public DBLog(IUnitOfWork uow, string LogStartedBy, bool showMessage = false)
         {
             _UOW = uow;
             _LogStartedBy = LogStartedBy;
+            _showMessage = showMessage;
         }
 
         public void LogEnd()
@@ -28,11 +30,19 @@ namespace DDAS.Data.Mongo
         public void WriteLog(string message)
         {
             UpdateLog("", message);
+            if (_showMessage == true)
+            {
+                Console.WriteLine(message);
+            }
         }
 
         public void WriteLog(string caption, string message)
         {
             UpdateLog(caption, message);
+            if (_showMessage == true)
+            {
+                Console.WriteLine(caption + " - " + message);
+            }
         }
 
         private void UpdateLog(string caption, string message)

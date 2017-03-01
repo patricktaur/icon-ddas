@@ -25,16 +25,17 @@
 						</div>
 
 					</div>
-
-					<div class="well">
+					<br>
+					<div class="">
 
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
-						<!--<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>-->
+						
 						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending ">Search</button>-->
 							
 						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-						<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Save</button>
+						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
+						<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -44,7 +45,7 @@
 							<p class="help-block">The process will continue in the background.</p>
 						</div>
 					</div>
-
+					<br>
 					<div class="row">
 						<div class="col-lg-12 ">
 
@@ -115,19 +116,19 @@
 												<h4>Investigators :</h4>
 												<div class="table-responsive">
 
-													<table class="table table-bordered table-hover table-striped">
+													<table class="table table-bordered table-hover">
 														<thead>
 															<tr>
-																<th class="col-md-3 text-left">Name</th>
-																<th class="col-md-2">Qualifications</th>
-																<th class="col-md-1">Med. Lic No. / ML#</th>
-																<th class="col-md-1">Inv. Id</th>
-																<th class="col-md-1">Role</th>
+																<th class="col-md-2 text-left">Name</th>
+																<th class="">Qualifications</th>
+																<th class="">Med. Lic No. / ML#</th>
+																<th class="">Inv. Id</th>
+																<th class="">Role</th>
 
-																<th class="col-md-1">Status</th>
+																<th >Status</th>
 																<!--<th class="col-md-1">Status</th>-->
 
-																<th class="col-md-3">Actions</th>
+																<th class="col-md-2">Actions</th>
 
 															</tr>
 														</thead>
@@ -166,11 +167,13 @@
 																</td>
 
 																<td>
-																	<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
-																	<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
-																	<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-																		title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-																	<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+																	<div class="btn-group">
+																	<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top" title="Move Up" > <span class="glyphicon glyphicon-chevron-up"></span></button>
+																	<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip" data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
+																	<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+																		data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+																	<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+																	</div>
 																</td>
 
 															</tr>
@@ -180,10 +183,7 @@
             											Name is required (minimum 3 characters).
  												</small>-->
 
-																	<div class="text-left">
-																		<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-																		<!--<button type="button" class="btn btn-primary" >Undo</button>-->
-																	</div>
+																
 																</td>
 															</tr>
 														</tbody>
@@ -205,7 +205,7 @@
 												<br>
 												<h4>Mandatory Sites participating in the search:</h4>
 												<div class="table-responsive">
-													<table class="table table-bordered table-hover table-striped">
+													<table class="table table-bordered table-hover">
 														<thead>
 															<tr>
 																<th class="">#</th>
@@ -252,7 +252,7 @@
 												<br>
 												<h4>Additional Sites participating in the search:</h4>
 												<div class="table-responsive">
-													<table class="table table-bordered table-hover table-striped">
+													<table class="table table-bordered table-hover">
 														<thead>
 															<tr>
 																<th class="">#</th>
@@ -280,7 +280,7 @@
 
 																</td>
 																<td>
-																	<button type="button" class="btn btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
+																	<button type="button" class="btn btn-xs btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
 																</td>
 															</tr>
 															<tr>
@@ -302,7 +302,7 @@
 											<div class="form-group">
 												<h4>Findings (Issues identified):</h4>
 												<div class="table-responsive">
-													<table class="table table-bordered table-hover table-striped">
+													<table class="table table-bordered table-hover">
 														<thead>
 															<tr>
 																<th class="col-md-1">Source #</th>
@@ -321,7 +321,7 @@
 																	{{item.InvestigatorName}}
 																</td>
 																<td>
-																	{{item.DateOfInspection |date:'dd/MMM/yyyy' }}
+																	{{item.DateOfInspection |date:'dd MMM yyyy' }}
 																</td>
 																<td align="left">
 																	
@@ -353,7 +353,7 @@
 													</div>
 													<div class="col-lg-6">
 														<label for="NameToSeaICONrch">Searched On:</label>
-														<label class="form-control">{{CompForm.SearchStartedOn | date: 'dd/MMM/yyyy'}}</label>
+														<label class="form-control">{{CompForm.SearchStartedOn | date: 'dd MMM yyyy'}}</label>
 
 													</div>
 												</div>
@@ -364,16 +364,17 @@
 								<div id="summary" class="tab-pane fade ">
 									<h4>Summary:</h4>
 
-									<p>Search Started On: {{CompForm.SearchStartedOn | date: 'dd/MMM/yyyy H:m'}} </p>
+									<p>Search Started On: {{CompForm.SearchStartedOn | date: 'dd MMM yyyy H:m'}} </p>
 									<p>Extraction Pending for {{CompForm.ExtractionPendingInvestigatorCount}} Investigator(s)</p>
+									<p>Extraction Que : {{CompForm.ExtractionQueue}} </p>
 									<p>Extraction Que Position: {{CompForm.ExtractionQuePosition}} </p>
-									<p>Extraction Que Started At: {{CompForm.ExtractionQueStart | date: 'dd/MMM/yyyy H:m'}} </p>
+									<p>Extraction Que Started At: {{CompForm.ExtractionQueStart | date: 'dd MMM yyyy H:m'}} </p>
 									<p>Estimated Extraction Completion within: {{CompForm.EstimatedExtractionCompletionWithin}} </p>
 
 									<p>Extraction Error for {{CompForm.ExtractionErrorInvestigatorCount}} Investigator(s)</p>
 									<p>Data Extracted for {{CompForm.ExtractedInvestigatorCount}} Investigator(s)</p>
 
-									<p>Extracted On: {{CompForm.ExtractedOn | date: 'dd/MMM/yyyy H:m'}} </p>
+									<p>Extracted On: {{CompForm.ExtractedOn | date: 'dd MMM yyyy H:m'}} </p>
 									<p>Partial Matches Found for {{CompForm.PartialMatchesFoundInvestigatorCount}} Investigator(s) Investigator(s)</p>
 									<p>Full Matches Found for {{CompForm.FullMatchesFoundInvestigatorCount}} Investigator(s)</p>
 									<p>Issues Found for {{CompForm.IssuesFoundInvestigatorCount}} Investigator(s)</p>
@@ -388,10 +389,12 @@
 
 						</div>
 					</div>
-					<div class="well">
+					<div class="">
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+						
 						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-					 <button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Save</button>
+						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
+					 <button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -444,8 +447,8 @@
 
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="AddSelectedSite(); AddSiteModal.close()">Add</button>
-		<button type="button" class="btn btn-default" (click)="AddSiteModal.close()">Cancel</button>
+		<button type="button" class="btn btn-primary" (click)="AddSelectedSite(); AddSiteModal.close()">Add</button>
+		<button type="button" class="btn btn-primary" (click)="AddSiteModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
 <modal #RemoveInvestigatorConfirmModal>
@@ -456,20 +459,20 @@
 		Investigator: {{InvestigatorToRemove.Name}} will be removed.
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="InvestigatorRemove(); RemoveInvestigatorConfirmModal.close()">Confirm Delete</button>
-		<button type="button" class="btn btn-default" (click)=" RemoveInvestigatorConfirmModal.close()">Cancel</button>
+		<button type="button" class="btn btn-primary" (click)="InvestigatorRemove(); RemoveInvestigatorConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-primary" (click)=" RemoveInvestigatorConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
 
 <modal #RemoveSiteConfirmModal>
 	<modal-header>
-		<h4 class="modal-title">Delete confirm</h4>
+		<h4 class="modal-title">Confirm Delete</h4>
 	</modal-header>
 	<modal-body>
 		Site: {{siteToRemove.SiteName}} will be removed.
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
-		<button type="button" class="btn btn-default" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
+		<button type="button" class="btn btn-primary" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-primary" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

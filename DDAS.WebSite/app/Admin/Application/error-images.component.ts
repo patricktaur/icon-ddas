@@ -12,6 +12,7 @@ import { ConfigService } from '../../shared/utils/config.service';
 export class ErrorImagesComponent implements OnInit {
     public ErrorImages: any[];
     public ApiHost: string;
+    public pageNumber: number;
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService

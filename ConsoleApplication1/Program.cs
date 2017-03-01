@@ -27,7 +27,7 @@ namespace ConsoleApplication1
                 Console.WriteLine("After uow");
                 ISearchEngine searchEngine = new SearchEngine(uow);
 
-                ILog log = new DBLog(uow, "Live Extractor Service");
+                ILog log = new DBLog(uow, "Live Extractor Service", true);
 
                 LiveScan liveScan = new LiveScan(uow, searchEngine, log, ErrorScreenCaptureFolder);
                 Console.WriteLine("Before StartLiveScan");
@@ -47,11 +47,7 @@ namespace ConsoleApplication1
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), ex.Message + "--Inner Exception:" + innerException);
                 _WriteLog.LogEnd();
-            } 
-     
+            }
         }
-        
-
-      
     }
 }

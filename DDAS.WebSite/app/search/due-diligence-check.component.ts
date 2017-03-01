@@ -96,6 +96,16 @@ export class DueDiligenceCheckComponent implements OnInit {
         
     }
     
+      get reviewPendingRecordCount(): number {
+        if (this.PrincipalInvestigators == null){
+            return null;
+        }
+        else{
+            //Records are already filtered for Review Pending.  
+            return this.PrincipalInvestigators.filter(x => x.ExtractionPendingInvestigatorCount == 0).length;
+        }
+        
+    }
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
         //this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
