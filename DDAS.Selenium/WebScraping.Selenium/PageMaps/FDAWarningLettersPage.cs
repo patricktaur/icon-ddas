@@ -105,6 +105,8 @@ namespace WebScraping.Selenium.Pages
                     {
                         IList<IWebElement> Elements = Web.FindElements(By.TagName("input"));
 
+                        if (Elements.Count == 0)
+                            return null;
                         foreach(IWebElement element in Elements)
                         {
                             if (element.GetAttribute("value").ToLower() =="search")
@@ -112,7 +114,7 @@ namespace WebScraping.Selenium.Pages
                                 return element;
                             }
                         }
-                        throw new Exception("Could not find 'Search' button");
+                        return null;
                     });
                 IWebElement targetElement = wait.Until(waitForElement);
                 return targetElement;

@@ -206,6 +206,7 @@ namespace DDAS.Services.Search
             RemoveDeleteMarkedItemsFromFormCollections(frm);
 
             AddMissingSearchStatusRecords(frm);
+<<<<<<< HEAD
 
             return SaveComplianceForm(frm);
 
@@ -220,6 +221,18 @@ namespace DDAS.Services.Search
         //        _UOW.ComplianceFormRepository.Add(frm);
         //    }
         //    return frm;
+=======
+            return SaveComplianceForm(frm);
+            //if (frm.RecId != null)
+            //{
+            //    _UOW.ComplianceFormRepository.UpdateComplianceForm(frm.RecId.Value, frm);
+            //}
+            //else
+            //{
+            //    _UOW.ComplianceFormRepository.Add(frm);
+            //}
+            //return frm;
+>>>>>>> 532f80caa31b9faf35842833af04d1528446d3ca
         }
 
 

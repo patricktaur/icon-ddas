@@ -50,10 +50,8 @@ namespace DDAS.Services.Search
 
         private void ProcessSingleForm()
         {
- 
             do
             {
-
                 var compForm = GetNextComplianceFormToScan();
 
                 if (compForm != null)
@@ -73,19 +71,14 @@ namespace DDAS.Services.Search
                 else
                 {
                     System.Threading.Thread.Sleep(10000); //10 seconds
-
                 }
             } while (_continue == true);
-
         }
-
-
 
         private void Process()
         {
             do
             {
-
                 var compFormsToScan = GetComplianceFormsToScan();
                 
                 if (compFormsToScan.Count > 0)

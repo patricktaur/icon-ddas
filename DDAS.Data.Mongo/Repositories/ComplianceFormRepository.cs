@@ -108,6 +108,13 @@ namespace DDAS.Data.Mongo.Repositories
 
 
 
+<<<<<<< HEAD
+=======
+            var builder = Builders<ComplianceForm>.Filter;
+            var filter = builder.Eq("RecId", id) & builder.Eq("Findings.SiteEnum", siteEnum) & builder.Eq("Findings.InvestigatorSearchedId", InvestigatorId);
+            var update = Builders<ComplianceForm>.Update.AddToSet("Findings", Findings);
+            //var update1 = Builders<ComplianceForm>.Update.PullFilter("Findings", Builders<Finding>.Filter.Not();
+>>>>>>> 532f80caa31b9faf35842833af04d1528446d3ca
 
         public bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator)
         {

@@ -47,11 +47,7 @@ namespace ConsoleApplication1
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), ex.Message + "--Inner Exception:" + innerException);
                 _WriteLog.LogEnd();
-            } 
-     
+            }
         }
-        
-
-      
     }
 }

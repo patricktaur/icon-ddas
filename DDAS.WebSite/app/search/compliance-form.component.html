@@ -89,9 +89,9 @@
 											<td>
 												<!--<button type="button" class="btn btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>-->
 												<!--<button type="button" class="btn btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>-->
-												<button type="button" class="btn btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+												<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
 													title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-												<button type="button" class="btn btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+												<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
 											</td>
 									</tr>
 									<tr>

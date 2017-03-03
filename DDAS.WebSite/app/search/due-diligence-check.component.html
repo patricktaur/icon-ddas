@@ -3,19 +3,19 @@
 		<div class="well">
 			<div class="row text-left">
 
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<h3 class="no-margin-top">Due Diligence Search</h3>
 					<br>
-					<button type="button" class="btn-lg btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form">Manual Search</button>
+					<button type="button" class="btn-lg btn btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Manual Search</button>
 
-					<button type="button" class="btn-lg btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()"
-						title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created.">Batch Upload</button>
+					<button type="button" class="btn-lg btn btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()"
+						title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created."><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Batch Upload</button>
 
 				</div>
-				<div class="col-md-8 ">
+				<div class="col-md-6 ">
 					<!--center	-->
 					<div class="text-right vertical-center">
-						<p><a href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"> Batch Upload Template</a></p>
+						<p><a class="btn btn-default btn-sm" href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>  Batch Upload Template</a></p>
 						<p>Review Pending: {{reviewPendingRecordCount}} </p>						
 						<p>Extraction Pending: {{extractionPendingRecordCount}} 
 							<span *ngIf="extractionPendingRecordCount > 0">&nbsp;</span>
@@ -34,37 +34,46 @@
 
 <div class="table-responsive">
 	<div statusCircle-Legend-Horizontal></div>
-	<table class="table table-bordered table-hover table-striped">
+	<table class="table table-bordered" style="bgcolor:#ffffff">
 		<thead>
-
 			<tr>
-				<th class="col-md-3 text-left">Principal Investigator </th>
-				<th class="col-md-2 text-left">ICON Project Number</th>
-				<th class="col-md-1 text-left">Sponsor Protocol Number</th>
-				<th class="col-md-2 text-left">Country</th>
-				<th class="col-md-1 text-center">Searched on</th>
-				<th class="col-md-1 text-left">Status</th>
-				<th class="col-md-2 text-center">Actions</th>
+				<th class="text-left">Principal Investigator </th>
+				<th class="text-left">ICON Project Number</th>
+				<th class="text-left">Sponsor Protocol Number</th>
+				<th class="text-left">Country</th>
+				<th class="text-center">Searched on</th>
+				<th class="text-left">Status</th>
+				<th class="text-center">Actions</th>
 			</tr>
 		</thead>
-
 		<tbody>
-			<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+			<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
 
 				<td class="text-left">
 					<div class="dropdown">
-						<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border:none; background:none;">
-    						{{item.Name}}
-							
+						<!--<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border:none; background:none;">
+							{{item.Name}}
     						<span class="caret" *ngIf="item.SubInvestigators.length > 0"></span>
   						</button>
 						<ul class="dropdown-menu" aria-labelledby="dLabel" *ngIf="item.SubInvestigators.length > 0">
-							<li *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
-						</ul>
+							<li *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>							
+						</ul>-->
+						<h5> <a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
+							<!--<span class="caret" *ngIf="item.SubInvestigators.length > 0"></span>-->
+							<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+							</a> 
+						</h5>
+
+						<div class="panel-group" role="tablist" style="border:0">
+							<div class="panel panel-default" style="border:0">
+								<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1" aria-expanded="false" style="border:0"> 
+									<ul class="list-group" style="border:0">
+										<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li> 
+									</ul>  
+								</div>
+							</div>
+						</div>						
 					</div>
-
-
-
 				</td>
 				<td class="text-center">
 					{{item.ProjectNumber}}
@@ -77,8 +86,8 @@
 					{{item.Country}}
 
 				</td>
-				<td class="text-left">
-					{{item.SearchStartedOn | date: 'dd/MMM/yyyy'}}
+				<td class="text-center">
+					{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
 
 				</td>
 				<td align="center">
@@ -92,7 +101,7 @@
 						title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>-->
 
 
-					<button type="button" class="btn btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open" ></span></button>
+					<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open" ></span></button>
 				</td>
 			</tr>
 		</tbody>

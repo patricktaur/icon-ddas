@@ -106,5 +106,6 @@
   }
   .sidebar-nav .navbar li a > .caret {
     margin-top: 8px;
+    width: 100%;
   }  
 }

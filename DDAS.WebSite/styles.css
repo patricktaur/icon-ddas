@@ -179,7 +179,7 @@ body{ background: #fff}
 .align-left{ float: left}
 .align-right{ float: right}
 .no-margin-top{ margin-top: 0}
-search-result-well{ min-height: 210px}
+.search-result-well{ min-height: 210px}
 .label{ padding: 1em}
 .table{ margin-bottom: 0}
 .table-bordered{ margin-top: 2em}
@@ -193,7 +193,7 @@ search-result-well{ min-height: 210px}
 }
 
 
-.main{ padding: 2em !important; }
+.main{ padding: 2em !important}
 .header-top{ background: #188574; color: white; padding: 2em; margin: -2em}
 .header-top .page-header{ border: 0; padding-bottom: 2em; margin: 0}
 .well-top{ margin-top: -5em}
