@@ -530,15 +530,12 @@ export class CompFormEditComponent implements OnInit {
 
     Save() {
 
-
-        this.service.saveComplianceForm(this.CompForm)
+        //this.service.saveComplianceForm(this.CompForm)
+        this.service.saveCompFormGeneralNInvestigatorsNOptionalSites(this.CompForm)
             .subscribe((item: ComplianceFormA) => {
- 
-                this.ComplianceFormId = item.RecId;
+                 this.ComplianceFormId = item.RecId;
                 this.LoadOpenComplainceForm();
- 
-
-            },
+             },
             error => {
 
             });

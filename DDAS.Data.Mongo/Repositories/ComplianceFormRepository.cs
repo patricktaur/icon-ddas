@@ -3,8 +3,11 @@ using System.Threading.Tasks;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Repository.Domain.SiteData;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using DDAS.Models.Enums;
+using MongoDB.Bson;
 
 namespace DDAS.Data.Mongo.Repositories
 {
@@ -93,22 +96,33 @@ namespace DDAS.Data.Mongo.Repositories
             }
         }
 
-       
-        public bool UpdateFindings(Guid id,  SiteEnum siteEnum, int InvestigatorId, List<Finding> Findings)
+        public bool UpdateReviewCompleted(Guid formId, int investigatorId, SiteEnum siteEnum, bool ReviewCompleted)
         {
-            //Require not in query to delere items not found in incoming collection.
+            var form = FindById(formId);
+            if (form != null)
+            {
+
+            }
+            return true;
+        }
 
 
-            var builder = Builders<ComplianceForm>.Filter;
-            var filter = builder.Eq("RecId", id) & builder.Eq("Findings.SiteEnum", siteEnum) & builder.Eq("Findings.InvestigatorSearchedId", InvestigatorId);
-            var update = Builders<ComplianceForm>.Update.AddToSet("Findings", Findings);
-            var update1 = Builders<ComplianceForm>.Update.PullFilter("Findings", Builders<Finding>.Filter.Not()
 
-            //        var update = Builders<Person>.Update.PullFilter("followerList",
-            //Builders<Follower>.Filter.Eq("follower", "fethiye"));
+
+        public bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator)
+        {
+
 
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
-            var result = collection.UpdateOne(filter, update);
+           
+            
+
+            var filter = Builders<ComplianceForm>.Filter.Where(x => x.RecId == formId);
+            //var inv = new List<InvestigatorSearched>();
+            //inv.Add(Investigator);
+            var update = Builders<ComplianceForm>.Update.AddToSet(x => x.InvestigatorDetails, Investigator);
+            //var update1 = Builders<ComplianceForm>.Update.Set(x => x.InvestigatorDetails, inv);
+            var result = collection.UpdateOneAsync(filter, update).Result;
             if (result.IsAcknowledged && result.ModifiedCount == 1)
             {
                 return true;
@@ -117,6 +131,37 @@ namespace DDAS.Data.Mongo.Repositories
             {
                 return false;
             }
+        }
+
+        
+
+        public bool UpdateFindings(UpdateFindigs updateFindings)
+        {
+
+            //Separate update operations, a single update is preferred.
+
+            //Clear all IsMatchedRecord == false Findigs 
+            //IsMatchedRecord cannot be deleted as it contains Record Details derived from Extraction Process.
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+
+            //var filter = Builders<ComplianceForm>.Filter.Where(x => x.RecId == updateFindings.FormId);
+            //var update = Builders<ComplianceForm>.Update.PullFilter(x => x.Findings,
+            //    f => f.SiteEnum == updateFindings.SiteEnum
+            //    && f.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
+            //    && f.IsMatchedRecord == false
+            //    );
+            //var result = collection.UpdateOneAsync(filter, update).Result;
+
+            var filter1 = Builders<ComplianceForm>.Filter.Where(x => x.RecId == updateFindings.FormId);
+            var update1 = Builders<ComplianceForm>.Update.AddToSetEach(x => x.Findings, updateFindings.Findings);
+            //CarRentalContext.Cars.Update(Query.EQ("_id", ObjectId.Parse(updateCarViewModel.Id)), Update.Replace(modifiedCar), UpdateFlags.Upsert);
+            //collection.UpdateOne(filter1, update1)
+            var result1 = collection.UpdateOneAsync(filter1, update1).Result;
+
+
+            return true;
+
+
         }
 
         public bool UpdateExtractionEstimatedCompletion(Guid id, DateTime dateValue)

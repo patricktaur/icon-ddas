@@ -207,15 +207,19 @@ namespace DDAS.Services.Search
 
             AddMissingSearchStatusRecords(frm);
 
-            if (frm.RecId != null)
-            {
-                _UOW.ComplianceFormRepository.UpdateComplianceForm(frm.RecId.Value, frm);
-            }
-            else
-            {
-                _UOW.ComplianceFormRepository.Add(frm);
-            }
-            return frm;
+            return SaveComplianceForm(frm);
+
+        //    if (frm.RecId != null)
+        //    {
+                
+        //         _UOW.ComplianceFormRepository.UpdateCollection( frm);
+        //        //_UOW.ComplianceFormRepository.UpdateComplianceForm(frm.RecId.Value, frm);
+        //    }
+        //    else
+        //    {
+        //        _UOW.ComplianceFormRepository.Add(frm);
+        //    }
+        //    return frm;
         }
 
 
@@ -304,7 +308,7 @@ namespace DDAS.Services.Search
             return frm;
         }
 
-    
+ 
 
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {
@@ -314,6 +318,175 @@ namespace DDAS.Services.Search
             form.ExtractionEstimatedCompletion = ExtractionEstimatedCompletion;
             _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
+
+        #region Client side update
+
+        // Called by ComplianceForm Save
+        public ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form, ILog log, string ErrorScreenCaptureFolder)
+        {
+            var dbForm = _UOW.ComplianceFormRepository.FindById(form.RecId);
+            if (dbForm != null)
+            {
+                dbForm.ProjectNumber = form.ProjectNumber;
+                dbForm.SponsorProtocolNumber = form.SponsorProtocolNumber;
+                dbForm.Institute = form.Institute;
+                dbForm.Address = form.Address;
+                dbForm.Country = form.Country;
+
+                //Delete Investigator not found in client collection
+                foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
+                {
+                    var clInv = form.InvestigatorDetails.Find(x => x.Id == inv.Id);
+                    if (clInv == null)
+                    {
+                        //not found, delete from DB
+                        inv.Deleted = true;
+                      }
+                 }
+                dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted = true);
+
+                //InvestigatorUpdate or add:
+                foreach (InvestigatorSearched clInv in form.InvestigatorDetails)
+                {
+                    var dbInv = dbForm.InvestigatorDetails.Find(x => x.Id == clInv.Id);
+                    if (dbInv != null)
+                    {
+                        dbInv.Name = clInv.Name;
+                        dbInv.Qualification = clInv.Qualification;
+                        dbInv.Role = clInv.Role;
+                        dbInv.InvestigatorId = clInv.InvestigatorId;
+                    }
+                    else
+                    {
+                        //Not found, add
+                        dbForm.InvestigatorDetails.Add(clInv);
+                    }
+                }
+
+                //Remove Optional Sites.
+                //Remove Optional sites not found in client collection
+
+                //Site add if not found:
+                foreach (SiteSource clSite in form.SiteSources)
+                {
+                    var dbInv = dbForm.SiteSources.Find(x => x.SiteEnum == clSite.SiteEnum);
+                    if (dbInv == null)
+                    {
+                        //Not found, add
+                        dbForm.SiteSources.Add(clSite);
+                    }
+                }
+
+                foreach (SiteSource site in dbForm.SiteSources)
+                {
+                    var clSite = form.SiteSources.Find(x => x.SiteEnum == site.SiteEnum);
+                    if (clSite.Deleted == true)
+                    {
+                        site.Deleted = true;
+                    }
+                    
+                    //if (clSite == null)
+                    //{
+                    //    //not found, delete from DB
+                    //    site.Deleted = true;
+                    //}
+                }
+                dbForm.SiteSources.RemoveAll(x => x.Deleted == true);
+
+                //Correct DisplayPosition:
+
+
+ 
+
+                AddMissingSearchStatusRecords(dbForm);
+                RemoveOrphanedSearchStatusRecords(dbForm);
+                RemoveOrphanedFindings(dbForm);
+
+                CorrectDisplayPositionOfSearchStatusRecords(dbForm);
+                //Check and Search if required:
+                AddMatchingRecords(dbForm, log, ErrorScreenCaptureFolder, "db");
+
+                RollUpSummary(dbForm);
+                _UOW.ComplianceFormRepository.UpdateCollection(dbForm);
+                return dbForm;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        // Called by Findings.
+        public bool UpdateFindings(UpdateFindigs updateFindings)
+        {
+            //Called by client - Findings page.
+            //Retrieves form from db and replaces view related values (ReviewCompleted, corresponding Findings) 
+            
+            //get Comp form from db.
+            var form = _UOW.ComplianceFormRepository.FindById(updateFindings.FormId);
+            if (form != null)
+            {
+                
+                //Set  Review Completed value:
+                foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
+                {
+                    if (Investigator.Id == updateFindings.InvestigatorSearchedId)
+                    {
+                        foreach (SiteSearchStatus s in Investigator.SitesSearched)
+                        {
+                            if (s.siteEnum == updateFindings.SiteEnum)
+                            {
+                                s.ReviewCompleted = updateFindings.ReviewCompleted;
+                            }
+                        }
+                    }
+                }
+
+                //Findings
+                //Remove manually added Findings (IsMatched = false) from db and add again from the client
+                form.Findings.RemoveAll(
+                    x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
+                    && x.SiteEnum == updateFindings.SiteEnum
+                    && x.IsMatchedRecord == false);
+                //Add all IsMatchedRecord = false records from client
+                form.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false));
+
+                var matchedRecords = updateFindings.Findings.Where(x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
+                   && x.SiteEnum == updateFindings.SiteEnum
+                   && x.IsMatchedRecord == true);
+
+                //Replace existing generated records (IsMatchedRecord = true) records with records received from client.
+                foreach (var rec in matchedRecords)
+                {
+                    var findingInForm = form.Findings.Find(x => x.Id == rec.Id);
+                    if (findingInForm != null)
+                    {
+                        findingInForm.Observation = rec.Observation;
+                        findingInForm.IsAnIssue = rec.IsAnIssue;
+                        findingInForm.Selected = rec.Selected;
+                     }
+                }
+
+                RollUpSummary(form);
+
+                _UOW.ComplianceFormRepository.UpdateCollection(form);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            
+            
+            //_UOW.ComplianceFormRepository.UpdateInvestigator(updateFindings.FormId, updateFindings.InvestigatorSearched);
+            //_UOW.ComplianceFormRepository.UpdateFindings(updateFindings);
+
+
+           // return true;
+        }
+
+        #endregion
 
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         public void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
@@ -762,7 +935,60 @@ namespace DDAS.Services.Search
             }
         }
 
-       public List<MatchedRecord> GetMatchedRecords(SiteSource site,
+        //When Site is removed, (Optional site), the corresponding SearchStatus of all Investigators become orphanced.
+        private void RemoveOrphanedSearchStatusRecords(ComplianceForm frm)
+        {
+            foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
+            {
+                foreach (SiteSearchStatus siteSearchStatus in inv.SitesSearched)
+                {
+                    var siteSource = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum);
+                    if (siteSource == null) // Site Source not available, remove 
+                    {
+                        siteSearchStatus.DisplayPosition = -1;
+                    }
+                }
+                inv.SitesSearched.RemoveAll(x => x.DisplayPosition == -1);
+            }
+        }
+
+
+        private void CorrectDisplayPositionOfSearchStatusRecords(ComplianceForm frm)
+        {
+            foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
+            {
+                var SrNo =0;
+                foreach (SiteSearchStatus siteSearchStatus in inv.SitesSearched)
+                {
+                    SrNo += 1;
+                    siteSearchStatus.DisplayPosition = SrNo;
+                   
+                }
+                
+            }
+        }
+
+        //When Site is removed, (Optional site), the Findings for those sites become orphanced.
+        private void RemoveOrphanedFindings(ComplianceForm frm)
+        {
+            //list.RemoveAll( item => !list2.Contains(item));
+           
+
+            foreach (Finding finding in frm.Findings)
+            {
+                var siteSource = frm.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum);
+                if (siteSource == null) // Site Source not available, remove 
+                {
+                     if (siteSource == null) // Site Source not available, remove 
+                    {
+                        finding.MatchCount = -1;  //used as a flag to delete records
+                    }
+                }
+             }
+            frm.Findings.RemoveAll(x => x.MatchCount == -1);
+        }
+
+        public List<MatchedRecord> GetMatchedRecords(SiteSource site,
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName)
         {

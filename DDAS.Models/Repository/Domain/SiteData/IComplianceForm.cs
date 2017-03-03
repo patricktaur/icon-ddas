@@ -15,6 +15,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
 
         bool UpdateAssignedTo(Guid id, string AssignedTo);
         bool UpdateComplianceForm(Guid id, ComplianceForm form);
-        bool UpdateFindings(Guid id, SiteEnum siteEnum, int InvestigatorId, List<Finding> Findings);
+        bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator);
+        bool UpdateFindings(UpdateFindigs updateFindings);
     }
 }

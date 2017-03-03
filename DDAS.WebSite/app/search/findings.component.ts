@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, Finding, SiteSearchStatus } from './search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, Finding, SiteSearchStatus, UpdateFindigs } from './search.classes';
 import { SearchService } from './search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
@@ -204,6 +204,27 @@ export class FindingsComponent implements OnInit {
             });
      }
     
+    TestSaveAndClose(){
+            //formId : string, siteEnum:number, InvestigatorId:number, ReviewCompleted : boolean,  Findings:Finding[]
+            let updateFindings = new UpdateFindigs;
+              
+              updateFindings.FormId= this.ComplianceFormId;
+              updateFindings.SiteEnum = this.SiteEnum;
+             // updateFindings.InvestigatorSearchedId = this.InvestigatorId;
+              updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted; 
+              updateFindings.Findings = this.Findings;
+               
+            this.service.saveFindingsAndObservations(updateFindings)
+            .subscribe((item: any) => {
+                this.pageChanged = false;
+                this.goBack()
+                
+                 },
+            error => {
+
+            });
+     }
+    
     Split = (RecordDetails: string) => {
         if (RecordDetails == undefined){
             return null;
@@ -245,5 +266,5 @@ export class FindingsComponent implements OnInit {
       
     }
     
-    get diagnostic() { return JSON.stringify(this.CompForm.Findings); }
+    get diagnostic() { return JSON.stringify(this.CompForm.Findings.length); }
 }

@@ -4,6 +4,17 @@ Analysing ComFormUpdates:
 Update Operations:
 1. UpdateAssignedToData
 2. UpdateExtractionEstimatedCompletion
+3. UpdateComplianceForm
+	General fields
+	Investigators, add / remove
+	Sites add / remove
+4. Findings
+	 Include / exclude a matched finding
+	 Add / remove unmatched finding.
+	 modify Review Completed
+5. Extraction - DB - completed
+6. Extraction - LIve - completed.
+
 
 2. SaveCompForm
 	a. GeneralInfo
