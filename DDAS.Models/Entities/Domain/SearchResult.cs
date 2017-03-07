@@ -926,6 +926,7 @@ namespace DDAS.Models.Entities.Domain
     public class DataExtractionHistory
     {
         //public string SiteName { get; set; }
+        public Guid? RecId { get; set; }
         public int SiteNumber { get; set; }
         public SiteEnum Enum { get; set; }
         public DateTime ExtractionDate { get; set; }

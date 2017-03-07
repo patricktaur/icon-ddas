@@ -175,7 +175,6 @@ namespace DDAS.Services.Search
 
         }
 
-    
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,  string ErrorScreenCaptureFolder, string siteType = "db")
         {
             //Creates or Updates form
@@ -197,7 +196,6 @@ namespace DDAS.Services.Search
             //return frm;
         }
 
-
         //Used by Client Save button, updates - general section, Inviestigators and Sites collection.
         public ComplianceForm UpdateComplianceForm(ComplianceForm frm)
         {
@@ -217,8 +215,6 @@ namespace DDAS.Services.Search
             //}
             //return frm;
         }
-
-
 
         public bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form) {
             //Check if Form exists.
@@ -303,8 +299,6 @@ namespace DDAS.Services.Search
            
             return frm;
         }
-
-    
 
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {

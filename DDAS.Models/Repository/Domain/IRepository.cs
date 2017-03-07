@@ -22,5 +22,6 @@ namespace DDAS.Models.Repository
         void Add(TEntity entity);
         void Update(TEntity entity);
         void Remove(TEntity entity);
+        void RemoveById(object Id);
     }
 }

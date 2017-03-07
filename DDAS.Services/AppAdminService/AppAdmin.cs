@@ -239,5 +239,542 @@ namespace DDAS.Services.AppAdminService
 
             return ListOfExtractionHistory;
         }
+
+        #region GetDataExtractionPerSite
+        public List<DataExtractionHistory> GetDataExtractionPerSite(SiteEnum Enum)
+        {
+            switch(Enum)
+            {
+                case SiteEnum.FDADebarPage:
+                    return GetFDADebarRepository();
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    return GetCiilRepository();
+
+                case SiteEnum.ERRProposalToDebarPage:
+                    return GetErrProposalToDebarRepository();
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    return GetAdequateAssuranceRepository();
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    return GetCBERRepository();
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    return GetPHSRepository();
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    return GetExclusionDatabaseRepository();
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    return GetCIARepository();
+
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    return GetSDNRepository();
+
+                default: throw new Exception("Invalid Enum");
+            }
+        }
+
+        private List<DataExtractionHistory> GetFDADebarRepository()
+        {
+            var FDASiteData = _UOW.FDADebarPageRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach(FDADebarPageSiteData SiteData in FDASiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetCiilRepository()
+        {
+            var CIILSiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (ClinicalInvestigatorInspectionSiteData SiteData in CIILSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetErrProposalToDebarRepository()
+        {
+            var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (ERRProposalToDebarPageSiteData SiteData in ERRSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetAdequateAssuranceRepository()
+        {
+            var AdequateAssuranceSiteData = _UOW.AdequateAssuranceListRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (AdequateAssuranceListSiteData SiteData in AdequateAssuranceSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetCBERRepository()
+        {
+            var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (CBERClinicalInvestigatorInspectionSiteData SiteData in CBERSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetPHSRepository()
+        {
+            var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (PHSAdministrativeActionListingSiteData SiteData in PHSSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetExclusionDatabaseRepository()
+        {
+            var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (ExclusionDatabaseSearchPageSiteData SiteData in ExclusionSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetCIARepository()
+        {
+            var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (CorporateIntegrityAgreementListSiteData SiteData in CIASiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
+        private List<DataExtractionHistory> GetSDNRepository()
+        {
+            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (SpeciallyDesignatedNationalsListSiteData SiteData in SDNSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+        #endregion
+
+        #region DeleteExtractionEntry
+
+        public void DeleteExtractionEntry(SiteEnum Enum, Guid? RecId)
+        {
+            switch (Enum)
+            {
+                case SiteEnum.FDADebarPage:
+                    DeleteFDADebarExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    DeleteCIILExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.ERRProposalToDebarPage:
+                    DeleteERRProposalToDebarExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    DeleteAdequateAssuranceExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    DeleteCBERExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    DeletePHSExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    DeleteExclusionDatabaseExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    DeleteCIAExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    DeleteSDNExtractionEntry(RecId);
+                    return;
+
+                default: throw new Exception("Invalid Enum");
+            }
+        }
+
+        private void DeleteFDADebarExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.FDADebarPageRepository.FindById(RecId);
+
+            //Remove all documents referecing the CurrentDocument, if any
+            if(CurrentDocument.DataExtractionSucceeded)
+            {
+                var FDASiteData = _UOW.FDADebarPageRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (FDADebarPageSiteData SiteData in FDASiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.FDADebarPageRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            //Remove the currentdocument
+            _UOW.FDADebarPageRepository.RemoveById(RecId);
+        }
+
+        private void DeleteCIILExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.ClinicalInvestigatorInspectionListRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var CIILSiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (ClinicalInvestigatorInspectionSiteData SiteData in CIILSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.ClinicalInvestigatorInspectionListRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.ClinicalInvestigatorInspectionListRepository.RemoveById(RecId);
+        }
+
+        private void DeleteERRProposalToDebarExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.ERRProposalToDebarRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (ERRProposalToDebarPageSiteData SiteData in ERRSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.ERRProposalToDebarRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.ERRProposalToDebarRepository.RemoveById(RecId);
+        }
+
+        private void DeleteAdequateAssuranceExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.AdequateAssuranceListRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var AdequateAssuranceSiteData = _UOW.AdequateAssuranceListRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (AdequateAssuranceListSiteData SiteData in AdequateAssuranceSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.AdequateAssuranceListRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.AdequateAssuranceListRepository.RemoveById(RecId);
+        }
+
+        private void DeleteCBERExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.CBERClinicalInvestigatorRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (CBERClinicalInvestigatorInspectionSiteData SiteData in CBERSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.CBERClinicalInvestigatorRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.CBERClinicalInvestigatorRepository.RemoveById(RecId);
+
+        }
+
+        private void DeletePHSExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.PHSAdministrativeActionListingRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (PHSAdministrativeActionListingSiteData SiteData in PHSSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.PHSAdministrativeActionListingRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.PHSAdministrativeActionListingRepository.RemoveById(RecId);
+        }
+
+        private void DeleteExclusionDatabaseExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.ExclusionDatabaseSearchRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (ExclusionDatabaseSearchPageSiteData SiteData in ExclusionSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.ERRProposalToDebarRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.ExclusionDatabaseSearchRepository.RemoveById(RecId);
+        }
+
+        private void DeleteCIAExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.CorporateIntegrityAgreementRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (CorporateIntegrityAgreementListSiteData SiteData in CIASiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.CorporateIntegrityAgreementRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.CorporateIntegrityAgreementRepository.RemoveById(RecId);
+        }
+
+        private void DeleteSDNExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = _UOW.SpeciallyDesignatedNationalsRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (SpeciallyDesignatedNationalsListSiteData SiteData in SDNSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.SpeciallyDesignatedNationalsRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.SpeciallyDesignatedNationalsRepository.RemoveById(RecId);
+        }
+        #endregion
     }
 }
