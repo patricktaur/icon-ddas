@@ -35,14 +35,14 @@
 							
 						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
 						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
-						<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>
+						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
-							<strong>Scanning Sources for Investigator Names ...</strong>
+							<strong>Scanning Sources for matching Investigator Names ...</strong>
 							<p class="help-block">Processing will take a while... </p>
-							<p class="help-block">You can use Back button to move to other sections.</p>
-							<p class="help-block">The process will continue in the background.</p>
+							<p class="help-block">You can use Back button to move to other sections and the </p>
+							<p class="help-block">processing will continue in the background.</p>
 						</div>
 					</div>
 					<br>
@@ -394,14 +394,14 @@
 						
 						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
 						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
-					 <button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>
+					 <!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
-							<strong>Scanning Sources for Investigator Names ...</strong>
+							<strong>Scanning Sources for matching Investigator Names ...</strong>
 							<p class="help-block">Processing will take a while... </p>
-							<p class="help-block">You can use Back button to move to other sections.</p>
-							<p class="help-block">The process will continue in the background.</p>
+							<p class="help-block">You can use Back button to move to other sections and the </p>
+							<p class="help-block">processing will continue in the background.</p>
 						</div>
 					</div>
 				</div>

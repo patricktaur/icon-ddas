@@ -20,11 +20,13 @@ namespace DDAS.Services.Search
         private ISearchEngine _SearchEngine;
 
         private const int MatchCountLowerLimit = 2;
+        private int _NumberOfRunningExtractionProcesses = 4;
 
         public ComplianceFormService(IUnitOfWork uow, ISearchEngine SearchEngine)
         {
             _UOW = uow;
             _SearchEngine = SearchEngine;
+
         }
 
         #region ComplianceFormCreationNUpdates
@@ -185,16 +187,17 @@ namespace DDAS.Services.Search
             AddMissingSearchStatusRecords(frm);
             //Check and Search if required:
             AddMatchingRecords(frm, log,  ErrorScreenCaptureFolder, siteType);
-   
-            return SaveComplianceForm(frm);
+            
+            //return SaveComplianceForm(frm);
 
-            //RollUpSummary(frm);
+            RollUpSummary(frm);
+            frm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
 
-            //if (frm.RecId != null)
-            //    _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
-            //else
-            //    _UOW.ComplianceFormRepository.Add(frm); //Insert
-            //return frm;
+            if (frm.RecId != null)
+                _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
+            else
+                _UOW.ComplianceFormRepository.Add(frm); //Insert
+            return frm;
         }
 
 
@@ -206,22 +209,7 @@ namespace DDAS.Services.Search
             RemoveDeleteMarkedItemsFromFormCollections(frm);
 
             AddMissingSearchStatusRecords(frm);
-<<<<<<< HEAD
 
-            return SaveComplianceForm(frm);
-
-        //    if (frm.RecId != null)
-        //    {
-                
-        //         _UOW.ComplianceFormRepository.UpdateCollection( frm);
-        //        //_UOW.ComplianceFormRepository.UpdateComplianceForm(frm.RecId.Value, frm);
-        //    }
-        //    else
-        //    {
-        //        _UOW.ComplianceFormRepository.Add(frm);
-        //    }
-        //    return frm;
-=======
             return SaveComplianceForm(frm);
             //if (frm.RecId != null)
             //{
@@ -232,7 +220,7 @@ namespace DDAS.Services.Search
             //    _UOW.ComplianceFormRepository.Add(frm);
             //}
             //return frm;
->>>>>>> 532f80caa31b9faf35842833af04d1528446d3ca
+
         }
 
 
@@ -332,6 +320,55 @@ namespace DDAS.Services.Search
             _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
 
+        private DateTime getEstimatedExtractionCompletion()
+        {
+            List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
+
+            //var sitesToScanCount = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+            //    s => s.ExtractionMode == "Live"
+            //    && s.ExtractedOn == null
+            //    && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            //    ))).ToList().OrderBy(o => o.SearchStartedOn).Count();
+
+            var formsToScanCount = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+              s => s.ExtractionMode == "Live"
+              && s.ExtractedOn == null
+              && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+              ))).ToList().Count();
+
+            int totCount = 0;
+            var formsForLiveScan = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+               s => s.ExtractionMode == "Live"
+               && s.ExtractedOn == null
+               && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+               ))).ToList();
+            foreach (ComplianceForm form in formsForLiveScan)
+            {
+                foreach(InvestigatorSearched inv in form.InvestigatorDetails.Where(i => i.ExtractionPendingSiteCount > 0))
+                {
+                    totCount += inv.SitesSearched.Count(
+                       s => s.ExtractionMode == "Live"
+                    && s.ExtractedOn == null
+                     && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified));
+                }
+            }
+          
+
+            var estimatedCompletionSecs = (totCount * 15) / _NumberOfRunningExtractionProcesses;
+            if (estimatedCompletionSecs < 60)
+            {
+                estimatedCompletionSecs = 60;
+            }
+            var completionAt = DateTime.Now.AddSeconds(estimatedCompletionSecs);
+            return completionAt;
+
+        }
+         /*
+           
+
+
+         */
+
         #region Client side update
 
         // Called by ComplianceForm Save
@@ -406,17 +443,20 @@ namespace DDAS.Services.Search
                 }
                 dbForm.SiteSources.RemoveAll(x => x.Deleted == true);
 
-                //Correct DisplayPosition:
-
-
- 
-
+                //Correct DisplayPosition etc
                 AddMissingSearchStatusRecords(dbForm);
                 RemoveOrphanedSearchStatusRecords(dbForm);
                 RemoveOrphanedFindings(dbForm);
 
+                // DisplayPosition, RowNumberInSource nos need adjustment when a site is deleted.
+                AdjustDisplayPositionOfSiteSources(dbForm);
                 CorrectDisplayPositionOfSearchStatusRecords(dbForm);
+                CorrectSourceNumberInFindings(dbForm);
                 //Check and Search if required:
+                if (dbForm.ExtractionPendingInvestigatorCount > 0)
+                {
+                    dbForm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
+                }
                 AddMatchingRecords(dbForm, log, ErrorScreenCaptureFolder, "db");
 
                 RollUpSummary(dbForm);
@@ -905,6 +945,9 @@ namespace DDAS.Services.Search
             }
         }
 
+        #region Save related
+
+  
         private void RemoveDeleteMarkedItemsFromFormCollections(ComplianceForm frm)
         {
             frm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
@@ -965,19 +1008,34 @@ namespace DDAS.Services.Search
             }
         }
 
+        private void AdjustDisplayPositionOfSiteSources(ComplianceForm frm)
+        {
+            //When intermediate sites are deleted.
+            var SrNo = 0;
+            foreach (SiteSource site in frm.SiteSources)
+            {
+                SrNo += 1;
+                site.DisplayPosition = SrNo;
+            }
+        }
 
         private void CorrectDisplayPositionOfSearchStatusRecords(ComplianceForm frm)
         {
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
-                var SrNo =0;
                 foreach (SiteSearchStatus siteSearchStatus in inv.SitesSearched)
                 {
-                    SrNo += 1;
-                    siteSearchStatus.DisplayPosition = SrNo;
-                   
+                    siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum).DisplayPosition;
+ 
                 }
-                
+             }
+        }
+
+        private void CorrectSourceNumberInFindings(ComplianceForm frm)
+        {
+            foreach (Finding finding in frm.Findings)
+            {
+                finding.SourceNumber = frm.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum).DisplayPosition;
             }
         }
 
@@ -1000,6 +1058,8 @@ namespace DDAS.Services.Search
              }
             frm.Findings.RemoveAll(x => x.MatchCount == -1);
         }
+        #endregion
+
 
         public List<MatchedRecord> GetMatchedRecords(SiteSource site,
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,

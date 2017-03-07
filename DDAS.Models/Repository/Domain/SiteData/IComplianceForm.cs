@@ -17,5 +17,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
         bool UpdateComplianceForm(Guid id, ComplianceForm form);
         bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator);
         bool UpdateFindings(UpdateFindigs updateFindings);
+        bool UpdateExtractionQueStart(Guid id, DateTime? dateValue);
     }
 }

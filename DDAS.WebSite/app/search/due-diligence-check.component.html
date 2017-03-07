@@ -15,7 +15,7 @@
 				<div class="col-md-6 ">
 					<!--center	-->
 					<div class="text-right vertical-center">
-						<p><a class="btn btn-default btn-sm" href="{{downloadTemplateUrl}}" download title="Download a sample/template file to fill in the Compliance Form Details and then upload with Due Diligence Check (Upload)"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>  Batch Upload Template</a></p>
+						<p><a class="btn btn-default btn-sm" href="{{downloadTemplateUrl}}" download title="Download a sample/template file, fill in the Compliance Form Details and then upload using Due Diligence Search / Batch Upload"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>  Batch Upload Template</a></p>
 						<p>Review Pending: {{reviewPendingRecordCount}} </p>						
 						<p>Extraction Pending: {{extractionPendingRecordCount}} 
 							<span *ngIf="extractionPendingRecordCount > 0">&nbsp;</span>
@@ -125,8 +125,8 @@
 				<div *ngIf="Loading">
 
 					<p class="help-block">Uploading and Scanning Sources for Investigator Names will take a while... </p>
-					<p class="help-block">You can close this Window if you wish to continue with other activities.</p>
-					<p class="help-block">The process will continue in the background.</p>
+					<p class="help-block">You can close this Window if you wish to continue with other activities and</p>
+					<p class="help-block">the process will continue in the background.</p>
 				</div>
 
 				<div *ngIf="validationMessage">

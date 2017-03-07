@@ -108,14 +108,6 @@ namespace DDAS.Data.Mongo.Repositories
 
 
 
-<<<<<<< HEAD
-=======
-            var builder = Builders<ComplianceForm>.Filter;
-            var filter = builder.Eq("RecId", id) & builder.Eq("Findings.SiteEnum", siteEnum) & builder.Eq("Findings.InvestigatorSearchedId", InvestigatorId);
-            var update = Builders<ComplianceForm>.Update.AddToSet("Findings", Findings);
-            //var update1 = Builders<ComplianceForm>.Update.PullFilter("Findings", Builders<Finding>.Filter.Not();
->>>>>>> 532f80caa31b9faf35842833af04d1528446d3ca
-
         public bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator)
         {
 
@@ -189,6 +181,26 @@ namespace DDAS.Data.Mongo.Repositories
                 return false;
             }
            
+        }
+
+        public bool UpdateExtractionQueStart(Guid id, DateTime? dateValue)
+        {
+            var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
+
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var update = Builders<ComplianceForm>.Update
+            .Set("ExtractionQueStart", dateValue)
+            .CurrentDate("UpdatedOn");
+            var result = collection.UpdateOne(filter, update);
+            if (result.IsAcknowledged && result.ModifiedCount == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
     }

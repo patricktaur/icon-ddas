@@ -531,9 +531,11 @@ export class CompFormEditComponent implements OnInit {
     Save() {
 
         //this.service.saveComplianceForm(this.CompForm)
+        this.searchInProgress = true;
         this.service.saveCompFormGeneralNInvestigatorsNOptionalSites(this.CompForm)
             .subscribe((item: ComplianceFormA) => {
                  this.ComplianceFormId = item.RecId;
+                  this.searchInProgress = false;
                 this.LoadOpenComplainceForm();
              },
             error => {

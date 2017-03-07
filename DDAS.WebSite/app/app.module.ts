@@ -24,6 +24,7 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 
 import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
 
+
 @NgModule({
   imports:      [ 
     BrowserModule ,
@@ -35,7 +36,6 @@ import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
     UserModule,
     LoggedInUserModule,
     LoginHistoryModule
-  
   ],
   declarations: [ 
     AppComponent,
