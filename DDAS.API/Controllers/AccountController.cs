@@ -241,8 +241,6 @@ namespace DDAS.API.Controllers
 
         #region FromAccountsController
 
-
-
         // POST api/Account/Logout
        
         [Route("Logout")]
@@ -252,8 +250,6 @@ namespace DDAS.API.Controllers
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
             return Ok();
         }
-
-  
 
         protected override void Dispose(bool disposing)
         {

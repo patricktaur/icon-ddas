@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -81,6 +82,23 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetDataExtractionHistory()
         {
             return Ok(_AppAdmin.GetDataExtractionHistory());
+        }
+
+        [Route("GetDataExtractionPerSite")]
+        [HttpGet]
+        public IHttpActionResult GetDataExtractionPerSite(SiteEnum Enum)
+        {
+            var ExtractionDataPerSite = _AppAdmin.GetDataExtractionPerSite(Enum);
+            return Ok(ExtractionDataPerSite);
+        }
+
+        [Route("DeleteExtractionData")]
+        [HttpGet]
+        public IHttpActionResult DeleteExtractionEntryAAA(string RecId, SiteEnum Enum)
+        {
+            var Id = Guid.Parse(RecId);
+            _AppAdmin.DeleteExtractionEntry(Enum, Id);
+            return Ok(true);
         }
 
         [Route("DownloadErrorImage")]

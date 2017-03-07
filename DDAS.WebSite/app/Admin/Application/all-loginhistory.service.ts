@@ -72,6 +72,15 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
+    getDataExtractionPerSite(SiteEnum:number){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetDataExtractionPerSite?Enum=' + SiteEnum,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     getExtractionHistory(){
         return this.http.get(this._baseUrl + 'AppAdmin/GetDataExtractionHistory',
         this._options)
@@ -88,6 +97,16 @@ export class LoginHistoryService {
             return res.json();
         })
         .catch(this.handleError);        
+    }
+
+    deleteExtractionData(RecId: string, Enum: number){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteExtractionData?RecId=' + RecId
+        + '&Enum=' + Enum,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     private handleError(error: any) {

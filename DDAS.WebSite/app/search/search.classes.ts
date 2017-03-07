@@ -176,37 +176,36 @@ export class SearchList{
     }
 
   export class ComplianceFormA{
-      RecId : string = "";
-      Active: boolean;
-      SponsorProtocolNumber : string = "";
-      Country : string = "";
-      Address : string = "";
-      ProjectNumber : string = "";
-      Institute : string = "";
-      AssignedTo: string = "";
-      SearchStartedOn : Date ;
-
-        ExtractionQueue: number;
-        ExtractionQuePosition: number;
-        ExtractionQueStart : Date ;
-        ExtractionEstimatedCompletion : Date ;
-        EstimatedExtractionCompletionWithin: string;
+    RecId : string = "";
+    Active: boolean;
+    SponsorProtocolNumber : string = "";
+    Country : string = "";
+    Address : string = "";
+    ProjectNumber : string = "";
+    Institute : string = "";
+    AssignedTo: string = "";
+    SearchStartedOn : Date ;
+    ExtractionQueue: number;
+    ExtractionQuePosition: number;
+    ExtractionQueStart : Date ;
+    ExtractionEstimatedCompletion : Date ;
+    EstimatedExtractionCompletionWithin: string;
      
-      ExtractedOn: Date;
-      ExtractionErrorInvestigatorCount: number;
+    ExtractedOn: Date;
+    ExtractionErrorInvestigatorCount: number;
 
-      FullMatchesFoundInvestigatorCount: number;
-      PartialMatchesFoundInvestigatorCount : number;
-      IssuesFoundInvestigatorCount: number;
-      ReviewCompletedInvestigatorCount : number;
+    FullMatchesFoundInvestigatorCount: number;
+    PartialMatchesFoundInvestigatorCount : number;
+    IssuesFoundInvestigatorCount: number;
+    ReviewCompletedInvestigatorCount : number;
 
-      InvestigatorDetails:InvestigatorSearched[] = [];
-      SiteSources : SiteSourceToSearch[] = [];
-      Findings: Finding[] = [];
-      Status: string = "";
-      StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
+    InvestigatorDetails:InvestigatorSearched[] = [];
+    SiteSources : SiteSourceToSearch[] = [];
+    Findings: Finding[] = [];
+    Status: string = "";
+    StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
 
-      SearchPending: boolean = true;
+    SearchPending: boolean = true;
     }
  
 

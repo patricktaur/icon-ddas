@@ -94,6 +94,13 @@ namespace DDAS.Data.Mongo.Repositories
             //_db.GetCollection<TEntity>().Delete(entity);
         }
 
+        public void RemoveById(object Id)
+        {
+            var filter = Builders<TEntity>.Filter.Eq("_id", Id);
+            var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
+            collection.DeleteOne(filter);
+        }
+
         public void Update(TEntity entity)
         {
             //same as Add:
