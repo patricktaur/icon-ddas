@@ -21,7 +21,7 @@ namespace DDAS.Setup
 
         static void Main(string[] args)
         {
-            string appRootFolder = "";
+            
             
             try
             {
@@ -35,50 +35,15 @@ namespace DDAS.Setup
                 string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
                 if (configFile != null)
                 {
-                    appRootFolder = Path.GetDirectoryName(configFile);
-                    //Folders:
-                    _WriteLog.WriteLog("Reading Web.config for:", "DataExtractionLogFile");
-                    string DataExtractionLogFile = GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
-                    string folder = Path.GetDirectoryName(DataExtractionLogFile);
-                    CreateFolder(appRootFolder  + @"\" + folder);
+                    //CreateFolders(configFile);
 
-                    _WriteLog.WriteLog("Reading Web.config for:", "AppDataDownloadFolder");
-                    string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
-                    CreateFolder(appRootFolder + @"\" + DownloadFolder);
-
-                    _WriteLog.WriteLog("Reading Web.config for:", "UploadsFolder");
-                    string UploadFolder = GetWebConfigAppSetting(configFile, "UploadsFolder");
-                    CreateFolder(appRootFolder + @"\" + UploadFolder);
-
-                    _WriteLog.WriteLog("Reading Web.config for:", "ExcelTemplateFolder");
-                    string ExcelTemplateFolder = GetWebConfigAppSetting(configFile, "ExcelTemplateFolder");
-                    CreateFolder(appRootFolder + @"\" + UploadFolder);
-                    //Copy Excel Template from ...
-
-                    _WriteLog.WriteLog("Reading Web.config for:", "WordTemplateFolder");
-                    string WordTemplateFolder = GetWebConfigAppSetting(configFile, "WordTemplateFolder");
-                    CreateFolder(appRootFolder + @"\" + UploadFolder);
-                    //Copy Word Template from ...
-
-                    _WriteLog.WriteLog("Reading Web.config for:", "ComplianceFormFolder");
-                    string ComplianceFormFolder = GetWebConfigAppSetting(configFile, "ComplianceFormFolder");
-                    CreateFolder(appRootFolder + @"\" + ComplianceFormFolder);
-
-                    //Initialize DB
+                    //Initialize DB for creating Roles and Users:
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
-                   
-                    MongoMaps.Initialize();
-                  
-                    _UOW = new UnitOfWork(connString);
-                   
-                    CreateRole("admin");
-                    CreateRole("user");
-                    CreateUser("clarityadmin", "admin", "Clarity@148");
-                    CreateUser("Patrick", "admin", "Clarity@148");
-                    CreateUser("Ravi", "user", "Clarity@148");
-                    CreateUser("User1", "user", "User1!234");
-                    CreateUser("User2", "user", "User2!234");
-                    CreateUser("User3", "user", "User3!234");
+                      MongoMaps.Initialize();
+                     _UOW = new UnitOfWork(connString);
+                    CreateRoles();
+                    CreateUsers();
+                    
                 }
                 else
                 {
@@ -98,6 +63,51 @@ namespace DDAS.Setup
 
         
           }
+
+        static void CreateFolders(string configFile)
+        {
+            var appRootFolder = Path.GetDirectoryName(configFile);
+            //Folders:
+            _WriteLog.WriteLog("Reading Web.config for:", "DataExtractionLogFile");
+            string DataExtractionLogFile = GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
+            string folder = Path.GetDirectoryName(DataExtractionLogFile);
+            CreateFolder(appRootFolder + @"\" + folder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "AppDataDownloadFolder");
+            string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
+            CreateFolder(appRootFolder + @"\" + DownloadFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "UploadsFolder");
+            string UploadFolder = GetWebConfigAppSetting(configFile, "UploadsFolder");
+            CreateFolder(appRootFolder + @"\" + UploadFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "ExcelTemplateFolder");
+            string ExcelTemplateFolder = GetWebConfigAppSetting(configFile, "ExcelTemplateFolder");
+            CreateFolder(appRootFolder + @"\" + UploadFolder);
+            //Copy Excel Template from ...
+
+            _WriteLog.WriteLog("Reading Web.config for:", "WordTemplateFolder");
+            string WordTemplateFolder = GetWebConfigAppSetting(configFile, "WordTemplateFolder");
+            CreateFolder(appRootFolder + @"\" + UploadFolder);
+            //Copy Word Template from ...
+
+            _WriteLog.WriteLog("Reading Web.config for:", "ComplianceFormFolder");
+            string ComplianceFormFolder = GetWebConfigAppSetting(configFile, "ComplianceFormFolder");
+            CreateFolder(appRootFolder + @"\" + ComplianceFormFolder);
+        }
+
+        static void CreateRoles()
+        {
+            CreateRole("admin");
+            CreateRole("user");
+            CreateRole("app-admin");
+        }
+
+        static void CreateUsers()
+        {
+            CreateUser("clarityadmin", "app-admin", "Clarity@148");
+        }
+
 
         static void CreateFolder(string path)
         {
@@ -243,44 +253,8 @@ namespace DDAS.Setup
                         userStore.AddToRoleAsync(user, roleName);
                         _WriteLog.WriteLog("Role updated");
                     }
-                    
-
                 }
-               
-            }
-
-            //RoleStore roleStore = new RoleStore(_UOW);
-            //var rm = new RoleManager<IdentityRole, Guid>(roleStore);
-
-            //var IdUser = new IdentityUser();
-            //IdUser.UserName = user.UserName;
-            //IdUser.SecurityStamp = Guid.NewGuid().ToString();
-
-            //try
-            //{
-            //    IdentityUser IdUsertemp = um.FindByName(IdUser.UserName);
-            //    if (IdUsertemp == null)
-            //    {
-            //        um.CreateAsync(IdUser, user.pwd);
-
-
-
-
-
-            //        um.AddToRole(IdUser.Id, user.RoleName);
-            //    }
-            //    else
-            //    {
-            //        um.AddToRole(IdUser.Id, user.RoleName);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.Write(ex.Message);
-            //}
-            //return Ok();
+             }
         }
-
-     
     }
 }

@@ -37,7 +37,10 @@ namespace DDAS.Services.UserService
             }
             return retUser;
         }
-        
+
+    
+
+
         public UserViewModel GetUser(Guid? UserId)
         {
             var retUserViewMOdel = new UserViewModel();
@@ -49,17 +52,17 @@ namespace DDAS.Services.UserService
             retUserViewMOdel.UserFullName = user.UserFullName;
             retUserViewMOdel.UserId = user.UserId;
             retUserViewMOdel.UserName = user.UserName;
-            retUserViewMOdel.Roles = getRolesViewModel(user.UserId);
+            retUserViewMOdel.Roles = getUserRolesViewModel(user.UserId);
             retUserViewMOdel.ActiveRoles = getActiveRolesText(userToAdd.Roles);
             return retUserViewMOdel;
         }
 
-        public List<UserViewModel> GetUsers()
+        private List<UserViewModel> GetAllUsers()
         {
             var retUsers = new List<UserViewModel>();
             var Roles = _UOW.RoleRepository.GetAll();
             var Users = _UOW.UserRepository.GetAllUsers();
-            
+
             foreach (User user in Users)
             {
                 var userToAdd = new UserViewModel();
@@ -68,11 +71,37 @@ namespace DDAS.Services.UserService
                 userToAdd.UserFullName = user.UserFullName;
                 userToAdd.UserId = user.UserId;
                 userToAdd.UserName = user.UserName;
-                userToAdd.Roles = getRolesViewModel(user.UserId);
+                userToAdd.Roles =  getAlluserRolesViewModel(user.UserId);
                 userToAdd.ActiveRoles = getActiveRolesText(userToAdd.Roles);
                 retUsers.Add(userToAdd);
+            }
+            return retUsers;
+        }
+
+        public List<UserViewModel> GetUsers()
+        {
+            var retUsers = new List<UserViewModel>();
+ 
+            foreach (UserViewModel user in GetAllUsers().ToList())
+            {
+                if (!user.ActiveRoles.ToLower().Contains("app-admin") )
+                {
+                    retUsers.Add(user);
+                }
               }
             return retUsers;
+        }
+
+        public List<UserViewModel> GetAdmins()
+        {
+            return GetAllUsers().Where(x =>
+                  x.ActiveRoles.ToLower().Contains("admin")).ToList();
+        }
+
+        public List<UserViewModel> GetAppAdmins()
+        {
+            return GetAllUsers().Where(x =>
+                  x.ActiveRoles.ToLower().Contains("app-admin")).ToList();
         }
 
         public UserViewModel SaveUser(UserViewModel userViewModel)
@@ -167,22 +196,30 @@ namespace DDAS.Services.UserService
         }
 
         #region Helpers
-        private List<RoleViewModel> getRolesViewModel(Guid UserId)
+        private List<RoleViewModel> getUserRolesViewModel(Guid UserId)
         {
+           return getAlluserRolesViewModel(UserId).Where(x => x.Name != "app-admin").ToList();
+        }
+
+        private List<RoleViewModel> getAlluserRolesViewModel(Guid UserId)
+        {
+            //exclude app-admin
             var retRolesViewModel = new List<RoleViewModel>();
             var Roles = _UOW.RoleRepository.GetAll();
             var activeRoles = _UOW.UserRoleRepository.GetRoleValues(UserId);
             
             foreach (Role role in Roles)
             {
-                var roleToAdd = new RoleViewModel();
-                roleToAdd.Name = role.Name;
-                if (activeRoles.Contains(role.Name))
-                {
-                    roleToAdd.Active = true;
-                }
+                    var roleToAdd = new RoleViewModel();
+                    roleToAdd.Name = role.Name;
+                    if (activeRoles.Contains(role.Name))
+                    {
+                        roleToAdd.Active = true;
+                    }
+
+                    retRolesViewModel.Add(roleToAdd);
+               
                 
-                retRolesViewModel.Add(roleToAdd);
             }
             return retRolesViewModel;
           }
@@ -245,6 +282,24 @@ namespace DDAS.Services.UserService
             var AllLoginHistory = _UOW.LoginDetailsRepository.GetAll();
             return AllLoginHistory;
         }
+
+
         #endregion
+
+        #region Helpers
+        //public static bool ContainsAny(this string haystack, params string[] needles)
+        //{
+        //    //Usage: bool anyLuck = s.ContainsAny("a", "b", "c");
+        //    foreach (string needle in needles)
+        //    {
+        //        if (haystack.Contains(needle))
+        //            return true;
+        //    }
+
+        //    return false;
+        //}
+
+        #endregion
+
     }
 }

@@ -48,7 +48,7 @@ export class AppComponent {
                 });
   }
 
-  get diagnostic() { return JSON.stringify(this.authService.token); }
+  get diagnostic() { return JSON.stringify(this.authService.TestValue); }
 }
 
  

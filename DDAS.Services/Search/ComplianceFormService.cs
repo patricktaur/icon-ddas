@@ -305,11 +305,7 @@ namespace DDAS.Services.Search
             return frm;
         }
 
-<<<<<<< HEAD
- 
 
-=======
->>>>>>> b080239c82536984d17ca6f42fea93f83e299339
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {
             var form = _UOW.ComplianceFormRepository.FindById(formId);

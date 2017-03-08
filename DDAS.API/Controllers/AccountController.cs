@@ -29,16 +29,7 @@ namespace DDAS.API.Controllers
               _UOW = uow;
             _userService = userService;
             _EMailService = email;
-            
-            //var cred = new EMailServerCredentialsModel();
-            //cred.EMailHost = System.Configuration.ConfigurationManager.AppSettings["EMailHost"];
-            //string port = System.Configuration.ConfigurationManager.AppSettings["EMailPort"];
-            //cred.EMailPort = Int32.Parse(port);
-            //cred.FromEMailId = System.Configuration.ConfigurationManager.AppSettings["FromEMailId"];
-            //cred.FromEMailPassword = System.Configuration.ConfigurationManager.AppSettings["FromEMailPassword"];
-            //_EMailService = new EMailService(cred);
-
-        }
+         }
 
         #region WorkingCode
 
@@ -56,10 +47,12 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAdminList()
         {
-            var Users = _userService.GetUsers();
+            //var Users = _userService.GetUsers();
 
-            var AdminList = Users.Where(x =>
-            x.ActiveRoles.ToLower().Contains("admin")).ToList();
+            //var AdminList = Users.Where(x =>
+            //x.ActiveRoles.ToLower().Contains("admin")).ToList();
+
+            var AdminList = _userService.GetAdmins();
 
             return Ok(AdminList);
         }
