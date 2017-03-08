@@ -16,7 +16,6 @@ export class AboutDDASComponent implements OnInit {
     ) { }
 
     ngOnInit(){
-        console.log("***ngOnInit***");
         //this.Admins = [1,2,3,4,5];
         this.LoadAdmins();
     }
@@ -24,7 +23,6 @@ export class AboutDDASComponent implements OnInit {
     LoadAdmins(){
         this.service.getAdminList()
         .subscribe((item: any[]) => {
-            console.log("item :" + item);
             this.Admins = item;
         });
     }
