@@ -23,6 +23,8 @@ namespace DDAS.Services.Search
         private long _sitesScanned;
         private Stopwatch _stopWatch;
 
+       
+
         public LiveScan(IUnitOfWork uow, ISearchEngine SearchEngine, ILog log, string ErrorScreenCaptureFolder)
         {
             _UOW = uow;
@@ -36,37 +38,47 @@ namespace DDAS.Services.Search
 
         public void StartLiveScan()
         {
-            _Log.LogStart();
 
-            //Process();
+            _Log.WriteLog("Before ProcessSingleForm");
             ProcessSingleForm();
+            _Log.WriteLog("After ProcessSingleForm");
+
+            //var compForm = GetNextComplianceFormToScan();
+            
         }
 
+       
         public void StopLiveScan()
         {
             _Log.LogEnd();
             _continue = false;
         }
 
+      
         private void ProcessSingleForm()
         {
             do
             {
+                
                 var compForm = GetNextComplianceFormToScan();
-
+               // var compForm = new ComplianceForm();
                 if (compForm != null)
                 {
                     //Flag Extraction Start, so that other Extraction processes cannot retrieve this form.
-                    compForm.ExtractionQueStart = DateTime.Now;
-                    _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    // compForm.ExtractionQueStart = DateTime.Now;
+                    //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    _UOW.ComplianceFormRepository.UpdateExtractionQueStart(compForm.RecId.Value, DateTime.Now);
                     //Console.WriteLine("Extraction Start:" + compForm.ProjectNumber);
                     _Log.WriteLog("Scan Start:" + compForm.ProjectNumber);
                     //_compFormService.AddMatchingRecords(compForm, _Log, _ErrorScreenCaptureFolder, "live");
-                    ScanNUpdate(compForm);
-                    compForm.ExtractionQueStart = null;
-                    _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+
+                     ScanNUpdate(compForm);
+                    //compForm.ExtractionQueStart = null;
+                    //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    _UOW.ComplianceFormRepository.UpdateExtractionQueStart(compForm.RecId.Value, null);
+
                     _Log.WriteLog("Scan End:" + compForm.ProjectNumber);
-                    //Console.WriteLine("Extraction End:" + compForm.ProjectNumber);
+
                 }
                 else
                 {
@@ -136,8 +148,7 @@ namespace DDAS.Services.Search
                 _stopWatch.Restart();
                 _compFormService.ScanUpdateComplianceForm(frm, _Log, _ErrorScreenCaptureFolder, "live");
                 _stopWatch.Stop();
-               
-               
+                
                 _totalScanTimeInSecs += _stopWatch.ElapsedMilliseconds / 1000;
                 _avgScanTimeInSecs = _totalScanTimeInSecs / _sitesScanned;
 
@@ -167,17 +178,20 @@ namespace DDAS.Services.Search
         private ComplianceForm GetNextComplianceFormToScan()
         {
             List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
+
+            var count = forms.Where(f => (f.ExtractionQueStart == null) && f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+                s => s.ExtractionMode == "Live"
+                && s.ExtractedOn == null
+                && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                ))).ToList().OrderBy(o => o.SearchStartedOn).Count();
+            _Log.WriteLog("Forms found to scan:" + count);
+
             var formForLiveScan = forms.Where(f => (f.ExtractionQueStart == null) && f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
                 s => s.ExtractionMode == "Live"
                 && s.ExtractedOn == null
                 && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                 ))).ToList().OrderBy(o => o.SearchStartedOn).FirstOrDefault();
-
-            //var formForLiveScan = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
-            //    s => s.ExtractionMode == "Live" 
-            //    && s.ExtractedOn == null
-            //    && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-            //    ))).ToList().OrderBy(o => o.SearchStartedOn).FirstOrDefault();
+           
             return formForLiveScan;
         }
 

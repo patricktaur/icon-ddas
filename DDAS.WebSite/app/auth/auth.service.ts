@@ -21,8 +21,11 @@ export class AuthService {
   
   public isAdmin: boolean;
   public isUser: boolean;
+  public isAppAdmin: boolean;
   public roles: string = ""; //comma separarted
 
+ 
+  
   // store the URL so we can redirect after logging in
   redirectUrl: string;
   _baseUrl: string = '';
@@ -34,13 +37,9 @@ export class AuthService {
         this._baseUrl = configService.getApiHost();
     }
   
-
-  // login(username:string, password:string) {
-  //   return Observable.of(true).delay(100).do(val => this.isLoggedIn = true);
-  // }
-
-//Working Code:
- 
+get TestValue(){
+    return this.test;
+}
  
  login(username:string, password:string) {
     
@@ -52,15 +51,11 @@ export class AuthService {
         let options = new RequestOptions({ headers: headers });
         return this.http.post(this._baseUrl + 'token', body, options )
             .map((response: Response) => {
-                // login successful if there's a jwt token in the response
+  
                 this.isLoggedIn = true;
                  this.token = response.json().access_token;
-                 //console.log("token: " + this.token)
-                
-                //let token = response.json() && response.json().access_token;
-                //let token = response.json().access_token;
-                this.userName = response.json().userName;
-                
+                  this.userName = response.json().userName;
+
                 //refactor code to handle dynamic addition of roles:
                 let comma : string = ""
                 this.roles = "";
@@ -82,6 +77,14 @@ export class AuthService {
                      comma = ", "
                 }
        
+                if (response.json()["app-admin"] == null){
+                    this.isAppAdmin = false;
+                }
+                else{
+                    this.isAppAdmin = true;
+                     this.roles = this.roles + comma + "App-Admin"
+                     comma = ", "
+                }
                 
             })
             //.catch(this.handleError);

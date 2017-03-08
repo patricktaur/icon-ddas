@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\AuditEntity.cs" />
+    <Compile Include="Entities\Domain\ApplicationSettings.cs" />
     <Compile Include="Entities\Domain\BaseSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteDataViewModel.cs" />
     <Compile Include="Entities\Domain\ScanHistory.cs" />
     <Compile Include="Entities\Domain\SearchResult.cs" />
     <Compile Include="Entities\Domain\SiteData\AdequateAssuranceListSiteData.cs" />

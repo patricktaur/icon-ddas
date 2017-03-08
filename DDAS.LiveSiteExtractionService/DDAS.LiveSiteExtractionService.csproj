@@ -34,7 +34,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InitializeService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -55,12 +71,34 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
+      <Project>{95f621b2-efa7-4329-a232-5ea1efe44844}</Project>
+      <Name>DDAS.Data.Mongo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DDAS.Models\DDAS.Models.csproj">
+      <Project>{d441e38f-0564-4688-872b-25127a7b3ec5}</Project>
+      <Name>DDAS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DDAS.Selenium\Utilities\Utilities.csproj">
+      <Project>{e284f28d-9482-4dea-9cc2-872bb86a3d9c}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DDAS.Selenium\WebScraping.Selenium\WebScraping.Selenium.csproj">
+      <Project>{90b7c01c-1eaa-441e-909a-6949bc6ed08c}</Project>
+      <Name>WebScraping.Selenium</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DDAS.Services\DDAS.Services.csproj">
       <Project>{b9fc373c-8e1b-49ba-a170-cf34e23cef60}</Project>
       <Name>DDAS.Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

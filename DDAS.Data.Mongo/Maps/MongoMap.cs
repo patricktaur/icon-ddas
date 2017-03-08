@@ -43,6 +43,7 @@ namespace DDAS.Data.Mongo.Maps
                 {
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
+                    //child.MapIdProperty(u => u.InvestigatorId).SetIdGenerator(GuidGenerator.Instance);
                 });
 
                 BsonClassMap.RegisterClassMap<SiteSource>(child =>

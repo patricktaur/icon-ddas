@@ -26,6 +26,9 @@ namespace DDAS.Models.Interfaces
        
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 
+        ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form, ILog log, string ErrorScreenCaptureFolder);
+        bool UpdateFindings(UpdateFindigs updateFindings);
+
         List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter);
 

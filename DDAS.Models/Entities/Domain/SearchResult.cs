@@ -905,6 +905,18 @@ namespace DDAS.Models.Entities.Domain
         public List<Link> Links { get; set; } = new List<Link>();
     }
 
+    public class UpdateFindigs
+    {
+        //Guid id,  SiteEnum siteEnum, int InvestigatorId, bool ReviewCompleted, List<Finding> Findings
+        public Guid FormId { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        public int InvestigatorSearchedId { get; set; }
+        public bool ReviewCompleted { get; set; }
+        //public InvestigatorSearched InvestigatorSearched { get; set; }
+        public List<Finding> Findings { get; set; }
+
+    }
+
     public class ComplianceFormManage
     {
         public string AssignedTo { get; set; }

@@ -317,8 +317,18 @@ export class SearchList{
         Active : Boolean;
     }
     
-    
-       
+     export class UpdateFindigs
+    {
+        //Guid id,  SiteEnum siteEnum, int InvestigatorId, bool ReviewCompleted, List<Finding> Findings
+        FormId :string;
+        SiteEnum : number;
+        //InvestigatorSearchedId : number;
+        ReviewCompleted : boolean;
+        //InvestigatorSearched: InvestigatorSearched;
+        Findings: Finding[];
+    }
+ 
+
    export enum ComplianceFormStatusEnum
     {
         NotScanned,

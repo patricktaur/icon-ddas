@@ -274,7 +274,7 @@ namespace WebScraping.Selenium.Pages
                 DateTime RecentLastUpdatedDate;
 
                 DateTime.TryParseExact(PageLastUpdated, 
-                    "yyyyMMdd hhmm", 
+                    "yyyyMMdd", 
                     System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.None, 
                     out RecentLastUpdatedDate);

@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Web;
 using Utilities.WordTemplate;
 using System.Linq;
+using DDAS.Models.Enums;
 
 namespace DDAS.API.Controllers
 {
@@ -293,7 +294,29 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
 
- 
+        #region Updates from Client
+      
+        [Route("UpdateCompFormGeneralNInvestigators")]
+        [HttpPost]
+        public IHttpActionResult UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
+        {
+
+            return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form, _log, ErrorScreenCaptureFolder));
+           
+        }
+
+
+        [Route("UpdateFindings")]
+        [HttpPost]
+        public IHttpActionResult UpdateFindings(UpdateFindigs updateFindings)
+        {
+
+            return Ok(_SearchService.UpdateFindings(updateFindings));
+            //return Ok( _UOW.ComplianceFormRepository.UpdateFindings(updateFindings));
+        }
+
+        #endregion
+
         [Route("GenerateComplianceForm")]
         [HttpGet]
         public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)

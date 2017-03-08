@@ -13,6 +13,8 @@ namespace DDAS.Models.Interfaces
         UserViewModel GetNewUser();
         UserViewModel GetUser(Guid? UserId);
         List<UserViewModel> GetUsers();
+        List<UserViewModel> GetAdmins();
+        List<UserViewModel> GetAppAdmins();
         UserViewModel SaveUser(UserViewModel user);
         bool DeleteUser(Guid UserId);
 

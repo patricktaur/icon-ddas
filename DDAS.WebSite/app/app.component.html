@@ -43,27 +43,50 @@
 
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction History</a></li>
+
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction</a></li>
+
 									</ul>
 								</div>
-								<li>
+							</li>
 
-									<li class="active" > <a routerLink="about-ddas" routerLinkActive="active">About DDAS</a></li>
+							
+							<li class="active" *ngIf="authService.isAppAdmin">
+								<a data-toggle="collapse" data-target="#adminMenu" data-parent="#sidenav01" class="collapsed">
+						 			App Admin<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
+								</a>
+								<div class="collapse" id="adminMenu" style="height: 0px;">
+									<ul class="nav nav-list  panel-body">
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
+
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Error Log</a></li>
+
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction History</a></li>
+
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction</a></li>
+
+									</ul>
+								</div>
+							</li>
+
+							<li class="active"> <a routerLink="about-ddas" routerLinkActive="active">About DDAS</a></li>
 				</ul>
 
 			</div>
 
 		</div>
-		
-			<div class="col-lg-10" style="background-color: #f2f2f2">
-				<div class="main">
-					<div class="header-top" *ngIf="authService.isLoggedIn">
-						<h1 class="page-header">Due Diligence Automation System</h1>
-					</div>
-					<div class="well-top">
-						<router-outlet> </router-outlet>
-					</div>
+
+		<div class="col-lg-10" style="background-color: #f2f2f2">
+			<div class="main">
+				<div class="header-top" *ngIf="authService.isLoggedIn">
+					<h1 class="page-header">Due Diligence Automation System</h1>
 				</div>
+				<div class="well-top">
+					<router-outlet> </router-outlet>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

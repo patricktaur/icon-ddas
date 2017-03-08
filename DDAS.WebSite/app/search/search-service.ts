@@ -14,7 +14,9 @@ import {
     ComplianceFormA,
     SiteSource,
     CompFormFilter,
-    PrincipalInvestigatorDetails
+    PrincipalInvestigatorDetails,
+    Finding,
+    UpdateFindigs
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -231,6 +233,33 @@ export class SearchService {
     getSiteSources(): Observable<SiteSource[]> {
         
         return this.http.get(this._baseUrl + 'search/GetSiteSources', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+    
+    saveCompFormGeneralNInvestigatorsNOptionalSites(form: ComplianceFormA){
+
+        let body = JSON.stringify(form);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(this._baseUrl + 'search/UpdateCompFormGeneralNInvestigators', body, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+
+    }
+    
+    saveFindingsAndObservations(updateFindings: UpdateFindigs){
+
+        let body = JSON.stringify(updateFindings);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(this._baseUrl + 'search/UpdateFindings', body, this._options)
             .map((res: Response) => {
                 return res.json();
             })
