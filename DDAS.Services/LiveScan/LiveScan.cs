@@ -179,14 +179,17 @@ namespace DDAS.Services.Search
         {
             List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
 
-            var count = forms.Where(f => (f.ExtractionQueStart == null) && f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+            //if the Live Scan is aborted after the start of Live Scan
+            //f.f.ExtractionQueStart == null will not match 
+            //hence: f.ExtractionQueStart == null || (f.ExtractionQueStart != null && (DateTime.Now - f.ExtractionQueStart.Value).Minutes > 10)
+            var count = forms.Where(f => (f.ExtractionQueStart == null || (f.ExtractionQueStart != null && (DateTime.Now - f.ExtractionQueStart.Value).Minutes > 10)) && f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
                 s => s.ExtractionMode == "Live"
                 && s.ExtractedOn == null
                 && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                 ))).ToList().OrderBy(o => o.SearchStartedOn).Count();
             _Log.WriteLog("Forms found to scan:" + count);
 
-            var formForLiveScan = forms.Where(f => (f.ExtractionQueStart == null) && f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+            var formForLiveScan = forms.Where(f => (f.ExtractionQueStart == null || (f.ExtractionQueStart != null && (DateTime.Now - f.ExtractionQueStart.Value).Minutes > 10)) && f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
                 s => s.ExtractionMode == "Live"
                 && s.ExtractedOn == null
                 && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
