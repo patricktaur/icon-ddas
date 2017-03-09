@@ -273,7 +273,7 @@ namespace WebScraping.Selenium.Pages
                         "PageLastUpdatedTextElement is null, unable to read SiteLastUpdatedDate");
 
                 string PageLastUpdated =
-                    DataInPageLastUpdatedElement[3].Replace("-", " ").Trim();
+                    DataInPageLastUpdatedElement[3].Replace("-", " ").Trim().Split(' ')[0];
 
                 DateTime RecentLastUpdatedDate;
 

@@ -40,11 +40,9 @@
 
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Error Log</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
 
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction History</a></li>
-
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction</a></li>
+										
 
 									</ul>
 								</div>
@@ -52,21 +50,17 @@
 
 							
 							<li class="active" *ngIf="authService.isAppAdmin">
-								<a data-toggle="collapse" data-target="#adminMenu" data-parent="#sidenav01" class="collapsed">
+								<a data-toggle="collapse" data-target="#appadminMenu" data-parent="#sidenav01" class="collapsed">
 						 			App Admin<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
 								</a>
-								<div class="collapse" id="adminMenu" style="height: 0px;">
+								<div class="collapse" id="appadminMenu" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
-
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Error Log</a></li>
+										<li class="active" > <a routerLink="/app-admin-users" routerLinkActive="active">App Admin Users</a></li>
 
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction History</a></li>
-
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction</a></li>
-
+										
+									<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction History</a></li>
 									</ul>
 								</div>
 							</li>

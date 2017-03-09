@@ -552,29 +552,80 @@ namespace Utilities.WordTemplate
         public void AddFooterPart(string FooterText)
         {
             var MainDocPart = _document.MainDocumentPart;
-            MainDocPart.DeleteParts(MainDocPart.FooterParts);
-            var footerPart = MainDocPart.AddNewPart<FooterPart>();
-            string footerPartId = MainDocPart.GetIdOfPart(footerPart);
+            var parts = MainDocPart.FooterParts;
 
-            IEnumerable<SectionProperties> sections = MainDocPart.Document.Body.Elements<SectionProperties>();
-
-            Footer footer = new Footer();
-            var Para = new Paragraph();
-            var run = new Run(new Text(FooterText));
-            Para.Append(run);
-            footer.Append(Para);
-            footerPart.Footer = footer;
-
-            foreach (var section in sections)
+            foreach(FooterPart part in parts)
             {
-                // Delete existing references to headers and footers
-                //section.RemoveAllChildren<HeaderReference>();
-                section.RemoveAllChildren<FooterReference>();
-
-                // Create the new footer reference node
-                section.PrependChild(new FooterReference() { Id = footerPartId });
+                var myFooter = part.Footer;
+                foreach( Paragraph para in myFooter.Descendants<Paragraph>())
+                {
+                    foreach (Run run in para.Descendants<Run>())
+                    {
+                        foreach (Text text in run.Descendants<Text>())
+                        {
+                            text.Text += " " + FooterText;
+                            break;
+                        }
+                        break;
+                    }
+                    break;
+                }
             }
 
+            //MainDocPart.DeleteParts(MainDocPart.FooterParts);
+            //var footerPart = MainDocPart.AddNewPart<FooterPart>();
+            //string footerPartId = MainDocPart.GetIdOfPart(footerPart);
+
+            //Footer footer1 = new Footer() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "w14 wp14" } };
+
+            //footer1.AddNamespaceDeclaration("wpc", "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas");
+            //footer1.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            //footer1.AddNamespaceDeclaration("o", "urn:schemas-microsoft-com:office:office");
+            //footer1.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+            //footer1.AddNamespaceDeclaration("m", "http://schemas.openxmlformats.org/officeDocument/2006/math");
+            //footer1.AddNamespaceDeclaration("v", "urn:schemas-microsoft-com:vml");
+            //footer1.AddNamespaceDeclaration("wp14", "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing");
+            //footer1.AddNamespaceDeclaration("wp", "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing");
+            //footer1.AddNamespaceDeclaration("w10", "urn:schemas-microsoft-com:office:word");
+            //footer1.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            //footer1.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            //footer1.AddNamespaceDeclaration("wpg", "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup");
+            //footer1.AddNamespaceDeclaration("wpi", "http://schemas.microsoft.com/office/word/2010/wordprocessingInk");
+            //footer1.AddNamespaceDeclaration("wne", "http://schemas.microsoft.com/office/word/2006/wordml");
+            //footer1.AddNamespaceDeclaration("wps", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape");
+
+            //Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "00164C17", RsidRunAdditionDefault = "00164C17" };
+
+            //ParagraphProperties paragraphProperties1 = new ParagraphProperties();
+            //ParagraphStyleId paragraphStyleId1 = new ParagraphStyleId() { Val = "Footer" };
+
+            //paragraphProperties1.Append(paragraphStyleId1);
+
+            //Run run1 = new Run();
+            //Text text1 = new Text();
+            //text1.Text = FooterText;
+
+            //run1.Append(text1);
+
+            //paragraph1.Append(paragraphProperties1);
+            //paragraph1.Append(run1);
+
+            //footer1.Append(paragraph1);
+
+            //footerPart.Footer = footer1;
+
+
+            //IEnumerable<SectionProperties> sections = MainDocPart.Document.Body.Elements<SectionProperties>();
+
+            //foreach (var section in sections)
+            //{
+            //    // Delete existing references to headers and footers
+            //    //section.RemoveAllChildren<HeaderReference>();
+            //    section.RemoveAllChildren<FooterReference>();
+
+            //    // Create the new footer reference node
+            //    section.PrependChild(new FooterReference() { Id = footerPartId });
+            //}
         }
 
         public void CloseDocument()

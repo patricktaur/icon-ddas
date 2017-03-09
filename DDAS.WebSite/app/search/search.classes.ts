@@ -322,7 +322,7 @@ export class SearchList{
         //Guid id,  SiteEnum siteEnum, int InvestigatorId, bool ReviewCompleted, List<Finding> Findings
         FormId :string;
         SiteEnum : number;
-        //InvestigatorSearchedId : number;
+        InvestigatorSearchedId : number;
         ReviewCompleted : boolean;
         //InvestigatorSearched: InvestigatorSearched;
         Findings: Finding[];
