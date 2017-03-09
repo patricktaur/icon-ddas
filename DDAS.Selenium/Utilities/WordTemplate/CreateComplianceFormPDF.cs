@@ -220,10 +220,16 @@ namespace Utilities.WordTemplate
         {
             _document.Add(_table);
         }
+
         public void CloseDocument()
         {
             _document.Close();
             _writer.Close();
+        }
+
+        public void AddFooterPart(string FooterText)
+        {
+            
         }
     }
 }

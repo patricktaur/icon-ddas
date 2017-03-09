@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -483,6 +484,7 @@ namespace Utilities.WordTemplate
         public void AddFormHeaders(string ProjectNumber,
             string SponsorProtocolNumber, string InstituteName, string Address)
         {
+
             var body = _document.MainDocumentPart.Document.Body;
 
             var HeaderTable = body.Descendants<Table>().ElementAt(0);
@@ -547,8 +549,37 @@ namespace Utilities.WordTemplate
             
         }
 
+        public void AddFooterPart(string FooterText)
+        {
+            var MainDocPart = _document.MainDocumentPart;
+            MainDocPart.DeleteParts(MainDocPart.FooterParts);
+            var footerPart = MainDocPart.AddNewPart<FooterPart>();
+            string footerPartId = MainDocPart.GetIdOfPart(footerPart);
+
+            IEnumerable<SectionProperties> sections = MainDocPart.Document.Body.Elements<SectionProperties>();
+
+            Footer footer = new Footer();
+            var Para = new Paragraph();
+            var run = new Run(new Text(FooterText));
+            Para.Append(run);
+            footer.Append(Para);
+            footerPart.Footer = footer;
+
+            foreach (var section in sections)
+            {
+                // Delete existing references to headers and footers
+                //section.RemoveAllChildren<HeaderReference>();
+                section.RemoveAllChildren<FooterReference>();
+
+                // Create the new footer reference node
+                section.PrependChild(new FooterReference() { Id = footerPartId });
+            }
+
+        }
+
         public void CloseDocument()
         {
+            
             _document.Close();
             _stream.Close();
         }
