@@ -23,6 +23,8 @@ namespace DDAS.Models.Interfaces
 
         void SaveChanges();
 
+        void AddFooterPart(string FooterText);
+
         void CloseDocument();
     }
 }

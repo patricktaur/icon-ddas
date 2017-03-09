@@ -1545,7 +1545,6 @@ namespace DDAS.Services.Search
                     };
                     writer.FillUpTable(CellValues);
                 }
-
             }
             writer.SaveChanges();
 
@@ -1554,6 +1553,8 @@ namespace DDAS.Services.Search
             writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
 
             writer.SaveChanges();
+
+            writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
 
             writer.CloseDocument();
 
@@ -1956,7 +1957,7 @@ namespace DDAS.Services.Search
         {
             DateTime? temp = null;
             _SearchEngine.ExtractData(SiteEnum.SystemForAwardManagementPage, NameToSearch,
-                ErrorScreenCaptureFolder, MatchCountLowerLimit, out SiteLastUpdatedOn);
+                ErrorScreenCaptureFolder, MatchCountLowerLimit, out temp);
 
             var siteData = _SearchEngine.SiteData;
             SiteLastUpdatedOn = temp;

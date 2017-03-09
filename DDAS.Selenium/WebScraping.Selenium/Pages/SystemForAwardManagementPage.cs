@@ -268,8 +268,12 @@ namespace WebScraping.Selenium.Pages
                 string[] DataInPageLastUpdatedElement =
                     PageLastUpdatedTextElement.Text.Split('.');
 
+                if (DataInPageLastUpdatedElement.Length == 0)
+                    throw new Exception(
+                        "PageLastUpdatedTextElement is null, unable to read SiteLastUpdatedDate");
+
                 string PageLastUpdated =
-                    DataInPageLastUpdatedElement[3].Replace("-", " ").Trim();
+                    DataInPageLastUpdatedElement[3].Replace("-", " ").Trim().Split(' ')[0];
 
                 DateTime RecentLastUpdatedDate;
 
@@ -284,7 +288,7 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception)
             {
-                throw new Exception("Unable to read or parse the SiteUpdatedDate");
+                throw new Exception("Unable to read or parse the SiteLastUpdatedDate");
             }
         }
 
