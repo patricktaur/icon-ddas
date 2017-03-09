@@ -176,41 +176,42 @@ export class FindingsComponent implements OnInit {
        
     }
     
+  
     
     
-    Save() {
-            //this.AddNewSearchStatusItem();
-            this.service.saveComplianceForm(this.CompForm)
-            .subscribe((item: any) => {
-                this.pageChanged = false;
-                this.CompForm = item;
-                this.IntiliazeRecords();
-              },
-            error => {
+    // Save() {
+    //         //this.AddNewSearchStatusItem();
+    //         this.service.saveComplianceForm(this.CompForm)
+    //         .subscribe((item: any) => {
+    //             this.pageChanged = false;
+    //             this.CompForm = item;
+    //             this.IntiliazeRecords();
+    //           },
+    //         error => {
 
-            });
-    }
+    //         });
+    // }
 
+    // SaveAndClose(){
+    //         //this.AddNewSearchStatusItem();
+    //            this.service.saveComplianceForm(this.CompForm)
+    //         .subscribe((item: any) => {
+    //             this.pageChanged = false;
+    //             this.goBack()
+    //             //this._location.back();
+    //              },
+    //         error => {
+
+    //         });
+    //  }
+    
     SaveAndClose(){
-            //this.AddNewSearchStatusItem();
-               this.service.saveComplianceForm(this.CompForm)
-            .subscribe((item: any) => {
-                this.pageChanged = false;
-                this.goBack()
-                //this._location.back();
-                 },
-            error => {
-
-            });
-     }
-    
-    TestSaveAndClose(){
             //formId : string, siteEnum:number, InvestigatorId:number, ReviewCompleted : boolean,  Findings:Finding[]
             let updateFindings = new UpdateFindigs;
               
               updateFindings.FormId= this.ComplianceFormId;
               updateFindings.SiteEnum = this.SiteEnum;
-             // updateFindings.InvestigatorSearchedId = this.InvestigatorId;
+              updateFindings.InvestigatorSearchedId = this.InvestigatorId;
               updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted; 
               updateFindings.Findings = this.Findings;
                

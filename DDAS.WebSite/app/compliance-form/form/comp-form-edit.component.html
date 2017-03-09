@@ -210,7 +210,9 @@
 															<tr>
 																<th class="">#</th>
 																<th class="">Source Name</th>
+																<th class="">Source Date</th>
 																<th class="">Extraction Mode</th>
+																
 																<th class="">Issues Identified</th>
 
 															</tr>
@@ -226,6 +228,10 @@
 																		</a>
 																	</div>
 
+																</td>
+																
+																<td>
+																	{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
 																</td>
 																<td>
 																	{{item.ExtractionMode}}
