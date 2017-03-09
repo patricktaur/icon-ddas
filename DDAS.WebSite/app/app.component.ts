@@ -48,7 +48,7 @@ export class AppComponent {
                 });
   }
 
-  get diagnostic() { return JSON.stringify(this.authService.TestValue); }
+  //get diagnostic() { return JSON.stringify(this.authService.TestValue); }
 }
 
  

@@ -23,7 +23,7 @@ import { UserModule }         from './user/user.module';
 import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 
 import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
-
+import {AppAdminModule} from './app-admin/app-admin.module'
 
 @NgModule({
   imports:      [ 
@@ -35,7 +35,8 @@ import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
     ReportModule,
     UserModule,
     LoggedInUserModule,
-    LoginHistoryModule
+    LoginHistoryModule,
+    AppAdminModule
   ],
   declarations: [ 
     AppComponent,

@@ -37,9 +37,6 @@ export class AuthService {
         this._baseUrl = configService.getApiHost();
     }
   
-get TestValue(){
-    return this.test;
-}
  
  login(username:string, password:string) {
     
