@@ -121,7 +121,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-         private IWebElement FDAWarningSortTable
+        private IWebElement FDAWarningSortTable
         {
            get
             {

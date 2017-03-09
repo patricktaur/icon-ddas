@@ -504,11 +504,15 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
-        public IEnumerable<SiteDataItemBase> SiteData
-        {
-            get
-            {
+        public IEnumerable<SiteDataItemBase> SiteData {
+            get {
                 return _searchPage.SiteData;
+            }
+        }
+
+        public BaseSiteData baseSiteData {
+            get {
+                return _searchPage.baseSiteData;
             }
         }
 
@@ -587,12 +591,17 @@ namespace WebScraping.Selenium.SearchEngine
         }
 
         public void ExtractData(SiteEnum siteEnum, string NameToSearch,
-            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit,
+            out DateTime? SiteLastUpdatedOn)
         {
+            //var SiteData = _searchPage.baseSiteData;
+            //SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+
             _searchPage = GetSearchPage(siteEnum);
+            SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
             _searchPage.LoadContent(
                 NameToSearch, "", ErrorScreenCaptureFolder, MatchCountLowerLimit);
-            _searchPage.SaveData();
+            //_searchPage.SaveData();
         }
     }
 }

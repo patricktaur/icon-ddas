@@ -1,6 +1,7 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace DDAS.Models.Interfaces
@@ -30,9 +31,11 @@ namespace DDAS.Models.Interfaces
         void ExtractData(List<SearchQuerySite> query, string DownloadFolder, ILog log);
         void ExtractData(SiteEnum siteEnum, string DownloadFolder, ILog log);
         void ExtractData(SiteEnum siteEnum, string NameToSearch, 
-            string ErrorScreenCaptureFolder, int MatchCountLowerLimit);//For Live site
+            string ErrorScreenCaptureFolder, int MatchCountLowerLimit,
+            out DateTime? SiteLastUpdatedOn);//For Live site
 
         IEnumerable<SiteDataItemBase> SiteData { get; }
+        BaseSiteData baseSiteData { get; }
 
         void SaveData();
 

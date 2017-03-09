@@ -273,8 +273,11 @@ namespace WebScraping.Selenium.Pages
 
                 DateTime RecentLastUpdatedDate;
 
-                DateTime.TryParseExact(PageLastUpdated, "yyyyMd hhmm", null,
-                    System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+                DateTime.TryParseExact(PageLastUpdated, 
+                    "yyyyMMdd", 
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, 
+                    out RecentLastUpdatedDate);
 
                 _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
 

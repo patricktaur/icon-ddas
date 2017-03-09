@@ -59,7 +59,6 @@
 							<li *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>							
 						</ul>-->
 						<h5> <a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
-							<!--<span class="caret" *ngIf="item.SubInvestigators.length > 0"></span>-->
 							<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 							</a> 
 						</h5>
@@ -72,7 +71,7 @@
 									</ul>  
 								</div>
 							</div>
-						</div>						
+						</div>
 					</div>
 				</td>
 				<td class="text-center">

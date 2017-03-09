@@ -7,6 +7,7 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -87,7 +88,25 @@ namespace WebScraping.Selenium.Pages
             IWebElement Search = FDASearchButton;
             if (Search == null)
                 throw new Exception("Could not find element: FDASearchButton");
+
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            //executor.ExecuteScript("arguments[0].click();", FDASearchButton);
+
             FDASearchButton.SendKeys(Keys.Enter);
+
+            bool IsElementClicked = false;
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    IsElementClicked = true;
+                    break;
+                }
+            }
+            if (!IsElementClicked)
+                throw new Exception("FDASearchButton click event took too long to respond");
 
             IWebElement Table = FDAWarningSortTable;
 

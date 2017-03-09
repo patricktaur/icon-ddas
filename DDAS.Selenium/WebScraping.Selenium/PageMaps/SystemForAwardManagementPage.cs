@@ -170,7 +170,10 @@ namespace WebScraping.Selenium.Pages
                 {
                     string XPathValue = "//div[@id='foot']/div/p";
                     IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
-                    return Elements[1];
+                    if (Elements.Count > 0)
+                        return Elements[0];
+                    else
+                        throw new Exception();
                 }
                 catch(Exception)
                 {

@@ -565,7 +565,6 @@ namespace DDAS.Services.Search
 
                 var siteSourceToAdd = new SiteSource();
 
-
                 if (site.ExtractionMode.ToLower() == "db")
                     //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
                     siteScan = ScanData.GetSiteScanData(site.SiteEnum, "", log);
@@ -876,9 +875,12 @@ namespace DDAS.Services.Search
                             //clear previously added matching records.
                             frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
 
-
+                            DateTime? SiteLastUpdatedOn = null;
                             var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
-                               ErrorScreenCaptureFolder,  ComponentsInInvestigatorName);
+                               ErrorScreenCaptureFolder,  ComponentsInInvestigatorName,
+                               out SiteLastUpdatedOn);
+
+                            siteSource.SiteSourceUpdatedOn = SiteLastUpdatedOn;
 
                             GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
 
@@ -1071,71 +1073,83 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetMatchedRecords(SiteSource site,
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
             switch (site.SiteEnum)
             {
                 case SiteEnum.FDADebarPage:
                     return GetFDADebarPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInvestigatorPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.FDAWarningLettersPage:
                     return GetFDAWarningLettersPageMatchedRecords(
                         site.SiteDataId, NameToSearch,
                         ErrorScreenCaptureFolder,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetERRProposalToDebarPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.AdequateAssuranceListPage:
                     return GetAdequateAssurancePageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
                     return GetClinicalInvestigatorDisqualificationPageMatchedRecords(
                         site.SiteDataId, NameToSearch,
                         ErrorScreenCaptureFolder,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
                     return GetPHSAdministrativeActionPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
                     return GetExclusionDatabasePageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     return GetCIAPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.SystemForAwardManagementPage:
                     return GetSAMPageMatchedRecords(site.SiteDataId, NameToSearch,
                         ErrorScreenCaptureFolder,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return GetSDNPageMatchedRecords(site.SiteDataId,
                         NameToSearch,
-                        ComponentsInInvestigatorName);
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
 
                 default: throw new Exception("Invalid Enum");
             }
@@ -1704,7 +1718,8 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             FDADebarPageSiteData FDASearchResult =
                 _UOW.FDADebarPageRepository.FindById(SiteDataId);
@@ -1716,6 +1731,8 @@ namespace DDAS.Services.Search
             var DebarList = FDASearchResult.DebarredPersons.Where(
                debarredList => debarredList.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = FDASearchResult.SiteLastUpdatedOn;
+
             if (DebarList == null)
                 return null;
 
@@ -1726,7 +1743,8 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             ClinicalInvestigatorInspectionSiteData CIILSearchResult =
                 _UOW.ClinicalInvestigatorInspectionListRepository.FindById(SiteDataId);
@@ -1737,6 +1755,8 @@ namespace DDAS.Services.Search
             var ClinicalInvestigatorList = CIILSearchResult.ClinicalInvestigatorInspectionList.Where(
                ClinicalList => ClinicalList.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = CIILSearchResult.SiteLastUpdatedOn;
+
             if (ClinicalInvestigatorList == null)
                 return null;
 
@@ -1745,23 +1765,23 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch, string ErrorScreenCaptureFolder,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
+            DateTime? temp = null; 
             _SearchEngine.ExtractData(
                 SiteEnum.FDAWarningLettersPage, NameToSearch, 
-                ErrorScreenCaptureFolder, MatchCountLowerLimit);
+                ErrorScreenCaptureFolder, MatchCountLowerLimit, out temp);
 
             var siteData = _SearchEngine.SiteData;
+            SiteLastUpdatedOn = temp;
+             
+            var baseSiteData = _SearchEngine.baseSiteData;
 
-            //UpdateMatchStatus(FDAWarningSearchResult.FDAWarningLetterList, NameToSearch);  //updates list with match count
             UpdateMatchStatus(siteData, NameToSearch);
 
             var FDAWarningLetterList =
                 siteData.Where(
                 FDAList => FDAList.Matched > 0);
-
-            //if (FDAWarningLetterList == null)
-            //    return null;
 
             if (siteData == null)
                 return null;
@@ -1771,7 +1791,8 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             ERRProposalToDebarPageSiteData ERRSearchResult =
                 _UOW.ERRProposalToDebarRepository.FindById(SiteDataId);
@@ -1782,6 +1803,8 @@ namespace DDAS.Services.Search
             var ERRList = ERRSearchResult.ProposalToDebar.Where(
                ErrList => ErrList.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = ERRSearchResult.SiteLastUpdatedOn;
+
             if (ERRList == null)
                 return null;
 
@@ -1790,7 +1813,8 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetAdequateAssurancePageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             AdequateAssuranceListSiteData AdequateAssuranceSearchResult =
                 _UOW.AdequateAssuranceListRepository.FindById(SiteDataId);
@@ -1803,6 +1827,8 @@ namespace DDAS.Services.Search
                 AdequateAssuranceSearchResult.AdequateAssurances.Where(
                 AssuranceList => AssuranceList.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = AdequateAssuranceSearchResult.SiteLastUpdatedOn;
+
             if (AdequateAssuranceList == null)
                 return null;
 
@@ -1811,13 +1837,17 @@ namespace DDAS.Services.Search
 
       public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
             Guid? SiteDataId, string NameToSearch, string ErrorScreenCaptureFolder,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
+            DateTime? temp = null;
             _SearchEngine.ExtractData(
                 SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch,
-                ErrorScreenCaptureFolder, MatchCountLowerLimit);
+                ErrorScreenCaptureFolder, MatchCountLowerLimit, out temp);
 
             var siteData = _SearchEngine.SiteData;
+            SiteLastUpdatedOn = temp;
+
+            var baseSiteData = _SearchEngine.baseSiteData;
 
             UpdateMatchStatus(siteData, NameToSearch);
 
@@ -1832,7 +1862,8 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             CBERClinicalInvestigatorInspectionSiteData CBERSearchResult =
                 _UOW.CBERClinicalInvestigatorRepository.FindById(SiteDataId);
@@ -1844,6 +1875,8 @@ namespace DDAS.Services.Search
             var ClinicalInvestigatorList = CBERSearchResult.ClinicalInvestigator.Where(
                CBERList => CBERList.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = CBERSearchResult.SiteLastUpdatedOn;
+
             if (ClinicalInvestigatorList == null)
                 return null;
 
@@ -1851,7 +1884,8 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetExclusionDatabasePageMatchedRecords(Guid? SiteDataId,
-            string InvestigatorName, int ComponentsInInvestigatorName)
+            string InvestigatorName, int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             ExclusionDatabaseSearchPageSiteData ExclusionSearchResult =
                 _UOW.ExclusionDatabaseSearchRepository.FindById(SiteDataId);
@@ -1863,6 +1897,8 @@ namespace DDAS.Services.Search
             var ExclusionDBList = ExclusionSearchResult.ExclusionSearchList.Where(
                ExclusionList => ExclusionList.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = ExclusionSearchResult.SiteLastUpdatedOn;
+
             if (ExclusionDBList == null)
                 return null;
 
@@ -1870,7 +1906,8 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetPHSAdministrativeActionPageMatchedRecords(Guid? SiteDataId,
-            string InvestigatorName, int ComponentsInInvestigatorName)
+            string InvestigatorName, int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             PHSAdministrativeActionListingSiteData PHSSearchResult =
                 _UOW.PHSAdministrativeActionListingRepository.FindById(SiteDataId);
@@ -1882,6 +1919,8 @@ namespace DDAS.Services.Search
             var PHSList = PHSSearchResult.PHSAdministrativeSiteData.Where(
                PHSData => PHSData.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = PHSSearchResult.SiteLastUpdatedOn;
+
             if (PHSList == null)
                 return null;
 
@@ -1890,7 +1929,8 @@ namespace DDAS.Services.Search
 
         public List<MatchedRecord> GetCIAPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
-            int ComponentsInInvestigatorName)
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             CorporateIntegrityAgreementListSiteData CIASearchResult =
                 _UOW.CorporateIntegrityAgreementRepository.FindById(SiteDataId);
@@ -1902,6 +1942,8 @@ namespace DDAS.Services.Search
             var CIAList = CIASearchResult.CIAListSiteData.Where(
                CIAData => CIAData.Matched > 0).ToList();
 
+            SiteLastUpdatedOn = CIASearchResult.SiteLastUpdatedOn;
+
             if (CIAList == null)
                 return null;
 
@@ -1910,12 +1952,15 @@ namespace DDAS.Services.Search
 
        public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch, string ErrorScreenCaptureFolder, 
-            int ComponentsInIvestigatorName)
+            int ComponentsInIvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
+            DateTime? temp = null;
             _SearchEngine.ExtractData(SiteEnum.SystemForAwardManagementPage, NameToSearch,
-                ErrorScreenCaptureFolder, MatchCountLowerLimit);
+                ErrorScreenCaptureFolder, MatchCountLowerLimit, out SiteLastUpdatedOn);
 
             var siteData = _SearchEngine.SiteData;
+            SiteLastUpdatedOn = temp;
+            var baseSiteData = _SearchEngine.baseSiteData;
 
             UpdateMatchStatus(siteData, NameToSearch);
 
@@ -1929,11 +1974,11 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetSDNPageMatchedRecords(Guid? SiteDataId,
-            string InvestigatorName, int ComponentsInInvestigatorName)
+            string InvestigatorName, int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
         {
             SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
-
 
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,
@@ -1941,6 +1986,8 @@ namespace DDAS.Services.Search
 
             var SDNList = SDNSearchResult.SDNListSiteData.Where(
                SDNData => SDNData.Matched > 0).ToList();
+
+            SiteLastUpdatedOn = SDNSearchResult.SiteLastUpdatedOn;            
 
             if (SDNList == null)
                 return null;
