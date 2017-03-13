@@ -54,9 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\AuditEntity.cs" />
     <Compile Include="Entities\Domain\ApplicationSettings.cs" />
     <Compile Include="Entities\Domain\BaseSiteData.cs" />
+    <Compile Include="Entities\Domain\LIveSiteScannerMemoryModel.cs" />
     <Compile Include="Entities\Domain\SiteDataViewModel.cs" />
     <Compile Include="Entities\Domain\ScanHistory.cs" />
     <Compile Include="Entities\Domain\SearchResult.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
     <Compile Include="Enums\Enums.cs" />
-    <Compile Include="Interfaces\IAppAdmin.cs" />
+    <Compile Include="Entities\IAppAdminService.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\ILog.cs" />

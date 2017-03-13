@@ -126,11 +126,12 @@
 						<td>
 							{{item.Active | boolToYesNo}}
 						</td>
-						<td class="text-left">
-							{{item.AssignedTo}}
-						</td>
+						
 						<td class="text-left">
 							{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+						</td>
+						<td class="text-left">
+							{{item.AssignedTo}}
 						</td>
 						<td class="text-center">
 							<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>

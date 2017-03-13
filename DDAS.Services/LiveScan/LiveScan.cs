@@ -22,10 +22,10 @@ namespace DDAS.Services.Search
         private long _totalScanTimeInSecs;
         private long _sitesScanned;
         private Stopwatch _stopWatch;
-
+        private int _QueueNumber;
        
 
-        public LiveScan(IUnitOfWork uow, ISearchEngine SearchEngine, ILog log, string ErrorScreenCaptureFolder)
+        public LiveScan(IUnitOfWork uow, ISearchEngine SearchEngine, ILog log, string ErrorScreenCaptureFolder, int QueueNumber)
         {
             _UOW = uow;
             _compFormService = new ComplianceFormService(uow, SearchEngine);
@@ -34,6 +34,7 @@ namespace DDAS.Services.Search
             _ErrorScreenCaptureFolder = ErrorScreenCaptureFolder;
             _avgScanTimeInSecs = 45;
              _stopWatch = new Stopwatch();
+            _QueueNumber = QueueNumber;
         }
 
         public void StartLiveScan()
@@ -67,15 +68,17 @@ namespace DDAS.Services.Search
                     //Flag Extraction Start, so that other Extraction processes cannot retrieve this form.
                     // compForm.ExtractionQueStart = DateTime.Now;
                     //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
-                    _UOW.ComplianceFormRepository.UpdateExtractionQueStart(compForm.RecId.Value, DateTime.Now);
+                    _UOW.ComplianceFormRepository.UpdateExtractionQueStart(compForm.RecId.Value, DateTime.Now, _QueueNumber);
                     //Console.WriteLine("Extraction Start:" + compForm.ProjectNumber);
+
+                    _Log.WriteLog(DateTime.Now.ToLongDateString());
                     _Log.WriteLog("Scan Start:" + compForm.ProjectNumber);
                     //_compFormService.AddMatchingRecords(compForm, _Log, _ErrorScreenCaptureFolder, "live");
 
                      ScanNUpdate(compForm);
                     //compForm.ExtractionQueStart = null;
                     //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
-                    _UOW.ComplianceFormRepository.UpdateExtractionQueStart(compForm.RecId.Value, null);
+                    _UOW.ComplianceFormRepository.UpdateExtractionQueEnd(compForm.RecId.Value, DateTime.Now);
 
                     _Log.WriteLog("Scan End:" + compForm.ProjectNumber);
 
@@ -146,7 +149,11 @@ namespace DDAS.Services.Search
                 _Log.WriteLog("Live Scan started", InvNameNProjNumber);
                 _sitesScanned += getScanPendingSiteCount(frm);
                 _stopWatch.Restart();
-                _compFormService.ScanUpdateComplianceForm(frm, _Log, _ErrorScreenCaptureFolder, "live");
+                //_compFormService.ScanUpdateComplianceForm(frm, _Log, _ErrorScreenCaptureFolder, "live");
+                _compFormService.AddLiveScanFindings(frm, _Log, _ErrorScreenCaptureFolder);
+                _compFormService.UpdateRollUpSummary(frm.RecId.Value);
+
+
                 _stopWatch.Stop();
                 
                 _totalScanTimeInSecs += _stopWatch.ElapsedMilliseconds / 1000;

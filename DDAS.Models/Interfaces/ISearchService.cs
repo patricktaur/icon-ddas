@@ -35,6 +35,9 @@ namespace DDAS.Models.Interfaces
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
 
         ComplianceForm RollUpSummary(ComplianceForm form);
+        bool UpdateRollUpSummary(Guid formId);
+
+        void AddLiveScanFindings(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder);
 
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
 

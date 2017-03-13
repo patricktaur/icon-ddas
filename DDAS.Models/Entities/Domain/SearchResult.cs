@@ -166,7 +166,7 @@ namespace DDAS.Models.Entities.Domain
         public int ExtractionAttempt { get; set; }
         public DateTime? ExtractionQueStart { get; set; }
         public DateTime? ExtractionEstimatedCompletion { get; set; }
-        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' // extraction end
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public int ExtractedInvestigatorCount { get; set; }

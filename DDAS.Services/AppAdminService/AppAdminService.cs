@@ -8,13 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DDAS.Services.LiveScan;
+using System.Diagnostics;
+using System.ComponentModel;
 
 namespace DDAS.Services.AppAdminService
 {
-    public class AppAdmin : IAppAdmin
+   
+    public class AppAdminService : IAppAdminService
     {
         private IUnitOfWork _UOW;
-        public AppAdmin(IUnitOfWork UOW)
+        private string _LiveSiteScannerExeName = "DDAS.LiveSiteExtractor";
+        public AppAdminService(IUnitOfWork UOW)
         {
             _UOW = UOW;
         }
@@ -775,6 +780,121 @@ namespace DDAS.Services.AppAdminService
             }
             _UOW.SpeciallyDesignatedNationalsRepository.RemoveById(RecId);
         }
+
+
+        #endregion
+
+        #region LiveScanner
+        public bool LaunchLiveScanner(string exeFolder)
+        {
+            var launcher = new LiveScanLauncher();
+            var QueueNumber = getMaxProcessNumber() + 1;
+            launcher.LaunchLiveScanner(exeFolder, QueueNumber);
+                return true;
+        }
+
+        public LIveSiteScannerMemoryModel LiveScannerInfo()
+        {
+            var retValue = new LIveSiteScannerMemoryModel();
+            
+            System.Diagnostics.Process[] processes =  System.Diagnostics.Process.GetProcessesByName(_LiveSiteScannerExeName);
+
+            long totalPhysicalMemory = 0;
+            TimeSpan totalProcessorTime = new TimeSpan(0, 0, 0, 0, 0); ;
+            long totalVirtualMemory = 0;
+
+            foreach (System.Diagnostics.Process proc in processes)
+            {
+                
+
+                totalPhysicalMemory += proc.WorkingSet64;
+                totalProcessorTime += proc.TotalProcessorTime;
+                totalVirtualMemory = proc.VirtualMemorySize64;
+                // imp prop to add:
+                //proc.Responding
+                //Console.WriteLine("Current physical memory : " + proc.WorkingSet64.ToString());
+                //Console.WriteLine("Total processor time : " + proc.TotalProcessorTime.ToString());
+                //Console.WriteLine("Virtual memory size : " + proc.VirtualMemorySize64.ToString());
+                
+            }
+            retValue.NumberOfProcesses = processes.Length;
+            retValue.TotalCurrentPhysicalMemory = totalPhysicalMemory / 1024;
+            retValue.TotalProcessorTime = totalProcessorTime;
+            retValue.TotalVirtualMemory = totalVirtualMemory /1024;
+
+            return retValue;
+        }
+
+        public List<LiveSiteScannerProcessModel> getLiveScannerProcessorsInfo()
+        {
+            var retValue = new List<LiveSiteScannerProcessModel>();
+
+            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(_LiveSiteScannerExeName);
+
+            foreach (System.Diagnostics.Process proc in processes)
+            {
+                var procInfo = new LiveSiteScannerProcessModel();
+                procInfo.ProcessId = proc.Id;
+                procInfo.Responding = proc.Responding;
+                procInfo.StartTime = proc.StartTime;
+               
+                if (proc.StartInfo.Arguments.Length > 0)
+                {
+                    procInfo.QueueNumber = int.Parse(proc.StartInfo.Arguments);
+                }
+  
+                procInfo.VirtualMemory = proc.VirtualMemorySize64;
+                procInfo.CurrentPhysicalMemory = proc.WorkingSet64;
+                procInfo.ProcessorTime = proc.TotalProcessorTime;
+
+                retValue.Add(procInfo);
+            }
+  
+            return retValue;
+        }
+
+        public bool KillLiveSiteScanner(int HowMany = 1)
+        {
+            int processedKilled = 0;
+            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(_LiveSiteScannerExeName);
+            foreach (Process p in processes)
+            {
+                try
+                {
+                    p.Kill();
+                    p.WaitForExit(); // possibly with a timeout
+                    processedKilled += 1;
+                    if (processedKilled >= HowMany)
+                    {
+                        break;
+                    }
+
+                }
+                catch (Win32Exception winException)
+                {
+                    // process was terminating or can't be terminated - deal with it
+                }
+                catch (InvalidOperationException invalidException)
+                {
+                    // process has already exited - might be able to let this one go
+                }
+            }
+            return true;
+        }
+
+        private int  getMaxProcessNumber()
+        {
+            int maxNumber = 0;
+            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(_LiveSiteScannerExeName);
+            foreach (Process p in processes)
+            {
+                var args = p.StartInfo.Arguments;
+                  
+                
+            }
+            return maxNumber;
+        }
+
         #endregion
     }
 }

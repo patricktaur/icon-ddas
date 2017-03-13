@@ -467,6 +467,7 @@ export class CompFormEditComponent implements OnInit {
                     let siteToAdd = new SiteSourceToSearch;
                     siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
                     siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
+                    siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
                     siteToAdd.Id = this.LastSiteSourceId + 1;
                     siteToAdd.IsMandatory = false;
                     siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;

@@ -3,7 +3,7 @@ import { CommonModule }   from '@angular/common';
 import { FormsModule }    from '@angular/forms';
 import {AppAdminRouting} from './app-admin.routing'
 import {AppAdminService} from './app-admin.service';
-import {AppAdminUsersComponent} from './app-admin-users.component'
+import {AppAdminDashboardComponent} from './app-admin-dashboard.component'
 @NgModule({ 
   imports: [
       
@@ -12,7 +12,7 @@ import {AppAdminUsersComponent} from './app-admin-users.component'
       AppAdminRouting
   ],
   declarations: [
-      AppAdminUsersComponent
+      AppAdminDashboardComponent
   ],
  
   providers: [      
