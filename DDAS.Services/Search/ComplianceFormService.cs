@@ -134,14 +134,17 @@ namespace DDAS.Services.Search
                 form.Institute = DetailsInEachRow[6];
                 form.Address = DetailsInEachRow[7];
                 form.Country = DetailsInEachRow[8];
-
+                int InvId = 1;
                 if (DetailsInEachRow[1].ToLower() == "principal")
                 {
+                    
+                    Investigator.Id = InvId;
+                    InvId += 1;
                     Investigator.Name = DetailsInEachRow[0];
                     Investigator.Role = DetailsInEachRow[1];
                     Investigator.MedicalLiceseNumber = DetailsInEachRow[2];
                     Investigator.Qualification = DetailsInEachRow[3];
-
+                   
                     form.InvestigatorDetails.Add(Investigator);
 
                     if (DetailsInEachRow.Count > 9)
@@ -149,10 +152,14 @@ namespace DDAS.Services.Search
                         for(int Index = 9; Index < DetailsInEachRow.Count; Index++)
                         {
                             var Inv = new InvestigatorSearched();
+
+                            Inv.Id = InvId;
+                            InvId += 1;
                             Inv.Name = DetailsInEachRow[Index];
                             Inv.Role = DetailsInEachRow[Index + 1];
                             Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 2];
                             Inv.Qualification = DetailsInEachRow[Index + 3];
+
 
                             Index += 8;
                             form.InvestigatorDetails.Add(Inv);
@@ -402,9 +409,11 @@ namespace DDAS.Services.Search
                         {
                             //not found, delete from DB
                             inv.Deleted = true;
+                            //remove all Findings for the deleted Investigator
+                            dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == inv.Id);
                         }
                     }
-                    dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted = true);
+                    dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
 
                     //InvestigatorUpdate or add:
                     var invId = 1;
@@ -418,12 +427,12 @@ namespace DDAS.Services.Search
                             dbInv.Qualification = clInv.Qualification;
                             dbInv.Role = clInv.Role;
                             dbInv.InvestigatorId = clInv.InvestigatorId;
-                            dbInv.Id = invId;
+                            //dbInv.Id = invId;
                         }
                         else
                         {
-                            //Not found, add
-                            clInv.Id = invId;
+                            //Not found in DB, add
+                            //clInv.Id = invId;
                             dbForm.InvestigatorDetails.Add(clInv);
                         }
                         invId += 1;
@@ -907,7 +916,7 @@ namespace DDAS.Services.Search
                             inv.Sites_FullMatchCount +=
                                 searchStatus.FullMatchCount;
 
-                            inv.Id = InvestigatorId;
+                            //inv.Id = InvestigatorId;
 
                             //To-Do: convert matchedRecords to Findings
                             foreach (MatchedRecord rec in MatchedRecords)

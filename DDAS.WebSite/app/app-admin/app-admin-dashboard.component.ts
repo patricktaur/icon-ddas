@@ -32,7 +32,7 @@ export class AppAdminDashboardComponent implements OnInit {
 
     getLiveScannerInfo(){
         this.service.getLiveScannerInfo()
-        .subscribe((item: LiveSiteScannerProcessModel) => {
+        .subscribe((item: LiveSiteScannerProcessModel[]) => {
             
             this.LiveSiteScannerInfo = item;
             
