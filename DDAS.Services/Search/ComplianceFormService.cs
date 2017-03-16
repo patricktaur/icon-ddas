@@ -2271,6 +2271,8 @@ namespace DDAS.Services.Search
 
         #region Helpers
 
+      
+
         public string RemoveExtraCharacters(string Value)
         {
             //string CharactersToRemove = ".,/:";

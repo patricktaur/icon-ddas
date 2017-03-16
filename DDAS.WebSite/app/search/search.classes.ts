@@ -237,6 +237,7 @@ export class SearchList{
 
      
         ExtractionPendingSiteCount:number = 0;
+        NameComponentCount: number = 0;
 
         //---For client side Validations
       CanEdit:boolean = true;  //set to false when the name is searched.

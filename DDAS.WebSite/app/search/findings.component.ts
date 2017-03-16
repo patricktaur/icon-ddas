@@ -23,6 +23,7 @@ export class FindingsComponent implements OnInit {
     private pageChanged: boolean= false;
      private rootPath: string;
      public loading: boolean;
+     public minMatchCount: number;
     
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
@@ -107,11 +108,15 @@ export class FindingsComponent implements OnInit {
     }
     
     get MatchedSiteRecords(){
-        //return this.Findings;
+       
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true).sort(s=> s.MatchCount).reverse();
     }
   
-   
+     get MatchedSiteRecordsForMatchCount(){
+        //return this.Findings;
+        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true  ).sort(s=> s.MatchCount).reverse();
+    }
+
     get  SiteSearchStatus(){
 
         let siteSearched = new SiteSearchStatus;
