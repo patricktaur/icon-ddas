@@ -25,6 +25,8 @@ namespace DDAS.Models.Interfaces
 
         void AddFooterPart(string FooterText);
 
+        void AttachFile(string FilePath, string ComplianceFormDocPath);
+
         void CloseDocument();
     }
 }

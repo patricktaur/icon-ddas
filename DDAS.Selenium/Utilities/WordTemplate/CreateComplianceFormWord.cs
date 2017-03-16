@@ -4,10 +4,12 @@ using DDAS.Models.Interfaces;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using OpenXmlEmbedObjectNew;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Utilities.WordTemplate
 {
@@ -479,6 +481,10 @@ namespace Utilities.WordTemplate
             _stream.Write(ByteArray, 0, ByteArray.Length);
 
             _document = WordprocessingDocument.Open(_stream, true);
+
+            //var FilePath = @"c:\Development\EmbedFile.pdf";
+            //var document = new OpenXmlHelper(_document, _document.MainDocumentPart);
+            //document.AddObject(FilePath, Path.GetFileName(FilePath));
         }
 
         public void AddFormHeaders(string ProjectNumber,
@@ -536,7 +542,7 @@ namespace Utilities.WordTemplate
         }
 
         public void AddSearchedBy(string SearchedBy, string Date)
-        {
+        {            
             var body = _document.MainDocumentPart.Document.Body;
             var SearchedByTable = body.Descendants<Table>().ElementAt(5);
             AddSearchedByDetails(SearchedByTable, SearchedBy, 0, 0);
@@ -571,68 +577,44 @@ namespace Utilities.WordTemplate
                     break;
                 }
             }
+        }
 
-            //MainDocPart.DeleteParts(MainDocPart.FooterParts);
-            //var footerPart = MainDocPart.AddNewPart<FooterPart>();
-            //string footerPartId = MainDocPart.GetIdOfPart(footerPart);
+        public void AttachFile(string EmbeddingFilePath, string ComplianceFormDocPath)
+        {
+            Start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath);
 
-            //Footer footer1 = new Footer() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "w14 wp14" } };
+            //var ProcessInfo = new ProcessStartInfo();
+            //ProcessInfo.FileName = @"C:\Development\OpenXmlDocumentGenerator-master\OpenXmlCidGenerator\bin\Debug\OpenXmlCidGenerator.exe";
+            //ProcessInfo.Arguments = EmbeddingFilePath + " \"" + ComplianceFormDocPath + "\"";
+            //ProcessInfo.CreateNoWindow = true;
+            //ProcessInfo.RedirectStandardOutput = true;
+            //ProcessInfo.UseShellExecute = false;
 
-            //footer1.AddNamespaceDeclaration("wpc", "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas");
-            //footer1.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
-            //footer1.AddNamespaceDeclaration("o", "urn:schemas-microsoft-com:office:office");
-            //footer1.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
-            //footer1.AddNamespaceDeclaration("m", "http://schemas.openxmlformats.org/officeDocument/2006/math");
-            //footer1.AddNamespaceDeclaration("v", "urn:schemas-microsoft-com:vml");
-            //footer1.AddNamespaceDeclaration("wp14", "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing");
-            //footer1.AddNamespaceDeclaration("wp", "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing");
-            //footer1.AddNamespaceDeclaration("w10", "urn:schemas-microsoft-com:office:word");
-            //footer1.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
-            //footer1.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
-            //footer1.AddNamespaceDeclaration("wpg", "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup");
-            //footer1.AddNamespaceDeclaration("wpi", "http://schemas.microsoft.com/office/word/2010/wordprocessingInk");
-            //footer1.AddNamespaceDeclaration("wne", "http://schemas.microsoft.com/office/word/2006/wordml");
-            //footer1.AddNamespaceDeclaration("wps", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape");
+            //var MyProcess = new Process();
+            //MyProcess.StartInfo = ProcessInfo;
 
-            //Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "00164C17", RsidRunAdditionDefault = "00164C17" };
+            //MyProcess.Start();
+            //string output = MyProcess.StandardOutput.ReadToEnd();
+            //MyProcess.WaitForExit();
+            //MyProcess.Close();
 
-            //ParagraphProperties paragraphProperties1 = new ParagraphProperties();
-            //ParagraphStyleId paragraphStyleId1 = new ParagraphStyleId() { Val = "Footer" };
+            //ThreadStart ths = new ThreadStart(() =>
+            //Start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath));
 
-            //paragraphProperties1.Append(paragraphStyleId1);
+            //Thread th = new Thread(ths);
+            //th.SetApartmentState(ApartmentState.STA);
+            //th.Join();
 
-            //Run run1 = new Run();
-            //Text text1 = new Text();
-            //text1.Text = FooterText;
-
-            //run1.Append(text1);
-
-            //paragraph1.Append(paragraphProperties1);
-            //paragraph1.Append(run1);
-
-            //footer1.Append(paragraph1);
-
-            //footerPart.Footer = footer1;
-
-
-            //IEnumerable<SectionProperties> sections = MainDocPart.Document.Body.Elements<SectionProperties>();
-
-            //foreach (var section in sections)
-            //{
-            //    // Delete existing references to headers and footers
-            //    //section.RemoveAllChildren<HeaderReference>();
-            //    section.RemoveAllChildren<FooterReference>();
-
-            //    // Create the new footer reference node
-            //    section.PrependChild(new FooterReference() { Id = footerPartId });
-            //}
+            //var document = new OpenXmlHelper(_document, _document.MainDocumentPart);
+            //document.AddObject(EmbeddingFilePath, Path.GetFileName(EmbeddingFilePath));
+            //document.Close();
         }
 
         public void CloseDocument()
         {
-            
             _document.Close();
-            _stream.Close();
+            //_stream.Close();
+            _stream.Dispose();
         }
         #endregion
     }

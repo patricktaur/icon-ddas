@@ -18,5 +18,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
         bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator);
         bool UpdateFindings(UpdateFindigs updateFindings);
         bool UpdateExtractionQueStart(Guid id, DateTime? dateValue);
+
+        bool AddAttachmentsToFindings(List<Attachment> Attachments);
     }
 }

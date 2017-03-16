@@ -80,8 +80,6 @@ namespace WebScraping.Selenium.Pages
             IWebElement Input = FDASearchTextBox;
             if (Input == null)
                 throw new Exception("Could not find element: FDASearchTextBox");
-            //Input.Clear();
-            //Input.SendKeys(Name);
             FDASearchTextBox.Clear();
             FDASearchTextBox.SendKeys(Name);
 
@@ -107,6 +105,11 @@ namespace WebScraping.Selenium.Pages
             }
             if (!IsElementClicked)
                 throw new Exception("FDASearchButton click event took too long to respond");
+
+            if(IsSiteDown)
+            {
+                throw new Exception("Unable to search records, the site is down");
+            }
 
             IWebElement Table = FDAWarningSortTable;
 

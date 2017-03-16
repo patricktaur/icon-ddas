@@ -1,17 +1,9 @@
-﻿using DDAS.Data.Mongo;
-using DDAS.Data.Mongo.Maps;
-using DDAS.Models;
-using DDAS.Models.Entities.Domain;
-using DDAS.Models.Enums;
-using DDAS.Models.Interfaces;
-using DDAS.Services.Search;
+﻿using OpenXmlEmbedObjectNew;
 using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Utilities;
-using WebScraping.Selenium.SearchEngine;
 
 namespace WebScraping
 {
@@ -19,12 +11,16 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
+            var EmbeddingObjectPath = "C:\\Development\\test.pdf";
+            var WordDocumentPath = "C:\\Development\\p926-ddas\\DDAS.API\\App_Data\\Templates\\ComplianceFormTemplate.docx";
+            Console.WriteLine("Calling DLL to embed file");
+            Start.EmbedObjectIntoDocument(EmbeddingObjectPath, WordDocumentPath);
+            Console.WriteLine("file is embedded successfully");
+            //string Name = "FullName: Pradeep Chavhan~ FirstName: Pradeep~LastName: Chavhan~Company: Clarity~WorkLocation: Bangalore";
 
-            string Name = "FullName: Pradeep Chavhan~ FirstName: Pradeep~LastName: Chavhan~Company: Clarity~WorkLocation: Bangalore";
+            //string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
 
-            string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
-
-            Console.WriteLine(res);
+            //Console.WriteLine(res);
 
             //IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             //ILog log = new LogText(

@@ -34,6 +34,9 @@ C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\bin\Debug\WebDrive
 C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\bin\Debug\WebDriver.Support.xml
 C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.ProjectInstaller.resources
 C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csproj.GenerateResource.Cache
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csprojResolveAssemblyReference.cache
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.ProjectInstaller.resources
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csproj.GenerateResource.Cache
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\phantomjs.exe
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\phantomjs-license.txt
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.LiveSiteExtractionService.exe.config
@@ -51,8 +54,10 @@ C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\MongoDB.Driver
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\SpreadsheetLight.dll
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DocumentFormat.OpenXml.dll
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\itextsharp.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\OpenXmlEmbedObjectNew.dll
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\WebDriver.dll
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\WebDriver.Support.dll
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\Microsoft.VisualStudio.OLE.Interop.dll
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.Data.Mongo.pdb
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.Models.pdb
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\Utilities.pdb
@@ -63,10 +68,9 @@ C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\MongoDB.Driver
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\MongoDB.Driver.Core.xml
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\SpreadsheetLight.xml
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\itextsharp.xml
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\OpenXmlEmbedObjectNew.pdb
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\WebDriver.xml
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\WebDriver.Support.xml
-C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csprojResolveAssemblyReference.cache
-C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.ProjectInstaller.resources
-C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csproj.GenerateResource.Cache
+C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\Microsoft.VisualStudio.OLE.Interop.xml
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.exe
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.pdb

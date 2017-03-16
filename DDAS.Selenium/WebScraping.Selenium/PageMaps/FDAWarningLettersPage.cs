@@ -123,7 +123,7 @@ namespace WebScraping.Selenium.Pages
 
         private IWebElement FDAWarningSortTable
         {
-           get
+            get
             {
                 try
                 {
@@ -142,8 +142,23 @@ namespace WebScraping.Selenium.Pages
                     throw new Exception("Unable to find table with id 'fd-table-2'");
                 }
             }
-       }
+        }
 
+        public bool IsSiteDown
+        {
+            get
+            {
+                if (driver.PageSource.ToLower().Contains("unexpected error"))
+                {
+                    if (driver.PageSource.ToLower().Contains("contact the website administrator"))
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+        }
 
         public IWebElement PageLastUpdatedTextElement
         {

@@ -203,5 +203,18 @@ namespace DDAS.Data.Mongo.Repositories
 
         }
 
+        public bool AddAttachmentsToFindings(List<Attachment> Attachments)
+        {
+            //var filter1 = Builders<ComplianceForm>.Filter.Eq("_id", form.Findings.
+            //    Where(x => x.Id == form.RecId));
+
+            var update = Builders<Finding>.Update
+            .Set("Attachments.$.Title", "")
+            .Set("Attachments.$.FileName", "")
+            .Set("Attachments.$.GeneratedFileName", "");
+            //.CurrentDate("UpdatedOn");
+
+            return true;
+        }
     }
 }

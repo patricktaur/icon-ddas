@@ -35,6 +35,7 @@ namespace DDAS.API.Controllers
         private string ComplianceFormFolder;
         private string ExcelTemplateFolder;
         private string ErrorScreenCaptureFolder;
+        private string AttachmentsFolder;
 
         private string RootPath;
         private string WordTemplateFolder;     
@@ -68,6 +69,9 @@ namespace DDAS.API.Controllers
 
           ErrorScreenCaptureFolder = RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
+
+            AttachmentsFolder = RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["AttachmentsFolder"];
         }
 
         [Route("Upload")]
@@ -175,6 +179,56 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("UploadAttachments")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            try
+            {
+                var userName = User.Identity.GetUserName();
+                //CustomMultipartFormDataStreamProvider provider = 
+                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+
+                var provider = new MultipartFormDataStreamProvider(UploadsFolder);
+
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                var Attachments = new List<Attachment>();
+
+                List<string> ValidationMessages = new List<string>();
+
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    string FilePathWithGUID = file.LocalFileName;
+                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                    {
+                        UploadedFileName = UploadedFileName.Trim('"');
+                    }
+                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                    {
+                        UploadedFileName = Path.GetFileName(UploadedFileName);
+                    }
+
+                    var Attachment = new Attachment();
+                    Attachment.Title = "";
+                    Attachment.FileName = UploadedFileName;
+                    Attachment.GeneratedFileName = FilePathWithGUID;
+                }
+                _SearchService.AddAttachmentsToFindings(form);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                    "Error Details: " + e.Message);
+            }
+        }
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
@@ -276,6 +330,10 @@ namespace DDAS.API.Controllers
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
            _log.LogStart();
+            if (form.InvestigatorDetails.First().Name == "" ||
+                form.InvestigatorDetails.First().Name == null)
+                return Ok("PI name cannot be empty");
+
             var result = _SearchService.ScanUpdateComplianceForm(form, _log,
                 ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");

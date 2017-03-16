@@ -174,11 +174,10 @@ namespace DDAS.Models.Entities.Domain
         public int PartialMatchesFoundInvestigatorCount { get; set; }
         public int IssuesFoundInvestigatorCount { get; set; }
         public int ReviewCompletedInvestigatorCount { get; set; }
-
         public List<InvestigatorSearched> InvestigatorDetails { get; set; }
-
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
+
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
         public string Status
@@ -903,6 +902,7 @@ namespace DDAS.Models.Entities.Domain
         public bool IsAnIssue { get; set; }
 
         public List<Link> Links { get; set; } = new List<Link>();
+        public List<Attachment> Attachments { get; set; } = new List<Attachment>();
     }
 
     public class UpdateFindigs
@@ -914,13 +914,19 @@ namespace DDAS.Models.Entities.Domain
         public bool ReviewCompleted { get; set; }
         //public InvestigatorSearched InvestigatorSearched { get; set; }
         public List<Finding> Findings { get; set; }
-
     }
 
     public class ComplianceFormManage
     {
         public string AssignedTo { get; set; }
         public bool Active { get; set; }
+    }
+
+    public class Attachment
+    {
+        public string Title { get; set; }
+        public string FileName { get; set; }
+        public string GeneratedFileName { get; set; }
     }
     #endregion
 

@@ -70,6 +70,10 @@
       <Project>{D441E38F-0564-4688-872B-25127A7B3EC5}</Project>
       <Name>DDAS.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\OpenXmlEmbedObjectNew\OpenXmlEmbedObjectNew.csproj">
+      <Project>{c3278f37-c0dc-4740-bdaa-3169905cb301}</Project>
+      <Name>OpenXmlEmbedObjectNew</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

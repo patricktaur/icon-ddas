@@ -199,6 +199,12 @@ namespace DDAS.Services.Search
             return frm;
         }
 
+        public bool AddAttachmentsToFindings(ComplianceForm form)
+        {
+            UpdateComplianceForm(form);
+            return true;
+        }
+
         //Used by Client Save button, updates - general section, Inviestigators and Sites collection.
         public ComplianceForm UpdateComplianceForm(ComplianceForm frm)
         {
@@ -304,7 +310,6 @@ namespace DDAS.Services.Search
            
             return frm;
         }
-
 
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {
@@ -1557,6 +1562,8 @@ namespace DDAS.Services.Search
             writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
 
             writer.CloseDocument();
+
+            //writer.AttachFile(@"C:\Development\test.pdf", GeneratedFileNameNPath);
 
             return DownloadFolder + GeneratedFileName;
         }

@@ -50,5 +50,7 @@ namespace DDAS.Models.Interfaces
             string DownloadFolder, string TemplateFolder,
             Guid? ComplianceFormId, IWriter writer,
             string FileExtension);
+
+        bool AddAttachmentsToFindings(ComplianceForm from);
     }
 }

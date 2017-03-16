@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
 using DDAS.Models.Interfaces;
@@ -221,15 +216,20 @@ namespace Utilities.WordTemplate
             _document.Add(_table);
         }
 
+        public void AddFooterPart(string FooterText)
+        {
+
+        }
+
+        public void AttachFile(string FilePath, string ComlianceFormDocPath)
+        {
+
+        }
+
         public void CloseDocument()
         {
             _document.Close();
             _writer.Close();
-        }
-
-        public void AddFooterPart(string FooterText)
-        {
-            
         }
     }
 }

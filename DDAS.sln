@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{02F790B5-9CBF-46B1-AD28-FB3721468093}"
 EndProject
@@ -45,6 +45,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSevice", "TestSevice\TestSevice.csproj", "{74BC09EE-B97E-4147-A2E2-E69620AAA3FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestService1", "TestService1\TestService1.csproj", "{6CC9AFF9-73CA-49A6-A68F-C8D40979642D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenXmlCidGenerator", "..\OpenXmlDocumentGenerator-master\OpenXmlCidGenerator\OpenXmlCidGenerator.csproj", "{DB7FBF65-FF65-4965-A6FF-E12C34B38219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenXmlEmbedObjectNew", "OpenXmlEmbedObjectNew\OpenXmlEmbedObjectNew.csproj", "{C3278F37-C0DC-4740-BDAA-3169905CB301}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -362,6 +366,33 @@ Global
 		{6CC9AFF9-73CA-49A6-A68F-C8D40979642D}.Release|x64.Build.0 = Release|Any CPU
 		{6CC9AFF9-73CA-49A6-A68F-C8D40979642D}.Release|x86.ActiveCfg = Release|Any CPU
 		{6CC9AFF9-73CA-49A6-A68F-C8D40979642D}.Release|x86.Build.0 = Release|Any CPU
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Debug|Any CPU.Build.0 = Debug|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Debug|ARM.ActiveCfg = Debug|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Debug|x64.ActiveCfg = Debug|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Debug|x86.ActiveCfg = Debug|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Debug|x86.Build.0 = Debug|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Release|Any CPU.ActiveCfg = Release|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Release|ARM.ActiveCfg = Release|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Release|x64.ActiveCfg = Release|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Release|x86.ActiveCfg = Release|x86
+		{DB7FBF65-FF65-4965-A6FF-E12C34B38219}.Release|x86.Build.0 = Release|x86
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|x64.Build.0 = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|x86.Build.0 = Debug|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|ARM.Build.0 = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|x64.Build.0 = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|x86.ActiveCfg = Release|Any CPU
+		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
