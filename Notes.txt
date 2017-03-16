@@ -1,3 +1,8 @@
+Error at IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+install: System.RunTime.InteropServices.RuntimeInformation by Microsoft
+
+Run 
+
 26Feb2017:
 Analysing ComFormUpdates:
 

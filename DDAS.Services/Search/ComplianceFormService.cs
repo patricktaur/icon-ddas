@@ -134,14 +134,17 @@ namespace DDAS.Services.Search
                 form.Institute = DetailsInEachRow[6];
                 form.Address = DetailsInEachRow[7];
                 form.Country = DetailsInEachRow[8];
-
+                int InvId = 1;
                 if (DetailsInEachRow[1].ToLower() == "principal")
                 {
+                    
+                    Investigator.Id = InvId;
+                    InvId += 1;
                     Investigator.Name = DetailsInEachRow[0];
                     Investigator.Role = DetailsInEachRow[1];
                     Investigator.MedicalLiceseNumber = DetailsInEachRow[2];
                     Investigator.Qualification = DetailsInEachRow[3];
-
+                   
                     form.InvestigatorDetails.Add(Investigator);
 
                     if (DetailsInEachRow.Count > 9)
@@ -149,10 +152,14 @@ namespace DDAS.Services.Search
                         for(int Index = 9; Index < DetailsInEachRow.Count; Index++)
                         {
                             var Inv = new InvestigatorSearched();
+
+                            Inv.Id = InvId;
+                            InvId += 1;
                             Inv.Name = DetailsInEachRow[Index];
                             Inv.Role = DetailsInEachRow[Index + 1];
                             Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 2];
                             Inv.Qualification = DetailsInEachRow[Index + 3];
+
 
                             Index += 8;
                             form.InvestigatorDetails.Add(Inv);
@@ -177,19 +184,22 @@ namespace DDAS.Services.Search
 
         }
 
+        //used by Excel File Upload method.
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,  string ErrorScreenCaptureFolder, string siteType = "db")
         {
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
-            RemoveDeleteMarkedItemsFromFormCollections(frm);
+            //RemoveDeleteMarkedItemsFromFormCollections(frm);
 
             AddMissingSearchStatusRecords(frm);
             //Check and Search if required:
             AddMatchingRecords(frm, log,  ErrorScreenCaptureFolder, siteType);
-            
+            //AddLiveScanFindings(frm, log, ErrorScreenCaptureFolder, siteType);
+
             //return SaveComplianceForm(frm);
 
             RollUpSummary(frm);
+            //UpdateRollUpSummary(frm.RecId.Value);
             frm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
 
             if (frm.RecId != null)
@@ -246,7 +256,6 @@ namespace DDAS.Services.Search
 
         private ComplianceForm SaveComplianceForm(ComplianceForm frm)
         {
-
             //retain Assignedto //
             if (frm.RecId != null)
             {
@@ -402,13 +411,17 @@ namespace DDAS.Services.Search
                         {
                             //not found, delete from DB
                             inv.Deleted = true;
+                            //remove all Findings for the deleted Investigator
+                            dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == inv.Id);
                         }
                     }
-                    dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted = true);
+                    dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
 
                     //InvestigatorUpdate or add:
+                    var invId = 1;
                     foreach (InvestigatorSearched clInv in form.InvestigatorDetails)
                     {
+
                         var dbInv = dbForm.InvestigatorDetails.Find(x => x.Id == clInv.Id);
                         if (dbInv != null)
                         {
@@ -416,12 +429,15 @@ namespace DDAS.Services.Search
                             dbInv.Qualification = clInv.Qualification;
                             dbInv.Role = clInv.Role;
                             dbInv.InvestigatorId = clInv.InvestigatorId;
+                            //dbInv.Id = invId;
                         }
                         else
                         {
-                            //Not found, add
+                            //Not found in DB, add
+                            //clInv.Id = invId;
                             dbForm.InvestigatorDetails.Add(clInv);
                         }
+                        invId += 1;
                     }
 
                     //Remove Optional Sites.
@@ -826,6 +842,14 @@ namespace DDAS.Services.Search
             return form;
         }
 
+        public bool UpdateRollUpSummary(Guid formId)  
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(formId);
+            RollUpSummary(form);
+            _UOW.ComplianceFormRepository.UpdateComplianceForm(formId, form);
+            return true;
+        }
+
         public void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType)
         {
             int InvestigatorId = 1;
@@ -894,13 +918,14 @@ namespace DDAS.Services.Search
                             inv.Sites_FullMatchCount +=
                                 searchStatus.FullMatchCount;
 
-                            inv.Id = InvestigatorId;
+                            //inv.Id = InvestigatorId;
 
                             //To-Do: convert matchedRecords to Findings
                             foreach (MatchedRecord rec in MatchedRecords)
                             {
                                 var finding = new Finding();
                                 finding.Id = Guid.NewGuid();
+                                finding.IsFullMatch = rec.IsFullMatch;
                                 finding.MatchCount = rec.MatchCount;
                                 finding.InvestigatorSearchedId = inv.Id;
                                 finding.SourceNumber = siteSource.DisplayPosition;
@@ -960,9 +985,252 @@ namespace DDAS.Services.Search
             }
         }
 
+        public void AddLiveScanFindings(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder)
+        {
+            string siteType = "live";
+
+            //int InvestigatorId = 1;
+            frm.ExtractedOn = DateTime.Now; //last extracted on
+            foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
+            {
+                //var ListOfSiteSearchStatus = new List<SiteSearchStatus>();
+
+                var InvestigatorName = RemoveExtraCharacters(inv.Name);
+
+                var ComponentsInInvestigatorName =
+                    InvestigatorName.Trim().Split(' ').Count();
+
+                //inv.ExtractedOn = DateTime.Now;
+                //inv.HasExtractionError = true; // until set to false.
+                //inv.IssuesFoundSiteCount = 0;
+                //inv.ReviewCompletedCount = 0;
+
+                //bool HasExtractionError = false; //for rollup value for Investigator
+                //int ExtractionErrorSiteCount = 0;
+                foreach (SiteSource siteSource in frm.SiteSources)
+                {
+                    SiteSearchStatus searchStatus = null;
+
+                    if (inv.SitesSearched != null)
+                        searchStatus =
+                            inv.SitesSearched.Find(x => x.siteEnum == siteSource.SiteEnum);
+
+                    bool searchRequired = false;
+
+                    if (searchStatus == null)
+                    {
+                        //SearchStatus records must be added to each Investigator before calling AddMatchingRecords
+                        throw new Exception("Coding Error: Search Status is not added to Project-Investigator:"
+                            + frm.ProjectNumber + "-" + inv.Name);
+                    }
+
+                    if (!(searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
+                    {
+                        if (searchStatus.HasExtractionError == true || searchStatus.ExtractedOn == null)
+                        {
+                            searchRequired = true;
+                        }
+                    }
+
+                    //10Feb2017-todo: siteSource.ExtractionMode.ToLower() = "db") //get db Sites only, live sites are extracted through windows service
+                    if (searchRequired == true &&
+                        siteSource.ExtractionMode.ToLower() == siteType)
+                    {
+                        try
+                        {
+                            //clear previously added matching records.
+                            frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
+
+                            //new:
+                            DateTime? SiteLastUpdatedOn1 = null;
+                          
+                                var findings = getFindings(siteSource, InvestigatorName, inv.Id, log,
+                               ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
+                               out SiteLastUpdatedOn1);
+
+                            if (findings.Count > 0)
+                            {
+                                _UOW.ComplianceFormRepository.AddFindings(frm.RecId.Value, findings);
+                            }
+                               
+  
+                            DateTime? SiteLastUpdatedOn = null;
+                            //var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
+                            //   ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
+                            //   out SiteLastUpdatedOn);
+
+                            siteSource.SiteSourceUpdatedOn = SiteLastUpdatedOn;
+
+                            //searchStatus - full / partial match count
+                            //GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
+                            //record.MatchCount >= ComponentsInInvestigatorName
+                            searchStatus.FullMatchCount = findings.Where(x => x.MatchCount >= ComponentsInInvestigatorName).Count();
+                            searchStatus.PartialMatchCount = findings.Count - searchStatus.FullMatchCount;
+
+
+                            //Handeled in Rollup.
+                            //inv.Sites_PartialMatchCount +=
+                            //    searchStatus.PartialMatchCount;
+                            //inv.Sites_FullMatchCount +=
+                            //    searchStatus.FullMatchCount;
+
+                            //??
+                            //inv.Id = InvestigatorId;
+
+                            //To-Do: convert matchedRecords to Findings
+                            //foreach (MatchedRecord rec in MatchedRecords)
+                            //{
+                            //    var finding = new Finding();
+                            //    finding.Id = Guid.NewGuid();
+                            //    finding.MatchCount = rec.MatchCount;
+                            //    finding.InvestigatorSearchedId = inv.Id;
+                            //    finding.SourceNumber = siteSource.DisplayPosition;
+                            //    finding.SiteEnum = siteSource.SiteEnum;
+
+                            //    finding.RecordDetails = rec.RecordDetails;
+                            //    finding.RowNumberInSource = rec.RowNumber;
+
+                            //    finding.IsMatchedRecord = true;
+                            //    if (rec.DateOfInspection.HasValue)
+                            //    {
+                            //        finding.DateOfInspection = rec.DateOfInspection;
+                            //    }
+
+                            //    finding.InvestigatorName = inv.Name;
+                            //    finding.Links = rec.Links;
+
+                            //    frm.Findings.Add(finding);
+                            //}
+
+                            //Review:
+                            //siteSource.SiteSourceUpdatedOn' is the date of update at the time of creation of CompForm
+                            //
+                            //replace  '= siteSource.SiteSourceUpdatedOn' SiteSourceUpdatedOn at the time of data extraction
+                            searchStatus.SiteSourceUpdatedOn = siteSource.SiteSourceUpdatedOn;
+                            searchStatus.HasExtractionError = false;
+                            searchStatus.ExtractionErrorMessage = "";
+                            searchStatus.ExtractionPending = false;
+                            searchStatus.ExtractedOn = DateTime.Now;
+                            //if (MatchedRecords.Count == 0)
+                            //{
+                            //    searchStatus.ReviewCompleted = true;
+                            //}
+                            if (findings.Count == 0)
+                            {
+                                searchStatus.ReviewCompleted = true;
+                            }
+
+                            
+
+                            
+
+                            //ListOfSiteSearchStatus.Add(searchStatus);
+                        }
+                        catch (Exception ex)
+                        {
+                            //HasExtractionError = true;  //for rollup to investigator
+                            //ExtractionErrorSiteCount += 1;
+                            searchStatus.ExtractionPending = true;
+                            searchStatus.ExtractedOn = null;
+
+                            searchStatus.HasExtractionError = true;
+                            searchStatus.ExtractionErrorMessage =
+                                "Data Extraction not successful - " + ex.Message;
+                            log.WriteLog("Data extraction failed. Details: " + ex.Message);
+                            // Log -- ex.Message + ex.InnerException.Message
+                        }
+                        finally
+                        {
+
+                        }
+                        UpdateSearchStatus(frm.RecId.Value, inv.Id, searchStatus);
+                    }
+                }
+
+                //handled
+                //inv.ExtractionErrorSiteCount = ExtractionErrorSiteCount;
+                //inv.HasExtractionError = HasExtractionError;
+                //inv.SitesSearched = ListOfSiteSearchStatus;
+                //InvestigatorId += 1;
+                
+            }
+        }
+
+        private List<Finding> getFindings(SiteSource siteSource, string InvestigatorName, int InvestigatorId, ILog log,  string ErrorScreenCaptureFolder, int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
+        {
+
+            var retFindings = new List<Finding>(); 
+            var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
+                               ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
+                               out SiteLastUpdatedOn);
+
+            //To-Do: convert matchedRecords to Findings
+            foreach (MatchedRecord rec in MatchedRecords)
+            {
+                var finding = new Finding();
+                finding.Id = Guid.NewGuid();
+                finding.MatchCount = rec.MatchCount;
+                finding.InvestigatorSearchedId = InvestigatorId;
+                finding.SourceNumber = siteSource.DisplayPosition;
+                finding.SiteEnum = siteSource.SiteEnum;
+
+                finding.RecordDetails = rec.RecordDetails;
+                finding.RowNumberInSource = rec.RowNumber;
+
+                finding.IsMatchedRecord = true;
+                if (rec.DateOfInspection.HasValue)
+                {
+                    finding.DateOfInspection = rec.DateOfInspection;
+                }
+
+                finding.InvestigatorName = InvestigatorName;
+                finding.Links = rec.Links;
+
+                retFindings.Add(finding);
+            }
+            return retFindings;
+        }
+
+        private bool UpdateSearchStatus(Guid formId, int InvestigatyorId, SiteSearchStatus siteStatus)
+        {
+            var dbForm = _UOW.ComplianceFormRepository.FindById(formId);
+
+            foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
+            {
+                if (inv.Id == InvestigatyorId)
+                {
+                    foreach (SiteSearchStatus ss in inv.SitesSearched)
+                    {
+                        if (ss.siteEnum == siteStatus.siteEnum)
+                        {
+                            //replace values
+                            ss.DisplayPosition = siteStatus.DisplayPosition;
+                            ss.ExtractedOn = siteStatus.ExtractedOn;
+                            ss.HasExtractionError = siteStatus.HasExtractionError;
+                            ss.ExtractionErrorMessage = siteStatus.ExtractionErrorMessage;
+                            //ss.ExtractionPending ??
+                            ss.FullMatchCount = siteStatus.FullMatchCount;
+                            //ss.HasExtractionError
+                            //ss.IssuesFound
+                            ss.PartialMatchCount = siteStatus.PartialMatchCount;
+                            ss.ReviewCompleted = siteStatus.ReviewCompleted;
+                            ss.SiteSourceUpdatedOn = siteStatus.SiteSourceUpdatedOn;
+                            ss.ExtractionPending = siteStatus.ExtractionPending;
+                            _UOW.ComplianceFormRepository.UpdateComplianceForm(formId, dbForm);
+                            break;
+                        }
+                    }
+                }
+
+                
+            }
+           
+            return true;
+        }
+
         #region Save related
 
-  
+
         private void RemoveDeleteMarkedItemsFromFormCollections(ComplianceForm frm)
         {
             frm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
@@ -1075,7 +1343,6 @@ namespace DDAS.Services.Search
         }
         #endregion
 
-
         public List<MatchedRecord> GetMatchedRecords(SiteSource site,
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
@@ -1168,7 +1435,10 @@ namespace DDAS.Services.Search
             foreach (MatchedRecord record in Records)
             {
                 if (record.MatchCount >= ComponentsInInvestigatorName)
+                {
                     SearchStatus.FullMatchCount += 1;
+                    record.IsFullMatch = true;
+                }
                 else
                     SearchStatus.PartialMatchCount += 1;
             }
@@ -1506,6 +1776,7 @@ namespace DDAS.Services.Search
                         Site.IssuesIdentified ? "Yes" : "No"
                     };
                     writer.FillUpTable(CellValues);
+                    RowIndex += 1;
                 }
             }
 

@@ -39,7 +39,7 @@
 						<div *ngIf="!ExtractionModeIsManual">
 							<div *ngIf="!SiteSearchStatus.HasExtractionError">
 								<p>Extracted On </p>
-								<p>{{SiteSearchStatus.ExtractedOn | date: 'dd/MMM/yyyy'}} </p>
+								<p>{{SiteSearchStatus.ExtractedOn | date: 'dd MMM yyyy'}} </p>
 							</div>
 							<div *ngIf="SiteSearchStatus.HasExtractionError">
 								<p>Data Extraction Errors </p>
@@ -189,6 +189,7 @@
 							<th class="col-md-2">Select</th>
 							<th class="col-md-8">Record Details</th>
 							<th class="col-md-2">Match Count</th>
+							<th>Is Full Match</th>
 						</tr>
 					</thead>
 
@@ -207,10 +208,12 @@
 
 							</td>
 							<td>
-
 								{{finding.MatchCount}}
-
 							</td>
+							<td>
+								{{finding.IsFullMatch}}
+							</td>
+
 						</tr>
 
 					</tbody>

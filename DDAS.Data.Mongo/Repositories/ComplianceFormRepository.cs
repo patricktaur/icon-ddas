@@ -163,11 +163,32 @@ namespace DDAS.Data.Mongo.Repositories
 
         }
 
-        public bool UpdateExtractionEstimatedCompletion(Guid id, DateTime dateValue)
+        public bool AddFindings(Guid formId, List<Finding> findings)
         {
-            var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
 
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var filter = Builders<ComplianceForm>.Filter.Where(x => x.RecId == formId);
+            var update = Builders<ComplianceForm>.Update.AddToSetEach(x => x.Findings, findings);
+             var result = collection.UpdateOneAsync(filter, update).Result;
+            if (result.IsAcknowledged && result.ModifiedCount == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+
+
+        public bool UpdateExtractionEstimatedCompletion(Guid id, DateTime dateValue)
+        {
+            
+
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
             var update = Builders<ComplianceForm>.Update
             .Set("ExtractionEstimatedCompletion", dateValue)
             .CurrentDate("UpdatedOn");
@@ -183,13 +204,81 @@ namespace DDAS.Data.Mongo.Repositories
            
         }
 
-        public bool UpdateExtractionQueStart(Guid id, DateTime? dateValue)
+        public bool UpdateSearchStatus(Guid formId, int InvestigatorId, SiteSearchStatus siteSearchStatus)
+        {
+            //Not working:
+            return false;
+
+            //var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            //var item = collection.Find(x => x.RecId == id).First();
+
+            //foreach (InvestigatorSearched inv in item.InvestigatorDetails)
+            //{
+            //    foreach (SiteSearchStatus ss in inv.SitesSearched)
+            //    {
+            //        if (ss.siteEnum == siteSearchStatus.siteEnum)
+            //        {
+            //            //replace values
+            //            ss.DisplayPosition = siteSearchStatus.DisplayPosition;
+            //            ss.ExtractedOn = siteSearchStatus.ExtractedOn;
+            //            ss.ExtractionErrorMessage = siteSearchStatus.ExtractionErrorMessage;
+            //            //ss.ExtractionPending ??
+            //            ss.FullMatchCount = siteSearchStatus.FullMatchCount;
+            //            //ss.HasExtractionError
+            //            //ss.IssuesFound
+            //            ss.PartialMatchCount = siteSearchStatus.PartialMatchCount;
+            //            ss.ReviewCompleted = siteSearchStatus.ReviewCompleted;
+            //            ss.SiteSourceUpdatedOn = siteSearchStatus.SiteSourceUpdatedOn;
+            //       }
+            //    }
+            //}
+            
+
+           
+            ////Unable to find a solution:
+            ////var update = Builders<ComplianceForm>.Update
+            ////.Set("ExtractionEstimatedCompletion", dateValue)
+            ////.CurrentDate("UpdatedOn");
+            ////var result = collection.UpdateOne(filter, update);
+            ////if (result.IsAcknowledged && result.ModifiedCount == 1)
+            ////{
+            ////    return true;
+            ////}
+            ////else
+            ////{
+            ////    return false;
+            ////}
+            
+        }
+
+        public bool UpdateExtractionQueStart(Guid id, DateTime? dateValue, int QueueNumber)
         {
             var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
 
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var update = Builders<ComplianceForm>.Update
             .Set("ExtractionQueStart", dateValue)
+            .Set("ExtractionQueue", QueueNumber)
+            .CurrentDate("UpdatedOn");
+            var result = collection.UpdateOne(filter, update);
+            if (result.IsAcknowledged && result.ModifiedCount == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public bool UpdateExtractionQueEnd(Guid id, DateTime? dateValue)
+        {
+            var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
+
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var update = Builders<ComplianceForm>.Update
+            .Set("ExtractedOn", dateValue)
             .CurrentDate("UpdatedOn");
             var result = collection.UpdateOne(filter, update);
             if (result.IsAcknowledged && result.ModifiedCount == 1)

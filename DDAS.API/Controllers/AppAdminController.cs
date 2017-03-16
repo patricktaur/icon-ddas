@@ -16,17 +16,18 @@ namespace DDAS.API.Controllers
     [RoutePrefix("api/AppAdmin")]
     public class AppAdminController : ApiController
     {
-        private IAppAdmin _AppAdmin;
+        private IAppAdminService _AppAdminService;
         private string ErrorScreenCaptureFolder;
-        private string RootPath;
+        private string _RootPath;
 
-        public AppAdminController(IAppAdmin AppAdmin)
+
+        public AppAdminController(IAppAdminService AppAdmin)
         {
-            _AppAdmin = AppAdmin;
+            _AppAdminService = AppAdmin;
 
-            RootPath = HttpRuntime.AppDomainAppPath;
+            _RootPath = HttpRuntime.AppDomainAppPath;
 
-            ErrorScreenCaptureFolder = RootPath +
+            ErrorScreenCaptureFolder = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
 
@@ -81,14 +82,14 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDataExtractionHistory()
         {
-            return Ok(_AppAdmin.GetDataExtractionHistory());
+            return Ok(_AppAdminService.GetDataExtractionHistory());
         }
 
         [Route("GetDataExtractionPerSite")]
         [HttpGet]
         public IHttpActionResult GetDataExtractionPerSite(SiteEnum Enum)
         {
-            var ExtractionDataPerSite = _AppAdmin.GetDataExtractionPerSite(Enum);
+            var ExtractionDataPerSite = _AppAdminService.GetDataExtractionPerSite(Enum);
             return Ok(ExtractionDataPerSite);
         }
 
@@ -97,7 +98,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult DeleteExtractionEntryAAA(string RecId, SiteEnum Enum)
         {
             var Id = Guid.Parse(RecId);
-            _AppAdmin.DeleteExtractionEntry(Enum, Id);
+            _AppAdminService.DeleteExtractionEntry(Enum, Id);
             return Ok(true);
         }
 
@@ -106,8 +107,37 @@ namespace DDAS.API.Controllers
         public IHttpActionResult DownloadErrorImage()
         {
             string FilePath = ErrorScreenCaptureFolder;
-            string path = FilePath.Replace(RootPath, "");
+            string path = FilePath.Replace(_RootPath, "");
             return Ok(path);
         }
+
+        #region LiveScanner
+
+       
+        [Route("LaunchLiveScanner")]
+        [HttpGet]
+        public IHttpActionResult LaunchLiveScanner()
+        {
+            var result = _AppAdminService.LaunchLiveScanner(_RootPath + "bin");
+            return Ok(result);
+        }
+
+        [Route("LiveScannerInfo")]
+        [HttpGet]
+        public IHttpActionResult LiveScannerCount()
+        {
+            var result = _AppAdminService.getLiveScannerProcessorsInfo();
+            return Ok(result);
+        }
+
+        [Route("KillLiveScanner")]
+        [HttpGet]
+        public IHttpActionResult KillLiveScanner()
+        {
+            var result = _AppAdminService.KillLiveSiteScanner();
+            return Ok(result);
+        }
+
+        #endregion
     }
 }

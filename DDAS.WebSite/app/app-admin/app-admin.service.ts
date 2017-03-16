@@ -27,8 +27,38 @@ export class AppAdminService {
             this._options = new RequestOptions({headers: headers});
     }
 
-    
+    LaunchLiveScanner(){
+        
+            return this.http.get(this._baseUrl + 'AppAdmin/LaunchLiveScanner'
+                , this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);      
+    }
 
+   
+    
+    getLiveScannerInfo(){
+        
+            return this.http.get(this._baseUrl + 'AppAdmin/LiveScannerInfo'
+                , this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);      
+    }
+    KillLiveScanner(){
+        
+            return this.http.get(this._baseUrl + 'AppAdmin/KillLiveScanner'
+                , this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);      
+    }
+       
+    
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

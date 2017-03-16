@@ -166,7 +166,7 @@ namespace DDAS.Models.Entities.Domain
         public int ExtractionAttempt { get; set; }
         public DateTime? ExtractionQueStart { get; set; }
         public DateTime? ExtractionEstimatedCompletion { get; set; }
-        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' // extraction end
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public int ExtractedInvestigatorCount { get; set; }
@@ -850,6 +850,7 @@ namespace DDAS.Models.Entities.Domain
 
     public class MatchedRecord
     {
+        public bool IsFullMatch { get; set; }
         public int MatchCount { get; set; }
         public int RowNumber { get; set; }
         public string RecordDetails { get; set; }
@@ -883,7 +884,7 @@ namespace DDAS.Models.Entities.Domain
         public Guid? Id { get; set; }
 
         public SiteEnum SiteEnum { get; set; }
-
+        public bool IsFullMatch { get; set; }
         public int InvestigatorSearchedId { get; set; }
         public int MatchCount { get; set; }
         public int RowNumberInSource { get; set; }

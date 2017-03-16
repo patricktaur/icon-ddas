@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csprojResolveAssemblyReference.cache
 C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.exe
 C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.pdb
@@ -37,6 +38,8 @@ C:\Development\p926-ddas-admin\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.Liv
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csprojResolveAssemblyReference.cache
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.ProjectInstaller.resources
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\obj\Debug\DDAS.LiveSiteExtractionService.csproj.GenerateResource.Cache
+=======
+>>>>>>> abb3a9b28110b3c6731456f9a952f543380bfd4d
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\phantomjs.exe
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\phantomjs-license.txt
 C:\Development\p926-ddas\DDAS.LiveSiteExtractionService\bin\Debug\DDAS.LiveSiteExtractionService.exe.config

@@ -16925,6 +16925,13 @@ DDAS.LiveSiteExtractionService/bin/
 DDAS.LiveSiteExtractionService/obj/
 TestSevice/
 TestService1/
+<<<<<<< HEAD
 OpenXmlEmbedObjectNew/obj/
 OpenXmlEmbedObject/
 OpenXmlEmbedObjectNew/bin/
+=======
+DDAS.LiveSiteExtractor/bin/
+DDAS.LiveSiteExtractor/obj/
+Documents/Technical/Errors/fromServer/MongoDBLog/mongod.log.2017-03-15T04-52-34
+>>>>>>> abb3a9b28110b3c6731456f9a952f543380bfd4d
+DDAS - Copy.sln

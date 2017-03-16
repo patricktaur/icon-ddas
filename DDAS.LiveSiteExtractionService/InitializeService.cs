@@ -27,6 +27,9 @@ namespace DDAS.LiveSiteExtractionService
             try
             {
 
+
+                int QueueNumber = 1;
+
                 var ErrorScreenCaptureFolder =
                     System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
 
@@ -38,9 +41,8 @@ namespace DDAS.LiveSiteExtractionService
                 
                 ISearchEngine searchEngine = new SearchEngine(uow);
 
-    
 
-                _LiveScan = new LiveScan(uow, searchEngine, _dbLog, ErrorScreenCaptureFolder);
+                _LiveScan = new LiveScan(uow, searchEngine, _dbLog, ErrorScreenCaptureFolder, QueueNumber);
                 _LiveScan.StartLiveScan();
 
                 

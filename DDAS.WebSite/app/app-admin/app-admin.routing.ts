@@ -2,10 +2,10 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import {AppAdminUsersComponent} from './app-admin-users.component'
+import {AppAdminDashboardComponent} from './app-admin-dashboard.component'
 
 export const AppAdminRoutes: Routes = [
-  { path: 'app-admin-users', component: AppAdminUsersComponent},
+  { path: 'app-admin-dashboard', component: AppAdminDashboardComponent},
 ]
 
 

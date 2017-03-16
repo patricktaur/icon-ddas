@@ -95,7 +95,7 @@ namespace DDAS.API.App_Start
             //container.RegisterWebApiRequest<IEMailService>(() => new EMailService(cred));
             container.Register<IEMailService>(() => new EMailService(cred));
 
-            container.Register<IAppAdmin, AppAdmin>();
+            container.Register<IAppAdminService, AppAdminService>();
         }
     }
 }

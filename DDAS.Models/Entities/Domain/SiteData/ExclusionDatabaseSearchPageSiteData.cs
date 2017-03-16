@@ -56,10 +56,27 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Middle Name: " + MiddleName + "~" +
                     "General: " + General + "~" +
                     "Specialty: " + Specialty + "~" +
-                    "Exclusion Type: " + ExclusionType;
+                    "Exclusion Type: " + ExclusionType +
+                    "Exclusion Date: " + DateOfAction;
             }
         }
+        public string DateOfAction {
+            get
+            {
+                if (ExclusionDate == "" || ExclusionDate == null)
+                    return null;
+                try
+                {
+                    return DateTime.ParseExact(ExclusionDate.Trim(), "yyyyMMdd", null,
+                        System.Globalization.DateTimeStyles.None).ToString();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
 
+        }
         public override DateTime? DateOfInspection {
             get {
                 if (ExclusionDate == "" || ExclusionDate == null)
@@ -73,7 +90,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 {
                     return null;
                 }
-
             }
         }
     }

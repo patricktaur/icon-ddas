@@ -280,6 +280,7 @@ export class SearchList{
 
     export class Finding{
         SiteEnum: number;
+        IsFullMatch: boolean;
         InvestigatorSearchedId: number;
         MatchCount : number;
         RowNumberInSource : number;
