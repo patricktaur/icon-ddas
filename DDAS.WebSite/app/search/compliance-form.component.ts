@@ -408,6 +408,7 @@ export class ComplianceFormComponent implements OnInit {
                         siteToAdd.Id = this.LastSiteSourceId + 1;
                         siteToAdd.IsMandatory = false;
                         siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;
+                        siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
                         this.CompForm.SiteSources.push(siteToAdd);
                         this.SitesAvailable[index].Included = true;
                    }
