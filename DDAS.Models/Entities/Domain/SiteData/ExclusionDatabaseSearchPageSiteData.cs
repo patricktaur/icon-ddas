@@ -56,7 +56,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Middle Name: " + MiddleName + "~" +
                     "General: " + General + "~" +
                     "Specialty: " + Specialty + "~" +
-                    "Exclusion Type: " + ExclusionType +
+                    "Exclusion Type: " + ExclusionType + "~" +
                     "Exclusion Date: " + DateOfAction;
             }
         }

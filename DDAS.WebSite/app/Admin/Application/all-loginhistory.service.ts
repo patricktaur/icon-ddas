@@ -96,7 +96,16 @@ export class LoginHistoryService {
         .map((res: Response) => {
             return res.json();
         })
-        .catch(this.handleError);        
+        .catch(this.handleError);  
+    }
+
+    getSiteSources(){
+        return this.http.get(this._baseUrl + 'search/GetSiteSources',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     deleteExtractionData(RecId: string, Enum: number){

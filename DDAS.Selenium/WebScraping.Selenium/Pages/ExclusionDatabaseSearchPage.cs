@@ -71,7 +71,7 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadExclusionList(string DownloadFolder)
         {
-            string fileName = DownloadFolder + "ExclusionDatabaseList.csv";
+            string DownloadFilePath = DownloadFolder + "ExclusionDatabaseList.csv";
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.
@@ -79,11 +79,14 @@ namespace WebScraping.Selenium.Pages
                 GetAttribute("href");
 
             Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n",
-                fileName, myStringWebResource);
-            // Download the Web resource and save it into the current filesystem folder.
-            myWebClient.DownloadFile(myStringWebResource, fileName);
+                DownloadFilePath, myStringWebResource);
 
-            return fileName;
+            if (File.Exists(DownloadFilePath))
+                File.Delete(DownloadFilePath);
+            // Download the Web resource and save it into the current filesystem folder.
+            myWebClient.DownloadFile(myStringWebResource, DownloadFilePath);
+
+            return DownloadFilePath;
         }
 
         private ExclusionDatabaseSearchPageSiteData _exclusionSearchSiteData;
@@ -97,7 +100,10 @@ namespace WebScraping.Selenium.Pages
             {
                 string CurrentRecord = Record.Replace("\\", "").Replace("\"", "");
 
-                string[] RecordDetails = CurrentRecord.Split(',');
+                //string[] RecordDetails = CurrentRecord.Split(',');
+
+                string[] RecordDetails = 
+                    CurrentRecord.Split(new string[] { "\"," }, StringSplitOptions.None);
 
                 if (RecordDetails[0] == null && RecordDetails[1] == null ||
                     RecordDetails[0].ToLower().Contains("lastname"))

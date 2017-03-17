@@ -50,7 +50,7 @@ namespace DDAS.Data.Mongo
         private IUserRoleRepository _UserRoleRepository;
         private ILoginDetailsRepository _LoginDetailsRepository;
         private ILogRepository _LogRepository;
-
+        private ISiteSourceRepository _SiteSourceRepository;
         #endregion
 
         /*
@@ -263,6 +263,15 @@ namespace DDAS.Data.Mongo
             {
                 return _LogRepository ??
                     (_LogRepository = new LogRepository(_db));
+            }
+        }
+
+        public ISiteSourceRepository SiteSourceRepository
+        {
+            get
+            {
+                return _SiteSourceRepository ??
+                    (_SiteSourceRepository = new SiteSourceRepository(_db));
             }
         }
         #endregion

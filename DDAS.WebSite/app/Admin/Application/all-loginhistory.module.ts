@@ -12,6 +12,7 @@ import {SharedModule} from '../../shared/shared.module'
 import {ErrorImagesComponent} from './error-images.component';
 import {ExtractionHistoryComponent} from './data-extraction-history.component';
 import {DataExtractionComponent} from './data-extraction.component';
+import {ManageSiteSourcesComponent} from './manage-site-sources-component';
 
 @NgModule({ 
   imports: [
@@ -24,7 +25,8 @@ import {DataExtractionComponent} from './data-extraction.component';
       LoginHistoryComponent,
       ErrorImagesComponent,
       ExtractionHistoryComponent,
-      DataExtractionComponent
+      DataExtractionComponent,
+      ManageSiteSourcesComponent
   ],
  
   providers: [      

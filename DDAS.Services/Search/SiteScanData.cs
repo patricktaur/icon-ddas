@@ -21,49 +21,49 @@ namespace DDAS.Services.Search
         }
 
         #region Not Used
-        public List<SiteScan> GetSiteScanSummary(string NameToSearch, ILog log)
-        {
-            //need to refactor
-            List<SiteScan> ListOfSiteScan = new List<SiteScan>();
+        //public List<SiteScan> GetSiteScanSummary(string NameToSearch, ILog log)
+        //{
+        //    //need to refactor
+        //    List<SiteScan> ListOfSiteScan = new List<SiteScan>();
 
-            List<SearchQuerySite> NewSearchQuery = SearchSites.GetNewSearchQuery();
+        //    List<SearchQuerySite> NewSearchQuery = SearchSites.GetNewSearchQuery();
 
-            SearchQuery NewLiveSiteSearchQuery = SearchSites.GetNewLiveSiteSearchQuery();
+        //    SearchQuery NewLiveSiteSearchQuery = SearchSites.GetNewLiveSiteSearchQuery();
 
-            List<SearchQuerySite> Sites = new List<SearchQuerySite>();
+        //    List<SearchQuerySite> Sites = new List<SearchQuerySite>();
             
-            Sites.AddRange(NewSearchQuery);
-            Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
+        //    Sites.AddRange(NewSearchQuery);
+        //    Sites.AddRange(NewLiveSiteSearchQuery.SearchSites);
 
-            Sites = Sites.OrderBy(Site => Site.SiteEnum).ToList();
+        //    Sites = Sites.OrderBy(Site => Site.SiteEnum).ToList();
 
-            foreach (SearchQuerySite Site in Sites) //NewSearchQuery.SearchSites)
-            {
-                var scanData = new SiteScan();
-                scanData.SiteName = Site.SiteName;
-                scanData.SiteUrl = Site.SiteUrl;
-                scanData.SiteEnum = Site.SiteEnum;
-                try
-                {
-                    scanData = GetSiteScanData(Site.SiteEnum, NameToSearch, log);
-                    scanData.SiteEnum = Site.SiteEnum;
-                }
-                catch (Exception e)
-                {
-                    log.WriteLog("Error occured while processing the Site:" + Site.SiteEnum
-                        + " Error Description: " + e.ToString());
-                    scanData.HasErrors = true;
-                    scanData.ErrorDescription = e.Message;
-                }
-                finally
-                {
-                    ListOfSiteScan.Add(scanData);
-                }
-            }
-            return ListOfSiteScan;
-        }
+        //    foreach (SearchQuerySite Site in Sites) //NewSearchQuery.SearchSites)
+        //    {
+        //        var scanData = new SiteScan();
+        //        scanData.SiteName = Site.SiteName;
+        //        scanData.SiteUrl = Site.SiteUrl;
+        //        scanData.SiteEnum = Site.SiteEnum;
+        //        try
+        //        {
+        //            scanData = GetSiteScanData(Site.SiteEnum, NameToSearch, log);
+        //            scanData.SiteEnum = Site.SiteEnum;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            log.WriteLog("Error occured while processing the Site:" + Site.SiteEnum
+        //                + " Error Description: " + e.ToString());
+        //            scanData.HasErrors = true;
+        //            scanData.ErrorDescription = e.Message;
+        //        }
+        //        finally
+        //        {
+        //            ListOfSiteScan.Add(scanData);
+        //        }
+        //    }
+        //    return ListOfSiteScan;
+        //}
         #endregion
-
+        
         public SiteScan GetSiteScanData(SiteEnum Enum, string NameToSearch, ILog log)
         {
             switch(Enum)
@@ -283,7 +283,6 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        //Pending
         public SiteScan GetSystemForAwardManagementSiteScanDetails(
             string NameToSearch, ILog log, SiteEnum Enum)
         {

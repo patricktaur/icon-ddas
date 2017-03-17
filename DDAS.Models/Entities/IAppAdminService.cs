@@ -17,5 +17,6 @@ namespace DDAS.Models.Interfaces
         LIveSiteScannerMemoryModel LiveScannerInfo();
         List<LiveSiteScannerProcessModel> getLiveScannerProcessorsInfo();
         bool KillLiveSiteScanner(int HowMany = 1);
+        void AddSitesInDbCollection(SearchQuerySite Site);
     }
 }

@@ -896,5 +896,76 @@ namespace DDAS.Services.AppAdminService
         }
 
         #endregion
+
+        #region AddSites
+        public void AddSitesInDbCollection(SearchQuerySite Site)
+        {
+
+            _UOW.SiteSourceRepository.Add(Site);
+
+
+
+            //var site1 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Pfizer DMC Checks", SiteShortName = "Pfizer DMC Checks", SiteEnum = SiteEnum.PfizerDMCChecksPage, SiteUrl = " http://ecf12.pfizer.com/sites/clinicaloversightcommittees/default.aspx" };
+            //_UOW.SiteSourceRepository.Add(site1);
+            //var site2 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Pfizer Unavailable Checks", SiteShortName = "Pfizer DMC Checks", SiteEnum = SiteEnum.PfizerUnavailableChecksPage, SiteUrl = "http://ecf12.pfizer.com/" };
+            //_UOW.SiteSourceRepository.Add(site2);
+            //var site3 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "GSK Do Not Use Check", SiteShortName = "GSK DNU Check", SiteEnum = SiteEnum.GSKDoNotUseCheckPage, SiteUrl = "" };
+            //_UOW.SiteSourceRepository.Add(site3);
+            //var site4 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Regeneron Usability Check", SiteShortName = "Regeneron Usability Check", SiteEnum = SiteEnum.RegeneronUsabilityCheckPage, SiteUrl = "" };
+            //_UOW.SiteSourceRepository.Add(site4);
+            //var site5 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "AUSTRALIAN HEALTH PRACTITIONER REGULATION AGENCY", SiteShortName = "HEALTH PRACTITIONER ...", SiteEnum = SiteEnum.AustralianHealthPratitionerRegulationPage, SiteUrl = "http://www.ahpra.gov.au/Registration/Registers-of-Practitioners.aspx" };
+            //_UOW.SiteSourceRepository.Add(site5);
+            //var site6 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Belgium1 - ZOEK EEN ARTS", SiteShortName = "ZOEK EEN ARTS", SiteEnum = SiteEnum.ZoekEenArtsPage, SiteUrl = "https://ordomedic.be/nl/zoek-een-arts/" };
+            //_UOW.SiteSourceRepository.Add(site6);
+            //var site7 =
+            //    new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Belgium2 - RIZIV - Zoeken", SiteShortName = "RIZIV - Zoeken", SiteEnum = SiteEnum.RizivZoekenPage, SiteUrl = "https://www.riziv.fgov.be/webprd/appl/psilverpages/nl" };
+            //_UOW.SiteSourceRepository.Add(site7);
+            //var site8 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Brazil - CONSELHOS DE MEDICINA", SiteShortName = "CONSELHOS DE MEDICINA", SiteEnum = SiteEnum.ConselhosDeMedicinaPage, SiteUrl = "http://portal.cfm.org.br/index.php?option=com_medicos&Itemid=59" };
+            //_UOW.SiteSourceRepository.Add(site8);
+            //var site9 =
+            //    new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Colombia - EL TRIBUNAL NACIONAL DE ÉTICA MÉDICA", SiteShortName = "EL TRIBUNAL NACIONAL...", SiteEnum = SiteEnum.TribunalNationalDeEticaMedicaPage, SiteUrl = "http://www.tribunalnacionaldeeticamedica.org/site/biblioteca_documental" };
+            //_UOW.SiteSourceRepository.Add(site9);
+            //var site10 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Finland - VALVIRA", SiteShortName = "VALVIRA", SiteEnum = SiteEnum.ValviraPage, SiteUrl = "https://julkiterhikki.valvira.fi/" };
+            //_UOW.SiteSourceRepository.Add(site10);
+            //var site11 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "France - CONSEIL NATIONAL DE L'ORDRE DES MEDECINS", SiteShortName = "CONSEIL NATIONAL DE L'ORDRE...", SiteEnum = SiteEnum.ConseilNationalDeMedecinsPage, SiteUrl = "http://www.conseil-national.medecin.fr/annuaire" };
+            //_UOW.SiteSourceRepository.Add(site11);
+            //var site12 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "MEDICAL COUNCIL OF INDIA", SiteShortName = "MEDICAL COUNSIL OF INDIA", SiteEnum = SiteEnum.MedicalCouncilOfIndiaPage, SiteUrl = "http://online.mciindia.org/online//Index.aspx?qstr_level=01" };
+            //_UOW.SiteSourceRepository.Add(site12);
+            //var site13 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Israel - MINISTRY OF HEALTH ISRAEL", SiteShortName = "MINISTRY OF HEALTH ISRAEL", SiteEnum = SiteEnum.MinistryOfHealthIsraelPage, SiteUrl = "http://www.health.gov.il/UnitsOffice/HR/professions/postponements/Pages/default.aspx" };
+            //_UOW.SiteSourceRepository.Add(site13);
+            //var site14 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "New Zeland - LIST OF REGISTERED DOCTORS", SiteShortName = "LIST OF REGISTERED DOCTORS", SiteEnum = SiteEnum.ListOfRegisteredDoctorsPage, SiteUrl = "https://www.mcnz.org.nz/support-for-doctors/list-of-registered-doctors/" };
+            //_UOW.SiteSourceRepository.Add(site14);
+            //var site15 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Poland - NACZELNA IZBA LEKARSKA", SiteShortName = "NACZELNA IZBA LEKARSKA", SiteEnum = SiteEnum.NaczelnaIzbaLekarskaPage, SiteUrl = "http://rejestr.nil.org.pl/xml/nil/rejlek/hurtd" };
+            //_UOW.SiteSourceRepository.Add(site15);
+            //var site16 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Portugal - PORTAL OFICIAL DA ORDEM DOS MEDICOS", SiteShortName = "PORTAL OFICIAL DA ORDEM...", SiteEnum = SiteEnum.PortalOficialDaOrdemDosMedicosPage, SiteUrl = "https://www.ordemdosmedicos.pt/" };
+            //_UOW.SiteSourceRepository.Add(site16);
+            //var site17 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Spain - ORGANIZACION MEDICA COLEGIAL DE ESPANA", SiteShortName = "ORGANIZACION MEDICA COLEGIAL...", SiteEnum = SiteEnum.OrganizacionMedicaColegialDeEspanaPage, SiteUrl = "http://www.cgcom.es/consultapublicacolegiados" };
+            //_UOW.SiteSourceRepository.Add(site17);
+            //var site18 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "SINGAPORE MEDICAL COUNCIL", SiteShortName = "SINGAPORE MEDICAL COUNCIL...", SiteEnum = SiteEnum.SingaporeMedicalCouncilPage, SiteUrl = "http://www.healthprofessionals.gov.sg/content/hprof/smc/en.html" };
+            //_UOW.SiteSourceRepository.Add(site18);
+            //var site19 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "SRI LANKA MEDICAL COUNCIL", SiteShortName = "SRI LANKA MEDICAL COUNCIL...", SiteEnum = SiteEnum.SriLankaMedicalCouncilPage, SiteUrl = "http://www.srilankamedicalcouncil.org/registry.php" };
+            //_UOW.SiteSourceRepository.Add(site19);
+            //var site20 =
+            //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "HEALTH GUIDE USA", SiteShortName = "HEALTH GUIDE USA", SiteEnum = SiteEnum.HealthGuideUSAPage, SiteUrl = "http://www.healthguideusa.org/medical_license_lookup.htm" };
+            //_UOW.SiteSourceRepository.Add(site20);
+        }
+        #endregion
     }
 }

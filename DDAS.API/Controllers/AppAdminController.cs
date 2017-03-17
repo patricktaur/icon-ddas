@@ -139,5 +139,16 @@ namespace DDAS.API.Controllers
         }
 
         #endregion
+
+        #region Add/Delete sites
+        
+        [Route("AddSite")]
+        [HttpPost]
+        public IHttpActionResult AddSite(SearchQuerySite Site)
+        {
+            _AppAdminService.AddSitesInDbCollection(Site);
+            return Ok();
+        }
+        #endregion
     }
 }

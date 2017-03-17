@@ -17,11 +17,18 @@ namespace DDAS.Data.Mongo.Maps
                 DateTimeSerializer.LocalInstance
                 );
 
+            BsonClassMap.RegisterClassMap<SearchQuerySite>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => 
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
                 map.AutoMap();
-                //Patrick 08Oct2016:
                 map.SetIgnoreExtraElements(true);
             });
 
