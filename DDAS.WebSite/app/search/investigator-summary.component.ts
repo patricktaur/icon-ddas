@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-
+import { DomSanitizer } from '@angular/platform-browser';
 import {Location} from '@angular/common';
 import {SearchService} from './search-service';
 
@@ -39,7 +39,8 @@ export class InvestigatorSummaryComponent {
    constructor(private service: SearchService,
        private route: ActivatedRoute,
        private _location: Location,
-       private router: Router
+       private router: Router,
+        private sanitizer: DomSanitizer
   ) {}
   
 
@@ -194,5 +195,8 @@ dividerGeneration(indexVal : number){
     }
 }
 
+ sanitize(url: string) {
+        return this.sanitizer.bypassSecurityTrustUrl(url);
+    }
  get diagnostic() { return JSON.stringify(this.Investigator); }
 }

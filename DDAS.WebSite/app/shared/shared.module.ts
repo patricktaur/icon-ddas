@@ -10,10 +10,13 @@ import { ConfirmDialogComponent }  from './components/confirm-dialog.component';
 
  import { BoolToYesNoPipe }  from './pipes/bool-yes-no.pipe'; 
   import { PadPipe }  from './pipes/pad.pipe'; 
+   import { HighlightPipe }  from './pipes/text-highlight.pipe'; 
   
   //import { MyDatePickerModule } from 'mydatepicker/dist/my-date-picker.module';
 import { MyDatePickerModule } from './utils/my-date-picker/my-date-picker.module';
 import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination'; 
+
+import {DateInputComponent} from './components/date-input.component'; 
  
 
 @NgModule({
@@ -21,14 +24,17 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
    [ CommonModule,
    MyDatePickerModule
     ],
+  
   declarations: [ 
     AwesomePipe, 
   HighlightDirective, 
   CircleComponent,
   BoolToYesNoPipe,
   PadPipe,
+  HighlightPipe,
   ToggleShowComponent,
-  ConfirmDialogComponent
+  ConfirmDialogComponent,
+  DateInputComponent
   
    ],
   exports:      [ 
@@ -39,10 +45,13 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
     CircleComponent, 
     BoolToYesNoPipe,
     PadPipe,
+    HighlightPipe,
     ToggleShowComponent,
     MyDatePickerModule,
     Ng2PaginationModule,
-    ConfirmDialogComponent
-                   ]
+    ConfirmDialogComponent,
+    DateInputComponent
+                   ],
+                   
 })
 export class SharedModule { }

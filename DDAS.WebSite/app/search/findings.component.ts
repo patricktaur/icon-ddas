@@ -27,7 +27,7 @@ export class FindingsComponent implements OnInit {
     
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
-
+    private highlightFilter: string;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -93,8 +93,35 @@ export class FindingsComponent implements OnInit {
             return inv;
         }
         else{
+              //remove special characters
+             let str = inv1.Name.replace(/[^a-zA-Z ]/g,'');
+             //remove words with less than 2 characters
+             this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g,''); //.split(/\s+/);
+               
             return inv1;
         }
+     }
+
+     private comps: string[];
+     private retvalue: string = "";
+     removeSingleComponent(name:string){
+         this.comps = name.split(" ");
+         
+         let spc = "";
+        
+        for (var c in this.comps){
+            this.retvalue.concat("XXXXXXXXXXXXX");
+            // if (c.length > 1){
+                
+            //     this.retvalue.concat(c);
+            //     spc = " ";
+            // }
+        }
+        return this.retvalue;
+         
+     }
+     get InvestigatorNameComponents(){
+         return this.Investigator.NameComponentCount;
      }
     
     get Findings(){
@@ -112,11 +139,16 @@ export class FindingsComponent implements OnInit {
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true).sort(s=> s.MatchCount).reverse();
     }
   
-     get MatchedSiteRecordsForMatchCount(){
-        //return this.Findings;
-        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true  ).sort(s=> s.MatchCount).reverse();
+   
+     get FullMatchRecords(){
+        
+        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == true).sort(s=> s.MatchCount).reverse();
     }
 
+    get PartialMatchRecords(){
+        
+        return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == false).sort(s=> s.MatchCount).reverse();
+    }
     get  SiteSearchStatus(){
 
         let siteSearched = new SiteSearchStatus;
@@ -272,5 +304,5 @@ export class FindingsComponent implements OnInit {
       
     }
     
-    get diagnostic() { return JSON.stringify(this.CompForm.Findings.length); }
+    get diagnostic() { return JSON.stringify(this.highlightFilter); }
 }

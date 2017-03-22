@@ -22,6 +22,7 @@
 					<div class="row">
 						<div class="col-lg-12 text-left">
 							<h4 class="no-margin-top">{{CompForm.ProjectNumber}} - {{PrincipalInvestigatorName}}</h4>
+
 						</div>
 
 					</div>
@@ -30,10 +31,10 @@
 
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
-						
+
 						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending ">Search</button>-->
-							
-						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
+
+						<!--<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>-->
 						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
 						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
 
@@ -106,7 +107,7 @@
 										</div>
 
 									</form>
-								
+
 								</div>
 								<!--<div id="investigators-tab" class="tab-pane fade in active">-->
 								<div id="investigators-tab" class="tab-pane fade {{invTabInActive}}">
@@ -125,7 +126,7 @@
 																<th class="">Inv. Id</th>
 																<th class="">Role</th>
 
-																<th >Status</th>
+																<th>Status</th>
 																<!--<th class="col-md-1">Status</th>-->
 
 																<th class="col-md-2">Actions</th>
@@ -158,8 +159,8 @@
 
 																</td>
 																<td>
-																	{{inv.Role}} /  {{inv.NameComponentCount}} 
-																	
+																	{{inv.Role}}
+
 																</td>
 
 																<td align="center">
@@ -169,11 +170,14 @@
 
 																<td>
 																	<div class="btn-group">
-																	<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top" title="Move Up" > <span class="glyphicon glyphicon-chevron-up"></span></button>
-																	<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip" data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
-																	<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-																		data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-																	<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved" data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
+																			title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
+																			data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+																			data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
+																			data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
 																	</div>
 																</td>
 
@@ -183,8 +187,8 @@
 																	<!--<small [hidden]="invName.valid || (invName.pristine && !f.submitted)" class="text-danger">
             											Name is required (minimum 3 characters).
  												</small>-->
+																	<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
 
-																
 																</td>
 															</tr>
 														</tbody>
@@ -213,7 +217,7 @@
 																<th class="">Source Name</th>
 																<th class="">Source Date</th>
 																<th class="">Extraction Mode</th>
-																
+
 																<th class="">Issues Identified</th>
 
 															</tr>
@@ -230,7 +234,7 @@
 																	</div>
 
 																</td>
-																
+
 																<td>
 																	{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
 																</td>
@@ -264,7 +268,7 @@
 															<tr>
 																<th class="">#</th>
 																<th class="">Source Name</th>
-
+																<th class="">Source Date</th>
 																<th class="">Issues Identified</th>
 																<th class="">Remove</th>
 															</tr>
@@ -281,7 +285,10 @@
 																	</div>
 
 																</td>
-
+																<td>
+																	<div date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
+																	{{item.SiteSourceUpdatedOn}}
+																</td>
 																<td>
 																	{{item.IssuesIdentified | boolToYesNo}}
 																</td>
@@ -312,10 +319,10 @@
 														<thead>
 															<tr>
 																<th class="col-md-1">Source #</th>
-																<th class="col-md-3">Investigator</th>
+																<th class="col-md-2">Investigator</th>
 																<th class="col-md-2">Date of Inspection / Action</th>
-																<th class="col-md-6">Description of Findings</th>
-
+																<th class="col-md-5">Description of Findings</th>
+																<th class="col-md-2">Action</th>
 															</tr>
 														</thead>
 														<tbody>
@@ -330,12 +337,29 @@
 																	{{item.DateOfInspection |date:'dd MMM yyyy' }}
 																</td>
 																<td align="left">
-																	
+
 																	<!--<div *ngIf="item.RecordDetails"><br> </div>-->
 																	<!--{{item.Observation}}-->
-																	<textarea   [(ngModel)]="item.Observation" rows="3" cols="60" readonly style="border: none"></textarea>
+																	<textarea [(ngModel)]="item.Observation" rows="3" cols="60" readonly style="border: none"></textarea>
+																</td>
+																<td >
+																	<div *ngIf="item.SourceNumber == null">
+																		<div class="btn-group">
+																			<button type="button" class="btn btn-sm btn-primary" (click)="EditFinding(item)" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit" ></span></button>
+																			<button type="button" class="btn btn-sm btn-primary" (click)="DeleteFinding(item); " data-toggle="tooltip" data-placement="top"
+																				title="Remove Finding"><span class="glyphicon glyphicon-remove" ></span></button>
+																		</div>
+																	</div>
 																</td>
 															</tr>
+															<tr>
+																<td colspan="4" align="left">
+																	<button type="button" class="btn btn-primary" (click)="AddFinding()">Add a Finding</button>
+																</td>
+
+															</tr>
+
+
 														</tbody>
 													</table>
 												</div>
@@ -397,10 +421,10 @@
 					</div>
 					<div class="">
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
-						
-						<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
+
+
 						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
-					 <!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
+						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
 
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -480,5 +504,30 @@
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
 		<button type="button" class="btn btn-primary" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #FindingsEditModal>
+	<modal-header>
+		<h4 class="modal-title">Edit Finding</h4>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-md-12">
+				<h5>Findings:</h5>
+				<textarea class="form-control" name="Observation" [(ngModel)]="selectedFinding.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<label ><h5>Date of Inspection / Action:</h5></label>
+				<div date-picker [(DateValue)]="selectedFinding.DateOfInspection"></div>
+				{{selectedFinding.DateOfInspection}}
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="FindingsEditModal.close()">Close</button>
 	</modal-footer>
 </modal>

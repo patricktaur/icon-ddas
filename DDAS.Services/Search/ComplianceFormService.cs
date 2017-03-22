@@ -448,14 +448,18 @@ namespace DDAS.Services.Search
                     //Remove Optional Sites.
                     //Remove Optional sites not found in client collection
 
-                    //Site add if not found:
+                    //Site add if not found, Update :
                     foreach (SiteSource clSite in form.SiteSources)
                     {
-                        var dbInv = dbForm.SiteSources.Find(x => x.SiteEnum == clSite.SiteEnum);
-                        if (dbInv == null)
+                        var dbSiteSource = dbForm.SiteSources.Find(x => x.SiteEnum == clSite.SiteEnum);
+                        if (dbSiteSource == null)
                         {
                             //Not found, add
                             dbForm.SiteSources.Add(clSite);
+                        }
+                        else
+                        {
+                            dbSiteSource.SiteSourceUpdatedOn = clSite.SiteSourceUpdatedOn;
                         }
                     }
 
@@ -475,10 +479,44 @@ namespace DDAS.Services.Search
                     }
                     dbForm.SiteSources.RemoveAll(x => x.Deleted == true);
 
+                    //Findings - not related to Investigator or Site
+                    //Add/Update Findings not found in db Findings.
+                    foreach (Finding clFinding in form.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
+                    {
+                        if (clFinding.Id == null)
+                        {
+                            clFinding.Id = Guid.NewGuid();
+                            dbForm.Findings.Add(clFinding);
+                        }
+                        else
+                        {
+                            var dbFinding = dbForm.Findings.Find(x => x.Id == clFinding.Id);
+                            if (dbFinding == null)  //??
+                            {
+                                dbForm.Findings.Add(clFinding);
+                            }
+                            else
+                            {
+                                dbFinding.Observation = clFinding.Observation;
+                            }
+                        }
+                     }
+
+                    //Delete not found in DB
+                    foreach (Finding dbFinding in dbForm.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
+                    {
+                        var clFinding = form.Findings.Find(x => x.Id == dbFinding.Id);
+                        if (clFinding == null)
+                        {
+                            dbFinding.InvestigatorSearchedId = -1;
+                        }
+                    }
+                    dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == -1);
+
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
                     RemoveOrphanedSearchStatusRecords(dbForm);
-                    RemoveOrphanedFindings(dbForm);
+                    //RemoveOrphanedFindings(dbForm);
 
                     // DisplayPosition, RowNumberInSource nos need adjustment when a site is deleted.
                     AdjustDisplayPositionOfSiteSources(dbForm);
@@ -510,12 +548,12 @@ namespace DDAS.Services.Search
             //Retrieves form from db and replaces view related values (ReviewCompleted, corresponding Findings) 
             
             //get Comp form from db.
-            var form = _UOW.ComplianceFormRepository.FindById(updateFindings.FormId);
-            if (form != null)
+            var dbForm = _UOW.ComplianceFormRepository.FindById(updateFindings.FormId);
+            if (dbForm != null)
             {
                 
                 //Set  Review Completed value:
-                foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
+                foreach (InvestigatorSearched Investigator in dbForm.InvestigatorDetails)
                 {
                     if (Investigator.Id == updateFindings.InvestigatorSearchedId)
                     {
@@ -530,13 +568,21 @@ namespace DDAS.Services.Search
                 }
 
                 //Findings
+                //add Guid for new records:
+                foreach (Finding finding in updateFindings.Findings)
+                {
+                    if (finding.Id == null)
+                    {
+                        finding.Id = Guid.NewGuid();
+                    }
+                }
                 //Remove manually added Findings (IsMatched = false) from db and add again from the client
-                form.Findings.RemoveAll(
+                dbForm.Findings.RemoveAll(
                     x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
                     && x.SiteEnum == updateFindings.SiteEnum
                     && x.IsMatchedRecord == false);
                 //Add all IsMatchedRecord = false records from client
-                form.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false));
+                dbForm.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false));
 
                 var matchedRecords = updateFindings.Findings.Where(x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
                    && x.SiteEnum == updateFindings.SiteEnum
@@ -545,7 +591,7 @@ namespace DDAS.Services.Search
                 //Replace existing generated records (IsMatchedRecord = true) records with records received from client.
                 foreach (var rec in matchedRecords)
                 {
-                    var findingInForm = form.Findings.Find(x => x.Id == rec.Id);
+                    var findingInForm = dbForm.Findings.Find(x => x.Id == rec.Id);
                     if (findingInForm != null)
                     {
                         findingInForm.Observation = rec.Observation;
@@ -554,9 +600,9 @@ namespace DDAS.Services.Search
                      }
                 }
 
-                RollUpSummary(form);
+                RollUpSummary(dbForm);
 
-                _UOW.ComplianceFormRepository.UpdateCollection(form);
+                _UOW.ComplianceFormRepository.UpdateCollection(dbForm);
                 return true;
             }
             else
@@ -760,7 +806,7 @@ namespace DDAS.Services.Search
                             Finding.InvestigatorSearchedId == Investigator.Id 
                              )
                         {
-                            InvId = Finding.InvestigatorSearchedId;
+                            InvId = Finding.InvestigatorSearchedId.Value;
                             IssuesFound += 1;
                             
                         }
@@ -1321,7 +1367,7 @@ namespace DDAS.Services.Search
 
         private void CorrectSourceNumberInFindings(ComplianceForm frm)
         {
-            foreach (Finding finding in frm.Findings)
+            foreach (Finding finding in frm.Findings.Where(x => (x.SiteEnum != null)))
             {
                 finding.SourceNumber = frm.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum).DisplayPosition;
             }
