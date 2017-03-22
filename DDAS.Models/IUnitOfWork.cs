@@ -10,6 +10,10 @@ namespace DDAS.Models
     {
         #region Properties
 
+        ILoginDetailsRepository LoginDetailsRepository { get; }
+        ILogRepository LogRepository { get; }
+        ISiteSourceRepository SiteSourceRepository { get; }
+
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
         IAdequateAssuranceListRepository AdequateAssuranceListRepository { get; }
@@ -37,11 +41,8 @@ namespace DDAS.Models
         ISystemForAwardManagementRepository 
             SystemForAwardManagementRepository { get; }
         IComplianceFormRepository ComplianceFormRepository { get; }
-        
-        ILoginDetailsRepository LoginDetailsRepository { get; }
-
-        ILogRepository LogRepository { get; }
         #endregion
+
 
         #endregion
 

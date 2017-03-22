@@ -20,6 +20,7 @@ namespace DDAS.Models.Entities.Domain
     //For multiple sites request
     public class SearchQuerySite
     {
+        public Guid? RecId { get; set; }
         public string SiteName { get; set; }
         //public bool IsOptional { get; set; }
         public string ExtractionMode { get; set; }
@@ -28,11 +29,10 @@ namespace DDAS.Models.Entities.Domain
         //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
-        public string SearchTimeTakenInMs { get; set; }
-        public bool HasErrors { get; set; } = false;
-        public string ErrorDescription { get; set; }
-        public List<MatchResult> Results { get; set; }
-
+        //public string SearchTimeTakenInMs { get; set; }
+        //public bool HasErrors { get; set; } = false;
+        //public string ErrorDescription { get; set; }
+        //public List<MatchResult> Results { get; set; }
     }
 
     public class SiteScan : SearchQuerySite
@@ -42,6 +42,8 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? SiteLastUpdatedOn { get; set; }
         public int FullMatch { get; set; }
         public int PartialMatch { get; set; }
+        public bool HasErrors { get; set; } = false;
+        public string ErrorDescription { get; set; }
     }
 
     //for Single site query:
@@ -1069,7 +1071,6 @@ namespace DDAS.Models.Entities.Domain
         public Guid UserId { get; set; }
     }
     #endregion
-
 
     public class ValidationError
     {

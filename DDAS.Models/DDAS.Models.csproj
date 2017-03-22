@@ -102,6 +102,7 @@
     <Compile Include="Repository\Domain\SiteData\IPHSAdministrativeActionListingRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IRoleRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISaveSearchResultRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISiteSourceRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISpeciallyDesignatedNationalsRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISysytemForAwardManagementRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IUserRepository.cs" />

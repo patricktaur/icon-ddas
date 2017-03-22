@@ -2324,8 +2324,6 @@ namespace DDAS.Services.Search
 
         #region Helpers
 
-      
-
         public string RemoveExtraCharacters(string Value)
         {
             //string CharactersToRemove = ".,/:";
@@ -2387,7 +2385,7 @@ namespace DDAS.Services.Search
                     "separated with a space!";
                 ValidationMessages.Add(ValidationMessage);
             }
-            if(IsNumeric(ExcelInputRow[0]))
+            if(IsNumericOrHasSpecialCharacters(ExcelInputRow[0]))
             {
                 ValidationMessage = "RowNumber: " + Row +
                     " - Investigator Name should not have any " +
@@ -2431,7 +2429,7 @@ namespace DDAS.Services.Search
             {
                 ValidationMessages.Add(ExcelInputRow[3]);
             }
-            if (IsNumeric(ExcelInputRow[3]))
+            if (IsNumericOrHasSpecialCharacters(ExcelInputRow[3]))
             {
                 ValidationMessage = "RowNumber: " + Row +
                     " - Qualification should not have any " +
@@ -2503,7 +2501,7 @@ namespace DDAS.Services.Search
             return ValidationMessages;
         }
 
-        private bool IsNumeric(string Value)
+        private bool IsNumericOrHasSpecialCharacters(string Value)
         {
             foreach (char c in Value)
             {
@@ -2530,7 +2528,8 @@ namespace DDAS.Services.Search
 
         private bool IsValidProjectNumber(string Value)
         {
-            return Regex.IsMatch(Value, "\\d{4}/\\d{4}");
+            string Expression = "^\\d{4}/\\d{4}$";
+            return Regex.IsMatch(Value, Expression);
         }
 
       
