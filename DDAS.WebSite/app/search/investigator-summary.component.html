@@ -27,58 +27,29 @@
 
 		<div class="well">
 			<h4>
-				Summary:<br> 
-				Reviews Pending: <strong>{{ReviewPendingCount}}</strong> | Sites with full Match: <strong>{{Investigator.Sites_FullMatchCount}}</strong>| Partial Matches: <strong>{{Investigator.Sites_PartialMatchCount}}</strong> <br> 
-				Issues Identified: <strong>{{Investigator.TotalIssuesFound}}</strong>|Extraction Errors: <strong>{{Investigator.ExtractionErrorSiteCount}}</strong> | Extraction Pending: <strong>{{Investigator.ExtractionPendingSiteCount}}</strong>
+				Summary:<br> Reviews Pending: <strong>{{ReviewPendingCount}}</strong> | Sites with full Match: <strong>{{Investigator.Sites_FullMatchCount}}</strong>|
+				Partial Matches: <strong>{{Investigator.Sites_PartialMatchCount}}</strong> <br> Issues Identified: <strong>{{Investigator.TotalIssuesFound}}</strong>|Extraction
+				Errors: <strong>{{Investigator.ExtractionErrorSiteCount}}</strong> | Extraction Pending: <strong>{{Investigator.ExtractionPendingSiteCount}}</strong>
 
 			</h4>
 			<h4>
-				Filters:<br> 
-				Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites" /> 
-				
-				
+				Filters:<br> Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites"
+				/>
 
-				
 			</h4>
-			<div *ngIf="true">
-				<!--Summary: {{Investigator.InvestigatorSiteStatus}}-->
-				<!--<div *ngFor="let item of Summary; "> 
-					{{item}}
-				</div>-->
 
-				<!--<p>ExtractedOn: {{Investigator.ExtractedOn}} </p>
-				<p>ExtractionErrorSiteCount: {{Investigator.ExtractionErrorSiteCount}} </p>
-				<p>HasExtractionError: {{Investigator.HasExtractionError}} </p>
-				<p>Sites_FullMatchCount: {{Investigator.Sites_FullMatchCount}} </p>
-				<p>Sites_PartialMatchCount: {{Investigator.Sites_PartialMatchCount}} </p>
-				<p>IssuesFoundSiteCount: {{Investigator.IssuesFoundSiteCount}} </p>
-				<p>ReviewCompletedSiteCount: {{Investigator.ReviewCompletedSiteCount}} </p>
-
-					<div *ngIf="!Investigator.HasExtractionError">
-						<p>Data was Extracted On: {{Investigator.ExtractedOn}} </p>
-						<p>{{SiteSearchStatus.PartialMatchCount}} partially mathing records found. </p>
-						<p>{{SiteSearchStatus.FullMatchCount}} fully matching records found.</p>
-					</div>
-					<div *ngIf="SiteSearchStatus.HasExtractionError">
-						<p>Data Extraction Errors: {{SiteSearchStatus.ExtractionErrorMessage}} </p>
-					</div>
-				
-				<p>Issues Identified: {{SiteSearchStatus.IssuesFound}} </p>
-				<p>Review Completed: {{BoolYesNo(SiteSearchStatus.ReviewCompleted)}} </p>-->
-			</div>
 		</div>
 	</div>
 </div>
 
 <div class="row">
-	<div *ngFor="let item of FilteredInvestigatorSiteSummary; let indexVal = index"> 
+	<div *ngFor="let item of FilteredInvestigatorSiteSummary; let indexVal = index">
 		<div class="col-lg-4">
-
 			<div class="well" [class.selected]="item.siteEnum == retSiteEnum">
 				<div class="row">
 					<div class="col-xs-10" style="height: 42px; overflow:hidden;">
 						<h5 class="no-margin-top">
-							<a target="_blank" [href]="item.SiteUrl">
+							<a target="_blank" [href]="sanitize(item.SiteUrl)">
 								{{item.DisplayPosition + "." + item.SiteName |pad: 90 : "&nbsp;"}} <!--not working -->
    							</a>
 						</h5>
@@ -88,7 +59,6 @@
 					</div>
 				</div>
 				<div class="row">
-
 					<!--<div *ngIf="item.siteEnum == retSiteEnum">aaaaa</div>-->
 					<div class="col-lg-12">
 						<table class="table table-bordered table-hover table-striped">
@@ -110,16 +80,7 @@
 						</table>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-12" *ngIf="false">
-						<p>ExtractedOn: {{item.ExtractedOn}} </p>
-						<p>HasExtractionError: {{item.HasExtractionError}} </p>
-						<p>ExtractionErrorMessage: {{item.ExtractionErrorMessage}} </p>
-						<p>PartialMatchCount: {{item.PartialMatchCount}} </p>
-						<p>IssuesFound: {{item.IssuesFound}} </p>
-						<p>ReviewCompleted: {{item.ReviewCompleted}} </p>
-					</div>
-				</div>
+
 				<div class="row">
 					<div class="col-lg-8">
 
@@ -130,14 +91,54 @@
 					</div>
 				</div>
 			</div>
-
-
 		</div>
 		<div *ngIf="dividerGeneration(indexVal)">
 			<div style="clear:both;"></div>
 		</div>
 	</div>
 </div>
+
+<div class="row">
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th class="">#</th>
+				<th class="">Source Name</th>
+				<th class="">Full Match</th>
+				<th class="">Partial Match</th>
+				<th class="">Issues Identified</th>
+				<th class="">Review Completed</th>
+				<th class="">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="active" *ngFor="let item of FilteredInvestigatorSiteSummary; let indexVal = index">
+				<td>{{item.DisplayPosition}}</td>
+				<td align="left">
+					<a target="_blank" [href]="sanitize(item.SiteUrl)">
+                            {{item.SiteName}}
+					</a>
+				</td>
+				<td class="success">{{item.FullMatchCount}}</td>
+				<td class="success">{{item.PartialMatchCount}}</td>
+				<td class="success">{{item.IssuesFound}}</td>
+
+				<td>
+					{{item.ReviewCompleted | boolToYesNo}}
+				</td>
+				<td>
+					<button type="button" class="btn btn-xs btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+
+</div>
+
+
+
 <p>
 	<button type="button" class="btn btn-default " (click)="goBack()">BACK</button>
 

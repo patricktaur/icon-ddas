@@ -1,11 +1,13 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum } from '../../search/search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding } from '../../search/search.classes';
 import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
+import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
+
 
 @Component({
     moduleId: module.id,
@@ -69,7 +71,16 @@ export class CompFormEditComponent implements OnInit {
     public invTab: boolean = false;
     public invTabInActive: string;
     public defaultTabInActive: string = " in active";
+    
+    public selectedFinding: Finding = new Finding;
+    @ViewChild('FindingsEditModal') findingsEditModal: ModalComponent;
 
+    public myDatePickerOptions = {
+        
+        dateFormat: 'dd mmm yyyy',
+        selectionTxtFontSize: 14
+     };
+    
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -527,6 +538,39 @@ export class CompFormEditComponent implements OnInit {
             return null;
         }
         return this.CompForm.Findings.filter(x => x.Selected == true);
+        //return this.CompForm.Findings;
+    }
+
+    AddFinding(){
+        
+       let finding = new Finding;
+        finding.IsMatchedRecord = false;
+        //finding.UISelected = true;
+        finding.IsAnIssue = true;
+        finding.InvestigatorSearchedId = null;
+        finding.SourceNumber = null;
+        finding.SiteEnum = null;
+        //finding.SourceNumber = 
+        //finding.InvestigatorName =
+        finding.DateOfInspection = new Date(Date.now()) ;
+        finding.Selected = true;
+        this.CompForm.Findings.push(finding);
+        this.EditFinding(finding);
+        
+    }
+
+    EditFinding(finding: Finding){
+        this.selectedFinding = finding;
+        this.findingsEditModal.open();
+    }
+
+    DeleteFinding(finding: Finding){
+        if (window.confirm("Remove ?") == true){
+            var index =  this.CompForm.Findings.indexOf(finding);
+            this.CompForm.Findings.splice(index, 1);   
+        }
+          
+        
     }
 
     Save() {
@@ -604,9 +648,17 @@ export class CompFormEditComponent implements OnInit {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
 
-
+    
+    dateChanged($event, dateValue: Date){
+        dateValue = $event.value;
+        window.alert(JSON.stringify(dateValue));
+        
+        window.alert(JSON.stringify(dateValue));
+    }
   
-    get diagnostic() { return JSON.stringify(this.SitesAvailable); }
+     private Todate = new Date(); 
+    
+    get diagnostic() { return JSON.stringify(this.CompForm.SiteSources); }
 
 
 }

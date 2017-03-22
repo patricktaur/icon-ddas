@@ -116,6 +116,13 @@ export class AllISCFsComponent implements OnInit {
         this.SelectedInvestigatorName = Investigator.Name;
     }
 
+    
+    private Todate = new Date(); 
+    private testDate: Date;
+    dateChanged(event: Date){
+            this.testDate = event;
+    }
+
     get diagnostic() { return JSON.stringify(this.FromDate); }
    
 

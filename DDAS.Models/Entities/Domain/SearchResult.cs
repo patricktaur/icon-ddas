@@ -883,9 +883,9 @@ namespace DDAS.Models.Entities.Domain
         //10Feb2017-todo: 
         public Guid? Id { get; set; }
 
-        public SiteEnum SiteEnum { get; set; }
+        public SiteEnum? SiteEnum { get; set; }
         public bool IsFullMatch { get; set; }
-        public int InvestigatorSearchedId { get; set; }
+        public int? InvestigatorSearchedId { get; set; }
         public int MatchCount { get; set; }
         public int RowNumberInSource { get; set; }
         public string Observation { get; set; }
@@ -897,7 +897,7 @@ namespace DDAS.Models.Entities.Domain
         
         public bool Selected { get; set; }
         public bool IsMatchedRecord { get; set; }
-        public int SourceNumber { get; set; }
+        public int? SourceNumber { get; set; }
         public DateTime? DateOfInspection { get; set; }
         public string InvestigatorName { get; set; }
         public bool IsAnIssue { get; set; }
