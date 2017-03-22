@@ -1,20 +1,23 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Repository.Domain.SiteData;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDAS.Data.Mongo.Repositories.SiteData
 {
     internal class SiteSourceRepository : Repository<SearchQuerySite>,
         ISiteSourceRepository
     {
+        private IMongoDatabase _db;
         internal SiteSourceRepository(IMongoDatabase db) : base(db)
         {
+            _db = db;
+        }
 
+        public bool UpdateSiteSource(SearchQuerySite SiteSource)
+        {
+            _db.GetCollection<SearchQuerySite>(typeof(SearchQuerySite).Name).
+                ReplaceOne(x => x.RecId == SiteSource.RecId, SiteSource);
+            return true;
         }
     }
 }

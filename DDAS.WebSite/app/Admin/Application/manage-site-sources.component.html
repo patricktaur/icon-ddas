@@ -11,10 +11,10 @@
 			</div>			
 		</div>
 
-		<div class="alert alert-info" *ngIf="formLoading">
+		<!--<div class="alert alert-info" *ngIf="formLoading">
 			<strong>Loading ...</strong>
 		</div>
-		<div *ngIf="!formLoading">
+		<div *ngIf="!formLoading">-->
 			<div class="well">
 				<div class="row">
 					<div class="col-lg-8">
@@ -25,7 +25,7 @@
 									<th>Extraction Mode</th>
 									<th>Mandatory</th>
 									<th>Site Short Name</th>
-                                    <th>Site Url</th>
+                                    <th class="col-md-3">Site Url</th>
                                     <th>Actions</th>
 								</tr>
 							</thead>
@@ -44,11 +44,11 @@
 									<td class="text-center">
                                         {{item.SiteShortName}}
 									</td>
-                                    <td class="text-center">
+                                    <td class="col-md-1 text-left">
                                         {{item.SiteUrl}}
                                     </td>
                                     <td>
-										<button type="button" class="btn btn-sm btn-primary" (click)="" title="Remove site"> <span class="glyphicon glyphicon-remove"></span> </button>
+										<button type="button" class="btn btn-sm btn-primary" (click)="EditSiteDetails(item.RecId)" title="Edit"> <span class="glyphicon glyphicon-edit"></span> </button>
 									</td>
 								</tr>
 							</tbody>
@@ -60,6 +60,6 @@
 					</div>
 				</div>
 			</div>		
-		</div>
+		<!--</div>-->
 	</div>
 </div>

@@ -12,6 +12,7 @@ import 'rxjs/add/operator/catch';
 //import { AuthService } from '../auth/auth.service';
 import { ConfigService } from '../../shared/utils/config.service';
 import { AuthService } from '../../auth/auth.service';
+import {SiteSourceViewModel} from './appAdmin.classes';
 
 @Injectable()
 export class LoginHistoryService {
@@ -100,8 +101,16 @@ export class LoginHistoryService {
     }
 
     getSiteSources(){
-        return this.http.get(this._baseUrl + 'search/GetSiteSources',
+        return this.http.get(this._baseUrl + 'AppAdmin/GetSiteSources',
         this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getSiteSource(RecId: string){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetSiteSource?RecId=' + RecId, this._options)
         .map((res: Response) => {
             return res.json();
         })
@@ -116,6 +125,15 @@ export class LoginHistoryService {
             return res.json();
         })
         .catch(this.handleError);
+    }
+
+    saveSiteSource(SiteSource: SiteSourceViewModel): Observable<SiteSourceViewModel>{
+        let body = JSON.stringify(SiteSource);
+        return this.http.post(this._baseUrl + 'AppAdmin/SaveSiteSource/', body, this._options)
+                   .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
     }
 
     private handleError(error: any) {

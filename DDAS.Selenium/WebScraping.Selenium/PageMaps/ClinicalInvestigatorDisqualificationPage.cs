@@ -13,6 +13,14 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class ClinicalInvestigatorDisqualificationPage: BaseSearchPage //BaseClasses.BasePage
     {
+        public bool IsFeedbackPopUpDisplayed {
+            get {
+                if (driver.PageSource.ToLower().Contains("give feeback"))
+                    return true;
+                else
+                    return false;
+            }
+        }
 
         public IWebElement DisqualifiedInvestigatorSearchTextBox
         {

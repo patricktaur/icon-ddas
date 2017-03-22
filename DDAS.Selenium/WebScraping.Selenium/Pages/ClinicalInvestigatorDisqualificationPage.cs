@@ -7,6 +7,7 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -23,6 +24,9 @@ namespace WebScraping.Selenium.Pages
             _DisqualificationSiteData = 
                 new ClinicalInvestigatorDisqualificationSiteData();
             _DisqualificationSiteData.Source = driver.Url;
+            _DisqualificationSiteData.RecId = Guid.NewGuid();
+            _DisqualificationSiteData.ReferenceId = 
+                _DisqualificationSiteData.RecId;
             //SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
         }
 
@@ -78,7 +82,7 @@ namespace WebScraping.Selenium.Pages
         private int RowNumber = 1;
 
         private void LoadDisqualificationProceedingsList(string NameToSearch,
-            int MatchCountLowerLimit)
+            int MatchCountLowerLimit = 0)
         {
             if (DisqualifiedInvestigatorTable == null)
                 throw new Exception(
@@ -91,8 +95,8 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                if (TDs.Count > 0 && 
-                    GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
+                if (TDs.Count > 0) //&& 
+                    //GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
                 {
                     DisqualifiedClinicalInvestigator.RowNumber = RowNumber;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
@@ -104,40 +108,40 @@ namespace WebScraping.Selenium.Pages
                     DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
                     DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
 
-                    if(IsElementPresent(TDs[0], By.XPath("a")))
-                    {
-                        Link link = new Link();
-                        IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
-                        link.Title = "Name";
-                        link.url = anchor.GetAttribute("href");
-                        DisqualifiedClinicalInvestigator.Links.Add(link);
-                    }
+                    //if(IsElementPresent(TDs[0], By.XPath("a")))
+                    //{
+                    //    Link link = new Link();
+                    //    IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
+                    //    link.Title = "Name";
+                    //    link.url = anchor.GetAttribute("href");
+                    //    DisqualifiedClinicalInvestigator.Links.Add(link);
+                    //}
                     
-                    if(IsElementPresent(TDs[6], By.XPath("a")))
-                    {
-                        IList<IWebElement> anchors = TDs[6].FindElements(By.XPath("a"));
+                    //if(IsElementPresent(TDs[6], By.XPath("a")))
+                    //{
+                    //    IList<IWebElement> anchors = TDs[6].FindElements(By.XPath("a"));
 
-                        foreach(IWebElement anchor in anchors)
-                        {
-                            Link link = new Link();
-                            link.Title = "Link To NIDPOE Letter - " + anchor.Text;
-                            link.url = anchor.GetAttribute("href");
-                            DisqualifiedClinicalInvestigator.Links.Add(link);
-                        }
-                    }
+                    //    foreach(IWebElement anchor in anchors)
+                    //    {
+                    //        Link link = new Link();
+                    //        link.Title = "Link To NIDPOE Letter - " + anchor.Text;
+                    //        link.url = anchor.GetAttribute("href");
+                    //        DisqualifiedClinicalInvestigator.Links.Add(link);
+                    //    }
+                    //}
 
-                    if (IsElementPresent(TDs[7], By.XPath("a")))
-                    {
-                        IList<IWebElement> anchors = TDs[7].FindElements(By.XPath("a"));
+                    //if (IsElementPresent(TDs[7], By.XPath("a")))
+                    //{
+                    //    IList<IWebElement> anchors = TDs[7].FindElements(By.XPath("a"));
 
-                        foreach (IWebElement anchor in anchors)
-                        {
-                            Link link = new Link();
-                            link.Title = "Link To NOOH Letter - " + anchor.Text;
-                            link.url = anchor.GetAttribute("href");
-                            DisqualifiedClinicalInvestigator.Links.Add(link);
-                        }
-                    }
+                    //    foreach (IWebElement anchor in anchors)
+                    //    {
+                    //        Link link = new Link();
+                    //        link.Title = "Link To NOOH Letter - " + anchor.Text;
+                    //        link.url = anchor.GetAttribute("href");
+                    //        DisqualifiedClinicalInvestigator.Links.Add(link);
+                    //    }
+                    //}
 
                     _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
                         DisqualifiedClinicalInvestigator);
@@ -200,9 +204,63 @@ namespace WebScraping.Selenium.Pages
             return true;
         }
 
+        private bool CheckForPopUpWindow()
+        {
+            bool IsPopUpWindowDispalyed = false;
+
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+
+            bool IsPageLoaded = false;
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    IsPageLoaded = true;
+                    break;
+                }
+            }
+
+            if (!IsPageLoaded)
+                throw new Exception("Page is not loaded");
+
+            if (IsFeedbackPopUpDisplayed)
+            {
+                IsPopUpWindowDispalyed = true;
+                var ErrorCaptureFilePath = 
+                    @"c:\Development\DisqualificationProceedings_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
+                driver.Navigate().GoToUrl(Url);
+            }
+            return IsPopUpWindowDispalyed;
+        }
+
         public override void LoadContent(string DownloadsFolder)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (CheckForPopUpWindow())
+                    throw new Exception("Feedback window found, Could not re-load page");
+
+                _DisqualificationSiteData.DataExtractionRequired = true;
+                LoadDisqualificationProceedingsList("");
+                _DisqualificationSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                _DisqualificationSiteData.DataExtractionSucceeded = false;
+                _DisqualificationSiteData.DataExtractionErrorMessage = e.ToString();
+                _DisqualificationSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _DisqualificationSiteData.CreatedOn = DateTime.Now;
+                _DisqualificationSiteData.CreatedBy = "Patrick";
+            }
         }
 
         public override void LoadContent(string NameToSearch, string DownloadFolder,

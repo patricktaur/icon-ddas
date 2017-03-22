@@ -793,9 +793,9 @@ namespace DDAS.Services.AppAdminService
                 return true;
         }
 
-        public LIveSiteScannerMemoryModel LiveScannerInfo()
+        public LiveSiteScannerMemoryModel LiveScannerInfo()
         {
-            var retValue = new LIveSiteScannerMemoryModel();
+            var retValue = new LiveSiteScannerMemoryModel();
             
             System.Diagnostics.Process[] processes =  System.Diagnostics.Process.GetProcessesByName(_LiveSiteScannerExeName);
 
@@ -900,10 +900,7 @@ namespace DDAS.Services.AppAdminService
         #region AddSites
         public void AddSitesInDbCollection(SearchQuerySite Site)
         {
-
             _UOW.SiteSourceRepository.Add(Site);
-
-
 
             //var site1 =
             //        new SearchQuerySite { Mandatory = false, ExtractionMode = "Manual", SiteName = "Pfizer DMC Checks", SiteShortName = "Pfizer DMC Checks", SiteEnum = SiteEnum.PfizerDMCChecksPage, SiteUrl = " http://ecf12.pfizer.com/sites/clinicaloversightcommittees/default.aspx" };
@@ -967,5 +964,24 @@ namespace DDAS.Services.AppAdminService
             //_UOW.SiteSourceRepository.Add(site20);
         }
         #endregion
+
+        public List<SearchQuerySite> GetAllSiteSources()
+        {
+            var SiteSources = _UOW.SiteSourceRepository.GetAll().OrderBy(x =>
+            x.SiteEnum).ToList();
+
+            return SiteSources;
+        }
+
+        public SearchQuerySite GetSingleSiteSource(Guid? RecId)
+        {
+            return _UOW.SiteSourceRepository.FindById(RecId);
+        }
+
+        public bool UpdateSiteSource(SearchQuerySite SiteSource)
+        {
+            _UOW.SiteSourceRepository.UpdateSiteSource(SiteSource);
+            return true;
+        }
     }
 }

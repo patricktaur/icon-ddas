@@ -85,7 +85,6 @@ namespace DDAS.API.Controllers
             return Ok(_userService.DeleteUser(userId));
         }
 
-
         // POST api/Account/SetPassword
         [Route("SetPassword")]
         [HttpPost]

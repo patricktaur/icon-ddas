@@ -17,20 +17,28 @@ export class ManageSiteSourcesComponent implements OnInit {
     public formLoading: boolean;
     constructor(
         private service: LoginHistoryService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private router: Router, 
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(){
-        this.formLoading = false;
         this.LoadSiteSources();
     }
 
-    LoadSiteSources()
-    {
+    LoadSiteSources(){
+        // this.formLoading = false;
         this.service.getSiteSources()
         .subscribe((item : any[]) => {
             this.SiteSources = item;
-            this.formLoading = true;
+            // this.formLoading = true;
+        },
+        error => {
+            // this.formLoading = false;
         });
+    }
+
+    EditSiteDetails(RecId: string){
+        this.router.navigate(['edit-site-source', RecId], { relativeTo: this.route.parent});
     }
 }

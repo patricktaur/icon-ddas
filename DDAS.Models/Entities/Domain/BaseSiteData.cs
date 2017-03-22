@@ -13,6 +13,7 @@ namespace DDAS.Models.Entities.Domain
         //public string UpdatedBy { get; set; }
 
         public Guid? ReferenceId { get; set; }
+        public int AttemptsMadeToExtractData { get; set; }
         public bool DataExtractionRequired { get; set; }
         public bool DataExtractionSucceeded { get; set; }
         public string DataExtractionErrorMessage { get; set; }

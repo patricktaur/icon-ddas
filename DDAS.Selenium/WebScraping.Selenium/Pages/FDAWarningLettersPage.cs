@@ -19,11 +19,7 @@ namespace WebScraping.Selenium.Pages
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
         {
             _UOW = uow;
-            if (driver == null)
-                Open();
-            else if (driver.Url.Contains("WarningLetters")) { }
-            else
-                Open();
+            Open();
             _FDAWarningSiteData = new FDAWarningLettersSiteData();
             _FDAWarningSiteData.Source = driver.Url;
         }
@@ -109,6 +105,16 @@ namespace WebScraping.Selenium.Pages
             if(IsSiteDown)
             {
                 throw new Exception("Unable to search records, the site is down");
+            }
+
+            if (IsFeedbackPopUpDisplayed)
+            {
+                var ErrorCaptureFilePath =
+                    @"c:\Development\FDAWarningLetters_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
+                driver.Navigate().GoToUrl(Url);
             }
 
             IWebElement Table = FDAWarningSortTable;

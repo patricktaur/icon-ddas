@@ -9,6 +9,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface ISiteSourceRepository : IRepository<SearchQuerySite>
     {
-
+        bool UpdateSiteSource(SearchQuerySite SiteSource);
     }
 }

@@ -12,7 +12,8 @@ import {SharedModule} from '../../shared/shared.module'
 import {ErrorImagesComponent} from './error-images.component';
 import {ExtractionHistoryComponent} from './data-extraction-history.component';
 import {DataExtractionComponent} from './data-extraction.component';
-import {ManageSiteSourcesComponent} from './manage-site-sources-component';
+import {ManageSiteSourcesComponent} from './manage-site-sources.component';
+import {EditSiteSourceComponent} from './edit-site-source.component';
 
 @NgModule({ 
   imports: [
@@ -26,7 +27,8 @@ import {ManageSiteSourcesComponent} from './manage-site-sources-component';
       ErrorImagesComponent,
       ExtractionHistoryComponent,
       DataExtractionComponent,
-      ManageSiteSourcesComponent
+      ManageSiteSourcesComponent,
+      EditSiteSourceComponent
   ],
  
   providers: [      

@@ -104,14 +104,11 @@ namespace DDAS.API.Controllers
                 {
                     string FilePathWithGUID = file.LocalFileName;
                     string UploadedFileName = file.Headers.ContentDisposition.FileName;
+
                     if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
-                    {
                         UploadedFileName = UploadedFileName.Trim('"');
-                    }
                     if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
-                    {
                         UploadedFileName = Path.GetFileName(UploadedFileName);
-                    }
 
                     var DataInExcelFile =
                             _SearchService.ReadDataFromExcelFile(FilePathWithGUID);
@@ -122,18 +119,15 @@ namespace DDAS.API.Controllers
                             return Request.CreateResponse(HttpStatusCode.OK,
                                 "No records found");
 
-                        //var Values = DataInExcelFile[0];
-
                         if(DataInExcelFile.SelectMany(x => x.Where( y => 
                         y.ToLower().Contains("errors found"))).Count() > 0)
                         {
+                            //unable to make the uploader handle list of strings, 
+                            //therefore this ListToString workaround:
                             return
                                 Request.CreateResponse(HttpStatusCode.OK,
                                 ListToString(DataInExcelFile));
                         }
-
-                        //if (Values.Count > 9 || Values.Count < 9)
-                        //unable to make the uploader handle list of strings, therefore this ListToString workaround:
                     }
 
                     var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,

@@ -9,8 +9,7 @@ import { SearchComponent }     from '../search/search.component';
 export const UserRoutes: Routes = [
   { path: 'users', component: UserComponent},
   { path: 'user-input/:userid', component: UserInputComponent},
-  { path: '',redirectTo: '/users', pathMatch: 'full'},
-
+  { path: '',redirectTo: '/users', pathMatch: 'full'}
 ]
 
 

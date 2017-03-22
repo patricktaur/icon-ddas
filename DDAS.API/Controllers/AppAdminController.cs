@@ -149,6 +149,27 @@ namespace DDAS.API.Controllers
             _AppAdminService.AddSitesInDbCollection(Site);
             return Ok();
         }
+        [Route("GetSiteSources")]
+        [HttpGet]
+        public IHttpActionResult GetSiteSources()
+        {
+            return Ok(_AppAdminService.GetAllSiteSources());
+        }
+
+        [Route("GetSiteSource")]
+        [HttpGet]
+        public IHttpActionResult GetSiteSource(string RecId)
+        {
+            var Id = Guid.Parse(RecId);
+            return Ok(_AppAdminService.GetSingleSiteSource(Id));
+        }
+
+        [Route("SaveSiteSource")]
+        [HttpPost]
+        public IHttpActionResult UpdateSiteSource(SearchQuerySite SiteSource)
+        {
+            return Ok(_AppAdminService.UpdateSiteSource(SiteSource));
+        }
         #endregion
     }
 }

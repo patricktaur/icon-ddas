@@ -43,7 +43,6 @@ namespace DDAS.Services.Search
         }
 
         #region ByPradeep
-        //13Jan2017
         public List<List<string>> ReadDataFromExcelFile(string FilePathWithGUID)
         {
             var readExcelData = new ReadUploadedExcelFile();
@@ -110,7 +109,7 @@ namespace DDAS.Services.Search
             return Validations.Count > 0 ? Validations : ComplianceFormDetails;
 
         }
-        //Pradeep 1Dec2016
+
         public List<ComplianceForm> ReadUploadedFileData(List<List<string>> DataFromExcelFile, 
             ILog log,
             string UserName, 
@@ -136,8 +135,7 @@ namespace DDAS.Services.Search
                 form.Country = DetailsInEachRow[8];
                 int InvId = 1;
                 if (DetailsInEachRow[1].ToLower() == "principal")
-                {
-                    
+                {  
                     Investigator.Id = InvId;
                     InvId += 1;
                     Investigator.Name = DetailsInEachRow[0];
@@ -160,7 +158,6 @@ namespace DDAS.Services.Search
                             Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 2];
                             Inv.Qualification = DetailsInEachRow[Index + 3];
 
-
                             Index += 8;
                             form.InvestigatorDetails.Add(Inv);
                         }
@@ -169,6 +166,14 @@ namespace DDAS.Services.Search
                 ComplianceForms.Add(form);
             }
             return ComplianceForms;
+        }
+
+        public void AddCountrySpecificSitesToComplianceForm(List<ComplianceForm> forms)
+        {
+            foreach(ComplianceForm form in forms)
+            {
+
+            }
         }
         #endregion
 

@@ -69,8 +69,6 @@ export class UserService {
                 return res.json();
             })
             .catch(this.handleError);
-       
-
     }
     
    changePassword(changePassword: ChangePasswordBindingModel): Observable<Boolean> {

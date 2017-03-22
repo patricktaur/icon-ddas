@@ -14,9 +14,12 @@ namespace DDAS.Models.Interfaces
         List<DataExtractionHistory> GetDataExtractionPerSite(SiteEnum Enum);
         void DeleteExtractionEntry(SiteEnum Enum, Guid? RecId);
         bool LaunchLiveScanner(string exeFolder);
-        LIveSiteScannerMemoryModel LiveScannerInfo();
+        LiveSiteScannerMemoryModel LiveScannerInfo();
         List<LiveSiteScannerProcessModel> getLiveScannerProcessorsInfo();
         bool KillLiveSiteScanner(int HowMany = 1);
         void AddSitesInDbCollection(SearchQuerySite Site);
+        SearchQuerySite GetSingleSiteSource(Guid? RecId);
+        List<SearchQuerySite> GetAllSiteSources();
+        bool UpdateSiteSource(SearchQuerySite SiteSource);
     }
 }
