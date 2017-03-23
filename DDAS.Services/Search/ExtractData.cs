@@ -22,7 +22,7 @@ namespace DDAS.Services.Search
             _searchEngine.ExtractData(siteEnum, DownloadFolder, log);
         }
 
-        public void ExtractDataAllDBSites(List<SearchQuerySite> Sites,
+        public void ExtractDataAllDBSites(List<SitesToSearch> Sites,
             string DownloadFolder, ILog log)
         {
             _searchEngine.ExtractData(Sites, DownloadFolder, log);

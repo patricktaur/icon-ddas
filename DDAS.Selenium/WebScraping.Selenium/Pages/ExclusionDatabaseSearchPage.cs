@@ -9,6 +9,8 @@ using System.Net;
 using System.IO;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using Microsoft.VisualBasic.FileIO;
+using System.Diagnostics;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -93,33 +95,38 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
         {
-            string[] AllRecords = File.ReadAllLines(CSVFilePath);
+            TextFieldParser parser = new TextFieldParser(CSVFilePath);
+
+            parser.HasFieldsEnclosedInQuotes = true;
+            parser.SetDelimiters(",");
+
+            string[] fields;
 
             int RowNumber = 1;
-            foreach (string Record in AllRecords)
+            while (!parser.EndOfData)
             {
-                string CurrentRecord = Record.Replace("\\", "").Replace("\"", "");
+                fields = parser.ReadFields();
 
-                //string[] RecordDetails = CurrentRecord.Split(',');
+                if (fields.Count() != 18)
+                    throw new Exception("record with First Name:" + fields[1] +
+                        " and Last Name:" + fields[0] +
+                        "does not have 18 fields");
 
-                string[] RecordDetails = 
-                    CurrentRecord.Split(new string[] { "\"," }, StringSplitOptions.None);
-
-                if (RecordDetails[0] == null && RecordDetails[1] == null ||
-                    RecordDetails[0].ToLower().Contains("lastname"))
+                if (fields[0] == "" && fields[1] == "" ||
+                    fields[0].ToLower().Contains("lastname"))
                     continue;
 
-                if (RecordDetails[0].Length > 1)
+                if (fields[0].Length > 1)
                 {
                     var ExclusionList = new ExclusionDatabaseSearchList();
 
                     ExclusionList.RowNumber = RowNumber;
-                    ExclusionList.LastName = RecordDetails[0];
-                    ExclusionList.FirstName = RecordDetails[1];
-                    ExclusionList.MiddleName = RecordDetails[2];
+                    ExclusionList.LastName = fields[0];
+                    ExclusionList.FirstName = fields[1];
+                    ExclusionList.MiddleName = fields[2];
                     //ExclusionList.BusinessName = RecordDetails[3];
-                    ExclusionList.General = RecordDetails[4];
-                    ExclusionList.Specialty = RecordDetails[5];
+                    ExclusionList.General = fields[4];
+                    ExclusionList.Specialty = fields[5];
                     //ExclusionList.UPIN = RecordDetails[6];
                     //ExclusionList.NPI = RecordDetails[7];
                     //ExclusionList.DOB = RecordDetails[8];
@@ -127,8 +134,8 @@ namespace WebScraping.Selenium.Pages
                     //ExclusionList.City = RecordDetails[10];
                     //ExclusionList.State = RecordDetails[11];
                     //ExclusionList.Zip = RecordDetails[12];
-                    ExclusionList.ExclusionType = RecordDetails[13];
-                    ExclusionList.ExclusionDate = RecordDetails[14];
+                    ExclusionList.ExclusionType = fields[13];
+                    ExclusionList.ExclusionDate = fields[14];
                     //ExclusionList.WaiverDate = RecordDetails[16];
                     //ExclusionList.WaiverState = RecordDetails[17];
 

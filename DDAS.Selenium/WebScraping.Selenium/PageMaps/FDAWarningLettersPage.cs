@@ -18,7 +18,7 @@ namespace WebScraping.Selenium.Pages
         {
             get
             {
-                if (driver.PageSource.ToLower().Contains("give feeback"))
+                if (driver.PageSource.ToLower().Contains("give feedback"))
                     return true;
                 else
                     return false;

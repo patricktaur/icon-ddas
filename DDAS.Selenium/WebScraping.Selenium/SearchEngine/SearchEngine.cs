@@ -40,7 +40,7 @@ namespace WebScraping.Selenium.SearchEngine
             searchResult.NameToSearch = searchQuery.NameToSearch;
             searchResult.SearchedBy = "Pradeep";
             searchResult.SearchedOn = DateTime.Now.ToString();
-            foreach (SearchQuerySite site in searchQuery.SearchSites)
+            foreach (SitesToSearch site in searchQuery.SearchSites)
             {
                 stopwatch.Start();
                 var LoadContent = SearchByName(NameToSearch, site.SiteEnum);
@@ -78,18 +78,18 @@ namespace WebScraping.Selenium.SearchEngine
             var query = SearchSites.GetNewLiveSiteSearchQuery();
 
             log.WriteLog("Processing:" + query.SearchSites.Count + " sites");
-            foreach (SearchQuerySite site in query.SearchSites)
+            foreach (SitesToSearch site in query.SearchSites)
             {
                 Load(site.SiteEnum, NameToSearch, DownloadFolder, true);               
             }
         }
 
-        public void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log)  //Load some
+        public void Load(List<SitesToSearch> query, string DownloadFolder, ILog log)  //Load some
         {
             var DBSites = query.Where(x => x.ExtractionMode == "DB").ToList();
 
             log.WriteLog("Processing:" + DBSites.Count + " sites");
-            foreach (SearchQuerySite site in DBSites)
+            foreach (SitesToSearch site in DBSites)
             {
                 try
                 {
@@ -546,13 +546,13 @@ namespace WebScraping.Selenium.SearchEngine
             _searchPage.SaveData();
         }
 
-        public void ExtractData(List<SearchQuerySite> query, 
+        public void ExtractData(List<SitesToSearch> query, 
             string DownloadFolder, ILog log)
         {
             var DBSites = query.Where(x => x.ExtractionMode == "DB").ToList();
 
             log.WriteLog("Processing:" + DBSites.Count + " sites");
-            foreach (SearchQuerySite site in DBSites)
+            foreach (SitesToSearch site in DBSites)
             {
                 try
                 {

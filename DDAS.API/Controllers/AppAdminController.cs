@@ -144,7 +144,7 @@ namespace DDAS.API.Controllers
         
         [Route("AddSite")]
         [HttpPost]
-        public IHttpActionResult AddSite(SearchQuerySite Site)
+        public IHttpActionResult AddSite(SitesToSearch Site)
         {
             _AppAdminService.AddSitesInDbCollection(Site);
             return Ok();
@@ -166,10 +166,15 @@ namespace DDAS.API.Controllers
 
         [Route("SaveSiteSource")]
         [HttpPost]
-        public IHttpActionResult UpdateSiteSource(SearchQuerySite SiteSource)
+        public IHttpActionResult UpdateSiteSource(SitesToSearch SiteSource)
         {
             return Ok(_AppAdminService.UpdateSiteSource(SiteSource));
         }
+        #endregion
+
+        #region Add Country
+        
+        
         #endregion
     }
 }

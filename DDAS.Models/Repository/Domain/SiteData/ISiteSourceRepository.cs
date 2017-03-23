@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Repository.Domain.SiteData
 {
-    public interface ISiteSourceRepository : IRepository<SearchQuerySite>
+    public interface ISiteSourceRepository : IRepository<SitesToSearch>
     {
-        bool UpdateSiteSource(SearchQuerySite SiteSource);
+        bool UpdateSiteSource(SitesToSearch SiteSource);
     }
 }
