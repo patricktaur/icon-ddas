@@ -68,10 +68,43 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         private bool SearchTerms(string Name)
         {
-            //if (CheckForFeedbackWindow != null)
-            //    throw new Exception("Could not close Feedback window");
+            if (!IsPageLoaded())
+                throw new Exception("Could not load the page. Site is down/unavailable");
+
+            if (IsFeedbackPopUpDisplayed)
+            {
+                var ErrorCaptureFilePath =
+                    @"c:\Development\PopUpIdentifiedAndReloading_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
+                driver.Navigate().GoToUrl(Url);
+            }
+
+            if (IsSiteDown)
+            {
+                throw new Exception("Unable to search records, the site is down");
+            }
 
             IWebElement Input = FDASearchTextBox;
             if (Input == null)
@@ -83,39 +116,10 @@ namespace WebScraping.Selenium.Pages
             if (Search == null)
                 throw new Exception("Could not find element: FDASearchButton");
 
-            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
-            //executor.ExecuteScript("arguments[0].click();", FDASearchButton);
-
             FDASearchButton.SendKeys(Keys.Enter);
 
-            bool IsElementClicked = false;
-            for (int Index = 1; Index <= 25; Index++)
-            {
-                Thread.Sleep(500);
-                if (executor.ExecuteScript("return document.readyState").ToString().
-                    Equals("complete"))
-                {
-                    IsElementClicked = true;
-                    break;
-                }
-            }
-            if (!IsElementClicked)
-                throw new Exception("FDASearchButton click event took too long to respond");
-
-            if(IsSiteDown)
-            {
-                throw new Exception("Unable to search records, the site is down");
-            }
-
-            if (IsFeedbackPopUpDisplayed)
-            {
-                var ErrorCaptureFilePath =
-                    @"c:\Development\FDAWarningLetters_" +
-                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
-                SaveScreenShot(ErrorCaptureFilePath);
-                driver.Navigate().GoToUrl(Url);
-            }
+            if (!IsPageLoaded())
+                throw new Exception("Page did not load after FDASearchButton sendkeys event");
 
             IWebElement Table = FDAWarningSortTable;
 
@@ -249,7 +253,19 @@ namespace WebScraping.Selenium.Pages
 
         public override void LoadContent(string DownloadsFolder)
         {
-            throw new NotImplementedException();
+            if (!IsPageLoaded())
+                throw new Exception("Could not load the page. Site is down/unavailable at the moment");
+
+            if (IsFeedbackPopUpDisplayed)
+            {
+                var ErrorCaptureFilePath =
+                    @"c:\Development\FDAWarningLetters_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".png";
+                SaveScreenShot(ErrorCaptureFilePath);
+                driver.Navigate().GoToUrl(Url);
+            }
+            FDASearchTextBox.SendKeys("testing");
         }
     }
 }

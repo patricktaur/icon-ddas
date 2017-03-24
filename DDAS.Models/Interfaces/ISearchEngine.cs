@@ -24,11 +24,11 @@ namespace DDAS.Models.Interfaces
             string DownloadFolder, bool IsExtractionRequired); //Pradeep 15Dec2016
 
         //void Load(string NameToSearch, string DownloadFolder, ILog log);
-        void Load(List<SearchQuerySite> query, string DownloadFolder, ILog log);
+        void Load(List<SitesToSearch> query, string DownloadFolder, ILog log);
         //void Load(SiteEnum siteEnum, string NameToSearch, string DownloadFolder);
 
         //Pradeep 22Dec2016
-        void ExtractData(List<SearchQuerySite> query, string DownloadFolder, ILog log);
+        void ExtractData(List<SitesToSearch> query, string DownloadFolder, ILog log);
         void ExtractData(SiteEnum siteEnum, string DownloadFolder, ILog log);
         void ExtractData(SiteEnum siteEnum, string NameToSearch, 
             string ErrorScreenCaptureFolder, int MatchCountLowerLimit,

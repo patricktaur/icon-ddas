@@ -17,7 +17,7 @@ namespace DDAS.Data.Mongo.Maps
                 DateTimeSerializer.LocalInstance
                 );
 
-            BsonClassMap.RegisterClassMap<SearchQuerySite>(map =>
+            BsonClassMap.RegisterClassMap<SitesToSearch>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);

@@ -624,12 +624,12 @@ namespace DDAS.Services.Search
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         public void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
         {
-            List<SearchQuerySite> siteSources = SearchSites.GetNewSearchQuery();
+            List<SitesToSearch> siteSources = SearchSites.GetNewSearchQuery();
 
             var ScanData = new SiteScanData(_UOW, _SearchEngine);
 
             int SrNo = 0;
-            foreach (SearchQuerySite site in siteSources.Where(x => x.Mandatory == true))
+            foreach (SitesToSearch site in siteSources.Where(x => x.Mandatory == true))
             {
                 SrNo += 1;
 

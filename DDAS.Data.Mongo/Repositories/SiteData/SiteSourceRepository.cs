@@ -4,7 +4,7 @@ using MongoDB.Driver;
 
 namespace DDAS.Data.Mongo.Repositories.SiteData
 {
-    internal class SiteSourceRepository : Repository<SearchQuerySite>,
+    internal class SiteSourceRepository : Repository<SitesToSearch>,
         ISiteSourceRepository
     {
         private IMongoDatabase _db;
@@ -13,9 +13,9 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             _db = db;
         }
 
-        public bool UpdateSiteSource(SearchQuerySite SiteSource)
+        public bool UpdateSiteSource(SitesToSearch SiteSource)
         {
-            _db.GetCollection<SearchQuerySite>(typeof(SearchQuerySite).Name).
+            _db.GetCollection<SitesToSearch>(typeof(SitesToSearch).Name).
                 ReplaceOne(x => x.RecId == SiteSource.RecId, SiteSource);
             return true;
         }

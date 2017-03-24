@@ -14,11 +14,11 @@ namespace DDAS.Models.Entities.Domain
     public class SearchQuery
     {
         public string NameToSearch { get; set; }
-        public List<SearchQuerySite> SearchSites { get; set; }
+        public List<SitesToSearch> SearchSites { get; set; }
     }
 
     //For multiple sites request
-    public class SearchQuerySite
+    public class SitesToSearch
     {
         public Guid? RecId { get; set; }
         public string SiteName { get; set; }
@@ -29,13 +29,15 @@ namespace DDAS.Models.Entities.Domain
         //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
+        public bool ExcludeSI { get; set; }
+        public bool ExcludePI { get; set; }
         //public string SearchTimeTakenInMs { get; set; }
         //public bool HasErrors { get; set; } = false;
         //public string ErrorDescription { get; set; }
         //public List<MatchResult> Results { get; set; }
     }
 
-    public class SiteScan : SearchQuerySite
+    public class SiteScan : SitesToSearch
     {
         public Guid? DataId { get; set; }
         public DateTime DataExtractedOn { get; set; }
@@ -1069,6 +1071,22 @@ namespace DDAS.Models.Entities.Domain
         public Guid Id { get; set; } //for Mongo mapping
         public Guid RoleId { get; set; }
         public Guid UserId { get; set; }
+    }
+    #endregion
+
+    #region Country
+    public class Country
+    {
+        public string Name { get; set; }
+        public Guid? SiteId { get; set; }
+    }
+    #endregion
+
+    #region Sponsor
+    public class Sponsor
+    {
+        public string SponsorProtocolNumber { get; set; }
+        public Guid? SiteId { get; set; }
     }
     #endregion
 

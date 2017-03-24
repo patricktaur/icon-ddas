@@ -5,4 +5,11 @@ export class SiteSourceViewModel{
     Mandatory: boolean;
     ExtractionMode: string;
     SiteUrl: string;
+    ExcludeSI: boolean;
+    ExcludePI: boolean;
+}
+
+export class Country{
+    Name: string;
+    SiteId: string;
 }
