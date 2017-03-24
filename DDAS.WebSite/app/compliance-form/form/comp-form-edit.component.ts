@@ -73,7 +73,7 @@ export class CompFormEditComponent implements OnInit {
     public defaultTabInActive: string = " in active";
     
     public selectedFinding: Finding = new Finding;
-    @ViewChild('FindingsEditModal') findingsEditModal: ModalComponent;
+    @ViewChild('FindingsAddModal') FindingsAddModal: ModalComponent;
 
     public myDatePickerOptions = {
         
@@ -538,7 +538,12 @@ export class CompFormEditComponent implements OnInit {
             return null;
         }
         return this.CompForm.Findings.filter(x => x.Selected == true);
-        //return this.CompForm.Findings;
+        //  return this.CompForm.Findings.filter(x => x.Selected == true).sort(
+        //     function(a,b,c){
+        //         if (a.InvestigatorName)
+        //         return 0;
+        //     }
+        //  );
     }
 
     AddFinding(){
@@ -561,7 +566,7 @@ export class CompFormEditComponent implements OnInit {
 
     EditFinding(finding: Finding){
         this.selectedFinding = finding;
-        this.findingsEditModal.open();
+        this.FindingsAddModal.open();
     }
 
     DeleteFinding(finding: Finding){
@@ -576,18 +581,34 @@ export class CompFormEditComponent implements OnInit {
     Save() {
 
         //this.service.saveComplianceForm(this.CompForm)
-        this.searchInProgress = true;
-        this.service.saveCompFormGeneralNInvestigatorsNOptionalSites(this.CompForm)
-            .subscribe((item: ComplianceFormA) => {
-                 this.ComplianceFormId = item.RecId;
-                  this.searchInProgress = false;
-                this.LoadOpenComplainceForm();
-             },
-            error => {
-
+         if (this.BlankInvestigatorNamesFound() ){
+            window.alert("The Name field is blank in one or more Investigator records.");
+        }
+        else{
+             this.searchInProgress = true;
+            this.service.saveCompFormGeneralNInvestigatorsNOptionalSites(this.CompForm)
+                .subscribe((item: ComplianceFormA) => {
+                    this.ComplianceFormId = item.RecId;
+                    this.searchInProgress = false;
+                    this.LoadOpenComplainceForm();
+                },
+                error => {
             });
-    }
+        }
+     }
 
+    BlankInvestigatorNamesFound(){
+         let retValue: boolean = false;
+         this.CompForm.InvestigatorDetails.forEach(inv =>
+            {if (inv.Name == null || inv.Name.length == 0)
+                {
+                    retValue = true;
+                }
+             }
+         );   
+        return retValue;
+    }
+    
     ScanNSave() {
         this.searchInProgress = true;
         this.service.scanSaveComplianceForm(this.CompForm)

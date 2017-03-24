@@ -42,7 +42,7 @@
 	</div>
 </div>
 
-<div class="row">
+<div class="row" *ngIf="false">
 	<div *ngFor="let item of FilteredInvestigatorSiteSummary; let indexVal = index">
 		<div class="col-lg-4">
 			<div class="well" [class.selected]="item.siteEnum == retSiteEnum">
@@ -127,7 +127,7 @@
 					{{item.ReviewCompleted | boolToYesNo}}
 				</td>
 				<td>
-					<button type="button" class="btn btn-xs btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
+					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.siteEnum)">Findings</button>
 				</td>
 			</tr>
 

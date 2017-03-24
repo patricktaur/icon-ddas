@@ -9,9 +9,9 @@ import {IMyOptions} from '../utils/my-date-picker';
 @Component({ 
     selector: '[date-picker]',
     template: `
-    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [selDate]="selDate" ></my-date-picker>
-    <div>---DateValue: {{DateValue}}</div>
-    <div>---selDate: {{selDate}}</div>
+    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [selDate]="selDate1" ></my-date-picker>
+    <div>---DateValue: ***{{DateValue}}***</div>
+    <div>---selDate: ***{{selDate1}}***</div>
     `,
     
 
@@ -28,7 +28,7 @@ export class DateInputComponent implements OnInit {
      //@Input('defaultDate') defaultDate: Date;
      //@Output('selectedDate') selectedDate = new EventEmitter();
      
-     public selDate: IMyDate;
+     public selDate1: IMyDate;
      
     
      @Output ('DateValue') outputDate = new EventEmitter();
@@ -49,7 +49,11 @@ export class DateInputComponent implements OnInit {
                 let day = Number.parseInt(dateParts[2]);
                 let month = Number.parseInt(dateParts[1]) - 1;
                 let year = Number.parseInt(dateParts[0]);
-                this.selDate = {day:day, month:month+1 , year:year}
+                this.selDate1 = {day:day, month:month+1 , year:year}
+
+                //this.selDate = {day:this.DateValue.getDay(), month:this.DateValue.getMonth()+1 , year:this.DateValue.getFullYear()}
+                    
+
         }
          
      }
@@ -68,6 +72,6 @@ export class DateInputComponent implements OnInit {
         
 }
     
-get diagnostic() { return JSON.stringify(this.selDate); }
+get diagnostic() { return JSON.stringify(this.selDate1); }
 
 }
