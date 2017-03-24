@@ -85,6 +85,13 @@ export class FindingsComponent implements OnInit {
         
     }
     
+    get IsManualExtractionSite(){
+        let retValue :boolean = false;
+        if (this.Site.ExtractionMode.toLowerCase() == "manual"){
+            retValue =  true;
+        }
+        return  retValue;
+    }
     get Investigator(){
         let inv = new InvestigatorSearched;
         let inv1 = this.CompForm.InvestigatorDetails.find(x => x.Id == this.InvestigatorId);
@@ -178,9 +185,10 @@ export class FindingsComponent implements OnInit {
         finding.InvestigatorSearchedId = this.InvestigatorId;
         finding.SiteEnum = this.SiteEnum;
         finding.SourceNumber = this.Site.DisplayPosition;
-        finding.DateOfInspection = new Date(Date.now()) ;
+        //finding.DateOfInspection = new Date() ;
         finding.Selected = true;
         finding.InvestigatorName = this.Investigator.Name;
+        finding.IsAnIssue = true;
         this.CompForm.Findings.push(finding);
         this.pageChanged = true;
     }
@@ -189,6 +197,7 @@ export class FindingsComponent implements OnInit {
            for (let item of this.CompForm.Findings) {
                 if (item.UISelected == true) {
                     item.Selected = true;
+                    item.IsAnIssue = true;
                     item.UISelected = false;
                  }
             }

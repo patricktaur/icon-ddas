@@ -905,6 +905,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? DateOfInspection { get; set; }
         public string InvestigatorName { get; set; }
         public bool IsAnIssue { get; set; }
+        public int DisplayPosition { get; set; }
 
         public List<Link> Links { get; set; } = new List<Link>();
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();

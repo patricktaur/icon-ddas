@@ -295,6 +295,7 @@ export class SearchList{
         SourceNumber: number;
         DateOfInspection: Date;
         InvestigatorName: string;
+        DisplayPosition: number;
         IsAnIssue: boolean = false;
         Links: Link[];
     }

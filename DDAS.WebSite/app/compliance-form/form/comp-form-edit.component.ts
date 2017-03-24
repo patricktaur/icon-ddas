@@ -537,13 +537,14 @@ export class CompFormEditComponent implements OnInit {
         if (this.CompForm == undefined) {
             return null;
         }
-        return this.CompForm.Findings.filter(x => x.Selected == true);
-        //  return this.CompForm.Findings.filter(x => x.Selected == true).sort(
-        //     function(a,b,c){
-        //         if (a.InvestigatorName)
-        //         return 0;
-        //     }
-        //  );
+        //return this.CompForm.Findings.filter(x => x.Selected == true);
+         return this.CompForm.Findings.filter(x => x.Selected == true).sort(
+            function(a,b){
+                if (a.DisplayPosition < b.DisplayPosition) return -1;
+                else if (a.DisplayPosition > b.DisplayPosition) return 1;
+                else return 0;
+            }
+         );
     }
 
     AddFinding(){

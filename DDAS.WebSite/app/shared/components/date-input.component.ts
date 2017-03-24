@@ -10,8 +10,6 @@ import {IMyOptions} from '../utils/my-date-picker';
     selector: '[date-picker]',
     template: `
     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [selDate]="selDate1" ></my-date-picker>
-    <div>---DateValue: ***{{DateValue}}***</div>
-    <div>---selDate: ***{{selDate1}}***</div>
     `,
     
 

@@ -882,6 +882,24 @@ namespace DDAS.Services.Search
                 }
             }
 
+            //set DisplayPosition value so that the sorting code is simple on client side angular.
+            int pos = 0;
+  
+            foreach (var fnd in form.Findings
+                .Where(f => f.Selected == true)
+                .OrderBy(f => f.InvestigatorSearchedId)
+                .ThenBy(f => f.SourceNumber)
+                .ThenByDescending( f=> f.DateOfInspection)
+                )
+            {
+                pos += 1;
+                fnd.DisplayPosition = pos;
+                //
+                //fnd.InvestigatorSearchedId
+                //   fnd.SourceNumber
+                // fnd.DateOfInspection
+            }
+
             form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
             form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
             form.IssuesFoundInvestigatorCount = IssuesFoundInvestigatorCount;
