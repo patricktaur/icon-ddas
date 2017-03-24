@@ -25,6 +25,22 @@ namespace DDAS.Data.Mongo.Maps
                 u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
+            BsonClassMap.RegisterClassMap<Country>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<SponsorProtocol>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {

@@ -42,10 +42,11 @@
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Error Log</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-site-sources" routerLinkActive="active">Manage Site Sources</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/add-country" routerLinkActive="active">Add Country</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-sponsor-protocol" routerLinkActive="active">Manage Sponsor Protocol</a></li>
 									</ul>
 								</div>
 							</li>
-
 							
 							<li class="active" *ngIf="authService.isAppAdmin">
 								<a data-toggle="collapse" data-target="#appadminMenu" data-parent="#sidenav01" class="collapsed">

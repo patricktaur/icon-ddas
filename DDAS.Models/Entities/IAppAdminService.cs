@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,23 @@ namespace DDAS.Models.Interfaces
         List<DataExtractionHistory> GetDataExtractionHistory();
         List<DataExtractionHistory> GetDataExtractionPerSite(SiteEnum Enum);
         void DeleteExtractionEntry(SiteEnum Enum, Guid? RecId);
+
         bool LaunchLiveScanner(string exeFolder);
         LiveSiteScannerMemoryModel LiveScannerInfo();
         List<LiveSiteScannerProcessModel> getLiveScannerProcessorsInfo();
         bool KillLiveSiteScanner(int HowMany = 1);
+
         void AddSitesInDbCollection(SitesToSearch Site);
         SitesToSearch GetSingleSiteSource(Guid? RecId);
         List<SitesToSearch> GetAllSiteSources();
         bool UpdateSiteSource(SitesToSearch SiteSource);
+
+        List<CountryViewModel> GetCountries();
+        bool AddCountry(Country country);
+        void DeleteCountry(Guid? RecId);
+
+        bool AddSponsor(SponsorProtocol sponsor);
+        void DeleteSponsor(Guid? RecId);
+        List<SponsorProtocolViewModel> GetSponsorProtocols();
     }
 }

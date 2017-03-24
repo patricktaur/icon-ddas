@@ -13,6 +13,8 @@ import 'rxjs/add/operator/catch';
 import { ConfigService } from '../../shared/utils/config.service';
 import { AuthService } from '../../auth/auth.service';
 import {SiteSourceViewModel} from './appAdmin.classes';
+import {Country} from './appAdmin.classes';
+import {SponsorProtocol} from './appAdmin.classes';
 
 @Injectable()
 export class LoginHistoryService {
@@ -134,6 +136,60 @@ export class LoginHistoryService {
                 return res.json();
             })
             .catch(this.handleError);
+    }
+
+    getCountries(){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetCountries',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    addCountry(countryList: Country){
+        let body = JSON.stringify(countryList);
+        return this.http.post(this._baseUrl + 'AppAdmin/AddCountry/', body, this._options)
+                   .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    removeCountry(RecId: string){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteCountry?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+    
+    addSponsorProtocol(sponsorProtocol : SponsorProtocol){
+        let body = JSON.stringify(sponsorProtocol);
+        return this.http.post(this._baseUrl + 'AppAdmin/AddSponsorProtocol/', body, this._options)
+                   .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getSponsorProtocol(){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetSponsorProtocols',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
+    removeSponsorProtocol(RecId: string){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteSponsorProtocol?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     private handleError(error: any) {

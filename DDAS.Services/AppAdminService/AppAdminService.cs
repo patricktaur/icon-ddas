@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DDAS.Services.LiveScan;
 using System.Diagnostics;
 using System.ComponentModel;
+using DDAS.Models.ViewModels;
 
 namespace DDAS.Services.AppAdminService
 {
@@ -1005,6 +1006,8 @@ namespace DDAS.Services.AppAdminService
         }
         #endregion
 
+        #region Get/update SiteSources
+
         public List<SitesToSearch> GetAllSiteSources()
         {
             var SiteSources = _UOW.SiteSourceRepository.GetAll();
@@ -1022,5 +1025,89 @@ namespace DDAS.Services.AppAdminService
             _UOW.SiteSourceRepository.UpdateSiteSource(SiteSource);
             return true;
         }
+        #endregion
+
+        #region Add/Get/Delete Country
+        
+        public List<CountryViewModel> GetCountries()
+        {
+            var CountriesViewModel = new List<CountryViewModel>();
+
+            var Countries = _UOW.CountryRepository.GetAll();
+
+            if (Countries.Count == 0)
+                return null;
+
+            foreach(Country country in Countries)
+            {
+                var CountryViewModel = new CountryViewModel();
+                CountryViewModel.Name = country.Name;
+                CountryViewModel.SiteId = country.SiteId;
+                CountryViewModel.RecId = country.RecId;
+                CountryViewModel.SiteName =
+                    _UOW.SiteSourceRepository.FindById(country.SiteId).SiteName;
+                CountriesViewModel.Add(CountryViewModel);
+            }
+            return CountriesViewModel;
+        }
+        
+        public bool AddCountry(Country country)
+        {
+            if (country.Name == "" || country.Name == null ||
+                country.SiteId == null)
+                return false;
+
+            _UOW.CountryRepository.Add(country);
+            return true;
+        }
+
+        public void DeleteCountry(Guid? RecId)
+        {
+            _UOW.CountryRepository.RemoveById(RecId);
+        }
+
+        #endregion
+
+        #region Add/Get/Delete Sponsor
+        
+        public bool AddSponsor(SponsorProtocol sponsor)
+        {
+            if (sponsor.SponsorProtocolNumber == "" ||
+                sponsor.SponsorProtocolNumber == null ||
+                sponsor.SiteId == null)
+                return false;
+
+            _UOW.SponsorProtocolRepository.Add(sponsor);
+            return true;
+        }
+
+        public void DeleteSponsor(Guid? RecId)
+        {
+            _UOW.SponsorProtocolRepository.RemoveById(RecId);
+        }
+
+        public List<SponsorProtocolViewModel> GetSponsorProtocols()
+        {
+            var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll();
+
+            if (SponsorProtocols.Count == 0)
+                return null;
+
+            var Sponsors = new List<SponsorProtocolViewModel>();
+
+            foreach(SponsorProtocol sponsor in  SponsorProtocols)
+            {
+                var sponsorViewModel = new SponsorProtocolViewModel();
+                sponsorViewModel.SponsorProtocolNumber = sponsor.SponsorProtocolNumber;
+                sponsorViewModel.SiteName =
+                    _UOW.SiteSourceRepository.FindById(sponsor.SiteId).SiteName;
+                sponsorViewModel.SiteId = sponsor.SiteId;
+                sponsorViewModel.RecId = sponsor.RecId;
+
+                Sponsors.Add(sponsorViewModel);
+            }
+            return Sponsors;
+        }
+        #endregion
     }
 }

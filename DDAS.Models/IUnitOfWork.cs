@@ -13,6 +13,8 @@ namespace DDAS.Models
         ILoginDetailsRepository LoginDetailsRepository { get; }
         ILogRepository LogRepository { get; }
         ISiteSourceRepository SiteSourceRepository { get; }
+        ICountryRepository CountryRepository { get; }
+        ISponsorProtocolRepository SponsorProtocolRepository { get; }
 
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
