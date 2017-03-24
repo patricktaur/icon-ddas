@@ -13,3 +13,15 @@ export class Country{
     Name: string;
     SiteId: string;
 }
+
+export class CountryViewModel{
+    Name: string;
+    SiteName: string;
+    SiteId: string;
+}
+
+
+export class SponsorProtocol{
+    SponsorProtocolNumber: string;
+    SiteId: string;
+}

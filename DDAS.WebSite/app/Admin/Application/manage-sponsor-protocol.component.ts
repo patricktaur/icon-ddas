@@ -5,21 +5,22 @@ import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 import { ConfigService } from '../../shared/utils/config.service';
 import {Country} from './appAdmin.classes';
 import {SiteSourceViewModel} from './appAdmin.classes';
-//import {CountryViewModel} from './appAdmin.classes';
+import {SponsorProtocol} from './appAdmin.classes';
 
 @Component({
     moduleId: module.id,
     //selector: 'User-input',
-    templateUrl: 'add-country.component.html',
+    templateUrl: 'manage-sponsor-protocol.component.html',
 })
 
-export class AddCountryComponent implements OnInit {
-    public countryList: Country = new Country;
+export class ManageSponsorProtocolComponent implements OnInit {
+    public sponsorProtocol: SponsorProtocol = new SponsorProtocol;
     //public countryViewModel: CountryViewModel[] = [];
     public SiteSource: any[];
-    public countriesAdded: any[];
+    public sponsorProtocolsAdded: any[];
     public pageNumber: number;
     public formLoading: boolean;
+    public message: string;
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -28,7 +29,8 @@ export class AddCountryComponent implements OnInit {
     ) { }
 
     ngOnInit(){
-        this.loadCountries();
+        this.message = "";
+        this.loadSponsorProtocol();
         this.loadSiteSources();
     }
 
@@ -42,14 +44,14 @@ export class AddCountryComponent implements OnInit {
         });
     }
 
-    loadCountries(){
+    loadSponsorProtocol(){
         // this.formLoading = false;
-        this.countryList.Name = "";
-        this.countryList.SiteId = "";
+        this.sponsorProtocol.SponsorProtocolNumber = "";
+        this.sponsorProtocol.SiteId = "";
         
-        this.service.getCountries()
+        this.service.getSponsorProtocol()
         .subscribe((item : any[]) => {
-            this.countriesAdded = item;
+            this.sponsorProtocolsAdded = item;
             // this.formLoading = true;
         },
         error => {
@@ -57,22 +59,24 @@ export class AddCountryComponent implements OnInit {
         });
     }
 
-    addCountry(){
-        this.service.addCountry(this.countryList)
+    addSponsorProtocol(){
+        this.service.addSponsorProtocol(this.sponsorProtocol)
         .subscribe((item: any) => {
-            this.loadCountries();
+            this.message = item;
+            this.loadSponsorProtocol();
         },
         error => {
         
         });
     }
-    removeCountry(RecId: string){
-        this.service.removeCountry(RecId)
+
+    removeSponsorProtocol(RecId: string){
+        this.service.removeSponsorProtocol(RecId)
         .subscribe((item: any) => {
-            this.loadCountries();
+            this.loadSponsorProtocol();
         },
         error => {
         
-        });        
+        });
     }
 }

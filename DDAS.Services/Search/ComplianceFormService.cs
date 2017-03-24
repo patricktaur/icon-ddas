@@ -125,6 +125,7 @@ namespace DDAS.Services.Search
                 var Investigator = new InvestigatorSearched();
 
                 var form = GetNewComplianceForm(log, UserName);
+
                 form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
@@ -133,6 +134,10 @@ namespace DDAS.Services.Search
                 form.Institute = DetailsInEachRow[6];
                 form.Address = DetailsInEachRow[7];
                 form.Country = DetailsInEachRow[8];
+
+                AddCountrySpecificSites(form);
+                AddSponsorSpecificSites(form);
+
                 int InvId = 1;
                 if (DetailsInEachRow[1].ToLower() == "principal")
                 {  
@@ -168,12 +173,9 @@ namespace DDAS.Services.Search
             return ComplianceForms;
         }
 
-        public void AddCountrySpecificSitesToComplianceForm(List<ComplianceForm> forms)
+        private void AddCountrySpecificSitesToComplianceForm(ComplianceForm form)
         {
-            foreach(ComplianceForm form in forms)
-            {
 
-            }
         }
         #endregion
 
@@ -621,8 +623,53 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        private void AddCountrySpecificSites(ComplianceForm compForm)
+        {
+            var Countries = _UOW.CountryRepository.GetAll().Where(country =>
+            country.Name == compForm.Country).ToList();
+
+            foreach (Country country in Countries)
+            {
+                var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
+
+                var siteSource = new SiteSource();
+
+                siteSource.SiteName = SiteToAdd.SiteName;
+                siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                siteSource.SiteEnum = SiteToAdd.SiteEnum;
+                siteSource.SiteUrl = SiteToAdd.SiteUrl;
+                siteSource.IsMandatory = SiteToAdd.Mandatory;
+                siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+
+                compForm.SiteSources.Add(siteSource);
+            }
+        }
+
+        private void AddSponsorSpecificSites(ComplianceForm compForm)
+        {
+            var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
+                sponsor => sponsor.SponsorProtocolNumber ==
+                compForm.SponsorProtocolNumber).ToList();
+            
+            foreach (SponsorProtocol sponsorProtocol in SponsorProtocols)
+            {
+                var SiteToAdd = _UOW.SiteSourceRepository.FindById(sponsorProtocol.SiteId);
+
+                var siteSource = new SiteSource();
+
+                siteSource.SiteName = SiteToAdd.SiteName;
+                siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                siteSource.SiteEnum = SiteToAdd.SiteEnum;
+                siteSource.SiteUrl = SiteToAdd.SiteUrl;
+                siteSource.IsMandatory = SiteToAdd.Mandatory;
+                siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+
+                compForm.SiteSources.Add(siteSource);
+            }
+        }
+
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
-        public void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
+        private void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
         {
             List<SitesToSearch> siteSources = SearchSites.GetNewSearchQuery();
 
@@ -1225,9 +1272,10 @@ namespace DDAS.Services.Search
             }
         }
 
-        private List<Finding> getFindings(SiteSource siteSource, string InvestigatorName, int InvestigatorId, ILog log,  string ErrorScreenCaptureFolder, int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
+        private List<Finding> getFindings(SiteSource siteSource, string InvestigatorName, 
+            int InvestigatorId, ILog log,  string ErrorScreenCaptureFolder, 
+            int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-
             var retFindings = new List<Finding>(); 
             var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
                                ErrorScreenCaptureFolder, ComponentsInInvestigatorName,

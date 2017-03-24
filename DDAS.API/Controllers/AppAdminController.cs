@@ -172,9 +172,67 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
-        #region Add Country
+        #region Add/Delete/Get Country
         
+        [Route("AddCountry")]
+        [HttpPost]
+        public IHttpActionResult AddCountry(Country country)
+        {
+            var result = _AppAdminService.AddCountry(country);
+            if (result)
+                return Ok("Country: " + country.Name +
+                    " is added successfully");
+            else
+                return Ok("could not add the Country");
+        }
+
+        [Route("GetCountries")]
+        [HttpGet]
+        public IHttpActionResult GetCountries()
+        {
+            var Countries = _AppAdminService.GetCountries();
+            return Ok(Countries);
+        }
+
+        [Route("DeleteCountry")]
+        [HttpGet]
+        public IHttpActionResult DeleteCountry(string RecId)
+        {
+            var Id = Guid.Parse(RecId);
+            _AppAdminService.DeleteCountry(Id);
+            return Ok(true);
+        }
+        #endregion
+
+        #region Add/Delete/Get SponsorProtocol
         
+        [Route("AddSponsorProtocol")]
+        [HttpPost]
+        public IHttpActionResult AddSponsor(SponsorProtocol sponsor)
+        {
+            var result = _AppAdminService.AddSponsor(sponsor);
+            if (result)
+                return Ok("sponsor: " + sponsor.SponsorProtocolNumber +
+                    " added successfully");
+            else
+                return Ok("could not add sponsor protocol");
+        }
+
+        [Route("GetSponsorProtocols")]
+        [HttpGet]
+        public IHttpActionResult GetSponsorProtocols()
+        {
+            return Ok(_AppAdminService.GetSponsorProtocols());
+        }
+
+        [Route("DeleteSponsorProtocol")]
+        [HttpGet]
+        public IHttpActionResult DeleteSponsorProtocol(string RecId)
+        {
+            var Id = Guid.Parse(RecId);
+            _AppAdminService.DeleteSponsor(Id);
+            return Ok(true);
+        }
         #endregion
     }
 }

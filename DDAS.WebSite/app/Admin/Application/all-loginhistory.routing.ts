@@ -8,6 +8,8 @@ import {ExtractionHistoryComponent} from './data-extraction-history.component';
 import {DataExtractionComponent} from './data-extraction.component';
 import {ManageSiteSourcesComponent} from './manage-site-sources.component';
 import {EditSiteSourceComponent} from './edit-site-source.component';
+import {AddCountryComponent} from './add-country.component';
+import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.component';
 
 export const LoggedInUserRoutes: Routes = [
   { path: 'all-loginhistory', component: LoginHistoryComponent},
@@ -16,7 +18,9 @@ export const LoggedInUserRoutes: Routes = [
   { path: 'data-extraction', component: DataExtractionComponent},
   { path: 'manage-site-sources', component: ManageSiteSourcesComponent},
   { path: 'edit-site-source/:RecId', component: EditSiteSourceComponent},
-  { path:'', redirectTo:'/manage-site-sources', pathMatch:'full'}
+  { path:'', redirectTo:'/manage-site-sources', pathMatch:'full'},
+  { path: 'add-country', component: AddCountryComponent},
+  {path: 'manage-sponsor-protocol', component: ManageSponsorProtocolComponent}
   //{ path: 'error-log', component: ErrorLogComponent},
 ]
 

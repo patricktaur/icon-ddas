@@ -16,6 +16,7 @@ namespace DDAS.Data.Mongo
         //private IMongo _provider;
         //private IMongoDatabase _db { get { return _provider.Database; } }
         private IMongoDatabase _db;
+
         #region PrivateRepositoryMembers
         private IFDADebarPageRepository _FDADebarPageRepository;
 
@@ -51,6 +52,8 @@ namespace DDAS.Data.Mongo
         private ILoginDetailsRepository _LoginDetailsRepository;
         private ILogRepository _LogRepository;
         private ISiteSourceRepository _SiteSourceRepository;
+        private ICountryRepository _CountryRepository;
+        private ISponsorProtocolRepository _SponsorProtocolRepository;
         #endregion
 
         /*
@@ -272,6 +275,24 @@ namespace DDAS.Data.Mongo
             {
                 return _SiteSourceRepository ??
                     (_SiteSourceRepository = new SiteSourceRepository(_db));
+            }
+        }
+
+        public ICountryRepository CountryRepository
+        {
+            get
+            {
+                return _CountryRepository ??
+                    (_CountryRepository = new CountryRepository(_db));
+            }
+        }
+
+        public ISponsorProtocolRepository SponsorProtocolRepository
+        {
+            get
+            {
+                return _SponsorProtocolRepository ??
+                    (_SponsorProtocolRepository = new SponsorProtocolRepository(_db));
             }
         }
         #endregion

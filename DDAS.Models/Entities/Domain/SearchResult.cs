@@ -1078,14 +1078,16 @@ namespace DDAS.Models.Entities.Domain
     #region Country
     public class Country
     {
+        public Guid? RecId { get; set; }
         public string Name { get; set; }
         public Guid? SiteId { get; set; }
     }
     #endregion
 
     #region Sponsor
-    public class Sponsor
+    public class SponsorProtocol
     {
+        public Guid? RecId { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public Guid? SiteId { get; set; }
     }

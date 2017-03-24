@@ -72,6 +72,7 @@
     <Compile Include="Repositories\SiteData\ClinicalInvestigatorDisqualificationRepository.cs" />
     <Compile Include="Repositories\SiteData\ClinicalInvestigatorInspectionListRepository.cs" />
     <Compile Include="Repositories\SiteData\CorporateIntegrityAgreementRepository.cs" />
+    <Compile Include="Repositories\SiteData\CountryRepository.cs" />
     <Compile Include="Repositories\SiteData\ERRProposalToDebarRepository.cs" />
     <Compile Include="Repositories\SiteData\ExclusionDatabaseSearchRepository.cs" />
     <Compile Include="Repositories\SiteData\FDADebarPageRepository.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Repositories\SiteData\LoginDetailsRepository.cs" />
     <Compile Include="Repositories\SiteData\PHSAdministrativeActionListingRepository.cs" />
     <Compile Include="Repositories\SiteData\SiteSourceRepository.cs" />
+    <Compile Include="Repositories\SiteData\SponsorProtocolRepository.cs" />
     <Compile Include="Repositories\Users\RoleRepository.cs" />
     <Compile Include="Repositories\SiteData\SaveSearchResultRepository.cs" />
     <Compile Include="Repositories\SiteData\SpeciallyDesignatedNationalsRepository.cs" />

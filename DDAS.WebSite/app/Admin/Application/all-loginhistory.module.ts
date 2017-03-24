@@ -14,6 +14,8 @@ import {ExtractionHistoryComponent} from './data-extraction-history.component';
 import {DataExtractionComponent} from './data-extraction.component';
 import {ManageSiteSourcesComponent} from './manage-site-sources.component';
 import {EditSiteSourceComponent} from './edit-site-source.component';
+import {AddCountryComponent} from './add-country.component';
+import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.component';
 
 @NgModule({ 
   imports: [
@@ -28,7 +30,9 @@ import {EditSiteSourceComponent} from './edit-site-source.component';
       ExtractionHistoryComponent,
       DataExtractionComponent,
       ManageSiteSourcesComponent,
-      EditSiteSourceComponent
+      EditSiteSourceComponent,
+      AddCountryComponent,
+      ManageSponsorProtocolComponent
   ],
  
   providers: [      

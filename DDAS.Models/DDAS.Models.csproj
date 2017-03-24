@@ -93,6 +93,7 @@
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionListRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IComplianceForm.cs" />
     <Compile Include="Repository\Domain\SiteData\ICorporateIntegrityAgreementRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ICountryRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IERRProposalToDebarRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IExclusionDatabaseSearchRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IFDADebarPageRepository.cs" />
@@ -104,12 +105,15 @@
     <Compile Include="Repository\Domain\SiteData\ISaveSearchResultRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISiteSourceRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISpeciallyDesignatedNationalsRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISponsorProtocolRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISysytemForAwardManagementRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IUserRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IUserRole.cs" />
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
+    <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchHistoryViewModel.cs" />
+    <Compile Include="ViewModels\SponsorViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
