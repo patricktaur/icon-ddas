@@ -20,6 +20,7 @@ export class UserComponent {
     public userNameToDelete: string;
     public passwordReset: boolean; // temp until email is ready.
     public loggedInUserName: string;
+    public LoggedInUserIsAppAdmin: boolean;
 
     public pageNumber: number;
     constructor(
@@ -34,6 +35,8 @@ export class UserComponent {
         this.LoadUsers();
         this.passwordReset = false;
         this.loggedInUserName = this.authService.userName;
+        
+        this.LoggedInUserIsAppAdmin = this.authService.isAppAdmin;
     }
     
     LoadUsers()
@@ -106,6 +109,8 @@ getDeleteButtonTitle(userName: string){
        
    }
 
+ 
+    
     get diagnostic() { return JSON.stringify(this.Users); }
         
 }

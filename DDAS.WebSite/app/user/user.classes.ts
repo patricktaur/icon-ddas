@@ -24,7 +24,7 @@
         EmailId : string;
         UserFullName : string;
         RoleName : string;
-        pwd:string;
+        isAppAdmin: boolean;
     }
 
      

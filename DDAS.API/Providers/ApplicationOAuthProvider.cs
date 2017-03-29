@@ -87,6 +87,7 @@ namespace DDAS.API.Providers
                     var Https =
                         HttpContext.Current.Request.ServerVariables.Get("HTTPS");
 
+                    
                     if (user == null)
                     {
                         _UserService.AddLoginDetails(
@@ -106,6 +107,27 @@ namespace DDAS.API.Providers
                             "invalid_grant", "The user name or password is incorrect.");
                         return;
                     }
+
+                    if (user.Active == false)
+                    {
+                        _UserService.AddLoginDetails(
+                            context.UserName,
+                            LocalIPAddress,
+                            HostIPAddress,
+                            PortNumber,
+                            false,
+                            ServerProtocol,
+                            ServerSoftware,
+                            HttpHost,
+                            ServerName,
+                            GatewayInterface,
+                            Https);
+
+                        context.SetError(
+                            "invalid_grant", "User Inactive");
+                        return;
+                    }
+
 
                     _UserService.AddLoginDetails(
                         context.UserName, 

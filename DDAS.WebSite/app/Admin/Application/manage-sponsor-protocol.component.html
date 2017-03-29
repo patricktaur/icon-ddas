@@ -5,36 +5,36 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<h3 class="align-left no-margin-top">
-						Manage Sponsor Protocol
+						Sponsor Specific Sites
 					</h3>
 				</div>
 			</div>			
 		</div>
 
-		<!--<div class="alert alert-info" *ngIf="formLoading">
-			<strong>Loading ...</strong>
-		</div>
-		<div *ngIf="!formLoading">-->
+	
 			<div class="well">
                 <div class="row">
-                    <label for="Country">Sponsor Protocol Number:</label>
+                    <label for="Country">Sponsor Number:</label>
                     <input type="text" name="Country" class="form-control" [(ngModel)]="sponsorProtocol.SponsorProtocolNumber">
                 
                     <label for="Site">Select Site:</label>
                     <select class="form-control" [(ngModel)]="sponsorProtocol.SiteId">
                         <option *ngFor="let item of SiteSource" value={{item.RecId}} selected="selected">{{item.SiteName}}</option>
                     </select>
-                    <button type="button" class="btn btn-primary" (click)="addSponsorProtocol()">Add Sponsor Protocol</button>
+                    <button type="button" class="btn btn-primary" (click)="addSponsorProtocol()">Add</button>
                 </div>
-                <div class="row">
+                
+				<!--<div class="row">
                 {{message}}
-                </div>
+                </div>-->
+				 </div>
+				<div class="well">
 				<div class="row">
 					<div class="col-lg-8">
 						<table class="table table-bordered">
 							<thead>
 								<tr>
-									<th>Sponsor Protocol Number</th>
+									<th>Sponsor Number</th>
 									<th>Site Name</th>
 									<!--<th>Mandatory</th>
 									<th>Site Short Name</th>

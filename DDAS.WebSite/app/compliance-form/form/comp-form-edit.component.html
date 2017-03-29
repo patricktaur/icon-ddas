@@ -329,7 +329,7 @@
 															<tr class="active" *ngFor="let item of Findings; ">
 																<td align="left">
 																	
-																	{{item.InvestigatorName}}/
+																	{{item.InvestigatorName}}
 																	
 																	
 																</td>
@@ -553,7 +553,6 @@
 			<div class="col-md-12">
 				<label><h5>Date of Inspection / Action:</h5></label>
 				<div date-picker [(DateValue)]="selectedFinding.DateOfInspection"></div>
-				{{selectedFinding.DateOfInspection}}
 			</div>
 		</div>
 	</modal-body>

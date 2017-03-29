@@ -107,6 +107,7 @@
 				<th class="">Full Match</th>
 				<th class="">Partial Match</th>
 				<th class="">Issues Identified</th>
+				<th class="">Status</th>
 				<th class="">Review Completed</th>
 				<th class="">Action</th>
 			</tr>
@@ -122,14 +123,22 @@
 				<td class="success">{{item.FullMatchCount}}</td>
 				<td class="success">{{item.PartialMatchCount}}</td>
 				<td class="success">{{item.IssuesFound}}</td>
-
+				<td class="success">{{item.Status}}</td>
 				<td>
 					{{item.ReviewCompleted | boolToYesNo}}
+
 				</td>
 				<td>
 					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.siteEnum)">Findings</button>
+					<div *ngIf="LoggedInUserIsAppAdmin">
+						Extraction Pending: {{item.ExtractionPending | boolToYesNo}} /
+						HasExtractionError: {{item.HasExtractionError | boolToYesNo}} / 
+						ExtractionErrorMessage: {{item.ExtractionErrorMessage }} /
+						ExtractedOn : {{item.ExtractedOn }} 
+					</div>
 				</td>
 			</tr>
+
 
 		</tbody>
 	</table>

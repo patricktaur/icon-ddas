@@ -15,6 +15,24 @@ namespace DDAS.Models.ViewModels
         public bool Active { get; set; }
         public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
         public string ActiveRoles { get; set; }
+
+   
+        public bool isAppAdmin
+        {
+            get
+            {
+                if (ActiveRoles.ToLower().Contains("app-admin"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        //public bool isAdmin { get; set; }
+        //public bool isAppAdmin { get; set; }
+ 
     }
 
     public class RoleViewModel

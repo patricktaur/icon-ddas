@@ -73,6 +73,8 @@ namespace DDAS.Services.UserService
                 userToAdd.UserName = user.UserName;
                 userToAdd.Roles =  getAlluserRolesViewModel(user.UserId);
                 userToAdd.ActiveRoles = getActiveRolesText(userToAdd.Roles);
+                //userToAdd.isAdmin = user.isAdmin;
+                //userToAdd.isAppAdmin = user.isAppAdmin;
                 retUsers.Add(userToAdd);
             }
             return retUsers;
@@ -80,16 +82,18 @@ namespace DDAS.Services.UserService
 
         public List<UserViewModel> GetUsers()
         {
-            var retUsers = new List<UserViewModel>();
- 
-            foreach (UserViewModel user in GetAllUsers().ToList())
-            {
-                if (!user.ActiveRoles.ToLower().Contains("app-admin") )
-                {
-                    retUsers.Add(user);
-                }
-              }
-            return retUsers;
+            //var retUsers = new List<UserViewModel>();
+
+            //foreach (UserViewModel user in GetAllUsers().ToList())
+            //{
+            //    if (!user.ActiveRoles.ToLower().Contains("app-admin") )
+            //    {
+            //        retUsers.Add(user);
+            //    }
+            //  }
+            //return retUsers;
+
+            return GetAllUsers();
         }
 
         public List<UserViewModel> GetAdmins()
@@ -198,7 +202,8 @@ namespace DDAS.Services.UserService
         #region Helpers
         private List<RoleViewModel> getUserRolesViewModel(Guid UserId)
         {
-           return getAlluserRolesViewModel(UserId).Where(x => x.Name != "app-admin").ToList();
+          // return getAlluserRolesViewModel(UserId).Where(x => x.Name != "app-admin").ToList();
+            return getAlluserRolesViewModel(UserId).ToList();
         }
 
         private List<RoleViewModel> getAlluserRolesViewModel(Guid UserId)

@@ -11,10 +11,10 @@
 
 
 <div class="table-responsive">
-<div statusCircle-Legend-Horizontal></div>
+	<div statusCircle-Legend-Horizontal></div>
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
-			
+
 			<tr>
 				<th class="col-md-3 text-left">Principal Investigator </th>
 				<th class="col-md-2 text-left">ICON Project Number</th>
@@ -38,15 +38,16 @@
 					</span>-->
 					<h5> <a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
 						<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
-						</a> 
+						</a>
 					</h5>
 
 					<div class="panel-group" role="tablist" style="border:0">
 						<div class="panel panel-default" style="border:0">
-							<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1" aria-expanded="false" style="border:0"> 
+							<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
+								aria-expanded="false" style="border:0">
 								<ul class="list-group" style="border:0">
-									<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li> 
-								</ul>  
+									<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -73,13 +74,13 @@
 						<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
 							title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>
 						<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open" ></span></button>
-						 <!--<button type="button" class="btn btn-primary" (click)="setCompFormActiveValue(item); ConfirmOpenForEditModal.open()" title="Open Compliance Form"><span class="glyphicon glyphicon-edit" ></span></button>-->
+						<!--<button type="button" class="btn btn-primary" (click)="setCompFormActiveValue(item); ConfirmOpenForEditModal.open()" title="Open Compliance Form"><span class="glyphicon glyphicon-edit" ></span></button>-->
 					</div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	<pagination-controls ></pagination-controls>
+	<pagination-controls></pagination-controls>
 </div>
 
 

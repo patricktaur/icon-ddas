@@ -2,6 +2,7 @@
 using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Entities.Domain;
+using DDAS.Services.AppAdminService;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace DDAS.Setup
     {
         private static LogText _WriteLog;
         private static UnitOfWork _UOW;
-
+        private static AppAdminService _AppAdminService;
         static void Main(string[] args)
         {
             
@@ -43,7 +44,11 @@ namespace DDAS.Setup
                      _UOW = new UnitOfWork(connString);
                     CreateRoles();
                     CreateUsers();
-                    
+                    _AppAdminService = new AppAdminService(_UOW);
+                    SitesToSearch Site = new SitesToSearch();
+                    _AppAdminService.AddSitesInDbCollection(Site);
+
+
                 }
                 else
                 {

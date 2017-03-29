@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import {Location} from '@angular/common';
 import {SearchService} from './search-service';
-
+import { AuthService }      from '../auth/auth.service';
 //import {SiteInfo,SearchSummaryItem,SearchSummary,NameSearch, MatchedRecordsPerSite} from './search.classes';
 
 import {InvestigatorSearched, ComplianceFormA, SiteSource, 
@@ -35,12 +35,14 @@ export class InvestigatorSummaryComponent {
    private rootPath: string;
    public HideReviewCompletedSites: boolean;
    private ShowMatchesFoundSites: boolean;
-
+   public LoggedInUserIsAppAdmin: boolean;
+   
    constructor(private service: SearchService,
        private route: ActivatedRoute,
        private _location: Location,
        private router: Router,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+         private authService: AuthService
   ) {}
   
 
@@ -54,7 +56,7 @@ export class InvestigatorSummaryComponent {
         this.rootPath =  params['rootPath'];
 
         this.LoadOpenComplainceForm();
-
+        this.LoggedInUserIsAppAdmin = this.authService.isAppAdmin;
         
     });
 
@@ -91,10 +93,10 @@ get InvestigatorSiteSummary(){
 get FilteredInvestigatorSiteSummary(){
 
     if (this.HideReviewCompletedSites == true){
-        return this.InvestigatorSiteSummary.filter(x => x.ReviewCompleted == false);
+        return this.InvestigatorSiteSummary.filter(x => x.ReviewCompleted == false && x.Exclude == false);
     }
     else{
-        return this.InvestigatorSiteSummary;
+        return this.InvestigatorSiteSummary.filter(x => x.Exclude == false);
     }
     
 }

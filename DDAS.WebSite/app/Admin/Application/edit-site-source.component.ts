@@ -37,6 +37,7 @@ export class EditSiteSourceComponent implements OnInit {
             if (this.RecId == ""){
                 this.isNew = true;
                 this.isNewText = "New";
+                //this.isNewText.toLowerCase
             }
             this.LoadSiteSource();
         });

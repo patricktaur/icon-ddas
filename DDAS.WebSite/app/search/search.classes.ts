@@ -259,6 +259,7 @@ export class SearchList{
         ReviewCompleted : boolean = false;
         SiteSourceUpdatedOn: Date;
         ExtractionMode: string;
+        Exclude : boolean = false;
    }
   
   
@@ -311,6 +312,9 @@ export class SearchList{
         Selected: boolean = false;
         Included: boolean = false; //Included in SiteSource collectio n
         ExtractionMode: string;
+        ExcludeSI : boolean = false;
+        ExcludePI : boolean = false;
+
     }  
 
 

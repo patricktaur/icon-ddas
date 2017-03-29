@@ -64,14 +64,14 @@
 
 					<div class="col-lg-2">
 						<div class="form-group">
-							<label for="Roles">Roles:</label>
+							<label >Roles:</label>
 							<br>
 							<div class="row" *ngFor="let role of user.Roles;">
 								<div class="col-lg-8">
 									&nbsp;&nbsp;&nbsp;{{role.Name}}
 								</div>
 								<div class="col-lg-4">
-									<input type="checkbox" name="Selected" [(ngModel)]="role.Active">
+									<input type="checkbox" name="{{role.Name}}" [(ngModel)]="role.Active">
 								</div>
 
 							</div>

@@ -191,6 +191,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ManageAppSettings\ManageAppSettings.cs" />
     <Compile Include="App_Start\SimpleInjectorWebApiInitializer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -207,6 +208,8 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Setup\OfflineActionFilter.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

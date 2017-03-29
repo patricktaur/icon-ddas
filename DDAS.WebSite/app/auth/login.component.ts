@@ -15,6 +15,8 @@ export class LoginComponent implements OnInit{
     loading = false;
     error = '';
     public rememberChecked:boolean=false;
+
+    test: any;
   constructor(public authService: AuthService, public router: Router) {
     this.setMessage();
     
@@ -41,6 +43,7 @@ export class LoginComponent implements OnInit{
         this.authService.login(this.logInfo.username, this.logInfo.password)
             .subscribe(
                 data => {
+                    
                     if (this.authService.isAdmin){
                        this.router.navigate(['/']);
                        // this.router.navigate(['/users']);
@@ -57,8 +60,8 @@ export class LoginComponent implements OnInit{
                   }
                 },
                 error => {
-                    //console.log("Password incorrect");
-                    this.error = 'Username or password is incorrect';
+                    //this.test = error;
+                    this.error = 'Access denied'; //Username or password is incorrect';
                     this.loading = false;
                 });
 
@@ -114,7 +117,7 @@ export class LoginComponent implements OnInit{
                 });
   }
 
-  get diagnostic() { return JSON.stringify(this.authService.token); }
+  //get diagnostic() { return JSON.stringify(this.authService.test); }
 }
 
 

@@ -23,7 +23,7 @@ export class ManageICFsComponent implements OnInit {
     public AssignedTo: string;
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
-
+    public LoggedInUserIsAppAdmin: boolean;
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
     public ComplianceFormFilter: CompFormFilter;
@@ -45,7 +45,7 @@ export class ManageICFsComponent implements OnInit {
         if (page != null){
             this.pageNumber = page;
         }
-
+        this.LoggedInUserIsAppAdmin = this.authService.isAppAdmin;
     });
       
             

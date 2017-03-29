@@ -368,12 +368,11 @@ namespace DDAS.Services.Search
                      && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified));
                 }
             }
-          
-
-            var estimatedCompletionSecs = (totCount * 15) / _NumberOfRunningExtractionProcesses;
-            if (estimatedCompletionSecs < 60)
+  
+            var estimatedCompletionSecs = (totCount * 30) / _NumberOfRunningExtractionProcesses;
+            if (estimatedCompletionSecs < 120)
             {
-                estimatedCompletionSecs = 60;
+                estimatedCompletionSecs = 120;
             }
             var completionAt = DateTime.Now.AddSeconds(estimatedCompletionSecs);
             return completionAt;
@@ -543,6 +542,9 @@ namespace DDAS.Services.Search
             
         }
 
+        
+        
+        
         // Called by Findings.
         public bool UpdateFindings(UpdateFindigs updateFindings)
         {
@@ -627,42 +629,55 @@ namespace DDAS.Services.Search
         {
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
             country.Name == compForm.Country).ToList();
+            var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
             foreach (Country country in Countries)
             {
                 var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
 
                 var siteSource = new SiteSource();
-
+                lastDisplayPosition += 1;
+                siteSource.DisplayPosition = lastDisplayPosition;
                 siteSource.SiteName = SiteToAdd.SiteName;
                 siteSource.SiteShortName = SiteToAdd.SiteShortName;
                 siteSource.SiteEnum = SiteToAdd.SiteEnum;
                 siteSource.SiteUrl = SiteToAdd.SiteUrl;
                 siteSource.IsMandatory = SiteToAdd.Mandatory;
                 siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
-
+                siteSource.ExcludePI = SiteToAdd.ExcludePI;
+                siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
                 compForm.SiteSources.Add(siteSource);
             }
         }
 
         private void AddSponsorSpecificSites(ComplianceForm compForm)
         {
+            var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
+
+            //var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
+            //    sponsor => sponsor.SponsorProtocolNumber ==
+            //    compForm.SponsorProtocolNumber).ToList();
+
             var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
-                sponsor => sponsor.SponsorProtocolNumber ==
-                compForm.SponsorProtocolNumber).ToList();
-            
+               sponsor => sponsor.SponsorProtocolNumber ==
+               compForm.ProjectNumber.Substring(0, 4)).ToList();
+
             foreach (SponsorProtocol sponsorProtocol in SponsorProtocols)
             {
                 var SiteToAdd = _UOW.SiteSourceRepository.FindById(sponsorProtocol.SiteId);
 
                 var siteSource = new SiteSource();
 
+                lastDisplayPosition += 1;
+                siteSource.DisplayPosition = lastDisplayPosition;
                 siteSource.SiteName = SiteToAdd.SiteName;
                 siteSource.SiteShortName = SiteToAdd.SiteShortName;
                 siteSource.SiteEnum = SiteToAdd.SiteEnum;
                 siteSource.SiteUrl = SiteToAdd.SiteUrl;
                 siteSource.IsMandatory = SiteToAdd.Mandatory;
                 siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+                siteSource.ExcludePI = SiteToAdd.ExcludePI;
+                siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
 
                 compForm.SiteSources.Add(siteSource);
             }
@@ -671,7 +686,9 @@ namespace DDAS.Services.Search
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         private void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
         {
-            List<SitesToSearch> siteSources = SearchSites.GetNewSearchQuery();
+            // List<SitesToSearch> siteSources = SearchSites.GetNewSearchQuery();
+
+            List<SitesToSearch> siteSources = _UOW.SiteSourceRepository.GetAll();
 
             var ScanData = new SiteScanData(_UOW, _SearchEngine);
 
@@ -708,6 +725,9 @@ namespace DDAS.Services.Search
                 siteSourceToAdd.SiteShortName = site.SiteShortName;
                 siteSourceToAdd.IsMandatory = site.Mandatory;
                 siteSourceToAdd.ExtractionMode = site.ExtractionMode;
+                siteSourceToAdd.ExcludePI = site.ExcludePI;
+                siteSourceToAdd.ExcludeSI = site.ExcludeSI;
+
                 siteSourceToAdd.Deleted = false;
 
                 compForm.SiteSources.Add(siteSourceToAdd);
@@ -825,7 +845,7 @@ namespace DDAS.Services.Search
                 Investigator.ReviewCompletedSiteCount = 0;
 
                 
-                foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched)
+                foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched.Where(x => x.Exclude == false))
                 {
                     if (
                         //searchStatus.ExtractionMode.ToLower() == "db" 
@@ -962,7 +982,10 @@ namespace DDAS.Services.Search
         {
             var form = _UOW.ComplianceFormRepository.FindById(formId);
             RollUpSummary(form);
-            _UOW.ComplianceFormRepository.UpdateComplianceForm(formId, form);
+            //_UOW.ComplianceFormRepository.UpdateComplianceForm(formId, form);
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+
             return true;
         }
 
@@ -1171,9 +1194,7 @@ namespace DDAS.Services.Search
                                
   
                             DateTime? SiteLastUpdatedOn = null;
-                            //var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
-                            //   ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
-                            //   out SiteLastUpdatedOn);
+                            
 
                             siteSource.SiteSourceUpdatedOn = SiteLastUpdatedOn;
 
@@ -1184,63 +1205,18 @@ namespace DDAS.Services.Search
                             searchStatus.PartialMatchCount = findings.Count - searchStatus.FullMatchCount;
 
 
-                            //Handeled in Rollup.
-                            //inv.Sites_PartialMatchCount +=
-                            //    searchStatus.PartialMatchCount;
-                            //inv.Sites_FullMatchCount +=
-                            //    searchStatus.FullMatchCount;
-
-                            //??
-                            //inv.Id = InvestigatorId;
-
-                            //To-Do: convert matchedRecords to Findings
-                            //foreach (MatchedRecord rec in MatchedRecords)
-                            //{
-                            //    var finding = new Finding();
-                            //    finding.Id = Guid.NewGuid();
-                            //    finding.MatchCount = rec.MatchCount;
-                            //    finding.InvestigatorSearchedId = inv.Id;
-                            //    finding.SourceNumber = siteSource.DisplayPosition;
-                            //    finding.SiteEnum = siteSource.SiteEnum;
-
-                            //    finding.RecordDetails = rec.RecordDetails;
-                            //    finding.RowNumberInSource = rec.RowNumber;
-
-                            //    finding.IsMatchedRecord = true;
-                            //    if (rec.DateOfInspection.HasValue)
-                            //    {
-                            //        finding.DateOfInspection = rec.DateOfInspection;
-                            //    }
-
-                            //    finding.InvestigatorName = inv.Name;
-                            //    finding.Links = rec.Links;
-
-                            //    frm.Findings.Add(finding);
-                            //}
-
-                            //Review:
-                            //siteSource.SiteSourceUpdatedOn' is the date of update at the time of creation of CompForm
-                            //
-                            //replace  '= siteSource.SiteSourceUpdatedOn' SiteSourceUpdatedOn at the time of data extraction
+                           
                             searchStatus.SiteSourceUpdatedOn = siteSource.SiteSourceUpdatedOn;
                             searchStatus.HasExtractionError = false;
                             searchStatus.ExtractionErrorMessage = "";
                             searchStatus.ExtractionPending = false;
                             searchStatus.ExtractedOn = DateTime.Now;
-                            //if (MatchedRecords.Count == 0)
-                            //{
-                            //    searchStatus.ReviewCompleted = true;
-                            //}
+                            
                             if (findings.Count == 0)
                             {
                                 searchStatus.ReviewCompleted = true;
                             }
-
                             
-
-                            
-
-                            //ListOfSiteSearchStatus.Add(searchStatus);
                         }
                         catch (Exception ex)
                         {
@@ -1385,6 +1361,20 @@ namespace DDAS.Services.Search
                         searchStatus.SiteUrl = site.SiteUrl;
                         searchStatus.DisplayPosition = site.DisplayPosition;
                         searchStatus.ExtractionMode = site.ExtractionMode;
+                        if (site.ExcludeSI == true && inv.Role.ToLower() == "sub")
+                        {
+                            searchStatus.Exclude = true;
+                            //searchStatus.ReviewCompleted = true;
+                        }
+                        if (site.ExcludePI == true && inv.Role.ToLower() == "principal")
+                        {
+                            searchStatus.Exclude = true;
+                            //searchStatus.ReviewCompleted = true;
+                        }
+                        if (site.ExtractionMode.ToLower() == "manual") //requirement of ICON 23-Mar-2017
+                        {
+                            searchStatus.ReviewCompleted = true;
+                        }
                         inv.SitesSearched.Add(searchStatus);
                     }
                 }
@@ -1906,7 +1896,7 @@ namespace DDAS.Services.Search
             TableHeaders = FindingsTableHeaders();
             writer.AddTableHeaders(TableHeaders, 4, 4);
 
-            foreach(Finding finding in form.Findings)
+            foreach(Finding finding in form.Findings.OrderBy(x => x.DisplayPosition))
             {
                 string DateOfInspection = "";
                 if (finding.DateOfInspection != null)

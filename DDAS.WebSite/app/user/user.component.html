@@ -14,52 +14,61 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th class="col-md-3">Name</th>
+								<th class="col-md-2">Name</th>
 								<th class="col-md-2">Role</th>
+								<th class="col-md-1">Active</th>
 								<th class="col-md-3">EMail</th>
 								<th class="col-md-4">Actions</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr *ngFor="let item of Users | paginate: { itemsPerPage: 10, currentPage: pageNumber}">
-								<td >
-									<div class="text-left">
-											{{item.UserName}}
-									</div>
-                                  </td>
-								
 								<td>
-									{{item.ActiveRoles}} 
-	                            </td>
-								<td >
 									<div class="text-left">
-											{{item.EmailId}}
+										{{item.UserName}} 
 									</div>
-                                  </td>
-								
-								<td>
-									<button class="btn btn-primary" (click)="OpenForEdit(item.UserId)" [disabled]="item.UserName == loggedInUserName" [title]="getEditButtonTitle(item.UserName)">Edit</button>
-									<button class="btn btn-primary" (click)="ResetPassword(item.UserId)">Reset Password</button>
-									<button class="btn btn-danger" (click)="setUserToDelete(item); DeleteUserModal.open()" [disabled]="item.UserName == loggedInUserName" [title]="getDeleteButtonTitle(item.UserName)">Delete</button>
 								</td>
+
+								<td>
+									{{item.ActiveRoles}}
+								</td>
+								<td>
+									{{item.Active | boolToYesNo}}
+								</td>
+								<td>
+									<div class="text-left">
+										{{item.EmailId}}
+									</div>
+								</td>
+
+								<td>
+									<div *ngIf="(item.isAppAdmin == false) || (item.isAppAdmin == true && LoggedInUserIsAppAdmin == true)">
+										<button class="btn btn-primary" (click)="OpenForEdit(item.UserId)" [disabled]="item.UserName == loggedInUserName" [title]="getEditButtonTitle(item.UserName)">Edit</button>
+										<button class="btn btn-primary" (click)="ResetPassword(item.UserId)">Reset Password</button>
+										<button class="btn btn-danger" (click)="setUserToDelete(item); DeleteUserModal.open()" [disabled]="item.UserName == loggedInUserName"
+											[title]="getDeleteButtonTitle(item.UserName)">Delete</button>
+									</div>
+								</td>
+
+
 							</tr>
 							<tr>
 								<td colspan="4" style="align-left">
-									<div class = "text-left">
+									<div class="text-left">
 										<button class="btn btn-primary" (click)="AddNew()">Add</button>
 									</div>
 								</td>
 							</tr>
 							<tr *ngIf="passwordReset">
 								<td colspan="3" style="align-left">
-									<div class = "text-left">
-										Password Reset.  Mail sent to the user.
+									<div class="text-left">
+										Password Reset. Mail sent to the user.
 									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					 <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
 			</div>
 		</div>
@@ -73,7 +82,7 @@
 	<modal-body>
 		User: {{userNameToDelete}} will be deleted.
 	</modal-body>
-	<modal-footer  >
+	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="DeleteUser(); DeleteUserModal.close()">Confirm Delete</button>
 		<button type="button" class="btn btn-default" (click)=" DeleteUserModal.close()">Cancel</button>
 	</modal-footer>
