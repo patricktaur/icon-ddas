@@ -8,18 +8,22 @@ using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
 using System.Threading;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class ClinicalInvestigatorDisqualificationPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public ClinicalInvestigatorDisqualificationPage(IWebDriver driver, IUnitOfWork uow)
+        public ClinicalInvestigatorDisqualificationPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config)
             : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _DisqualificationSiteData = 
                 new ClinicalInvestigatorDisqualificationSiteData();
@@ -95,8 +99,8 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                if (TDs.Count > 0 && 
-                    GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
+                if (TDs.Count > 0) //&& 
+                    //GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
                 {
                     DisqualifiedClinicalInvestigator.RowNumber = RowNumber;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
@@ -176,14 +180,15 @@ namespace WebScraping.Selenium.Pages
         private bool SearchTerms(string NameToSearch)
         {
             if (!IsPageLoaded())
-                throw new Exception("Feedback window found, Could not re-load page");
+                throw new Exception("Could not load the page");
 
             if (IsFeedbackPopUpDisplayed)
             {
                 var ErrorCaptureFilePath =
-                    @"c:\Development\PopUpIdentifiedAndReloading_" +
+                    _config.ErrorScreenCaptureFolder +
+                    "PopUp_DisqualificationProceedings_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
+                    + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
                 driver.Navigate().GoToUrl(Url);
             }
@@ -235,33 +240,48 @@ namespace WebScraping.Selenium.Pages
             return PageLoaded;
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
-            //try
-            //{
-            //    if (CheckForPopUpWindow())
-            //        throw new Exception("Feedback window found, Could not re-load page");
+            try
+            {
+                if (!IsPageLoaded())
+                    throw new Exception("Could not load the page");
 
-            //    _DisqualificationSiteData.DataExtractionRequired = true;
-            //    LoadDisqualificationProceedingsList("");
-            //    _DisqualificationSiteData.DataExtractionSucceeded = true;
-            //}
-            //catch (Exception e)
-            //{
-            //    _DisqualificationSiteData.DataExtractionSucceeded = false;
-            //    _DisqualificationSiteData.DataExtractionErrorMessage = e.ToString();
-            //    _DisqualificationSiteData.ReferenceId = null;
-            //    throw new Exception(e.ToString());
-            //}
-            //finally
-            //{
-            //    _DisqualificationSiteData.CreatedOn = DateTime.Now;
-            //    _DisqualificationSiteData.CreatedBy = "Patrick";
-            //}
+                if (IsFeedbackPopUpDisplayed)
+                {
+                    var ErrorCaptureFilePath =
+                        _config.ErrorScreenCaptureFolder +
+                         "PopUp_DisqualificationProceedings_" +
+                        DateTime.Now.ToString("dd MMM yyyy hh_mm");
+                    SaveScreenShot(ErrorCaptureFilePath);
+                    driver.Navigate().GoToUrl(Url);
+                }
+
+                _DisqualificationSiteData.DataExtractionRequired = true;
+                LoadDisqualificationProceedingsList("");
+                _DisqualificationSiteData.DataExtractionSucceeded = true;
+            }
+            catch (Exception e)
+            {
+                var ErrorCaptureFilePath =
+                    _config.ErrorScreenCaptureFolder +
+                    "Error_DisqualificationProceedings_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm");
+                SaveScreenShot(ErrorCaptureFilePath);
+
+                _DisqualificationSiteData.DataExtractionSucceeded = false;
+                _DisqualificationSiteData.DataExtractionErrorMessage = e.ToString();
+                _DisqualificationSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _DisqualificationSiteData.CreatedOn = DateTime.Now;
+                _DisqualificationSiteData.CreatedBy = "Patrick";
+            }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             string [] WordsInNameToSearch = NameToSearch.Split(' ');
 
@@ -282,9 +302,10 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
-                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\DisqualificationProceedings_" +
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
+                    @"\Error_DisqualificationProceedings_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
+                    + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
 
                 _DisqualificationSiteData.DataExtractionSucceeded = false;

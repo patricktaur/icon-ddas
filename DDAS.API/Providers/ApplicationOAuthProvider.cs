@@ -108,25 +108,25 @@ namespace DDAS.API.Providers
                         return;
                     }
 
-                    if (user.Active == false)
-                    {
-                        _UserService.AddLoginDetails(
-                            context.UserName,
-                            LocalIPAddress,
-                            HostIPAddress,
-                            PortNumber,
-                            false,
-                            ServerProtocol,
-                            ServerSoftware,
-                            HttpHost,
-                            ServerName,
-                            GatewayInterface,
-                            Https);
+                    //if (user.Active == false)
+                    //{
+                    //    _UserService.AddLoginDetails(
+                    //        context.UserName,
+                    //        LocalIPAddress,
+                    //        HostIPAddress,
+                    //        PortNumber,
+                    //        false,
+                    //        ServerProtocol,
+                    //        ServerSoftware,
+                    //        HttpHost,
+                    //        ServerName,
+                    //        GatewayInterface,
+                    //        Https);
 
-                        context.SetError(
-                            "invalid_grant", "User Inactive");
-                        return;
-                    }
+                    //    context.SetError(
+                    //        "invalid_grant", "User Inactive");
+                    //    return;
+                    //}
 
 
                     _UserService.AddLoginDetails(

@@ -7,18 +7,22 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class CorporateIntegrityAgreementsListPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public CorporateIntegrityAgreementsListPage(IWebDriver driver, IUnitOfWork uow)
+        public CorporateIntegrityAgreementsListPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config)
             : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _CIASiteData = new CorporateIntegrityAgreementListSiteData();
             _CIASiteData.RecId = Guid.NewGuid();
@@ -100,7 +104,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {
@@ -121,8 +125,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }

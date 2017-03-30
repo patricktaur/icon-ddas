@@ -10,6 +10,7 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Repository;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -17,10 +18,13 @@ namespace WebScraping.Selenium.Pages
     {
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
+        private IConfig _config;
 
-        public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
+        public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
             _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
@@ -98,27 +102,11 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCapture, int MatchCountLowerLimit)
+        public override void LoadContent(
+            string NameToSearch,
+            int MatchCountLowerLimit)
         {
-            try
-            {
-                _adequateAssuranceListSiteData.DataExtractionRequired = true;                
-                LoadAdequateAssuranceInvestigators();
-                _adequateAssuranceListSiteData.DataExtractionSucceeded = true;
-            }
-            catch (Exception e)
-            {
-                _adequateAssuranceListSiteData.DataExtractionSucceeded = false;
-                _adequateAssuranceListSiteData.DataExtractionErrorMessage = e.Message;
-                _adequateAssuranceListSiteData.ReferenceId = null;
-                throw new Exception(e.ToString());
-            }
-            finally
-            {
-                _adequateAssuranceListSiteData.CreatedOn = DateTime.Now;
-                _adequateAssuranceListSiteData.CreatedBy = "Patrick";
-            }
+            throw new NotImplementedException();
         }
 
         private void ReadSiteLastUpdatedDateFromPage()
@@ -149,7 +137,7 @@ namespace WebScraping.Selenium.Pages
                 _adequateAssuranceListSiteData);
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {

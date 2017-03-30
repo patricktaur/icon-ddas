@@ -23,8 +23,6 @@ namespace DDAS.DataExtractor
         private static LogText _WriteLog;
         private IWebDriver _Driver;
 
-        public static string DownloadFolder; //= ConfigurationManager.AppSettings["DownloadFolder"];
-
         static void Main(string[] args)
         {
             int? SiteNum = null;
@@ -38,35 +36,36 @@ namespace DDAS.DataExtractor
 
         static void ExtractData(int? SiteNum = null)
         {
-            //ILog log, IUnitOfWork uow
             MongoMaps.Initialize();
-            string appRootFolder = "";
+            //string appRootFolder = "";
             string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
 
             if (configFile == null)
             {
-                string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 _WriteLog = new LogText(exePath + @"\ERROR-DATA-EXTRACTION.log", true);
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Data Extractor: Entry in AppSettings: APIWebConfigFile not found");
                 _WriteLog.LogEnd();
                 return;
             }
-            appRootFolder = Path.GetDirectoryName(configFile);
-            string DataExtractionLogFile = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
-            _WriteLog = new LogText(DataExtractionLogFile, true);
+            //appRootFolder = Path.GetDirectoryName(configFile);
+            //string DataExtractionLogFile = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
+            //_WriteLog = new LogText(DataExtractionLogFile, true);
 
-            DownloadFolder = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
-            
+            //DownloadFolder = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
+
             //string DataExtractionLogFile = ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
             IUnitOfWork uow = new UnitOfWork("DefaultConnection");
-            _WriteLog.LogStart();
-            _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
-
-            ISearchEngine searchEngine = new SearchEngine(uow);
+            IConfig _config = new Config();
+            ISearchEngine searchEngine = new SearchEngine(uow, _config);
 
             var extractData = new ExtractData(searchEngine);
+
+            _WriteLog = new LogText(_config.DataExtractionLogFile, true);
+            _WriteLog.LogStart();
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 
             try
             {
@@ -75,14 +74,14 @@ namespace DDAS.DataExtractor
                     SiteEnum siteEnum = (SiteEnum)SiteNum;
 
                     extractData.ExtractDataSingleSite(
-                        siteEnum, DownloadFolder, _WriteLog);
+                        siteEnum, _WriteLog);
                 }
                 else
                 {
                     var query = SearchSites.GetNewSearchQuery();
 
                     extractData.ExtractDataAllDBSites(
-                        query, DownloadFolder, _WriteLog);                    
+                        query, _WriteLog);                    
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             }
@@ -195,5 +194,104 @@ namespace DDAS.DataExtractor
             }
         }
 
+    }
+
+    public class Config : IConfig
+    {
+        public string AppDataDownloadsFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["AppDataDownloadsFolder"];
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string AttachmentsFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string ComplianceFormFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string DataExtractionLogFile
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["DataExtractionLogFile"];
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string ErrorScreenCaptureFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string ExcelTempateFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string UploadsFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string WordTemplateFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
     }
 }

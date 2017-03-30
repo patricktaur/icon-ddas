@@ -1103,4 +1103,16 @@ namespace DDAS.Models.Entities.Domain
     {
         public string ErrorMessage { get; set; }
     }
+
+    public class Config : IConfig
+    {
+        public string AppDataDownloadsFolder { get; set; }
+        public string ErrorScreenCaptureFolder { get; set; }
+        public string DataExtractionLogFile { get; set; }
+        public string UploadsFolder { get; set; }
+        public string ComplianceFormFolder { get; set; }
+        public string ExcelTempateFolder { get; set; }
+        public string AttachmentsFolder { get; set; }
+        public string WordTemplateFolder { get; set; }
+    }
 }

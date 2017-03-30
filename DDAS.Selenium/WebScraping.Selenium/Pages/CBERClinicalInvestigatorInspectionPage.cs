@@ -7,18 +7,22 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class CBERClinicalInvestigatorInspectionPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public CBERClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow) :
+        public CBERClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) :
             base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
             _CBERSiteData.RecId = Guid.NewGuid();
@@ -114,7 +118,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {
@@ -136,8 +140,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCapture, int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch,
+            int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }

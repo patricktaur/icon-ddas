@@ -7,17 +7,21 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class ERRProposalToDebarPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public ERRProposalToDebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
+        public ERRProposalToDebarPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
             _proposalToDebarSiteData.RecId = Guid.NewGuid();
@@ -96,8 +100,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }
@@ -167,7 +170,7 @@ namespace WebScraping.Selenium.Pages
             _UOW.ERRProposalToDebarRepository.Add(_proposalToDebarSiteData);
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {

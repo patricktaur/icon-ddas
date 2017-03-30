@@ -79,6 +79,7 @@
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Entities\IAppAdminService.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
+    <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\ISearchEngine.cs" />

@@ -16,16 +16,14 @@ namespace DDAS.Services.Search
 
         //Currently ExtractData is only for DB sites
 
-        public void ExtractDataSingleSite(SiteEnum siteEnum, 
-            string DownloadFolder, ILog log)
+        public void ExtractDataSingleSite(SiteEnum siteEnum, ILog log)
         {
-            _searchEngine.ExtractData(siteEnum, DownloadFolder, log);
+            _searchEngine.ExtractData(siteEnum, log);
         }
 
-        public void ExtractDataAllDBSites(List<SitesToSearch> Sites,
-            string DownloadFolder, ILog log)
+        public void ExtractDataAllDBSites(List<SitesToSearch> Sites, ILog log)
         {
-            _searchEngine.ExtractData(Sites, DownloadFolder, log);
+            _searchEngine.ExtractData(Sites, log);
         }
     }
 }
