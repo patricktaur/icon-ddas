@@ -73,16 +73,22 @@ namespace DDAS.Services.Search
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
                     return GetClinicalInvestigatorSiteScanDetails();
 
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningLettersSiteScanDetails();
+
                 case SiteEnum.ERRProposalToDebarPage:
                     return GetProposalToDebarSiteScanDetails();
 
                 case SiteEnum.AdequateAssuranceListPage:
                     return GetAdequateAssuranceSiteScanDetails();
 
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    return GetClinicalInvestigatorDisqualificationSiteScanDetails();
+
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
                     return GetCBERClinicalInvestigatorSiteScanDetails();
 
-                case SiteEnum.PHSAdministrativeActionListingPage :
+                case SiteEnum.PHSAdministrativeActionListingPage:
                     return GetPHSSiteScanDetails();
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
@@ -101,13 +107,12 @@ namespace DDAS.Services.Search
                 default:
                     throw new Exception("Invalid Enum");
             }
-        }
-        
+        }    
 
         //Pradeep 17Dec2016 Changing FindById(SiteData.RecId) to
         //FindById(SiteData.ReferenceId)
 
-        public SiteScan GetFDADebarSiteScanDetails()
+        private SiteScan GetFDADebarSiteScanDetails()
         {
             var SiteData = _UOW.FDADebarPageRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -129,7 +134,7 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetClinicalInvestigatorSiteScanDetails()
+        private SiteScan GetClinicalInvestigatorSiteScanDetails()
         {
             var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -151,7 +156,27 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetProposalToDebarSiteScanDetails()
+        private SiteScan GetFDAWarningLettersSiteScanDetails()
+        {
+            var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null || SiteData.ReferenceId == null)
+                return null;
+
+            var ExtractedSiteData =
+                _UOW.FDAWarningLettersRepository.FindById(SiteData.ReferenceId);
+
+            SiteScan scan = new SiteScan();
+
+            scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
+            scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
+            scan.DataId = ExtractedSiteData.ReferenceId;
+
+            return scan;
+        }
+
+        private SiteScan GetProposalToDebarSiteScanDetails()
         {
             var SiteData = _UOW.ERRProposalToDebarRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -173,15 +198,13 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetAdequateAssuranceSiteScanDetails()
+        private SiteScan GetAdequateAssuranceSiteScanDetails()
         {
             var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             if (SiteData == null || SiteData.ReferenceId == null)
-                //Patrick 02Dec2016
                 return null;
-                //throw new Exception("Failed to extract data for the site: FDADebarPage");
 
             var ExtractedSiteData =
                 _UOW.AdequateAssuranceListRepository.FindById(SiteData.ReferenceId);
@@ -195,7 +218,27 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetCBERClinicalInvestigatorSiteScanDetails()
+        private SiteScan GetClinicalInvestigatorDisqualificationSiteScanDetails()
+        {
+            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null || SiteData.ReferenceId == null)
+                return null;
+
+            var ExtractedSiteData =
+                _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteData.ReferenceId);
+
+            SiteScan scan = new SiteScan();
+
+            scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
+            scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
+            scan.DataId = ExtractedSiteData.ReferenceId;
+
+            return scan;
+        }
+
+        private SiteScan GetCBERClinicalInvestigatorSiteScanDetails()
         {
             var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -217,7 +260,7 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetPHSSiteScanDetails()
+        private SiteScan GetPHSSiteScanDetails()
         {
             var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -239,7 +282,7 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetExclusionDatabaseSearchSiteScanDetails()
+        private SiteScan GetExclusionDatabaseSearchSiteScanDetails()
         {
             var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -261,7 +304,7 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetCorporateIntegrityAgreementSiteScanDetails()
+        private SiteScan GetCorporateIntegrityAgreementSiteScanDetails()
         {
             var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
                 OrderByDescending(t => t.CreatedOn).FirstOrDefault();
@@ -283,13 +326,13 @@ namespace DDAS.Services.Search
             return scan;
         }
 
-        public SiteScan GetSystemForAwardManagementSiteScanDetails(
+        private SiteScan GetSystemForAwardManagementSiteScanDetails(
             string NameToSearch, ILog log, SiteEnum Enum)
         {
             return null;
         }
 
-        public SiteScan GetSpeciallyDesignatedNationsDetails()
+        private SiteScan GetSpeciallyDesignatedNationsDetails()
         {
             var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.
                 GetAll().

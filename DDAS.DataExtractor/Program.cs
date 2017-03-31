@@ -193,7 +193,6 @@ namespace DDAS.DataExtractor
                     return _Driver;
             }
         }
-
     }
 
     public class Config : IConfig

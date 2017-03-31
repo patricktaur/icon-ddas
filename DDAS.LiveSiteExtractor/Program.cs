@@ -5,6 +5,7 @@ using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -30,21 +31,19 @@ namespace DDAS.LiveSiteExtractor
                 {
                     QueueNumber = int.Parse(args[0]);
                 }
-
-                var ErrorScreenCaptureFolder =
-                    System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
                 
                 MongoMaps.Initialize();
                 Console.WriteLine("After Initialize");
                 
                 IUnitOfWork uow = new UnitOfWork("DefaultConnection");
                 Console.WriteLine("After uow");
-                
-                ISearchEngine searchEngine = new SearchEngine(uow);
+
+                var _config = new Config();
+                ISearchEngine searchEngine = new SearchEngine(uow, _config);
                 
                 ILog log = new DBLog(uow, "Live Extractor Service", true);
                 
-                LiveScan liveScan = new LiveScan(uow, searchEngine, log, ErrorScreenCaptureFolder, procId);
+                LiveScan liveScan = new LiveScan(uow, searchEngine, log, _config.ErrorScreenCaptureFolder, procId);
                 Console.WriteLine("Before StartLiveScan");
                 
                 liveScan.StartLiveScan();
@@ -69,4 +68,104 @@ namespace DDAS.LiveSiteExtractor
             }
         }
     }
+
+    public class Config : IConfig
+    {
+        public string AppDataDownloadsFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["AppDataDownloadsFolder"];
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string AttachmentsFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string ComplianceFormFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string DataExtractionLogFile
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["DataExtractionLogFile"];
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string ErrorScreenCaptureFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string ExcelTempateFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string UploadsFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string WordTemplateFolder
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                value = "";
+            }
+        }
+    }
+
 }

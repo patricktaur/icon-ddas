@@ -13,6 +13,7 @@ using System.Linq;
 using System.Globalization;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -97,13 +98,15 @@ namespace WebScraping.Selenium.Pages
             // Download the Web resource and save it into the current filesystem folder.
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
-            if (!File.Exists(UnZipPath + "\\cliil.txt")) //filename is cliil.txt by default
-                ZipFile.ExtractToDirectory(fileName, UnZipPath);
+            if (File.Exists(UnZipPath + "\\cliil.txt")) //filename is cliil.txt by default
+                File.Delete(UnZipPath + "\\cliil.txt");
+
+            ZipFile.ExtractToDirectory(fileName, UnZipPath);
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        private void LoadClinicalInvestigatorListAlt()
+        private void LoadClinicalInvestigatorList()
         {
             int RowNumber = 1;
 
@@ -159,7 +162,7 @@ namespace WebScraping.Selenium.Pages
                         else
                             break;
                     }
-                    Counter = TempCounter - 1; //For the 'for' loop!
+                    Counter = TempCounter - 1; //For the 'for' loop
 
                     InvestigatorList.RowNumber = RowNumber;
                     InvestigatorList.IdNumber = FieldData[0];
@@ -269,9 +272,12 @@ namespace WebScraping.Selenium.Pages
         {
             try
             {
+                if (!IsPageLoaded())
+                    throw new Exception("page is not loaded");
+
                 _clinicalSiteData.DataExtractionRequired = true;
                 DownloadCIIList();
-                LoadClinicalInvestigatorListAlt();
+                LoadClinicalInvestigatorList();
                 _clinicalSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
@@ -286,6 +292,24 @@ namespace WebScraping.Selenium.Pages
                 _clinicalSiteData.CreatedBy = "Patrick";
                 _clinicalSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
         }
     }
 }

@@ -81,13 +81,13 @@ namespace DDAS.Services.Search
 
                     new SitesToSearch { Mandatory = true,  ExtractionMode = "DB", SiteName="Clinical Investigator Inspection List (CLIL)(CDER", SiteShortName="Clinical Investigator Insp...", SiteEnum = SiteEnum.ClinicalInvestigatorInspectionPage, SiteUrl="http://www.accessdata.fda.gov/scripts/cder/cliil/index.cfm" },
 
-                    new SitesToSearch { Mandatory = true,  ExtractionMode = "Live", SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="http://www.fda.gov/ICECI/EnforcementActions/WarningLetters/default.htm" },
+                    new SitesToSearch { Mandatory = true,  ExtractionMode = "DB", SiteName="FDA Warning Letters and Responses", SiteShortName="FDA Warning Letters ...", SiteEnum = SiteEnum.FDAWarningLettersPage, SiteUrl="http://www.fda.gov/ICECI/EnforcementActions/WarningLetters/default.htm" },
 
                     new SitesToSearch { Mandatory = true,  ExtractionMode = "DB", SiteName="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar", SiteShortName="NOOH – Proposal to Debar", SiteEnum = SiteEnum.ERRProposalToDebarPage, SiteUrl="http://www.fda.gov/RegulatoryInformation/FOI/ElectronicReadingRoom/ucm143240.htm" },
 
                     new SitesToSearch { Mandatory = true,  ExtractionMode = "DB", SiteName="Adequate Assurances List for Clinical Investigators", SiteShortName="Adequate Assurances List ...", SiteEnum = SiteEnum.AdequateAssuranceListPage, SiteUrl="http://www.fda.gov/ora/compliance_ref/bimo/asurlist.htm" },
 
-                    new SitesToSearch { Mandatory = true,  ExtractionMode = "Live", SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="http://www.accessdata.fda.gov/scripts/SDA/sdNavigation.cfm?sd=clinicalinvestigatorsdisqualificationproceedings&previewMode=true&displayAll=true" },
+                    new SitesToSearch { Mandatory = true,  ExtractionMode = "DB", SiteName="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)", SiteShortName="Disqualification Proceedings ...", SiteEnum = SiteEnum.ClinicalInvestigatorDisqualificationPage, SiteUrl="http://www.accessdata.fda.gov/scripts/SDA/sdNavigation.cfm?sd=clinicalinvestigatorsdisqualificationproceedings&previewMode=true&displayAll=true" },
 
                     new SitesToSearch { Mandatory = true,  ExtractionMode = "DB", SiteName="PHS Administrative Actions Listing ", SiteShortName="PHS Administrative Actions", SiteEnum = SiteEnum.PHSAdministrativeActionListingPage, SiteUrl="https://ori.hhs.gov/ORI_PHS_alert.html?d=update" },
 

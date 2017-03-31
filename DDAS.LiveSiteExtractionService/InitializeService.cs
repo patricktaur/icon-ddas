@@ -53,7 +53,8 @@ namespace DDAS.LiveSiteExtractionService
             }
             catch (Exception ex)
             {
-               _dbLog.WriteLog("After uow");                var innerException = "";
+               _dbLog.WriteLog("After uow");
+                var innerException = "";
                 if (ex.InnerException != null)
                 {
                     innerException = ex.InnerException.Message;

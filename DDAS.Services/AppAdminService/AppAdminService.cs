@@ -857,7 +857,7 @@ namespace DDAS.Services.AppAdminService
         public bool KillLiveSiteScanner(int HowMany = 1)
         {
             int processedKilled = 0;
-            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(_LiveSiteScannerExeName);
+            Process[] processes = Process.GetProcessesByName(_LiveSiteScannerExeName);
             foreach (Process p in processes)
             {
                 try
@@ -871,11 +871,11 @@ namespace DDAS.Services.AppAdminService
                     }
 
                 }
-                catch (Win32Exception winException)
+                catch (Win32Exception)
                 {
                     // process was terminating or can't be terminated - deal with it
                 }
-                catch (InvalidOperationException invalidException)
+                catch (InvalidOperationException)
                 {
                     // process has already exited - might be able to let this one go
                 }

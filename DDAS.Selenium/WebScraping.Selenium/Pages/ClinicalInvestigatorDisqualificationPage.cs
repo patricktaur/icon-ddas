@@ -99,8 +99,8 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                if (TDs.Count > 0) //&& 
-                    //GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
+                if (TDs.Count > 0 && 
+                    GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
                 {
                     DisqualifiedClinicalInvestigator.RowNumber = RowNumber;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
@@ -258,7 +258,7 @@ namespace WebScraping.Selenium.Pages
                 }
 
                 _DisqualificationSiteData.DataExtractionRequired = true;
-                LoadDisqualificationProceedingsList("");
+                LoadDisqualificationProceedingsList("", 0);
                 _DisqualificationSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
