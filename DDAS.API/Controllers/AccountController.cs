@@ -61,13 +61,21 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUser(string UserId)
         {
+            bool IncludeAppAdminRole = false;
+            var LoggedInUserId = User.Identity.GetUserId();
+            var gLoggedInUserId = Guid.Parse(LoggedInUserId);
+            if (_userService.IsUserAppAdmin(gLoggedInUserId) == true)
+            {
+                IncludeAppAdminRole = true;
+            }
+            
             if (UserId == null)
             {
-                return Ok(_userService.GetNewUser());
+                return Ok(_userService.GetNewUser(IncludeAppAdminRole));
             }
             else { 
                 Guid gUserId = Guid.Parse(UserId);
-                return Ok(_userService.GetUser(gUserId));
+                return Ok(_userService.GetUser(gUserId, IncludeAppAdminRole));
             }
         }
 

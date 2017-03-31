@@ -10,12 +10,14 @@ namespace DDAS.Models.Interfaces
 {
     public interface IUserService
     {
-        UserViewModel GetNewUser();
-        UserViewModel GetUser(Guid? UserId);
+        bool IsUserAppAdmin(Guid UserId);
+
+        UserViewModel GetNewUser(bool IncludeAppAdminrole);
+        UserViewModel GetUser(Guid? UserId, bool IncludeAppAdminrole);
         List<UserViewModel> GetUsers();
         List<UserViewModel> GetAdmins();
         List<UserViewModel> GetAppAdmins();
-        UserViewModel SaveUser(UserViewModel user);
+        bool SaveUser(UserViewModel user);
         bool DeleteUser(Guid UserId);
 
         bool AddLoginDetails(

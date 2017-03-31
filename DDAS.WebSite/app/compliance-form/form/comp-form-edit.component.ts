@@ -671,7 +671,7 @@ export class CompFormEditComponent implements OnInit {
     }
 
     
-    dateChanged($event, dateValue: Date){
+    dateChanged($event:any, dateValue: Date){
         dateValue = $event.value;
         window.alert(JSON.stringify(dateValue));
         

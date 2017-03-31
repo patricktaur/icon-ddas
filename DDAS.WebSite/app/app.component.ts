@@ -1,6 +1,6 @@
 // #docregion
 // #docregion import
-import { Component } from '@angular/core';
+import { Component, Input, Renderer } from '@angular/core';
 import { Router }   from '@angular/router';
 import { AuthService } from './auth/auth.service';
 // #enddocregion import
@@ -20,16 +20,18 @@ import { AuthService } from './auth/auth.service';
 // #docregion class
 export class AppComponent {
 
+ private appLocation: string;
  constructor(
         public authService: AuthService,
-        private router: Router
-  ) { }
+        private router: Router,
+        renderer: Renderer
+  ) { 
 
-  // logout(){
-    
-  //   this.authService.logout();
-  //   this.router.navigate(['/login']);
-  // }  
+      let rootElement = renderer.selectRootElement('ddas-app');
+       this.appLocation = rootElement.getAttribute('app-location');
+       authService.appLocation = this.appLocation;
+  }
+
 
   logout() {
 
@@ -46,6 +48,10 @@ export class AppComponent {
                     //this.error = 'Could not logout.';
                     //this.loading = false;
                 });
+  }
+
+  get showLocation(){
+      return (this.appLocation.length >0);
   }
 
   //get diagnostic() { return JSON.stringify(this.authService.TestValue); }

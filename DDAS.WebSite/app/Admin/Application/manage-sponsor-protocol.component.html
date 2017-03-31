@@ -19,7 +19,7 @@
                 
                     <label for="Site">Select Site:</label>
                     <select class="form-control" [(ngModel)]="sponsorProtocol.SiteId">
-                        <option *ngFor="let item of SiteSource" value={{item.RecId}} selected="selected">{{item.SiteName}}</option>
+                        <option *ngFor="let item of SiteSource" value={{item.RecId}} selected="selected">{{item.SiteName  + '/' + item.SiteUrl}}</option>
                     </select>
                     <button type="button" class="btn btn-primary" (click)="addSponsorProtocol()">Add</button>
                 </div>
@@ -30,15 +30,14 @@
 				 </div>
 				<div class="well">
 				<div class="row">
-					<div class="col-lg-8">
+					<div class="col-lg-12">
 						<table class="table table-bordered">
 							<thead>
 								<tr>
 									<th>Sponsor Number</th>
 									<th>Site Name</th>
-									<!--<th>Mandatory</th>
-									<th>Site Short Name</th>
-                                    <th class="col-md-3">Site Url</th>-->
+								
+									<th>URL</th>
                                     <th>Actions</th>
 								</tr>
 							</thead>
@@ -48,9 +47,12 @@
 									<td class="text-center">
 										{{item.SponsorProtocolNumber}}
 									</td>
-									<td class="text-center">
+									<td class="text-left">
 										{{item.SiteName}}
 									</td>
+									<td class="text-left">
+									{{item.SiteUrl}}
+								</td>
                                     <td>
 										<button type="button" class="btn btn-sm btn-primary" (click)="removeSponsorProtocol(item.RecId)" title="delete"> <span class="glyphicon glyphicon-remove"></span> </button>
 									</td>
@@ -59,9 +61,7 @@
 						</table>
 						<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 					</div>
-					<div class="col-lg-4">
-						
-					</div>
+					
 				</div>
 			</div>		
 		<!--</div>-->

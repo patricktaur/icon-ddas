@@ -44,9 +44,14 @@ namespace DDAS.Setup
                      _UOW = new UnitOfWork(connString);
                     CreateRoles();
                     CreateUsers();
+
                     _AppAdminService = new AppAdminService(_UOW);
-                    SitesToSearch Site = new SitesToSearch();
-                    _AppAdminService.AddSitesInDbCollection(Site);
+                    //SitesToSearch Sites = new SitesToSearch();
+                    //_AppAdminService.AddSitesInDbCollection(Sites);
+
+                    //Executed on 31-3-2017
+                    //ModifySiteSource_ChangeLive2DB();
+
 
 
                 }
@@ -111,6 +116,7 @@ namespace DDAS.Setup
         static void CreateUsers()
         {
             CreateUser("clarityadmin", "app-admin", "Clarity@148");
+
         }
 
 
@@ -224,7 +230,7 @@ namespace DDAS.Setup
                 var newUser = new IdentityUser();
                 newUser.UserName = userName;
                 newUser.SecurityStamp = Guid.NewGuid().ToString();
-                
+                newUser.Active = true;
                 userManager.CreateAsync(newUser, password);
                 //CreateAsync does not set the password:
                 String hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
@@ -260,6 +266,34 @@ namespace DDAS.Setup
                     }
                 }
              }
+        }
+
+        //31Mar2017
+        static void ModifySiteSource_ChangeLive2DB()
+        {
+            var sites = _AppAdminService.GetAllSiteSources();
+            var FDAWarningLettersSite = sites.Find(x => x.SiteEnum == Models.Enums.SiteEnum.FDAWarningLettersPage);
+            if (FDAWarningLettersSite != null)
+            {
+                FDAWarningLettersSite.ExtractionMode = "DB";
+                _AppAdminService.UpdateSiteSource(FDAWarningLettersSite);
+            }
+            else
+            {
+                throw new Exception("FDAWarningLettersSite not found");
+            }
+
+            var ClinicalInvestigatorDisqualificationSite = sites.Find(x => x.SiteEnum == Models.Enums.SiteEnum.ClinicalInvestigatorDisqualificationPage);
+            if (ClinicalInvestigatorDisqualificationSite != null)
+            {
+                ClinicalInvestigatorDisqualificationSite.ExtractionMode = "DB";
+                _AppAdminService.UpdateSiteSource(ClinicalInvestigatorDisqualificationSite);
+            }
+            else
+            {
+                throw new Exception("ClinicalInvestigatorDisqualificationSite not found");
+            }
+            //_AppAdminService.UpdateSiteSource()
         }
     }
 }

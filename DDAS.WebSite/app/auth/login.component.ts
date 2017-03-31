@@ -3,6 +3,7 @@ import { Router,
          NavigationExtras } from '@angular/router';
 import { AuthService }      from './auth.service';
 import { loginInfo }      from './auth.classes';
+import { ConfigService } from '../shared/utils/config.service';
 @Component({
 
   moduleId: module.id,
@@ -16,8 +17,8 @@ export class LoginComponent implements OnInit{
     error = '';
     public rememberChecked:boolean=false;
 
-    test: any;
-  constructor(public authService: AuthService, public router: Router) {
+    
+  constructor(public authService: AuthService, public router: Router, private configService: ConfigService) {
     this.setMessage();
     
   }
@@ -61,14 +62,10 @@ export class LoginComponent implements OnInit{
                 },
                 error => {
                     //this.test = error;
-                    this.error = 'Access denied'; //Username or password is incorrect';
+                    
+                    this.error = error.error_description; //'Access denied'; //Username or password is incorrect';
                     this.loading = false;
                 });
-
-     
-     
-    
-
     }
     
     checkedChange(e: any){
@@ -76,6 +73,9 @@ export class LoginComponent implements OnInit{
       localStorage.setItem('currentUserpassword',this.logInfo.password);
     }
   
+  get appLocaation(){
+    return this.authService.appLocation;
+  }
   
   ///
   
@@ -117,6 +117,10 @@ export class LoginComponent implements OnInit{
                 });
   }
 
+
+  get CurrentVersion(){
+        return this.configService.getVer();
+    }
   //get diagnostic() { return JSON.stringify(this.authService.test); }
 }
 

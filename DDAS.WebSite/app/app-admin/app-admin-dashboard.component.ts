@@ -8,7 +8,7 @@ import {LiveSiteScannerProcessModel} from './app-admin.classes';
 })
 export class AppAdminDashboardComponent implements OnInit {
 
-   private LiveSiteScannerInfo: LiveSiteScannerProcessModel[] = [];
+   public LiveSiteScannerInfo: LiveSiteScannerProcessModel[] = [];
    constructor(
         private service: AppAdminService
     ) { }

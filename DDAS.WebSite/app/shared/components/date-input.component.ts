@@ -17,7 +17,7 @@ import {IMyOptions} from '../utils/my-date-picker';
 export class DateInputComponent implements OnInit {
     public defaultDatePickerValue: IMyDateModel;
     
-     private myDatePickerOptions: IMyOptions = {
+     public myDatePickerOptions: IMyOptions = {
         // other options...
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: '14'
@@ -27,7 +27,7 @@ export class DateInputComponent implements OnInit {
      //@Output('selectedDate') selectedDate = new EventEmitter();
      
      public selDate1: IMyDate;
-     
+ 
     
      @Output ('DateValue') outputDate = new EventEmitter();
      

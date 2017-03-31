@@ -79,7 +79,8 @@ namespace DDAS.DataExtractor
                 }
                 else
                 {
-                    var query = SearchSites.GetNewSearchQuery();
+                    //var query = SearchSites.GetNewSearchQuery();
+                    var query = uow.SiteSourceRepository.GetAll();
 
                     extractData.ExtractDataAllDBSites(
                         query, DownloadFolder, _WriteLog);                    

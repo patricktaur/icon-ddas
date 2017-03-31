@@ -8,6 +8,7 @@
 			</div>
 
 			<div class="navbar-collapse collapse sidebar-navbar-collapse">
+				<div class="alert alert-info" *ngIf="showLocation">{{appLocation}} </div>
 				<ul class="nav navbar-nav">
 					<li class="active">
 						<a data-toggle="collapse" data-target="#loggedInAccount" data-parent="#sidenav01" class="collapsed">
@@ -74,6 +75,7 @@
 							</li>
 
 							<li class="active"> <a routerLink="about-ddas" routerLinkActive="active">About DDAS</a></li>
+							
 				</ul>
 
 			</div>
