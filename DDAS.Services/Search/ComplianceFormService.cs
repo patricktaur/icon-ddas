@@ -2149,23 +2149,31 @@ namespace DDAS.Services.Search
             string NameToSearch, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            DateTime? temp = null; 
-            _SearchEngine.ExtractData(
-                SiteEnum.FDAWarningLettersPage, NameToSearch, 
-                MatchCountLowerLimit, out temp);
+            //DateTime? temp = null; 
+            //_SearchEngine.ExtractData(
+            //    SiteEnum.FDAWarningLettersPage, NameToSearch, 
+            //    MatchCountLowerLimit, out temp);
 
-            var siteData = _SearchEngine.SiteData;
-            SiteLastUpdatedOn = temp;
-             
-            var baseSiteData = _SearchEngine.baseSiteData;
+            //var siteData = _SearchEngine.SiteData;
+            //SiteLastUpdatedOn = temp;
 
-            UpdateMatchStatus(siteData, NameToSearch);
+            //var baseSiteData = _SearchEngine.baseSiteData;
+
+            //UpdateMatchStatus(siteData, NameToSearch);
+
+            var FDAWarningSiteData =
+                _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
+
+            UpdateMatchStatus(FDAWarningSiteData.FDAWarningLetterList, NameToSearch);
 
             var FDAWarningLetterList =
-                siteData.Where(
-                FDAList => FDAList.Matched > 0);
+                FDAWarningSiteData.FDAWarningLetterList
+                .Where(FDAList => FDAList.Matched > 0)
+                .ToList();
 
-            if (siteData == null)
+            SiteLastUpdatedOn = FDAWarningSiteData.SiteLastUpdatedOn;
+
+            if(FDAWarningLetterList == null)
                 return null;
 
             return ConvertToMatchedRecords(FDAWarningLetterList);
@@ -2221,25 +2229,35 @@ namespace DDAS.Services.Search
             Guid? SiteDataId, string NameToSearch, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            DateTime? temp = null;
-            _SearchEngine.ExtractData(
-                SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch,
-                MatchCountLowerLimit, out temp);
-
-            var siteData = _SearchEngine.SiteData;
-            SiteLastUpdatedOn = temp;
-
-            var baseSiteData = _SearchEngine.baseSiteData;
-
-            UpdateMatchStatus(siteData, NameToSearch);
-
             var DisqualificationSiteData =
-                siteData.Where(site => site.Matched > 0);
+                _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteDataId);
 
-            if (siteData == null)
+            UpdateMatchStatus(DisqualificationSiteData.DisqualifiedInvestigatorList,
+                NameToSearch);
+
+            //DateTime? temp = null;
+            //_SearchEngine.ExtractData(
+            //    SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch,
+            //    MatchCountLowerLimit, out temp);
+
+            //var siteData = _SearchEngine.SiteData;
+            //SiteLastUpdatedOn = temp;
+
+            //var baseSiteData = _SearchEngine.baseSiteData;
+
+            //UpdateMatchStatus(siteData, NameToSearch);
+
+            var SiteData =
+                DisqualificationSiteData.DisqualifiedInvestigatorList
+                .Where(site => site.Matched > 0)
+                .ToList();
+
+            SiteLastUpdatedOn = DisqualificationSiteData.SiteLastUpdatedOn;
+
+            if (SiteData == null)
                 return null;
 
-            return ConvertToMatchedRecords(DisqualificationSiteData);
+            return ConvertToMatchedRecords(SiteData);
         }
 
         public List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,

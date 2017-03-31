@@ -35,6 +35,9 @@ export class ConfigService {
          return this._apiURI.replace('api/','');
      }
 
+     getVer(){
+         return "Ver: D1.4.0 30 March, 2017"
+     }
 
 }
 

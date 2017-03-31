@@ -439,7 +439,7 @@ namespace WebScraping.Selenium.SearchEngine
         public void ExtractData(List<SitesToSearch> query, 
             ILog log)
         {
-            var DBSites = query.Where(x => x.ExtractionMode == "DB").ToList();
+            var DBSites = query.Where(x => x.ExtractionMode.ToLower() == "db").ToList();
 
             log.WriteLog("Processing:" + DBSites.Count + " sites");
             foreach (SitesToSearch site in DBSites)

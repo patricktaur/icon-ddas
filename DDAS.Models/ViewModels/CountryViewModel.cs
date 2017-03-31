@@ -11,6 +11,7 @@ namespace DDAS.Models.ViewModels
         public Guid? SiteId { get; set; }
         public string Name { get; set; }
         public string SiteName { get; set; }
+        public string SiteUrl { get; set; }
         public Guid? RecId { get; set; }
     }
 }

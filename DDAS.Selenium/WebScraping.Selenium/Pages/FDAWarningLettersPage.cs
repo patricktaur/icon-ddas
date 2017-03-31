@@ -118,6 +118,7 @@ namespace WebScraping.Selenium.Pages
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
                 driver.Navigate().GoToUrl(Url);
+                IsPageLoaded();
             }
 
             if (IsSiteDown)
@@ -224,7 +225,7 @@ namespace WebScraping.Selenium.Pages
             catch (Exception e)
             {
                 var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
-                    "FDAWarningLetters_" +
+                    "Error_FDAWarningLetters_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
@@ -280,12 +281,13 @@ namespace WebScraping.Selenium.Pages
 
                 if (IsFeedbackPopUpDisplayed)
                 {
-                    var ErrorCaptureFilePath =
-                        @"c:\Development\FDAWarningLetters_" +
+                    var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                        "PopUp_FDAWarningLetters_" +
                         DateTime.Now.ToString("dd MMM yyyy hh_mm")
                         + ".jpeg";
                     SaveScreenShot(ErrorCaptureFilePath);
                     driver.Navigate().GoToUrl(Url);
+                    IsPageLoaded();
                 }
                 //DownloadFDAWarningLettersCSVFile("01/01/2000");
                 DownloadFDAWarningLettersList();
@@ -294,7 +296,7 @@ namespace WebScraping.Selenium.Pages
             catch(Exception e)
             {
                 var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
-                    "FDAWarningLetters_" +
+                    "Error_FDAWarningLetters_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);

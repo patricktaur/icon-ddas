@@ -20,13 +20,12 @@ namespace DDAS.Setup
         private static LogText _WriteLog;
         private static UnitOfWork _UOW;
         private static AppAdminService _AppAdminService;
+
         static void Main(string[] args)
         {
-            
-            
             try
             {
-                string exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 
                 _WriteLog = new LogText(exePath + @"\setup.log", true);
                 _WriteLog.LogStart();
@@ -44,11 +43,13 @@ namespace DDAS.Setup
                      _UOW = new UnitOfWork(connString);
                     CreateRoles();
                     CreateUsers();
+
                     _AppAdminService = new AppAdminService(_UOW);
-                    SitesToSearch Site = new SitesToSearch();
-                    _AppAdminService.AddSitesInDbCollection(Site);
+                    //SitesToSearch Sites = new SitesToSearch();
+                    //_AppAdminService.AddSitesInDbCollection(Sites);
 
-
+                    //Executed on 31-3-2017
+                    //ModifySiteSource_ChangeLive2DB();
                 }
                 else
                 {
@@ -65,8 +66,6 @@ namespace DDAS.Setup
                 _WriteLog.LogEnd();
                 _WriteLog.Dispose();
             }
-
-        
           }
 
         static void CreateFolders(string configFile)
@@ -111,6 +110,7 @@ namespace DDAS.Setup
         static void CreateUsers()
         {
             CreateUser("clarityadmin", "app-admin", "Clarity@148");
+
         }
 
 
@@ -134,6 +134,7 @@ namespace DDAS.Setup
                 throw new Exception(ex.Message);
             }
         }
+
         static string GetWebConfigAppSetting(string configFile, string keyName)
         {
             string error;
@@ -165,6 +166,7 @@ namespace DDAS.Setup
             }
       
         }
+
         static string GetWebConfigConnectionString(string configFile, string keyName)
         {
             string error;
@@ -196,6 +198,7 @@ namespace DDAS.Setup
             }
 
         }
+
         static void CreateRole(string roleName)
         {
             _WriteLog.WriteLog("Creating Role: " + roleName);
@@ -212,6 +215,7 @@ namespace DDAS.Setup
             }
 
         }
+
         static void CreateUser(string userName, string roleName, string password)
         {
             _WriteLog.WriteLog("Creating User: " + userName + " Role: " + roleName);
@@ -224,7 +228,7 @@ namespace DDAS.Setup
                 var newUser = new IdentityUser();
                 newUser.UserName = userName;
                 newUser.SecurityStamp = Guid.NewGuid().ToString();
-                
+                newUser.Active = true;
                 userManager.CreateAsync(newUser, password);
                 //CreateAsync does not set the password:
                 String hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
@@ -260,6 +264,34 @@ namespace DDAS.Setup
                     }
                 }
              }
+        }
+
+        //31Mar2017
+        static void ModifySiteSource_ChangeLive2DB()
+        {
+            var sites = _AppAdminService.GetAllSiteSources();
+            var FDAWarningLettersSite = sites.Find(x => x.SiteEnum == Models.Enums.SiteEnum.FDAWarningLettersPage);
+            if (FDAWarningLettersSite != null)
+            {
+                FDAWarningLettersSite.ExtractionMode = "DB";
+                _AppAdminService.UpdateSiteSource(FDAWarningLettersSite);
+            }
+            else
+            {
+                throw new Exception("FDAWarningLettersSite not found");
+            }
+
+            var ClinicalInvestigatorDisqualificationSite = sites.Find(x => x.SiteEnum == Models.Enums.SiteEnum.ClinicalInvestigatorDisqualificationPage);
+            if (ClinicalInvestigatorDisqualificationSite != null)
+            {
+                ClinicalInvestigatorDisqualificationSite.ExtractionMode = "DB";
+                _AppAdminService.UpdateSiteSource(ClinicalInvestigatorDisqualificationSite);
+            }
+            else
+            {
+                throw new Exception("ClinicalInvestigatorDisqualificationSite not found");
+            }
+            //_AppAdminService.UpdateSiteSource()
         }
     }
 }

@@ -22,7 +22,22 @@ namespace DDAS.Services.UserService
             
         }
 
-        public UserViewModel GetNewUser()
+        public bool IsUserAppAdmin(Guid UserId)
+        {
+
+            var roles = _UOW.UserRoleRepository.GetRoleValues(UserId); //getAlluserRolesViewModel(UserId);
+            
+            if (roles.Contains("app-admin"))
+            { 
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public UserViewModel GetNewUser(bool IncludeAppAdminrole)
         {
             var retUser = new UserViewModel();
             retUser.Active = true;
@@ -41,7 +56,7 @@ namespace DDAS.Services.UserService
     
 
 
-        public UserViewModel GetUser(Guid? UserId)
+        public UserViewModel GetUser(Guid? UserId, bool IncludeAppAdminrole)
         {
             var retUserViewMOdel = new UserViewModel();
             var user = _UOW.UserRepository.FindById(UserId);
@@ -52,7 +67,7 @@ namespace DDAS.Services.UserService
             retUserViewMOdel.UserFullName = user.UserFullName;
             retUserViewMOdel.UserId = user.UserId;
             retUserViewMOdel.UserName = user.UserName;
-            retUserViewMOdel.Roles = getUserRolesViewModel(user.UserId);
+            retUserViewMOdel.Roles = getUserRolesViewModel(user.UserId, IncludeAppAdminrole);
             retUserViewMOdel.ActiveRoles = getActiveRolesText(userToAdd.Roles);
             return retUserViewMOdel;
         }
@@ -108,7 +123,7 @@ namespace DDAS.Services.UserService
                   x.ActiveRoles.ToLower().Contains("app-admin")).ToList();
         }
 
-        public UserViewModel SaveUser(UserViewModel userViewModel)
+        public bool SaveUser(UserViewModel userViewModel)
         {
             //convert userViewModel to user:
 
@@ -172,8 +187,8 @@ namespace DDAS.Services.UserService
                     }
                 }
             }
-
-            return GetUser(userToUpdate.UserId); //return userViewModel with roles.
+            return true;
+            //return GetUser(userToUpdate.UserId, false); //return userViewModel with roles.
         }
 
         public bool DeleteUser(Guid UserId)
@@ -200,10 +215,21 @@ namespace DDAS.Services.UserService
         }
 
         #region Helpers
-        private List<RoleViewModel> getUserRolesViewModel(Guid UserId)
+
+        
+        private List<RoleViewModel> getUserRolesViewModel(Guid UserId, bool IncludeAppAdminRole)
         {
-          // return getAlluserRolesViewModel(UserId).Where(x => x.Name != "app-admin").ToList();
-            return getAlluserRolesViewModel(UserId).ToList();
+          if (IncludeAppAdminRole == true)
+            {
+                return getAlluserRolesViewModel(UserId).ToList();
+            }
+            else
+            {
+                return getAlluserRolesViewModel(UserId).Where(x => x.Name != "app-admin").ToList();
+            }
+            
+            // 
+           
         }
 
         private List<RoleViewModel> getAlluserRolesViewModel(Guid UserId)

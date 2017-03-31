@@ -76,24 +76,24 @@ namespace DDAS.Models.Entities.Domain.SiteData
             new Dictionary<string, string>() {
                 { "MTF", "MTF - Case closed with a Memo to File" },
                 { "NAI", "NAI - No Action Indicated.  No objectionable conditions or practices were found during the inspection" },
-                { "VAI", "Voluntary Action Indicated.  Objectionable conditions were found but the problems do not justify further regulatory action. Any corrective action is left to the investigator to take voluntarily" },
-                { "VAI1", "Correction made on site" },
-                { "VAI2", "No response requested" },
-                { "VAI2C", "Consent problems found" },
-                { "VAI3", "Response requested" },
-                { "VAI3C", "Case closed" },
-                { "VAI3F", "Follow-up for cause inspection issued" },
-                { "VAI3R", "Response received and accepted" },
-                { "VAIRC", "30-day response requested and case closed" },
-                { "VAIRR", "30-day response requested, received and accepted" },
-                { "VAIR", "30-day response requested" },
-                { "OAI", "Official Action Indicated. Objectionable conditions were found and regulatory and/or administrative sanctions by FDA are indicated" },
-                { "OAIC", "Completed" },
-                { "OAIR", "Response requested" },
-                { "OAIRR", "Response requested and accepted" },
-                { "OAIW", "Warning letter issued" },
-                { "CANC", "Cancelled. The inspection assignment was canceled before the inspection was started" },
-                { "WASH", "Washout. An inspection was initiated but no meaningful information could be obtained" },
+                { "VAI", "VAI - Voluntary Action Indicated.  Objectionable conditions were found but the problems do not justify further regulatory action. Any corrective action is left to the investigator to take voluntarily" },
+                { "VAI1", "VAI1 - Correction made on site" },
+                { "VAI2", "VAI2 - No response requested" },
+                { "VAI2C", "VAI2C - Consent problems found" },
+                { "VAI3", "VAI3 - Response requested" },
+                { "VAI3C", "VAI3C - Case closed" },
+                { "VAI3F", "VAI3F - Follow-up for cause inspection issued" },
+                { "VAI3R", "VAI3R - Response received and accepted" },
+                { "VAIRC", "VAIRC - 30-day response requested and case closed" },
+                { "VAIRR", "VAIRR - 30-day response requested, received and accepted" },
+                { "VAIR", "VAIR - 30-day response requested" },
+                { "OAI", "OAI - Official Action Indicated. Objectionable conditions were found and regulatory and/or administrative sanctions by FDA are indicated" },
+                { "OAIC", "OAIC - Completed" },
+                { "OAIR", "OAIR - Response requested" },
+                { "OAIRR", "OAIRR - Response requested and accepted" },
+                { "OAIW", "OAIW - Warning letter issued" },
+                { "CANC", "CANC - Cancelled. The inspection assignment was canceled before the inspection was started" },
+                { "WASH", "WASH - Washout. An inspection was initiated but no meaningful information could be obtained" },
                 { "REF", "REF - Reference" }
             };
         #endregion
@@ -104,9 +104,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 foreach(KeyValuePair<string, string> pair in ClassificationCodes)
                 {
                     if (ClassificationCode.ToLower() == pair.Key.ToLower())
-                    {
                         ClassificationCode = pair.Value;
-                    }
                 }
                 return ClassificationCode;
             }

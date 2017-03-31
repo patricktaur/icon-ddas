@@ -41,7 +41,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Title: " + Title + "~" +
                     "Institute/Address: " + InstituteAndAddress + "~" +
                     "Inspection Start/End Date: " + InspectionStartAndEndDate + "~" +
-                    "Classification: " + Classification;
+                    "Classification: " + ClassificationCodeExpanded;
             }
         }
 
@@ -59,6 +59,25 @@ namespace DDAS.Models.Entities.Domain.SiteData
                         System.Globalization.DateTimeStyles.None);
                 else
                     return null;
+            }
+        }
+
+        Dictionary<string, string> ClassificationCode = new Dictionary<string, string>()
+        {
+            {"NAI", "NAI - No Action Indicated"},
+            {"VAI", "VAI - Voluntary Action Indicated"},
+            {"OAI", "OAI - Official Action Indicated"}
+        };
+
+        public string ClassificationCodeExpanded {
+            get
+            {
+                foreach(KeyValuePair<string, string> pair in ClassificationCode)
+                {
+                    if (Classification.ToLower() == pair.Key.ToLower())
+                        Classification = pair.Value;
+                }
+                return Classification;
             }
         }
     }

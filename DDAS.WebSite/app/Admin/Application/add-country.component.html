@@ -15,22 +15,22 @@
 			<div class="row">
 				<label for="Country">Country Name:</label>
 				<input type="text" name="Country" class="form-control" [(ngModel)]="countryList.Name">
-
 				<label for="Site">Select Site:</label>
 				<select class="form-control" [(ngModel)]="countryList.SiteId">
-                        <option *ngFor="let item of SiteSource" value={{item.RecId}} selected="selected">{{item.SiteName}}</option>
+                        <option *ngFor="let item of SiteSource" value={{item.RecId}} selected="selected">{{item.SiteName + '/' + item.SiteUrl}}</option>
                     </select>
 				<button type="button" class="btn btn-primary" (click)="addCountry()">Add</button>
 			</div>
 		</div>
 		<div class="well">
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-lg-12">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
 								<th>Country</th>
 								<th>Site Name</th>
+								<th>URL</th>
 								<!--<th>Mandatory</th>
 									<th>Site Short Name</th>
                                     <th class="col-md-3">Site Url</th>-->
@@ -43,8 +43,11 @@
 								<td class="text-center">
 									{{item.Name}}
 								</td>
-								<td class="text-center">
+								<td class="text-left">
 									{{item.SiteName}}
+								</td>
+								<td class="text-left">
+									{{item.SiteUrl}}
 								</td>
 								<td>
 									<button type="button" class="btn btn-sm btn-primary" (click)="removeCountry(item.RecId)" title="delete"> <span class="glyphicon glyphicon-remove"></span> </button>
@@ -54,9 +57,7 @@
 					</table>
 					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
-				<div class="col-lg-4">
-
-				</div>
+				
 			</div>
 		</div>
 		<!--</div>-->

@@ -18,10 +18,12 @@ export class CountryViewModel{
     Name: string;
     SiteName: string;
     SiteId: string;
+    SiteUrl: string;
 }
 
 
 export class SponsorProtocol{
     SponsorProtocolNumber: string;
     SiteId: string;
+    SiteUrl: string;
 }

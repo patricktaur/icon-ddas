@@ -13,6 +13,7 @@ export class ErrorImagesComponent implements OnInit {
     public ErrorImages: any[];
     public ApiHost: string;
     public pageNumber: number;
+    public formLoading: boolean;
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService

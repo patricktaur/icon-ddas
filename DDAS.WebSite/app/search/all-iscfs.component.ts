@@ -37,6 +37,7 @@ export class AllISCFsComponent implements OnInit {
     public ToDate: IMyDateModel;  // Object = { date: { year: 2018, month: 10, day: 9 } };
     
     public p: number;
+    public formLoading: boolean;
     constructor(
         private route: ActivatedRoute,
         private router: Router,

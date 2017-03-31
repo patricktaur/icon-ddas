@@ -95,6 +95,19 @@ namespace DDAS.LiveSiteExtractor
             }
         }
 
+        public string CIILZipFolder
+        {
+            get
+            {
+                return null;
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public string ComplianceFormFolder
         {
             get

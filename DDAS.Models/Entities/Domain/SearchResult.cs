@@ -1114,5 +1114,6 @@ namespace DDAS.Models.Entities.Domain
         public string ExcelTempateFolder { get; set; }
         public string AttachmentsFolder { get; set; }
         public string WordTemplateFolder { get; set; }
+        public string CIILZipFolder { get; set; }
     }
 }

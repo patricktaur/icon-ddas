@@ -84,9 +84,10 @@ namespace WebScraping.Selenium.Pages
 
         private void DownloadCIIList()
         {
-            //string fileName = _folderPath + @"\test.pdf";
+            string fileName = _config.CIILZipFolder + "cliil_" + 
+                DateTime.Now.ToString("dd_MM_yyyy") +
+                ".zip";
 
-            string fileName = _config.AppDataDownloadsFolder + "cliil.zip";
             string UnZipPath = _config.AppDataDownloadsFolder;
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
@@ -98,8 +99,8 @@ namespace WebScraping.Selenium.Pages
             // Download the Web resource and save it into the current filesystem folder.
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
-            if (File.Exists(UnZipPath + "\\cliil.txt")) //filename is cliil.txt by default
-                File.Delete(UnZipPath + "\\cliil.txt");
+            if (File.Exists(UnZipPath + "cliil.txt")) //filename is cliil.txt by default
+                File.Delete(UnZipPath + "cliil.txt");
 
             ZipFile.ExtractToDirectory(fileName, UnZipPath);
         }

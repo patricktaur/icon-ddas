@@ -10,6 +10,7 @@ namespace DDAS.Models.ViewModels
     {
         public string SponsorProtocolNumber { get; set; }
         public string SiteName { get; set; }
+        public string SiteUrl { get; set; }
         public Guid? SiteId { get; set; }
         public Guid? RecId { get; set; }
     }

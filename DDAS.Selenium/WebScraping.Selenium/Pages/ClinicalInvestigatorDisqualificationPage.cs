@@ -191,6 +191,7 @@ namespace WebScraping.Selenium.Pages
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
                 driver.Navigate().GoToUrl(Url);
+                IsPageLoaded();
             }
 
             IWebElement SearchTextBox = DisqualifiedInvestigatorSearchTextBox;
@@ -255,6 +256,7 @@ namespace WebScraping.Selenium.Pages
                         DateTime.Now.ToString("dd MMM yyyy hh_mm");
                     SaveScreenShot(ErrorCaptureFilePath);
                     driver.Navigate().GoToUrl(Url);
+                    IsPageLoaded();
                 }
 
                 _DisqualificationSiteData.DataExtractionRequired = true;
@@ -303,7 +305,7 @@ namespace WebScraping.Selenium.Pages
             catch (Exception e)
             {
                 var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
-                    @"\Error_DisqualificationProceedings_" +
+                    "Error_DisqualificationProceedings_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);

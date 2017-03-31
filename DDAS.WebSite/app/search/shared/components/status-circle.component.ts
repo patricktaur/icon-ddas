@@ -5,6 +5,8 @@ import { ComplianceFormStatusEnum } from '../../search.classes';
 @Component({ 
     selector: '[statusCircle]',
     template: '<div circle  [color]="color" [radius]="radius" title="{{title}}"></div>'
+    // template: '<div circle  [color]="testColor" [radius]="radius" title="{{title}}"></div>'
+
  })
 export class StatusCircleComponent implements OnInit {
     @Input('status') status: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
@@ -12,8 +14,11 @@ export class StatusCircleComponent implements OnInit {
     @Input('title') title:string = "";
     radius : number;
     color : string = "";
-     
+    colorArray: string[];
+    loading: boolean;
+    
     ngOnInit() {
+        this.loading = true;
         this.radius = this.size / 2;
         
         switch (this.status) {
@@ -49,8 +54,28 @@ export class StatusCircleComponent implements OnInit {
             break;
         }
 
-
+        
+        
+        // this.colorArray.push("#BDBDBD");
+        // this.colorArray.push("#BF360C");
+        // this.colorArray.push("#388e3c");
+        // this.colorArray.push("#F44336");
+        // this.colorArray.push("#F44336");
+        // this.colorArray.push("#cddc39");
+        // this.colorArray.push("#F44336");
+        // this.colorArray.push("#BDBDBD");
+        // this.colorArray.push("#212121");
+        this.loading = false;
     }
   
+    get testColor(){
+        if (this.loading){
+            return null;
+        }
+        else{
+             return this.colorArray[this.status];
+        }
+       
+    }
 }
 

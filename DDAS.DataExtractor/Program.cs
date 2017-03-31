@@ -78,10 +78,11 @@ namespace DDAS.DataExtractor
                 }
                 else
                 {
-                    var query = SearchSites.GetNewSearchQuery();
+                    //var query = SearchSites.GetNewSearchQuery();
+                    var query = uow.SiteSourceRepository.GetAll();
 
                     extractData.ExtractDataAllDBSites(
-                        query, _WriteLog);                    
+                        query, _WriteLog);
                 }
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data ends");
             }
@@ -219,6 +220,20 @@ namespace DDAS.DataExtractor
             {
                 value = "";
             }
+        }
+
+        public string CIILZipFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["CIILZipFolder"];
+            }
+
+            set
+            {
+
+            }
+            
         }
 
         public string ComplianceFormFolder

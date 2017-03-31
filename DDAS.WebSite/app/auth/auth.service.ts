@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/delay';
@@ -24,7 +25,7 @@ export class AuthService {
   public isAppAdmin: boolean;
   public roles: string = ""; //comma separarted
 
- 
+ public appLocation: string;
   
   // store the URL so we can redirect after logging in
   redirectUrl: string;
@@ -43,7 +44,7 @@ export class AuthService {
     this.token = null;
     this.isLoggedIn = false;
     
-    var body = "grant_type=password&username=" +  username + "&password=" + password;
+    var body = "grant_type=password&username=" +  username + "&password=" + password + "&Ver=" + this.configService.getVer();
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });
         return this.http.post(this._baseUrl + 'token', body, options )
@@ -84,9 +85,15 @@ export class AuthService {
                 }
                 
             })
-            //.catch(this.handleError);
+            .catch( ( errorRes: Response ) => {
+                   let details = errorRes.json();
+                   
+                   return Observable.throw(details);
+
+                 })
  
   }
+
 
    
   changePassword(changePassword: ChangePasswordBindingModel): Observable<Boolean> {

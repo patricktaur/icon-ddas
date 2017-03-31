@@ -1010,7 +1010,7 @@ namespace DDAS.Services.AppAdminService
 
         public List<SitesToSearch> GetAllSiteSources()
         {
-            var SiteSources = _UOW.SiteSourceRepository.GetAll();
+            var SiteSources = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList(); 
 
             return SiteSources;
         }
@@ -1033,7 +1033,7 @@ namespace DDAS.Services.AppAdminService
         {
             var CountriesViewModel = new List<CountryViewModel>();
 
-            var Countries = _UOW.CountryRepository.GetAll();
+            var Countries = _UOW.CountryRepository.GetAll().OrderBy(x => x.Name).ToList();
 
             if (Countries.Count == 0)
                 return null;
@@ -1044,9 +1044,14 @@ namespace DDAS.Services.AppAdminService
                 CountryViewModel.Name = country.Name;
                 CountryViewModel.SiteId = country.SiteId;
                 CountryViewModel.RecId = country.RecId;
-                CountryViewModel.SiteName =
-                    _UOW.SiteSourceRepository.FindById(country.SiteId).SiteName;
-                CountriesViewModel.Add(CountryViewModel);
+                var site = _UOW.SiteSourceRepository.FindById(country.SiteId);
+                if (site != null) {
+                    CountryViewModel.SiteName =  site.SiteName;
+                    CountryViewModel.SiteUrl = site.SiteUrl;
+                    CountriesViewModel.Add(CountryViewModel);
+                }
+                //CountryViewModel.SiteName =
+                //    _UOW.SiteSourceRepository.FindById(country.SiteId).SiteName;
             }
             return CountriesViewModel;
         }
@@ -1099,12 +1104,23 @@ namespace DDAS.Services.AppAdminService
             {
                 var sponsorViewModel = new SponsorProtocolViewModel();
                 sponsorViewModel.SponsorProtocolNumber = sponsor.SponsorProtocolNumber;
+
+                var site = _UOW.SiteSourceRepository.FindById(sponsor.SiteId);
+                if (site != null)
+                {
+                    sponsorViewModel.SiteName = site.SiteName;
+                    sponsorViewModel.SiteUrl = site.SiteUrl;
+                    sponsorViewModel.SiteId = sponsor.SiteId;
+                    sponsorViewModel.RecId = sponsor.RecId;
+
+                    Sponsors.Add(sponsorViewModel);
+                }
+
+
                 sponsorViewModel.SiteName =
                     _UOW.SiteSourceRepository.FindById(sponsor.SiteId).SiteName;
-                sponsorViewModel.SiteId = sponsor.SiteId;
-                sponsorViewModel.RecId = sponsor.RecId;
 
-                Sponsors.Add(sponsorViewModel);
+                
             }
             return Sponsors;
         }

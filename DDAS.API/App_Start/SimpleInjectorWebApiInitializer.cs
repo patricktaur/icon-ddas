@@ -101,8 +101,10 @@ namespace DDAS.API.App_Start
                UploadsFolder = RootPath +
                System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"],
                WordTemplateFolder = RootPath +
-               System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"]
-        });
+               System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"],
+               CIILZipFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["CIILZipFolder"]
+            });
             //container.RegisterWebApiRequest<IUserService, UserService>();
             container.Register<IUserService, UserService>();
 

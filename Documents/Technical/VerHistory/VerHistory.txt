@@ -1,0 +1,9 @@
+Ver: D1.3.0 30Mar2017
+
+31Mar2017
+1. LocationName: display on SideMenu, Login Screen.
+2. For Inactive User 'Access Denied' message on login screen.
+3. Set up - - change LiveSites to DB - 
+
+30Mar2017
+

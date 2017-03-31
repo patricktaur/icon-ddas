@@ -3,6 +3,7 @@ import { Router, Params, ActivatedRoute } from '@angular/router';
 import { UserService } from './user-service';
 //import { User, Role } from './user.classes';
 import {UserViewModel} from './user.classes';
+import { AuthService }      from '../auth/auth.service';
 
 @Component({
     moduleId: module.id,
@@ -17,8 +18,11 @@ export class UserInputComponent {
      private processing: boolean;
      public isNew: boolean = false;
     public isNewText: string = "";
-
-    constructor(private router: Router, private service: UserService, private route: ActivatedRoute) { }
+    public LoggedInUserIsAppAdmin: boolean;
+    constructor(
+        private router: Router, private service: UserService, 
+        private route: ActivatedRoute, private authService: AuthService) { }
+    
     ngOnInit() {
         this.user = new UserViewModel;
        
@@ -31,8 +35,9 @@ export class UserInputComponent {
                 this.isNewText = "New";
             }
             this.LoadUser();
+            this.LoggedInUserIsAppAdmin = this.authService.isAppAdmin;
         });
-
+        
     }
 
     LoadUser() {
