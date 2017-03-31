@@ -8,19 +8,38 @@ using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
 using System.Threading;
+using DDAS.Models.Interfaces;
+using SpreadsheetLight;
+using System.Runtime.InteropServices;
+using System.Net;
+using System.IO;
+using Microsoft.VisualBasic.FileIO;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Xml;
+using System.Text;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDAWarningLettersPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
+        [DllImport("urlmon.dll")]
+        public static extern long URLDownloadToFile(long pCaller, string szURL,
+            string szFileName, long dwReserved, long lpfnCB);
+
+        public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _FDAWarningSiteData = new FDAWarningLettersSiteData();
+            _FDAWarningSiteData.RecId = Guid.NewGuid();
+            _FDAWarningSiteData.ReferenceId = _FDAWarningSiteData.RecId;
             _FDAWarningSiteData.Source = driver.Url;
         }
 
@@ -93,10 +112,10 @@ namespace WebScraping.Selenium.Pages
 
             if (IsFeedbackPopUpDisplayed)
             {
-                var ErrorCaptureFilePath =
-                    @"c:\Development\PopUpIdentifiedAndReloading_" +
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "PopUp_FDAWarningLetters_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
+                    + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
                 driver.Navigate().GoToUrl(Url);
             }
@@ -136,6 +155,7 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> AnchorTags = TD.FindElements(By.XPath("a"));
 
+                //click on 'All' anchor to display all records
                 if (AnchorTags.Count > 0)
                     AnchorTags[AnchorTags.Count - 1].SendKeys(Keys.Enter);
                 return true;
@@ -181,8 +201,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder, int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             string[] FullName = NameToSearch.Split(' ');
             try
@@ -204,9 +223,10 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
-                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\FDAWarningLetters_" +
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
+                    "FDAWarningLetters_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
+                    + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
 
                 _FDAWarningSiteData.DataExtractionSucceeded = false;
@@ -251,21 +271,160 @@ namespace WebScraping.Selenium.Pages
             _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
-            if (!IsPageLoaded())
-                throw new Exception("Could not load the page. Site is down/unavailable at the moment");
-
-            if (IsFeedbackPopUpDisplayed)
+            try
             {
-                var ErrorCaptureFilePath =
-                    @"c:\Development\FDAWarningLetters_" +
-                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
-                SaveScreenShot(ErrorCaptureFilePath);
-                driver.Navigate().GoToUrl(Url);
+                if (!IsPageLoaded())
+                    throw new Exception("Could not load the page. Site is down/unavailable at the moment");
+
+                if (IsFeedbackPopUpDisplayed)
+                {
+                    var ErrorCaptureFilePath =
+                        @"c:\Development\FDAWarningLetters_" +
+                        DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                        + ".jpeg";
+                    SaveScreenShot(ErrorCaptureFilePath);
+                    driver.Navigate().GoToUrl(Url);
+                }
+                //DownloadFDAWarningLettersCSVFile("01/01/2000");
+                DownloadFDAWarningLettersList();
+                ReadFDAWarningLetters(_config.AppDataDownloadsFolder + "FDAWarningLetters.xls");
             }
-            FDASearchTextBox.SendKeys("testing");
+            catch(Exception e)
+            {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
+                    "FDAWarningLetters_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
+                _FDAWarningSiteData.DataExtractionSucceeded = false;
+                _FDAWarningSiteData.DataExtractionErrorMessage = e.Message +
+                    " - " + ErrorCaptureFilePath;
+
+                _FDAWarningSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _FDAWarningSiteData.CreatedBy = "Patrick";
+                _FDAWarningSiteData.CreatedOn = DateTime.Now;
+            }
+
+        }
+
+        private void DownloadFDAWarningLettersList()
+        {
+            string fileName = _config.AppDataDownloadsFolder + "FDAWarningLetters.xls";
+
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+            // Create a new WebClient instance.
+            WebClient myWebClient = new WebClient();
+
+            // Concatenate the domain with the Web resource filename.
+
+            string myStringWebResource = 
+                "https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";
+
+            Console.WriteLine(
+                "Downloading File \"{0}\" from \"{1}\" .......\n\n", 
+                fileName, myStringWebResource);
+            
+            // Download the Web resource and save it into the current filesystem folder.
+            myWebClient.DownloadFile(myStringWebResource, fileName);
+        }
+
+        private void DownloadFDAWarningLettersCSVFileXXXX(string LetterIssuedDateFrom)
+        {
+            driver.Navigate().GoToUrl("https://www.accessdata.fda.gov/scripts/warningletters/wlSearchExcel.cfm");
+
+            if(!IsPageLoaded())
+                throw new Exception("Could not navigate to: /scripts/warningletters/wlSearchExcel.cfm");
+
+            LetterIssuedDateFromElement.Clear();
+            //LetterIssuedDateFromElement.SendKeys(LetterIssuedDateFrom);
+            Thread.Sleep(500);
+            SearchElement.SendKeys(Keys.Enter);
+            //driver.FindElement(By.Id("searchAdvanced")).Submit();
+        }
+
+        public void ReadFDAWarningLetters(string DownloadFolder)
+        {
+            TextFieldParser parser = new TextFieldParser(DownloadFolder);
+            
+            parser.HasFieldsEnclosedInQuotes = false;
+            parser.SetDelimiters("</tr>");
+
+            string[] rows;
+
+            //int RowNumber = 1;
+            while (!parser.EndOfData)
+            {
+                rows = parser.ReadFields();
+                foreach (string row in rows)
+                {
+                    if (row.ToLower().Contains("warning letters search results") ||
+                        row.Contains("<table>") || row.ToLower().Contains("Letter Issued"))
+                        continue;
+
+                    var Value = row.Replace("<tr>", string.Empty);
+                    Stream stream = GenerateStreamFromString(Value);
+                    TextFieldParser rowParser = new TextFieldParser(stream);
+                    rowParser.HasFieldsEnclosedInQuotes = false;
+                    rowParser.SetDelimiters("</td>");
+                    while (!rowParser.EndOfData)
+                    {
+                        string[] cols;
+                        cols = rowParser.ReadFields();
+
+                        if (cols.Count() < 7)
+                            break;
+
+                        if (cols[0].ToLower().Contains("company") && 
+                            cols[1].ToLower().Contains("letter issued"))
+                            break;
+
+                        for(int Index = 0; Index < cols.Count(); Index++)
+                        {
+                            var sb = new StringBuilder(cols[Index]);
+                            cols[Index] = sb
+                                .Replace("<td align=\"left\">", string.Empty)
+                                .Replace("<td>", string.Empty)
+                                .Replace("&nbsp;", string.Empty)
+                                .ToString();
+                        }
+
+                        var FDAWarningLetterRecord = new FDAWarningLetter();
+
+                        FDAWarningLetterRecord.Company = cols[0];
+                        FDAWarningLetterRecord.LetterIssued = cols[1];
+                        FDAWarningLetterRecord.IssuingOffice = cols[2];
+                        FDAWarningLetterRecord.Subject = cols[3];
+                        FDAWarningLetterRecord.ResponseLetterPosted = cols[4];
+                        FDAWarningLetterRecord.CloseoutDate = cols[5];
+
+                        var link = new Link();
+                        link.Title = "Company";
+                        link.url = cols[6];
+                        FDAWarningLetterRecord.Links.Add(link);
+                        _FDAWarningSiteData.FDAWarningLetterList.Add(
+                            FDAWarningLetterRecord);
+                    }
+                }
+            }
+        }
+
+        private  Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
     }
 }

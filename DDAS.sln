@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{02F790B5-9CBF-46B1-AD28-FB3721468093}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDAS.Models", "DDAS.Models\DDAS.Models.csproj", "{D441E38F-0564-4688-872B-25127A7B3EC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDAS.EF", "DDAS.EF\DDAS.EF.csproj", "{DA8B8909-E002-4E18-9223-BC95F2B6B2CD}"
@@ -42,8 +40,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleLiveScanQueueProcess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDAS.LiveSiteExtractionService", "DDAS.LiveSiteExtractionService\DDAS.LiveSiteExtractionService.csproj", "{005B9323-D82A-4B8C-B25B-62452C4A892F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDAS.LiveSiteExtractor", "DDAS.LiveSiteExtractor\DDAS.LiveSiteExtractor.csproj", "{F5F9139B-A7E1-4A18-B900-D0368BF5E819}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenXmlCidGenerator", "..\OpenXmlDocumentGenerator-master\OpenXmlCidGenerator\OpenXmlCidGenerator.csproj", "{DB7FBF65-FF65-4965-A6FF-E12C34B38219}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenXmlEmbedObjectNew", "OpenXmlEmbedObjectNew\OpenXmlEmbedObjectNew.csproj", "{C3278F37-C0DC-4740-BDAA-3169905CB301}"
@@ -60,22 +56,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|ARM.Build.0 = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|x64.Build.0 = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Debug|x86.Build.0 = Debug|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|ARM.ActiveCfg = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|ARM.Build.0 = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|x64.ActiveCfg = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|x64.Build.0 = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|x86.ActiveCfg = Release|Any CPU
-		{02F790B5-9CBF-46B1-AD28-FB3721468093}.Release|x86.Build.0 = Release|Any CPU
 		{D441E38F-0564-4688-872B-25127A7B3EC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D441E38F-0564-4688-872B-25127A7B3EC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D441E38F-0564-4688-872B-25127A7B3EC5}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -332,22 +312,6 @@ Global
 		{005B9323-D82A-4B8C-B25B-62452C4A892F}.Release|x64.Build.0 = Release|Any CPU
 		{005B9323-D82A-4B8C-B25B-62452C4A892F}.Release|x86.ActiveCfg = Release|Any CPU
 		{005B9323-D82A-4B8C-B25B-62452C4A892F}.Release|x86.Build.0 = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|ARM.Build.0 = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|x64.Build.0 = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Debug|x86.Build.0 = Debug|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|ARM.ActiveCfg = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|ARM.Build.0 = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|x64.ActiveCfg = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|x64.Build.0 = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|x86.ActiveCfg = Release|Any CPU
-		{F5F9139B-A7E1-4A18-B900-D0368BF5E819}.Release|x86.Build.0 = Release|Any CPU
 		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3278F37-C0DC-4740-BDAA-3169905CB301}.Debug|ARM.ActiveCfg = Debug|Any CPU

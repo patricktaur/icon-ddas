@@ -47,6 +47,7 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
+
         public IWebElement FDASearchButton
         {
             get
@@ -124,6 +125,54 @@ namespace WebScraping.Selenium.Pages
                 catch(Exception)
                 {
                     throw new Exception("Could not find PageLastUpdatedElement");
+                }
+            }
+        }
+
+        public IWebElement LetterIssuedDateFromElement
+        {
+            get
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IWebElement element = Web.FindElement(By.Id("_1_issueDt"));
+                            return element;
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Unable to find letter issued date (from) element with id '_1_issueDt'");
+                }
+            }
+        }
+
+        public IWebElement SearchElement
+        {
+            get
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                    Func<IWebDriver, IWebElement> waitForElement =
+                        new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                        {
+                            IWebElement element = 
+                            Web.FindElement(By.CssSelector("input[type='submit'][value='Search']"));
+                            return element;
+                        });
+                    IWebElement targetElement = wait.Until(waitForElement);
+                    return targetElement;
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Unable to find 'Search' element with in " +
+                        "'Search warning letters by issue date and export to excel page");
                 }
             }
         }

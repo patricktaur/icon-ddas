@@ -18,6 +18,7 @@ using DDAS.Services.UserService;
 using Utilities.EMail;
 using DDAS.Models.Entities.Domain;
 using DDAS.Services.AppAdminService;
+using System.Web;
 
 namespace DDAS.API.App_Start
 {
@@ -72,7 +73,7 @@ namespace DDAS.API.App_Start
             //container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
             container.Register<ISearchEngine, SearchEngine>();
             
-           
+            
 
             //container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
@@ -80,8 +81,28 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
             container.Register<ISearchService, ComplianceFormService>();
-           
 
+            var RootPath = HttpRuntime.AppDomainAppPath;
+
+            container.Register<IConfig>(() =>
+            new Config() {
+               AppDataDownloadsFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["AppDataDownloadsFolder"],
+               DataExtractionLogFile = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"],
+               ErrorScreenCaptureFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"],
+               AttachmentsFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["AttachmentsFolder"],
+               ComplianceFormFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["ComplianceFormFolder"],
+               ExcelTempateFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["ExcelTemplateFolder"],
+               UploadsFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"],
+               WordTemplateFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"]
+        });
             //container.RegisterWebApiRequest<IUserService, UserService>();
             container.Register<IUserService, UserService>();
 

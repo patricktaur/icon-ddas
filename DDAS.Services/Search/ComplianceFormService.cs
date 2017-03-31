@@ -173,10 +173,6 @@ namespace DDAS.Services.Search
             return ComplianceForms;
         }
 
-        private void AddCountrySpecificSitesToComplianceForm(ComplianceForm form)
-        {
-
-        }
         #endregion
 
         public void UpdateAssignedToData(string AssignedTo, bool Active,
@@ -2156,7 +2152,7 @@ namespace DDAS.Services.Search
             DateTime? temp = null; 
             _SearchEngine.ExtractData(
                 SiteEnum.FDAWarningLettersPage, NameToSearch, 
-                ErrorScreenCaptureFolder, MatchCountLowerLimit, out temp);
+                MatchCountLowerLimit, out temp);
 
             var siteData = _SearchEngine.SiteData;
             SiteLastUpdatedOn = temp;
@@ -2228,7 +2224,7 @@ namespace DDAS.Services.Search
             DateTime? temp = null;
             _SearchEngine.ExtractData(
                 SiteEnum.ClinicalInvestigatorDisqualificationPage, NameToSearch,
-                ErrorScreenCaptureFolder, MatchCountLowerLimit, out temp);
+                MatchCountLowerLimit, out temp);
 
             var siteData = _SearchEngine.SiteData;
             SiteLastUpdatedOn = temp;
@@ -2342,7 +2338,7 @@ namespace DDAS.Services.Search
         {
             DateTime? temp = null;
             _SearchEngine.ExtractData(SiteEnum.SystemForAwardManagementPage, NameToSearch,
-                ErrorScreenCaptureFolder, MatchCountLowerLimit, out temp);
+                MatchCountLowerLimit, out temp);
 
             var siteData = _SearchEngine.SiteData;
             SiteLastUpdatedOn = temp;

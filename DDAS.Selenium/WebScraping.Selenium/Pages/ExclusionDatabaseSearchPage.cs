@@ -10,19 +10,22 @@ using System.IO;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
 using Microsoft.VisualBasic.FileIO;
-using System.Diagnostics;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class ExclusionDatabaseSearchPage : BaseSearchPage 
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public ExclusionDatabaseSearchPage(IWebDriver driver, IUnitOfWork uow) 
+        public ExclusionDatabaseSearchPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) 
             : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
             _exclusionSearchSiteData.RecId = Guid.NewGuid();
@@ -71,9 +74,10 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private string DownloadExclusionList(string DownloadFolder)
+        private string DownloadExclusionList()
         {
-            string DownloadFilePath = DownloadFolder + "ExclusionDatabaseList.csv";
+            string DownloadFilePath = _config.AppDataDownloadsFolder + 
+                "ExclusionDatabaseList.csv";
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.
@@ -146,9 +150,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder,
-            int MatchCountLowerLimit)
+        public override void LoadContent(
+            string NameToSearch, int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }
@@ -186,13 +189,13 @@ namespace WebScraping.Selenium.Pages
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {
                 _exclusionSearchSiteData.DataExtractionRequired = true;
 
-                string FilePath = DownloadExclusionList(DownloadsFolder);
+                string FilePath = DownloadExclusionList();
                 LoadExclusionDatabaseListFromCSV(FilePath);
 
                 _exclusionSearchSiteData.DataExtractionSucceeded = true;

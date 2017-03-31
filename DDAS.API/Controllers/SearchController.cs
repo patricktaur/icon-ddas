@@ -29,49 +29,30 @@ namespace DDAS.API.Controllers
         private ISearchService _SearchService;
         private IUnitOfWork _UOW;
         private ILog _log;
+        private IConfig _config;
 
-        private string DataExtractionLogFile;
-        private string UploadsFolder;
-        private string ComplianceFormFolder;
-        private string ExcelTemplateFolder;
-        private string ErrorScreenCaptureFolder;
-        private string AttachmentsFolder;
+        //private string DataExtractionLogFile;
+        //private string UploadsFolder;
+        //private string ComplianceFormFolder;
+        //private string ExcelTemplateFolder;
+        //private string ErrorScreenCaptureFolder;
+        //private string AttachmentsFolder;
+        //private string WordTemplateFolder;
 
         private string RootPath;
-        private string WordTemplateFolder;     
 
         public SearchController(ISearchEngine search, ISearchService SearchSummary,
-            IUnitOfWork uow)
+            IUnitOfWork uow, IConfig Config)
         {
+            RootPath = HttpRuntime.AppDomainAppPath;
+
+            _config = Config;
             _SearchEngine = search;
             _SearchService = SearchSummary;
             _UOW = uow;
             _log = new DummyLog(); //Need to refactor
 
             //_userName = User.Identity.GetUserName(); //returns null in constructor, returns correct value in method.
-           
-            RootPath = HttpRuntime.AppDomainAppPath;
-
-            DataExtractionLogFile = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["DataExtractionLogFile"];
-
-            UploadsFolder = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"];
-
-            ComplianceFormFolder = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["ComplianceFormFolder"];
-
-            ExcelTemplateFolder = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["ExcelTemplateFolder"];
-
-            WordTemplateFolder = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"];
-
-          ErrorScreenCaptureFolder = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
-
-            AttachmentsFolder = RootPath +
-                System.Configuration.ConfigurationManager.AppSettings["AttachmentsFolder"];
         }
 
         [Route("Upload")]
@@ -92,7 +73,7 @@ namespace DDAS.API.Controllers
                 //CustomMultipartFormDataStreamProvider provider = 
                 //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
 
-                var provider = new MultipartFormDataStreamProvider(UploadsFolder);
+                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -141,7 +122,7 @@ namespace DDAS.API.Controllers
                         form.ExtractionEstimatedCompletion = nextEstimatedLiveScanCompletion;
                         complianceForms.Add(
                             _SearchService.ScanUpdateComplianceForm(
-                                form, _log, ErrorScreenCaptureFolder));
+                                form, _log, _config.ErrorScreenCaptureFolder));
                         nextEstimatedLiveScanCompletion = nextEstimatedLiveScanCompletion.AddSeconds(extQuery.AverageExtractionTimeInSecs * 3);
                     }
                 }
@@ -188,7 +169,7 @@ namespace DDAS.API.Controllers
                 //CustomMultipartFormDataStreamProvider provider = 
                 //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
 
-                var provider = new MultipartFormDataStreamProvider(UploadsFolder);
+                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
 
@@ -241,7 +222,6 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.getPrincipalInvestigators(UserName, true));
          }
-
 
         [Route("GetMyReviewPendingPrincipalInvestigators")]
         [HttpGet]
@@ -329,7 +309,7 @@ namespace DDAS.API.Controllers
                 return Ok("PI name cannot be empty");
 
             var result = _SearchService.ScanUpdateComplianceForm(form, _log,
-                ErrorScreenCaptureFolder);
+                _config.ErrorScreenCaptureFolder);
             _log.WriteLog("=================================================================================");
             _log.LogEnd();
             return Ok(result);
@@ -353,7 +333,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
 
-            return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form, _log, ErrorScreenCaptureFolder));
+            return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form, _log, _config.ErrorScreenCaptureFolder));
            
         }
 
@@ -383,7 +363,7 @@ namespace DDAS.API.Controllers
                 IWriter writer = new CreateComplianceFormWord();
 
                 var FilePath = _SearchService.GenerateComplianceForm(
-                    ComplianceFormFolder, WordTemplateFolder, RecId,
+                    _config.ComplianceFormFolder, _config.WordTemplateFolder, RecId,
                     writer, ".docx");
 
                 string path = FilePath.Replace(RootPath, "");
@@ -410,7 +390,7 @@ namespace DDAS.API.Controllers
                 IWriter writer = new CreateComplianceFormPDF();
 
                 var FilePath = _SearchService.GenerateComplianceForm(
-                    ComplianceFormFolder, WordTemplateFolder, RecId,
+                    _config.ComplianceFormFolder, _config.WordTemplateFolder, RecId,
                     writer, ".pdf");
 
                 string path = FilePath.Replace(RootPath, "");
@@ -463,7 +443,7 @@ namespace DDAS.API.Controllers
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
-            var localFilePath = UploadsFolder + "SITE LIST REQUEST FORM_Updated.docx";
+            var localFilePath = _config.UploadsFolder + "SITE LIST REQUEST FORM_Updated.docx";
             if (!File.Exists(localFilePath))
             {
                 result = Request.CreateResponse(HttpStatusCode.Gone);
@@ -507,7 +487,6 @@ namespace DDAS.API.Controllers
 
             return Ok(true);
         }
-
 
         [Route("DeleteComplianceForm")]
         [HttpGet]

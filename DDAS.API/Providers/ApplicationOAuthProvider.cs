@@ -119,6 +119,7 @@ namespace DDAS.API.Providers
                         return;
                     }
 
+<<<<<<< HEAD
                     if (user.Active == false)
                     {
                         _UserService.AddLoginDetails(
@@ -138,6 +139,27 @@ namespace DDAS.API.Providers
                             "invalid_grant", "Access denied");
                         return;
                     }
+=======
+                    //if (user.Active == false)
+                    //{
+                    //    _UserService.AddLoginDetails(
+                    //        context.UserName,
+                    //        LocalIPAddress,
+                    //        HostIPAddress,
+                    //        PortNumber,
+                    //        false,
+                    //        ServerProtocol,
+                    //        ServerSoftware,
+                    //        HttpHost,
+                    //        ServerName,
+                    //        GatewayInterface,
+                    //        Https);
+
+                    //    context.SetError(
+                    //        "invalid_grant", "User Inactive");
+                    //    return;
+                    //}
+>>>>>>> fae0ac97bc8b8036a29863d209d258c1448705a2
 
 
                     _UserService.AddLoginDetails(

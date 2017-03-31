@@ -12,22 +12,26 @@ using System.IO;
 using System.Linq;
 using System.Globalization;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class ClinicalInvestigatorInspectionPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL,
             string szFileName, long dwReserved, long lpfnCB);
 
-        public ClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow) 
+        public ClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) 
             : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
             _clinicalSiteData.RecId = Guid.NewGuid();
@@ -77,12 +81,12 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private void DownloadCIIList(string DownloadFolder)
+        private void DownloadCIIList()
         {
             //string fileName = _folderPath + @"\test.pdf";
 
-            string fileName = DownloadFolder  + "cliil.zip";
-            string UnZipPath = DownloadFolder;
+            string fileName = _config.AppDataDownloadsFolder + "cliil.zip";
+            string UnZipPath = _config.AppDataDownloadsFolder;
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.
@@ -93,17 +97,19 @@ namespace WebScraping.Selenium.Pages
             // Download the Web resource and save it into the current filesystem folder.
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
-            if (!File.Exists(UnZipPath + "\\cliil.txt"))
+            if (!File.Exists(UnZipPath + "\\cliil.txt")) //filename is cliil.txt by default
                 ZipFile.ExtractToDirectory(fileName, UnZipPath);
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        private void LoadClinicalInvestigatorListAlt(string DownloadFolder)
+        private void LoadClinicalInvestigatorListAlt()
         {
             int RowNumber = 1;
 
-            string[] LinesFromTextFile = File.ReadAllLines(DownloadFolder + "cliil.txt");
+            string[] LinesFromTextFile = 
+                File.ReadAllLines(
+                    _config.AppDataDownloadsFolder + "cliil.txt");
 
             DateTime CurrentRowInspectionDate = new DateTime();
 
@@ -180,8 +186,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder,
+        public override void LoadContent(string NameToSearch,
             int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
@@ -260,13 +265,13 @@ namespace WebScraping.Selenium.Pages
                 _clinicalSiteData);
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {
                 _clinicalSiteData.DataExtractionRequired = true;
-                DownloadCIIList(DownloadsFolder);
-                LoadClinicalInvestigatorListAlt(DownloadsFolder);
+                DownloadCIIList();
+                LoadClinicalInvestigatorListAlt();
                 _clinicalSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)

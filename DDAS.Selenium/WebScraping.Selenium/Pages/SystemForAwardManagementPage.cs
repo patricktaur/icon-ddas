@@ -7,18 +7,22 @@ using System.Diagnostics;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class SystemForAwardManagementPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public SystemForAwardManagementPage(IWebDriver driver, IUnitOfWork uow) 
+        public SystemForAwardManagementPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) 
             : base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _SAMSiteData = new SystemForAwardManagementPageSiteData();
             _SAMSiteData.RecId = Guid.NewGuid();
@@ -183,14 +187,12 @@ namespace WebScraping.Selenium.Pages
                 return true;
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             throw new NotImplementedException();
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder,
-            int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             string[] Name = NameToSearch.Split(' ');
             try
@@ -214,9 +216,10 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
-                var ErrorCaptureFilePath = ErrorScreenCaptureFolder + @"\SAM_" +
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder + 
+                    "SAM_" +
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
-                    + ".png";
+                    + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
 
                 _SAMSiteData.DataExtractionSucceeded = false;

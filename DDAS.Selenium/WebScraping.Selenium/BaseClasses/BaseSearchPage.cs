@@ -16,12 +16,10 @@ namespace WebScraping.Selenium.BaseClasses
 
         public abstract SiteEnum SiteName { get; }
         
-        public abstract void LoadContent(string DownloadsFolder);
+        public abstract void LoadContent();
 
         public abstract void LoadContent(
-            string NameToSearch, 
-            string DownloadFolder,
-            string ErrorScreenCapture,
+            string NameToSearch,
             int MatchCountLowerLimit);
 
         public virtual void SavePageImage() {

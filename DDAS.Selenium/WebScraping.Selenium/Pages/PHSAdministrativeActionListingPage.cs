@@ -9,19 +9,23 @@ using OpenQA.Selenium;
 using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class PHSAdministrativeActionListingPage : BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public PHSAdministrativeActionListingPage(IWebDriver driver, IUnitOfWork uow)
+        public PHSAdministrativeActionListingPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config)
             : base(driver)
         {
-            Open();
             _UOW = uow;
+            _config = Config;
+            Open();
             _PHSAdministrativeSiteData = new PHSAdministrativeActionListingSiteData();
             _PHSAdministrativeSiteData.RecId = Guid.NewGuid();
             _PHSAdministrativeSiteData.ReferenceId = 
@@ -128,9 +132,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder,
-            int MatchCountLowerLimit)
+        public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }
@@ -198,7 +200,7 @@ namespace WebScraping.Selenium.Pages
             //        _PHSAdministrativeSiteData.RecId;
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {

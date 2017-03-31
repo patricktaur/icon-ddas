@@ -8,18 +8,22 @@ using DDAS.Models.Entities.Domain.SiteData;
 using System.IO;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Interfaces;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class FDADebarPage : BaseSearchPage
     {
         IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
-        public FDADebarPage(IWebDriver driver, IUnitOfWork uow) : base(driver)
+        public FDADebarPage(IWebDriver driver, IUnitOfWork uow,
+            IConfig Config) : base(driver)
         {
-            Open();
             _UOW = uow;
+            _config = Config;
+            Open();
             _FDADebarPageSiteData = new FDADebarPageSiteData();
             _FDADebarPageSiteData.RecId = Guid.NewGuid();
             _FDADebarPageSiteData.ReferenceId = _FDADebarPageSiteData.RecId;
@@ -99,8 +103,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public override void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder,
+        public override void LoadContent(
+            string NameToSearch,
             int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
@@ -135,7 +139,7 @@ namespace WebScraping.Selenium.Pages
 
         }
 
-        public override void LoadContent(string DownloadsFolder)
+        public override void LoadContent()
         {
             try
             {

@@ -20,6 +20,7 @@ namespace WebScraping.Selenium.Pages
     public partial class SpeciallyDesignatedNationalsListPage: ISearchPage //BaseSearchPage
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
 
         [DllImport("urlmon.dll")]
@@ -27,10 +28,11 @@ namespace WebScraping.Selenium.Pages
             string szFileName, long dwReserved, long lpfnCB);
 
         public SpeciallyDesignatedNationalsListPage(
-            IUnitOfWork uow, IWebDriver driver)
+            IUnitOfWork uow, IWebDriver driver, IConfig Config)
             :  base(driver)
         {
             _UOW = uow;
+            _config = Config;
             Open();
             _SDNSiteData = new SpeciallyDesignatedNationalsListSiteData();
             _SDNSiteData.RecId = Guid.NewGuid();
@@ -78,9 +80,9 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private string DownloadSDNList(string DownloadFolder)
+        private string DownloadSDNList()
         {
-            string fileName = DownloadFolder + "\\SDNList.txt";
+            string fileName = _config.AppDataDownloadsFolder + "SDNList.txt";
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
@@ -140,9 +142,9 @@ namespace WebScraping.Selenium.Pages
             return Names;
         }
 
-        private void LoadSDNList(string DownloadFolder)
+        private void LoadSDNList()
         {
-            string AllRecords = File.ReadAllText(DownloadFolder);
+            string AllRecords = File.ReadAllText(_config.AppDataDownloadsFolder);
 
             string[] Records = 
                 AllRecords.Split(new string[] { "\n\n" }, StringSplitOptions.None);
@@ -181,9 +183,7 @@ namespace WebScraping.Selenium.Pages
             //return SiteUpdatedDate != CurrentSiteUpdatedDate ? false : true;
         }
 
-        public void LoadContent(string NameToSearch, string DownloadFolder,
-            string ErrorScreenCaptureFolder,
-            int MatchCountLowerLimit)
+        public void LoadContent(string NameToSearch, int MatchCountLowerLimit)
         {
             throw new NotImplementedException();
         }
@@ -215,14 +215,14 @@ namespace WebScraping.Selenium.Pages
             _SiteLastUpdatedFromPage = CurrentSiteUpdatedDate;
         }
 
-        public void LoadContent(string DownloadFolder)
+        public void LoadContent()
         {
             try
             {
                 _SDNSiteData.DataExtractionRequired = true;
-                var FilePath = DownloadSDNList(DownloadFolder);
+                DownloadSDNList();
                 //GetTextFromPDF("", DownloadFolder);
-                LoadSDNList(FilePath);
+                LoadSDNList();
                 _SDNSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
