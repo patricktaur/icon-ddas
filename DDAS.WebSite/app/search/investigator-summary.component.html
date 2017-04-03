@@ -116,9 +116,17 @@
 			<tr class="active" *ngFor="let item of FilteredInvestigatorSiteSummary; let indexVal = index">
 				<td>{{item.DisplayPosition}}</td>
 				<td align="left">
-					<a target="_blank" [href]="sanitize(item.SiteUrl)">
+					<!--<a target="_blank" [href]="sanitize(item.SiteUrl)">
                             {{item.SiteName}}
-					</a>
+					</a>-->
+					<div class="text-left" *ngIf="item.SiteUrl.length > 0">
+						<a target="_blank" [href]="sanitize(item.SiteUrl)">
+							{{item.SiteName}}
+						</a>
+					</div>
+					<div class="text-left" *ngIf="item.SiteUrl.length == 0">
+						{{item.SiteName}}
+					</div>
 				</td>
 				<td class="success">{{item.FullMatchCount}}</td>
 				<td class="success">{{item.PartialMatchCount}}</td>
@@ -131,10 +139,8 @@
 				<td>
 					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.siteEnum)">Findings</button>
 					<div *ngIf="LoggedInUserIsAppAdmin">
-						Extraction Pending: {{item.ExtractionPending | boolToYesNo}} /
-						HasExtractionError: {{item.HasExtractionError | boolToYesNo}} / 
-						ExtractionErrorMessage: {{item.ExtractionErrorMessage }} /
-						ExtractedOn : {{item.ExtractedOn }} 
+						Extraction Pending: {{item.ExtractionPending | boolToYesNo}} / HasExtractionError: {{item.HasExtractionError | boolToYesNo}}
+						/ ExtractionErrorMessage: {{item.ExtractionErrorMessage }} / ExtractedOn : {{item.ExtractedOn }}
 					</div>
 				</td>
 			</tr>

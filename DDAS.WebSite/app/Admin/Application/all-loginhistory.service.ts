@@ -138,6 +138,16 @@ export class LoginHistoryService {
             .catch(this.handleError);
     }
 
+   deleteSiteSource(RecId: string){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteSiteSource?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    
     getCountries(){
         return this.http.get(this._baseUrl + 'AppAdmin/GetCountries',
         this._options)

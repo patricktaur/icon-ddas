@@ -624,25 +624,29 @@ namespace DDAS.Services.Search
         private void AddCountrySpecificSites(ComplianceForm compForm)
         {
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
-            country.Name == compForm.Country).ToList();
+            country.Name.ToLower() == compForm.Country.ToLower()).ToList();
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
             foreach (Country country in Countries)
             {
                 var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
-
-                var siteSource = new SiteSource();
-                lastDisplayPosition += 1;
-                siteSource.DisplayPosition = lastDisplayPosition;
-                siteSource.SiteName = SiteToAdd.SiteName;
-                siteSource.SiteShortName = SiteToAdd.SiteShortName;
-                siteSource.SiteEnum = SiteToAdd.SiteEnum;
-                siteSource.SiteUrl = SiteToAdd.SiteUrl;
-                siteSource.IsMandatory = SiteToAdd.Mandatory;
-                siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
-                siteSource.ExcludePI = SiteToAdd.ExcludePI;
-                siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
-                compForm.SiteSources.Add(siteSource);
+                if (SiteToAdd != null)
+                {
+                    var siteSource = new SiteSource();
+                    lastDisplayPosition += 1;
+                    siteSource.DisplayPosition = lastDisplayPosition;
+                    siteSource.SiteName = SiteToAdd.SiteName;
+                    siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                    siteSource.SiteEnum = SiteToAdd.SiteEnum;
+                    siteSource.SiteUrl = SiteToAdd.SiteUrl;
+                    siteSource.IsMandatory = SiteToAdd.Mandatory;
+                    siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+                    siteSource.ExcludePI = SiteToAdd.ExcludePI;
+                    siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
+                    compForm.SiteSources.Add(siteSource);
+                }
+                //Not found, continue
+                
             }
         }
 
@@ -805,7 +809,7 @@ namespace DDAS.Services.Search
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
 
-            int SiteCount = form.SiteSources.Count;
+            //int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
 
@@ -826,6 +830,11 @@ namespace DDAS.Services.Search
             AllSites.ToList().ForEach(x => x.IssuesIdentified = false);
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
+                var sitesSearched = Investigator.SitesSearched.Where(x => x.Exclude == false);
+                int sitesSearchedCount = sitesSearched.ToList().Count;
+
+
+
                 Investigator.TotalIssuesFound = 0;
 
                 int PartialMatchSiteCount = 0;
@@ -840,8 +849,8 @@ namespace DDAS.Services.Search
                 Investigator.IssuesFoundSiteCount = 0;
                 Investigator.ReviewCompletedSiteCount = 0;
 
-                
-                foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched.Where(x => x.Exclude == false))
+               // foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched.Where(x => x.Exclude == false))
+                foreach (SiteSearchStatus searchStatus in sitesSearched)
                 {
                     if (
                         //searchStatus.ExtractionMode.ToLower() == "db" 
@@ -925,7 +934,7 @@ namespace DDAS.Services.Search
                 {
                     IssuesFoundInvestigatorCount += 1;
                 }
-                if (Investigator.ReviewCompletedSiteCount == SiteCount)
+                if (Investigator.ReviewCompletedSiteCount == sitesSearchedCount)  //SiteCount)
                 {
                      ReviewCompletedInvestigatorCount += 1;
                 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, Finding, SiteSearchStatus, UpdateFindigs } from './search.classes';
 import { SearchService } from './search-service';
 import { Location } from '@angular/common';
@@ -33,6 +34,7 @@ export class FindingsComponent implements OnInit {
         private router: Router,
         private _location: Location,
         private service: SearchService,
+         private sanitizer: DomSanitizer
     ) { }
 
     ngOnInit() {
@@ -83,6 +85,26 @@ export class FindingsComponent implements OnInit {
             return site1;
          }
         
+    }
+
+    get SiteHasUrl(){
+        if (this.Site != null){
+            if (this.Site.SiteUrl != null ){
+                if (this.Site.SiteUrl.length > 0 ){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+             }
+            else{
+                return false;
+            }
+            
+        }
+        else{
+            return false;
+        }
     }
     
     get IsManualExtractionSite(){
@@ -313,5 +335,8 @@ export class FindingsComponent implements OnInit {
       
     }
     
+    sanitize(url: string) {
+        return this.sanitizer.bypassSecurityTrustUrl(url);
+    }
     get diagnostic() { return JSON.stringify(this.highlightFilter); }
 }

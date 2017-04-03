@@ -233,6 +233,8 @@
 																		</a>
 																	</div>
 
+
+
 																</td>
 
 																<td>
@@ -277,13 +279,14 @@
 															<tr class="active" *ngFor="let item of OptionalSites; let idx = index;">
 																<td>{{item.DisplayPosition}}</td>
 																<td>
-																	<div class="text-left">
-
+																	<div class="text-left" *ngIf="item.SiteUrl.length > 0">
 																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
                                                 							 {{item.SiteName}}
                                             								</a>
 																	</div>
-
+																	<div class="text-left" *ngIf="item.SiteUrl.length == 0">
+                                                							 {{item.SiteName}}
+ 																	</div>
 																</td>
 																<td>
 																	<div date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
@@ -328,15 +331,15 @@
 														<tbody>
 															<tr class="active" *ngFor="let item of Findings; ">
 																<td align="left">
-																	
+
 																	{{item.InvestigatorName}}
-																	
-																	
+
+
 																</td>
 																<td>
 																	{{item.SourceNumber}}
 																</td>
-																
+
 																<td>
 																	{{item.DateOfInspection |date:'dd MMM yyyy' }}
 
@@ -492,10 +495,14 @@
 						<input type="checkbox" [(ngModel)]="item.Selected" />
 					</td>
 					<td>
-						<div class="text-left">
+						<div class="text-left" *ngIf="item.SiteUrl.length > 0">
 							<a target="_blank" [href]="sanitize(item.SiteUrl)">
 								{{item.SiteName}}
 								</a>
+						</div>
+						<div class="text-left" *ngIf="item.SiteUrl.length == 0">
+
+							{{item.SiteName}}
 						</div>
 
 					</td>

@@ -509,7 +509,9 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            return Ok(SearchSites.GetNewSearchQuery());
+            //return Ok(SearchSites.GetNewSearchQuery());
+            return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName));
+            
         }
 
        string ListToString(List<List<string>> lst)

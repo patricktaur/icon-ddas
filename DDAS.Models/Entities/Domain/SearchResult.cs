@@ -560,8 +560,9 @@ namespace DDAS.Models.Entities.Domain
             var searchStatusPartialMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending).ToList().Count;
             var searchStatusExtractionErrorsCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors).ToList().Count;
             var searchStatusNotScannedCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.NotScanned).ToList().Count;
+            var sitesSearchedCount = SitesSearched.Where(x => x.Exclude == false).Count();
             //ExtractionPendingSiteCount
-            if (ReviewCompletedSiteCount == SitesSearched.Count)
+            if (ReviewCompletedSiteCount == sitesSearchedCount)
             {
                 ReviewCompleted = true;
             }
@@ -957,6 +958,7 @@ namespace DDAS.Models.Entities.Domain
         //public string SiteName { get; set; }
         public Guid? RecId { get; set; }
         public int SiteNumber { get; set; }
+        public string SiteName { get; set; }
         public SiteEnum Enum { get; set; }
         public DateTime ExtractionDate { get; set; }
         public DateTime? SiteLastUpdatedOn { get; set; }
