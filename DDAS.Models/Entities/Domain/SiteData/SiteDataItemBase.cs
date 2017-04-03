@@ -10,10 +10,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public abstract string RecordDetails { get; }
         public int RowNumber { get; set; }
         public int RecordNumber { get; set; }
-        public List<Link> Links { get; } = new List<Link>();
+        public List<Link> Links { get; set; } = new List<Link>();
        
         public abstract DateTime? DateOfInspection { get; }
-        
     }
 
     public class Link

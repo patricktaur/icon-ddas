@@ -12,7 +12,7 @@ export class LoginHistoryComponent implements OnInit {
     public loginHistoryDetails: any[];
 
     public pageNumber: number;
-    public formLoading: Boolean;
+    public formLoading: boolean;
     
     public myDatePickerOptions = {
         
@@ -56,7 +56,7 @@ export class LoginHistoryComponent implements OnInit {
     LoadLoginHistory(){
          let from: Date;
         let to: Date;
-        this.formLoading = false;
+        this.formLoading = true;
         if (this.FromDate != null){
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
@@ -71,7 +71,7 @@ export class LoginHistoryComponent implements OnInit {
         .subscribe((item: any[]) => {
             console.log("item :" + item);
             this.loginHistoryDetails = item;
-            this.formLoading = true;
+            this.formLoading = false;
         },
         error => {
             this.formLoading = false;
