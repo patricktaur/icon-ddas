@@ -41,14 +41,23 @@ namespace DDAS.Services.UserService
         {
             var retUser = new UserViewModel();
             retUser.Active = true;
+            
             //AddRoles:
             var Roles = _UOW.RoleRepository.GetAll();
             foreach (Role role in Roles)
             {
-                var roleToAdd = new RoleViewModel();
-                roleToAdd.Name = role.Name;
-                roleToAdd.Active = false;
-                retUser.Roles.Add(roleToAdd);
+                if (IncludeAppAdminrole != true && role.Name.ToLower()=="app-admin")
+                {
+                    //skip adding role
+                }
+                else
+                {
+                    var roleToAdd = new RoleViewModel();
+                    roleToAdd.Name = role.Name;
+                    roleToAdd.Active = false;
+                    retUser.Roles.Add(roleToAdd);
+                }
+                
             }
             return retUser;
         }

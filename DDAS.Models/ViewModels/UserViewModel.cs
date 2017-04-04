@@ -21,7 +21,7 @@ namespace DDAS.Models.ViewModels
         {
             get
             {
-                if (ActiveRoles.ToLower().Contains("app-admin"))
+                if (ActiveRoles != null && ActiveRoles.ToLower().Contains("app-admin"))
                 {
                     return true;
                 }
