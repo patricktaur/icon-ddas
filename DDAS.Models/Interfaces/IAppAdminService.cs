@@ -24,6 +24,7 @@ namespace DDAS.Models.Interfaces
         SitesToSearch GetSingleSiteSource(Guid? RecId);
         List<SitesToSearch> GetAllSiteSources();
         bool UpdateSiteSource(SitesToSearch SiteSource);
+        void DeleteSiteSource(Guid? RecId);
 
         List<CountryViewModel> GetCountries();
         bool AddCountry(Country country);

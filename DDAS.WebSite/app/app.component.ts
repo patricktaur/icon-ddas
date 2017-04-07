@@ -51,7 +51,14 @@ export class AppComponent {
   }
 
   get showLocation(){
-      return (this.appLocation.length >0);
+      if (this.appLocation != null){
+          return true;
+          //return (this.appLocation.length >0);
+      }
+      else {
+          return false;
+      }
+      
   }
 
   //get diagnostic() { return JSON.stringify(this.authService.TestValue); }

@@ -91,27 +91,29 @@ namespace DDAS.API.Controllers
                     if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
                         UploadedFileName = Path.GetFileName(UploadedFileName);
 
-                    var DataInExcelFile =
+                    var excelInput =
                             _SearchService.ReadDataFromExcelFile(FilePathWithGUID);
 
-                    if (DataInExcelFile.Count >= 0)
+                    if (excelInput.ExcelInputRows.Count >= 0)
                     {
-                        if (DataInExcelFile.Count == 0)
+                        if (excelInput.ExcelInputRows.Count == 0)
                             return Request.CreateResponse(HttpStatusCode.OK,
                                 "No records found");
 
-                        if(DataInExcelFile.SelectMany(x => x.Where( y => 
-                        y.ToLower().Contains("errors found"))).Count() > 0)
+                        if(excelInput.ExcelInputRows.SelectMany(
+                            x => x.ErrorMessages.Where(
+                                y => y.ToLower()
+                                .Contains("errors found"))).Count() > 0)
                         {
                             //unable to make the uploader handle list of strings, 
                             //therefore this ListToString workaround:
                             return
                                 Request.CreateResponse(HttpStatusCode.OK,
-                                ListToString(DataInExcelFile));
+                                ListToString(excelInput));
                         }
                     }
 
-                    var forms = _SearchService.ReadUploadedFileData(DataInExcelFile,
+                    var forms = _SearchService.ReadUploadedFileData(excelInput,
                         _log, userName, FilePathWithGUID, UploadedFileName);
 
                     var extQuery = new Services.LiveScan.ExtractionQueries(_UOW, 2);
@@ -129,7 +131,6 @@ namespace DDAS.API.Controllers
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
                 
                 return Request.CreateResponse(HttpStatusCode.OK, "ok");
-
             }
             catch (Exception e)
             {
@@ -257,6 +258,16 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.
                     getInvestigatorSiteSummary(formId, investigatorId));
+        }
+
+        [Route("GetSingleComponentMatches")]
+        [HttpGet]
+        public IHttpActionResult GetSinlgeComponentMatches(
+            SiteEnum Enum, 
+            Guid? SiteDataId,
+            string NameComponent)
+        {
+            return Ok();
         }
 
         [Route("ComplianceFormFilters")]
@@ -509,10 +520,27 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            return Ok(SearchSites.GetNewSearchQuery());
+            //return Ok(SearchSites.GetNewSearchQuery());
+            return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName));
+            
         }
 
-       string ListToString(List<List<string>> lst)
+        string ListToString(ExcelInput excelInput)
+        {
+            string retValue = "";
+
+            var excelRows = excelInput.ExcelInputRows;
+            foreach(ExcelInputRow row in excelRows)
+            {
+                foreach(string Value in row.ErrorMessages)
+                {
+                    retValue += Value + "---";
+                }
+            }
+            return retValue;
+        }
+
+        string ListToString(List<List<string>> lst)
         {
             string retValue = "";
             foreach(List<string> l in lst)

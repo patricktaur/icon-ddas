@@ -17,10 +17,20 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<h3 class="align-left no-margin-top">
-						<a target="_blank" [href]="Site.SiteUrl">
+						<!--<a target="_blank" [href]="Site.SiteUrl">
                              Source: {{Site.DisplayPosition + "." + Site.SiteName}}
 							
-                        </a>
+                        </a>-->
+						<div class="text-left" *ngIf="SiteHasUrl == true">
+							<a target="_blank" [href]="sanitize(Site.SiteUrl)">
+								Source: {{Site.DisplayPosition + "." + Site.SiteName}}
+							</a>
+						</div>
+						<div class="text-left" *ngIf="SiteHasUrl == false">
+							Source: {{Site.DisplayPosition + "." + Site.SiteName}}
+						</div>
+					
+					
 					</h3>
 				</div>
 			</div>

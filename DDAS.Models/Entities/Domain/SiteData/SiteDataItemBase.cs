@@ -7,11 +7,12 @@ namespace DDAS.Models.Entities.Domain.SiteData
     {
         public int Matched { get; set; }
         public abstract string FullName { get; }
+        //public string SingleComponentMatchedValues { get; set; }
         public abstract string RecordDetails { get; }
         public int RowNumber { get; set; }
         public int RecordNumber { get; set; }
         public List<Link> Links { get; set; } = new List<Link>();
-       
+
         public abstract DateTime? DateOfInspection { get; }
     }
 

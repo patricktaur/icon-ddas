@@ -176,10 +176,20 @@ namespace DDAS.API.Controllers
         {
             return Ok(_AppAdminService.UpdateSiteSource(SiteSource));
         }
+
+        [Route("DeleteSiteSource")]
+        [HttpGet]
+        public IHttpActionResult DeleteSiteSource(string RecId)
+        {
+            var Id = Guid.Parse(RecId);
+            _AppAdminService.DeleteSiteSource(Id);
+            return Ok(true);
+        }
+
         #endregion
 
         #region Add/Delete/Get Country
-        
+
         [Route("AddCountry")]
         [HttpPost]
         public IHttpActionResult AddCountry(Country country)

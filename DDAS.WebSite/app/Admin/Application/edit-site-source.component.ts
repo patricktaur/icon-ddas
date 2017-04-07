@@ -44,10 +44,19 @@ export class EditSiteSourceComponent implements OnInit {
     }
 
     LoadSiteSource(){
-        this.service.getSiteSource(this.RecId)
+
+        if (this.RecId == ""){
+            let newSiteSource = new SiteSourceViewModel();
+            newSiteSource.ExtractionMode = "Manual";
+            this.SiteSource = newSiteSource;
+        }
+        else{
+            this.service.getSiteSource(this.RecId)
         .subscribe((item: any) => {
         this.SiteSource = item;
         });
+        }
+        
     }
 
    Save() {

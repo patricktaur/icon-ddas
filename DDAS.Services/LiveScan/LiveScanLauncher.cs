@@ -18,7 +18,7 @@ namespace DDAS.Services.LiveScan
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = true;
+            startInfo.UseShellExecute = false;
             startInfo.FileName = fileName;
            
             startInfo.WindowStyle = ProcessWindowStyle.Normal;
@@ -40,6 +40,7 @@ namespace DDAS.Services.LiveScan
             catch (Exception)
             {
                 // Log error.
+
                 return false;
             }
         }

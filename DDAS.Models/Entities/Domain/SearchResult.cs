@@ -499,6 +499,24 @@ namespace DDAS.Models.Entities.Domain
         public int Id { get; set; }
         public int DisplayPosition { get; set; }
         public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string SearchName
+        {
+            get
+            {
+                var searchName = "";
+                if (FirstName.Trim().Length > 0)
+                    searchName = FirstName.Trim();
+                if (MiddleName.Trim().Length > 0)
+                    searchName += " " + MiddleName.Trim();
+                if (LastName.Trim().Length > 0)
+                    searchName += " " + LastName.Trim();
+                return searchName;
+            }
+        }
+
         public string Role { get; set; }
         public string Qualification { get; set; }
         public string MedicalLiceseNumber { get; set; }
@@ -517,6 +535,8 @@ namespace DDAS.Models.Entities.Domain
 
         public int TotalIssuesFound { get; set; }
         public int ReviewCompletedCount { get; set; }
+
+        public string MemberId { get; set; }
 
         //Patrick 27NOvb2016: - to be removed:
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
@@ -560,8 +580,9 @@ namespace DDAS.Models.Entities.Domain
             var searchStatusPartialMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending).ToList().Count;
             var searchStatusExtractionErrorsCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors).ToList().Count;
             var searchStatusNotScannedCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.NotScanned).ToList().Count;
+            var sitesSearchedCount = SitesSearched.Where(x => x.Exclude == false).Count();
             //ExtractionPendingSiteCount
-            if (ReviewCompletedSiteCount == SitesSearched.Count)
+            if (ReviewCompletedSiteCount == sitesSearchedCount)
             {
                 ReviewCompleted = true;
             }
@@ -717,6 +738,8 @@ namespace DDAS.Models.Entities.Domain
         public int IssuesFound { get; set; }
         public bool Exclude { get; set; }
         public bool ReviewCompleted { get; set; }
+
+        public string SingleComponentMatchedValues { get; set; }
 
         public DateTime? SiteSourceUpdatedOn { get; set; }
         public string ExtractionMode { get; set; }
@@ -957,6 +980,7 @@ namespace DDAS.Models.Entities.Domain
         //public string SiteName { get; set; }
         public Guid? RecId { get; set; }
         public int SiteNumber { get; set; }
+        public string SiteName { get; set; }
         public SiteEnum Enum { get; set; }
         public DateTime ExtractionDate { get; set; }
         public DateTime? SiteLastUpdatedOn { get; set; }
@@ -1116,4 +1140,60 @@ namespace DDAS.Models.Entities.Domain
         public string WordTemplateFolder { get; set; }
         public string CIILZipFolder { get; set; }
     }
+
+    #region ReadExcelInput
+    public class ExcelInput
+    {
+        public List<ExcelInputRow> ExcelInputRows { get; set; } 
+            = new List<ExcelInputRow>();
+    }
+
+    public class ExcelInputRow
+    {
+        public string Role { get; set; }
+        public string ProjectNumber { get; set; }
+        public string SponsorProtocolNumber { get; set; }
+        public string DisplayName { get; set; }
+        public string InvestigatorID { get; set; }
+        public string MemberID { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string InstituteName { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string PostalCode { get; set; }
+        public string Country { get; set; }
+        public string MedicalLicenseNumber { get; set; }
+        public List<string> ErrorMessages { get; set; } = new List<string>();
+
+        public string FullName {
+            get {
+                var fullName = "";
+                fullName = FirstName.Trim() + " " + MiddleName.Trim() + " " + LastName.Trim();
+                return fullName.Trim();
+            }
+        }
+
+        public string Address {
+            get {
+                var address = "";
+                if (AddressLine1.Trim().Length > 0)
+                    address += AddressLine1 + " ";
+                if(AddressLine2.Trim().Length > 0)
+                    address += AddressLine2 + " ";
+                if(City.Trim().Length > 0)
+                    address += City + " ";
+                if(State.Trim().Length > 0)
+                    address += State + " ";
+                if(PostalCode.Trim().Length > 0)
+                    address += PostalCode;
+
+                return address.Trim();
+            }
+        }
+    }
+    #endregion
 }

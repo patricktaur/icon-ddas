@@ -21,6 +21,7 @@
 							<thead>
 								<tr>
 									<th>Site #</th>
+									<th>Site Name</th>
 									<th>Data Last Extracted On</th>
 									<th>Site Source Last Updated On</th>
 									<th>Error Description</th>
@@ -29,9 +30,12 @@
 							</thead>
 							<tbody>
 								<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
-								<tr *ngFor="let item of ExtractionDetails | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+								<tr *ngFor="let item of ExtractionDetails" class="active">
 									<td class="text-center">
 										{{item.SiteNumber}}
+									</td>
+									<td class="text-left">
+										{{item.SiteName}}
 									</td>
 									<td class="text-center">
 										{{item.ExtractionDate | date: 'dd MMM yyyy hh:mm a'}}
@@ -39,10 +43,10 @@
 									<td class="text-center">
 										{{item.SiteLastUpdatedOn | date: 'dd MMM yyyy hh:mm a'}}
 									</td>
-									<td class="text-center">
+									<td class="text-left">
 										{{item.ErrorDescription}}
 									</td>
-									<td class="text-center">
+									<td class="text-left">
 										{{item.ExtractionMessage}}
 									</td>                                
 								</tr>

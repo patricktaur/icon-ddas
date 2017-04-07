@@ -16,13 +16,15 @@ import {ManageSiteSourcesComponent} from './manage-site-sources.component';
 import {EditSiteSourceComponent} from './edit-site-source.component';
 import {AddCountryComponent} from './add-country.component';
 import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.component';
+import { Ng2Bs3ModalModule } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
 @NgModule({ 
   imports: [
       LoginHistoryRouting,
       CommonModule,
       FormsModule,
-      SharedModule
+      SharedModule,
+      Ng2Bs3ModalModule
   ],
   declarations: [
       LoginHistoryComponent,
@@ -32,7 +34,8 @@ import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.componen
       ManageSiteSourcesComponent,
       EditSiteSourceComponent,
       AddCountryComponent,
-      ManageSponsorProtocolComponent
+      ManageSponsorProtocolComponent,
+      
   ],
  
   providers: [      

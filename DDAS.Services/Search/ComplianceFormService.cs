@@ -43,7 +43,32 @@ namespace DDAS.Services.Search
         }
 
         #region ByPradeep
-        public List<List<string>> ReadDataFromExcelFile(string FilePathWithGUID)
+
+        public ExcelInputRow FillUpExcelInputRowObject(ExcelInputRow RowData,
+            List<string> ExcelRow)
+        {
+            RowData.Role = ExcelRow[0];
+            RowData.ProjectNumber = ExcelRow[1];
+            RowData.SponsorProtocolNumber = ExcelRow[2];
+            RowData.DisplayName = ExcelRow[3];
+            RowData.InvestigatorID = ExcelRow[4];
+            RowData.MemberID = ExcelRow[5];
+            RowData.FirstName = ExcelRow[6];
+            RowData.MiddleName = ExcelRow[7];
+            RowData.LastName = ExcelRow[8];
+            RowData.InstituteName = ExcelRow[9];
+            RowData.AddressLine1 = ExcelRow[10];
+            RowData.AddressLine2 = ExcelRow[11];
+            RowData.City = ExcelRow[12];
+            RowData.State = ExcelRow[13];
+            RowData.PostalCode = ExcelRow[14];
+            RowData.Country = ExcelRow[15];
+            RowData.MedicalLicenseNumber = ExcelRow[16];
+
+            return RowData;
+        }
+
+        public ExcelInput ReadDataFromExcelFile(string FilePathWithGUID)
         {
             var readExcelData = new ReadUploadedExcelFile();
 
@@ -51,66 +76,100 @@ namespace DDAS.Services.Search
             var ValidationMessages = new List<string>();
             var ComplianceFormDetails = new List<List<string>>();
 
+            var excelInput = new ExcelInput();
+            
             int RowIndex = 2;
+
             while (true)
             {
+                var RowData = new ExcelInputRow();
+
                 var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
                 if(ExcelRow.Where(x => x.Contains("cannot find column")).Count() > 0)
                 {
-                    Validations.Add(ExcelRow);
+                    ExcelRow.ForEach(row =>
+                    {
+                        RowData.ErrorMessages.Add(row);
+                    });
+                    RowData.ErrorMessages.Add("errors found");
+                    excelInput.ExcelInputRows.Add(RowData);
+                    //Validations.Add(ExcelRow);
                     break;
                 }
 
                 if (ExcelRow[0] == null || ExcelRow[0] == "")
-                {
                     break;
-                }
+ 
+                FillUpExcelInputRowObject(RowData, ExcelRow);
 
                 //Validate RowData
-                ValidationMessages = ValidateExcelInputs(ExcelRow, RowIndex);
+                ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
+                //ValidationMessages = ValidateExcelInputs(ExcelRow, RowIndex);
 
                 if (ValidationMessages.Count > 0)
                 {
-                    Validations.Add(ValidationMessages);
+                    ValidationMessages.ForEach(message =>
+                    {
+                        RowData.ErrorMessages.Add(message);
+                    });
+                    RowData.ErrorMessages.Add("errors found");
+                    excelInput.ExcelInputRows.Add(RowData);
+                    //Validations.Add(ValidationMessages);
                     break;
                 }
 
-                if(ExcelRow[1].ToLower() == "principal")
+                excelInput.ExcelInputRows.Add(RowData);
+
+                //if(ExcelRow[1].ToLower() == "principal")
+                if (RowData.Role.ToLower() == "principal")
                 {
                     RowIndex += 1;
-                    var SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
+                    var SubInvestigator =
+                        readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
-                    while (SubInvestigator[1].ToLower() == "sub")
+                    while (SubInvestigator[0].ToLower() == "sub")
                     {
-                        ValidationMessages = ValidateExcelInputs(SubInvestigator, RowIndex);
+                        var SubInvRowData = new ExcelInputRow();
+                        FillUpExcelInputRowObject(SubInvRowData, SubInvestigator);
+                        ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
+                        //ValidationMessages = ValidateExcelInputs(SubInvestigator, RowIndex);
 
                         if (ValidationMessages.Count > 0)
                         {
-                            Validations.Add(ValidationMessages);
+                            ExcelRow.ForEach(row =>
+                            {
+                                RowData.ErrorMessages.Add(row);
+                            });
+                            RowData.ErrorMessages.Add("errors found");
+                            //Validations.Add(ValidationMessages);
                             //break;
                         }
 
-                        foreach (string Inv in SubInvestigator)
-                        {
-                            ExcelRow.Add(Inv);
-                        }
+                        //foreach (string Inv in SubInvestigator)
+                        //{
+                        //    ExcelRow.Add(Inv);
+                        //}
+                        excelInput.ExcelInputRows.Add(SubInvRowData);
                         RowIndex += 1;
                         SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
                     }
                 }
-                ComplianceFormDetails.Add(ExcelRow);
+                //ComplianceFormDetails.Add(ExcelRow);
             }
-            if(Validations.Count > 0)
-            {
-                List<string> temp = new List<string>() {"errors found"};
-                Validations.Add(temp);
-            }
-            return Validations.Count > 0 ? Validations : ComplianceFormDetails;
 
+            return excelInput;
+            //if(RowData.ErrorMessages.Count > 0)
+            //if (Validations.Count > 0)
+            //{
+            //    List<string> temp = new List<string>() {"errors found"};
+            //    //RowData.ErrorMessages.Add(temp);
+            //    Validations.Add(temp);
+            //}
+            //return Validations.Count > 0 ? Validations : ComplianceFormDetails;
         }
 
-        public List<ComplianceForm> ReadUploadedFileData(List<List<string>> DataFromExcelFile, 
+        public List<ComplianceForm> ReadUploadedFileData(ExcelInput DataFromExcelFile, 
             ILog log,
             string UserName, 
             string FilePathWithGUID,
@@ -118,58 +177,142 @@ namespace DDAS.Services.Search
         {
             var ComplianceForms = new List<ComplianceForm>();
 
-            for (int Counter = 0; Counter < DataFromExcelFile.Count; Counter++)
+            var InputRows = DataFromExcelFile.ExcelInputRows;
+
+            for (int Index = 0; Index < InputRows.Count; Index++)
             {
-                var DetailsInEachRow = DataFromExcelFile[Counter];
-
-                var Investigator = new InvestigatorSearched();
-
                 var form = GetNewComplianceForm(log, UserName);
 
                 form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
-                form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
-                form.ProjectNumber = DetailsInEachRow[4];
-                form.SponsorProtocolNumber = DetailsInEachRow[5];
-                form.Institute = DetailsInEachRow[6];
-                form.Address = DetailsInEachRow[7];
-                form.Country = DetailsInEachRow[8];
+                form.GeneratedFileName = 
+                    Path.GetFileName(FilePathWithGUID);
+                form.ProjectNumber = InputRows[Index].ProjectNumber;
+                //form.SponsorProtocolNumber = 
+                //    InputRows[Index].ProjectNumber.Split('/')[0];
+                form.SponsorProtocolNumber =
+                    InputRows[Index].SponsorProtocolNumber;
+                form.Institute = InputRows[Index].InstituteName;
+                form.Address = InputRows[Index].Address;
+                form.Country = InputRows[Index].Country;
 
                 AddCountrySpecificSites(form);
                 AddSponsorSpecificSites(form);
 
                 int InvId = 1;
-                if (DetailsInEachRow[1].ToLower() == "principal")
-                {  
+                if(InputRows[Index].Role.ToLower() == "principal")
+                {
+                    var Investigator = new InvestigatorSearched();
                     Investigator.Id = InvId;
                     InvId += 1;
-                    Investigator.Name = DetailsInEachRow[0];
-                    Investigator.Role = DetailsInEachRow[1];
-                    Investigator.MedicalLiceseNumber = DetailsInEachRow[2];
-                    Investigator.Qualification = DetailsInEachRow[3];
-                   
+
+                    Investigator.Name = InputRows[Index].DisplayName;
+                    Investigator.FirstName = InputRows[Index].FirstName;
+                    Investigator.MiddleName = InputRows[Index].MiddleName;
+                    Investigator.LastName = InputRows[Index].LastName;
+                    Investigator.Role = InputRows[Index].Role;
+                    Investigator.MedicalLiceseNumber = 
+                        InputRows[Index].MedicalLicenseNumber;
+                    Investigator.MemberId = InputRows[Index].MemberID;
+                    Investigator.InvestigatorId = InputRows[Index].InvestigatorID;
+
                     form.InvestigatorDetails.Add(Investigator);
 
-                    if (DetailsInEachRow.Count > 9)
+                    int tempIndex = Index + 1; //to add SI's
+                    while(tempIndex < InputRows.Count && 
+                        InputRows[tempIndex].Role.ToLower() == "sub")
                     {
-                        for(int Index = 9; Index < DetailsInEachRow.Count; Index++)
-                        {
-                            var Inv = new InvestigatorSearched();
+                        var Inv = new InvestigatorSearched();
+                        Inv.Id = InvId;
+                        InvId += 1;
 
-                            Inv.Id = InvId;
-                            InvId += 1;
-                            Inv.Name = DetailsInEachRow[Index];
-                            Inv.Role = DetailsInEachRow[Index + 1];
-                            Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 2];
-                            Inv.Qualification = DetailsInEachRow[Index + 3];
+                        Inv.Name = InputRows[tempIndex].DisplayName;
+                        Inv.FirstName = InputRows[tempIndex].FirstName;
+                        Inv.MiddleName = InputRows[tempIndex].MiddleName;
+                        Inv.LastName = InputRows[tempIndex].LastName;
+                        Inv.Role = InputRows[tempIndex].Role;
+                        Inv.MedicalLiceseNumber =
+                            InputRows[tempIndex].MedicalLicenseNumber;
+                        Inv.MemberId = InputRows[tempIndex].MemberID;
+                        Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
 
-                            Index += 8;
-                            form.InvestigatorDetails.Add(Inv);
-                        }
+                        form.InvestigatorDetails.Add(Inv);
+                        tempIndex += 1;
                     }
+                    Index = tempIndex - 1;
                 }
                 ComplianceForms.Add(form);
             }
+            //for (int Counter = 0; Counter < DataFromExcelFile.Count; Counter++)
+            //{
+            //    var DetailsInEachRow = DataFromExcelFile[Counter];
+
+            //    var Investigator = new InvestigatorSearched();
+
+            //    var form = GetNewComplianceForm(log, UserName);
+
+            //    form.AssignedTo = UserName;
+            //    form.UploadedFileName = UploadedFileName;
+            //    form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
+            //    form.ProjectNumber = DetailsInEachRow[1];
+            //    form.SponsorProtocolNumber = DetailsInEachRow[2];
+            //    form.Institute = DetailsInEachRow[9];
+            //    var Address = "";
+
+            //    if (DetailsInEachRow[10].Trim().Length > 0)
+            //        Address += DetailsInEachRow[10] + " ";
+            //    if (DetailsInEachRow[11].Trim().Length > 0)
+            //        Address += DetailsInEachRow[11] + " ";
+            //    if (DetailsInEachRow[12].Trim().Length > 0)
+            //        Address += DetailsInEachRow[12] + " ";
+            //    if (DetailsInEachRow[13].Trim().Length > 0)
+            //        Address += DetailsInEachRow[13] + " ";
+            //    if (DetailsInEachRow[14].Trim().Length > 0)
+            //        Address += DetailsInEachRow[14];
+
+            //    form.Address = Address.Trim();
+            //    form.Country = DetailsInEachRow[15];
+
+            //    AddCountrySpecificSites(form);
+            //    AddSponsorSpecificSites(form);
+
+            //    int InvId = 1;
+            //    if (DetailsInEachRow[0].ToLower() == "principal")
+            //    {  
+            //        Investigator.Id = InvId;
+            //        InvId += 1;
+
+            //        Investigator.Name =
+            //            DetailsInEachRow[5].Trim() +
+            //            DetailsInEachRow[6].Trim() +
+            //            DetailsInEachRow[7].Trim();
+
+            //        Investigator.Role = DetailsInEachRow[0];
+            //        Investigator.MedicalLiceseNumber = DetailsInEachRow[16];
+            //        //Investigator.Qualification = DetailsInEachRow[3];
+                   
+            //        form.InvestigatorDetails.Add(Investigator);
+
+            //        if (DetailsInEachRow.Count > 9)
+            //        {
+            //            for(int Index = 9; Index < DetailsInEachRow.Count; Index++)
+            //            {
+            //                var Inv = new InvestigatorSearched();
+
+            //                Inv.Id = InvId;
+            //                InvId += 1;
+            //                Inv.Name = DetailsInEachRow[Index];
+            //                Inv.Role = DetailsInEachRow[Index + 1];
+            //                Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 2];
+            //                Inv.Qualification = DetailsInEachRow[Index + 3];
+
+            //                Index += 8;
+            //                form.InvestigatorDetails.Add(Inv);
+            //            }
+            //        }
+            //    }
+            //    ComplianceForms.Add(form);
+            //}
             return ComplianceForms;
         }
 
@@ -624,25 +767,29 @@ namespace DDAS.Services.Search
         private void AddCountrySpecificSites(ComplianceForm compForm)
         {
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
-            country.Name == compForm.Country).ToList();
+            country.Name.ToLower() == compForm.Country.ToLower()).ToList();
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
             foreach (Country country in Countries)
             {
                 var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
-
-                var siteSource = new SiteSource();
-                lastDisplayPosition += 1;
-                siteSource.DisplayPosition = lastDisplayPosition;
-                siteSource.SiteName = SiteToAdd.SiteName;
-                siteSource.SiteShortName = SiteToAdd.SiteShortName;
-                siteSource.SiteEnum = SiteToAdd.SiteEnum;
-                siteSource.SiteUrl = SiteToAdd.SiteUrl;
-                siteSource.IsMandatory = SiteToAdd.Mandatory;
-                siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
-                siteSource.ExcludePI = SiteToAdd.ExcludePI;
-                siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
-                compForm.SiteSources.Add(siteSource);
+                if (SiteToAdd != null)
+                {
+                    var siteSource = new SiteSource();
+                    lastDisplayPosition += 1;
+                    siteSource.DisplayPosition = lastDisplayPosition;
+                    siteSource.SiteName = SiteToAdd.SiteName;
+                    siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                    siteSource.SiteEnum = SiteToAdd.SiteEnum;
+                    siteSource.SiteUrl = SiteToAdd.SiteUrl;
+                    siteSource.IsMandatory = SiteToAdd.Mandatory;
+                    siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+                    siteSource.ExcludePI = SiteToAdd.ExcludePI;
+                    siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
+                    compForm.SiteSources.Add(siteSource);
+                }
+                //Not found, continue
+                
             }
         }
 
@@ -730,10 +877,10 @@ namespace DDAS.Services.Search
             }
         }
 
-        void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string NameToSearch)
+        void UpdateMatchStatus(IEnumerable<SiteDataItemBase> items, string InvestigatorName)
         {
-            NameToSearch = RemoveExtraCharacters(NameToSearch);
-            string[] Name = NameToSearch.Split(' ');
+            InvestigatorName = RemoveExtraCharacters(InvestigatorName);
+            string[] Name = InvestigatorName.Split(' ');
             foreach (SiteDataItemBase item in items)
             {
                 if (item.FullName != null)
@@ -780,6 +927,27 @@ namespace DDAS.Services.Search
             }
         }
 
+        void AddSingleComponentMatches(
+            IEnumerable<SiteDataItemBase> items, 
+            string InvestigatorName)
+        {
+            var NameComponents = InvestigatorName.Split(' ');
+
+            int Count = 0;
+
+            for(int Index = 0; Index < NameComponents.Length; Index ++)
+            {
+                foreach (SiteDataItemBase item in items)
+                {
+                    if (item.FullName.ToLower().Contains(NameComponents[Index].ToLower()))
+                    {
+                        Count += 1;
+                    }
+                }
+                
+            }
+        }
+
         //Patrick: further refactoring may not require this method.
         public List<MatchedRecord> ConvertToMatchedRecords(IEnumerable<SiteDataItemBase> records)
         {
@@ -805,7 +973,7 @@ namespace DDAS.Services.Search
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
 
-            int SiteCount = form.SiteSources.Count;
+            //int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
 
@@ -826,6 +994,11 @@ namespace DDAS.Services.Search
             AllSites.ToList().ForEach(x => x.IssuesIdentified = false);
             foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
+                var sitesSearched = Investigator.SitesSearched.Where(x => x.Exclude == false);
+                int sitesSearchedCount = sitesSearched.ToList().Count;
+
+
+
                 Investigator.TotalIssuesFound = 0;
 
                 int PartialMatchSiteCount = 0;
@@ -840,8 +1013,8 @@ namespace DDAS.Services.Search
                 Investigator.IssuesFoundSiteCount = 0;
                 Investigator.ReviewCompletedSiteCount = 0;
 
-                
-                foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched.Where(x => x.Exclude == false))
+               // foreach (SiteSearchStatus searchStatus in Investigator.SitesSearched.Where(x => x.Exclude == false))
+                foreach (SiteSearchStatus searchStatus in sitesSearched)
                 {
                     if (
                         //searchStatus.ExtractionMode.ToLower() == "db" 
@@ -925,7 +1098,7 @@ namespace DDAS.Services.Search
                 {
                     IssuesFoundInvestigatorCount += 1;
                 }
-                if (Investigator.ReviewCompletedSiteCount == SiteCount)
+                if (Investigator.ReviewCompletedSiteCount == sitesSearchedCount)  //SiteCount)
                 {
                      ReviewCompletedInvestigatorCount += 1;
                 }
@@ -993,10 +1166,19 @@ namespace DDAS.Services.Search
             {
                 //var ListOfSiteSearchStatus = new List<SiteSearchStatus>();
 
-                var InvestigatorName = RemoveExtraCharacters(inv.Name);
+                //var InvestigatorName = RemoveExtraCharacters(inv.Name);
+
+                var InvestigatorName = inv.SearchName;
+
+                //if (inv.FirstName.Trim().Length > 0)
+                //    InvestigatorName = inv.FirstName.Trim();
+                //if (inv.MiddleName.Trim().Length > 0)
+                //    InvestigatorName += " " + inv.MiddleName;
+                //if (inv.LastName.Trim().Length > 0)
+                //    InvestigatorName += " " + inv.LastName;
 
                 var ComponentsInInvestigatorName =
-                    InvestigatorName.Trim().Split(' ').Count();
+                    InvestigatorName.Split(' ').Count();
 
                 inv.ExtractedOn = DateTime.Now;
                 inv.HasExtractionError = true; // until set to false.
@@ -1052,6 +1234,24 @@ namespace DDAS.Services.Search
                                 searchStatus.PartialMatchCount;
                             inv.Sites_FullMatchCount +=
                                 searchStatus.FullMatchCount;
+
+                            var Matches = GetSingleComponentMatches(
+                                siteSource.SiteEnum,
+                                siteSource.SiteDataId,
+                                InvestigatorName.Split(' '));
+
+                            if(Matches != null)
+                            {
+                                foreach (int MatchCount in Matches)
+                                {
+                                    if (searchStatus.SingleComponentMatchedValues == null)
+                                        searchStatus.SingleComponentMatchedValues =
+                                            MatchCount.ToString();
+                                    else
+                                        searchStatus.SingleComponentMatchedValues += ", " +
+                                            MatchCount.ToString();
+                                }
+                            }
 
                             //inv.Id = InvestigatorId;
 
@@ -1446,7 +1646,7 @@ namespace DDAS.Services.Search
         }
         #endregion
 
-        public List<MatchedRecord> GetMatchedRecords(SiteSource site,
+        private List<MatchedRecord> GetMatchedRecords(SiteSource site,
             string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -1530,7 +1730,7 @@ namespace DDAS.Services.Search
             }
         }
 
-        public void GetFullAndPartialMatchCount(List<MatchedRecord> Records,
+        private void GetFullAndPartialMatchCount(List<MatchedRecord> Records,
             SiteSearchStatus SearchStatus, int ComponentsInInvestigatorName)
         {
             SearchStatus.FullMatchCount = 0;
@@ -1543,8 +1743,11 @@ namespace DDAS.Services.Search
                     record.IsFullMatch = true;
                 }
                 else
+                {
                     SearchStatus.PartialMatchCount += 1;
+                }
             }
+
         }
 
         #endregion
@@ -1810,9 +2013,10 @@ namespace DDAS.Services.Search
                 string[] CellValues = new string[]
                 {
                     Investigator.Name,
-                    Investigator.Qualification,
+                    //Investigator.Qualification,
                     Investigator.MedicalLiceseNumber,
-                    Investigator.Role
+                    Investigator.Role,
+                    Investigator.SearchName
                 };
                 writer.FillUpTable(CellValues);
             }
@@ -1947,9 +2151,10 @@ namespace DDAS.Services.Search
             return new string[]
             {
                 "Investigator Name",
-                "Qualification",
+                //"Qualification",
                 "Medical License Number",
-                "Role"
+                "Role",
+                "Name Searched As"
             };
         }
 
@@ -2096,7 +2301,6 @@ namespace DDAS.Services.Search
         //    }
         //    return form;
         //}
-
 
         public List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
@@ -2397,6 +2601,311 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        #region GetSingleComponentMatchedValues
+        
+        private int[] GetSingleComponentMatches(SiteEnum Enum, 
+            Guid? SiteDataId,
+            string[] NameComponents)
+        {
+            switch(Enum)
+            {
+                case SiteEnum.FDADebarPage:
+                    return GetFDADebarSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.ClinicalInvestigatorInspectionPage:
+                    return GetCIILSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.FDAWarningLettersPage:
+                    return GetFDAWarningSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.ERRProposalToDebarPage:
+                    return GetERRSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.AdequateAssuranceListPage:
+                    return GetAdequateAssuranceSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    return GetDisqualificationSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.PHSAdministrativeActionListingPage:
+                    return GetPHSSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.CBERClinicalInvestigatorInspectionPage:
+                    return GetCBERSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.ExclusionDatabaseSearchPage:
+                    return GetExclusionSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.CorporateIntegrityAgreementsListPage:
+                    return GetCIASingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    return GetSAMSingleComponent(SiteDataId, NameComponent);
+
+                case SiteEnum.SpeciallyDesignedNationalsListPage:
+                    return GetSDNSingleComponent(SiteDataId, NameComponent);
+
+                default: throw new Exception("Invalid Enum");
+            }
+        }
+
+        private int[] GetFDADebarSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach(string Component in NameComponents)
+            {
+                var MatchCount = SiteData.DebarredPersons.Where(x =>
+                x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetCIILSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData = 
+                _UOW.ClinicalInvestigatorInspectionListRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount = 
+                    SiteData.ClinicalInvestigatorInspectionList.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetFDAWarningSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.FDAWarningLettersRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.FDAWarningLetterList.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetERRSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.ERRProposalToDebarRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.ProposalToDebar.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetAdequateAssuranceSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.AdequateAssuranceListRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.AdequateAssurances.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetDisqualificationSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.ClinicalInvestigatorDisqualificationRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.DisqualifiedInvestigatorList.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetPHSSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.PHSAdministrativeActionListingRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.PHSAdministrativeSiteData.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetCBERSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.CBERClinicalInvestigatorRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.ClinicalInvestigator.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetExclusionSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.ExclusionDatabaseSearchRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.ExclusionSearchList.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetCIASingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            var SiteData =
+                _UOW.CorporateIntegrityAgreementRepository
+                .FindById(SiteDataId);
+
+            var Matches = new int[NameComponents.Count()];
+
+            int Index = 0;
+            foreach (string Component in NameComponents)
+            {
+                var MatchCount =
+                    SiteData.CIAListSiteData.Where(x =>
+                    x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+                Matches[Index] = MatchCount;
+                Index += 1;
+            }
+            return Matches;
+        }
+
+        private int[] GetSAMSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            //var SiteData =
+            //    _UOW.SystemForAwardManagementRepository
+            //    .FindById(SiteDataId);
+
+            //var Matches = new int[NameComponents.Count()];
+
+            //int Index = 0;
+            //foreach (string Component in NameComponents)
+            //{
+            //    var MatchCount =
+            //        SiteData.SAMSiteData.Where(x =>
+            //        x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+            //    Matches[Index] = MatchCount;
+            //    Index += 1;
+            //}
+            //return Matches;
+            return null;
+        }
+
+        private int[] GetSDNSingleComponent(Guid? SiteDataId, string[] NameComponents)
+        {
+            //var SiteData =
+            //    _UOW.SpeciallyDesignatedNationalsRepository
+            //    .FindById(SiteDataId);
+
+            //var Matches = new int[NameComponents.Count()];
+
+            //int Index = 0;
+            //foreach (string Component in NameComponents)
+            //{
+            //    var MatchCount =
+            //        SiteData.SDNListSiteData.Where(x =>
+            //        x.FullName.ToLower().Contains(Component.ToLower())).Count();
+
+            //    Matches[Index] = MatchCount;
+            //    Index += 1;
+            //}
+            //return Matches;
+            return null;
+        }
+
+        #endregion
+
+        #region GetSingleComponentMatchedRecords
+
+        #endregion
+
         #region Helpers
 
         public string RemoveExtraCharacters(string Value)
@@ -2429,6 +2938,89 @@ namespace DDAS.Services.Search
         #endregion
 
         #region ExcelValidations
+
+        private List<string> ValidateExcelInputs(ExcelInputRow InputRow, int Row)
+        {
+            var ValidationMessages = new List<string>();
+
+            if (Row == 2 && InputRow.Role.ToLower() != "principal")
+                ValidationMessages.Add(
+                    "RowNumber: 2 - First Investigator must be a Principal Investigator");
+
+            var FullName = InputRow.FullName;
+
+            var InvComponent = FullName.Split(' ').Count();
+
+            if (InvComponent <= 1)
+                ValidationMessages.Add("Row number: " + Row +
+                    " - please provide at least two components to search - First Name/Middle Name/Last Name");
+
+            if(InputRow.DisplayName == null || InputRow.DisplayName.Trim() == "")
+                ValidationMessages.Add("Row number: " + Row +
+                    " - Display Name is mandatory");
+
+            if (InputRow.Role.ToLower() != "principal" &&
+                InputRow.Role.ToLower() != "sub")
+                ValidationMessages.Add("Row number: " + Row +
+                    " - Role column should have either 'Principal' or 'Sub'");
+
+            if(InputRow.Role.Length > 9)
+                ValidationMessages.Add("RowNumber: " + Row +
+                    " - Role column exceeds max character(9) limit");
+
+            if(!IsValidProjectNumber(InputRow.ProjectNumber))
+                ValidationMessages.Add("RowNumber: " + Row +
+                    " - change the project number format to '1234-5678'");
+
+            if(InputRow.DisplayName.Trim().Length == 0)
+                ValidationMessages.Add("RowNumber: " + Row +
+                    " - Investigator Name With Qualification (ICSF) is missing");
+
+            #region MaxCharacterValidation
+            //if(InputRow.InvestigatorID.Length > 10)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Investigator ID should not be more than 10 characters");
+
+            //if (InputRow.MemeberID.Length > 10)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Member ID should not be more than 10 characters");
+
+            //if(InputRow.InstituteName.Length > 500)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Institute Name should not be more than 500 characters");
+
+            //if (InputRow.AddressLine1.Length > 500)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Address Line 1 should not be more than 500 characters");
+
+            //if (InputRow.AddressLine2.Length > 500)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Address Line 2 should not be more than 500 characters");
+
+            //if (InputRow.City.Length > 20)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - City should not be more than 20 characters");
+
+            //if (InputRow.State.Length > 20)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - State should not be more than 20 characters");
+
+            //if (InputRow.PostalCode.Length > 10)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Postal Code should not be more than 10 characters");
+
+            //if (InputRow.Country.Length > 20)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Country should not be more than 20 characters");
+
+            //if (InputRow.MedicalLicenseNumber.Length > 20)
+            //    ValidationMessages.Add("RowNumber: " + Row +
+            //        " - Medical License Number should not be more than 20 characters");
+            #endregion
+
+            return ValidationMessages;
+        }
+
         public List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row)
         {
             var ValidationMessages = new List<string>();
@@ -2437,7 +3029,7 @@ namespace DDAS.Services.Search
 
             var PrincipalInv = ExcelInputRow[0].Split(' ').Count();
 
-            if (Row == 2 && ExcelInputRow[1].ToLower() != "principal")
+            if (Row == 2 && ExcelInputRow[6].ToLower() != "principal")
             {
                 ValidationMessages.Add(
                     "RowNumber: 1 - First Investigator must be a Principal Investigator");
@@ -2603,7 +3195,7 @@ namespace DDAS.Services.Search
 
         private bool IsValidProjectNumber(string Value)
         {
-            string Expression = "^\\d{4}/\\d{4}$";
+            string Expression = "^\\d{4}-\\d{4}$";
             return Regex.IsMatch(Value, Expression);
         }
 

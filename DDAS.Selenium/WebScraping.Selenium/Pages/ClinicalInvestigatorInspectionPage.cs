@@ -175,7 +175,7 @@ namespace WebScraping.Selenium.Pages
                     InvestigatorList.Country = FieldData[7];
                     InvestigatorList.Zip = FieldData[8];
                     InvestigatorList.InspectionDate = FieldData[9];
-                    InvestigatorList.ClassificationType = FieldData[10];
+                    InvestigatorList.InspectionType = FieldData[10];
                     InvestigatorList.ClassificationCode = FieldData[11];
 
                     if (DeficiencyCode != null)

@@ -31,7 +31,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 return Name;
             }
         }
-        //Patrick 28Nov2016
+        
         public override string RecordDetails
         {
             get
@@ -64,9 +64,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         Dictionary<string, string> ClassificationCode = new Dictionary<string, string>()
         {
-            {"NAI", "NAI - No Action Indicated"},
-            {"VAI", "VAI - Voluntary Action Indicated"},
-            {"OAI", "OAI - Official Action Indicated"}
+            {"NAI", "NAI - No Action Indicated. No objectionable conditions or practices were found during the inspection"},
+            {"VAI", "VAI - Voluntary Action Indicated. Objectionable conditions were found but the problems do not justify further regulatory action. Any corrective action is left to the investigator to take voluntarily"},
+            {"OAI", "OAI - Official Action Indicated. Objectionable conditions were found and regulatory and/or administrative sanctions by FDA are indicated"}
         };
 
         public string ClassificationCodeExpanded {

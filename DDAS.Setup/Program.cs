@@ -45,11 +45,15 @@ namespace DDAS.Setup
                     CreateUsers();
 
                     _AppAdminService = new AppAdminService(_UOW);
-                    //SitesToSearch Sites = new SitesToSearch();
-                    //_AppAdminService.AddSitesInDbCollection(Sites);
+
+                    //Executed on FindMeServerOn 1April2017.
+                    SitesToSearch Sites = new SitesToSearch();
+                    _AppAdminService.AddSitesInDbCollection(Sites);
 
                     //Executed on 31-3-2017
-                    //ModifySiteSource_ChangeLive2DB();
+                    // ModifySiteSource_ChangeLive2DB();
+
+
                 }
                 else
                 {

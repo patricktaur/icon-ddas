@@ -77,7 +77,7 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
     <Compile Include="Enums\Enums.cs" />
-    <Compile Include="Entities\IAppAdminService.cs" />
+    <Compile Include="Interfaces\IAppAdminService.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\IEntity.cs" />

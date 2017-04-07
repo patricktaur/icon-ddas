@@ -23,6 +23,7 @@ namespace DDAS.LiveSiteExtractor
            
             try
             {
+                Console.WriteLine("Start");
                 var proc = Process.GetCurrentProcess();
                 var procId = proc.Id;
 
