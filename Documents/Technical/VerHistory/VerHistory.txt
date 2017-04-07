@@ -1,3 +1,7 @@
+Ver: D1.4.1 
+1. Incorrect display of value in DDAS.WebSite / investigator-summary.component.ts corrected: return this.Investigator.SitesSearched.filter(x => x.Exclude == false);
+2. User Roles : do not show app-admin role when creating a new user - if logged in user is not AppAdmin
+
 Ver: D1.4.0 03Apr2017
 Bug: Roll up incorrect.  
 

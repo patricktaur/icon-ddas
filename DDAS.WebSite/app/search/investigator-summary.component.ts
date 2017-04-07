@@ -85,7 +85,7 @@ get InvestigatorSiteSummary(){
         return sitesSearched;
     }
     else{
-        return this.Investigator.SitesSearched;
+        return this.Investigator.SitesSearched.filter(x => x.Exclude == false);
     }
    
 }
@@ -117,6 +117,7 @@ get Investigator(): InvestigatorSearched{
 
 
 get ReviewPendingCount(){
+    
     return (this.InvestigatorSiteSummary.length- this.Investigator.ReviewCompletedSiteCount);
 }
 
