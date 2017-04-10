@@ -29,7 +29,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string Country { get; set; }
         public string Zip { get; set; }
         public string InspectionDate { get; set; }
-        public string ClassificationType { get; set; }
+        public string InspectionType { get; set; }
         public string ClassificationCode { get; set; }
         public string DeficiencyCode { get; set; }
 
@@ -39,7 +39,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
         }
 
-        //Patrick 28Nov2016
         public override string RecordDetails
         {
             get
@@ -54,9 +53,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Country: " + Country + "~" +
                     "Zip: " + Zip + "~" +
                     "Inspection Date: " + InspectionDate + "~" +
-                    "Classification Type: " + ClassificationType + "~" +
+                    "Inspection Type: " + InspectionTypeExpanded + "~" +
                     "Classification Code: " + ClassificationCodeExpanded + "~" +
-                    "Deficiency Code: " + DeficiencyCode;
+                    "Deficiency Code: " + DeficiencyCodeExpanded;
             }
         }
 
@@ -98,6 +97,47 @@ namespace DDAS.Models.Entities.Domain.SiteData
             };
         #endregion
 
+        #region DeficiencyCodesDictionary
+
+        Dictionary<string, string> DeficiencyCodes =
+            new Dictionary<string, string>()
+            {
+                { "00", "00 - No deficiencies noted, n/a" },
+                { "01", "01 - Records availability, 21 CFR 312.62" },
+                { "02", "02 - Failure to obtain and/or document subject consent, 21 CFR 312.60, 50.20, 50.27" },
+                { "03", "03 - Inadequate informed consent form, 21 CFR 50.25" },
+                { "04", "04 - Inadequate drug accountability, 21 CFR 312.60, 312.62" },
+                { "05", "05 - Failure to follow investigational plan, 21 CFR 312.60" },
+                { "06", "06 - Inadequate and inaccurate records, 21 CFR 312.62" },
+                { "07", "07 - Unapproved concomitant therapy, 21 CFR 312.60" },
+                { "08", "08 - Inappropriate payment to volunteers, 21 CFR 50.20" },
+                { "09", "09 - Unapproved use of drug before IND submission, 21 CFR 312.40(d)" },
+                { "10", "10 - Inappropriate delegation of authority, 21 CFR 312.7, 312.61" },
+                { "11", "11 - Inappropriate use/commercialization of IND, 21 CFR 312.7, 312.61" },
+                { "12", "12 - Failure to list additional investigators on 1572, 21 CFR 312.60" },
+                { "13", "13 - Subjects receiving simultaneous investigational drugs, 21 CFR 312.60" },
+                { "14", "14 - Failure to obtain or document IRB approval, 21 CFR 312.60, 62, 66; 56.103" },
+                { "15", "15 - Failure to notify IRB of changes, failure to submit progress reports, 21 CFR 312.66" },
+                { "16", "16 - Failure to report adverse drug reactions, 21 CFR 312.64, 312.66" },
+                { "17", "17 - Submission of false information, 21 CFR 312.70" },
+                { "18", "18 - Other, n/a" },
+                { "19", "19 - Failure to supervise or personally conduct the clinical investigation, 21 CFR 312.60" },
+                { "20", "20 - Failure to protect the rights, safety, and welfare of subjects, 21 CFR 312.60" },
+                { "21", "21 - Failure to permit FDA access to records, 21 CFR 312.68" }
+            };
+        #endregion
+
+        #region InspectionTypeDictionary
+
+        Dictionary<string, string> InspectionTypes = new Dictionary<string, string>()
+        {
+            { "DA", "DA  - Data Audit: An inspection in which the focus is on verification of study data" },
+            { "FC", "FC - For Cause: An inspection in which the focus is on the conduct of the study by the Clinical Investigator" },
+            { "IG", "Information Gathering" }
+        };
+
+        #endregion
+
         public string ClassificationCodeExpanded {
             get
             {
@@ -107,6 +147,30 @@ namespace DDAS.Models.Entities.Domain.SiteData
                         ClassificationCode = pair.Value;
                 }
                 return ClassificationCode;
+            }
+        }
+
+        public string DeficiencyCodeExpanded {
+            get
+            {
+                foreach(KeyValuePair<string, string> pair in DeficiencyCodes)
+                {
+                    if (DeficiencyCode.ToLower() == pair.Key.ToLower())
+                        DeficiencyCode = pair.Value;
+                }
+                return DeficiencyCode;
+            }
+        }
+
+        public string InspectionTypeExpanded {
+            get
+            {
+                foreach(KeyValuePair<string, string> pair in InspectionTypes)
+                {
+                    if (InspectionType.ToLower() == pair.Key.ToLower())
+                        InspectionType = pair.Value;
+                }
+                return InspectionType;
             }
         }
     }

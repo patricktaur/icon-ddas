@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+<<<<<<< HEAD
     <StartArguments>5</StartArguments>
+=======
+    <StartArguments>
+    </StartArguments>
+>>>>>>> 76164901fff65947323cdef111623be110ba5237
   </PropertyGroup>
 </Project>

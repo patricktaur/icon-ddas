@@ -314,9 +314,10 @@ namespace WebScraping.Selenium.SearchEngine
             _searchPage = GetSearchPage(siteEnum);
 
             //Pradeep 21Dec2016 return true for live sites - Need to refactor
-            //if (siteEnum == SiteEnum.FDAWarningLettersPage) //||
+            if (siteEnum == SiteEnum.SystemForAwardManagementPage)
+                //siteEnum == SiteEnum.FDAWarningLettersPage ||
                 //siteEnum == SiteEnum.ClinicalInvestigatorDisqualificationPage)
-                //return true;
+                return true;
 
             var SiteUpdatedDateFromPage =
                 _searchPage.SiteLastUpdatedDateFromPage;
@@ -379,7 +380,7 @@ namespace WebScraping.Selenium.SearchEngine
                     _Driver = new PhantomJSDriver(service);
 
                     _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
-                    _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                    _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                     //Patrick 16Feb2017
                     //_Driver.Manage().Window.Maximize();
                     //_Driver.Manage().Window.Size = new Size(1124, 850);

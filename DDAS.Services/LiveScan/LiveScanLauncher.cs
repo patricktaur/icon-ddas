@@ -37,7 +37,7 @@ namespace DDAS.Services.LiveScan
                 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log error.
 

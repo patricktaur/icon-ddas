@@ -33,6 +33,7 @@ namespace DDAS.API.Controllers
 
         }
 
+        #region Get/Delete/Download ErrorImages
         [Route("GetErrorImages")]
         [HttpGet]
         public List<ErrorScreenCapture> GetAllErrorImages()
@@ -78,6 +79,18 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
 
+        [Route("DownloadErrorImage")]
+        [HttpGet]
+        public IHttpActionResult DownloadErrorImage()
+        {
+            string FilePath = ErrorScreenCaptureFolder;
+            string path = FilePath.Replace(_RootPath, "");
+            return Ok(path);
+        }
+
+        #endregion
+
+        #region DataExtractionHistory
         [Route("GetDataExtractionHistory")]
         [HttpGet]
         public IHttpActionResult GetDataExtractionHistory()
@@ -102,14 +115,7 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
 
-        [Route("DownloadErrorImage")]
-        [HttpGet]
-        public IHttpActionResult DownloadErrorImage()
-        {
-            string FilePath = ErrorScreenCaptureFolder;
-            string path = FilePath.Replace(_RootPath, "");
-            return Ok(path);
-        }
+        #endregion
 
         #region LiveScanner
 

@@ -255,6 +255,7 @@ export class SearchList{
         ExtractionErrorMessage : string;
         FullMatchCount : number = 0;
         PartialMatchCount : number = 0;
+        SingleComponentMatchedValues : string;
         IssuesFound : number = 0;
         ReviewCompleted : boolean = false;
         SiteSourceUpdatedOn: Date;

@@ -44,12 +44,17 @@ namespace WebScraping.Selenium.BaseClasses
         {
             try
             {
+                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
                 elem.FindElement(by);
                 return true;
             }
             catch (NoSuchElementException)
             {
                 return false;
+            }
+            finally
+            {
+                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             }
         }
 

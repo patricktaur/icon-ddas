@@ -26,14 +26,14 @@ namespace DDAS.API.Controllers
         private IEMailService _EMailService;
         public AccountController(IUnitOfWork uow, IUserService userService, IEMailService email)
         {
-              _UOW = uow;
+            _UOW = uow;
             _userService = userService;
             _EMailService = email;
          }
 
         #region WorkingCode
 
-        
+        #region User
         //[Authorize(Roles = "admin")]
         [Route("GetUsers")]
         [HttpGet]
@@ -127,7 +127,6 @@ namespace DDAS.API.Controllers
             return Ok("Password change successful");
         }
 
-
         [Route("ResetPassword")]
         [HttpGet]
         public IHttpActionResult ResetPassword(Guid userId)
@@ -157,7 +156,8 @@ namespace DDAS.API.Controllers
 
             return Ok(true);
         }
-                
+        #endregion
+
         [Route("getLogHistory")]
         [HttpGet]
         public IHttpActionResult GetAllLoginHistory(string DateFrom, string DateTo)

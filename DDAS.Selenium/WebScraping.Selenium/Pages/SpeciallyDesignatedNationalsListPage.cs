@@ -208,7 +208,7 @@ namespace WebScraping.Selenium.Pages
 
             DateTime CurrentSiteUpdatedDate;
 
-            DateTime.TryParseExact(temp, "M'/'d'/'yyyy h:mm tt",
+            DateTime.TryParseExact(temp, "M'/'d'/'yyyy",
             CultureInfo.InvariantCulture,
             DateTimeStyles.None, out CurrentSiteUpdatedDate);
 

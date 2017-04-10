@@ -45,8 +45,8 @@ namespace DDAS.Models.Interfaces
         string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder);
 
         List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row);
-        List<List<string>> ReadDataFromExcelFile(string FilePathWithGUID);
-        List<ComplianceForm> ReadUploadedFileData(List<List<string>> ExcelInputData, 
+        ExcelInput ReadDataFromExcelFile(string FilePathWithGUID);
+        List<ComplianceForm> ReadUploadedFileData(ExcelInput ExcelInputData, 
             ILog log, string UserName, string FilePathWithGUID, string UploadedFileName);
 
         string GenerateComplianceForm(
