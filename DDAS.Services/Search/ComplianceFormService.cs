@@ -405,42 +405,45 @@ namespace DDAS.Services.Search
                     dbForm.Address = form.Address;
                     dbForm.Country = form.Country;
 
-                    //Delete Investigator not found in client collection
-                    foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
-                    {
-                        var clInv = form.InvestigatorDetails.Find(x => x.Id == inv.Id);
-                        if (clInv == null)
-                        {
-                            //not found, delete from DB
-                            inv.Deleted = true;
-                            //remove all Findings for the deleted Investigator
-                            dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == inv.Id);
-                        }
-                    }
-                    dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
+                    dbForm.InvestigatorDetails.Clear();
+                    dbForm.InvestigatorDetails.AddRange(form.InvestigatorDetails);
 
-                    //InvestigatorUpdate or add:
-                    var invId = 1;
-                    foreach (InvestigatorSearched clInv in form.InvestigatorDetails)
-                    {
+                    ////Delete Investigator not found in client collection
+                    //foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
+                    //{
+                    //    var clInv = form.InvestigatorDetails.Find(x => x.Id == inv.Id);
+                    //    if (clInv == null)
+                    //    {
+                    //        //not found, delete from DB
+                    //        inv.Deleted = true;
+                    //        //remove all Findings for the deleted Investigator
+                    //        dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == inv.Id);
+                    //    }
+                    //}
+                    //dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
 
-                        var dbInv = dbForm.InvestigatorDetails.Find(x => x.Id == clInv.Id);
-                        if (dbInv != null)
-                        {
-                            dbInv.Name = clInv.Name;
-                            dbInv.Qualification = clInv.Qualification;
-                            dbInv.Role = clInv.Role;
-                            dbInv.InvestigatorId = clInv.InvestigatorId;
-                            //dbInv.Id = invId;
-                        }
-                        else
-                        {
-                            //Not found in DB, add
-                            //clInv.Id = invId;
-                            dbForm.InvestigatorDetails.Add(clInv);
-                        }
-                        invId += 1;
-                    }
+                    ////InvestigatorUpdate or add:
+                    //var invId = 1;
+                    //foreach (InvestigatorSearched clInv in form.InvestigatorDetails)
+                    //{
+
+                    //    var dbInv = dbForm.InvestigatorDetails.Find(x => x.Id == clInv.Id);
+                    //    if (dbInv != null)
+                    //    {
+                    //        dbInv.Name = clInv.Name;
+                    //        dbInv.Qualification = clInv.Qualification;
+                    //        dbInv.Role = clInv.Role;
+                    //        dbInv.InvestigatorId = clInv.InvestigatorId;
+                    //        //dbInv.Id = invId;
+                    //    }
+                    //    else
+                    //    {
+                    //        //Not found in DB, add
+                    //        //clInv.Id = invId;
+                    //        dbForm.InvestigatorDetails.Add(clInv);
+                    //    }
+                    //    invId += 1;
+                    //}
 
                     //Remove Optional Sites.
                     //Remove Optional sites not found in client collection
@@ -691,7 +694,7 @@ namespace DDAS.Services.Search
             List<SitesToSearch> siteSources = _UOW.SiteSourceRepository.GetAll();
 
             var ScanData = new SiteScanData(_UOW, _SearchEngine);
-
+            var test = siteSources.Where(x => x.Mandatory == true).Count();
             int SrNo = 0;
             foreach (SitesToSearch site in siteSources.Where(x => x.Mandatory == true))
             {

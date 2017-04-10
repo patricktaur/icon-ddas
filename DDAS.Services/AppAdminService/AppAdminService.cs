@@ -1180,6 +1180,8 @@ namespace DDAS.Services.AppAdminService
                     new SitesToSearch { Mandatory = false, ExtractionMode = "Manual", SiteName = "HEALTH GUIDE USA", SiteShortName = "HEALTH GUIDE USA", SiteEnum = SiteEnum.HealthGuideUSAPage, SiteUrl = "http://www.healthguideusa.org/medical_license_lookup.htm", ExcludePI = false, ExcludeSI = false };
             _UOW.SiteSourceRepository.Add(site20);
         }
+        
+              
         #endregion
 
         #region Get/update SiteSources
@@ -1308,8 +1310,9 @@ namespace DDAS.Services.AppAdminService
                 }
 
 
-                sponsorViewModel.SiteName =
-                    _UOW.SiteSourceRepository.FindById(sponsor.SiteId).SiteName;
+
+                //sponsorViewModel.SiteName =
+                //    _UOW.SiteSourceRepository.FindById(sponsor.SiteId).SiteName;
 
                 
             }

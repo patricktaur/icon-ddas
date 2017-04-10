@@ -532,6 +532,20 @@ export class CompFormEditComponent implements OnInit {
         return lastNumber;
     }
 
+    siteIsManual(value: string ){
+       if (value == null){
+           value = "";
+       }    
+    //    if (ExtractionMode.toLowerCase() == "manual"){
+    //         retValue =  true;
+    //   }
+        if (value == "Manual"){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     //Findgins
     get Findings() {
         if (this.CompForm == undefined) {
