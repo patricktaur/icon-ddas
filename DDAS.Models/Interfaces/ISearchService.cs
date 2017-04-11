@@ -55,5 +55,10 @@ namespace DDAS.Models.Interfaces
             string FileExtension);
 
         bool AddAttachmentsToFindings(ComplianceForm from);
+
+        List<Finding> GetSingleComponentMatchedRecords(
+            SiteEnum Enum,
+            Guid? RecId, 
+            string NameComponent);
     }
 }

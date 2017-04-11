@@ -270,6 +270,15 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
+        [Route("GetSingleComponentMatchedRecords")]
+        [HttpGet]
+        public IHttpActionResult GetSingleComponentMatchRecords(
+            string RecId, SiteEnum Enum, string NameComponent)
+        {
+            var Id = Guid.Parse(RecId);
+            return Ok(_SearchService.GetSingleComponentMatchedRecords(Enum, Id, NameComponent));
+        }
+
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)

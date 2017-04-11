@@ -58,14 +58,14 @@ namespace DDAS.API.Providers
                 try
                 {
                     
-                    var form = await context.Request.ReadFormAsync();
-                    var verSubmitted = form["Ver"];
-                    if (verSubmitted != _ClientVer)
-                    {
-                        context.SetError(
-                           "invalid_grant", "Incorrect version used.  The current version is: " + _ClientVer + "  Close the web page to clear the cache and reopen.");
-                        return;
-                    }
+                    //var form = await context.Request.ReadFormAsync();
+                    //var verSubmitted = form["Ver"];
+                    //if (verSubmitted != _ClientVer)
+                    //{
+                    //    context.SetError(
+                    //       "invalid_grant", "Incorrect version used.  The current version is: " + _ClientVer + "  Close the web page to clear the cache and reopen.");
+                    //    return;
+                    //}
 
 
                     IdentityUser user = 
