@@ -2613,40 +2613,40 @@ namespace DDAS.Services.Search
             switch(Enum)
             {
                 case SiteEnum.FDADebarPage:
-                    return GetFDADebarSingleComponent(SiteDataId, NameComponent);
+                    return GetFDADebarSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return GetCIILSingleComponent(SiteDataId, NameComponent);
+                    return GetCIILSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.FDAWarningLettersPage:
-                    return GetFDAWarningSingleComponent(SiteDataId, NameComponent);
+                    return GetFDAWarningSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.ERRProposalToDebarPage:
-                    return GetERRSingleComponent(SiteDataId, NameComponent);
+                    return GetERRSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.AdequateAssuranceListPage:
-                    return GetAdequateAssuranceSingleComponent(SiteDataId, NameComponent);
+                    return GetAdequateAssuranceSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    return GetDisqualificationSingleComponent(SiteDataId, NameComponent);
+                    return GetDisqualificationSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
-                    return GetPHSSingleComponent(SiteDataId, NameComponent);
+                    return GetPHSSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                    return GetCBERSingleComponent(SiteDataId, NameComponent);
+                    return GetCBERSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
-                    return GetExclusionSingleComponent(SiteDataId, NameComponent);
+                    return GetExclusionSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
-                    return GetCIASingleComponent(SiteDataId, NameComponent);
+                    return GetCIASingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.SystemForAwardManagementPage:
-                    return GetSAMSingleComponent(SiteDataId, NameComponent);
+                    return GetSAMSingleComponent(SiteDataId, NameComponents);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    return GetSDNSingleComponent(SiteDataId, NameComponent);
+                    return GetSDNSingleComponent(SiteDataId, NameComponents);
 
                 default: throw new Exception("Invalid Enum");
             }
@@ -2973,7 +2973,7 @@ namespace DDAS.Services.Search
 
             if(!IsValidProjectNumber(InputRow.ProjectNumber))
                 ValidationMessages.Add("RowNumber: " + Row +
-                    " - change the project number format to '1234-5678'");
+                    " - change the project number format to '1234/5678'");
 
             if(InputRow.DisplayName.Trim().Length == 0)
                 ValidationMessages.Add("RowNumber: " + Row +
@@ -3198,7 +3198,7 @@ namespace DDAS.Services.Search
 
         private bool IsValidProjectNumber(string Value)
         {
-            string Expression = "^\\d{4}-\\d{4}$";
+            string Expression = "^\\d{4}/\\d{4}$";
             return Regex.IsMatch(Value, Expression);
         }
 

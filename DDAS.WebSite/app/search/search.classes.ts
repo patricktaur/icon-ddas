@@ -213,6 +213,14 @@ export class SearchList{
       Id: number = 0;
       DisplayPosition: number = 0;
       Name: string = "";
+
+        FirstName : string = "";
+        MiddleName : string = "";
+        LastName: string = "";
+        SearchName: string = "";
+         MemberId : string = "";
+
+
       Role: string = "";
       Qualification: string;
       MedicalLiceseNumber: string;
@@ -244,6 +252,7 @@ export class SearchList{
       Saved: boolean = false;  //temp, to be replaced by form validation
       Help: string = "";
 
+      
   }
 
   export class SiteSearchStatus{

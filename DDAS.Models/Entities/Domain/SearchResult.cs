@@ -507,13 +507,13 @@ namespace DDAS.Models.Entities.Domain
             get
             {
                 var searchName = "";
-                if (FirstName.Trim().Length > 0)
+                if (FirstName != null && FirstName.Trim().Length > 0)
                     searchName = FirstName.Trim();
-                if (MiddleName.Trim().Length > 0)
+                if (MiddleName != null && MiddleName.Trim().Length > 0)
                     searchName += " " + MiddleName.Trim();
-                if (LastName.Trim().Length > 0)
+                if (LastName != null && LastName.Trim().Length > 0)
                     searchName += " " + LastName.Trim();
-                return searchName;
+                return searchName.Trim();
             }
         }
 
@@ -919,24 +919,33 @@ namespace DDAS.Models.Entities.Domain
         public bool IsFullMatch { get; set; }
         public int? InvestigatorSearchedId { get; set; }
         public int MatchCount { get; set; }
+        //Remove ??
         public int RowNumberInSource { get; set; }
         public string Observation { get; set; }
         public string RecordDetails { get; set; }
-        //???:
+        //Remove ???:
         public string Status { get; set; }
         ////Patrick 04Dec2016: no longer required, can be deleted.  Comp Form collection in MOngodB has to be dropped.
         public string HiddenStatus { get; set; }
-        
+        //Remove?
         public bool Selected { get; set; }
         public bool IsMatchedRecord { get; set; }
+        //Remove?
         public int? SourceNumber { get; set; }
         public DateTime? DateOfInspection { get; set; }
+        //?? remove
         public string InvestigatorName { get; set; }
         public bool IsAnIssue { get; set; }
         public int DisplayPosition { get; set; }
 
         public List<Link> Links { get; set; } = new List<Link>();
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+
+        //New fields: 11Apr2017
+        //guid SiteDataId
+        //guid SiteRecordId
+        //DateTime AddedOn
+
     }
 
     public class UpdateFindigs

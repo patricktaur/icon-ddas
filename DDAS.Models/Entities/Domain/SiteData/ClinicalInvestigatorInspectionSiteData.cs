@@ -143,7 +143,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
             {
                 foreach(KeyValuePair<string, string> pair in ClassificationCodes)
                 {
-                    if (ClassificationCode.ToLower() == pair.Key.ToLower())
+                    if (ClassificationCode != null && 
+                        ClassificationCode.ToLower() == pair.Key.ToLower())
                         ClassificationCode = pair.Value;
                 }
                 return ClassificationCode;
@@ -155,7 +156,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
             {
                 foreach(KeyValuePair<string, string> pair in DeficiencyCodes)
                 {
-                    if (DeficiencyCode.ToLower() == pair.Key.ToLower())
+                    if (DeficiencyCode != null && 
+                        DeficiencyCode.ToLower() == pair.Key.ToLower())
                         DeficiencyCode = pair.Value;
                 }
                 return DeficiencyCode;
@@ -167,7 +169,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
             {
                 foreach(KeyValuePair<string, string> pair in InspectionTypes)
                 {
-                    if (InspectionType.ToLower() == pair.Key.ToLower())
+                    if (InspectionType != null && 
+                        InspectionType.ToLower() == pair.Key.ToLower())
                         InspectionType = pair.Value;
                 }
                 return InspectionType;

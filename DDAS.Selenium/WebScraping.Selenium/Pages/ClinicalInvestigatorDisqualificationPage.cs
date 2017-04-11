@@ -164,14 +164,9 @@ namespace WebScraping.Selenium.Pages
                     
                     if(AnchorTags.Count > 0)
                     {
-<<<<<<< HEAD
-                        
-                        IList<IWebElement> anchors = TDs[7].FindElements(By.XPath("a"));
 
-                        foreach (IWebElement anchor in anchors)
-=======
                         foreach (IWebElement anchor in AnchorTags)
->>>>>>> 76164901fff65947323cdef111623be110ba5237
+
                         {
                             Link link = new Link();
                             link.Title = "Link To NOOH Letter - " + anchor.Text;

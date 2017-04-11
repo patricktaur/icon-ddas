@@ -36,7 +36,7 @@ export class ConfigService {
      }
 
      getVer(){
-         return "Ver: D1.4.1 04 Apr, 2017"
+         return "Ver: D1.4.2 10 Apr, 2017"
      }
 
 }
