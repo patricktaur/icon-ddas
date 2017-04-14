@@ -154,13 +154,25 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string DeficiencyCodeExpanded {
             get
             {
-                foreach(KeyValuePair<string, string> pair in DeficiencyCodes)
+                var DefCode = "";
+                foreach (KeyValuePair<string, string> pair in DeficiencyCodes)
                 {
-                    if (DeficiencyCode != null && 
-                        DeficiencyCode.ToLower() == pair.Key.ToLower())
-                        DeficiencyCode = pair.Value;
+                    if(DeficiencyCode != null)
+                    {
+                        var Codes = DeficiencyCode.Split(',').ToList();
+                        foreach(string Code in Codes)
+                        {
+                            if (Code.Trim().ToLower() == pair.Key.ToLower())
+                            {
+                                if (DefCode == "")
+                                    DefCode = pair.Value;
+                                else
+                                    DefCode += ", " + pair.Value;
+                            }
+                        }
+                    }
                 }
-                return DeficiencyCode;
+                return DefCode;
             }
         }
 

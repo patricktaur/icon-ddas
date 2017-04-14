@@ -3330,11 +3330,6 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetFDAWarningLettersMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var RecentSiteData = _UOW.FDAWarningLettersRepository
-                .GetAll()
-                .OrderByDescending(x =>
-                x.CreatedOn).FirstOrDefault();
-
             var SiteData = _UOW.FDAWarningLettersRepository
                 .FindById(SiteDataId);
 
@@ -3355,11 +3350,6 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetERRMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var RecentSiteData = _UOW.ERRProposalToDebarRepository
-                .GetAll()
-                .OrderByDescending(x =>
-                x.CreatedOn).FirstOrDefault();
-
             var SiteData = _UOW.ERRProposalToDebarRepository
                 .FindById(SiteDataId);
 
