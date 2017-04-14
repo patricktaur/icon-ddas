@@ -76,6 +76,7 @@ namespace WebScraping.Selenium.Pages
             foreach (IWebElement TR in ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")))
             {
                 var proposalToDebarList = new ProposalToDebar();
+
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
                 proposalToDebarList.Name = TDs[0].Text;

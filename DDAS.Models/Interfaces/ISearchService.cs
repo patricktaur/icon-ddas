@@ -57,8 +57,8 @@ namespace DDAS.Models.Interfaces
         bool AddAttachmentsToFindings(ComplianceForm from);
 
         List<Finding> GetSingleComponentMatchedRecords(
+            Guid? SiteDataId,
             SiteEnum Enum,
-            Guid? RecId, 
-            string NameComponent);
+            string FullName);
     }
 }

@@ -21,7 +21,7 @@ using DDAS.Models.Enums;
 
 namespace DDAS.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
@@ -273,10 +273,19 @@ namespace DDAS.API.Controllers
         [Route("GetSingleComponentMatchedRecords")]
         [HttpGet]
         public IHttpActionResult GetSingleComponentMatchRecords(
-            string RecId, SiteEnum Enum, string NameComponent)
+            string SiteDataId, SiteEnum Enum, string FullName)
         {
-            var Id = Guid.Parse(RecId);
-            return Ok(_SearchService.GetSingleComponentMatchedRecords(Enum, Id, NameComponent));
+            try
+            {
+                var Id = Guid.Parse(SiteDataId);
+                return Ok(
+                    _SearchService.GetSingleComponentMatchedRecords(
+                        Id, Enum, FullName));
+            }
+            catch(Exception e)
+            {
+                return Ok(e.ToString());
+            }
         }
 
         [Route("ComplianceFormFilters")]

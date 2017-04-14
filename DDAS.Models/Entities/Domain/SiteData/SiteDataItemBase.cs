@@ -5,7 +5,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 {
     public abstract class SiteDataItemBase
     {
-        public int Matched { get; set; }
+        public int MatchCount { get; set; }
         public abstract string FullName { get; }
         //public string SingleComponentMatchedValues { get; set; }
         public abstract string RecordDetails { get; }

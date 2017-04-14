@@ -90,7 +90,10 @@ namespace WebScraping.Selenium.Pages
                 debarredPerson.FrDateText = TDs[3].Text;
                 debarredPerson.VolumePage = TDs[4].Text;
 
-                if (IsElementPresent(TDs[4], By.XPath("a")))
+                var AnchorTag = TDs[4].FindElement(By.XPath("a"));
+
+                //if (IsElementPresent(TDs[4], By.XPath("a")))
+                if(AnchorTag != null)
                 {
                     IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
                     Link link = new Link();

@@ -1,5 +1,6 @@
 ﻿using DDAS.API.Identity;
 using DDAS.Data.Mongo;
+using DDAS.Data.Mongo.Indexes;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Entities.Domain;
 using DDAS.Services.AppAdminService;
@@ -47,13 +48,25 @@ namespace DDAS.Setup
                     _AppAdminService = new AppAdminService(_UOW);
 
                     //Executed on FindMeServerOn 1April2017.
-                    SitesToSearch Sites = new SitesToSearch();
-                    _AppAdminService.AddSitesInDbCollection(Sites);
+                    var sitesInDB = _UOW.SiteSourceRepository.GetAll();
+                    _WriteLog.WriteLog("site Sources InDB:", sitesInDB.Count.ToString());
+                    if (sitesInDB.Count > 0)
+                    {
+                        _WriteLog.WriteLog("Sites already exist.  Not added");
+                    }
+                    else
+                    {
+                        _WriteLog.WriteLog("Adding Sites");
+                        SitesToSearch Sites = new SitesToSearch();
+                        _AppAdminService.AddSitesInDbCollection(Sites);
+                    }
+
+                    
 
                     //Executed on 31-3-2017
                     // ModifySiteSource_ChangeLive2DB();
 
-
+                    //CreateIndexes();
                 }
                 else
                 {
@@ -296,6 +309,12 @@ namespace DDAS.Setup
                 throw new Exception("ClinicalInvestigatorDisqualificationSite not found");
             }
             //_AppAdminService.UpdateSiteSource()
+        }
+
+        static void CreateIndexes()
+        {
+            Indexes idx = new Indexes();
+            var x = idx.CreateIndex();
         }
     }
 }

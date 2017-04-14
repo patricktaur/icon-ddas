@@ -419,7 +419,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private  Stream GenerateStreamFromString(string s)
+        private Stream GenerateStreamFromString(string s)
         {
             MemoryStream stream = new MemoryStream();
             StreamWriter writer = new StreamWriter(stream);

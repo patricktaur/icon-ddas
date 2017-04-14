@@ -55,7 +55,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override DateTime? DateOfInspection {
             get {
-                if (EffectiveDate == "" || EffectiveDate == null)
+                if (EffectiveDate == null || EffectiveDate == "")
                     return null;
 
                 return DateTime.ParseExact(EffectiveDate.Trim(),

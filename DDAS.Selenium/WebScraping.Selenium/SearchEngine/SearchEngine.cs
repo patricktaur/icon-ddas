@@ -493,7 +493,7 @@ namespace WebScraping.Selenium.SearchEngine
             SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
             _searchPage.LoadContent(
                 NameToSearch, MatchCountLowerLimit);
-            //_searchPage.SaveData();
+            _searchPage.SaveData();
         }
     }
 }

@@ -153,6 +153,7 @@ namespace WebScraping.Selenium.Pages
             foreach(string Record in Records)
             {
                 SDNList SDNRecord = new SDNList();
+
                 SDNRecord.Name = Record;
                 SDNRecord.RecordNumber = RecordNumber;
 

@@ -92,6 +92,7 @@ namespace WebScraping.Selenium.Pages
                 throw new Exception(
                     "Could not find DisqualifiedInvestigatorTable in " +
                     "LoadDisqualificationProceedingsList()");
+
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {

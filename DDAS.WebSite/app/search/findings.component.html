@@ -64,7 +64,7 @@
 					<div class="col-lg-2  text-center">
 						<p>Full Match</p>
 						<p *ngIf="SiteSearchStatus.FullMatchCount > 0">
-							<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+							<a  style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
 						&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;</a>
 						</p>
 						<p *ngIf="SiteSearchStatus.FullMatchCount == 0">
@@ -187,8 +187,8 @@
 
 	<p align="center">
 
-		<button type="button" class="btn btn-primary" (click)="Add()">Add Additional Findings</button>
-		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
+		<button type="button" class="btn btn-primary" (click)="Add()"  >Add Additional Findings</button>
+		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual"  [disabled]="MatchedSiteRecords.length == 0"
 			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
 		<br/>
 	</p>

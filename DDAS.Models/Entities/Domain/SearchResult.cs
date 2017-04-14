@@ -507,13 +507,13 @@ namespace DDAS.Models.Entities.Domain
             get
             {
                 var searchName = "";
-                if (FirstName.Trim().Length > 0)
+                if (FirstName != null && FirstName.Trim().Length > 0)
                     searchName = FirstName.Trim();
-                if (MiddleName.Trim().Length > 0)
+                if (MiddleName != null && MiddleName.Trim().Length > 0)
                     searchName += " " + MiddleName.Trim();
-                if (LastName.Trim().Length > 0)
+                if (LastName != null && LastName.Trim().Length > 0)
                     searchName += " " + LastName.Trim();
-                return searchName;
+                return searchName.Trim();
             }
         }
 
@@ -522,7 +522,8 @@ namespace DDAS.Models.Entities.Domain
         public string MedicalLiceseNumber { get; set; }
         public string InvestigatorId { get; set; }
 
-        public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' 
+        //changed ExtractedOn to AddedOn
+        public DateTime? AddedOn { get; set; } //null indicates 'Not extracted' 
         public bool HasExtractionError { get; set; }
         public int ExtractionErrorSiteCount { get; set; }
         public int ExtractionPendingSiteCount { get; set; }
@@ -721,7 +722,6 @@ namespace DDAS.Models.Entities.Domain
         }
     }
 
-
     //Patrick 01Dec2016 - new props added:
     public class SiteSearchStatus
     {
@@ -729,6 +729,7 @@ namespace DDAS.Models.Entities.Domain
         public SiteEnum siteEnum { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
+        public Guid? SiteDataId { get; set; }
         public bool ExtractionPending { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' or has errors.
         public bool HasExtractionError { get; set; }
@@ -739,6 +740,7 @@ namespace DDAS.Models.Entities.Domain
         public bool Exclude { get; set; }
         public bool ReviewCompleted { get; set; }
 
+        public int[] SingleComponentMatchCount { get; set; }
         public string SingleComponentMatchedValues { get; set; }
 
         public DateTime? SiteSourceUpdatedOn { get; set; }
@@ -909,7 +911,6 @@ namespace DDAS.Models.Entities.Domain
 
     }
 
- 
     public class Finding
     {
         //10Feb2017-todo: 
@@ -919,24 +920,33 @@ namespace DDAS.Models.Entities.Domain
         public bool IsFullMatch { get; set; }
         public int? InvestigatorSearchedId { get; set; }
         public int MatchCount { get; set; }
+        //Remove ??
         public int RowNumberInSource { get; set; }
         public string Observation { get; set; }
         public string RecordDetails { get; set; }
-        //???:
+        //Remove ???:
         public string Status { get; set; }
         ////Patrick 04Dec2016: no longer required, can be deleted.  Comp Form collection in MOngodB has to be dropped.
         public string HiddenStatus { get; set; }
-        
+        //Remove?
         public bool Selected { get; set; }
         public bool IsMatchedRecord { get; set; }
+        //Remove?
         public int? SourceNumber { get; set; }
         public DateTime? DateOfInspection { get; set; }
+        //?? remove
         public string InvestigatorName { get; set; }
         public bool IsAnIssue { get; set; }
         public int DisplayPosition { get; set; }
 
         public List<Link> Links { get; set; } = new List<Link>();
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+
+        //New fields: 11Apr2017
+        //guid SiteDataId
+        //guid SiteRecordId
+        //DateTime AddedOn
+
     }
 
     public class UpdateFindigs
