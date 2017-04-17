@@ -33,5 +33,9 @@ namespace DDAS.Models.Interfaces
         bool AddSponsor(SponsorProtocol sponsor);
         void DeleteSponsor(Guid? RecId);
         List<SponsorProtocolViewModel> GetSponsorProtocols();
+
+        bool AddDefaultSite(DefaultSite site);
+        List<DefaultSitesViewModel> GetDefaultSites();
+        void DeleteDefaultSite(Guid? RecId);
     }
 }

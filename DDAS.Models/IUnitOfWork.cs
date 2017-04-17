@@ -15,6 +15,7 @@ namespace DDAS.Models
         ISiteSourceRepository SiteSourceRepository { get; }
         ICountryRepository CountryRepository { get; }
         ISponsorProtocolRepository SponsorProtocolRepository { get; }
+        IDefaultSiteRepository DefaultSiteRepository { get; }
 
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }

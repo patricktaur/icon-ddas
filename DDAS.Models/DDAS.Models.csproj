@@ -96,6 +96,7 @@
     <Compile Include="Repository\Domain\SiteData\IComplianceForm.cs" />
     <Compile Include="Repository\Domain\SiteData\ICorporateIntegrityAgreementRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ICountryRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IDefaultSiteRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IERRProposalToDebarRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IExclusionDatabaseSearchRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IFDADebarPageRepository.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
+    <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchHistoryViewModel.cs" />
     <Compile Include="ViewModels\SponsorViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />

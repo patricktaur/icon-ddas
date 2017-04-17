@@ -741,7 +741,7 @@ namespace DDAS.Models.Entities.Domain
         public bool ReviewCompleted { get; set; }
 
         public int[] SingleComponentMatchCount { get; set; }
-        public string SingleComponentMatchedValues { get; set; }
+        public string SingleComponentMatchedValues { get; set; } = "";
 
         public DateTime? SiteSourceUpdatedOn { get; set; }
         public string ExtractionMode { get; set; }
@@ -1112,6 +1112,19 @@ namespace DDAS.Models.Entities.Domain
         public Guid Id { get; set; } //for Mongo mapping
         public Guid RoleId { get; set; }
         public Guid UserId { get; set; }
+    }
+    #endregion
+
+
+    #region DefaultSites
+    public class DefaultSite
+    {
+        public Guid? RecId { get; set; }
+        public Guid? SiteId { get; set; }
+        public int OrderNo { get; set; }
+        public bool IsMandatory { get; set; }
+        public bool ExcludeSI { get; set; }
+  
     }
     #endregion
 

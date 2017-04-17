@@ -39,8 +39,9 @@
 								<div class="collapse" id="config" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-site-sources" routerLinkActive="active">Site Sources</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/add-country" routerLinkActive="active">Country Specific Sites</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-sponsor-protocol" routerLinkActive="active">Sponsor  Specific Sites</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/default-sites" routerLinkActive="active">Default Site Sources</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/add-country" routerLinkActive="active">Country Specific Site Sources</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-sponsor-protocol" routerLinkActive="active">Sponsor Specific Site Sources</a></li>
 									</ul>
 								</div>
 							</li>

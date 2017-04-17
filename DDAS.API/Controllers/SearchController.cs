@@ -270,17 +270,20 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
+      
         [Route("GetSingleComponentMatchedRecords")]
         [HttpGet]
         public IHttpActionResult GetSingleComponentMatchRecords(
-            string SiteDataId, SiteEnum Enum, string FullName)
+            string SiteDataId, SiteEnum SiteEnum, string FullName)
         {
             try
             {
                 var Id = Guid.Parse(SiteDataId);
+       
+                //SiteEnum siteEnum = (SiteEnum)Enum;
                 return Ok(
                     _SearchService.GetSingleComponentMatchedRecords(
-                        Id, Enum, FullName));
+                        Id, SiteEnum, FullName));
             }
             catch(Exception e)
             {

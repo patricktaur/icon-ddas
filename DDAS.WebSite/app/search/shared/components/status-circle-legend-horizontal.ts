@@ -44,7 +44,7 @@ import { ComplianceFormStatusEnum } from '../../search.classes';
 			</div>
 			<div class="row">
 				<div class="col-md-12 ">
-					Full / Partial match found, Review pending
+					Full / Partial match found / Issues Identified, Review pending
 				</div>
 			</div>
 		</div>

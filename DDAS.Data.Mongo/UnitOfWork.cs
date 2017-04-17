@@ -54,6 +54,7 @@ namespace DDAS.Data.Mongo
         private ISiteSourceRepository _SiteSourceRepository;
         private ICountryRepository _CountryRepository;
         private ISponsorProtocolRepository _SponsorProtocolRepository;
+        private IDefaultSiteRepository _DefaultSiteRepository;
         #endregion
 
         /*
@@ -293,6 +294,15 @@ namespace DDAS.Data.Mongo
             {
                 return _SponsorProtocolRepository ??
                     (_SponsorProtocolRepository = new SponsorProtocolRepository(_db));
+            }
+        }
+
+        public IDefaultSiteRepository DefaultSiteRepository
+        {
+            get
+            {
+                return _DefaultSiteRepository ??
+                    (_DefaultSiteRepository = new DefaultSiteRepository(_db));
             }
         }
         #endregion

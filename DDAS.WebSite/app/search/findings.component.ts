@@ -24,7 +24,12 @@ export class FindingsComponent implements OnInit {
     private pageChanged: boolean= false;
      private rootPath: string;
      public loading: boolean;
+     public singleMatchRecordsLoading: boolean;
      public minMatchCount: number;
+     private singleMatchRecords: Finding[]=[];
+     private recordToDelete: Finding = new Finding;
+     public pageNumber: number;
+     public filterRecordDetails: string = "";
     
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
@@ -72,6 +77,26 @@ export class FindingsComponent implements OnInit {
                  }
               
         }
+    }
+//SiteDataId: string, SiteEnum:number, FullName: string
+    LoadSingleMatchedRecords(){
+        this.singleMatchRecordsLoading = true;
+        if (this.singleMatchRecords.length > 0){
+            this.singleMatchRecordsLoading = false;
+            return;
+        }
+        this.service.getSingleComponentMatchedRecords(
+            this.Site.SiteDataId,
+            this.SiteEnum,
+            this.Investigator.SearchName
+        )
+        .subscribe((item: any) => {
+            this.singleMatchRecords = item;
+            this.singleMatchRecordsLoading = false; 
+            },
+        error => {
+            this.singleMatchRecordsLoading = false; 
+        });
     }
 
     get Site(){
@@ -178,6 +203,34 @@ export class FindingsComponent implements OnInit {
         
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == false).sort(s=> s.MatchCount).reverse();
     }
+    
+    get filteredSingleMatchRecords(){
+        if (this.singleMatchRecords == null){
+            return null;    
+        }
+        else{
+          if (this.filterRecordDetails.trim().length > 0){
+               return this.singleMatchRecords.filter(x => x.RecordDetails.toLowerCase().indexOf(this.filterRecordDetails.toLowerCase().trim() ) > 0);
+               //return this.SiteSources.filter(x => x.SiteUrl.indexOf(this.filterSiteURL.trim() ) > 0);
+           }
+           else{
+               return this.singleMatchRecords;
+           }
+        }
+        
+    }
+
+    get filteredSingleMatchCount(){
+        if (this.filteredSingleMatchRecords == null){
+            return 0;
+        }
+        else{
+            return this.filteredSingleMatchRecords.length;
+        }
+    }
+
+
+    
     get  SiteSearchStatus(){
 
         let siteSearched = new SiteSearchStatus;
@@ -201,6 +254,7 @@ export class FindingsComponent implements OnInit {
     //     }
     // }
 
+ 
     Add(){
         let finding = new Finding;
         finding.IsMatchedRecord = false;
@@ -226,12 +280,61 @@ export class FindingsComponent implements OnInit {
             this.pageChanged = true;
     }
     
-    RemoveFromSelected(selectedRecord: Finding){
+    AddSelectedSingleMatchRecords(){
+        for (let item of this.singleMatchRecords) {
+                if (item.UISelected == true) {
+                    item.UISelected = false;
+                   let finding = new Finding;
+                    finding.IsMatchedRecord = true;
+                    finding.InvestigatorSearchedId = this.InvestigatorId;
+                    finding.SiteEnum = this.SiteEnum;
+                    finding.SourceNumber = this.Site.DisplayPosition;
+                    finding.Selected = true;
+                    finding.InvestigatorName = this.Investigator.Name;
+                    finding.IsAnIssue = true;
+                    finding.MatchCount = 1; //for determining if the finding was added through single match action
+                    finding.RecordDetails = item.RecordDetails;
+                    finding.DateOfInspection = item.DateOfInspection;
+                    finding.Links = item.Links;
+                    this.CompForm.Findings.push(finding);
+                    this.pageChanged = true;
+                 }
+        }
+            
+    }
+    
+    SetFindingToRemove(selectedRecord: Finding){
+        this.recordToDelete = selectedRecord;
+    }
+
+    get RecordToDeleteText(){
+        if (this.recordToDelete == null){
+            return "";
+        }else{
+            if (this.recordToDelete.RecordDetails == null){
+                return "";
+            }else{
+                return this.recordToDelete.RecordDetails.substr(0, 100) + " ...";
+            }
+         }
+       
+    }
+
+    RemoveFinding(){
         this.pageChanged = true;
-        selectedRecord.IsAnIssue = false;
-        selectedRecord.Observation = "";
-        selectedRecord.Selected = false;
-    } 
+        if (this.recordToDelete.IsMatchedRecord || this.recordToDelete.MatchCount == 1){
+            var index = this.CompForm.Findings.indexOf(this.recordToDelete, 0);
+            if (index > -1) {
+                this.CompForm.Findings.splice(index, 1);
+            }
+        }
+        else{
+            this.recordToDelete.IsAnIssue = false;
+            this.recordToDelete.Observation = "";
+            this.recordToDelete.Selected = false;
+        }
+   
+} 
     
     get ExtractionModeIsManual(){
         if (this.SiteSearchStatus.ExtractionMode == "Manual"){
