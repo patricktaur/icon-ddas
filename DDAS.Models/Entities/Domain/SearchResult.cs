@@ -1127,6 +1127,7 @@ namespace DDAS.Models.Entities.Domain
   
     }
     #endregion
+
     #region Country
     public class Country
     {
