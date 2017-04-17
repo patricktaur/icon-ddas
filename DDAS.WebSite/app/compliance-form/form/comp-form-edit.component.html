@@ -211,20 +211,20 @@
 
 
 																<td>
-																	<input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control">
+																	<input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control input-sm">
 																	<!--<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>-->
 
 																</td>
 																<td>
-																	<p><input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control"></p>
+																	<p><input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control input-sm"></p>
 																</td>
 																<td>
-																	<input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control">
+																	<input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control input-sm">
 
 																</td>
 
 																<td>
-																	<input type="text" name="memberId" [(ngModel)]="inv.MemberId" class="form-control">
+																	<input type="text" name="memberId" [(ngModel)]="inv.MemberId" class="form-control input-sm">
 
 																</td>
 
@@ -238,9 +238,9 @@
 																	<div *ngIf="inv.ExtractionPendingSiteCount > 0" class="glyphicon glyphicon-search"></div>
 																</td>
 
-																<td>
+																<td width="15%">
 																	
-																		<div class="btn-group">
+																		<div class="btn-group ">
 																			<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
 																				title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
 																			<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
@@ -397,7 +397,7 @@
 													<table class="table table-bordered table-hover">
 														<thead>
 															<tr>
-																<th class="col-md-2">Investigator</th>
+																<th class="col-md-2">Investigator / Institute</th>
 																<th class="col-md-1">Source #</th>
 																<th class="col-md-2">Date of Inspection / Action</th>
 																<th class="col-md-5">Description of Findings</th>
@@ -407,8 +407,13 @@
 														<tbody>
 															<tr class="active" *ngFor="let item of Findings; ">
 																<td align="left">
-
-																	{{item.InvestigatorName}}
+																	<div *ngIf="item.InvestigatorName">
+																		{{item.InvestigatorName}}
+																	</div>	
+																	<div *ngIf="!item.InvestigatorName">
+																		{{CompForm.Institute}} 
+																	</div>	
+																	
 
 
 																</td>
@@ -462,7 +467,7 @@
 															</tr>
 															<tr>
 																<td colspan="4" align="left">
-																	<button type="button" class="btn btn-primary" (click)="AddFinding()">Add a Finding</button>
+																	<button type="button" class="btn btn-primary" (click)="AddFinding()">Add a Finding for Institute: {{CompForm.Institute}} </button>
 																</td>
 
 															</tr>

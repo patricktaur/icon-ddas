@@ -15,6 +15,8 @@ import { AuthService } from '../../auth/auth.service';
 import {SiteSourceViewModel} from './appAdmin.classes';
 import {Country} from './appAdmin.classes';
 import {SponsorProtocol} from './appAdmin.classes';
+import {DefaultSite} from './appAdmin.classes';
+
 
 @Injectable()
 export class LoginHistoryService {
@@ -202,6 +204,33 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
+     addDefaultSite(defaultSite : DefaultSite){
+        let body = JSON.stringify(defaultSite);
+        return this.http.post(this._baseUrl + 'AppAdmin/AddDefaultSite/', body, this._options)
+                   .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getDefaultSites(){
+        return this.http.get(this._baseUrl + 'AppAdmin/GetDefaultSites',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
+     removeDefaultSite(RecId: string){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteDefaultSite?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+    
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

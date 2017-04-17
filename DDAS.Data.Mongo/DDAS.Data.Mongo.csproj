@@ -74,6 +74,7 @@
     <Compile Include="Repositories\SiteData\ClinicalInvestigatorInspectionListRepository.cs" />
     <Compile Include="Repositories\SiteData\CorporateIntegrityAgreementRepository.cs" />
     <Compile Include="Repositories\SiteData\CountryRepository.cs" />
+    <Compile Include="Repositories\SiteData\DefaultSiteRepository.cs" />
     <Compile Include="Repositories\SiteData\ERRProposalToDebarRepository.cs" />
     <Compile Include="Repositories\SiteData\ExclusionDatabaseSearchRepository.cs" />
     <Compile Include="Repositories\SiteData\FDADebarPageRepository.cs" />

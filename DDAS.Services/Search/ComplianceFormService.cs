@@ -725,13 +725,15 @@ namespace DDAS.Services.Search
                 dbForm.Findings.RemoveAll(
                     x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
                     && x.SiteEnum == updateFindings.SiteEnum
-                    && x.IsMatchedRecord == false);
-                //Add all IsMatchedRecord = false records from client
-                dbForm.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false));
+                    && (x.IsMatchedRecord == false || x.MatchCount ==1));
+
+                //Add all IsMatchedRecord = false OR MatchCount == 1 records from client
+                //MatchCount == 1  are added to comp Form by client.
+                dbForm.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false || x.MatchCount == 1));
 
                 var matchedRecords = updateFindings.Findings.Where(x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
                    && x.SiteEnum == updateFindings.SiteEnum
-                   && x.IsMatchedRecord == true);
+                   && (x.IsMatchedRecord == true && x.MatchCount > 1));
 
                 //Replace existing generated records (IsMatchedRecord = true) records with records received from client.
                 foreach (var rec in matchedRecords)

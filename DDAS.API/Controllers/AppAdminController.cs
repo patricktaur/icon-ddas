@@ -250,5 +250,29 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
         #endregion
+
+        #region Add/Delete/Get DefaultSite
+        [Route("AddDefaultSite")]
+        [HttpPost]
+        public IHttpActionResult AddDefaultSite(DefaultSite DefaultSite)
+        {
+            return Ok(_AppAdminService.AddDefaultSite(DefaultSite));
+        }
+
+        [Route("GetDefaultSites")]
+        [HttpGet]
+        public IHttpActionResult GetDefaultSites()
+        {
+            return Ok(_AppAdminService.GetDefaultSites());
+        }
+        [Route("DeleteDefaultSite")]
+        [HttpGet]
+        public IHttpActionResult DeleteDefaultSite(string RecId)
+        {
+            var Id = Guid.Parse(RecId);
+            _AppAdminService.DeleteDefaultSite(Id);
+            return Ok(true);
+        }
+        #endregion
     }
 }

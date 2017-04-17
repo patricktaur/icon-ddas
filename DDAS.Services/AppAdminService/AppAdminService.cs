@@ -1137,5 +1137,65 @@ namespace DDAS.Services.AppAdminService
             return Sponsors;
         }
         #endregion
+
+        #region DefaultSites
+        public bool AddDefaultSite(DefaultSite site)
+        {
+            if (
+                site.SiteId == null)
+                return false;
+
+            _UOW.DefaultSiteRepository.Add(site);
+            return true;
+        }
+
+
+
+        public List<DefaultSitesViewModel> GetDefaultSites()
+        {
+           
+
+            var defaultSitesInDB = _UOW.DefaultSiteRepository.GetAll().OrderBy(x => x.OrderNo).ToList();
+
+            if (defaultSitesInDB.Count == 0)
+                return null;
+
+            var defaultSites = new List<DefaultSitesViewModel>();
+
+            foreach (DefaultSite defaultSite in defaultSitesInDB)
+            {
+                var defaultSiteViewModel = new DefaultSitesViewModel();
+                defaultSiteViewModel.OrderNo = defaultSite.OrderNo;
+                defaultSiteViewModel.IsMandatory = defaultSite.IsMandatory;
+                defaultSiteViewModel.ExcludeSI = defaultSite.ExcludeSI;
+                var site = _UOW.SiteSourceRepository.FindById(defaultSite.SiteId);
+                if (site != null)
+                {
+                    defaultSiteViewModel.SiteName = site.SiteName;
+                    defaultSiteViewModel.SiteUrl = site.SiteUrl;
+                    defaultSiteViewModel.SiteId = defaultSite.SiteId;
+                    defaultSiteViewModel.RecId = defaultSite.RecId;
+
+                    defaultSites.Add(defaultSiteViewModel);
+                }
+                else
+                {
+                    defaultSiteViewModel.SiteName = "Site not found in Site Source repository";
+                    defaultSiteViewModel.SiteUrl = "Delete the record and add a new one.";
+                }
+
+                //sponsorViewModel.SiteName =
+                //    _UOW.SiteSourceRepository.FindById(sponsor.SiteId).SiteName;
+
+
+            }
+            return defaultSites;
+        }
+
+        public void DeleteDefaultSite(Guid? RecId)
+        {
+            _UOW.DefaultSiteRepository.RemoveById(RecId);
+        }
+        #endregion
     }
 }

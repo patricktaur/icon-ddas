@@ -27,3 +27,12 @@ export class SponsorProtocol{
     SiteId: string;
     SiteUrl: string;
 }
+
+ export class DefaultSite{
+        RecId : string;
+        SiteId : string;
+        OrderNo : number;
+        IsMandatory : boolean;
+        ExcludeSI : boolean;
+  
+    }

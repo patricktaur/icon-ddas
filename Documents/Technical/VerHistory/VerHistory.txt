@@ -1,3 +1,17 @@
+VerD1.5.0
+1. Single Match Findings in Findings
+	Display, pagination etc.
+	Add to Compliance Form
+
+2. Add Findings for Institute
+
+3. Default Sites
+	List, Add, Delete
+	Web Site
+	API
+
+		
+
 Ver D1.4.2
 Corrected:
 WebSite: Status Color displays grey immediately on first Save - corrections in status-circle.component.ts

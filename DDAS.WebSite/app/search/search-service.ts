@@ -265,6 +265,22 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
+ 
+    
+    getSingleComponentMatchedRecords(SiteDataId: string, SiteEnum:number, FullName: string){
+
+
+        return this.http.get(this._baseUrl + 'search/GetSingleComponentMatchedRecords/?SiteDataId=' + SiteDataId 
+        + '&SiteEnum=' + SiteEnum 
+        + '&FullName=' + FullName , 
+        this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+
+    }
+    //string SiteDataId, SiteEnum Enum, string FullName
     
     //-------------------------
 

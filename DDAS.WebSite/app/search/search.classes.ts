@@ -308,7 +308,7 @@ export class SearchList{
         InvestigatorName: string;
         DisplayPosition: number;
         IsAnIssue: boolean = false;
-        Links: Link[];
+        Links: Link[] = [];
     }
   
 

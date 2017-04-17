@@ -10,6 +10,7 @@ import {ManageSiteSourcesComponent} from './manage-site-sources.component';
 import {EditSiteSourceComponent} from './edit-site-source.component';
 import {AddCountryComponent} from './add-country.component';
 import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.component';
+import {DefaultSitesComponent} from './default-site-source.component';
 
 export const LoggedInUserRoutes: Routes = [
   { path: 'all-loginhistory', component: LoginHistoryComponent},
@@ -20,7 +21,8 @@ export const LoggedInUserRoutes: Routes = [
   { path: 'edit-site-source/:RecId', component: EditSiteSourceComponent},
   { path:'', redirectTo:'/manage-site-sources', pathMatch:'full'},
   { path: 'add-country', component: AddCountryComponent},
-  {path: 'manage-sponsor-protocol', component: ManageSponsorProtocolComponent}
+  {path: 'manage-sponsor-protocol', component: ManageSponsorProtocolComponent},
+  {path: 'default-sites', component: DefaultSitesComponent},
   //{ path: 'error-log', component: ErrorLogComponent},
 ]
 
