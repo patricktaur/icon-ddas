@@ -1253,7 +1253,7 @@ namespace DDAS.Services.Search
                                 siteSource.SiteDataId,
                                 InvestigatorName.Split(' '));
 
-                            if(MatchCount > 0)
+                            if(MatchCount >= 0)
                             {
                                 searchStatus.SingleComponentMatchedValues = 
                                     MatchCount.ToString();
@@ -2116,8 +2116,8 @@ namespace DDAS.Services.Search
                 {
                     string[] CellValues = new string[]
                     {
-                        finding.SourceNumber.ToString(),
                         finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
+                        finding.SourceNumber.ToString(),
                         DateOfInspection,
                         finding.Observation
                     };
@@ -2661,7 +2661,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.DebarredPersons, FullName, 0);
 
-            var MatchCount = SiteData.DebarredPersons.Where(x =>
+            int MatchCount = 0;
+
+            MatchCount = SiteData.DebarredPersons.Where(x =>
             x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2701,7 +2703,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.ClinicalInvestigatorInspectionList, FullName, 0);
 
-            var MatchCount = SiteData.ClinicalInvestigatorInspectionList.
+            int MatchCount = 0;
+
+            MatchCount = SiteData.ClinicalInvestigatorInspectionList.
                 Where(x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2740,7 +2744,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.FDAWarningLetterList, FullName, 1);
 
-            var MatchCount = SiteData.FDAWarningLetterList.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.FDAWarningLetterList.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2781,7 +2787,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.ProposalToDebar, FullName, 1);
 
-            var MatchCount = SiteData.ProposalToDebar.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.ProposalToDebar.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2823,7 +2831,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.AdequateAssurances, FullName, 1);
 
-            var MatchCount = SiteData.AdequateAssurances.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.AdequateAssurances.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2864,7 +2874,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.DisqualifiedInvestigatorList, FullName, 1);
 
-            var MatchCount = SiteData.DisqualifiedInvestigatorList.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.DisqualifiedInvestigatorList.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2905,7 +2917,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.PHSAdministrativeSiteData, FullName, 1);
 
-            var MatchCount = SiteData.PHSAdministrativeSiteData.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.PHSAdministrativeSiteData.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -2946,7 +2960,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.ClinicalInvestigator, FullName, 1);
 
-            var MatchCount = SiteData.ClinicalInvestigator.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.ClinicalInvestigator.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
@@ -3034,7 +3050,9 @@ namespace DDAS.Services.Search
 
             UpdateMatchStatus(SiteData.CIAListSiteData, FullName, 1);
 
-            var MatchCount = SiteData.CIAListSiteData.Where(
+            int MatchCount = 0;
+
+            MatchCount = SiteData.CIAListSiteData.Where(
                 x => x.MatchCount == 1).Count();
 
             return MatchCount;
