@@ -1140,9 +1140,16 @@ namespace DDAS.Services.AppAdminService
         #region DefaultSites
         public bool AddDefaultSite(DefaultSite site)
         {
-            if (
-                site.SiteId == null)
+            if (site.SiteId == null)
                 return false;
+
+            var siteSource = _UOW.SiteSourceRepository.FindById(site.SiteId);
+
+            site.SiteEnum = siteSource.SiteEnum;
+            site.SiteName = siteSource.SiteName;
+            site.SiteShortName = siteSource.SiteShortName;
+            site.SiteUrl = siteSource.SiteUrl;
+            site.ExtractionMode = siteSource.ExtractionMode;
 
             _UOW.DefaultSiteRepository.Add(site);
             return true;

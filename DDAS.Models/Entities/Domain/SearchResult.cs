@@ -746,7 +746,6 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? SiteSourceUpdatedOn { get; set; }
         public string ExtractionMode { get; set; }
 
-
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
         public string Status
@@ -1124,7 +1123,15 @@ namespace DDAS.Models.Entities.Domain
         public int OrderNo { get; set; }
         public bool IsMandatory { get; set; }
         public bool ExcludeSI { get; set; }
-  
+
+        public string SiteName { get; set; }
+        public string ExtractionMode { get; set; }
+        public string SiteShortName { get; set; }
+        public SiteEnum SiteEnum { get; set; }
+        public string SiteUrl { get; set; }
+        public bool ExcludePI { get; set; }
+
+
     }
     #endregion
 

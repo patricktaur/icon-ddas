@@ -837,7 +837,8 @@ namespace DDAS.Services.Search
 
             var siteSources = _UOW.SiteSourceRepository.GetAll();
 
-            var DefaultSites = _UOW.DefaultSiteRepository.GetAll();
+            var DefaultSites = _UOW.DefaultSiteRepository.GetAll()
+                .OrderBy(x => x.OrderNo).ToList();
 
             var ScanData = new SiteScanData(_UOW, _SearchEngine);
             var test = siteSources.Where(x => x.Mandatory == true).Count();
@@ -847,15 +848,13 @@ namespace DDAS.Services.Search
             {
                 SrNo += 1;
 
-                var tempSiteSource = _UOW.SiteSourceRepository.FindById(site.SiteId);
-
                 var siteScan = new SiteScan();
-
                 var siteSourceToAdd = new SiteSource();
 
-                if (tempSiteSource.ExtractionMode.ToLower() == "db")
+                siteScan = null;
+                if (site.ExtractionMode.ToLower() == "db")
                     //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
-                    siteScan = ScanData.GetSiteScanData(tempSiteSource.SiteEnum, "", log);
+                    siteScan = ScanData.GetSiteScanData(site.SiteEnum, "", log);
 
                 if (siteScan != null)
                 {
@@ -871,14 +870,14 @@ namespace DDAS.Services.Search
                 siteSourceToAdd.Id = SrNo;
                 siteSourceToAdd.DisplayPosition = SrNo;
 
-                siteSourceToAdd.SiteEnum = tempSiteSource.SiteEnum;
-                siteSourceToAdd.SiteUrl = tempSiteSource.SiteUrl;
-                siteSourceToAdd.SiteName = tempSiteSource.SiteName;
-                siteSourceToAdd.SiteShortName = tempSiteSource.SiteShortName;
-                siteSourceToAdd.IsMandatory = tempSiteSource.Mandatory;
-                siteSourceToAdd.ExtractionMode = tempSiteSource.ExtractionMode;
-                siteSourceToAdd.ExcludePI = tempSiteSource.ExcludePI;
-                siteSourceToAdd.ExcludeSI = tempSiteSource.ExcludeSI;
+                siteSourceToAdd.SiteEnum = site.SiteEnum;
+                siteSourceToAdd.SiteUrl = site.SiteUrl;
+                siteSourceToAdd.SiteName = site.SiteName;
+                siteSourceToAdd.SiteShortName = site.SiteShortName;
+                siteSourceToAdd.IsMandatory = site.IsMandatory;
+                siteSourceToAdd.ExtractionMode = site.ExtractionMode;
+                siteSourceToAdd.ExcludePI = site.ExcludePI;
+                siteSourceToAdd.ExcludeSI = site.ExcludeSI;
 
                 siteSourceToAdd.Deleted = false;
 
