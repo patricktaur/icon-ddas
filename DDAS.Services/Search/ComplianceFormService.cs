@@ -1298,7 +1298,7 @@ namespace DDAS.Services.Search
                             searchStatus.ExtractionErrorMessage = "";
 
                             searchStatus.ExtractedOn = siteSource.CreatedOn;
-                            searchStatus.SiteDataId = siteSource.SiteDataId;
+                            //searchStatus.SiteDataId = siteSource.SiteDataId.ToString();
                             if (MatchedRecords.Count == 0)
                             {
                                 searchStatus.ReviewCompleted = true;
@@ -2742,7 +2742,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.FDAWarningLetterList, FullName, 1);
+            UpdateMatchStatus(SiteData.FDAWarningLetterList, FullName, 0);
 
             int MatchCount = 0;
 
@@ -2785,7 +2785,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.ProposalToDebar, FullName, 1);
+            UpdateMatchStatus(SiteData.ProposalToDebar, FullName, 0);
 
             int MatchCount = 0;
 
@@ -2829,7 +2829,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.AdequateAssurances, FullName, 1);
+            UpdateMatchStatus(SiteData.AdequateAssurances, FullName, 0);
 
             int MatchCount = 0;
 
@@ -2872,7 +2872,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.DisqualifiedInvestigatorList, FullName, 1);
+            UpdateMatchStatus(SiteData.DisqualifiedInvestigatorList, FullName, 0);
 
             int MatchCount = 0;
 
@@ -2915,7 +2915,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.PHSAdministrativeSiteData, FullName, 1);
+            UpdateMatchStatus(SiteData.PHSAdministrativeSiteData, FullName, 0);
 
             int MatchCount = 0;
 
@@ -2958,7 +2958,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.ClinicalInvestigator, FullName, 1);
+            UpdateMatchStatus(SiteData.ClinicalInvestigator, FullName, 0);
 
             int MatchCount = 0;
 
@@ -3048,7 +3048,7 @@ namespace DDAS.Services.Search
                     FullName += " " + Name;
             }
 
-            UpdateMatchStatus(SiteData.CIAListSiteData, FullName, 1);
+            UpdateMatchStatus(SiteData.CIAListSiteData, FullName, 0);
 
             int MatchCount = 0;
 

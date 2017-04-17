@@ -61,9 +61,9 @@ export class AllISCFsComponent implements OnInit {
         this.ComplianceFormFilter.ProjectNumber = null;
         this.ComplianceFormFilter.SponsorProtocolNumber = null;
         
-     var fromDay = new Date();
+        var fromDay = new Date();
  
-        fromDay.setDate(fromDay.getDate() - 30);
+        fromDay.setDate(fromDay.getDate() - 10);
   
       
     this.FromDate = {
