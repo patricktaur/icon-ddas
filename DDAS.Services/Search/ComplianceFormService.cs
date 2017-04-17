@@ -837,7 +837,7 @@ namespace DDAS.Services.Search
 
             var siteSources = _UOW.SiteSourceRepository.GetAll();
 
-            var DefaultSites = _UOW.DefaultSiteRepository.GetAll();
+            var DefaultSites = _UOW.DefaultSiteRepository.GetAll().OrderBy(x => x.OrderNo);
 
             var ScanData = new SiteScanData(_UOW, _SearchEngine);
             var test = siteSources.Where(x => x.Mandatory == true).Count();
@@ -853,6 +853,7 @@ namespace DDAS.Services.Search
 
                 var siteSourceToAdd = new SiteSource();
 
+                siteScan = null;
                 if (tempSiteSource.ExtractionMode.ToLower() == "db")
                     //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
                     siteScan = ScanData.GetSiteScanData(tempSiteSource.SiteEnum, "", log);
@@ -1299,7 +1300,7 @@ namespace DDAS.Services.Search
                             searchStatus.ExtractionErrorMessage = "";
 
                             searchStatus.ExtractedOn = siteSource.CreatedOn;
-                            searchStatus.SiteDataId = siteSource.SiteDataId;
+                            //searchStatus.SiteDataId = siteSource.SiteDataId.ToString();
                             if (MatchedRecords.Count == 0)
                             {
                                 searchStatus.ReviewCompleted = true;
