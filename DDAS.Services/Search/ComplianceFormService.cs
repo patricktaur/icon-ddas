@@ -1255,7 +1255,7 @@ namespace DDAS.Services.Search
                                 siteSource.SiteDataId,
                                 InvestigatorName.Split(' '));
 
-                            if(MatchCount > 0)
+                            if(MatchCount >= 0)
                             {
                                 searchStatus.SingleComponentMatchedValues = 
                                     MatchCount.ToString();
@@ -2118,8 +2118,9 @@ namespace DDAS.Services.Search
                 {
                     string[] CellValues = new string[]
                     {
-                        finding.SourceNumber.ToString(),
+                       
                         finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
+                        finding.SourceNumber.ToString(),
                         DateOfInspection,
                         finding.Observation
                     };
