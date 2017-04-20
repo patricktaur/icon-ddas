@@ -305,7 +305,7 @@
                                                 							 {{item.SiteName}}
 																		</a>
 																	</div>
-
+																	
 
 
 																</td>
@@ -354,14 +354,16 @@
 															<tr class="active" *ngFor="let item of OptionalSites; let idx = index;">
 																<td>{{item.DisplayPosition}}</td>
 																<td>
-																	<div class="text-left" *ngIf="item.SiteUrl.length > 0">
+																	<!--<div class="text-left" *ngIf="item.SiteUrl.length > 0">-->
+																	<div class="text-left" *ngIf="isUrl(item.SiteUrl)">
 																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
                                                 							 {{item.SiteName}}
                                             								</a>
 																	</div>
-																	<div class="text-left" *ngIf="item.SiteUrl.length == 0">
+																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
 																		{{item.SiteName}}
 																	</div>
+																	
 																</td>
 																<td>
 
@@ -585,7 +587,7 @@
 
 							{{item.SiteName}}
 						</div>
-
+						
 					</td>
 
 				</tr>
@@ -620,7 +622,7 @@
 		Site: {{siteToRemove.SiteName}} will be removed.
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-primary" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-primary" (click)="RemoveSite1(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
 		<button type="button" class="btn btn-primary" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

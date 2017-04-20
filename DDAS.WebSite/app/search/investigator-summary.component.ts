@@ -52,6 +52,7 @@ export class InvestigatorSummaryComponent {
         this.route.params.forEach((params: Params) => {
         this.ComplianceFormId = params['formId'];
         this.InvestigatorId = +params['investigatorId'];
+        // change to SiteId:
         this.retSiteEnum =  +params['siteEnum'];
         this.rootPath =  params['rootPath'];
 
@@ -165,12 +166,18 @@ get Summary(){
     return retSummary;
 }
  
-gotoSiteDetails(siteEnum: number){
+// gotoSiteDetails(siteEnum: number){
  
-    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteEnum, {rootPath:this.rootPath}], 
+//     this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteEnum, {rootPath:this.rootPath}], 
+//     { relativeTo: this.route.parent});
+// }
+ 
+gotoSiteDetails(siteId: string){
+ 
+    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteId, {rootPath:this.rootPath}], 
     { relativeTo: this.route.parent});
 }
- 
+
 goBack() {
 
     //this._location.back();

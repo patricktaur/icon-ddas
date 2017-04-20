@@ -436,7 +436,9 @@ export class CompFormEditComponent implements OnInit {
         //Mark sites that are already included Comp Form:
 
         for (let site of this.SitesAvailable) {
-            let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteEnum == site.SiteEnum);
+
+            //let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteEnum == site.SiteEnum);
+            let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteId == site.RecId);
             site.Selected = false;
             if (siteInCompForm == null) {
                 site.Included = false;
@@ -470,12 +472,15 @@ export class CompFormEditComponent implements OnInit {
             if (this.SitesAvailable[index].Selected == true) {
                 //Check if site is already included
                 let enumOfSiteToAdd = this.SitesAvailable[index].SiteEnum;
-                let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
+                let siteIdToAdd = this.SitesAvailable[index].RecId;
+                //let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
+                let check = this.CompForm.SiteSources.find(x => x.SiteId == siteIdToAdd)
                 if (check) { //If found then it was possibly marked as deleted 
                     check.Deleted = false;
                 }
                 else {  //add it to the collection
                     let siteToAdd = new SiteSourceToSearch;
+                    siteToAdd.SiteId = this.SitesAvailable[index].RecId;
                     siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
                     siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
                     siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
@@ -498,16 +503,38 @@ export class CompFormEditComponent implements OnInit {
     }
 
     RemoveSite() {
-        //item.Deleted = true;
+        
         this.siteToRemove.Deleted = true;
+        this.siteToRemove.SiteEnum
         let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
         if (site) {
             site.Included = false;
             this.pageChanged = true;
         }
         this.SetSiteDisplayPosition();
-    }
+    
+}
 
+    RemoveSite1(){
+        
+        let siteIdToRemove = this.siteToRemove.SiteId;
+        console.log("AAAA");
+        this.CompForm.Findings.forEach(function(item, index, object) {
+            if (item.SiteId === siteIdToRemove) {
+                object.splice(index, 1);
+                console.log("Finding removed");
+            }
+        });
+        console.log("BBBBB");
+        var index = this.CompForm.SiteSources.indexOf(this.siteToRemove, 0);
+        if (index > -1) {
+            this.CompForm.SiteSources.splice(index, 1);
+        }
+        console.log("CCCCC");
+        this.SetSiteDisplayPosition();
+    }
+    
+    
     SetSiteDisplayPosition() {
         let pos: number = 1
         for (let item of this.CompForm.SiteSources) {
@@ -693,6 +720,14 @@ export class CompFormEditComponent implements OnInit {
     }
   
      private Todate = new Date(); 
+
+     isUrl(url: string){
+         if (url.toLowerCase().startsWith("http")){
+             return true;
+         }else{
+             return false;
+         }
+     }
     
     get diagnostic() { return JSON.stringify(this.CompForm.SiteSources); }
 

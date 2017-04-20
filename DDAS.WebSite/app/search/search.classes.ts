@@ -256,6 +256,7 @@ export class SearchList{
   }
 
   export class SiteSearchStatus{
+         SiteId: string;
         siteEnum: number = 0;
         SiteName: string = "";
         SiteUrl: string = "";
@@ -275,6 +276,7 @@ export class SearchList{
   
     export class SiteSourceToSearch{
         Id: number = 0;
+        SiteId: string;
         DisplayPosition: number = 0;
         SiteName :string;
         SiteShortName : string;
@@ -291,6 +293,7 @@ export class SearchList{
     }  
 
     export class Finding{
+        SiteId: string;
         SiteEnum: number;
         IsFullMatch: boolean;
         InvestigatorSearchedId: number;
@@ -314,6 +317,7 @@ export class SearchList{
 
      
     export class SiteSource{
+        RecId: string;
         SiteName :string;
         SiteShortName : string;
         SiteEnum : number; 
