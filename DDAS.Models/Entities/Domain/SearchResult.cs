@@ -502,6 +502,7 @@ namespace DDAS.Models.Entities.Domain
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
+
         public string SearchName
         {
             get
@@ -533,6 +534,8 @@ namespace DDAS.Models.Entities.Domain
         public int Sites_PartialMatchCount { get; set; }
         public int IssuesFoundSiteCount { get; set; }
         public int ReviewCompletedSiteCount { get; set; }
+
+        public DateTime? ReviewCompletedOn { get; set; } = null;
 
         public int TotalIssuesFound { get; set; }
         public int ReviewCompletedCount { get; set; }
@@ -1171,6 +1174,7 @@ namespace DDAS.Models.Entities.Domain
         public string AttachmentsFolder { get; set; }
         public string WordTemplateFolder { get; set; }
         public string CIILZipFolder { get; set; }
+        public string OutputFileFolder { get; set; }
     }
 
     #region ReadExcelInput

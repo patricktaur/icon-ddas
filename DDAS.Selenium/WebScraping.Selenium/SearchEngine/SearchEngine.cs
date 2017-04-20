@@ -314,10 +314,10 @@ namespace WebScraping.Selenium.SearchEngine
             _searchPage = GetSearchPage(siteEnum);
 
             //Pradeep 21Dec2016 return true for live sites - Need to refactor
-            if (siteEnum == SiteEnum.SystemForAwardManagementPage)
+            //if (siteEnum == SiteEnum.SystemForAwardManagementPage)
                 //siteEnum == SiteEnum.FDAWarningLettersPage ||
                 //siteEnum == SiteEnum.ClinicalInvestigatorDisqualificationPage)
-                return true;
+                //return true;
 
             var SiteUpdatedDateFromPage =
                 _searchPage.SiteLastUpdatedDateFromPage;

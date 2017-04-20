@@ -203,7 +203,7 @@ namespace WebScraping.Selenium.Pages
             catch (Exception e)
             {
                 _exclusionSearchSiteData.DataExtractionSucceeded = false;
-                _exclusionSearchSiteData.DataExtractionErrorMessage = e.Message;
+                _exclusionSearchSiteData.DataExtractionErrorMessage = e.ToString();
                 _exclusionSearchSiteData.ReferenceId = null;
                 throw new Exception(e.ToString());
             }

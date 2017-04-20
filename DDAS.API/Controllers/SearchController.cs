@@ -364,7 +364,6 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
-
             return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form, _log, _config.ErrorScreenCaptureFolder));
            
         }
@@ -406,6 +405,26 @@ namespace DDAS.API.Controllers
             {
                 return  Content(HttpStatusCode.BadRequest, e.Message);
             }
+        }
+
+        [Route("GenerateOutputFile")]
+        [HttpGet]
+        public IHttpActionResult GenerateOutputFile()
+        {
+            var GenerateOutputFile = 
+                new GenerateOutputFile(
+                    _config.ExcelTempateFolder + "Output_File.xlsx");
+
+            var forms = _UOW.ComplianceFormRepository.GetAll();
+
+            var FilePath = _SearchService.GenerateOutputFile(
+                GenerateOutputFile,
+                forms, 
+                _config);
+
+            var Path = FilePath.Replace(RootPath, "");
+
+            return Ok(Path);
         }
 
         [Route("GenerateComplianceFormPDF")]

@@ -83,6 +83,7 @@
     <Compile Include="Repositories\SiteData\PHSAdministrativeActionListingRepository.cs" />
     <Compile Include="Repositories\SiteData\SiteSourceRepository.cs" />
     <Compile Include="Repositories\SiteData\SponsorProtocolRepository.cs" />
+    <Compile Include="Repositories\SiteData\SystemForAwardManagementEntityRepository.cs" />
     <Compile Include="Repositories\Users\RoleRepository.cs" />
     <Compile Include="Repositories\SiteData\SaveSearchResultRepository.cs" />
     <Compile Include="Repositories\SiteData\SpeciallyDesignatedNationalsRepository.cs" />

@@ -103,7 +103,9 @@ namespace DDAS.API.App_Start
                WordTemplateFolder = RootPath +
                System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"],
                CIILZipFolder = RootPath +
-               System.Configuration.ConfigurationManager.AppSettings["CIILZipFolder"]
+               System.Configuration.ConfigurationManager.AppSettings["CIILZipFolder"],
+               OutputFileFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"]
             });
             //container.RegisterWebApiRequest<IUserService, UserService>();
             container.Register<IUserService, UserService>();

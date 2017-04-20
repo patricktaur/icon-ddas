@@ -1027,7 +1027,6 @@ namespace DDAS.Services.AppAdminService
                 _UOW.SiteSourceRepository.UpdateSiteSource(SiteSource);
                 return true;
             }
-            
         }
 
         public void DeleteSiteSource(Guid? RecId)

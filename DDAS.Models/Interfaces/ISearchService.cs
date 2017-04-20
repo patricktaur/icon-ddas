@@ -60,5 +60,10 @@ namespace DDAS.Models.Interfaces
             Guid? SiteDataId,
             SiteEnum Enum,
             string FullName);
+
+        string GenerateOutputFile(
+            IGenerateOutputFile GenerateOutputFile,
+            List<ComplianceForm> forms,
+            IConfig Config);
     }
 }

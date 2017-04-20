@@ -8,6 +8,7 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class SystemForAwardManagementPage: BaseSearchPage
     {
+        #region Related to Live Search
         public IWebElement SAMAnchorTag {
             get {
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
@@ -179,6 +180,46 @@ namespace WebScraping.Selenium.Pages
                 {
                     throw new Exception("Could not find PageLastUpdatedTextElement");
                 }
+            }
+        }
+
+        #endregion
+
+        public IWebElement DataAccessAnchorTag
+        {
+            get
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
+
+                        foreach (IWebElement Anchor in Anchors)
+                        {
+                            if (Anchor.GetAttribute("title").ToLower() == "data access")
+                                return Anchor;
+                        }
+                        throw new Exception("Could not find SAMAchorTag");
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
+            }
+        }
+
+        public IWebElement LatestExclusionExtractAnchorTag
+        {
+            get
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                Func<IWebDriver, IWebElement> waitForElement =
+                    new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
+                    {
+                        var AnchorTag = driver.FindElement(By.Id("anch_84"));
+                        return AnchorTag;
+                    });
+                IWebElement targetElement = wait.Until(waitForElement);
+                return targetElement;
             }
         }
     }

@@ -470,8 +470,8 @@ namespace Utilities.WordTemplate
 
         public void Initialize(string TemplateFolder, string ComplianceFormFolder)
         {
-            if (File.Exists(ComplianceFormFolder))
-                File.Delete(ComplianceFormFolder);
+            //if (File.Exists(ComplianceFormFolder))
+            //    File.Delete(ComplianceFormFolder);
             
             byte[] ByteArray = File.ReadAllBytes(
                 TemplateFolder + "ComplianceFormTemplate.docx");
