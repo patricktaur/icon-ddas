@@ -73,6 +73,7 @@
     <Compile Include="Entities\Domain\SiteData\PHSAdministrativeActionListingSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\SiteDataItemBase.cs" />
     <Compile Include="Entities\Domain\SiteData\SpeciallyDesignatedNationalsListSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementEntitySiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementPageSiteData.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\IGenerateOutputFile.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\ISearchEngine.cs" />
     <Compile Include="Interfaces\ISearchPage.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Repository\Domain\SiteData\ISiteSourceRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISpeciallyDesignatedNationalsRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISponsorProtocolRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISystemForAwardManagementEntityRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISysytemForAwardManagementRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IUserRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IUserRole.cs" />

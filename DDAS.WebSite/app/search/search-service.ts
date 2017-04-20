@@ -204,7 +204,6 @@ export class SearchService {
     }
     
     generateComplianceForm(formId: string){
-
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
@@ -217,6 +216,19 @@ export class SearchService {
             );
     }
     
+    generateOutputFile(){
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        return this.http.get(this._baseUrl + 'search/GenerateOutputFile', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(
+                this.handleError
+            );        
+    }
+
     downLoadComplianceForm(formId: string){
 
         let headers = new Headers();

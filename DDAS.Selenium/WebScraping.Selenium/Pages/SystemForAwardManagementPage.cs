@@ -8,6 +8,10 @@ using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using System.Net;
+using System.IO;
+using System.IO.Compression;
+using Microsoft.VisualBasic.FileIO;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -54,7 +58,8 @@ namespace WebScraping.Selenium.Pages
             get
             {
                 if (_SiteLastUpdatedFromPage == null)
-                    ReadSiteLastUpdatedDateFromPage();
+                    GetSiteLastUpdatedDate();
+                    //ReadSiteLastUpdatedDateFromPage(); uncomment this for live search
                 return _SiteLastUpdatedFromPage;
             }
         }
@@ -69,93 +74,93 @@ namespace WebScraping.Selenium.Pages
 
         private SystemForAwardManagementPageSiteData _SAMSiteData;
 
-        private int RowNumber = 1;
+        //private int RowNumber = 1;
 
         //need to refactor
         private void LoadSAMList()
         {
-            IList<IWebElement> TableThatContainsRecords =
-                SAMSearchResult.FindElements
-                (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table"));
+            //IList<IWebElement> TableThatContainsRecords =
+            //    SAMSearchResult.FindElements
+            //    (By.XPath("//tbody/tr/td/ul/table/tbody/tr/td/li/table"));
 
-            foreach (IWebElement RecordsTable in TableThatContainsRecords)
-            {
-                Debug.Print(RecordsTable.Text);
+            //foreach (IWebElement RecordsTable in TableThatContainsRecords)
+            //{
+            //    //Debug.Print(RecordsTable.Text);
 
-                var SAMDataList = new SystemForAwardManagement();
+            //    var SAMDataList = new SystemForAwardManagement();
 
-                string TempContent = RecordsTable.Text.Replace("\n", "");
-                string[] ContentOfEachRecord = TempContent.Split('\r');
+            //    string TempContent = RecordsTable.Text.Replace("\n", "");
+            //    string[] ContentOfEachRecord = TempContent.Split('\r');
 
-                SAMDataList.RowNumber = RowNumber;
-                SAMDataList.Entity = ContentOfEachRecord[1];
+            //    SAMDataList.RowNumber = RowNumber;
+            //    SAMDataList.Entity = ContentOfEachRecord[1];
 
-                for (int counter = 2; counter < ContentOfEachRecord.Length; counter++)
-                {
-                    string Content = ContentOfEachRecord[counter];
+            //    for (int counter = 2; counter < ContentOfEachRecord.Length; counter++)
+            //    {
+            //        string Content = ContentOfEachRecord[counter];
 
-                    string[] tempFieldValue = new string[0];
+            //        string[] tempFieldValue = new string[0];
 
-                    if (Content.Contains(":"))
-                        tempFieldValue = Content.Split(':');
-                    else if (Content.Contains("Entity") || Content.Contains("Exclusion"))
-                    {
-                        SAMDataList.Entity = ContentOfEachRecord[counter + 2];
-                        continue;
-                    }
+            //        if (Content.Contains(":"))
+            //            tempFieldValue = Content.Split(':');
+            //        else if (Content.Contains("Entity") || Content.Contains("Exclusion"))
+            //        {
+            //            SAMDataList.Entity = ContentOfEachRecord[counter + 2];
+            //            continue;
+            //        }
 
-                    if (tempFieldValue.Length >= 1)
-                    {
-                        switch (tempFieldValue[0])
-                        {
-                            case "Status": SAMDataList.Status = tempFieldValue[1]; break;
+            //        if (tempFieldValue.Length >= 1)
+            //        {
+            //            switch (tempFieldValue[0])
+            //            {
+            //                case "Status": SAMDataList.Status = tempFieldValue[1]; break;
 
-                            case "DUNS":
-                                SAMDataList.Duns = tempFieldValue[1].Replace("CAGE Code", "").Trim();
-                                if (tempFieldValue.Length > 2)
-                                    SAMDataList.CAGECode = tempFieldValue[2];
-                                break;
+            //                case "DUNS":
+            //                    SAMDataList.Duns = tempFieldValue[1].Replace("CAGE Code", "").Trim();
+            //                    if (tempFieldValue.Length > 2)
+            //                        SAMDataList.CAGECode = tempFieldValue[2];
+            //                    break;
 
-                            case "Has Active Exclusion?":
-                                SAMDataList.HasActiveExclusion =
-                                tempFieldValue[1].Replace("DoDAAC", "").Trim();
-                                if (tempFieldValue.Length > 2)
-                                    SAMDataList.DoDAAC = tempFieldValue[2];
-                                break;
+            //                case "Has Active Exclusion?":
+            //                    SAMDataList.HasActiveExclusion =
+            //                    tempFieldValue[1].Replace("DoDAAC", "").Trim();
+            //                    if (tempFieldValue.Length > 2)
+            //                        SAMDataList.DoDAAC = tempFieldValue[2];
+            //                    break;
 
-                            case "Expiration Date":
-                                string[] temp =
-                                    tempFieldValue[1].Replace("Delinquent Federal Debt?", "?").Split('?');
+            //                case "Expiration Date":
+            //                    string[] temp =
+            //                        tempFieldValue[1].Replace("Delinquent Federal Debt?", "?").Split('?');
 
-                                SAMDataList.ExpirationDate =
-                                    temp[0].Trim();
-                                if (temp.Length > 1)
-                                    SAMDataList.DelinquentFederalDebt =
-                                    tempFieldValue[1].Split('?')[1].Trim();
-                                break;
+            //                    SAMDataList.ExpirationDate =
+            //                        temp[0].Trim();
+            //                    if (temp.Length > 1)
+            //                        SAMDataList.DelinquentFederalDebt =
+            //                        tempFieldValue[1].Split('?')[1].Trim();
+            //                    break;
 
-                            case "Purpose of Registration":
-                                if (tempFieldValue.Length > 1)
-                                    SAMDataList.PurposeOfRegistration = tempFieldValue[1].Trim();
-                                break;
+            //                case "Purpose of Registration":
+            //                    if (tempFieldValue.Length > 1)
+            //                        SAMDataList.PurposeOfRegistration = tempFieldValue[1].Trim();
+            //                    break;
 
-                            case "Classification":
-                                if (tempFieldValue.Length > 1)
-                                    SAMDataList.Classification = tempFieldValue[1].Trim();
-                                break;
+            //                case "Classification":
+            //                    if (tempFieldValue.Length > 1)
+            //                        SAMDataList.Classification = tempFieldValue[1].Trim();
+            //                    break;
 
-                            case "Activation Date":
-                                SAMDataList.ActivationDate =
-                                    tempFieldValue[1].Replace("Termination Date", "").Trim();
-                                if (tempFieldValue.Length > 2)
-                                    SAMDataList.TerminationDate = tempFieldValue[2].Trim();
-                                break;
-                        }
-                    }
-                }
-                _SAMSiteData.SAMSiteData.Add(SAMDataList);
-                RowNumber += 1;
-            }
+            //                case "Activation Date":
+            //                    SAMDataList.ActivationDate =
+            //                        tempFieldValue[1].Replace("Termination Date", "").Trim();
+            //                    if (tempFieldValue.Length > 2)
+            //                        SAMDataList.TerminationDate = tempFieldValue[2].Trim();
+            //                    break;
+            //            }
+            //        }
+            //    }
+            //    _SAMSiteData.SAMSiteData.Add(SAMDataList);
+            //    RowNumber += 1;
+            //}
         }
 
         private bool SearchTerms(string NameToSearch)
@@ -187,9 +192,119 @@ namespace WebScraping.Selenium.Pages
                 return true;
         }
 
+        private string DownloadExclusionFile()
+        {
+            string fileName = _config.AppDataDownloadsFolder + 
+                "SAM_Exclusions_Public_Extract_";
+            //SAM_Exclusions_Public_Extract_17096
+
+            string CSVFilePath = fileName;
+
+            string UnZipPath = _config.AppDataDownloadsFolder;
+
+            WebClient myWebClient = new WebClient();
+
+            //https://www.sam.gov/portal/SAM/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_17110.ZIP
+
+            string myStringWebResource = "https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_";
+            string Year = DateTime.Now.ToString("yy");
+
+            string JulianDate = LatestExclusionExtractAnchorTag.Text.Split(' ')[1];
+            myStringWebResource += Year + JulianDate + ".ZIP";
+
+            fileName += Year + JulianDate + ".ZIP";
+            CSVFilePath += Year + JulianDate + ".CSV";
+
+            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", fileName, myStringWebResource);
+
+            if (File.Exists(CSVFilePath))
+                File.Delete(CSVFilePath);
+
+            myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            ZipFile.ExtractToDirectory(fileName, _config.AppDataDownloadsFolder);
+
+            return CSVFilePath;
+        }
+
+        private void LoadSAMDatafromCSV(string CSVFilePath)
+        {
+            TextFieldParser parser = new TextFieldParser(CSVFilePath);
+
+            parser.HasFieldsEnclosedInQuotes = true;
+            parser.SetDelimiters(",");
+
+            string[] fields;
+
+            int RowNumber = 1;
+            while (!parser.EndOfData)
+            {
+                fields = parser.ReadFields();
+
+                if(fields[3].Trim().Length == 0 &&
+                    fields[4].Trim().Length == 0 &&
+                    fields[5].Trim().Length == 0)
+                {
+                    continue;
+                }
+                else if(fields[3].ToLower() == "first")
+                {
+                    continue;
+                }
+
+                var SAMSiteRecord = new SystemForAwardManagement();
+
+                SAMSiteRecord.RowNumber = RowNumber;
+                SAMSiteRecord.First = fields[3].Trim();
+                SAMSiteRecord.Middle = fields[4].Trim();
+                SAMSiteRecord.Last = fields[5].Trim();
+
+                //var Name = "";
+
+                //if (fields[3].Trim().Length > 0)
+                //    Name = fields[3].Trim();
+                //if (fields[4].Trim().Length > 0)
+                //    Name += " " + fields[4].Trim();
+                //if (fields[5].Trim().Length > 0)
+                //    Name += " " + fields[5].Trim();
+
+                //var FullName = Name.Trim();
+                //SAMSiteRecord.Name = FullName.Trim();
+
+                SAMSiteRecord.ExcludingAgency = fields[17].Trim();
+                SAMSiteRecord.ExclusionType = fields[19].Trim();
+                //SAMSiteRecord.AdditionalComments = fields[20].Trim();
+                SAMSiteRecord.ActiveDate = fields[21].Trim();
+                //SAMSiteRecord.RecordStatus = fields[23].Trim();
+
+                _SAMSiteData.SAMSiteData.Add(SAMSiteRecord);
+                RowNumber += 1;
+            }
+        }
+
         public override void LoadContent()
         {
-            throw new NotImplementedException();
+            try
+            {
+                _SAMSiteData.DataExtractionRequired = true;
+
+                var FilePath = DownloadExclusionFile();
+                LoadSAMDatafromCSV(FilePath);
+
+                _SAMSiteData.DataExtractionSucceeded = true;
+            }
+            catch(Exception e)
+            {
+                _SAMSiteData.DataExtractionSucceeded = false;
+                _SAMSiteData.DataExtractionErrorMessage = e.ToString();
+                _SAMSiteData.ReferenceId = null;
+                throw new Exception(e.ToString());
+            }
+            finally
+            {
+                _SAMSiteData.CreatedBy = "Patrick";
+                _SAMSiteData.CreatedOn = DateTime.Now;
+            }
         }
 
         public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
@@ -264,7 +379,26 @@ namespace WebScraping.Selenium.Pages
             //driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(10));
         }
 
-        public void ReadSiteLastUpdatedDateFromPage()
+        //for DB search
+        private void GetSiteLastUpdatedDate()
+        {
+            DataAccessAnchorTag.SendKeys(Keys.Enter);
+            var AnchorTitle = LatestExclusionExtractAnchorTag.GetAttribute("title");
+            var Date = AnchorTitle.Replace("Active Exclusions Data File", "").Trim();
+
+            DateTime LastUpdatedDate;
+
+            DateTime.TryParseExact(Date,
+                "M'/'d'/'yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out LastUpdatedDate);
+
+            _SiteLastUpdatedFromPage = LastUpdatedDate;
+        }
+
+        //for live search
+        private void ReadSiteLastUpdatedDateFromPage()
         {
             try
             {

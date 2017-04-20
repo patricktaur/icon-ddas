@@ -55,6 +55,9 @@ namespace DDAS.Data.Mongo
         private ICountryRepository _CountryRepository;
         private ISponsorProtocolRepository _SponsorProtocolRepository;
         private IDefaultSiteRepository _DefaultSiteRepository;
+        private ISystemForAwardManagementEntityRepository
+            _SystemForAwardManagementEntityRepository;
+
         #endregion
 
         /*
@@ -239,6 +242,17 @@ namespace DDAS.Data.Mongo
                 return _ClinicalInvestigatorDisqualificationRepository ??
                     (_ClinicalInvestigatorDisqualificationRepository = 
                     new ClinicalInvestigatorDisqualificationRepository(_db));
+            }
+        }
+
+        public ISystemForAwardManagementEntityRepository
+            SystemForAwardManagementEntityRepository
+        {
+            get
+            {
+                return _SystemForAwardManagementEntityRepository ??
+                    (_SystemForAwardManagementEntityRepository = new
+                    SystemForAwardManagementEntityRepository(_db));
             }
         }
 

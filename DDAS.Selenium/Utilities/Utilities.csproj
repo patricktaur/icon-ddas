@@ -58,6 +58,7 @@
     <Compile Include="DummyLog.cs" />
     <Compile Include="EMail\EMailService.cs" />
     <Compile Include="ExportList.cs" />
+    <Compile Include="GenerateOutputFile.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

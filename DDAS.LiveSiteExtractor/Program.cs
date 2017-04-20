@@ -61,7 +61,6 @@ namespace DDAS.LiveSiteExtractor
                 {
                     innerException = ex.InnerException.Message;
                 }
-               
 
                 _WriteLog.WriteLog(DateTime.Now.ToString(), ex.Message + "--Inner Exception:" + innerException);
                 
@@ -100,12 +99,12 @@ namespace DDAS.LiveSiteExtractor
         {
             get
             {
-                return null;
+                return ConfigurationManager.AppSettings["CIILZipFolder"]; ;
             }
 
             set
             {
-                throw new NotImplementedException();
+                value = "";
             }
         }
 
@@ -151,6 +150,19 @@ namespace DDAS.LiveSiteExtractor
             {
                 return null;
             }
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string OutputFileFolder
+        {
+            get
+            {
+                return null;
+            }
+
             set
             {
                 value = "";

@@ -86,7 +86,7 @@ namespace WebScraping.Selenium.Pages
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
-            
+
             // Concatenate the domain with the Web resource filename.
             // PDF file path --> https://www.treasury.gov/ofac/downloads/sdnlist.pdf
 

@@ -95,12 +95,9 @@ namespace DDAS.DataExtractor
             {
                 _WriteLog.WriteLog("=================================================================================");
                 _WriteLog.LogEnd();
-                Process currentProcess = Process.GetCurrentProcess();
 
+                Process currentProcess = Process.GetCurrentProcess();
                 currentProcess.CloseMainWindow();
-                
-                //ForcedCleanUp();
-                //Environment.Exit(0);
             }
         }
 
@@ -281,6 +278,19 @@ namespace DDAS.DataExtractor
             set
             {
                 value = "";
+            }
+        }
+
+        public string OutputFileFolder
+        {
+            get
+            {
+                return null;
+            }
+
+            set
+            {
+                throw new NotImplementedException();
             }
         }
 

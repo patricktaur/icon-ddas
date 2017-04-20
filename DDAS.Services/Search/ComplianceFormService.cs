@@ -1006,8 +1006,6 @@ namespace DDAS.Services.Search
                 var sitesSearched = Investigator.SitesSearched.Where(x => x.Exclude == false);
                 int sitesSearchedCount = sitesSearched.ToList().Count;
 
-
-
                 Investigator.TotalIssuesFound = 0;
 
                 int PartialMatchSiteCount = 0;
@@ -1028,9 +1026,12 @@ namespace DDAS.Services.Search
                     if (
                         //searchStatus.ExtractionMode.ToLower() == "db" 
                         //|| searchStatus.ExtractionMode.ToLower() == "live") && searchStatus.ExtractedOn == null
-                        searchStatus.ExtractedOn == null
-                        && searchStatus.ExtractionMode.ToLower() == "live"
-                        && !(searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                        searchStatus.ExtractedOn == null && 
+                        searchStatus.ExtractionMode.ToLower() == "live" && 
+                        !(searchStatus.StatusEnum == 
+                        ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || 
+                        searchStatus.StatusEnum == 
+                        ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                         )
                     {
                         searchStatus.ExtractionPending = true;
@@ -1048,12 +1049,10 @@ namespace DDAS.Services.Search
                     foreach (Finding Finding in Findings)
                     {
                         if (Finding != null && Finding.IsAnIssue &&
-                            Finding.InvestigatorSearchedId == Investigator.Id 
-                             )
+                            Finding.InvestigatorSearchedId == Investigator.Id)
                         {
                             InvId = Finding.InvestigatorSearchedId.Value;
-                            IssuesFound += 1;
-                            
+                            IssuesFound += 1; 
                         }
                     }
                     searchStatus.IssuesFound = IssuesFound;
@@ -1083,6 +1082,7 @@ namespace DDAS.Services.Search
                     if (searchStatus.ReviewCompleted)
                     {
                         ReviewCompletedSiteCount += 1;
+                        Investigator.ReviewCompletedOn = DateTime.Now;
                     }
                 }
                 Investigator.Sites_PartialMatchCount = PartialMatchSiteCount;
@@ -1999,7 +1999,10 @@ namespace DDAS.Services.Search
 
             var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
 
-            var GeneratedFileName = ProjectNumber + "_" + PI + FileExtension;
+            var GeneratedFileName = 
+                ProjectNumber + "_" + PI + "_" + 
+                DateTime.Now.ToString("dd MMM yyyy HH_mm") +
+                FileExtension;
 
             var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
 
@@ -3460,6 +3463,80 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        #region OutputFile
+        
+        public string GenerateOutputFile(
+            IGenerateOutputFile GenerateOutputFile, 
+            List<ComplianceForm> forms,
+            IConfig Config)
+        {
+            int Row = 2;
+            foreach(ComplianceForm form in forms)
+            {
+                DateTime? WorldCheckCompletedOn = null;
+                DateTime? InstituteWorldCheckCompletedOn = null;
+                DateTime? DMCCheckCompletedOn = null;
+
+                foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
+                {
+                    foreach (Finding finding in form.Findings)
+                    {
+                        if (finding.SiteEnum == SiteEnum.WorldCheckPage &&
+                            finding.InvestigatorSearchedId == Investigator.Id)
+                        {
+                            WorldCheckCompletedOn = finding.DateOfInspection;
+                        }
+                        else if (finding.SiteEnum == SiteEnum.PfizerDMCChecksPage &&
+                            finding.InvestigatorSearchedId == Investigator.Id)
+                        {
+                            DMCCheckCompletedOn = finding.DateOfInspection;
+                        }
+
+                        if (finding.InvestigatorName == null ||
+                            finding.InvestigatorName == "" &&
+                            finding.InvestigatorSearchedId == Investigator.Id)
+                            InstituteWorldCheckCompletedOn =
+                                finding.DateOfInspection;
+                    }
+
+                    if (Investigator.ReviewCompletedOn != null)
+                    {
+                        GenerateOutputFile.AddInvestigator(
+                            Investigator.InvestigatorId,
+                            Investigator.MemberId,
+                            Investigator.FirstName,
+                            Investigator.LastName,
+                            1,
+                            Investigator.ReviewCompletedOn,
+                            Investigator.ReviewCompletedOn,
+                            WorldCheckCompletedOn,
+                            1,
+                            WorldCheckCompletedOn,
+                            1,
+                            InstituteWorldCheckCompletedOn,
+                            InstituteWorldCheckCompletedOn == null ? "No" : "Yes",
+                            DMCCheckCompletedOn,
+                            DMCCheckCompletedOn == null ? "No" : "Yes",
+                            Row);
+                        Row += 1;
+                        WorldCheckCompletedOn = null;
+                        InstituteWorldCheckCompletedOn = null;
+                        DMCCheckCompletedOn = null;
+                    }
+                }
+            }
+            var OutputFileName = "OutputFile_" + 
+                DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+                ".xlsx";
+            
+            GenerateOutputFile.SaveChanges(Config.OutputFileFolder + 
+                OutputFileName);
+
+            return Config.OutputFileFolder + OutputFileName;
+        }
+        
+        #endregion
+
         #region Helpers
 
         public string RemoveExtraCharacters(string Value)
@@ -3467,7 +3544,7 @@ namespace DDAS.Services.Search
             //string CharactersToRemove = ".,/:";
             //return Name.Replace(CharactersToRemove, "");
             //string TempValue = Regex.Unescape(Value);
-            return Regex.Replace(Value, "[,./]", "");
+            return Regex.Replace(Value, "[,.'/]", "");
         }
 
         public static string RemoveSpecialCharacters(string str)

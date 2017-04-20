@@ -33,7 +33,7 @@ export class ClosedICFsComponent implements OnInit {
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
-    private makeActiveCompFormId: string;
+    public makeActiveCompFormId: string;
     public makeActivePrincipalInvestigatorName: string
 
     public pageNumber: number;
@@ -125,6 +125,19 @@ export class ClosedICFsComponent implements OnInit {
             error => {
                 this.ComplianceFormGenerationError = "Error: Compliance Form could not be generated."
             });
+    }
+
+    GenerateOutputFile(){
+        this.downloadUrl = "";
+        this.service.generateOutputFile()
+        .subscribe((item: any) => {
+            this.downloadUrl = this.configService.getApiHost() + item;
+            console.log("item:" + item);
+            console.log("this.downloadUrl:" + this.downloadUrl);            
+        },
+        error => {
+            this.ComplianceFormGenerationError = "Error: Output File could not be generated."
+        });
     }
 
     handleUpload(data: any): void {

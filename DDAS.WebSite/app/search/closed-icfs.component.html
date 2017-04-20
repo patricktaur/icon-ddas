@@ -7,7 +7,14 @@
 </div>
 
 
-
+<div class="row">
+	<div class="col-md-4">
+		<button type="button" class="btn btn-sm btn-primary" (click)="GenerateOutputFileModal.generate()"
+			title="Generate Output File"><span class="glyphicon glyphicon-download-alt" ></span></button>		
+	</div>
+	<div class="col-md-8">
+	</div>
+</div>
 
 
 <div class="table-responsive">
@@ -86,6 +93,8 @@
 
 
 <div #DownloadComplianceFormModal download-compliance-form></div>
+
+<div #GenerateOutputFileModal generate-output-file></div>
 
 <modal #ConfirmOpenForEditModal>
 	<modal-header [show-close]="true">
