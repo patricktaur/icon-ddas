@@ -32,6 +32,8 @@ export class InvestigatorSummaryComponent {
    public CompForm: ComplianceFormA = new ComplianceFormA;
    
    public retSiteEnum: number;
+   public retSiteId: string;
+
    private rootPath: string;
    public HideReviewCompletedSites: boolean;
    private ShowMatchesFoundSites: boolean;
@@ -54,6 +56,8 @@ export class InvestigatorSummaryComponent {
         this.InvestigatorId = +params['investigatorId'];
         // change to SiteId:
         this.retSiteEnum =  +params['siteEnum'];
+        this.retSiteId =  params['siteId'];
+        
         this.rootPath =  params['rootPath'];
 
         this.LoadOpenComplainceForm();
@@ -204,6 +208,14 @@ dividerGeneration(indexVal : number){
         return false;
     }
 }
+
+isUrl(url: string){
+         if (url.toLowerCase().startsWith("http")){
+             return true;
+         }else{
+             return false;
+         }
+     }
 
  sanitize(url: string) {
         return this.sanitizer.bypassSecurityTrustUrl(url);

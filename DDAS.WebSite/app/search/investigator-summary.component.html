@@ -87,7 +87,8 @@
 						<label for="Country">Review Completed:{{item.ReviewCompleted | boolToYesNo}}</label>
 					</div>
 					<div class="col-lg-4">
-						<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.siteEnum)">Findings</button>
+						<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.siteId)">Findings</button>
+						
 					</div>
 				</div>
 			</div>
@@ -120,12 +121,12 @@
 					<!--<a target="_blank" [href]="sanitize(item.SiteUrl)">
                             {{item.SiteName}}
 					</a>-->
-					<div class="text-left" *ngIf="item.SiteUrl.length > 0">
+					<div class="text-left" *ngIf="isUrl(item.SiteUrl)">
 						<a target="_blank" [href]="sanitize(item.SiteUrl)">
 							{{item.SiteName}}
 						</a>
 					</div>
-					<div class="text-left" *ngIf="item.SiteUrl.length == 0">
+					<div class="text-left" *ngIf="!isUrl(item.SiteUrl)">
 						{{item.SiteName}}
 					</div>
 				</td>
@@ -138,7 +139,7 @@
 					{{item.ReviewCompleted | boolToYesNo}}
 				</td>
 				<td>
-					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.siteEnum)">Findings</button>
+					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.SiteId)">Findings</button>
 					<div *ngIf="LoggedInUserIsAppAdmin">
 						Extraction Pending: {{item.ExtractionPending | boolToYesNo}} / HasExtractionError: {{item.HasExtractionError | boolToYesNo}}
 						/ ExtractionErrorMessage: {{item.ExtractionErrorMessage }} / ExtractedOn : {{item.ExtractedOn }}

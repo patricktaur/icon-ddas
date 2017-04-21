@@ -505,7 +505,7 @@ export class CompFormEditComponent implements OnInit {
     RemoveSite() {
         
         this.siteToRemove.Deleted = true;
-        this.siteToRemove.SiteEnum
+        //this.siteToRemove.SiteEnum
         let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
         if (site) {
             site.Included = false;
@@ -518,19 +518,34 @@ export class CompFormEditComponent implements OnInit {
     RemoveSite1(){
         
         let siteIdToRemove = this.siteToRemove.SiteId;
-        console.log("AAAA");
-        this.CompForm.Findings.forEach(function(item, index, object) {
-            if (item.SiteId === siteIdToRemove) {
-                object.splice(index, 1);
-                console.log("Finding removed");
+        //console.clear;
+       
+         console.log("siteIdToRemove:" + siteIdToRemove);
+        // console.log("siteName:" + this.siteToRemove.SiteName);
+        // this.CompForm.Findings.forEach(function(item, index, object) {
+        //     console.log("Finding: " + item.SiteId );
+        //     if (item.SiteId === siteIdToRemove) {
+        //         console.log("Finding removed: " + item.SiteId  );
+        //         object.splice(index, 1);
+
+        //     }
+        // });
+
+        var i;
+        for (i = this.CompForm.Findings.length - 1; i >= 0; i -= 1) {
+            if (this.CompForm.Findings[i].SiteId == this.siteToRemove.SiteId ) {
+                 console.log("Finding removed: " + this.CompForm.Findings[i].SiteId  );
+                this.CompForm.Findings.splice(i, 1);
             }
-        });
-        console.log("BBBBB");
+        }
+        
+        
+        // console.log("BBBBB");
         var index = this.CompForm.SiteSources.indexOf(this.siteToRemove, 0);
         if (index > -1) {
             this.CompForm.SiteSources.splice(index, 1);
         }
-        console.log("CCCCC");
+
         this.SetSiteDisplayPosition();
     }
     

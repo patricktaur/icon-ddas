@@ -1034,8 +1034,10 @@ namespace DDAS.Services.Search
                     searchStatus.IssuesFound = IssuesFound;
                     Investigator.TotalIssuesFound += IssuesFound;
 
+                    //var Site = form.SiteSources.Find
+                    //    (x => x.SiteEnum == searchStatus.siteEnum);
                     var Site = form.SiteSources.Find
-                        (x => x.SiteEnum == searchStatus.siteEnum);
+                        (x => x.SiteId == searchStatus.SiteId);
 
                     if (IssuesFound > 0 && Investigator.Id == InvId)
                         Site.IssuesIdentified = true;

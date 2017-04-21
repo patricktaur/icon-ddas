@@ -105,6 +105,7 @@ export class FindingsComponent implements OnInit {
     get Site(){
         let site = new SiteSourceToSearch;
         //let site1 = this.CompForm.SiteSources.find(x => x.SiteEnum == this.SiteEnum);
+       
         let site1 = this.CompForm.SiteSources.find(x => x.SiteId == this.SiteId);
         if (site1 == undefined){
             site.SiteName = "Not found";
@@ -116,10 +117,18 @@ export class FindingsComponent implements OnInit {
         
     }
 
+    // isUrl(url: string){
+    //      if (url.toLowerCase().startsWith("http")){
+    //          return true;
+    //      }else{
+    //          return false;
+    //      }
+    //  }
+    
     get SiteHasUrl(){
         if (this.Site != null){
             if (this.Site.SiteUrl != null ){
-                if (this.Site.SiteUrl.length > 0 ){
+                if (this.Site.SiteUrl.toLowerCase().startsWith("http") ){
                     return true;
                 }
                 else{
