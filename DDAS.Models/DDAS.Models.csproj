@@ -71,6 +71,7 @@
     <Compile Include="Entities\Domain\SiteData\FDADebarPageSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\FDAWarningLettersSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\PHSAdministrativeActionListingSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SAMSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\SiteDataItemBase.cs" />
     <Compile Include="Entities\Domain\SiteData\SpeciallyDesignatedNationalsListSiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementEntitySiteData.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Repository\Domain\SiteData\ILoginDetailsRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IPHSAdministrativeActionListingRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IRoleRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISAMSiteData.cs" />
     <Compile Include="Repository\Domain\SiteData\ISaveSearchResultRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISiteSourceRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ISpeciallyDesignatedNationalsRepository.cs" />

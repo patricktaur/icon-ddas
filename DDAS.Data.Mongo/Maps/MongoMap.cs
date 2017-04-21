@@ -48,6 +48,7 @@ namespace DDAS.Data.Mongo.Maps
                 map.MapIdProperty(u =>
                 u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
+
             #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
@@ -235,6 +236,14 @@ namespace DDAS.Data.Mongo.Maps
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
                 });
+            });
+
+            BsonClassMap.RegisterClassMap<SAMSiteData>
+            (map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>

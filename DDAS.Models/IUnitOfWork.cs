@@ -45,9 +45,9 @@ namespace DDAS.Models
             SystemForAwardManagementRepository { get; }
         ISystemForAwardManagementEntityRepository
             SystemForAwardManagementEntityRepository { get; }
+        ISAMSiteDataRepository SAMSiteDataRepository { get; }
         IComplianceFormRepository ComplianceFormRepository { get; }
         #endregion
-
 
         #endregion
 

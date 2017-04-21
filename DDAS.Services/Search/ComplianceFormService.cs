@@ -5,6 +5,7 @@ using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -2534,7 +2535,7 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            CorporateIntegrityAgreementListSiteData CIASearchResult =
+            var CIASearchResult =
                 _UOW.CorporateIntegrityAgreementRepository.FindById(SiteDataId);
 
             UpdateMatchStatus(
@@ -2556,18 +2557,27 @@ namespace DDAS.Services.Search
             string NameToSearch, string ErrorScreenCaptureFolder, 
             int ComponentsInIvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            DateTime? temp = null;
-            _SearchEngine.ExtractData(SiteEnum.SystemForAwardManagementPage, NameToSearch,
-                MatchCountLowerLimit, out temp);
+            //DateTime? temp = null;
+            //_SearchEngine.ExtractData(SiteEnum.SystemForAwardManagementPage, NameToSearch,
+            //    MatchCountLowerLimit, out temp);
+            //var siteData = _SearchEngine.SiteData;
+            //SiteLastUpdatedOn = temp;
+            //var baseSiteData = _SearchEngine.baseSiteData;
+            //UpdateMatchStatus(siteData, NameToSearch);
 
-            var siteData = _SearchEngine.SiteData;
-            SiteLastUpdatedOn = temp;
-            var baseSiteData = _SearchEngine.baseSiteData;
+            var siteData = 
+                _UOW.SystemForAwardManagementRepository.FindById(SiteDataId);
 
-            UpdateMatchStatus(siteData, NameToSearch);
+            var tempData = _UOW.SAMSiteDataRepository.GetAll();
+
+            siteData.SAMSiteData.Concat(tempData);
+
+            UpdateMatchStatus(siteData.SAMSiteData, NameToSearch);
+
+            SiteLastUpdatedOn = siteData.SiteLastUpdatedOn;
 
             var DisqualificationSiteData =
-                siteData.Where(site => site.MatchCount > 0);
+                siteData.SAMSiteData.Where(site => site.MatchCount > 0);
 
             if (siteData == null)
                 return null;
@@ -3494,7 +3504,8 @@ namespace DDAS.Services.Search
 
                         if (finding.InvestigatorName == null ||
                             finding.InvestigatorName == "" &&
-                            finding.InvestigatorSearchedId == Investigator.Id)
+                            finding.InvestigatorSearchedId == Investigator.Id &&
+                            Investigator.Role.ToLower() == "principal")
                             InstituteWorldCheckCompletedOn =
                                 finding.DateOfInspection;
                     }

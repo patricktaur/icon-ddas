@@ -329,7 +329,22 @@ namespace DDAS.Services.Search
         private SiteScan GetSystemForAwardManagementSiteScanDetails(
             string NameToSearch, ILog log, SiteEnum Enum)
         {
-            return null;
+            var SiteData = _UOW.SystemForAwardManagementRepository.GetAll().
+                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            if (SiteData == null || SiteData.ReferenceId == null)
+                return null;
+
+            var ExtractedSiteData =
+                _UOW.SystemForAwardManagementRepository.FindById(SiteData.ReferenceId);
+
+            SiteScan scan = new SiteScan();
+
+            scan.DataExtractedOn = ExtractedSiteData.CreatedOn;
+            scan.SiteLastUpdatedOn = ExtractedSiteData.SiteLastUpdatedOn;
+            scan.DataId = ExtractedSiteData.ReferenceId;
+
+            return scan;
         }
 
         private SiteScan GetSpeciallyDesignatedNationsDetails()
