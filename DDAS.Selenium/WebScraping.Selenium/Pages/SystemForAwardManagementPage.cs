@@ -30,6 +30,7 @@ namespace WebScraping.Selenium.Pages
             Open();
             _SAMSiteData = new SystemForAwardManagementPageSiteData();
             _SAMSiteData.RecId = Guid.NewGuid();
+            _SAMSiteData.ReferenceId = _SAMSiteData.RecId;
             _SAMSiteData.Source = driver.Url;
         }
 
@@ -253,31 +254,24 @@ namespace WebScraping.Selenium.Pages
                 }
 
                 var SAMSiteRecord = new SystemForAwardManagement();
+                //var SAMSiteRecord = new SAMSiteData();
+
+                SAMSiteRecord.RecId = Guid.NewGuid();
+                SAMSiteRecord.ParentId = _SAMSiteData.RecId;
 
                 SAMSiteRecord.RowNumber = RowNumber;
                 SAMSiteRecord.First = fields[3].Trim();
                 SAMSiteRecord.Middle = fields[4].Trim();
                 SAMSiteRecord.Last = fields[5].Trim();
 
-                //var Name = "";
-
-                //if (fields[3].Trim().Length > 0)
-                //    Name = fields[3].Trim();
-                //if (fields[4].Trim().Length > 0)
-                //    Name += " " + fields[4].Trim();
-                //if (fields[5].Trim().Length > 0)
-                //    Name += " " + fields[5].Trim();
-
-                //var FullName = Name.Trim();
-                //SAMSiteRecord.Name = FullName.Trim();
-
                 SAMSiteRecord.ExcludingAgency = fields[17].Trim();
                 SAMSiteRecord.ExclusionType = fields[19].Trim();
-                //SAMSiteRecord.AdditionalComments = fields[20].Trim();
+                SAMSiteRecord.AdditionalComments = fields[20].Trim();
                 SAMSiteRecord.ActiveDate = fields[21].Trim();
-                //SAMSiteRecord.RecordStatus = fields[23].Trim();
+                SAMSiteRecord.RecordStatus = fields[23].Trim();
 
-                _SAMSiteData.SAMSiteData.Add(SAMSiteRecord);
+                //_SAMSiteData.SAMSiteData.Add(SAMSiteRecord);
+                _UOW.SAMSiteDataRepository.Add(SAMSiteRecord);
                 RowNumber += 1;
             }
         }
@@ -289,6 +283,9 @@ namespace WebScraping.Selenium.Pages
                 _SAMSiteData.DataExtractionRequired = true;
 
                 var FilePath = DownloadExclusionFile();
+                //var FilePath = _config.AppDataDownloadsFolder +
+                //    "SAM_Exclusions_Public_Extract_17110.CSV";
+
                 LoadSAMDatafromCSV(FilePath);
 
                 _SAMSiteData.DataExtractionSucceeded = true;
