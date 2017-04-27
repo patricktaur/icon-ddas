@@ -215,7 +215,7 @@ namespace WebScraping.Selenium.Pages
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
-                        var AnchorTag = driver.FindElement(By.Id("anch_84"));
+                        var AnchorTag = driver.FindElement(By.Id("anch_80"));
                         return AnchorTag;
                     });
                 IWebElement targetElement = wait.Until(waitForElement);

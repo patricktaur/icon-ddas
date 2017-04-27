@@ -531,7 +531,7 @@ export class CompFormEditComponent implements OnInit {
         //     }
         // });
 
-        var i;
+        var i:number;
         for (i = this.CompForm.Findings.length - 1; i >= 0; i -= 1) {
             if (this.CompForm.Findings[i].SiteId == this.siteToRemove.SiteId ) {
                  console.log("Finding removed: " + this.CompForm.Findings[i].SiteId  );

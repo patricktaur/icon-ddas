@@ -9,5 +9,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface ISAMSiteDataRepository : IRepository<SystemForAwardManagement>
     {
+        bool DropRecord(object RecId);
+        bool DropAll();
     }
 }

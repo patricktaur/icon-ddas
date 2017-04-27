@@ -69,7 +69,7 @@ export class LoginHistoryComponent implements OnInit {
 
         this.service.getLoginHistory(from, to)
         .subscribe((item: any[]) => {
-            console.log("item :" + item);
+            
             this.loginHistoryDetails = item;
             this.formLoading = false;
         },

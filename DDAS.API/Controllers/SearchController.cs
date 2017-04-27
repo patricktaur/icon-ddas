@@ -21,7 +21,7 @@ using DDAS.Models.Enums;
 
 namespace DDAS.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
@@ -248,7 +248,7 @@ namespace DDAS.API.Controllers
         {
             var UserName = User.Identity.GetUserName();
             return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, true, true));
+                _SearchService.getPrincipalInvestigators(UserName,  true, true));
         }
 
         [Route("GetInvestigatorSiteSummary")]

@@ -63,7 +63,7 @@ namespace DDAS.Setup
                     }
 
                     //Executed on 20-4-2017
-                    //ModifySiteSource_ChangeLive2DB();
+                    ModifySiteSource_ChangeLive2DB();
 
                     //CreateIndexes();
                 }

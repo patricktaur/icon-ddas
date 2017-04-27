@@ -118,10 +118,15 @@ namespace DDAS.Services.AppAdminService
             //11 SAM / SYSTEM FOR AWARD MANAGEMENT Live No
             //Live Site - Data not extracted
             var ExtractionHistory11 = new DataExtractionHistory();
-            var site11 = new BaseSiteData();
-            
-            site11.DataExtractionRequired = false;
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11, site11, 11, SiteEnum.SystemForAwardManagementPage);
+
+            //var site11 = new BaseSiteData();
+            //site11.DataExtractionRequired = false;
+
+            var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).
+                First();
+
+            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11, SamSiteData, 11, SiteEnum.SystemForAwardManagementPage);
 
             var ExtractionHistory12 = new DataExtractionHistory();
 

@@ -1758,7 +1758,7 @@ namespace DDAS.Services.Search
         {
             var retList = new List<PrincipalInvestigator>();
 
-            var compForms = _UOW.ComplianceFormRepository.GetAll();
+            var compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
 
             foreach (ComplianceForm compForm in compForms)
             {
@@ -1774,11 +1774,11 @@ namespace DDAS.Services.Search
             List<ComplianceForm> compForms;
             if (AssignedTo != null && AssignedTo.Length > 0)
             {
-                compForms = _UOW.ComplianceFormRepository.GetAll().Where(x => x.AssignedTo == AssignedTo).ToList();
+                compForms = _UOW.ComplianceFormRepository.GetAll().Where(x => x.AssignedTo == AssignedTo).OrderByDescending(x => x.SearchStartedOn).ToList();
             }
             else
             {
-                compForms = _UOW.ComplianceFormRepository.GetAll();
+                compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
             }
 
             foreach (ComplianceForm compForm in compForms.Where(x => x.Active == Active))
@@ -1815,7 +1815,7 @@ namespace DDAS.Services.Search
 
             //Principal Investigator
             List<ComplianceForm> compForms1;
-            compForms1 = compForms;
+            compForms1 = compForms.OrderByDescending(x => x.SearchStartedOn).ToList();
             if (PricipalInvestigatorName.Length > 0)
             {
                 compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role=="Principal"))).ToList();
@@ -1878,8 +1878,8 @@ namespace DDAS.Services.Search
                 throw new Exception("Invalid CompFormFilter");
             }
 
-            var Filter = _UOW.ComplianceFormRepository.GetAll();
-            var Filter1 = Filter;
+            var Filter = _UOW.ComplianceFormRepository.GetAll();  
+            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
 
 
             if (CompFormFilter.InvestigatorName != null && 
@@ -2560,7 +2560,8 @@ namespace DDAS.Services.Search
 
             var tempData = _UOW.SAMSiteDataRepository.GetAll();
 
-            siteData.SAMSiteData.Concat(tempData);
+            //siteData.SAMSiteData.Concat(tempData);
+            AddRecordsToSAMSiteData(siteData, tempData);
 
             UpdateMatchStatus(siteData.SAMSiteData, NameToSearch);
 
@@ -2573,6 +2574,31 @@ namespace DDAS.Services.Search
                 return null;
 
             return ConvertToMatchedRecords(DisqualificationSiteData);
+        }
+
+        private void AddRecordsToSAMSiteData(SystemForAwardManagementPageSiteData siteData, List<SystemForAwardManagement> records)
+        {
+            foreach(SystemForAwardManagement rec in records)
+            {
+                var recToAdd = new SystemForAwardManagement();
+                recToAdd.ActiveDate = rec.ActiveDate;
+                recToAdd.AdditionalComments = rec.AdditionalComments;
+
+                recToAdd.ExcludingAgency = rec.ExcludingAgency;
+                recToAdd.ExclusionType = rec.ExclusionType;
+                recToAdd.First = rec.First;
+                recToAdd.Last = rec.Last;
+                recToAdd.Links = rec.Links;
+                recToAdd.MatchCount = rec.MatchCount;
+                recToAdd.Middle = rec.Middle;
+                recToAdd.ParentId = rec.ParentId;
+                recToAdd.RecId = rec.RecId;
+                recToAdd.RecordNumber = rec.RecordNumber;
+                recToAdd.RecordStatus = rec.RecordStatus;
+                recToAdd.RowNumber = rec.RowNumber;
+
+                siteData.SAMSiteData.Add(recToAdd);
+            }
         }
 
         public List<MatchedRecord> GetSDNPageMatchedRecords(Guid? SiteDataId,

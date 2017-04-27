@@ -123,7 +123,10 @@ const searchRoutes: Routes = [
       }
     ]
   }, 
-   
+  {
+    path: 'output-excel', component: SearchComponent
+    , canActivate: [AuthGuard]
+  }, 
 ];
 
 export const searchRouting: ModuleWithProviders = RouterModule.forChild(searchRoutes);

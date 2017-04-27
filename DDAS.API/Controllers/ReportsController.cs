@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using Utilities;
 
 namespace DDAS.API.Controllers
 {
@@ -14,11 +15,15 @@ namespace DDAS.API.Controllers
     {
         private ISearchService _SearchSummary;
         private IUnitOfWork _UOW;
+        private IConfig _config;
+        private string RootPath;
 
-        public ReportsController(ISearchService SearchSummary, IUnitOfWork UOW)
+        public ReportsController(ISearchService SearchSummary, IUnitOfWork UOW, IConfig Config)
         {
+            RootPath = HttpRuntime.AppDomainAppPath;
             _SearchSummary = SearchSummary;
             _UOW = UOW;
+            _config = Config;
         }
 
         [Route("GetNamesFromClosedComplianceForms")]
@@ -58,6 +63,57 @@ namespace DDAS.API.Controllers
             _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
             var Forms = GetNamesFromClosedComplianceForm();
             return Ok(Forms);
+        }
+
+        [Route("GenerateOutputFile")]
+        [HttpPost]
+        public IHttpActionResult GenerateOutputFile(ComplianceFormFilter CompFormFilter)
+        {
+            var GenerateOutputFile =
+                new GenerateOutputFile(
+                    _config.ExcelTempateFolder + "Output_File.xlsx");
+
+            var fromDate = CompFormFilter.SearchedOnFrom.Value;
+
+            var allForms = _UOW.ComplianceFormRepository.GetAll();
+
+            var forms = allForms
+                .Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
+                || x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
+                .OrderBy(x => x.SearchStartedOn).ToList();
+
+            var forms1 = forms;
+
+            if (CompFormFilter.SearchedOnFrom != null)
+            {
+                DateTime startDate;
+                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+                forms1 = forms.Where(x =>
+               x.SearchStartedOn >= startDate)
+               .ToList();
+            }
+
+            var forms2 = forms1;
+
+            if (CompFormFilter.SearchedOnTo != null)
+            {
+
+                DateTime endDate;
+                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+                forms2 = forms1.Where(x =>
+                x.SearchStartedOn <
+                endDate)
+                .ToList();
+            }
+
+            var FilePath = _SearchSummary.GenerateOutputFile(
+                GenerateOutputFile,
+                forms2,
+                _config);
+
+            var Path = FilePath.Replace(RootPath, "");
+
+            return Ok(Path);
         }
     }
 }

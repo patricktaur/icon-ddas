@@ -909,9 +909,12 @@ namespace DDAS.Models.Entities.Domain
         public string SiteUrl { get; set; }
         public bool IssuesIdentified { get; set; }
         public bool Deleted { get; set; } = false; //Patrick 30NOv2016
+
+
         public bool ExcludeSI { get; set; }
         public bool ExcludePI { get; set; }
 
+        public SearchAppliesToEnum SearchAppliesTo { get; set; }
 
     }
 
@@ -1134,7 +1137,9 @@ namespace DDAS.Models.Entities.Domain
         public string SiteShortName { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
+
         public bool ExcludePI { get; set; }
+        public SearchAppliesToEnum SearchAppliesTo { get; set; }
 
 
     }

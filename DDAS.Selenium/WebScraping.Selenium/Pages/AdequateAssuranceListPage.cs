@@ -30,7 +30,8 @@ namespace WebScraping.Selenium.Pages
             _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
             _adequateAssuranceListSiteData.ReferenceId =
                 _adequateAssuranceListSiteData.RecId;
-            SavePageImage();
+            //Patrick: 26April, 2017, Error during nightly extraction at this point. This code does not appear to have any purpose. Therefore commented. 
+            //SavePageImage();
             _adequateAssuranceListSiteData.Source = driver.Url;
             //SaveScreenShot("AdequateAssuranceListPage.png");
         }

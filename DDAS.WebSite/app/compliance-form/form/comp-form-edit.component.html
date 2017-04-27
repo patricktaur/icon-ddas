@@ -87,21 +87,29 @@
 											<div class="col-lg-6">
 												<div class="form-group">
 													<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
+													
 													<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber">
 												</div>
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-lg-6">
+											<div class="col-lg-5">
 												<div class="form-group">
 													<label for="Country">Institute:</label>
-													<input type="text" class="form-control" name="Institute" [(ngModel)]="CompForm.Institute">
+													<p>
+														<input type="text" class="form-control" name="Institute" [(ngModel)]="CompForm.Institute">
+														
+													</p>
+															
 												</div>
 												<div class="form-group">
 													<label for="Country">Country:</label>
 													<input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country">
 												</div>
 											</div>
+											<div class="col-lg-1">
+												<button type="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Edit Institute related findings"><span class="glyphicon glyphicon-edit" ></span></button>
+											</div>	
 											<div class="col-lg-6">
 												<div class="form-group">
 													<label for="NameToSeaICONrch">Address:</label>
@@ -239,18 +247,18 @@
 																</td>
 
 																<td width="15%">
-																	
-																		<div class="btn-group ">
-																			<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
-																				title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
-																			<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
-																				data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
-																			<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-																				data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-																			<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
-																				data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
-																		</div>
-																	
+
+																	<div class="btn-group ">
+																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
+																			title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
+																			data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+																			data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+																		<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
+																			data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+																	</div>
+
 																</td>
 
 															</tr>
@@ -305,7 +313,7 @@
                                                 							 {{item.SiteName}}
 																		</a>
 																	</div>
-																	
+
 
 
 																</td>
@@ -363,7 +371,7 @@
 																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
 																		{{item.SiteName}}
 																	</div>
-																	
+
 																</td>
 																<td>
 
@@ -411,11 +419,11 @@
 																<td align="left">
 																	<div *ngIf="item.InvestigatorName">
 																		{{item.InvestigatorName}}
-																	</div>	
+																	</div>
 																	<div *ngIf="!item.InvestigatorName">
-																		{{CompForm.Institute}} 
-																	</div>	
-																	
+																		{{CompForm.Institute}}
+																	</div>
+
 
 
 																</td>
@@ -587,7 +595,7 @@
 
 							{{item.SiteName}}
 						</div>
-						
+
 					</td>
 
 				</tr>

@@ -1,3 +1,19 @@
+for Git:
+26April2017
+Bug: Adequate Assurance Site not getting extracted during nighlty extraction.
+ public AdequateAssuranceListPage(IWebDriver driver, ...
+ //Patrick: 26April, 2017, Error during nightly extraction at this point. This code does not appear to have any purpose. Therefore commented. 
+            //SavePageImage();
+
+
+VerD1.6.0
+Sam Site Converted to DB
+New: Output Report 
+All Lists, Due Diligence, All Forms, Closed Forms, Manage ... sorted descending order
+Bug: The Source Date of SDN website (12th site in ICSF) is displaying wrong date as 17th Mar instead of the correct one 13th Apr - resolved.
+Bug:Incorect Page Number in footer.  ICSFs going more than 2 pages are having the pagination error and could you please see if this could be fixed by any means.
+
+
 VerD1.5.1
 public class SiteSource
 	added:  public Guid? SiteId { get; set; }
