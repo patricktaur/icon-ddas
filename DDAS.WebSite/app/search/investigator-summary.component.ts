@@ -32,6 +32,8 @@ export class InvestigatorSummaryComponent {
    public CompForm: ComplianceFormA = new ComplianceFormA;
    
    public retSiteEnum: number;
+   public retSiteId: string;
+
    private rootPath: string;
    public HideReviewCompletedSites: boolean;
    private ShowMatchesFoundSites: boolean;
@@ -52,7 +54,10 @@ export class InvestigatorSummaryComponent {
         this.route.params.forEach((params: Params) => {
         this.ComplianceFormId = params['formId'];
         this.InvestigatorId = +params['investigatorId'];
+        // change to SiteId:
         this.retSiteEnum =  +params['siteEnum'];
+        this.retSiteId =  params['siteId'];
+        
         this.rootPath =  params['rootPath'];
 
         this.LoadOpenComplainceForm();
@@ -165,12 +170,18 @@ get Summary(){
     return retSummary;
 }
  
-gotoSiteDetails(siteEnum: number){
+// gotoSiteDetails(siteEnum: number){
  
-    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteEnum, {rootPath:this.rootPath}], 
+//     this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteEnum, {rootPath:this.rootPath}], 
+//     { relativeTo: this.route.parent});
+// }
+ 
+gotoSiteDetails(siteId: string){
+ 
+    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteId, {rootPath:this.rootPath}], 
     { relativeTo: this.route.parent});
 }
- 
+
 goBack() {
 
     //this._location.back();
@@ -197,6 +208,14 @@ dividerGeneration(indexVal : number){
         return false;
     }
 }
+
+isUrl(url: string){
+         if (url.toLowerCase().startsWith("http")){
+             return true;
+         }else{
+             return false;
+         }
+     }
 
  sanitize(url: string) {
         return this.sanitizer.bypassSecurityTrustUrl(url);

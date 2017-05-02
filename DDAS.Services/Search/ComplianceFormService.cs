@@ -551,110 +551,82 @@ namespace DDAS.Services.Search
                     dbForm.InvestigatorDetails.Clear();
                     dbForm.InvestigatorDetails.AddRange(form.InvestigatorDetails);
 
-                    ////Delete Investigator not found in client collection
-                    //foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
-                    //{
-                    //    var clInv = form.InvestigatorDetails.Find(x => x.Id == inv.Id);
-                    //    if (clInv == null)
-                    //    {
-                    //        //not found, delete from DB
-                    //        inv.Deleted = true;
-                    //        //remove all Findings for the deleted Investigator
-                    //        dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == inv.Id);
-                    //    }
-                    //}
-                    //dbForm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
 
-                    ////InvestigatorUpdate or add:
-                    //var invId = 1;
-                    //foreach (InvestigatorSearched clInv in form.InvestigatorDetails)
-                    //{
-
-                    //    var dbInv = dbForm.InvestigatorDetails.Find(x => x.Id == clInv.Id);
-                    //    if (dbInv != null)
-                    //    {
-                    //        dbInv.Name = clInv.Name;
-                    //        dbInv.Qualification = clInv.Qualification;
-                    //        dbInv.Role = clInv.Role;
-                    //        dbInv.InvestigatorId = clInv.InvestigatorId;
-                    //        //dbInv.Id = invId;
-                    //    }
-                    //    else
-                    //    {
-                    //        //Not found in DB, add
-                    //        //clInv.Id = invId;
-                    //        dbForm.InvestigatorDetails.Add(clInv);
-                    //    }
-                    //    invId += 1;
-                    //}
 
                     //Remove Optional Sites.
                     //Remove Optional sites not found in client collection
+                    dbForm.SiteSources.Clear();
+                    dbForm.SiteSources.AddRange(form.SiteSources);
 
-                    //Site add if not found, Update :
-                    foreach (SiteSource clSite in form.SiteSources)
-                    {
-                        var dbSiteSource = dbForm.SiteSources.Find(x => x.SiteEnum == clSite.SiteEnum);
-                        if (dbSiteSource == null)
-                        {
-                            //Not found, add
-                            dbForm.SiteSources.Add(clSite);
-                        }
-                        else
-                        {
-                            dbSiteSource.SiteSourceUpdatedOn = clSite.SiteSourceUpdatedOn;
-                        }
-                    }
+                    ////Site add if not found, Update :
+                    //foreach (SiteSource clSite in form.SiteSources)
+                    //{
+                    //    var dbSiteSource = dbForm.SiteSources.Find(x => x.SiteEnum == clSite.SiteEnum);
+                    //    if (dbSiteSource == null)
+                    //    {
+                    //        //Not found, add
+                    //        dbForm.SiteSources.Add(clSite);
+                    //    }
+                    //    else
+                    //    {
+                    //        dbSiteSource.SiteSourceUpdatedOn = clSite.SiteSourceUpdatedOn;
+                    //    }
+                    //}
 
-                    foreach (SiteSource site in dbForm.SiteSources)
-                    {
-                        var clSite = form.SiteSources.Find(x => x.SiteEnum == site.SiteEnum);
-                        if (clSite.Deleted == true)
-                        {
-                            site.Deleted = true;
-                        }
+                    //foreach (SiteSource site in dbForm.SiteSources)
+                    //{
+                    //    var clSite = form.SiteSources.Find(x => x.SiteEnum == site.SiteEnum);
+                    //    if (clSite.Deleted == true)
+                    //    {
+                    //        site.Deleted = true;
+                    //    }
 
-                        //if (clSite == null)
-                        //{
-                        //    //not found, delete from DB
-                        //    site.Deleted = true;
-                        //}
-                    }
-                    dbForm.SiteSources.RemoveAll(x => x.Deleted == true);
+                    //    //if (clSite == null)
+                    //    //{
+                    //    //    //not found, delete from DB
+                    //    //    site.Deleted = true;
+                    //    //}
+                    //}
+                    //dbForm.SiteSources.RemoveAll(x => x.Deleted == true);
 
-                    //Findings - not related to Investigator or Site
-                    //Add/Update Findings not found in db Findings.
-                    foreach (Finding clFinding in form.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
-                    {
-                        if (clFinding.Id == null)
-                        {
-                            clFinding.Id = Guid.NewGuid();
-                            dbForm.Findings.Add(clFinding);
-                        }
-                        else
-                        {
-                            var dbFinding = dbForm.Findings.Find(x => x.Id == clFinding.Id);
-                            if (dbFinding == null)  //??
-                            {
-                                dbForm.Findings.Add(clFinding);
-                            }
-                            else
-                            {
-                                dbFinding.Observation = clFinding.Observation;
-                            }
-                        }
-                     }
+                    dbForm.Findings.Clear();
+                    dbForm.Findings.AddRange(form.Findings);
 
-                    //Delete not found in DB
-                    foreach (Finding dbFinding in dbForm.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
-                    {
-                        var clFinding = form.Findings.Find(x => x.Id == dbFinding.Id);
-                        if (clFinding == null)
-                        {
-                            dbFinding.InvestigatorSearchedId = -1;
-                        }
-                    }
-                    dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == -1);
+                    ////Findings - not related to Investigator or Site
+                    ////Add/Update Findings not found in db Findings.
+                    //foreach (Finding clFinding in form.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
+                    //{
+                    //    if (clFinding.Id == null)
+                    //    {
+                    //        clFinding.Id = Guid.NewGuid();
+                    //        dbForm.Findings.Add(clFinding);
+                    //    }
+                    //    else
+                    //    {
+                    //        var dbFinding = dbForm.Findings.Find(x => x.Id == clFinding.Id);
+                    //        if (dbFinding == null)  //??
+                    //        {
+                    //            dbForm.Findings.Add(clFinding);
+                    //        }
+                    //        else
+                    //        {
+                    //            dbFinding.Observation = clFinding.Observation;
+                    //        }
+                    //    }
+                    // }
+
+                    ////Delete not found in DB
+                    //foreach (Finding dbFinding in dbForm.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
+                    //{
+                    //    var clFinding = form.Findings.Find(x => x.Id == dbFinding.Id);
+                    //    if (clFinding == null)
+                    //    {
+                    //        dbFinding.InvestigatorSearchedId = -1;
+                    //    }
+                    //}
+                    //dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == -1);
+
+
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
@@ -662,9 +634,11 @@ namespace DDAS.Services.Search
                     //RemoveOrphanedFindings(dbForm);
 
                     // DisplayPosition, RowNumberInSource nos need adjustment when a site is deleted.
+                    
                     AdjustDisplayPositionOfSiteSources(dbForm);
                     CorrectDisplayPositionOfSearchStatusRecords(dbForm);
                     CorrectSourceNumberInFindings(dbForm);
+                    
                     //Check and Search if required:
                     if (dbForm.ExtractionPendingInvestigatorCount > 0)
                     {
@@ -785,6 +759,7 @@ namespace DDAS.Services.Search
                     siteSource.DisplayPosition = lastDisplayPosition;
                     siteSource.SiteName = SiteToAdd.SiteName;
                     siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                    siteSource.SiteId = SiteToAdd.RecId;
                     siteSource.SiteEnum = SiteToAdd.SiteEnum;
                     siteSource.SiteUrl = SiteToAdd.SiteUrl;
                     siteSource.IsMandatory = SiteToAdd.Mandatory;
@@ -820,6 +795,7 @@ namespace DDAS.Services.Search
                 siteSource.DisplayPosition = lastDisplayPosition;
                 siteSource.SiteName = SiteToAdd.SiteName;
                 siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                siteSource.SiteId = SiteToAdd.RecId;
                 siteSource.SiteEnum = SiteToAdd.SiteEnum;
                 siteSource.SiteUrl = SiteToAdd.SiteUrl;
                 siteSource.IsMandatory = SiteToAdd.Mandatory;
@@ -870,7 +846,7 @@ namespace DDAS.Services.Search
                 //DisplayPosition may change at the client side.
                 siteSourceToAdd.Id = SrNo;
                 siteSourceToAdd.DisplayPosition = SrNo;
-
+                siteSourceToAdd.SiteId = site.SiteId; //RecId of SiteSourceRepository
                 siteSourceToAdd.SiteEnum = site.SiteEnum;
                 siteSourceToAdd.SiteUrl = site.SiteUrl;
                 siteSourceToAdd.SiteName = site.SiteName;
@@ -1059,8 +1035,10 @@ namespace DDAS.Services.Search
                     searchStatus.IssuesFound = IssuesFound;
                     Investigator.TotalIssuesFound += IssuesFound;
 
+                    //var Site = form.SiteSources.Find
+                    //    (x => x.SiteEnum == searchStatus.siteEnum);
                     var Site = form.SiteSources.Find
-                        (x => x.SiteEnum == searchStatus.siteEnum);
+                        (x => x.SiteId == searchStatus.SiteId);
 
                     if (IssuesFound > 0 && Investigator.Id == InvId)
                         Site.IssuesIdentified = true;
@@ -1270,6 +1248,7 @@ namespace DDAS.Services.Search
                             {
                                 var finding = new Finding();
                                 finding.Id = Guid.NewGuid();
+                                finding.SiteId = siteSource.SiteId;
                                 finding.IsFullMatch = rec.IsFullMatch;
                                 finding.MatchCount = rec.MatchCount;
                                 finding.InvestigatorSearchedId = inv.Id;
@@ -1558,10 +1537,12 @@ namespace DDAS.Services.Search
             {
                 foreach (SiteSource site in frm.SiteSources)
                 {
-                    SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
+                    //SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
+                    SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.SiteId== site.SiteId);
                     if (searchStatus == null)
                     {
                         searchStatus = new SiteSearchStatus();
+                        searchStatus.SiteId = site.SiteId;
                         searchStatus.siteEnum = site.SiteEnum;
                         searchStatus.SiteName = site.SiteName;
                         searchStatus.SiteUrl = site.SiteUrl;
@@ -1594,7 +1575,8 @@ namespace DDAS.Services.Search
             {
                 foreach (SiteSearchStatus siteSearchStatus in inv.SitesSearched)
                 {
-                    var siteSource = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum);
+                    //var siteSource = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum);
+                    var siteSource = frm.SiteSources.Find(x => x.SiteId == siteSearchStatus.SiteId);
                     if (siteSource == null) // Site Source not available, remove 
                     {
                         siteSearchStatus.DisplayPosition = -1;
@@ -1621,18 +1603,26 @@ namespace DDAS.Services.Search
             {
                 foreach (SiteSearchStatus siteSearchStatus in inv.SitesSearched)
                 {
-                    siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum).DisplayPosition;
+                    //siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum).DisplayPosition;
+
+                    siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.SiteId == siteSearchStatus.SiteId).DisplayPosition;
  
                 }
              }
         }
 
+
         private void CorrectSourceNumberInFindings(ComplianceForm frm)
         {
-            foreach (Finding finding in frm.Findings.Where(x => (x.SiteEnum != null)))
+            //foreach (Finding finding in frm.Findings.Where(x => (x.SiteEnum != null)))
+            //{
+            //    finding.SourceNumber = frm.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum).DisplayPosition;
+            //}
+            foreach (Finding finding in frm.Findings.Where(x => (x.SiteId != null)))
             {
-                finding.SourceNumber = frm.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum).DisplayPosition;
+                finding.SourceNumber = frm.SiteSources.Find(x => x.SiteId == finding.SiteId).DisplayPosition;
             }
+
         }
 
         //When Site is removed, (Optional site), the Findings for those sites become orphanced.

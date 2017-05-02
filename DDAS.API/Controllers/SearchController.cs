@@ -561,6 +561,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetSiteSources()
         {
             //return Ok(SearchSites.GetNewSearchQuery());
+            var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
             return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName));
             
         }

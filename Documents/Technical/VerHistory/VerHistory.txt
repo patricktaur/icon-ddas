@@ -1,3 +1,8 @@
+VerD1.5.1
+public class SiteSource
+	added:  public Guid? SiteId { get; set; }
+
+
 VerD1.5.0
 1. Single Match Findings in Findings
 	Display, pagination etc.

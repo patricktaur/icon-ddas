@@ -52,7 +52,8 @@ const searchRoutes: Routes = [
         component: InvestigatorSummaryComponent,
       },
       {
-        path: 'findings/:formId/:investigatorId/:siteEnum',
+        //path: 'findings/:formId/:investigatorId/:siteEnum',
+        path: 'findings/:formId/:investigatorId/:siteId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]
@@ -84,7 +85,8 @@ const searchRoutes: Routes = [
         component: InvestigatorSummaryComponent,
       },
       {
-        path: 'findings/:formId/:investigatorId/:siteEnum',
+         //path: 'findings/:formId/:investigatorId/:siteEnum',
+        path: 'findings/:formId/:investigatorId/:siteId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]
@@ -115,8 +117,8 @@ const searchRoutes: Routes = [
         component: InvestigatorSummaryComponent,
       },
       {
-        
-        path: 'findings/:formId/:investigatorId/:siteEnum',
+        //path: 'findings/:formId/:investigatorId/:siteEnum',
+        path: 'findings/:formId/:investigatorId/:siteId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       }
     ]

@@ -729,6 +729,7 @@ namespace DDAS.Models.Entities.Domain
     public class SiteSearchStatus
     {
         public int DisplayPosition { get; set; }
+        public Guid? SiteId { get; set; } //RecId of SiteSourceRepository
         public SiteEnum siteEnum { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
@@ -893,6 +894,7 @@ namespace DDAS.Models.Entities.Domain
     public class SiteSource
     {
         public int Id { get; set; }
+        public Guid? SiteId { get; set; } //RecId of SiteSourceRepository
         public int DisplayPosition { get; set; }
         public string SiteName { get; set; }
         public string SiteShortName { get; set; }
@@ -917,7 +919,7 @@ namespace DDAS.Models.Entities.Domain
     {
         //10Feb2017-todo: 
         public Guid? Id { get; set; }
-
+        public Guid? SiteId { get; set; } //RecId of SiteSourceRepository
         public SiteEnum? SiteEnum { get; set; }
         public bool IsFullMatch { get; set; }
         public int? InvestigatorSearchedId { get; set; }
