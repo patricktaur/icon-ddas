@@ -218,7 +218,9 @@ namespace WebScraping.Selenium.Pages
                         var AnchorTags = 
                         driver.FindElements(
                             By.XPath(
-                                "//*[@class='contentDiv'[2]]/table/tbody/tr[2]/td/a"));
+                                "//*[@class='contentDiv'[2]]"));
+                        var temp = driver.FindElements(By.XPath("//table/tbody/tr[2]/td/a"));
+
                         var AnchorTag = AnchorTags[AnchorTags.Count - 1];
                         return AnchorTag;
                     });
