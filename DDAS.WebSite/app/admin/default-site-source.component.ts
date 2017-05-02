@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
-import { ConfigService } from '../../shared/utils/config.service';
+import { ConfigService } from '../shared/utils/config.service';
 
 import {DefaultSite} from './appAdmin.classes';
 
@@ -59,18 +59,16 @@ export class DefaultSitesComponent implements OnInit {
         });
     }
 
-    addDefaultSite(){
-        this.service.addDefaultSite(this.defaultSite)
-        .subscribe((item: any) => {
-            this.message = item;
-            this.loadDefaultSites();
-        },
-        error => {
-        
-        });
+ 
+    Edit(RecId: string){
+        this.router.navigate(['default-site-edit', RecId], { relativeTo: this.route.parent});
     }
 
-    
+    Add(){
+        this.router.navigate(['default-site-edit', ""], { relativeTo: this.route.parent});
+    } 
+   
+   
     removeDefaultSite(RecId: string){
         this.service.removeDefaultSite(RecId)
         .subscribe((item: any) => {

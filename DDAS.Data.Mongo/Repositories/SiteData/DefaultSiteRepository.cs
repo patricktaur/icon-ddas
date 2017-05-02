@@ -15,5 +15,12 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         {
             _db = db;
         }
+
+        public bool UpdateDefaultSite(DefaultSite defaultSite)
+        {
+            _db.GetCollection<DefaultSite>(typeof(DefaultSite).Name).
+                ReplaceOne(x => x.RecId == defaultSite.RecId, defaultSite);
+            return true;
+        }
     }
 }

@@ -3,6 +3,7 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
+using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -196,8 +197,8 @@ namespace DDAS.Services.Search
                 form.Address = InputRows[Index].Address;
                 form.Country = InputRows[Index].Country;
 
-                AddCountrySpecificSites(form);
-                AddSponsorSpecificSites(form);
+                AddCountrySpecificSites(form, log);
+                AddSponsorSpecificSites(form, log);
 
                 int InvId = 1;
                 if(InputRows[Index].Role.ToLower() == "principal")
@@ -551,82 +552,13 @@ namespace DDAS.Services.Search
                     dbForm.InvestigatorDetails.Clear();
                     dbForm.InvestigatorDetails.AddRange(form.InvestigatorDetails);
 
-
-
                     //Remove Optional Sites.
                     //Remove Optional sites not found in client collection
                     dbForm.SiteSources.Clear();
                     dbForm.SiteSources.AddRange(form.SiteSources);
 
-                    ////Site add if not found, Update :
-                    //foreach (SiteSource clSite in form.SiteSources)
-                    //{
-                    //    var dbSiteSource = dbForm.SiteSources.Find(x => x.SiteEnum == clSite.SiteEnum);
-                    //    if (dbSiteSource == null)
-                    //    {
-                    //        //Not found, add
-                    //        dbForm.SiteSources.Add(clSite);
-                    //    }
-                    //    else
-                    //    {
-                    //        dbSiteSource.SiteSourceUpdatedOn = clSite.SiteSourceUpdatedOn;
-                    //    }
-                    //}
-
-                    //foreach (SiteSource site in dbForm.SiteSources)
-                    //{
-                    //    var clSite = form.SiteSources.Find(x => x.SiteEnum == site.SiteEnum);
-                    //    if (clSite.Deleted == true)
-                    //    {
-                    //        site.Deleted = true;
-                    //    }
-
-                    //    //if (clSite == null)
-                    //    //{
-                    //    //    //not found, delete from DB
-                    //    //    site.Deleted = true;
-                    //    //}
-                    //}
-                    //dbForm.SiteSources.RemoveAll(x => x.Deleted == true);
-
                     dbForm.Findings.Clear();
                     dbForm.Findings.AddRange(form.Findings);
-
-                    ////Findings - not related to Investigator or Site
-                    ////Add/Update Findings not found in db Findings.
-                    //foreach (Finding clFinding in form.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
-                    //{
-                    //    if (clFinding.Id == null)
-                    //    {
-                    //        clFinding.Id = Guid.NewGuid();
-                    //        dbForm.Findings.Add(clFinding);
-                    //    }
-                    //    else
-                    //    {
-                    //        var dbFinding = dbForm.Findings.Find(x => x.Id == clFinding.Id);
-                    //        if (dbFinding == null)  //??
-                    //        {
-                    //            dbForm.Findings.Add(clFinding);
-                    //        }
-                    //        else
-                    //        {
-                    //            dbFinding.Observation = clFinding.Observation;
-                    //        }
-                    //    }
-                    // }
-
-                    ////Delete not found in DB
-                    //foreach (Finding dbFinding in dbForm.Findings.Where(x => x.InvestigatorSearchedId == null && x.SiteEnum == null))
-                    //{
-                    //    var clFinding = form.Findings.Find(x => x.Id == dbFinding.Id);
-                    //    if (clFinding == null)
-                    //    {
-                    //        dbFinding.InvestigatorSearchedId = -1;
-                    //    }
-                    //}
-                    //dbForm.Findings.RemoveAll(x => x.InvestigatorSearchedId == -1);
-
-
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
@@ -637,7 +569,7 @@ namespace DDAS.Services.Search
                     
                     AdjustDisplayPositionOfSiteSources(dbForm);
                     CorrectDisplayPositionOfSearchStatusRecords(dbForm);
-                    CorrectSourceNumberInFindings(dbForm);
+                    CorrectSiteDisplayPositionInFindings(dbForm);
                     
                     //Check and Search if required:
                     if (dbForm.ExtractionPendingInvestigatorCount > 0)
@@ -679,7 +611,7 @@ namespace DDAS.Services.Search
                     {
                         foreach (SiteSearchStatus s in Investigator.SitesSearched)
                         {
-                            if (s.siteEnum == updateFindings.SiteEnum)
+                            if (s.SiteSourceId == updateFindings.SiteSourceId)
                             {
                                 s.ReviewCompleted = updateFindings.ReviewCompleted;
                             }
@@ -699,7 +631,7 @@ namespace DDAS.Services.Search
                 //Remove manually added Findings (IsMatched = false) from db and add again from the client
                 dbForm.Findings.RemoveAll(
                     x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
-                    && x.SiteEnum == updateFindings.SiteEnum
+                    && x.SiteSourceId == updateFindings.SiteSourceId
                     && (x.IsMatchedRecord == false || x.MatchCount ==1));
 
                 //Add all IsMatchedRecord = false OR MatchCount == 1 records from client
@@ -707,7 +639,7 @@ namespace DDAS.Services.Search
                 dbForm.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false || x.MatchCount == 1));
 
                 var matchedRecords = updateFindings.Findings.Where(x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
-                   && x.SiteEnum == updateFindings.SiteEnum
+                   && x.SiteSourceId == updateFindings.SiteSourceId
                    && (x.IsMatchedRecord == true && x.MatchCount > 1));
 
                 //Replace existing generated records (IsMatchedRecord = true) records with records received from client.
@@ -741,125 +673,208 @@ namespace DDAS.Services.Search
            // return true;
         }
 
+        public bool UpdateInstituteFindings(UpdateInstituteFindings InstitueFindings)
+        {
+            //Called by client - Findings page.
+            //Retrieves form from db and replaces view related values (ReviewCompleted, corresponding Findings) 
+
+            //get Comp form from db.
+            var dbForm = _UOW.ComplianceFormRepository.FindById(InstitueFindings.FormId);
+            if (dbForm != null)
+            {
+
+                dbForm.Findings.RemoveAll(x => x.SiteSourceId == InstitueFindings.SiteSourceId);
+  
+                //Findings
+                //add Guid for new records:
+                foreach (Finding finding in InstitueFindings.Findings)
+                {
+                    if (finding.Id == null)
+                    {
+                        finding.Id = Guid.NewGuid();
+                    }
+                }
+
+                dbForm.Findings.AddRange(InstitueFindings.Findings);
+
+                RollUpSummary(dbForm);
+
+                _UOW.ComplianceFormRepository.UpdateCollection(dbForm);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
         #endregion
 
-        private void AddCountrySpecificSites(ComplianceForm compForm)
+        private void AddCountrySpecificSites(ComplianceForm compForm, ILog log)
         {
+            //var test = _UOW.CountryRepository.GetAll();
+            //var test1 = test.Where(x => x.CountryName == "");
+            //var test2 = test1.ToList();
+            //if (compForm.Country.Trim().ToLower() == "")
+            //{
+            //    return;
+            //}
+
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
-            country.Name.ToLower() == compForm.Country.ToLower()).ToList();
+            country.CountryName.Trim().ToLower() == compForm.Country.Trim().ToLower()); //.ToList();
+            //if (Countries == null)
+            //{
+            //    return;
+            //}
+
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
             foreach (Country country in Countries)
             {
-                var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
-                if (SiteToAdd != null)
-                {
-                    var siteSource = new SiteSource();
-                    lastDisplayPosition += 1;
-                    siteSource.DisplayPosition = lastDisplayPosition;
-                    siteSource.SiteName = SiteToAdd.SiteName;
-                    siteSource.SiteShortName = SiteToAdd.SiteShortName;
-                    siteSource.SiteId = SiteToAdd.RecId;
-                    siteSource.SiteEnum = SiteToAdd.SiteEnum;
-                    siteSource.SiteUrl = SiteToAdd.SiteUrl;
-                    siteSource.IsMandatory = SiteToAdd.Mandatory;
-                    siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
-                    siteSource.ExcludePI = SiteToAdd.ExcludePI;
-                    siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
-                    compForm.SiteSources.Add(siteSource);
-                }
+                lastDisplayPosition += 1;
+                AddToComplianceFormSiteSource(compForm, country, lastDisplayPosition, log);
+
+                //var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
+                //if (SiteToAdd != null)
+                //{
+                //    var siteSource = new SiteSource();
+                //    lastDisplayPosition += 1;
+                //    siteSource.DisplayPosition = lastDisplayPosition;
+                //    siteSource.SiteName = SiteToAdd.SiteName;
+                //    siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                //    siteSource.SiteId = SiteToAdd.RecId;
+                //    siteSource.SiteEnum = SiteToAdd.SiteEnum;
+                //    siteSource.SiteUrl = SiteToAdd.SiteUrl;
+                //    siteSource.IsMandatory = SiteToAdd.Mandatory;
+                //    siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+                //    //siteSource.ExcludePI = SiteToAdd.ExcludePI;
+                //    //siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
+                //    compForm.SiteSources.Add(siteSource);
+                //}
                 //Not found, continue
                 
             }
         }
 
-        private void AddSponsorSpecificSites(ComplianceForm compForm)
+        private void AddSponsorSpecificSites(ComplianceForm compForm, ILog log)
         {
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
             //var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
             //    sponsor => sponsor.SponsorProtocolNumber ==
             //    compForm.SponsorProtocolNumber).ToList();
-
+            //if (compForm.Country.Trim().ToLower() == "")
+            //{
+            //    return;
+            //}
             var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
                sponsor => sponsor.SponsorProtocolNumber ==
-               compForm.ProjectNumber.Substring(0, 4)).ToList();
-
+               compForm.ProjectNumber.Substring(0, 4)); //.ToList();
+            //if (SponsorProtocols == null)
+            //{
+            //    return;
+            //}
             foreach (SponsorProtocol sponsorProtocol in SponsorProtocols)
             {
-                var SiteToAdd = _UOW.SiteSourceRepository.FindById(sponsorProtocol.SiteId);
-
-                var siteSource = new SiteSource();
-
                 lastDisplayPosition += 1;
-                siteSource.DisplayPosition = lastDisplayPosition;
-                siteSource.SiteName = SiteToAdd.SiteName;
-                siteSource.SiteShortName = SiteToAdd.SiteShortName;
-                siteSource.SiteId = SiteToAdd.RecId;
-                siteSource.SiteEnum = SiteToAdd.SiteEnum;
-                siteSource.SiteUrl = SiteToAdd.SiteUrl;
-                siteSource.IsMandatory = SiteToAdd.Mandatory;
-                siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
-                siteSource.ExcludePI = SiteToAdd.ExcludePI;
-                siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
+                AddToComplianceFormSiteSource(compForm, sponsorProtocol, lastDisplayPosition, log);
 
-                compForm.SiteSources.Add(siteSource);
+                //var SiteToAdd = _UOW.SiteSourceRepository.FindById(sponsorProtocol.SiteId);
+
+                //var siteSource = new SiteSource();
+
+                //lastDisplayPosition += 1;
+                //siteSource.DisplayPosition = lastDisplayPosition;
+                //siteSource.SiteName = SiteToAdd.SiteName;
+                //siteSource.SiteShortName = SiteToAdd.SiteShortName;
+                //siteSource.SiteId = SiteToAdd.RecId;
+                //siteSource.SiteEnum = SiteToAdd.SiteEnum;
+                //siteSource.SiteUrl = SiteToAdd.SiteUrl;
+                //siteSource.IsMandatory = SiteToAdd.Mandatory;
+                //siteSource.ExtractionMode = SiteToAdd.ExtractionMode;
+                //siteSource.ExcludePI = SiteToAdd.ExcludePI;
+                //siteSource.ExcludeSI = SiteToAdd.ExcludeSI;
+
+                //compForm.SiteSources.Add(siteSource);
             }
         }
 
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         private void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
         {
-            // List<SitesToSearch> siteSources = SearchSites.GetNewSearchQuery();
-
+            
             var siteSources = _UOW.SiteSourceRepository.GetAll();
 
-            var DefaultSites = _UOW.DefaultSiteRepository.GetAll()
-                .OrderBy(x => x.OrderNo).ToList();
-
-            var ScanData = new SiteScanData(_UOW, _SearchEngine);
-            var test = siteSources.Where(x => x.Mandatory == true).Count();
+            
+            
             int SrNo = 0;
 
-            foreach (DefaultSite site in DefaultSites)
+            var MandatorySites = _UOW.DefaultSiteRepository.GetAll()
+                .Where (x => x.IsMandatory == true)
+                .OrderBy(x => x.OrderNo).ToList();
+            foreach (DefaultSite site in MandatorySites)
             {
                 SrNo += 1;
-
-                var siteScan = new SiteScan();
-                var siteSourceToAdd = new SiteSource();
-
-                siteScan = null;
-                if (site.ExtractionMode.ToLower() == "db")
-                    //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
-                    siteScan = ScanData.GetSiteScanData(site.SiteEnum, "", log);
-
-                if (siteScan != null)
-                {
-                    siteSourceToAdd.DataExtractedOn = siteScan.DataExtractedOn;
-                    siteSourceToAdd.SiteSourceUpdatedOn = siteScan.SiteLastUpdatedOn;
-                    //Patrick Is this required?
-                    siteSourceToAdd.SiteDataId = siteScan.DataId;
-                }
-
-                siteSourceToAdd.CreatedOn = DateTime.Now;
-                //The Id and DisplayPosition are identical when form is created.
-                //DisplayPosition may change at the client side.
-                siteSourceToAdd.Id = SrNo;
-                siteSourceToAdd.DisplayPosition = SrNo;
-                siteSourceToAdd.SiteId = site.SiteId; //RecId of SiteSourceRepository
-                siteSourceToAdd.SiteEnum = site.SiteEnum;
-                siteSourceToAdd.SiteUrl = site.SiteUrl;
-                siteSourceToAdd.SiteName = site.SiteName;
-                siteSourceToAdd.SiteShortName = site.SiteShortName;
-                siteSourceToAdd.IsMandatory = site.IsMandatory;
-                siteSourceToAdd.ExtractionMode = site.ExtractionMode;
-                siteSourceToAdd.ExcludePI = site.ExcludePI;
-                siteSourceToAdd.ExcludeSI = site.ExcludeSI;
-
-                siteSourceToAdd.Deleted = false;
-
-                compForm.SiteSources.Add(siteSourceToAdd);
+                AddToComplianceFormSiteSource(compForm, site, SrNo,  log);
             }
+
+            var OptionalSites = _UOW.DefaultSiteRepository.GetAll()
+                .Where(x => x.IsMandatory == false)
+                .OrderBy(x => x.OrderNo).ToList();
+            foreach (DefaultSite site in OptionalSites)
+            {
+                SrNo += 1;
+                AddToComplianceFormSiteSource(compForm, site, SrNo,  log);
+            }
+
+        }
+
+        private void AddToComplianceFormSiteSource(ComplianceForm compForm, ComplianceFormBaseSite siteToAdd, int SrNo,  ILog log)
+        {
+            var ScanData = new SiteScanData(_UOW, _SearchEngine);
+            var sourceSite = _UOW.SiteSourceRepository.FindById(siteToAdd.SiteId);
+            if (sourceSite == null)
+            {
+                throw new Exception("Site Source for position " + SrNo + " not found");
+            }
+            var siteScan = new SiteScan();
+            var siteSourceToAdd = new SiteSource();
+
+            siteScan = null;
+            if (sourceSite.ExtractionMode.ToLower() == "db")
+                //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
+                siteScan = ScanData.GetSiteScanData(sourceSite.SiteEnum, "", log);
+
+            if (siteScan != null)
+            {
+                siteSourceToAdd.DataExtractedOn = siteScan.DataExtractedOn;
+                siteSourceToAdd.SiteSourceUpdatedOn = siteScan.SiteLastUpdatedOn;
+                //Patrick Is this required?
+                siteSourceToAdd.SiteDataId = siteScan.DataId;
+            }
+
+            siteSourceToAdd.CreatedOn = DateTime.Now;
+            //The Id and DisplayPosition are identical when form is created.
+            //DisplayPosition may change at the client side.
+            siteSourceToAdd.Id = SrNo;
+            siteSourceToAdd.DisplayPosition = SrNo;
+            siteSourceToAdd.SiteId = siteToAdd.SiteId; //RecId of SiteSourceRepository
+            siteSourceToAdd.SiteEnum = sourceSite.SiteEnum;
+            siteSourceToAdd.SiteUrl = sourceSite.SiteUrl;
+            siteSourceToAdd.SiteName = siteToAdd.Name; // siteToAdd.SiteName; //Name derived from Default / Country / Sponsor list. 
+            siteSourceToAdd.SiteShortName = sourceSite.SiteShortName;
+            siteSourceToAdd.IsMandatory = siteToAdd.IsMandatory;
+            siteSourceToAdd.ExtractionMode = sourceSite.ExtractionMode;
+            siteSourceToAdd.SearchAppliesTo = siteToAdd.SearchAppliesTo;
+            siteSourceToAdd.SearchAppliesToText = siteToAdd.SearchAppliesTo.ToString().Replace("_", " ");
+
+            //siteSourceToAdd.ExcludePI = siteToAdd.ExcludePI;
+            //siteSourceToAdd.ExcludeSI = siteToAdd.ExcludeSI;
+
+            siteSourceToAdd.Deleted = false;
+
+            compForm.SiteSources.Add(siteSourceToAdd);
         }
 
         void UpdateMatchStatus(
@@ -1018,8 +1033,11 @@ namespace DDAS.Services.Search
 
                     var ListOfFindings = form.Findings;
 
+                    //var Findings = ListOfFindings.Where(
+                    //    x => x.SiteEnum == searchStatus.siteEnum).ToList();
+
                     var Findings = ListOfFindings.Where(
-                        x => x.SiteEnum == searchStatus.siteEnum).ToList();
+                        x => x.SiteSourceId == searchStatus.SiteSourceId).ToList();
 
                     int IssuesFound = 0;
                     int InvId = 0;
@@ -1035,15 +1053,16 @@ namespace DDAS.Services.Search
                     searchStatus.IssuesFound = IssuesFound;
                     Investigator.TotalIssuesFound += IssuesFound;
 
-                    //var Site = form.SiteSources.Find
-                    //    (x => x.SiteEnum == searchStatus.siteEnum);
-                    var Site = form.SiteSources.Find
-                        (x => x.SiteId == searchStatus.SiteId);
+                   //Commented Patrick, 29Apr2017, replaced by code at line: 1177
+                    // //var Site = form.SiteSources.Find
+                   // //    (x => x.SiteEnum == searchStatus.siteEnum);
+                   // var Site = form.SiteSources.Find
+                   //     (x => x.SiteId == searchStatus.SiteId);
 
-                    if (IssuesFound > 0 && Investigator.Id == InvId)
-                        Site.IssuesIdentified = true;
-                   //else
-                    //    Site.IssuesIdentified = false;
+                   // if (IssuesFound > 0 && Investigator.Id == InvId)
+                   //     Site.IssuesIdentified = true;
+                   ////else
+                   // //    Site.IssuesIdentified = false;
 
                     //Rollup summary:
                     if (searchStatus.PartialMatchCount > 0)
@@ -1112,17 +1131,31 @@ namespace DDAS.Services.Search
             foreach (var fnd in form.Findings
                 .Where(f => f.Selected == true)
                 .OrderBy(f => f.InvestigatorSearchedId)
-                .ThenBy(f => f.SourceNumber)
+                .ThenBy(f => f.SiteDisplayPosition)
                 .ThenByDescending( f=> f.DateOfInspection)
                 )
             {
                 pos += 1;
                 fnd.DisplayPosition = pos;
-                //
-                //fnd.InvestigatorSearchedId
-                //   fnd.SourceNumber
-                // fnd.DateOfInspection
             }
+
+            //Set Isssues find for all sites;
+            //.Where(x => x.SearchAppliesTo == SearchAppliesToEnum.Institute)
+            foreach (var site in form.SiteSources)
+            {
+                var InstFindginsCount = form.Findings.Where(
+                    x => x.SiteSourceId == site.Id // .DisplayPosition
+                    && x.IsAnIssue == true
+                    ).Count();
+                if (InstFindginsCount > 0)
+                {
+                    site.IssuesIdentified = true;
+                }else
+                {
+                    site.IssuesIdentified = false;
+                }
+            }
+            
 
             form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
             form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
@@ -1152,18 +1185,9 @@ namespace DDAS.Services.Search
             frm.ExtractedOn = DateTime.Now; //last extracted on
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
-                //var ListOfSiteSearchStatus = new List<SiteSearchStatus>();
-
-                //var InvestigatorName = RemoveExtraCharacters(inv.Name);
-
+          
                 var InvestigatorName = inv.SearchName;
 
-                //if (inv.FirstName.Trim().Length > 0)
-                //    InvestigatorName = inv.FirstName.Trim();
-                //if (inv.MiddleName.Trim().Length > 0)
-                //    InvestigatorName += " " + inv.MiddleName;
-                //if (inv.LastName.Trim().Length > 0)
-                //    InvestigatorName += " " + inv.LastName;
 
                 var ComponentsInInvestigatorName =
                     InvestigatorName.Split(' ').Count();
@@ -1175,13 +1199,22 @@ namespace DDAS.Services.Search
 
                 bool HasExtractionError = false; //for rollup value for Investigator
                 int ExtractionErrorSiteCount = 0;
-                foreach (SiteSource siteSource in frm.SiteSources)
+                //foreach (SiteSource siteSource in frm.SiteSources)
+                foreach (SiteSource siteSource in frm.SiteSources.Where(
+                    x => x.ExtractionMode.ToLower() == "db" 
+                    && x.SearchAppliesTo != SearchAppliesToEnum.Institute
+                    ))
                 {
                     SiteSearchStatus searchStatus = null;
 
+                    //if (inv.SitesSearched != null)
+                    //    searchStatus =
+                    //        inv.SitesSearched.Find(x => x.siteEnum == siteSource.SiteEnum);
+
                     if (inv.SitesSearched != null)
                         searchStatus =
-                            inv.SitesSearched.Find(x => x.siteEnum == siteSource.SiteEnum);
+                            inv.SitesSearched.Find(x =>  x.DisplayPosition == siteSource.DisplayPosition);
+
 
                     bool searchRequired = false;
 
@@ -1207,7 +1240,8 @@ namespace DDAS.Services.Search
                         try
                         {
                             //clear previously added matching records.
-                            frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
+                            //frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
+                            frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.DisplayPosition == searchStatus.DisplayPosition) && x.IsMatchedRecord == true);
 
                             DateTime? SiteLastUpdatedOn = null;
                             var MatchedRecords = GetMatchedRecords(
@@ -1248,13 +1282,19 @@ namespace DDAS.Services.Search
                             {
                                 var finding = new Finding();
                                 finding.Id = Guid.NewGuid();
+                                finding.InvestigatorSearchedId = inv.Id;
+                                finding.SiteSourceId = siteSource.Id; // siteSource.DisplayPosition;
+                                finding.SiteDisplayPosition = siteSource.DisplayPosition;
+                                //required??
                                 finding.SiteId = siteSource.SiteId;
+                                finding.SiteEnum = siteSource.SiteEnum;
+
                                 finding.IsFullMatch = rec.IsFullMatch;
                                 finding.MatchCount = rec.MatchCount;
-                                finding.InvestigatorSearchedId = inv.Id;
+                                
 
-                                finding.SourceNumber = siteSource.DisplayPosition;
-                                finding.SiteEnum = siteSource.SiteEnum;
+                                
+                                
 
                                 finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
@@ -1311,199 +1351,213 @@ namespace DDAS.Services.Search
 
         public void AddLiveScanFindings(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder)
         {
-            string siteType = "live";
+            throw new NotImplementedException();
 
-            //int InvestigatorId = 1;
-            frm.ExtractedOn = DateTime.Now; //last extracted on
-            foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
-            {
-                //var ListOfSiteSearchStatus = new List<SiteSearchStatus>();
+            ////Recheck code when uncommenting:
 
-                var InvestigatorName = RemoveExtraCharacters(inv.Name);
+            //string siteType = "live";
 
-                var ComponentsInInvestigatorName =
-                    InvestigatorName.Trim().Split(' ').Count();
+            ////int InvestigatorId = 1;
+            //frm.ExtractedOn = DateTime.Now; //last extracted on
+            //foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
+            //{
+            //    //var ListOfSiteSearchStatus = new List<SiteSearchStatus>();
 
-                //inv.ExtractedOn = DateTime.Now;
-                //inv.HasExtractionError = true; // until set to false.
-                //inv.IssuesFoundSiteCount = 0;
-                //inv.ReviewCompletedCount = 0;
+            //    var InvestigatorName = RemoveExtraCharacters(inv.Name);
 
-                //bool HasExtractionError = false; //for rollup value for Investigator
-                //int ExtractionErrorSiteCount = 0;
-                foreach (SiteSource siteSource in frm.SiteSources)
-                {
-                    SiteSearchStatus searchStatus = null;
+            //    var ComponentsInInvestigatorName =
+            //        InvestigatorName.Trim().Split(' ').Count();
 
-                    if (inv.SitesSearched != null)
-                        searchStatus =
-                            inv.SitesSearched.Find(x => x.siteEnum == siteSource.SiteEnum);
+            //    //inv.ExtractedOn = DateTime.Now;
+            //    //inv.HasExtractionError = true; // until set to false.
+            //    //inv.IssuesFoundSiteCount = 0;
+            //    //inv.ReviewCompletedCount = 0;
 
-                    bool searchRequired = false;
+            //    //bool HasExtractionError = false; //for rollup value for Investigator
+            //    //int ExtractionErrorSiteCount = 0;
+            //    foreach (SiteSource siteSource in frm.SiteSources)
+            //    {
+            //        SiteSearchStatus searchStatus = null;
 
-                    if (searchStatus == null)
-                    {
-                        //SearchStatus records must be added to each Investigator before calling AddMatchingRecords
-                        throw new Exception("Coding Error: Search Status is not added to Project-Investigator:"
-                            + frm.ProjectNumber + "-" + inv.Name);
-                    }
+            //        if (inv.SitesSearched != null)
+            //            searchStatus =
+            //                inv.SitesSearched.Find(x => x.siteEnum == siteSource.SiteEnum);
 
-                    if (!(searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
-                    {
-                        if (searchStatus.HasExtractionError == true || searchStatus.ExtractedOn == null)
-                        {
-                            searchRequired = true;
-                        }
-                    }
+            //        bool searchRequired = false;
 
-                    //10Feb2017-todo: siteSource.ExtractionMode.ToLower() = "db") //get db Sites only, live sites are extracted through windows service
-                    if (searchRequired == true &&
-                        siteSource.ExtractionMode.ToLower() == siteType)
-                    {
-                        try
-                        {
-                            //clear previously added matching records.
-                            frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
+            //        if (searchStatus == null)
+            //        {
+            //            //SearchStatus records must be added to each Investigator before calling AddMatchingRecords
+            //            throw new Exception("Coding Error: Search Status is not added to Project-Investigator:"
+            //                + frm.ProjectNumber + "-" + inv.Name);
+            //        }
 
-                            //new:
-                            DateTime? SiteLastUpdatedOn1 = null;
+            //        if (!(searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || searchStatus.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
+            //        {
+            //            if (searchStatus.HasExtractionError == true || searchStatus.ExtractedOn == null)
+            //            {
+            //                searchRequired = true;
+            //            }
+            //        }
+
+            //        //10Feb2017-todo: siteSource.ExtractionMode.ToLower() = "db") //get db Sites only, live sites are extracted through windows service
+            //        if (searchRequired == true &&
+            //            siteSource.ExtractionMode.ToLower() == siteType)
+            //        {
+            //            try
+            //            {
+            //                //clear previously added matching records.
+            //                frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
+
+            //                //new:
+            //                DateTime? SiteLastUpdatedOn1 = null;
                           
-                                var findings = getFindings(siteSource, InvestigatorName, inv.Id, log,
-                               ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
-                               out SiteLastUpdatedOn1);
+            //                    var findings = getFindings(siteSource, InvestigatorName, inv.Id, log,
+            //                   ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
+            //                   out SiteLastUpdatedOn1);
 
-                            if (findings.Count > 0)
-                            {
-                                _UOW.ComplianceFormRepository.AddFindings(frm.RecId.Value, findings);
-                            }
+            //                if (findings.Count > 0)
+            //                {
+            //                    _UOW.ComplianceFormRepository.AddFindings(frm.RecId.Value, findings);
+            //                }
                                
   
-                            DateTime? SiteLastUpdatedOn = null;
+            //                DateTime? SiteLastUpdatedOn = null;
                             
 
-                            siteSource.SiteSourceUpdatedOn = SiteLastUpdatedOn;
+            //                siteSource.SiteSourceUpdatedOn = SiteLastUpdatedOn;
 
-                            //searchStatus - full / partial match count
-                            //GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
-                            //record.MatchCount >= ComponentsInInvestigatorName
-                            searchStatus.FullMatchCount = findings.Where(x => x.MatchCount >= ComponentsInInvestigatorName).Count();
-                            searchStatus.PartialMatchCount = findings.Count - searchStatus.FullMatchCount;
+            //                //searchStatus - full / partial match count
+            //                //GetFullAndPartialMatchCount(MatchedRecords, searchStatus, ComponentsInInvestigatorName);
+            //                //record.MatchCount >= ComponentsInInvestigatorName
+            //                searchStatus.FullMatchCount = findings.Where(x => x.MatchCount >= ComponentsInInvestigatorName).Count();
+            //                searchStatus.PartialMatchCount = findings.Count - searchStatus.FullMatchCount;
 
 
                            
-                            searchStatus.SiteSourceUpdatedOn = siteSource.SiteSourceUpdatedOn;
-                            searchStatus.HasExtractionError = false;
-                            searchStatus.ExtractionErrorMessage = "";
-                            searchStatus.ExtractionPending = false;
-                            searchStatus.ExtractedOn = DateTime.Now;
+            //                searchStatus.SiteSourceUpdatedOn = siteSource.SiteSourceUpdatedOn;
+            //                searchStatus.HasExtractionError = false;
+            //                searchStatus.ExtractionErrorMessage = "";
+            //                searchStatus.ExtractionPending = false;
+            //                searchStatus.ExtractedOn = DateTime.Now;
                             
-                            if (findings.Count == 0)
-                            {
-                                searchStatus.ReviewCompleted = true;
-                            }
+            //                if (findings.Count == 0)
+            //                {
+            //                    searchStatus.ReviewCompleted = true;
+            //                }
                             
-                        }
-                        catch (Exception ex)
-                        {
-                            //HasExtractionError = true;  //for rollup to investigator
-                            //ExtractionErrorSiteCount += 1;
-                            searchStatus.ExtractionPending = true;
-                            searchStatus.ExtractedOn = null;
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                //HasExtractionError = true;  //for rollup to investigator
+            //                //ExtractionErrorSiteCount += 1;
+            //                searchStatus.ExtractionPending = true;
+            //                searchStatus.ExtractedOn = null;
 
-                            searchStatus.HasExtractionError = true;
-                            searchStatus.ExtractionErrorMessage =
-                                "Data Extraction not successful - " + ex.Message;
-                            log.WriteLog("Data extraction failed. Details: " + ex.Message);
-                            // Log -- ex.Message + ex.InnerException.Message
-                        }
-                        finally
-                        {
+            //                searchStatus.HasExtractionError = true;
+            //                searchStatus.ExtractionErrorMessage =
+            //                    "Data Extraction not successful - " + ex.Message;
+            //                log.WriteLog("Data extraction failed. Details: " + ex.Message);
+            //                // Log -- ex.Message + ex.InnerException.Message
+            //            }
+            //            finally
+            //            {
 
-                        }
-                        UpdateSearchStatus(frm.RecId.Value, inv.Id, searchStatus);
-                    }
-                }
+            //            }
+            //            UpdateSearchStatus(frm.RecId.Value, inv.Id, searchStatus);
+            //        }
+            //    }
 
-                //handled
-                //inv.ExtractionErrorSiteCount = ExtractionErrorSiteCount;
-                //inv.HasExtractionError = HasExtractionError;
-                //inv.SitesSearched = ListOfSiteSearchStatus;
-                //InvestigatorId += 1;
+            //    //handled
+            //    //inv.ExtractionErrorSiteCount = ExtractionErrorSiteCount;
+            //    //inv.HasExtractionError = HasExtractionError;
+            //    //inv.SitesSearched = ListOfSiteSearchStatus;
+            //    //InvestigatorId += 1;
                 
-            }
+            //}
         }
 
         private List<Finding> getFindings(SiteSource siteSource, string InvestigatorName, 
             int InvestigatorId, ILog log,  string ErrorScreenCaptureFolder, 
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            var retFindings = new List<Finding>(); 
-            var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
-                               ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
-                               out SiteLastUpdatedOn);
+            throw new NotImplementedException();
 
-            //To-Do: convert matchedRecords to Findings
-            foreach (MatchedRecord rec in MatchedRecords)
-            {
-                var finding = new Finding();
-                finding.Id = Guid.NewGuid();
-                finding.MatchCount = rec.MatchCount;
-                finding.InvestigatorSearchedId = InvestigatorId;
-                finding.SourceNumber = siteSource.DisplayPosition;
-                finding.SiteEnum = siteSource.SiteEnum;
+            //Recheck code when uncommenting:
 
-                finding.RecordDetails = rec.RecordDetails;
-                finding.RowNumberInSource = rec.RowNumber;
+            //var retFindings = new List<Finding>(); 
+            //var MatchedRecords = GetMatchedRecords(siteSource, InvestigatorName, log,
+            //                   ErrorScreenCaptureFolder, ComponentsInInvestigatorName,
+            //                   out SiteLastUpdatedOn);
 
-                finding.IsMatchedRecord = true;
-                if (rec.DateOfInspection.HasValue)
-                {
-                    finding.DateOfInspection = rec.DateOfInspection;
-                }
+            ////To-Do: convert matchedRecords to Findings
+            //foreach (MatchedRecord rec in MatchedRecords)
+            //{
+            //    var finding = new Finding();
+            //    finding.Id = Guid.NewGuid();
+            //    finding.MatchCount = rec.MatchCount;
+            //    finding.InvestigatorSearchedId = InvestigatorId;
+            //    //finding.SiteSourceId = siteSource.DisplayPosition;
+            //    finding.SiteSourceId = siteSource.Id;
+            //    finding.SiteDisplayPosition = siteSource.DisplayPosition;
+            //    finding.SiteEnum = siteSource.SiteEnum;
 
-                finding.InvestigatorName = InvestigatorName;
-                finding.Links = rec.Links;
+            //    finding.RecordDetails = rec.RecordDetails;
+            //    finding.RowNumberInSource = rec.RowNumber;
 
-                retFindings.Add(finding);
-            }
-            return retFindings;
+            //    finding.IsMatchedRecord = true;
+            //    if (rec.DateOfInspection.HasValue)
+            //    {
+            //        finding.DateOfInspection = rec.DateOfInspection;
+            //    }
+
+            //    finding.InvestigatorName = InvestigatorName;
+            //    finding.Links = rec.Links;
+
+            //    retFindings.Add(finding);
+            //}
+            //return retFindings;
         }
 
         private bool UpdateSearchStatus(Guid formId, int InvestigatyorId, SiteSearchStatus siteStatus)
         {
-            var dbForm = _UOW.ComplianceFormRepository.FindById(formId);
+            throw new NotImplementedException();
 
-            foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
-            {
-                if (inv.Id == InvestigatyorId)
-                {
-                    foreach (SiteSearchStatus ss in inv.SitesSearched)
-                    {
-                        if (ss.siteEnum == siteStatus.siteEnum)
-                        {
-                            //replace values
-                            ss.DisplayPosition = siteStatus.DisplayPosition;
-                            ss.ExtractedOn = siteStatus.ExtractedOn;
-                            ss.HasExtractionError = siteStatus.HasExtractionError;
-                            ss.ExtractionErrorMessage = siteStatus.ExtractionErrorMessage;
-                            //ss.ExtractionPending ??
-                            ss.FullMatchCount = siteStatus.FullMatchCount;
-                            //ss.HasExtractionError
-                            //ss.IssuesFound
-                            ss.PartialMatchCount = siteStatus.PartialMatchCount;
-                            ss.ReviewCompleted = siteStatus.ReviewCompleted;
-                            ss.SiteSourceUpdatedOn = siteStatus.SiteSourceUpdatedOn;
-                            ss.ExtractionPending = siteStatus.ExtractionPending;
-                            _UOW.ComplianceFormRepository.UpdateComplianceForm(formId, dbForm);
-                            break;
-                        }
-                    }
-                }
+            ////Recheck code when uncommenting:
+
+            //var dbForm = _UOW.ComplianceFormRepository.FindById(formId);
+
+            //foreach (InvestigatorSearched inv in dbForm.InvestigatorDetails)
+            //{
+            //    if (inv.Id == InvestigatyorId)
+            //    {
+            //        foreach (SiteSearchStatus ss in inv.SitesSearched)
+            //        {
+            //            if (ss.siteEnum == siteStatus.siteEnum)
+            //            {
+            //                //replace values
+            //                ss.DisplayPosition = siteStatus.DisplayPosition;
+            //                ss.ExtractedOn = siteStatus.ExtractedOn;
+            //                ss.HasExtractionError = siteStatus.HasExtractionError;
+            //                ss.ExtractionErrorMessage = siteStatus.ExtractionErrorMessage;
+            //                //ss.ExtractionPending ??
+            //                ss.FullMatchCount = siteStatus.FullMatchCount;
+            //                //ss.HasExtractionError
+            //                //ss.IssuesFound
+            //                ss.PartialMatchCount = siteStatus.PartialMatchCount;
+            //                ss.ReviewCompleted = siteStatus.ReviewCompleted;
+            //                ss.SiteSourceUpdatedOn = siteStatus.SiteSourceUpdatedOn;
+            //                ss.ExtractionPending = siteStatus.ExtractionPending;
+            //                _UOW.ComplianceFormRepository.UpdateComplianceForm(formId, dbForm);
+            //                break;
+            //            }
+            //        }
+            //    }
 
                 
-            }
+            //}
            
-            return true;
+            //return true;
         }
 
         #region Save related
@@ -1535,29 +1589,30 @@ namespace DDAS.Services.Search
 
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
-                foreach (SiteSource site in frm.SiteSources)
+                foreach (SiteSource site in frm.SiteSources.Where(x => x.SearchAppliesTo != SearchAppliesToEnum.Institute))
                 {
                     //SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.siteEnum == site.SiteEnum);
-                    SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.SiteId== site.SiteId);
+                    //SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.SiteId== site.SiteId);
+                    //SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.DisplayPosition == site.DisplayPosition);
+                    SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.SiteSourceId == site.Id);
                     if (searchStatus == null)
                     {
                         searchStatus = new SiteSearchStatus();
+                        searchStatus.SiteSourceId = site.Id;
                         searchStatus.SiteId = site.SiteId;
                         searchStatus.siteEnum = site.SiteEnum;
                         searchStatus.SiteName = site.SiteName;
                         searchStatus.SiteUrl = site.SiteUrl;
                         searchStatus.DisplayPosition = site.DisplayPosition;
                         searchStatus.ExtractionMode = site.ExtractionMode;
-                        if (site.ExcludeSI == true && inv.Role.ToLower() == "sub")
+
+                        if (site.SearchAppliesTo == SearchAppliesToEnum.PIs && inv.Role.ToLower() == "sub")
+                        //if (site.ExcludeSI == true && inv.Role.ToLower() == "sub")
                         {
                             searchStatus.Exclude = true;
                             //searchStatus.ReviewCompleted = true;
                         }
-                        if (site.ExcludePI == true && inv.Role.ToLower() == "principal")
-                        {
-                            searchStatus.Exclude = true;
-                            //searchStatus.ReviewCompleted = true;
-                        }
+                       
                         if (site.ExtractionMode.ToLower() == "manual") //requirement of ICON 23-Mar-2017
                         {
                             searchStatus.ReviewCompleted = true;
@@ -1576,7 +1631,7 @@ namespace DDAS.Services.Search
                 foreach (SiteSearchStatus siteSearchStatus in inv.SitesSearched)
                 {
                     //var siteSource = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum);
-                    var siteSource = frm.SiteSources.Find(x => x.SiteId == siteSearchStatus.SiteId);
+                    var siteSource = frm.SiteSources.Find(x => x.Id == siteSearchStatus.SiteSourceId);
                     if (siteSource == null) // Site Source not available, remove 
                     {
                         siteSearchStatus.DisplayPosition = -1;
@@ -1605,22 +1660,19 @@ namespace DDAS.Services.Search
                 {
                     //siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.SiteEnum == siteSearchStatus.siteEnum).DisplayPosition;
 
-                    siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.SiteId == siteSearchStatus.SiteId).DisplayPosition;
+                    siteSearchStatus.DisplayPosition = frm.SiteSources.Find(x => x.Id  == siteSearchStatus.SiteSourceId).DisplayPosition;
  
                 }
              }
         }
 
 
-        private void CorrectSourceNumberInFindings(ComplianceForm frm)
+        private void CorrectSiteDisplayPositionInFindings(ComplianceForm frm)
         {
-            //foreach (Finding finding in frm.Findings.Where(x => (x.SiteEnum != null)))
-            //{
-            //    finding.SourceNumber = frm.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum).DisplayPosition;
-            //}
-            foreach (Finding finding in frm.Findings.Where(x => (x.SiteId != null)))
+            //foreach (Finding finding in frm.Findings.Where(x => (x.SiteId != null)))
+            foreach (Finding finding in frm.Findings)
             {
-                finding.SourceNumber = frm.SiteSources.Find(x => x.SiteId == finding.SiteId).DisplayPosition;
+                finding.SiteDisplayPosition = frm.SiteSources.Find(x => x.Id == finding.SiteSourceId).DisplayPosition;
             }
 
         }
@@ -1960,6 +2012,35 @@ namespace DDAS.Services.Search
             return ReturnList;
         }
 
+        public List<InstituteFindingsSummaryViewModel> getInstituteFindingsSummary(Guid CompFormId)
+        {
+            var retList = new List<InstituteFindingsSummaryViewModel>();
+            var compForm = _UOW.ComplianceFormRepository.FindById(CompFormId);
+            if (compForm != null){
+                var InstSiteSources = compForm.SiteSources.Where(x => x.SearchAppliesTo == SearchAppliesToEnum.Institute);
+                foreach (var instSite in InstSiteSources)
+                {
+                    var item = new InstituteFindingsSummaryViewModel();
+                    item.SiteSourceId = instSite.Id;
+                    item.DisplayPosition = instSite.DisplayPosition;
+                    item.IsMandatory = instSite.IsMandatory;
+                    item.SiteId = instSite.SiteId;
+                    item.SiteName = instSite.SiteName;
+                    item.SiteShortName = instSite.SiteShortName;
+                    item.SiteUrl = instSite.SiteUrl;
+                    item.IssuesFound = compForm.Findings.Where(x => x.SiteSourceId == instSite.Id).Count();
+
+                    retList.Add(item);
+                }
+                return retList;
+            }else
+            {
+                return null;
+            }
+            
+        }
+
+
         #endregion
 
         #region ComplianceFormGeneration
@@ -2111,7 +2192,7 @@ namespace DDAS.Services.Search
                     string[] CellValues = new string[]
                     {
                         finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
-                        finding.SourceNumber.ToString(),
+                        finding.SiteSourceId.ToString(),
                         DateOfInspection,
                         finding.Observation
                     };
@@ -2226,6 +2307,7 @@ namespace DDAS.Services.Search
             foreach (SiteSource site in compForm.SiteSources)
             {
                 var searchStatus = new SiteSearchStatus();
+                searchStatus.SiteSourceId = site.Id;
                 searchStatus.DisplayPosition = site.DisplayPosition;
                 searchStatus.siteEnum = site.SiteEnum;
                 searchStatus.SiteUrl = site.SiteUrl;

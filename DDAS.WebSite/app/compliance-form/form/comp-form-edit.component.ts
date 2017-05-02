@@ -502,51 +502,59 @@ export class CompFormEditComponent implements OnInit {
         this.siteToRemove = site;
     }
 
-    RemoveSite() {
+//     RemoveSite() {
         
-        this.siteToRemove.Deleted = true;
-        //this.siteToRemove.SiteEnum
-        let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
-        if (site) {
-            site.Included = false;
-            this.pageChanged = true;
-        }
-        this.SetSiteDisplayPosition();
+//         this.siteToRemove.Deleted = true;
+//         //this.siteToRemove.SiteEnum
+//         let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
+//         if (site) {
+//             site.Included = false;
+//             this.pageChanged = true;
+//         }
+//         this.SetSiteDisplayPosition();
     
-}
+// }
 
-    RemoveSite1(){
+    RemoveSite(){
         
         let siteIdToRemove = this.siteToRemove.SiteId;
-        //console.clear;
        
-         console.log("siteIdToRemove:" + siteIdToRemove);
-        // console.log("siteName:" + this.siteToRemove.SiteName);
-        // this.CompForm.Findings.forEach(function(item, index, object) {
-        //     console.log("Finding: " + item.SiteId );
-        //     if (item.SiteId === siteIdToRemove) {
-        //         console.log("Finding removed: " + item.SiteId  );
-        //         object.splice(index, 1);
-
-        //     }
-        // });
-
+       
+         
+       //Remove Findings:
         var i:number;
         for (i = this.CompForm.Findings.length - 1; i >= 0; i -= 1) {
-            if (this.CompForm.Findings[i].SiteId == this.siteToRemove.SiteId ) {
+            if (this.CompForm.Findings[i].SiteSourceId == this.siteToRemove.Id ) {
                  console.log("Finding removed: " + this.CompForm.Findings[i].SiteId  );
                 this.CompForm.Findings.splice(i, 1);
             }
         }
         
-        
-        // console.log("BBBBB");
+        //remove siteSearchStatus for all Investigators.
+        var inv:number;
+        for (inv = this.CompForm.InvestigatorDetails.length - 1; inv >= 0; inv -= 1) {
+            var s: number;
+            for (s = this.CompForm.InvestigatorDetails[inv].SitesSearched.length - 1; s >= 0; s -= 1) {
+                if (this.CompForm.InvestigatorDetails[inv].SitesSearched[s].SiteSourceId == this.siteToRemove.Id ) {
+                   var invName = this.CompForm.InvestigatorDetails[inv].SearchName;
+                   console.log( "siteSearchStatus removed: inv: " + invName + "-" + this.CompForm.InvestigatorDetails[inv].SitesSearched[s].DisplayPosition);
+                   
+                    this.CompForm.InvestigatorDetails[inv].SitesSearched.splice(s, 1);
+                }
+            
+            }
+            
+           
+        }
+
         var index = this.CompForm.SiteSources.indexOf(this.siteToRemove, 0);
         if (index > -1) {
             this.CompForm.SiteSources.splice(index, 1);
         }
 
         this.SetSiteDisplayPosition();
+        this.SetSiteDisplayPositionInFindings();
+        this.pageChanged = true;
     }
     
     
@@ -563,6 +571,15 @@ export class CompFormEditComponent implements OnInit {
             }
         }
     }
+
+   SetSiteDisplayPositionInFindings() {
+        for (let finding of this.CompForm.Findings) {
+            let pos: number = 0
+            pos = this.CompForm.SiteSources.find(x => x.Id == finding.SiteSourceId).DisplayPosition;
+            finding.SiteDisplayPosition = pos;
+        }
+    }
+
     //Better method?
     get LastSiteSourceId(): number {
         let lastNumber: number = 0
@@ -610,7 +627,7 @@ export class CompFormEditComponent implements OnInit {
         //finding.UISelected = true;
         finding.IsAnIssue = true;
         finding.InvestigatorSearchedId = null;
-        finding.SourceNumber = null;
+        finding.SiteSourceId = null;
         finding.SiteEnum = null;
         //finding.SourceNumber = 
         //finding.InvestigatorName =
@@ -690,6 +707,11 @@ export class CompFormEditComponent implements OnInit {
 
     }
 
+    gotoInstituteSummaryFindings(){
+         this.router.navigate(['institute-findings-summary', this.CompForm.RecId,  { rootPath: this.rootPath }],
+            { relativeTo: this.route.parent });
+    }
+    
     goBack() {
 
         if (this.rootPath == null) {
@@ -737,11 +759,17 @@ export class CompFormEditComponent implements OnInit {
      private Todate = new Date(); 
 
      isUrl(url: string){
-         if (url.toLowerCase().startsWith("http")){
-             return true;
-         }else{
+         if (url == null){
              return false;
          }
+         else{
+            if (url.toLowerCase().startsWith("http")){
+                return true;
+            }else{
+                return false;
+            }
+         }
+   
      }
     
     get diagnostic() { return JSON.stringify(this.CompForm.SiteSources); }

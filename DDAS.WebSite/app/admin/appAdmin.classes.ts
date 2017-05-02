@@ -30,9 +30,12 @@ export class SponsorProtocol{
 
  export class DefaultSite{
         RecId : string;
+        Name: string;
         SiteId : string;
         OrderNo : number;
         IsMandatory : boolean;
-        ExcludeSI : boolean;
+        SearchAppliesToEnum: number;
+        //ExcludeSI : boolean;
+
   
     }

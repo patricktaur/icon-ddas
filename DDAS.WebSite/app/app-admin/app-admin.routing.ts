@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {AppAdminDashboardComponent} from './app-admin-dashboard.component'
 
 export const AppAdminRoutes: Routes = [
-  { path: 'app-admin-dashboard', component: AppAdminDashboardComponent},
+  //{ path: 'app-admin-dashboard', component: AppAdminDashboardComponent},
 ]
 
 

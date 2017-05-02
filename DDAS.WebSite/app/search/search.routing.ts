@@ -22,6 +22,8 @@ import { InvestigatorSummaryComponent } from './investigator-summary.component'
 import { FindingsComponent } from './findings.component'
 
 
+import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
+import {InstituteFindingsComponent} from './institute-findings.component' 
 
 import { AuthGuard } from '../auth/auth-guard.service';
 
@@ -53,9 +55,17 @@ const searchRoutes: Routes = [
       },
       {
         //path: 'findings/:formId/:investigatorId/:siteEnum',
-        path: 'findings/:formId/:investigatorId/:siteId',
+        path: 'findings/:formId/:investigatorId/:siteSourceId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
-      }
+      },
+       {
+        path: 'institute-findings-summary/:formId',
+        component: InstituteFindingsSummaryComponent,
+      },
+      {
+        path: 'institute-findings/:formId/:siteSourceId',
+        component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
+      },
     ]
   },
   {
@@ -120,7 +130,15 @@ const searchRoutes: Routes = [
         //path: 'findings/:formId/:investigatorId/:siteEnum',
         path: 'findings/:formId/:investigatorId/:siteId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
-      }
+      },
+      {
+        path: 'institute-findings-summary/:formId',
+        component: InstituteFindingsSummaryComponent,
+      },
+      {
+        path: 'institute-findings/:formId/:siteSourceId',
+        component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
+      },
     ]
   }, 
   {

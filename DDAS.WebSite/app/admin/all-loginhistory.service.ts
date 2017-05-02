@@ -10,8 +10,8 @@ import 'rxjs/add/operator/catch';
 
 //import { ConfigService } from '../shared/utils/config.service';
 //import { AuthService } from '../auth/auth.service';
-import { ConfigService } from '../../shared/utils/config.service';
-import { AuthService } from '../../auth/auth.service';
+import { ConfigService } from '../shared/utils/config.service';
+import { AuthService } from '../auth/auth.service';
 import {SiteSourceViewModel} from './appAdmin.classes';
 import {Country} from './appAdmin.classes';
 import {SponsorProtocol} from './appAdmin.classes';
@@ -87,7 +87,17 @@ export class LoginHistoryService {
     }
 
     getExtractionHistory(){
-        return this.http.get(this._baseUrl + 'AppAdmin/GetDataExtractionHistory',
+        return this.http.get(this._baseUrl + 'admin/GetDataExtractionHistory',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    deleteExtractionData(RecId: string, Enum: number){
+        return this.http.get(this._baseUrl + 'AppAdmin/DeleteExtractionData?RecId=' + RecId
+        + '&Enum=' + Enum,
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -105,7 +115,7 @@ export class LoginHistoryService {
     }
 
     getSiteSources(){
-        return this.http.get(this._baseUrl + 'AppAdmin/GetSiteSources',
+        return this.http.get(this._baseUrl + 'admin/GetSiteSources',
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -114,26 +124,18 @@ export class LoginHistoryService {
     }
 
     getSiteSource(RecId: string){
-        return this.http.get(this._baseUrl + 'AppAdmin/GetSiteSource?RecId=' + RecId, this._options)
+        return this.http.get(this._baseUrl + 'admin/GetSiteSource?RecId=' + RecId, this._options)
         .map((res: Response) => {
             return res.json();
         })
         .catch(this.handleError);
     }
 
-    deleteExtractionData(RecId: string, Enum: number){
-        return this.http.get(this._baseUrl + 'AppAdmin/DeleteExtractionData?RecId=' + RecId
-        + '&Enum=' + Enum,
-        this._options)
-        .map((res: Response) => {
-            return res.json();
-        })
-        .catch(this.handleError);
-    }
+    
 
     saveSiteSource(SiteSource: SiteSourceViewModel): Observable<SiteSourceViewModel>{
         let body = JSON.stringify(SiteSource);
-        return this.http.post(this._baseUrl + 'AppAdmin/SaveSiteSource/', body, this._options)
+        return this.http.post(this._baseUrl + 'admin/SaveSiteSource/', body, this._options)
                    .map((res: Response) => {
                 return res.json();
             })
@@ -141,7 +143,7 @@ export class LoginHistoryService {
     }
 
    deleteSiteSource(RecId: string){
-        return this.http.get(this._baseUrl + 'AppAdmin/DeleteSiteSource?RecId=' + RecId,
+        return this.http.get(this._baseUrl + 'admin/DeleteSiteSource?RecId=' + RecId,
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -151,7 +153,7 @@ export class LoginHistoryService {
 
     
     getCountries(){
-        return this.http.get(this._baseUrl + 'AppAdmin/GetCountries',
+        return this.http.get(this._baseUrl + 'admin/GetCountries',
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -161,7 +163,7 @@ export class LoginHistoryService {
 
     addCountry(countryList: Country){
         let body = JSON.stringify(countryList);
-        return this.http.post(this._baseUrl + 'AppAdmin/AddCountry/', body, this._options)
+        return this.http.post(this._baseUrl + 'admin/AddCountry/', body, this._options)
                    .map((res: Response) => {
                 return res.json();
             })
@@ -169,7 +171,7 @@ export class LoginHistoryService {
     }
 
     removeCountry(RecId: string){
-        return this.http.get(this._baseUrl + 'AppAdmin/DeleteCountry?RecId=' + RecId,
+        return this.http.get(this._baseUrl + 'admin/DeleteCountry?RecId=' + RecId,
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -179,7 +181,7 @@ export class LoginHistoryService {
     
     addSponsorProtocol(sponsorProtocol : SponsorProtocol){
         let body = JSON.stringify(sponsorProtocol);
-        return this.http.post(this._baseUrl + 'AppAdmin/AddSponsorProtocol/', body, this._options)
+        return this.http.post(this._baseUrl + 'admin/AddSponsorProtocol/', body, this._options)
                    .map((res: Response) => {
                 return res.json();
             })
@@ -187,7 +189,7 @@ export class LoginHistoryService {
     }
 
     getSponsorProtocol(){
-        return this.http.get(this._baseUrl + 'AppAdmin/GetSponsorProtocols',
+        return this.http.get(this._baseUrl + 'admin/GetSponsorProtocols',
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -196,7 +198,7 @@ export class LoginHistoryService {
     }
 
     removeSponsorProtocol(RecId: string){
-        return this.http.get(this._baseUrl + 'AppAdmin/DeleteSponsorProtocol?RecId=' + RecId,
+        return this.http.get(this._baseUrl + 'admin/DeleteSponsorProtocol?RecId=' + RecId,
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -206,7 +208,7 @@ export class LoginHistoryService {
 
      addDefaultSite(defaultSite : DefaultSite){
         let body = JSON.stringify(defaultSite);
-        return this.http.post(this._baseUrl + 'AppAdmin/AddDefaultSite/', body, this._options)
+        return this.http.post(this._baseUrl + 'admin/AddDefaultSite/', body, this._options)
                    .map((res: Response) => {
                 return res.json();
             })
@@ -214,7 +216,7 @@ export class LoginHistoryService {
     }
 
     getDefaultSites(){
-        return this.http.get(this._baseUrl + 'AppAdmin/GetDefaultSites',
+        return this.http.get(this._baseUrl + 'admin/GetDefaultSites',
         this._options)
         .map((res: Response) => {
             return res.json();
@@ -222,14 +224,34 @@ export class LoginHistoryService {
         .catch(this.handleError);        
     }
 
+    getDefaultSite(RecId: string){
+        return this.http.get(this._baseUrl + 'admin/GetDefaultSite/?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+     
+    saveDefaultSite(SiteSource: DefaultSite): Observable<DefaultSite>{
+        let body = JSON.stringify(SiteSource);
+        return this.http.post(this._baseUrl + 'admin/SaveDefaultSite/', body, this._options)
+                   .map((res: Response) => {
+                return res.json();
+            })
+        .catch(this.handleError);
+    }
+     
+     
      removeDefaultSite(RecId: string){
-        return this.http.get(this._baseUrl + 'AppAdmin/DeleteDefaultSite?RecId=' + RecId,
+        return this.http.get(this._baseUrl + 'admin/DeleteDefaultSite?RecId=' + RecId,
         this._options)
         .map((res: Response) => {
             return res.json();
         })
         .catch(this.handleError);
     }
+    
     
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

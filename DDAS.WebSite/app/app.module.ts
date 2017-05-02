@@ -22,8 +22,10 @@ import { ReportModule }         from './reports/report.module';
 import { UserModule }         from './user/user.module';
 import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 
-import {LoginHistoryModule} from './Admin/Application/all-loginhistory.module';
-import {AppAdminModule} from './app-admin/app-admin.module'
+import {LoginHistoryModule} from './admin/all-loginhistory.module';
+import {AppAdminModule} from './app-admin/app-admin.module';
+
+import {CommonService} from './shared/common.service';
 
 @NgModule({
   imports:      [ 
@@ -50,8 +52,8 @@ import {AppAdminModule} from './app-admin/app-admin.module'
     appRoutingProviders,
     DialogService,
     ConfigService,
-    SearchService
-     
+    SearchService,
+    CommonService
     ],
   bootstrap:    [ AppComponent ]
 })

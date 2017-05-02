@@ -293,64 +293,7 @@ namespace DDAS.Models.Entities.Domain
             }
 
 
-            //else if (IssuesFoundInvestigatorCount > 0)
-            //{
-            //    if (IssuesFoundInvestigatorCount > 1)
-            //    {
-            //        plural = "s";
-            //    }
-            //    _Status = string.Format("Issue{1} Identified for {0} Investigator{1}, Review Pending", IssuesFoundInvestigatorCount, plural);
-            //    _StatusEnum = ComplianceFormStatusEnum.IssuesIdentifiedReviewPending;
-            //}
-
-            //else if (ExtractionPendingInvestigatorCount > 0)
-            //{
-            //    if (ExtractionErrorInvestigatorCount > 0)
-            //    {
-            //        if (ExtractionErrorInvestigatorCount > 1)
-            //        {
-            //            plural = "s";
-            //        }
-            //        _Status = string.Format("Data Extraction Error for {0} Investigator{1}, Review Pending", ExtractionErrorInvestigatorCount, plural);
-            //        _StatusEnum = ComplianceFormStatusEnum.NotScanned;
-            //    }
-            //    else
-            //    {
-            //        if (ExtractionPendingInvestigatorCount > 1)
-            //        {
-            //            plural = "s";
-            //        }
-            //        _Status = string.Format("Data Not Extracted for {0} Investigator{1}, Review Pending", ExtractionPendingInvestigatorCount, plural);
-            //        _StatusEnum = ComplianceFormStatusEnum.NotScanned;
-            //    }
-            //}
-            //else
-            //{
-            //    if (FullMatchesFoundInvestigatorCount > 0)
-            //    {
-            //        if (FullMatchesFoundInvestigatorCount > 1)
-            //        {
-            //            plural = "es";
-            //            plural1 = "s";
-            //        }
-            //         _Status = string.Format("Full Match{1} Found for {0} Investigator{2}, Review Pending", FullMatchesFoundInvestigatorCount, plural, plural1);
-            //        _StatusEnum = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
-            //    }
-            //    else if (PartialMatchesFoundInvestigatorCount > 0)
-            //    {
-            //        if (PartialMatchesFoundInvestigatorCount > 1)
-            //        {
-            //            plural1 = "s";
-            //            plural = "es";
-            //        }
-            //        _Status = string.Format("Partial Match{1} Found for {0} Investigator{2}, Review Pending", PartialMatchesFoundInvestigatorCount, plural, plural1);
-            //        _StatusEnum = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
-            //    }
-            //    else
-            //    {
-            //        _Status = "No Match Found, Review Pending";
-            //        _StatusEnum = ComplianceFormStatusEnum.NoMatchFoundReviewPending;
-            //    }
+     
         }
         public string EstimatedExtractionCompletionWithin
         {
@@ -444,6 +387,12 @@ namespace DDAS.Models.Entities.Domain
             }
 
             return (hrs + mins + secs) ;
+        }
+
+        public int InstituteSearchSiteCount {
+            get {
+                return SiteSources.Where(x => x.SearchAppliesTo == SearchAppliesToEnum.Institute).Count();
+            }
         }
     }
 
@@ -728,12 +677,14 @@ namespace DDAS.Models.Entities.Domain
     //Patrick 01Dec2016 - new props added:
     public class SiteSearchStatus
     {
-        public int DisplayPosition { get; set; }
+        public int SiteSourceId { get; set; } //CompForm.SiteSources.Id
         public Guid? SiteId { get; set; } //RecId of SiteSourceRepository
         public SiteEnum siteEnum { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
         public Guid? SiteDataId { get; set; }
+        public int DisplayPosition { get; set; }
+
         public bool ExtractionPending { get; set; }
         public DateTime? ExtractedOn { get; set; } //null indicates 'Not extracted' or has errors.
         public bool HasExtractionError { get; set; }
@@ -910,11 +861,11 @@ namespace DDAS.Models.Entities.Domain
         public bool IssuesIdentified { get; set; }
         public bool Deleted { get; set; } = false; //Patrick 30NOv2016
 
-
-        public bool ExcludeSI { get; set; }
-        public bool ExcludePI { get; set; }
+        //public bool ExcludeSI { get; set; }
+        //public bool ExcludePI { get; set; }
 
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
+        public string SearchAppliesToText { get; set; }
 
     }
 
@@ -924,30 +875,35 @@ namespace DDAS.Models.Entities.Domain
         public Guid? Id { get; set; }
         public Guid? SiteId { get; set; } //RecId of SiteSourceRepository
         public SiteEnum? SiteEnum { get; set; }
-        public bool IsFullMatch { get; set; }
+        public int? SiteSourceId { get; set; } // refers to the CompForm.SiteSource.Id  //SourceNumber renamed to SiteSourceId
+        public int SiteDisplayPosition { get; set; } // CompForm.SiteSource.DisplayPosition -- display Site No 
+        public int DisplayPosition { get; set; } //to facilitate ordering on client side.
+
         public int? InvestigatorSearchedId { get; set; }
-        public int MatchCount { get; set; }
+        public string InvestigatorName { get; set; }
+
         //Remove ??
         public int RowNumberInSource { get; set; }
-        public string Observation { get; set; }
-        public string RecordDetails { get; set; }
+
+        public bool IsFullMatch { get; set; }
+        public int MatchCount { get; set; }
+
+        //Remove?
+        public bool Selected { get; set; }  
+        public bool IsMatchedRecord { get; set; }
+
         //Remove ???:
         public string Status { get; set; }
         ////Patrick 04Dec2016: no longer required, can be deleted.  Comp Form collection in MOngodB has to be dropped.
-        public string HiddenStatus { get; set; }
-        //Remove?
-        public bool Selected { get; set; }
-        public bool IsMatchedRecord { get; set; }
-        //Remove?
-        public int? SourceNumber { get; set; }
-        public DateTime? DateOfInspection { get; set; }
-        //?? remove
-        public string InvestigatorName { get; set; }
-        public bool IsAnIssue { get; set; }
-        public int DisplayPosition { get; set; }
+        //public string HiddenStatus { get; set; }
 
-        public List<Link> Links { get; set; } = new List<Link>();
-        public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+        //Findings:
+        public string RecordDetails { get; set; }  //content copied from matched record.
+        public DateTime? DateOfInspection { get; set; } //for DB site: Date extracted, for Manual Site: editable.
+        public string Observation { get; set; }
+        public bool IsAnIssue { get; set; }
+        public List<Link> Links { get; set; } = new List<Link>();//for DB sites only, not used for Manual sites
+        public List<Attachment> Attachments { get; set; } = new List<Attachment>();//not yet used by client
 
         //New fields: 11Apr2017
         //guid SiteDataId
@@ -960,10 +916,18 @@ namespace DDAS.Models.Entities.Domain
     {
         //Guid id,  SiteEnum siteEnum, int InvestigatorId, bool ReviewCompleted, List<Finding> Findings
         public Guid FormId { get; set; }
-        public SiteEnum SiteEnum { get; set; }
+        //public SiteEnum SiteEnum { get; set; }
+        public int SiteSourceId { get; set; }
         public int InvestigatorSearchedId { get; set; }
         public bool ReviewCompleted { get; set; }
         //public InvestigatorSearched InvestigatorSearched { get; set; }
+        public List<Finding> Findings { get; set; }
+    }
+
+    public class UpdateInstituteFindings
+    {
+         public Guid FormId { get; set; }
+        public int SiteSourceId { get; set; }
         public List<Finding> Findings { get; set; }
     }
 
@@ -1122,44 +1086,73 @@ namespace DDAS.Models.Entities.Domain
     }
     #endregion
 
-
-    #region DefaultSites
-    public class DefaultSite
+    #region BaseSites
+    public class ComplianceFormBaseSite
     {
-        public Guid? RecId { get; set; }
+
+        public string Name { get; set; }
         public Guid? SiteId { get; set; }
         public int OrderNo { get; set; }
         public bool IsMandatory { get; set; }
-        public bool ExcludeSI { get; set; }
-
         public string SiteName { get; set; }
-        public string ExtractionMode { get; set; }
-        public string SiteShortName { get; set; }
-        public SiteEnum SiteEnum { get; set; }
-        public string SiteUrl { get; set; }
-
-        public bool ExcludePI { get; set; }
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
+    }
+        #endregion
+
+        #region DefaultSites
+        public class DefaultSite: ComplianceFormBaseSite
+    {
+        public Guid? RecId { get; set; }
+        //public Guid? SiteId { get; set; }
+        //public int OrderNo { get; set; }
+        //public bool IsMandatory { get; set; }
+        //public bool ExcludeSI { get; set; }
+
+        //public string SiteName { get; set; }
+        //public string ExtractionMode { get; set; }
+        //public string SiteShortName { get; set; }
+        //public SiteEnum SiteEnum { get; set; }
+        //public string SiteUrl { get; set; }
+
+       
+       //public SearchAppliesToEnum SearchAppliesTo { get; set; }
 
 
     }
     #endregion
 
     #region Country
-    public class Country
+    public class Country: ComplianceFormBaseSite
     {
         public Guid? RecId { get; set; }
-        public string Name { get; set; }
-        public Guid? SiteId { get; set; }
+        public string CountryName { get; set; }
+        //public Guid? SiteId { get; set; }
+
+        //---
+
+        //public int OrderNo { get; set; }
+        //public bool IsMandatory { get; set; }
+        //public string SiteName { get; set; }
+        //public string ExtractionMode { get; set; }
+        
+        //public SearchAppliesToEnum SearchAppliesTo { get; set; }
     }
     #endregion
 
     #region Sponsor
-    public class SponsorProtocol
+    public class SponsorProtocol : ComplianceFormBaseSite
     {
         public Guid? RecId { get; set; }
         public string SponsorProtocolNumber { get; set; }
-        public Guid? SiteId { get; set; }
+        //public Guid? SiteId { get; set; }
+
+        //---
+
+        //public int OrderNo { get; set; }
+        //public bool IsMandatory { get; set; }
+        //public string SiteName { get; set; }
+       
+        //public SearchAppliesToEnum SearchAppliesTo { get; set; }
     }
     #endregion
 

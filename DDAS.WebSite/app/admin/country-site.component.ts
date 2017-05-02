@@ -1,26 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
-import { ConfigService } from '../../shared/utils/config.service';
+import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import { ConfigService } from '../shared/utils/config.service';
 import {Country} from './appAdmin.classes';
 import {SiteSourceViewModel} from './appAdmin.classes';
-import {SponsorProtocol} from './appAdmin.classes';
+//import {CountryViewModel} from './appAdmin.classes';
 
 @Component({
     moduleId: module.id,
     //selector: 'User-input',
-    templateUrl: 'manage-sponsor-protocol.component.html',
+    templateUrl: 'country-site.component.html',
 })
 
-export class ManageSponsorProtocolComponent implements OnInit {
-    public sponsorProtocol: SponsorProtocol = new SponsorProtocol;
+export class AddCountryComponent implements OnInit {
+    public countryList: Country = new Country;
     //public countryViewModel: CountryViewModel[] = [];
     public SiteSource: any[];
-    public sponsorProtocolsAdded: any[];
+    public countriesAdded: any[];
     public pageNumber: number;
     public formLoading: boolean;
-    public message: string;
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -29,8 +28,7 @@ export class ManageSponsorProtocolComponent implements OnInit {
     ) { }
 
     ngOnInit(){
-        this.message = "";
-        this.loadSponsorProtocol();
+        this.loadCountries();
         this.loadSiteSources();
     }
 
@@ -44,14 +42,14 @@ export class ManageSponsorProtocolComponent implements OnInit {
         });
     }
 
-    loadSponsorProtocol(){
+    loadCountries(){
         // this.formLoading = false;
-        this.sponsorProtocol.SponsorProtocolNumber = "";
-        this.sponsorProtocol.SiteId = "";
+        this.countryList.Name = "";
+        this.countryList.SiteId = "";
         
-        this.service.getSponsorProtocol()
+        this.service.getCountries()
         .subscribe((item : any[]) => {
-            this.sponsorProtocolsAdded = item;
+            this.countriesAdded = item;
             // this.formLoading = true;
         },
         error => {
@@ -59,24 +57,22 @@ export class ManageSponsorProtocolComponent implements OnInit {
         });
     }
 
-    addSponsorProtocol(){
-        this.service.addSponsorProtocol(this.sponsorProtocol)
+    addCountry(){
+        this.service.addCountry(this.countryList)
         .subscribe((item: any) => {
-            this.message = item;
-            this.loadSponsorProtocol();
+            this.loadCountries();
         },
         error => {
         
         });
     }
-
-    removeSponsorProtocol(RecId: string){
-        this.service.removeSponsorProtocol(RecId)
+    removeCountry(RecId: string){
+        this.service.removeCountry(RecId)
         .subscribe((item: any) => {
-            this.loadSponsorProtocol();
+            this.loadCountries();
         },
         error => {
         
-        });
+        });        
     }
 }

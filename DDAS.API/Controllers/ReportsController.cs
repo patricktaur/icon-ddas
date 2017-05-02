@@ -10,6 +10,7 @@ using Utilities;
 
 namespace DDAS.API.Controllers
 {
+    [Authorize(Roles = "user, admin")]
     [RoutePrefix("api/Reports")]
     public class ReportsController : ApiController
     {

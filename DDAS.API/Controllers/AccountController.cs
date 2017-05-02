@@ -17,7 +17,7 @@ using System.Globalization;
 
 namespace DDAS.API.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
-import { ConfigService } from '../../shared/utils/config.service';
+import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import { ConfigService } from '../shared/utils/config.service';
 
 @Component({
     moduleId: module.id,
