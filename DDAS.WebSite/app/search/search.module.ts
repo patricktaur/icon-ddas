@@ -36,6 +36,10 @@ import { StatusCircleLegHorComponent } from './shared/components/status-circle-l
 import { DownloadComplianceFormComponent } from './shared/components/download-compliance-form.component';
 import { GenerateOutputFileComponent } from './shared/components/generate-output-file.component';
 
+import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
+import {InstituteFindingsComponent} from './institute-findings.component' 
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -63,7 +67,9 @@ import { GenerateOutputFileComponent } from './shared/components/generate-output
     StatusCircleLegHorComponent,
     DownloadComplianceFormComponent,
     AllISCFsComponent,
-    GenerateOutputFileComponent
+    GenerateOutputFileComponent,
+    InstituteFindingsSummaryComponent,
+    InstituteFindingsComponent
   ],
 
   providers: [

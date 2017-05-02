@@ -273,6 +273,19 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private void DelteAllSAMSiteDataRecords()
+        {
+            var records = _UOW.SAMSiteDataRepository.GetAll();
+            //foreach (var rec in records)
+            //{
+            //    //_UOW.SAMSiteDataRepository.Remove(rec);
+            //    //_UOW.SAMSiteDataRepository.RemoveById(rec.RecId);
+            //    Guid RecId = rec.RecId.Value;
+            //    _UOW.SAMSiteDataRepository.DropRecord(RecId);
+            //}
+            _UOW.SAMSiteDataRepository.DropAll();
+        }
+
         public override void LoadContent()
         {
             try
@@ -283,6 +296,7 @@ namespace WebScraping.Selenium.Pages
                 //var FilePath = _config.AppDataDownloadsFolder +
                 //    "SAM_Exclusions_Public_Extract_17110.CSV";
 
+                DelteAllSAMSiteDataRecords();
                 LoadSAMDatafromCSV(FilePath);
 
                 _SAMSiteData.DataExtractionSucceeded = true;

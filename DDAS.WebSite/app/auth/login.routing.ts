@@ -9,7 +9,7 @@ export const loginRoutes: Routes = [
   
   { path: 'login', component: LoginComponent },
   { path: 'logout', redirectTo: '/login' },
-    { path: 'changepassword', component: ChangePasswordComponent },
+    { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard] },
      {path: '',     redirectTo: '/login',  pathMatch: 'full'  },
       { path: '**',redirectTo: '/login', pathMatch: 'full'  }
 ];

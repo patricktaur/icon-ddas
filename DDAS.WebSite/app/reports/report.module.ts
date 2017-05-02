@@ -3,23 +3,29 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportComponent } from './report.component';
 import { ReportService } from './report-service';
+import {reportRouting} from './report.routing';
+
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
-import { SearchModule } from '../search/search.module'
+
 import { SharedModule } from '../shared/shared.module'
 //import {ModalModule} from "ng2-modal";
+import {OutputReportComponent} from './output-report.component'
+
 
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    reportRouting,
     Ng2Bs3ModalModule,
-    SearchModule,
+    
     SharedModule
     //ModalModule
   ],
   declarations: [
-    ReportComponent
+    ReportComponent,
+    OutputReportComponent
   ],
 
   providers: [

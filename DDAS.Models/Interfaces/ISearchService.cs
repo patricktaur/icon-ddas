@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,11 +29,14 @@ namespace DDAS.Models.Interfaces
 
         ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form, ILog log, string ErrorScreenCaptureFolder);
         bool UpdateFindings(UpdateFindigs updateFindings);
+        bool UpdateInstituteFindings(UpdateInstituteFindings InstitueFinding);
 
         List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter);
 
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
+
+        List<InstituteFindingsSummaryViewModel> getInstituteFindingsSummary(Guid CompFormId);
 
         ComplianceForm RollUpSummary(ComplianceForm form);
         bool UpdateRollUpSummary(Guid formId);

@@ -4,7 +4,7 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<h3 class="align-left no-margin-top">
-						Search Summary
+						Investigator Search Summary
 					</h3>
 					<div class="alert alert-info" *ngIf="loading">
 						<strong>Loading ...</strong>
@@ -139,7 +139,7 @@
 					{{item.ReviewCompleted | boolToYesNo}}
 				</td>
 				<td>
-					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.SiteId)">Findings</button>
+					<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.SiteSourceId)">Findings</button>
 					<div *ngIf="LoggedInUserIsAppAdmin">
 						Extraction Pending: {{item.ExtractionPending | boolToYesNo}} / HasExtractionError: {{item.HasExtractionError | boolToYesNo}}
 						/ ExtractionErrorMessage: {{item.ExtractionErrorMessage }} / ExtractedOn : {{item.ExtractedOn }}

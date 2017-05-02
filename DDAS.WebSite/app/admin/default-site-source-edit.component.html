@@ -1,0 +1,55 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<form #f="ngForm" novalidate>
+				<div class="row">
+					<div class="col-lg-12">
+						<h3 class="align-left no-margin-top">
+							Default Site - {{isNewText}}
+						</h3>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<label for="siteSources">Select Site:</label>
+							<select class="form-control" [(ngModel)]="DefaultSite.SiteId" name="siteSources" (change)="onSiteSourceChange($event)">
+                                <option *ngFor="let item of SiteSources" value={{item.RecId}} selected="selected" >
+									{{item.SiteName  + '/' + item.SiteUrl}}
+								</option>
+                            </select>
+								
+							
+
+							<label for="EditOrderNo">Order No:</label>
+							<input type="text" name="EditOrderNo" class="form-control" [(ngModel)]="DefaultSite.OrderNo">
+
+							<label for="name">Name:</label>
+							<input type="text" name="name" class="form-control" [(ngModel)]="DefaultSite.Name">
+
+
+							<label for="appliesTo">Search Applies To:</label>
+							<select class="form-control" [(ngModel)]="DefaultSite.SearchAppliesTo" name="appliesTo">
+                                <option *ngFor="let item of AppliesToItems" value={{item.id}} selected="selected">{{item.name}}</option>
+                            </select>
+
+
+							<label for="EditIsMandatory">Is Mandatory:</label>
+							<input type="checkbox" name="EditIsMandatory" [(ngModel)]="DefaultSite.IsMandatory"><br>
+						</div>
+					</div>
+
+					<div site-source-toadd></div>
+				</div>
+				<div class="row">
+					<div class="col-lg-4">
+						<button type="button" class="btn btn-primary" (click)="Save()" title="Save"><span class="glyphicon glyphicon-ok" > Save</span></button>
+						<button type="button" class="btn btn-primary" (click)="CancelSave()" title="Cancel">Cancel</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

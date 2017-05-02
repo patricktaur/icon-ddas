@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDAS.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,12 @@ namespace DDAS.Models.ViewModels
         public int OrderNo { get; set; }
         public string SiteName { get; set; }
         public string SiteUrl { get; set; }
+        public string ExtractionMode { get; set; }
+        public string SearchAppliesToText { get; set; }
+        public SearchAppliesToEnum SearchAppliesTo { get; set; }
+
         public bool IsMandatory { get; set; }
-        public bool ExcludeSI { get; set; }
+        //public bool ExcludeSI { get; set; }
     }
   
 }

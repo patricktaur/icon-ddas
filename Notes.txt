@@ -1,3 +1,10 @@
+1May2017
+
+Handle older forms:
+Findings tab:
+	Source # Column
+
+
 Error at IUnitOfWork uow = new UnitOfWork("DefaultConnection");
 install: System.RunTime.InteropServices.RuntimeInformation by Microsoft
 

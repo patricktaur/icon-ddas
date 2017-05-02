@@ -12,9 +12,26 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
     internal class SAMSiteDataRepository : Repository<SystemForAwardManagement>,
         ISAMSiteDataRepository
     {
+        private IMongoDatabase _db;
         public SAMSiteDataRepository(IMongoDatabase db) : base(db)
         {
+            _db = db;
+        }
 
+        public bool DropRecord(object RecId)
+        {
+            var filter = Builders<SystemForAwardManagement>.Filter.Eq("_id", RecId);
+            var collection = _db.GetCollection<SystemForAwardManagement>(typeof(SystemForAwardManagement).Name);
+            var entity = collection.DeleteOne(filter);
+            return true;
+        }
+
+        public bool DropAll()
+        {
+            
+            var collection = _db.GetCollection<SystemForAwardManagement>(typeof(SystemForAwardManagement).Name);
+            var entity = collection.DeleteMany("{ }");
+            return true;
         }
     }
 }

@@ -21,7 +21,7 @@ using DDAS.Models.Enums;
 
 namespace DDAS.API.Controllers
 {
-    //[Authorize]
+    [Authorize(Roles = "user, admin")]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
@@ -248,7 +248,7 @@ namespace DDAS.API.Controllers
         {
             var UserName = User.Identity.GetUserName();
             return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, true, true));
+                _SearchService.getPrincipalInvestigators(UserName,  true, true));
         }
 
         [Route("GetInvestigatorSiteSummary")]
@@ -258,6 +258,17 @@ namespace DDAS.API.Controllers
             return Ok(
                 _SearchService.
                     getInvestigatorSiteSummary(formId, investigatorId));
+        }
+
+        //getInstituteFindingsSummary
+        [Route("GetInstituteFindingsSummary")]
+        [HttpGet]
+        public IHttpActionResult getInstituteFindingsSummary(string formId)
+        {
+            Guid gCompFormId = Guid.Parse(formId);
+            return Ok(
+                _SearchService.
+                    getInstituteFindingsSummary(gCompFormId));
         }
 
         [Route("GetSingleComponentMatches")]
@@ -376,6 +387,13 @@ namespace DDAS.API.Controllers
 
             return Ok(_SearchService.UpdateFindings(updateFindings));
             //return Ok( _UOW.ComplianceFormRepository.UpdateFindings(updateFindings));
+        }
+
+        [Route("UpdateInstituteFindings")]
+        [HttpPost]
+        public IHttpActionResult UpdateInstituteFindings(UpdateInstituteFindings FindingsModel)
+        {
+               return Ok(_SearchService.UpdateInstituteFindings(FindingsModel));
         }
 
         #endregion

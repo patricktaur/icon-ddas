@@ -55,4 +55,13 @@
         IssuesIdentifiedReviewPending,
         HasExtractionErrors
     }
+
+    public enum SearchAppliesToEnum
+    {
+        PIs_SIs,
+        PIs,
+        Institute
+
+    }
+
 }

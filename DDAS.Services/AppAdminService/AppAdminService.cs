@@ -118,10 +118,15 @@ namespace DDAS.Services.AppAdminService
             //11 SAM / SYSTEM FOR AWARD MANAGEMENT Live No
             //Live Site - Data not extracted
             var ExtractionHistory11 = new DataExtractionHistory();
-            var site11 = new BaseSiteData();
-            
-            site11.DataExtractionRequired = false;
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11, site11, 11, SiteEnum.SystemForAwardManagementPage);
+
+            //var site11 = new BaseSiteData();
+            //site11.DataExtractionRequired = false;
+
+            var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll().
+                OrderByDescending(x => x.CreatedOn).
+                First();
+
+            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11, SamSiteData, 11, SiteEnum.SystemForAwardManagementPage);
 
             var ExtractionHistory12 = new DataExtractionHistory();
 
@@ -1042,7 +1047,7 @@ namespace DDAS.Services.AppAdminService
         {
             var CountriesViewModel = new List<CountryViewModel>();
 
-            var Countries = _UOW.CountryRepository.GetAll().OrderBy(x => x.Name).ToList();
+            var Countries = _UOW.CountryRepository.GetAll().OrderBy(x => x.CountryName).ToList();
 
             if (Countries.Count == 0)
                 return null;
@@ -1050,7 +1055,7 @@ namespace DDAS.Services.AppAdminService
             foreach(Country country in Countries)
             {
                 var CountryViewModel = new CountryViewModel();
-                CountryViewModel.Name = country.Name;
+                CountryViewModel.Name = country.CountryName;
                 CountryViewModel.SiteId = country.SiteId;
                 CountryViewModel.RecId = country.RecId;
                 var site = _UOW.SiteSourceRepository.FindById(country.SiteId);
@@ -1067,7 +1072,7 @@ namespace DDAS.Services.AppAdminService
         
         public bool AddCountry(Country country)
         {
-            if (country.Name == "" || country.Name == null ||
+            if (country.CountryName == "" || country.CountryName == null ||
                 country.SiteId == null)
                 return false;
 
@@ -1137,22 +1142,22 @@ namespace DDAS.Services.AppAdminService
         #endregion
 
         #region DefaultSites
-        public bool AddDefaultSite(DefaultSite site)
-        {
-            if (site.SiteId == null)
-                return false;
+        //public bool AddDefaultSite(DefaultSite site)
+        //{
+        //    if (site.SiteId == null)
+        //        return false;
 
-            var siteSource = _UOW.SiteSourceRepository.FindById(site.SiteId);
+        //    var siteSource = _UOW.SiteSourceRepository.FindById(site.SiteId);
 
-            site.SiteEnum = siteSource.SiteEnum;
-            site.SiteName = siteSource.SiteName;
-            site.SiteShortName = siteSource.SiteShortName;
-            site.SiteUrl = siteSource.SiteUrl;
-            site.ExtractionMode = siteSource.ExtractionMode;
+        //    site.SiteEnum = siteSource.SiteEnum;
+        //    site.SiteName = siteSource.SiteName;
+        //    site.SiteShortName = siteSource.SiteShortName;
+        //    site.SiteUrl = siteSource.SiteUrl;
+        //    site.ExtractionMode = siteSource.ExtractionMode;
 
-            _UOW.DefaultSiteRepository.Add(site);
-            return true;
-        }
+        //    _UOW.DefaultSiteRepository.Add(site);
+        //    return true;
+        //}
 
         public List<DefaultSitesViewModel> GetDefaultSites()
         {
@@ -1170,14 +1175,32 @@ namespace DDAS.Services.AppAdminService
                 var defaultSiteViewModel = new DefaultSitesViewModel();
                 defaultSiteViewModel.OrderNo = defaultSite.OrderNo;
                 defaultSiteViewModel.IsMandatory = defaultSite.IsMandatory;
-                defaultSiteViewModel.ExcludeSI = defaultSite.ExcludeSI;
+
+                
+                defaultSiteViewModel.SearchAppliesTo = defaultSite.SearchAppliesTo;
+                defaultSiteViewModel.SearchAppliesToText = defaultSite.SearchAppliesTo.ToString();
+                //defaultSiteViewModel.ExcludeSI = defaultSite.ExcludeSI;
                 var site = _UOW.SiteSourceRepository.FindById(defaultSite.SiteId);
+                
+                if (site == null)
+                {
+                    throw new Exception("Site Source for Order No: " + defaultSite.OrderNo + " not found");
+                }
                 if (site != null)
                 {
-                    defaultSiteViewModel.SiteName = site.SiteName;
+                    defaultSiteViewModel.SiteName = defaultSite.Name;
                     defaultSiteViewModel.SiteUrl = site.SiteUrl;
                     defaultSiteViewModel.SiteId = defaultSite.SiteId;
                     defaultSiteViewModel.RecId = defaultSite.RecId;
+                    if (defaultSite.SearchAppliesTo == SearchAppliesToEnum.Institute)
+                    {
+                        defaultSiteViewModel.ExtractionMode = "Manual";
+                    }
+                    else
+                    {
+                        defaultSiteViewModel.ExtractionMode = site.ExtractionMode;
+                    }
+                    
 
                     defaultSites.Add(defaultSiteViewModel);
                 }
@@ -1193,6 +1216,45 @@ namespace DDAS.Services.AppAdminService
 
             }
             return defaultSites;
+        }
+
+        public DefaultSite GetSingleDefaultSite(Guid? RecId)
+        {
+            return _UOW.DefaultSiteRepository.FindById(RecId);
+        }
+
+        public bool UpdateDefaultSite(DefaultSite defaultSite)
+        {
+          
+            //var ExtractionMode = sourceSite.ExtractionMode;
+            //defaultSite.SiteName = sourceSite.SiteName;
+            //defaultSite.SiteShortName = sourceSite.SiteShortName;
+            //defaultSite.SiteUrl = sourceSite.SiteUrl;
+            //Code does not handle searching by Institute Name.
+            //Changing ExtractionMode to Manual for all sites where Search applies to Manual is
+            //On UI Compliance Form Edit page - in the list of sites Source Date can be maded editable 
+            //even for sites with Extraction Mode 'DB'
+            //'Source Date' of the DB Extracted site cann be used for Sites that are applied to Institute
+            // as user can add findings on any later day.  In the case of DB extracted sites (for PI and SI) the search, 
+            //full match and partial match is carried out immediately, therefore the 'Source Date' derived from the site is valid.
+            //if (defaultSite.SearchAppliesTo == SearchAppliesToEnum.Institute)
+            //{
+            //    defaultSite.ExtractionMode = "Manual";
+            //}
+            //else
+            //{
+            //    defaultSite.ExtractionMode = ExtractionMode;
+            //}
+            if (defaultSite.RecId == null)
+            {
+                 _UOW.DefaultSiteRepository.Add(defaultSite);
+                return true;
+            }
+            else
+            {
+                _UOW.DefaultSiteRepository.UpdateDefaultSite(defaultSite);
+                return true;
+            }
         }
 
         public void DeleteDefaultSite(Guid? RecId)

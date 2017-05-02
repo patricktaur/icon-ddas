@@ -144,7 +144,10 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadSDNList()
         {
-            string AllRecords = File.ReadAllText(_config.AppDataDownloadsFolder);
+            //Patrick: 24April2017
+            //string AllRecords = File.ReadAllText(_config.AppDataDownloadsFolder);
+            var dataFile = _config.AppDataDownloadsFolder + "SDNList.txt";
+            string AllRecords = File.ReadAllText(dataFile);
 
             string[] Records = 
                 AllRecords.Split(new string[] { "\n\n" }, StringSplitOptions.None);
@@ -209,11 +212,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime CurrentSiteUpdatedDate;
 
-            DateTime.TryParseExact(temp, "M'/'d'/'yyyy",
-            CultureInfo.InvariantCulture,
-            DateTimeStyles.None, out CurrentSiteUpdatedDate);
+            //DateTime.TryParseExact(temp, "M'/'d'/'yyyy",
+            //CultureInfo.InvariantCulture,
+            //DateTimeStyles.None, out CurrentSiteUpdatedDate);
 
-            _SiteLastUpdatedFromPage = CurrentSiteUpdatedDate;
+            var result = DateTime.TryParse(temp, out CurrentSiteUpdatedDate);
+
+            
+            
+            if (result == true)
+            {
+                _SiteLastUpdatedFromPage = CurrentSiteUpdatedDate;
+            }
+            
+            
         }
 
         public void LoadContent()
