@@ -289,7 +289,6 @@ namespace WebScraping.Selenium.Pages
                     driver.Navigate().GoToUrl(Url);
                     IsPageLoaded();
                 }
-                //DownloadFDAWarningLettersCSVFile("01/01/2000");
                 DownloadFDAWarningLettersList();
                 ReadFDAWarningLetters(_config.AppDataDownloadsFolder + "FDAWarningLetters.xls");
             }
@@ -313,7 +312,6 @@ namespace WebScraping.Selenium.Pages
                 _FDAWarningSiteData.CreatedBy = "Patrick";
                 _FDAWarningSiteData.CreatedOn = DateTime.Now;
             }
-
         }
 
         private void DownloadFDAWarningLettersList()

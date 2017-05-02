@@ -303,6 +303,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch(Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "SAM_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _SAMSiteData.DataExtractionSucceeded = false;
                 _SAMSiteData.DataExtractionErrorMessage = e.ToString();
                 _SAMSiteData.ReferenceId = null;

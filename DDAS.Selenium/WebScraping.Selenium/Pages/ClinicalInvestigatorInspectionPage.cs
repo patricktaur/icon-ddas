@@ -283,6 +283,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "ClinicalInvestigatorInspectionPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _clinicalSiteData.DataExtractionSucceeded = false;
                 _clinicalSiteData.DataExtractionErrorMessage = e.Message;
                 _clinicalSiteData.ReferenceId = null;

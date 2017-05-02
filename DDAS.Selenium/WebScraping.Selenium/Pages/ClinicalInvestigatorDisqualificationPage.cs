@@ -31,7 +31,6 @@ namespace WebScraping.Selenium.Pages
             _DisqualificationSiteData.RecId = Guid.NewGuid();
             _DisqualificationSiteData.ReferenceId = 
                 _DisqualificationSiteData.RecId;
-            //SaveScreenShot("ClinicalInvestigatorDisqualificationPage.png");
         }
 
         public override string Url

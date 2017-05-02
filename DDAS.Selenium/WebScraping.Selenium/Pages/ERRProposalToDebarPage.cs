@@ -166,11 +166,6 @@ namespace WebScraping.Selenium.Pages
             _proposalToDebarSiteData.ReferenceId = SiteData.RecId;
         }
 
-        public override void SaveData()
-        {
-            _UOW.ERRProposalToDebarRepository.Add(_proposalToDebarSiteData);
-        }
-
         public override void LoadContent()
         {
             try
@@ -181,6 +176,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "ERRProposalToDebarPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _proposalToDebarSiteData.DataExtractionSucceeded = false;
                 _proposalToDebarSiteData.DataExtractionErrorMessage = e.Message;
                 _proposalToDebarSiteData.ReferenceId = null;
@@ -191,6 +192,11 @@ namespace WebScraping.Selenium.Pages
                 _proposalToDebarSiteData.CreatedBy = "Patrick";
                 _proposalToDebarSiteData.CreatedOn = DateTime.Now;
             }
+        }
+
+        public override void SaveData()
+        {
+            _UOW.ERRProposalToDebarRepository.Add(_proposalToDebarSiteData);
         }
     }
 }

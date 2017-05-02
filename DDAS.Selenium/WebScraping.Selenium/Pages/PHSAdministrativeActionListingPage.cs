@@ -210,6 +210,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "PHSAdministrativeActionListingPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _PHSAdministrativeSiteData.DataExtractionSucceeded = false;
                 _PHSAdministrativeSiteData.DataExtractionErrorMessage = e.Message;
                 _PHSAdministrativeSiteData.ReferenceId = null;

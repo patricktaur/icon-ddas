@@ -215,17 +215,17 @@ namespace WebScraping.Selenium.Pages
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
-<<<<<<< HEAD
                         var AnchorTags = 
                         driver.FindElements(
-                            By.XPath(
-                                "//*[@class='contentDiv'[2]]"));
-                        var temp = driver.FindElements(By.XPath("//table/tbody/tr[2]/td/a"));
+                            By.CssSelector(
+                                "div[class='contentDiv']"));
 
-                        var AnchorTag = AnchorTags[AnchorTags.Count - 1];
-=======
-                        var AnchorTag = driver.FindElement(By.Id("anch_80"));
->>>>>>> 0cecb01e5420b1f8696c2aa127968b15a6d2fdf7
+                        var temp = 
+                        AnchorTags[AnchorTags.Count - 1].FindElements(
+                            By.XPath(
+                                "//table/tbody/tr[3]/td[1]/a"));
+
+                        var AnchorTag = temp[temp.Count - 1];
                         return AnchorTag;
                     });
                 IWebElement targetElement = wait.Until(waitForElement);

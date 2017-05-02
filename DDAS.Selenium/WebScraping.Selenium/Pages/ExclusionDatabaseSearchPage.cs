@@ -202,6 +202,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "ExclusionDatabaseSearchPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _exclusionSearchSiteData.DataExtractionSucceeded = false;
                 _exclusionSearchSiteData.DataExtractionErrorMessage = e.ToString();
                 _exclusionSearchSiteData.ReferenceId = null;

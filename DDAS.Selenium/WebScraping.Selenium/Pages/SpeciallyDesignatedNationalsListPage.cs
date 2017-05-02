@@ -240,6 +240,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "SDNPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _SDNSiteData.DataExtractionSucceeded = false;
                 _SDNSiteData.DataExtractionErrorMessage = e.Message;
                 _SDNSiteData.ReferenceId = null;

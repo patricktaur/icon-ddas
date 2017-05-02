@@ -114,6 +114,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "CorporateIntegrityAgreementPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _CIASiteData.DataExtractionSucceeded = false;
                 _CIASiteData.DataExtractionErrorMessage = e.Message;
                 _CIASiteData.ReferenceId = null;

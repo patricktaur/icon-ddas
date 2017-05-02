@@ -28,7 +28,6 @@ namespace WebScraping.Selenium.Pages
             _CBERSiteData.RecId = Guid.NewGuid();
             _CBERSiteData.ReferenceId = _CBERSiteData.RecId;
             _CBERSiteData.Source = driver.Url;
-            //SaveScreenShot("CBERClinicalInvestigatorInspectionPage.png");
         }
 
         public override string Url {
@@ -128,6 +127,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "CBERClinicalInvestigator_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _CBERSiteData.DataExtractionSucceeded = false;
                 _CBERSiteData.DataExtractionErrorMessage = e.Message;
                 _CBERSiteData.ReferenceId = null;

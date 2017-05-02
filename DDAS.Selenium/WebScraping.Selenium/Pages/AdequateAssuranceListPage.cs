@@ -30,10 +30,7 @@ namespace WebScraping.Selenium.Pages
             _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
             _adequateAssuranceListSiteData.ReferenceId =
                 _adequateAssuranceListSiteData.RecId;
-            //Patrick: 26April, 2017, Error during nightly extraction at this point. This code does not appear to have any purpose. Therefore commented. 
-            //SavePageImage();
             _adequateAssuranceListSiteData.Source = driver.Url;
-            //SaveScreenShot("AdequateAssuranceListPage.png");
         }
 
         public override string Url
@@ -148,6 +145,12 @@ namespace WebScraping.Selenium.Pages
             }
             catch (Exception e)
             {
+                var ErrorCaptureFilePath = _config.ErrorScreenCaptureFolder +
+                    "AdequateAssuranceListPage_" +
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
+                SaveScreenShot(ErrorCaptureFilePath);
+
                 _adequateAssuranceListSiteData.DataExtractionSucceeded = false;
                 _adequateAssuranceListSiteData.DataExtractionErrorMessage = e.Message;
                 _adequateAssuranceListSiteData.ReferenceId = null;
