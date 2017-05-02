@@ -197,15 +197,12 @@ namespace WebScraping.Selenium.Pages
         {
             string fileName = _config.AppDataDownloadsFolder + 
                 "SAM_Exclusions_Public_Extract_";
-            //SAM_Exclusions_Public_Extract_17096
 
             string CSVFilePath = fileName;
 
             string UnZipPath = _config.AppDataDownloadsFolder;
 
             WebClient myWebClient = new WebClient();
-
-            //https://www.sam.gov/portal/SAM/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_17110.ZIP
 
             string myStringWebResource = "https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_";
             string Year = DateTime.Now.ToString("yy");
