@@ -7,22 +7,17 @@ import {LoginHistoryComponent} from './all-loginhistory.component';
 import {LoginHistoryRouting} from './all-loginhistory.Routing';
 
 import {LoginHistoryService} from './all-loginhistory.service';
-import {SharedModule} from '../shared/shared.module'
+import {SharedModule} from '../../shared/shared.module'
 
 import {ErrorImagesComponent} from './error-images.component';
 import {ExtractionHistoryComponent} from './data-extraction-history.component';
 import {DataExtractionComponent} from './data-extraction.component';
 import {ManageSiteSourcesComponent} from './manage-site-sources.component';
 import {EditSiteSourceComponent} from './edit-site-source.component';
-import {AddCountryComponent} from './country-site.component';
+import {AddCountryComponent} from './add-country.component';
 import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.component';
 import {DefaultSitesComponent} from './default-site-source.component';
-import {DefaultSiteSourceEditComponent} from './default-site-source-edit.component';
-import { CountrySiteEditComponent } from './country-site-edit.component';
-import { SponsorSpecificSiteEditComponent} from './sponsor-protocol-edit.component';
-import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
-//C:\Development\p926-ddas-admin\DDAS.WebSite\app\shared\components\site-source-toadd.component.ts
-//import { SiteSourceToAddComponent } from '../shared/components/site-source-toadd.component';
+import { Ng2Bs3ModalModule } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
 @NgModule({ 
   imports: [
@@ -41,11 +36,7 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
       EditSiteSourceComponent,
       AddCountryComponent,
       ManageSponsorProtocolComponent,
-      DefaultSitesComponent,
-      DefaultSiteSourceEditComponent,
-      CountrySiteEditComponent,
-      SponsorSpecificSiteEditComponent
-      //SiteSourceToAddComponent
+      DefaultSitesComponent
   ],
  
   providers: [      

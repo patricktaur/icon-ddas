@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
-import { ConfigService } from '../shared/utils/config.service';
+import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
+import { ConfigService } from '../../shared/utils/config.service';
 import {SiteSourceViewModel} from './appAdmin.classes';
 
 
@@ -77,13 +77,16 @@ export class ManageSiteSourcesComponent implements OnInit {
         this.router.navigate(['edit-site-source', ""], { relativeTo: this.route.parent});
     }
 
-  setSelectedRecordDetails(rec: SiteSourceViewModel){
+  setSelectedRecordDetails(rec: SiteSourceViewModel)
+   {
        this.selectedRecId = rec.RecId;
-       this.selectedRecordName = rec.SiteName;   
+       this.selectedRecordName = rec.SiteName;
+       
    }
    
    Delete(){ 
       //CompFormId to be set by the delete button
+
       this.service.deleteSiteSource(this.selectedRecId)
             .subscribe((item: any) => {
               this.LoadSiteSources();

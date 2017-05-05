@@ -87,38 +87,20 @@
 											<div class="col-lg-6">
 												<div class="form-group">
 													<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
-
 													<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber">
 												</div>
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-lg-5">
+											<div class="col-lg-6">
 												<div class="form-group">
 													<label for="Country">Institute:</label>
-													<p>
-														<input type="text" class="form-control" name="Institute" [(ngModel)]="CompForm.Institute">
-
-													</p>
-
+													<input type="text" class="form-control" name="Institute" [(ngModel)]="CompForm.Institute">
 												</div>
 												<div class="form-group">
 													<label for="Country">Country:</label>
 													<input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country">
 												</div>
-											</div>
-											<div class="col-lg-1">
-												<button type="button" 
-												class="btn btn-sm btn-primary" 
-												data-toggle="tooltip" 
-												data-placement="top" 
-												title="Edit Institute related findings" 
-												(click)="gotoInstituteSummaryFindings()"
-												[disabled]="CompForm.InstituteSearchSiteCount == 0"
-												>
-												<span class="glyphicon glyphicon-edit" ></span>
-												</button>
-											
 											</div>
 											<div class="col-lg-6">
 												<div class="form-group">
@@ -257,18 +239,18 @@
 																</td>
 
 																<td width="15%">
-
-																	<div class="btn-group ">
-																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
-																			title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
-																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
-																			data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
-																		<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-																			data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-																		<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
-																			data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
-																	</div>
-
+																	
+																		<div class="btn-group ">
+																			<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
+																				title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
+																			<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
+																				data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
+																			<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+																				data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
+																			<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
+																				data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
+																		</div>
+																	
 																</td>
 
 															</tr>
@@ -306,11 +288,10 @@
 
 																<th class="col-md-1">#</th>
 																<th class="col-md-5">Source Name</th>
-																<th class="col-md-2">Extraction Mode</th>
 																<th class="col-md-2">Source Date</th>
+																<th class="col-md-2">Extraction Mode</th>
 
-																<th class="col-md-1">Applies To</th>
-																<th class="col-md-1">Issues Identified</th>
+																<th class="col-md-2">Issues Identified</th>
 
 															</tr>
 														</thead>
@@ -318,34 +299,24 @@
 															<tr class="active" *ngFor="let item of MandatorySites; let idx = index;">
 																<td>{{item.DisplayPosition}}</td>
 																<td>
-																	<!--<div class="text-left">
+																	<div class="text-left">
 
 																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
                                                 							 {{item.SiteName}}
 																		</a>
-																	</div>-->
-																	<div class="text-left" *ngIf="isUrl(item.SiteUrl)">
-																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
-                                                							 {{item.SiteName}}
-                                            								</a>
 																	</div>
-																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
-																		{{item.SiteName}}
-																	</div>
+																	
 
 
 																</td>
-																<td>
-																	{{item.ExtractionMode}}
-																</td>
+
 																<td>
 																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
 																	<div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
 
 																</td>
-
 																<td>
-																	{{item.SearchAppliesToText}}
+																	{{item.ExtractionMode}}
 																</td>
 																<td>
 																	{{item.IssuesIdentified | boolToYesNo}}
@@ -372,16 +343,11 @@
 													<table class="table table-bordered table-hover">
 														<thead>
 															<tr>
-
-
-																<th class="col-md-1">#</th>
-																<th class="col-md-4">Source Name</th>
-																<th class="col-md-2">Extraction Mode</th>
-																<th class="col-md-2">Source Date</th>
-
-																<th class="col-md-1">Applies To</th>
-																<th class="col-md-1">Issues Identified</th>
-																<th class="col-md-1">Remove</th>
+																<th class="">#</th>
+																<th class="">Source Name</th>
+																<th class="">Source Date</th>
+																<th class="">Issues Identified</th>
+																<th class="">Remove</th>
 															</tr>
 														</thead>
 														<tbody>
@@ -397,20 +363,12 @@
 																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
 																		{{item.SiteName}}
 																	</div>
-
-																</td>
-																<td>
-																	{{item.ExtractionMode}}
+																	
 																</td>
 																<td>
 
-																	<!--<div date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>-->
-																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
-																	<div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
+																	<div date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
 
-																</td>
-																<td>
-																	{{item.SearchAppliesToText}}
 																</td>
 																<td>
 																	{{item.IssuesIdentified | boolToYesNo}}
@@ -420,7 +378,7 @@
 																</td>
 															</tr>
 															<tr>
-																<td colspan="7">
+																<td colspan="5">
 																	<div class="text-left"><button type="button" class="btn btn-primary" (click)="AddSiteModal.open()">Add</button> </div>
 																</td>
 															</tr>
@@ -445,7 +403,7 @@
 																<th class="col-md-1">Source #</th>
 																<th class="col-md-2">Date of Inspection / Action</th>
 																<th class="col-md-5">Description of Findings</th>
-																<!--<th class="col-md-2">Action</th>-->
+																<th class="col-md-2">Action</th>
 															</tr>
 														</thead>
 														<tbody>
@@ -453,17 +411,16 @@
 																<td align="left">
 																	<div *ngIf="item.InvestigatorName">
 																		{{item.InvestigatorName}}
-																	</div>
+																	</div>	
 																	<div *ngIf="!item.InvestigatorName">
-																		{{CompForm.Institute}}
-																	</div>
-
+																		{{CompForm.Institute}} 
+																	</div>	
+																	
 
 
 																</td>
 																<td>
-																   	<!--{{item.SourceNumber}}-->
-																	   {{item.SiteDisplayPosition}} 
+																	{{item.SourceNumber}}
 																</td>
 
 																<td>
@@ -476,17 +433,15 @@
 																	<!--{{item.Observation}}-->
 																	<textarea [(ngModel)]="item.Observation" rows="3" cols="60" readonly style="border: none"></textarea>
 																</td>
-																<!--<td>-->
-																	
-																	<!--<div *ngIf="item.SiteSourceId == null">
+																<td>
+																	<div *ngIf="item.SourceNumber == null">
 																		<div class="btn-group">
 																			<button type="button" class="btn btn-sm btn-primary" (click)="FindingsEditModal1.open()" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit" ></span></button>
 																			<button type="button" class="btn btn-sm btn-primary" (click)="DeleteFinding(item); " data-toggle="tooltip" data-placement="top"
 																				title="Remove Finding"><span class="glyphicon glyphicon-remove" ></span></button>
 																		</div>
-																	</div>-->
-																	
-																	<!--<modal #FindingsEditModal1>
+																	</div>
+																	<modal #FindingsEditModal1>
 																		<modal-header>
 																			<h4 class="modal-title">Edit Finding</h4>
 																		</modal-header>
@@ -509,15 +464,15 @@
 																		<modal-footer>
 																			<button type="button" class="btn btn-primary" (click)="FindingsEditModal1.close()">Close</button>
 																		</modal-footer>
-																	</modal>-->
-																<!--</td>-->
+																	</modal>
+																</td>
 															</tr>
-															<!--<tr>
+															<tr>
 																<td colspan="5" align="left">
 																	<button type="button" class="btn btn-primary" (click)="AddFinding()">Add a Finding (Observation) for Institute: {{CompForm.Institute}} </button>
 																</td>
 
-															</tr>-->
+															</tr>
 
 
 														</tbody>
@@ -632,7 +587,7 @@
 
 							{{item.SiteName}}
 						</div>
-
+						
 					</td>
 
 				</tr>
@@ -667,7 +622,7 @@
 		Site: {{siteToRemove.SiteName}} will be removed.
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-primary" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-primary" (click)="RemoveSite1(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
 		<button type="button" class="btn btn-primary" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

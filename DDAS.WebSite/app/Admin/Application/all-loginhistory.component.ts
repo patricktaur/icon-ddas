@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 
 @Component({
     moduleId: module.id,
@@ -12,8 +12,9 @@ export class LoginHistoryComponent implements OnInit {
     public loginHistoryDetails: any[];
 
     public pageNumber: number;
-
-      public myDatePickerOptions = {
+    public formLoading: boolean;
+    
+    public myDatePickerOptions = {
         
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
@@ -55,6 +56,7 @@ export class LoginHistoryComponent implements OnInit {
     LoadLoginHistory(){
          let from: Date;
         let to: Date;
+        this.formLoading = true;
         if (this.FromDate != null){
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
@@ -69,6 +71,10 @@ export class LoginHistoryComponent implements OnInit {
         .subscribe((item: any[]) => {
             console.log("item :" + item);
             this.loginHistoryDetails = item;
+            this.formLoading = false;
+        },
+        error => {
+            this.formLoading = false;
         });
     }
 }
