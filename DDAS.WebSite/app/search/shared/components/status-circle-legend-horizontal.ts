@@ -88,6 +88,7 @@ export class StatusCircleLegHorComponent implements OnInit {
     public NoMatchFoundReviewPending: number;
     public NotScanned: number;
     public PartialMatchFoundReviewPending: number;
+	public SingleMatchFoundReviewPending: number;
     public ReviewCompletedIssuesIdentified: number;
 
     ngOnInit() {
@@ -96,7 +97,7 @@ export class StatusCircleLegHorComponent implements OnInit {
         //only one is used:
         this.FullMatchFoundReviewPending = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
         this.PartialMatchFoundReviewPending = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
-
+		this.SingleMatchFoundReviewPending = ComplianceFormStatusEnum.SingleMatchFoundReviewPending;
         this.ReviewCompletedIssuesNotIdentified = ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified;
 
         this.ReviewCompletedIssuesIdentified = ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified;

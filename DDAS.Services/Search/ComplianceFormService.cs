@@ -947,7 +947,6 @@ namespace DDAS.Services.Search
                         Count += 1;
                     }
                 }
-                
             }
         }
 
@@ -977,6 +976,7 @@ namespace DDAS.Services.Search
             //int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
+            int SingleMatchFoundInvestigatorCount = 0;
 
             int IssuesFoundInvestigatorCount = 0;
             int ReviewCompletedInvestigatorCount = 0;
@@ -987,6 +987,7 @@ namespace DDAS.Services.Search
             //Pradeep 20Dec2016
             form.PartialMatchesFoundInvestigatorCount = 0;
             form.FullMatchesFoundInvestigatorCount = 0;
+            form.SingleMatchFoundInvestigatorCount = 0;
             form.IssuesFoundInvestigatorCount = 0;
             form.ReviewCompletedInvestigatorCount = 0;
             form.ExtractedInvestigatorCount = 0;
@@ -1002,6 +1003,7 @@ namespace DDAS.Services.Search
 
                 int PartialMatchSiteCount = 0;
                 int FullMatchSiteCount = 0;
+                int SingleMatchSiteCount = 0;
                 int IssuesFoundSiteCount = 0;
                 int ReviewCompletedSiteCount = 0;
                 int ExtractionPendingSiteCount = 0;
@@ -1009,6 +1011,7 @@ namespace DDAS.Services.Search
                 //Pradeep 20Dec2016
                 Investigator.Sites_PartialMatchCount = 0;
                 Investigator.Sites_FullMatchCount = 0;
+                Investigator.Sites_SingleMatchCount = 0;
                 Investigator.IssuesFoundSiteCount = 0;
                 Investigator.ReviewCompletedSiteCount = 0;
 
@@ -1073,6 +1076,10 @@ namespace DDAS.Services.Search
                     {
                         FullMatchSiteCount += 1;
                     }
+                    if(searchStatus.SingleMatchCount > 0)
+                    {
+                        SingleMatchSiteCount += 1;
+                    }
                     if (searchStatus.IssuesFound > 0)
                     {
                         IssuesFoundSiteCount += 1;
@@ -1085,6 +1092,7 @@ namespace DDAS.Services.Search
                 }
                 Investigator.Sites_PartialMatchCount = PartialMatchSiteCount;
                 Investigator.Sites_FullMatchCount = FullMatchSiteCount;
+                Investigator.Sites_SingleMatchCount = SingleMatchSiteCount;
                 Investigator.IssuesFoundSiteCount = IssuesFoundSiteCount;
                 Investigator.ReviewCompletedSiteCount = ReviewCompletedSiteCount;
                 Investigator.ExtractionPendingSiteCount = ExtractionPendingSiteCount;
@@ -1093,18 +1101,22 @@ namespace DDAS.Services.Search
                 {
                     PartialMatchesFoundInvestigatorCount += 1;
                 }
-               
 
                 if (Investigator.Sites_FullMatchCount > 0)
                 {
                     FullMatchesFoundInvestigatorCount += 1;
                 }
-               
+
+                if(Investigator.Sites_SingleMatchCount > 0)
+                {
+                    SingleMatchFoundInvestigatorCount += 1;
+                }
 
                 if (Investigator.IssuesFoundSiteCount > 0)
                 {
                     IssuesFoundInvestigatorCount += 1;
                 }
+
                 if (Investigator.ReviewCompletedSiteCount == sitesSearchedCount)  //SiteCount)
                 {
                      ReviewCompletedInvestigatorCount += 1;
@@ -1156,9 +1168,9 @@ namespace DDAS.Services.Search
                 }
             }
             
-
             form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
             form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
+            form.SingleMatchFoundInvestigatorCount = SingleMatchFoundInvestigatorCount;
             form.IssuesFoundInvestigatorCount = IssuesFoundInvestigatorCount;
             form.ReviewCompletedInvestigatorCount = ReviewCompletedInvestigatorCount;
             form.ExtractedInvestigatorCount = ExtractedInvestigatorCount;
@@ -1188,7 +1200,6 @@ namespace DDAS.Services.Search
           
                 var InvestigatorName = inv.SearchName;
 
-
                 var ComponentsInInvestigatorName =
                     InvestigatorName.Split(' ').Count();
 
@@ -1214,7 +1225,6 @@ namespace DDAS.Services.Search
                     if (inv.SitesSearched != null)
                         searchStatus =
                             inv.SitesSearched.Find(x =>  x.DisplayPosition == siteSource.DisplayPosition);
-
 
                     bool searchRequired = false;
 
@@ -1261,16 +1271,13 @@ namespace DDAS.Services.Search
                             inv.Sites_FullMatchCount +=
                                 searchStatus.FullMatchCount;
 
-                            var MatchCount = GetSingleComponentMatches(
+                            var SingleMatchCount = GetSingleComponentMatches(
                                 siteSource.SiteEnum,
                                 siteSource.SiteDataId,
                                 InvestigatorName.Split(' '));
 
-                            if(MatchCount >= 0)
-                            {
-                                searchStatus.SingleComponentMatchedValues = 
-                                    MatchCount.ToString();
-                            }
+                            if(SingleMatchCount >= 0)
+                                searchStatus.SingleMatchCount = SingleMatchCount;
 
                             //inv.Id = InvestigatorId;
 
@@ -1288,14 +1295,8 @@ namespace DDAS.Services.Search
                                 //required??
                                 finding.SiteId = siteSource.SiteId;
                                 finding.SiteEnum = siteSource.SiteEnum;
-
                                 finding.IsFullMatch = rec.IsFullMatch;
                                 finding.MatchCount = rec.MatchCount;
-                                
-
-                                
-                                
-
                                 finding.RecordDetails = rec.RecordDetails;
                                 finding.RowNumberInSource = rec.RowNumber;
                                 finding.IsMatchedRecord = true;
@@ -1319,7 +1320,7 @@ namespace DDAS.Services.Search
 
                             searchStatus.ExtractedOn = siteSource.CreatedOn;
                             //searchStatus.SiteDataId = siteSource.SiteDataId.ToString();
-                            if (MatchedRecords.Count == 0)
+                            if (MatchedRecords.Count == 0 && SingleMatchCount == 0)
                             {
                                 searchStatus.ReviewCompleted = true;
                             }

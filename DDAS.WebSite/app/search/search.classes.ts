@@ -107,7 +107,6 @@ export class SitesIncludedInSearch{
     MatchedRecords:MatchedRecordsPerSite[] = [] ;
    }
 
-
 export class MatchedRecordsPerSite{
     Observation: string = "";
     IssueNumber :number = 0;
@@ -117,8 +116,6 @@ export class MatchedRecordsPerSite{
     Selected:boolean;  //this prop is not declared on server side
     HiddenStatus: string = "";
 }
-
-
  
 export class SearchList{
     NameToSearch: string = "";
@@ -196,6 +193,7 @@ export class SearchList{
 
     FullMatchesFoundInvestigatorCount: number;
     PartialMatchesFoundInvestigatorCount : number;
+    SingleMatchFoundInvestigatorCount: number;
     IssuesFoundInvestigatorCount: number;
     ReviewCompletedInvestigatorCount : number;
 
@@ -233,6 +231,7 @@ export class SearchList{
 
       Sites_FullMatchCount: number = 0;
       Sites_PartialMatchCount: number = 0;
+      Sites_SingleMatchCount: number = 0;
       IssuesFoundSiteCount: number =0;
       ReviewCompletedSiteCount: number = 0;
 
@@ -253,15 +252,9 @@ export class SearchList{
       CanEdit:boolean = true;  //set to false when the name is searched.
       Saved: boolean = false;  //temp, to be replaced by form validation
       Help: string = "";
-
-      
   }
 
-   
   export class SiteSearchStatus{
-        
-        
-        
         SiteSourceId: number;
         SiteId: string;
         siteEnum: number = 0;
@@ -275,7 +268,7 @@ export class SearchList{
         ExtractionErrorMessage : string;
         FullMatchCount : number = 0;
         PartialMatchCount : number = 0;
-        SingleComponentMatchedValues : string;
+        SingleMatchCount : number = 0;
         IssuesFound : number = 0;
         ReviewCompleted : boolean = false;
         SiteSourceUpdatedOn: Date;
@@ -384,7 +377,8 @@ export class SearchList{
         NoMatchFoundReviewPending,
          ManualSearchSiteReviewPending,
         IssuesIdentifiedReviewPending,
-        HasExtractionErrors
+        HasExtractionErrors,
+        SingleMatchFoundReviewPending
     } 
 
     export class CompFormFilter

@@ -1058,6 +1058,7 @@ namespace DDAS.Services.AppAdminService
                 CountryViewModel.RecId = country.RecId;
                 CountryViewModel.SearchAppliesToText =
                     country.SearchAppliesTo.ToString();
+                CountryViewModel.IsMandatory = country.IsMandatory;
 
                 var site = _UOW.SiteSourceRepository.FindById(country.SiteId);
 
@@ -1143,7 +1144,8 @@ namespace DDAS.Services.AppAdminService
                     sponsor.SearchAppliesTo;
                 sponsorViewModel.SearchAppliesToText =
                     sponsor.SearchAppliesTo.ToString();
-
+                sponsorViewModel.IsMandatory = sponsor.IsMandatory;
+                
                 var site = _UOW.SiteSourceRepository.FindById(sponsor.SiteId);
 
                 if (site == null)

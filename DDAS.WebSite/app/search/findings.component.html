@@ -110,14 +110,14 @@
 									</td>
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
-											<p *ngIf="SiteSearchStatus.SingleComponentMatchedValues != '0' ">
+											<p *ngIf="SiteSearchStatus.SingleMatchCount != '0' ">
 												
 												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open()">
-												&nbsp;{{SiteSearchStatus.SingleComponentMatchedValues}}&nbsp;</a>
+												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;</a>
 											</p>
 											
-											<p *ngIf="SiteSearchStatus.SingleComponentMatchedValues == '0' ">
-												{{SiteSearchStatus.SingleComponentMatchedValues}}
+											<p *ngIf="SiteSearchStatus.SingleMatchCount == '0' ">
+												{{SiteSearchStatus.SingleMatchCount}}
 											</p>
 
 										</div>

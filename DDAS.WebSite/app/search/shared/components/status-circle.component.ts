@@ -58,12 +58,13 @@ export class StatusCircleComponent implements OnInit {
         this.colorArray.push("#BDBDBD"); //0 - grey
         this.colorArray.push("#BF360C"); //1 - "red";
         this.colorArray.push("#388e3c"); //2 "green";
-        this.colorArray.push("#F44336"); //3 
-        this.colorArray.push("#F44336"); //4
+        this.colorArray.push("#F44336"); //3 full match
+        this.colorArray.push("#F44336"); //4 partial match
         this.colorArray.push("#cddc39"); //5 "lawngreen";
         this.colorArray.push("#BDBDBD"); //6 
         this.colorArray.push("#F44336"); // 7 
         this.colorArray.push("#BDBDBD"); // 8
+        this.colorArray.push("#F44336"); // 9 single match
         this.loading = false;
     }
   
