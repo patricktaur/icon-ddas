@@ -12,8 +12,17 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
     internal class SponsorProtocolRepository : Repository<SponsorProtocol>,
         ISponsorProtocolRepository
     {
+        private IMongoDatabase _db;
         public SponsorProtocolRepository(IMongoDatabase db) : base(db)
         {
+            _db = db;
+        }
+
+        public bool UpdateSponsorProtocol(SponsorProtocol sponsorProtocol)
+        {
+            _db.GetCollection<SponsorProtocol>(typeof(SponsorProtocol).Name).
+                ReplaceOne(x => x.RecId == sponsorProtocol.RecId, sponsorProtocol);
+            return true;
         }
     }
 }

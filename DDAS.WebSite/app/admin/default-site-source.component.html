@@ -54,16 +54,19 @@
 										{{item.SearchAppliesToText}}
 									</td>
 									<td>
-										<button type="button" class="btn btn-sm btn-primary" (click)="Edit(item.RecId)" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit" ></span></button>
-										<button type="button" class="btn btn-sm btn-primary" (click)="removeDefaultSite(item.RecId)" title="delete"> <span class="glyphicon glyphicon-remove"></span> </button>
-										<modal #EditModal>
+										<button type="button" class="btn btn-sm btn-primary" (click)="Edit(item.RecId)" data-toggle="tooltip" data-placement="top">
+											<span class="glyphicon glyphicon-edit" ></span>
+										</button>
+										<button type="button" *ngIf="extractionModeIsManual(item.ExtractionMode)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="delete"> 
+											<span class="glyphicon glyphicon-remove"></span> 
+										</button>
+										<!--<modal #EditModal>
 											<modal-header>
 												<h4 class="modal-title">Edit </h4>
 											</modal-header>
 											<modal-body>
 												<label for="EditOrderNo">Name:{{item.SiteName}}</label>
 												<label for="EditOrderNo">URL:{{item.SiteUrl}}</label><br>
-
 
 												<label for="EditOrderNo">Order No:</label>
 												<input type="text" name="EditOrderNo" class="form-control" [(ngModel)]="item.OrderNo">
@@ -76,8 +79,7 @@
 											<modal-footer>
 												<button type="button" class="btn btn-primary" (click)="EditModal.close()">Close</button>
 											</modal-footer>
-										</modal>
-
+										</modal>-->
 									</td>
 								</tr>
 								<tr>
@@ -97,3 +99,16 @@
 		<!--</div>-->
 	</div>
 </div>
+
+<modal #DeleteConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Delete confirm</h4>
+	</modal-header>
+	<modal-body>
+		Site Source <b> {{selectedRecordName}} </b> will be deleted.
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="Delete(); DeleteConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-default" (click)=" DeleteConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>

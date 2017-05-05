@@ -77,16 +77,13 @@ export class ManageSiteSourcesComponent implements OnInit {
         this.router.navigate(['edit-site-source', ""], { relativeTo: this.route.parent});
     }
 
-  setSelectedRecordDetails(rec: SiteSourceViewModel)
-   {
+  setSelectedRecordDetails(rec: SiteSourceViewModel){
        this.selectedRecId = rec.RecId;
-       this.selectedRecordName = rec.SiteName;
-       
+       this.selectedRecordName = rec.SiteName;   
    }
    
    Delete(){ 
       //CompFormId to be set by the delete button
-
       this.service.deleteSiteSource(this.selectedRecId)
             .subscribe((item: any) => {
               this.LoadSiteSources();

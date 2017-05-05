@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
-import {LoginHistoryService} from './all-loginhistory.service';
+import { LoginHistoryService } from './all-loginhistory.service';
 import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
 import { ConfigService } from '../shared/utils/config.service';
-import {SiteSourceViewModel} from './appAdmin.classes';
-import {DefaultSite} from './appAdmin.classes';
+import { SiteSourceViewModel } from './appAdmin.classes';
+import { SponsorProtocol } from './appAdmin.classes';
 
 @Component({
     moduleId: module.id,
     //selector: 'User-input',
-    templateUrl: 'default-site-source-edit.component.html',
+    templateUrl: 'sponsor-protocol-edit.component.html',
 })
 
-export class DefaultSiteSourceEditComponent implements OnInit {
-    public DefaultSite: DefaultSite = new DefaultSite;
+export class SponsorSpecificSiteEditComponent implements OnInit {
+    public SponsorSpecificSite: SponsorProtocol = new SponsorProtocol;
     public pageNumber: number;
     public formLoading: boolean;
     
@@ -40,9 +40,8 @@ export class DefaultSiteSourceEditComponent implements OnInit {
                 this.isNew = true;
                 this.isNewText = "New";
                 //this.isNewText.toLowerCase
-            }
+            }            
             this.loadSiteSources();
-            
         });
     }
 
@@ -58,48 +57,45 @@ export class DefaultSiteSourceEditComponent implements OnInit {
     }
     
     LoadRecord(){
-
         if (this.RecId == ""){
-            let newSiteSource = new DefaultSite();
+            let newSiteSource = new SponsorProtocol();
             //newSiteSource.ExtractionMode = "Manual";
-            this.DefaultSite = newSiteSource;
+            this.SponsorSpecificSite = newSiteSource;
         }
-        else{
-            this.service.getDefaultSite(this.RecId)
+        else{        
+        this.service.getSponsorProtocol(this.RecId)
         .subscribe((item: any) => {
-            this.DefaultSite = item;
-        });
+            this.SponsorSpecificSite = item;
+            });        
         }
-        
     }
 
     test: any;
    onSiteSourceChange(value:any){
       var site = this.SiteSources.find(x => x.RecId == value);
-      this.DefaultSite.Name = site.SiteName;
+      this.SponsorSpecificSite.Name = site.SiteName;
    }
    
    Save() {
-        this.service.saveDefaultSite(this.DefaultSite)
+        this.service.saveSponsorProtocol(this.SponsorSpecificSite)
             .subscribe((item: any) => {
-                this.router.navigate(["/default-sites"]);
+                this.router.navigate(["/manage-sponsor-protocol"]);
             },
             error => {
 
             });
     }
 
-    get AppliesToItems(){       
+    get AppliesToItems(){
         var items: { id: number, name: string }[] = [
         { "id": 0, "name": "PIs and SIs" },
         { "id": 1, "name": "PIs" },
         { "id": 2, "name": "Institute" }];
         return items;
-
     }
     
     CancelSave() {
-        this.router.navigate(["/default-sites"]);
+        this.router.navigate(["/manage-sponsor-protocol"]);
     }
 
     get diagnostic() { return JSON.stringify(this.test); }

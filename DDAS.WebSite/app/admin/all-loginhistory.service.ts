@@ -161,7 +161,16 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    addCountry(countryList: Country){
+    getCountry(RecId: string){
+        return this.http.get(this._baseUrl + 'admin/GetCountry?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
+    saveCountry(countryList: Country){
         let body = JSON.stringify(countryList);
         return this.http.post(this._baseUrl + 'admin/AddCountry/', body, this._options)
                    .map((res: Response) => {
@@ -179,7 +188,7 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
     
-    addSponsorProtocol(sponsorProtocol : SponsorProtocol){
+    saveSponsorProtocol(sponsorProtocol : SponsorProtocol){
         let body = JSON.stringify(sponsorProtocol);
         return this.http.post(this._baseUrl + 'admin/AddSponsorProtocol/', body, this._options)
                    .map((res: Response) => {
@@ -188,13 +197,22 @@ export class LoginHistoryService {
             .catch(this.handleError);
     }
 
-    getSponsorProtocol(){
+    getSponsorProtocols(){
         return this.http.get(this._baseUrl + 'admin/GetSponsorProtocols',
         this._options)
         .map((res: Response) => {
             return res.json();
         })
         .catch(this.handleError);        
+    }
+
+    getSponsorProtocol(RecId: string){
+        return this.http.get(this._baseUrl + 'admin/GetSponsorProtocol?RecId=' + RecId,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     removeSponsorProtocol(RecId: string){

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
-import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import { LoginHistoryService } from './all-loginhistory.service';
+import { IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
 import { ConfigService } from '../shared/utils/config.service';
 
 @Component({
@@ -14,38 +14,47 @@ export class ErrorImagesComponent implements OnInit {
     public ApiHost: string;
     public pageNumber: number;
     public formLoading: boolean;
+    private selectedRecId: string;
+    public selectedRecordName: string;
+
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService
     ) { }
 
-    ngOnInit(){
+    ngOnInit() {
         this.service.getErrorImageFolderPath()
-        .subscribe((item : any[]) => {
-        this.ApiHost = this.configService.getApiHost() + item;    
-        });
+            .subscribe((item: any[]) => {
+                this.ApiHost = this.configService.getApiHost() + item;
+            });
         this.LoadErrorImages();
     }
 
-    LoadErrorImages(){
+    LoadErrorImages() {
         this.service.getAllErrorImages()
-        .subscribe((item : any[]) => {
-            this.ErrorImages = item;
-        });
+            .subscribe((item: any[]) => {
+                this.ErrorImages = item;
+            });
     }
 
-    DeleteErrorImage(FileName: string){
-        this.service.deleteErrorImage(FileName)
-        .subscribe((item : any[]) => {
-            this.LoadErrorImages();
-        });        
+    setSelectedRecordDetails(rec: any) {
+        //    this.selectedRecId = rec.RecId;
+        this.selectedRecordName = "";
+        this.selectedRecordName = rec.FileName;
     }
 
-    deleteAllErrorImages(){
+    Delete() {
+        this.service.deleteErrorImage(this.selectedRecordName)
+            .subscribe((item: any[]) => {
+                this.LoadErrorImages();
+            });
+    }
+
+    deleteAllErrorImages() {
         this.service.deleteAllErrorImages()
-        .subscribe((item : any[]) => {
-        //this.ErrorImages = item;
-        this.LoadErrorImages();
-        });
+            .subscribe((item: any[]) => {
+                //this.ErrorImages = item;
+                this.LoadErrorImages();
+            });
     }
 }

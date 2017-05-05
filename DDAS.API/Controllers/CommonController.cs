@@ -14,7 +14,6 @@ namespace DDAS.API.Controllers
     public class CommonController : ApiController
     {
         private IAppAdminService _AppAdminService;
-        private string ErrorScreenCaptureFolder;
         private string _RootPath;
         public CommonController(IAppAdminService AppAdmin)
         {

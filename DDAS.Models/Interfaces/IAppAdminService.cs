@@ -27,12 +27,14 @@ namespace DDAS.Models.Interfaces
         void DeleteSiteSource(Guid? RecId);
 
         List<CountryViewModel> GetCountries();
+        Country GetCountry(Guid? RecId);
         bool AddCountry(Country country);
         void DeleteCountry(Guid? RecId);
 
         bool AddSponsor(SponsorProtocol sponsor);
         void DeleteSponsor(Guid? RecId);
         List<SponsorProtocolViewModel> GetSponsorProtocols();
+        SponsorProtocol GetSponsorProtocol(Guid? RecId);
 
         //bool AddDefaultSite(DefaultSite site);
         List<DefaultSitesViewModel> GetDefaultSites();

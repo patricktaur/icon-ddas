@@ -24,13 +24,13 @@ namespace DDAS.Models.Entities.Domain
         public string SiteName { get; set; }
         //public bool IsOptional { get; set; }
         public string ExtractionMode { get; set; }
-        public bool Mandatory { get; set; }
+        //public bool Mandatory { get; set; }
         public string SiteShortName { get; set; }
         //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
-        public bool ExcludeSI { get; set; }
-        public bool ExcludePI { get; set; }
+        //public bool ExcludeSI { get; set; }
+        //public bool ExcludePI { get; set; }
         //public string SearchTimeTakenInMs { get; set; }
         //public bool HasErrors { get; set; } = false;
         //public string ErrorDescription { get; set; }
@@ -1089,22 +1089,20 @@ namespace DDAS.Models.Entities.Domain
     #region BaseSites
     public class ComplianceFormBaseSite
     {
-
         public string Name { get; set; }
         public Guid? SiteId { get; set; }
-        public int OrderNo { get; set; }
         public bool IsMandatory { get; set; }
-        public string SiteName { get; set; }
+        //public string SiteName { get; set; }
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
     }
-        #endregion
+    #endregion
 
-        #region DefaultSites
+    #region DefaultSites
         public class DefaultSite: ComplianceFormBaseSite
     {
         public Guid? RecId { get; set; }
         //public Guid? SiteId { get; set; }
-        //public int OrderNo { get; set; }
+        public int OrderNo { get; set; }
         //public bool IsMandatory { get; set; }
         //public bool ExcludeSI { get; set; }
 
@@ -1114,10 +1112,7 @@ namespace DDAS.Models.Entities.Domain
         //public SiteEnum SiteEnum { get; set; }
         //public string SiteUrl { get; set; }
 
-       
-       //public SearchAppliesToEnum SearchAppliesTo { get; set; }
-
-
+        //public SearchAppliesToEnum SearchAppliesTo { get; set; }
     }
     #endregion
 

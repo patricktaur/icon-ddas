@@ -11,7 +11,9 @@ import {EditSiteSourceComponent} from './edit-site-source.component';
 import {AddCountryComponent} from './country-site.component';
 import {ManageSponsorProtocolComponent} from './manage-sponsor-protocol.component';
 import {DefaultSitesComponent} from './default-site-source.component';
-import {DefaultSiteSourceEditComponent} from './default-site-source-edit.component'
+import {DefaultSiteSourceEditComponent} from './default-site-source-edit.component';
+import { CountrySiteEditComponent } from './country-site-edit.component';
+import { SponsorSpecificSiteEditComponent} from './sponsor-protocol-edit.component';
 import { AuthGuard } from '../auth/auth-guard.service';
 
 export const LoggedInUserRoutes: Routes = [
@@ -22,13 +24,13 @@ export const LoggedInUserRoutes: Routes = [
   { path: 'manage-site-sources', component: ManageSiteSourcesComponent, canActivate: [AuthGuard]},
   { path: 'edit-site-source/:RecId', component: EditSiteSourceComponent, canActivate: [AuthGuard]},
   { path:'', redirectTo:'/manage-site-sources', pathMatch:'full'},
-  { path: 'add-country', component: AddCountryComponent, canActivate: [AuthGuard]},
+  { path: 'country-site', component: AddCountryComponent, canActivate: [AuthGuard]},
   {path: 'manage-sponsor-protocol', component: ManageSponsorProtocolComponent, canActivate: [AuthGuard]},
   {path: 'default-sites', component: DefaultSitesComponent, canActivate: [AuthGuard]},
   {path: 'default-site-edit/:RecId', component: DefaultSiteSourceEditComponent, canActivate: [AuthGuard]},
+  {path: 'country-site-edit/:RecId', component: CountrySiteEditComponent, canActivate: [AuthGuard]},
+  {path: 'sponsor-protocol-edit/:RecId', component: SponsorSpecificSiteEditComponent, canActivate: [AuthGuard]}
   //{ path: 'error-log', component: ErrorLogComponent},
-  
 ]
-
 
 export const LoginHistoryRouting: ModuleWithProviders = RouterModule.forChild(LoggedInUserRoutes);

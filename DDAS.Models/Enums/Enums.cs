@@ -42,7 +42,6 @@
         WorldCheckPage //27Jan2017 Pradeep
     };
 
-  
     public enum ComplianceFormStatusEnum
     {
         NotScanned,
@@ -61,7 +60,6 @@
         PIs_SIs,
         PIs,
         Institute
-
     }
 
 }

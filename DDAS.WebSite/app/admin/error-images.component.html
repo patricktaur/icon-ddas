@@ -48,7 +48,9 @@
 										{{item.FileSize}}
 									</td>
 									<td>
-										<button type="button" class="btn btn-sm btn-primary" (click)="DeleteErrorImage(item.FileName)" title="Delete Error Image"> <span class="glyphicon glyphicon-remove"></span> </button>
+										<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Error Image">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
 									</td>
 								</tr>
 							</tbody>
@@ -63,3 +65,16 @@
 		</div>
 	</div>
 </div>
+
+<modal #DeleteConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Delete confirm</h4>
+	</modal-header>
+	<modal-body>
+		Site Source <b> {{selectedRecordName}} </b> will be deleted.
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="Delete(); DeleteConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-default" (click)=" DeleteConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>

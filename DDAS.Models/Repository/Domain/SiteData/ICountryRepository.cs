@@ -9,6 +9,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface ICountryRepository : IRepository<Country>
     {
-
+        bool UpdateCountry(Country country);
     }
 }

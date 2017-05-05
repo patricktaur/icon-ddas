@@ -181,7 +181,7 @@ get Summary(){
 // }
  
 gotoSiteDetails(siteSourceId: number){
- 
+  //console.log("XXXXX");
     this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteSourceId, {rootPath:this.rootPath, hideReviewCompleted:this.HideReviewCompletedSites}], 
     { relativeTo: this.route.parent});
 }

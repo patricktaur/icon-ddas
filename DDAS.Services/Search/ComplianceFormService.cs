@@ -21,7 +21,7 @@ namespace DDAS.Services.Search
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
 
-        private const int MatchCountLowerLimit = 2;
+        private const int _MatchCountLowerLimit = 2;
         private int _NumberOfRunningExtractionProcesses = 4;
 
         public ComplianceFormService(IUnitOfWork uow, ISearchEngine SearchEngine)
@@ -2098,7 +2098,6 @@ namespace DDAS.Services.Search
                 {
                     Investigator.Role,
                     Investigator.Name,
-                    //Investigator.Qualification,
                     Investigator.MedicalLiceseNumber,
                     Investigator.SearchName
                 };
@@ -2658,7 +2657,9 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(DisqualificationSiteData);
         }
 
-        private void AddRecordsToSAMSiteData(SystemForAwardManagementPageSiteData siteData, List<SystemForAwardManagement> records)
+        private void AddRecordsToSAMSiteData(
+            SystemForAwardManagementPageSiteData siteData, 
+            List<SystemForAwardManagement> records)
         {
             foreach(SystemForAwardManagement rec in records)
             {

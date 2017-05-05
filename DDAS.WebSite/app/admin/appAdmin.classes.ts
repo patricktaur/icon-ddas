@@ -2,30 +2,39 @@ export class SiteSourceViewModel{
     RecId: string;
     SiteName: string;
     SiteShortName: string;
-    Mandatory: boolean;
+    //Mandatory: boolean;
     ExtractionMode: string;
     SiteUrl: string;
-    ExcludeSI: boolean;
-    ExcludePI: boolean;
+    //ExcludeSI: boolean;
+    //ExcludePI: boolean;
 }
 
 export class Country{
-    Name: string;
+    CountryName: string;
     SiteId: string;
+    IsMandatory: boolean;
+    SiteUrl: string;
+    SearchAppliesTo: number;
+    RecId: string;
+    Name: string;
 }
 
 export class CountryViewModel{
-    Name: string;
+    CountryName: string;
     SiteName: string;
     SiteId: string;
     SiteUrl: string;
+    RecId: string;
 }
-
 
 export class SponsorProtocol{
     SponsorProtocolNumber: string;
     SiteId: string;
+    IsMandatory: boolean;
     SiteUrl: string;
+    SearchAppliesTo: number;
+    RecId: string;
+    Name: string;
 }
 
  export class DefaultSite{
@@ -34,8 +43,6 @@ export class SponsorProtocol{
         SiteId : string;
         OrderNo : number;
         IsMandatory : boolean;
-        SearchAppliesToEnum: number;
+        SearchAppliesTo: number;
         //ExcludeSI : boolean;
-
-  
     }

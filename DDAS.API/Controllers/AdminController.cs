@@ -79,8 +79,6 @@ namespace DDAS.API.Controllers
 
         #endregion
 
-
-
         #region Add/Delete/Get Country
 
         [Route("AddCountry")]
@@ -101,6 +99,14 @@ namespace DDAS.API.Controllers
         {
             var Countries = _AppAdminService.GetCountries();
             return Ok(Countries);
+        }
+
+        [Route("GetCountry")]
+        [HttpGet]
+        public IHttpActionResult GetCountry(Guid? RecId)
+        {
+            var Country = _AppAdminService.GetCountry(RecId);
+            return Ok(Country);
         }
 
         [Route("DeleteCountry")]
@@ -132,6 +138,14 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetSponsorProtocols()
         {
             return Ok(_AppAdminService.GetSponsorProtocols());
+        }
+
+        [Route("GetSponsorProtocol")]
+        [HttpGet]
+        public IHttpActionResult GetSponsorProtocol(string RecId)
+        {
+            var Id = Guid.Parse(RecId);
+            return Ok(_AppAdminService.GetSponsorProtocol(Id));
         }
 
         [Route("DeleteSponsorProtocol")]

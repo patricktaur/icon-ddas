@@ -9,6 +9,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface ISponsorProtocolRepository : IRepository<SponsorProtocol>
     {
-
+        bool UpdateSponsorProtocol(SponsorProtocol sponsorProtocol);
     }
 }
