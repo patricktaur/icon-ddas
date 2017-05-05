@@ -176,6 +176,7 @@ namespace DDAS.Models.Entities.Domain
         public int ExtractedInvestigatorCount { get; set; }
         public int FullMatchesFoundInvestigatorCount { get; set; }
         public int PartialMatchesFoundInvestigatorCount { get; set; }
+        public int SingleMatchFoundInvestigatorCount { get; set; }
         public int IssuesFoundInvestigatorCount { get; set; }
         public int ReviewCompletedInvestigatorCount { get; set; }
         public List<InvestigatorSearched> InvestigatorDetails { get; set; }
@@ -213,6 +214,7 @@ namespace DDAS.Models.Entities.Domain
             var InvIssuesIdentifiedCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending).ToList().Count;
             var InvFullMatchCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending).ToList().Count;
             var InvPartialMatchCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending).ToList().Count;
+            var InvSingleMatchCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending).ToList().Count;
             var InvExtractionErrorsCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors).ToList().Count;
             var InvNotScannedCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.NotScanned).ToList().Count;
 
@@ -265,6 +267,16 @@ namespace DDAS.Models.Entities.Domain
                 _Status = string.Format("Partial Match{1} Found for {0} Investigator{2}, Review Pending", InvPartialMatchCount, plural, plural1);
                 _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
             }
+            else if(InvSingleMatchCount > 0)
+            {
+                if(InvSingleMatchCount > 1)
+                {
+                    plural = "es";
+                    plural1 = "s";
+                }
+                _Status = string.Format("Partial Match{1} Found for {0} Investigator{2}, Review Pending", InvSingleMatchCount, plural, plural1);
+                _StatusEnum = ComplianceFormStatusEnum.SingleMatchFoundReviewPending;
+            }
             else if (InvExtractionErrorsCount > 0)
             {
                 if (InvExtractionErrorsCount > 1)
@@ -274,8 +286,6 @@ namespace DDAS.Models.Entities.Domain
                 _Status = string.Format("Data Extraction Error for {0} Investigator{1}, Review Pending", InvExtractionErrorsCount, plural);
                 _StatusEnum = ComplianceFormStatusEnum.HasExtractionErrors;
             }
-   
-
             else if (InvNotScannedCount > 0)
             {
                 if (InvNotScannedCount > 1)
@@ -291,9 +301,6 @@ namespace DDAS.Models.Entities.Domain
                 _Status = "No Match Found, Review Pending";
                 _StatusEnum = ComplianceFormStatusEnum.NoMatchFoundReviewPending;
             }
-
-
-     
         }
         public string EstimatedExtractionCompletionWithin
         {
@@ -481,6 +488,7 @@ namespace DDAS.Models.Entities.Domain
 
         public int Sites_FullMatchCount { get; set; }
         public int Sites_PartialMatchCount { get; set; }
+        public int Sites_SingleMatchCount { get; set; }
         public int IssuesFoundSiteCount { get; set; }
         public int ReviewCompletedSiteCount { get; set; }
 
@@ -499,6 +507,7 @@ namespace DDAS.Models.Entities.Domain
 
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
+
         public string Status
         {
             get
@@ -510,6 +519,7 @@ namespace DDAS.Models.Entities.Domain
                 return _Status;
             }
         }
+
         public ComplianceFormStatusEnum StatusEnum
         {
             get
@@ -521,7 +531,6 @@ namespace DDAS.Models.Entities.Domain
                 return _StatusEnum;
             }
         }
-      
 
         private void setStatusNStatusEnum()
         {
@@ -531,6 +540,7 @@ namespace DDAS.Models.Entities.Domain
             var searchStatusIssuesIdentifiedCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending).ToList().Count;
             var searchStatusFullMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending).ToList().Count;
             var searchStatusPartialMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending).ToList().Count;
+            var searchStatusSingleMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending).ToList().Count;
             var searchStatusExtractionErrorsCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors).ToList().Count;
             var searchStatusNotScannedCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.NotScanned).ToList().Count;
             var sitesSearchedCount = SitesSearched.Where(x => x.Exclude == false).Count();
@@ -541,7 +551,6 @@ namespace DDAS.Models.Entities.Domain
             }
             if (ReviewCompleted == true)
             {
-                
                 _Status = "Review completed, Issues Not Identified";
                 _StatusEnum = ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified;
                 if (IssuesFoundSiteCount > 0)
@@ -583,8 +592,17 @@ namespace DDAS.Models.Entities.Domain
                 _Status = string.Format("Partial Match Found{1} at {0} Source{2}, Review Pending", searchStatusPartialMatchCount, plural, plural1);
                 _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
             }
+            else if(searchStatusSingleMatchCount > 0)
+            {
+                if(searchStatusSingleMatchCount > 1)
+                {
+                    plural = "es";
+                    plural1 = "s";
+                }
+                _Status = string.Format("Partial Match Found{1} at {0} Source{2}, Review Pending", searchStatusSingleMatchCount, plural, plural1);
+                _StatusEnum = ComplianceFormStatusEnum.SingleMatchFoundReviewPending;
+            }
             //searchStatusHasExtractionErrors
-        
             else if (searchStatusExtractionErrorsCount > 0)
             {
                 if (searchStatusExtractionErrorsCount > 1)
@@ -593,8 +611,7 @@ namespace DDAS.Models.Entities.Domain
                 }
                 _Status = string.Format("Data Extraction Error at {0} Source{1}, Review Pending", searchStatusExtractionErrorsCount, plural);
                 _StatusEnum = ComplianceFormStatusEnum.HasExtractionErrors;
-            }
-             
+            } 
             else if (searchStatusNotScannedCount > 0)
             {
                 if (searchStatusNotScannedCount > 1)
@@ -692,12 +709,14 @@ namespace DDAS.Models.Entities.Domain
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
 
+        public int SingleMatchCount { get; set; }
+
         public int IssuesFound { get; set; }
         public bool Exclude { get; set; }
         public bool ReviewCompleted { get; set; }
 
         public int[] SingleComponentMatchCount { get; set; }
-        public string SingleComponentMatchedValues { get; set; } = "";
+        //public int SingleComponentCount { get; set; }
 
         public DateTime? SiteSourceUpdatedOn { get; set; }
         public string ExtractionMode { get; set; }
@@ -759,7 +778,7 @@ namespace DDAS.Models.Entities.Domain
                 _Status = "Issues Not Identified (Manual Search), Review Pending";
                 _StatusEnum = ComplianceFormStatusEnum.ManualSearchSiteReviewPending;
             }
-            else if (FullMatchCount > 0 || PartialMatchCount > 0)
+            else if (FullMatchCount > 0)
             {
                 plural = "es";
                 if (FullMatchCount > 0)
@@ -767,11 +786,23 @@ namespace DDAS.Models.Entities.Domain
                     _Status = string.Format("{0} Full Match{1} Found, Review Pending", FullMatchCount, plural);
                     _StatusEnum = ComplianceFormStatusEnum.FullMatchFoundReviewPending;
                 }
-                else if (PartialMatchCount > 0)
-                {
-                    _Status = string.Format("Review Pending, {0} Partial Match{1} Found", PartialMatchCount, plural);
-                    _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
-                }
+                //else if (PartialMatchCount > 0)
+                //{
+                //    _Status = string.Format("Review Pending, {0} Partial Match{1} Found", PartialMatchCount, plural);
+                //    _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
+                //}
+            }
+            else if(PartialMatchCount > 0)
+            {
+                plural = "es";
+                _Status = string.Format("Review Pending, {0} Partial Match{1} Found", PartialMatchCount, plural);
+                _StatusEnum = ComplianceFormStatusEnum.PartialMatchFoundReviewPending;
+            }
+            else if(SingleMatchCount > 0)
+            {
+                plural = "es";
+                _Status = string.Format("Review Pending, {0} Single Match{1} Found", SingleMatchCount, plural);
+                _StatusEnum = ComplianceFormStatusEnum.SingleMatchFoundReviewPending;
             }
             else if (HasExtractionError == true)
             {

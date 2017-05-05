@@ -52,7 +52,8 @@
         NoMatchFoundReviewPending,
         ManualSearchSiteReviewPending,
         IssuesIdentifiedReviewPending,
-        HasExtractionErrors
+        HasExtractionErrors,
+        SingleMatchFoundReviewPending
     }
 
     public enum SearchAppliesToEnum
