@@ -33,7 +33,7 @@ namespace DDAS.Setup
                 string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
                 if (configFile != null)
                 {
-                    //CreateFolders(configFile);
+                    CreateFolders(configFile);
 
                     //Initialize DB for creating Roles and Users:
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
@@ -90,7 +90,7 @@ namespace DDAS.Setup
             CreateFolder(appRootFolder + @"\" + folder);
 
             _WriteLog.WriteLog("Reading Web.config for:", "AppDataDownloadFolder");
-            string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
+            string DownloadFolder = GetWebConfigAppSetting(configFile, "AppDataDownloadsFolder");
             CreateFolder(appRootFolder + @"\" + DownloadFolder);
 
             _WriteLog.WriteLog("Reading Web.config for:", "UploadsFolder");
@@ -110,6 +110,26 @@ namespace DDAS.Setup
             _WriteLog.WriteLog("Reading Web.config for:", "ComplianceFormFolder");
             string ComplianceFormFolder = GetWebConfigAppSetting(configFile, "ComplianceFormFolder");
             CreateFolder(appRootFolder + @"\" + ComplianceFormFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "CIILFolder");
+            string CIILFolder = GetWebConfigAppSetting(configFile, "CIILFolder");
+            CreateFolder(appRootFolder + @"\" + CIILFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "FDAWarningLettersFolder");
+            string FDAWarningLettersFolder = GetWebConfigAppSetting(configFile, "FDAWarningLettersFolder");
+            CreateFolder(appRootFolder + @"\" + FDAWarningLettersFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "ExclusionDatabaseFolder");
+            string ExclusionDatabaseFolder = GetWebConfigAppSetting(configFile, "ExclusionDatabaseFolder");
+            CreateFolder(appRootFolder + @"\" + ExclusionDatabaseFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "SAMFolder");
+            string SAMFolder = GetWebConfigAppSetting(configFile, "SAMFolder");
+            CreateFolder(appRootFolder + @"\" + SAMFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "SDNFolder");
+            string SDNFolder = GetWebConfigAppSetting(configFile, "SDNFolder");
+            CreateFolder(appRootFolder + @"\" + SDNFolder);
         }
 
         static void CreateRoles()
@@ -159,7 +179,7 @@ namespace DDAS.Setup
                 error = "Config file : " + configFile + " could not be loaded.";
                 _WriteLog.WriteLog(error);
                 throw new Exception(error);
-              }
+            }
             else
             {
                 KeyValueConfigurationElement settings = config.AppSettings.Settings[keyName];
@@ -170,7 +190,9 @@ namespace DDAS.Setup
                 }
                 else
                 {
-                    error = "Key : " + keyName + ", Value: " + settings.Value + " could not be read";
+                    //cannot use settings.value when settings == null
+                    //error = "Key : " + keyName + ", Value: " + settings.Value + " could not be read";
+                    error = "Key : " + keyName + " could not be read";
                     _WriteLog.WriteLog(error);
                     throw new Exception(error);
                 }

@@ -195,12 +195,16 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadExclusionFile()
         {
-            string fileName = _config.AppDataDownloadsFolder + 
-                "SAM_Exclusions_Public_Extract_";
+            //string fileName = 
+            //    _config.AppDataDownloadsFolder + "SAM_Exclusions_Public_Extract_";
+
+            string fileName =
+                _config.SAMFolder + "SAM_Exclusions_Public_Extract_";
 
             string CSVFilePath = fileName;
 
-            string UnZipPath = _config.AppDataDownloadsFolder;
+            //string UnZipPath = _config.AppDataDownloadsFolder;
+            string UnZipPath = _config.SAMFolder;
 
             WebClient myWebClient = new WebClient();
 
@@ -220,7 +224,7 @@ namespace WebScraping.Selenium.Pages
 
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
-            ZipFile.ExtractToDirectory(fileName, _config.AppDataDownloadsFolder);
+            ZipFile.ExtractToDirectory(fileName, _config.SAMFolder);
 
             return CSVFilePath;
         }

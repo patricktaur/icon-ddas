@@ -82,17 +82,16 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadSDNList()
         {
-            string fileName = _config.AppDataDownloadsFolder + "SDNList.txt";
+            //string fileName = _config.AppDataDownloadsFolder + "SDNList.txt";
+            string fileName = _config.SDNFolder + "SDNList.txt";
 
-            // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
 
-            // Concatenate the domain with the Web resource filename.
             // PDF file path --> https://www.treasury.gov/ofac/downloads/sdnlist.pdf
 
             string myStringWebResource = "https://www.treasury.gov/ofac/downloads/sdnlist.txt";
             Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", fileName, myStringWebResource);
-            // Download the Web resource and save it into the current filesystem folder.
+            
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
             return fileName;
@@ -146,7 +145,7 @@ namespace WebScraping.Selenium.Pages
         {
             //Patrick: 24April2017
             //string AllRecords = File.ReadAllText(_config.AppDataDownloadsFolder);
-            var dataFile = _config.AppDataDownloadsFolder + "SDNList.txt";
+            var dataFile = _config.SDNFolder + "SDNList.txt";
             string AllRecords = File.ReadAllText(dataFile);
 
             string[] Records = 

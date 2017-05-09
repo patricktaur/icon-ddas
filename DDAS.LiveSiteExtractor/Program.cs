@@ -95,7 +95,7 @@ namespace DDAS.LiveSiteExtractor
             }
         }
 
-        public string CIILZipFolder
+        public string CIILFolder
         {
             get
             {

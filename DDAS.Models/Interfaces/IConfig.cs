@@ -16,7 +16,11 @@ namespace DDAS.Models.Interfaces
         string ExcelTempateFolder { get; set; }
         string AttachmentsFolder { get; set; }
         string WordTemplateFolder { get; set; }
-        string CIILZipFolder { get; set; }
+        string CIILFolder { get; set; }
         string OutputFileFolder { get; set; }
+        string ExclusionDatabaseFolder { get; set; }
+        string FDAWarningLettersFolder { get; set; }
+        string SAMFolder { get; set; }
+        string SDNFolder { get; set; }
     }
 }
