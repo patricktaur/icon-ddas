@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule }   from '@angular/router';
-//import {ReportTempComponent} from './report-temp.component';
+import {ReportTempComponent} from './report-temp.component';
 
 import { AuthGuard }             from './auth/auth-guard.service';
 

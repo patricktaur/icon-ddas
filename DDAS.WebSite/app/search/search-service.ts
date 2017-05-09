@@ -16,7 +16,8 @@ import {
     CompFormFilter,
     PrincipalInvestigatorDetails,
     Finding,
-    UpdateFindigs
+    UpdateFindigs,
+    UpdateInstituteFindings
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -203,6 +204,17 @@ export class SearchService {
             .catch(this.handleError);
     }
     
+    getInstituteFindingsSummary(formId: string) {
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        return this.http.get(this._baseUrl + 'search/getInstituteFindingsSummary/?formId=' + formId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
     generateComplianceForm(formId: string){
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -278,7 +290,20 @@ export class SearchService {
             .catch(this.handleError);
     }
  
-    
+    //UpdateInstituteFindings(string FormId, int SiteDisplayPosition, List<Finding> Findings)
+    updateInstituteFindings(findingsModel: UpdateInstituteFindings){
+
+        let body = JSON.stringify(findingsModel);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(this._baseUrl + 'search/UpdateInstituteFindings', body, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     getSingleComponentMatchedRecords(SiteDataId: string, SiteEnum:number, FullName: string){
 
 

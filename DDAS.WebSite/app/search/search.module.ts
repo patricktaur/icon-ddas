@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-//import { SearchResultSummaryComponent } from './search-result-summary.component';
-//import { SearchInputComponent } from './search-input.component';
+import { SearchResultSummaryComponent } from './search-result-summary.component';
+import { SearchInputComponent } from './search-input.component';
 
 import { OpenComplianceFormsComponent } from './open-compliance-search-forms.component';
 
@@ -19,7 +19,7 @@ import { SearchComponent } from './search.component';
 
 import { searchRouting } from './search.routing';
 
-//import { SearchDetailComponent } from './search-detail.component';
+import { SearchDetailComponent } from './search-detail.component';
 import { Ng2Uploader } from '../shared/utils/ng2-uploader1/ng2-uploader'
 
 import { ComplianceFormComponent } from './compliance-form.component'
@@ -35,6 +35,10 @@ import { StatusCircleLegendVerticalComponent } from './shared/components/status-
 import { StatusCircleLegHorComponent } from './shared/components/status-circle-legend-horizontal';
 import { DownloadComplianceFormComponent } from './shared/components/download-compliance-form.component';
 import { GenerateOutputFileComponent } from './shared/components/generate-output-file.component';
+
+import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
+import {InstituteFindingsComponent} from './institute-findings.component' 
+
 
 @NgModule({
   imports: [
@@ -63,7 +67,9 @@ import { GenerateOutputFileComponent } from './shared/components/generate-output
     StatusCircleLegHorComponent,
     DownloadComplianceFormComponent,
     AllISCFsComponent,
-    GenerateOutputFileComponent
+    GenerateOutputFileComponent,
+    InstituteFindingsSummaryComponent,
+    InstituteFindingsComponent
   ],
 
   providers: [

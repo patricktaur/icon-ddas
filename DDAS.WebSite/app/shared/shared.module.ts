@@ -17,6 +17,9 @@ import { MyDatePickerModule } from './utils/my-date-picker/my-date-picker.module
 import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination'; 
 
 import {DateInputComponent} from './components/date-input.component'; 
+import {CommonService} from './common.service';
+
+
  
 
 @NgModule({
@@ -34,7 +37,8 @@ import {DateInputComponent} from './components/date-input.component';
   HighlightPipe,
   ToggleShowComponent,
   ConfirmDialogComponent,
-  DateInputComponent
+  DateInputComponent,
+  
   
    ],
   exports:      [ 
@@ -50,7 +54,8 @@ import {DateInputComponent} from './components/date-input.component';
     MyDatePickerModule,
     Ng2PaginationModule,
     ConfirmDialogComponent,
-    DateInputComponent
+    DateInputComponent,
+   
                    ],
                    
 })

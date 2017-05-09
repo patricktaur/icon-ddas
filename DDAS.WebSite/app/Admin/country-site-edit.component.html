@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<form #f="ngForm" novalidate>
+				<div class="row">
+					<div class="col-lg-12">
+						<h3 class="align-left no-margin-top">
+							Country Specific Site - {{isNewText}}
+						</h3>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<label for="siteSources">Select Site:</label>
+							<select class="form-control" [(ngModel)]="CountrySite.SiteId" name="siteSources" (change)="onSiteSourceChange($event.target.value)">
+                                <option *ngFor="let item of SiteSources" value={{item.RecId}} selected="selected" >
+									{{item.SiteName  + ' - ' + item.SiteUrl}}
+									<!--{{item.SiteUrl}}-->
+								</option>
+                            </select>
+
+							<label for="name">Site Name:</label>
+							<input type="text" name="name" class="form-control" value="CountrySite.Name" [(ngModel)]="CountrySite.Name">
+
+							<label for="countryname">Country Name:</label>
+							<input type="text" name="countryname" class="form-control" value="CountrySite.CountryName" [(ngModel)]="CountrySite.CountryName">
+
+							<label for="appliesTo">Search Applies To:</label>
+							<select class="form-control" [(ngModel)]="CountrySite.SearchAppliesTo" name="appliesTo">
+                                <option *ngFor="let item of AppliesToItems" value={{item.id}} selected="selected">{{item.name}}</option>
+                            </select>
+
+
+							<label for="EditIsMandatory">Is Mandatory:</label>
+							<input type="checkbox" name="EditIsMandatory" [(ngModel)]="CountrySite.IsMandatory"><br>
+						</div>
+					</div>
+
+					<div site-source-toadd></div>
+				</div>
+				<div class="row">
+					<div class="col-lg-4">
+						<button type="button" class="btn btn-primary" (click)="Save()" title="Save"><span class="glyphicon glyphicon-ok" > Save</span></button>
+						<button type="button" class="btn btn-primary" (click)="CancelSave()" title="Cancel">Cancel</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
