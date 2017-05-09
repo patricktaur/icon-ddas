@@ -274,7 +274,6 @@ namespace DDAS.Services.AppAdminService
             }
             return DataExtractionList;
         }
-
         
         private List<DataExtractionHistory> GetFDAWarningLetters()
         {
@@ -406,6 +405,7 @@ namespace DDAS.Services.AppAdminService
             }
             return DataExtractionList;
         }
+
         private List<DataExtractionHistory> GetCBERRepository()
         {
             var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
@@ -581,12 +581,20 @@ namespace DDAS.Services.AppAdminService
                     DeleteCIILExtractionEntry(RecId);
                     return;
 
+                case SiteEnum.FDAWarningLettersPage:
+                    DeleteFDAWarningExtractionEntry(RecId);
+                    return;
+
                 case SiteEnum.ERRProposalToDebarPage:
                     DeleteERRProposalToDebarExtractionEntry(RecId);
                     return;
 
                 case SiteEnum.AdequateAssuranceListPage:
                     DeleteAdequateAssuranceExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.ClinicalInvestigatorDisqualificationPage:
+                    DeleteDisqualificationExtractionEntry(RecId);
                     return;
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
@@ -635,7 +643,8 @@ namespace DDAS.Services.AppAdminService
 
         private void DeleteCIILExtractionEntry(Guid? RecId)
         {
-            var CurrentDocument = _UOW.ClinicalInvestigatorInspectionListRepository.FindById(RecId);
+            var CurrentDocument = 
+                _UOW.ClinicalInvestigatorInspectionListRepository.FindById(RecId);
 
             if (CurrentDocument.DataExtractionSucceeded)
             {
@@ -649,6 +658,25 @@ namespace DDAS.Services.AppAdminService
                 }
             }
             _UOW.ClinicalInvestigatorInspectionListRepository.RemoveById(RecId);
+        }
+
+        private void DeleteFDAWarningExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = 
+                _UOW.FDAWarningLettersRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var FDAWarningSiteData = _UOW.FDAWarningLettersRepository.GetAll()
+                    .OrderByDescending(x => x.CreatedOn)
+                    .ToList();
+                foreach (FDAWarningLettersSiteData SiteData in FDAWarningSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.FDAWarningLettersRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.FDAWarningLettersRepository.RemoveById(RecId);
         }
 
         private void DeleteERRProposalToDebarExtractionEntry(Guid? RecId)
@@ -685,6 +713,31 @@ namespace DDAS.Services.AppAdminService
                 }
             }
             _UOW.AdequateAssuranceListRepository.RemoveById(RecId);
+        }
+
+        private void DeleteDisqualificationExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = 
+                _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(RecId);
+
+            //Remove all documents referecing the CurrentDocument, if any
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var DisqualificationSiteData = 
+                    _UOW.ClinicalInvestigatorDisqualificationRepository
+                    .GetAll()
+                    .OrderByDescending(x => x.CreatedOn)
+                    .ToList();
+
+                foreach (ClinicalInvestigatorDisqualificationSiteData SiteData 
+                    in DisqualificationSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.ClinicalInvestigatorDisqualificationRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            //Remove the currentdocument
+            _UOW.ClinicalInvestigatorDisqualificationRepository.RemoveById(RecId);
         }
 
         private void DeleteCBERExtractionEntry(Guid? RecId)
@@ -777,8 +830,6 @@ namespace DDAS.Services.AppAdminService
             }
             _UOW.SpeciallyDesignatedNationalsRepository.RemoveById(RecId);
         }
-
-
         #endregion
 
         #region LiveScanner

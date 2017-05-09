@@ -1198,8 +1198,16 @@ namespace DDAS.Models.Entities.Domain
         public string ExcelTempateFolder { get; set; }
         public string AttachmentsFolder { get; set; }
         public string WordTemplateFolder { get; set; }
-        public string CIILZipFolder { get; set; }
+        public string CIILFolder { get; set; }
         public string OutputFileFolder { get; set; }
+
+        public string ExclusionDatabaseFolder { get;  set; }
+
+        public string FDAWarningLettersFolder { get; set;}
+
+        public string SAMFolder { get; set; }
+
+        public string SDNFolder{ get; set; }
     }
 
     #region ReadExcelInput

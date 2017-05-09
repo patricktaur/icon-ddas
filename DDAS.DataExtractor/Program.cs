@@ -219,7 +219,7 @@ namespace DDAS.DataExtractor
             }
         }
 
-        public string CIILZipFolder
+        public string CIILFolder
         {
             get
             {
@@ -281,6 +281,32 @@ namespace DDAS.DataExtractor
             }
         }
 
+        public string ExclusionDatabaseFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ExclusionDatabaseFolder"];
+            }
+
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string FDAWarningLettersFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["FDAWarningLettersFolder"];
+            }
+
+            set
+            {
+                value = "";
+            }
+        }
+
         public string OutputFileFolder
         {
             get
@@ -291,6 +317,32 @@ namespace DDAS.DataExtractor
             set
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        public string SAMFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["SAMFolder"];
+            }
+
+            set
+            {
+                value = "";
+            }
+        }
+
+        public string SDNFolder
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["SDNFolder"];
+            }
+
+            set
+            {
+                value = "";
             }
         }
 

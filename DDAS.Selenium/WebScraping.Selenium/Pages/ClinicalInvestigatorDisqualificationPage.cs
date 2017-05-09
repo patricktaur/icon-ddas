@@ -122,15 +122,6 @@ namespace WebScraping.Selenium.Pages
                         DisqualifiedClinicalInvestigator.Links.Add(link);
                     }
 
-                    //if (IsElementPresent(TDs[0], By.XPath("a")))
-                    //{
-                    //    Link link = new Link();
-                    //    IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
-                    //    link.Title = "Name";
-                    //    link.url = anchor.GetAttribute("href");
-                    //    DisqualifiedClinicalInvestigator.Links.Add(link);
-                    //}
-
                     var AnchorTags = TDs[6].FindElements(By.XPath("a"));
 
                     if(AnchorTags.Count > 0)
@@ -143,19 +134,6 @@ namespace WebScraping.Selenium.Pages
                             DisqualifiedClinicalInvestigator.Links.Add(link);
                         }
                     }
-
-                    //if (IsElementPresent(TDs[6], By.XPath("a")))
-                    //{
-                    //    IList<IWebElement> anchors = TDs[6].FindElements(By.XPath("a"));
-
-                    //    foreach (IWebElement anchor in anchors)
-                    //    {
-                    //        Link link = new Link();
-                    //        link.Title = "Link To NIDPOE Letter - " + anchor.Text;
-                    //        link.url = anchor.GetAttribute("href");
-                    //        DisqualifiedClinicalInvestigator.Links.Add(link);
-                    //    }
-                    //}
 
                     AnchorTags = null;
                     AnchorTags = TDs[7].FindElements(By.XPath("a"));
@@ -170,19 +148,6 @@ namespace WebScraping.Selenium.Pages
                             DisqualifiedClinicalInvestigator.Links.Add(link);
                         }
                     }
-
-                    //if (IsElementPresent(TDs[7], By.XPath("a")))
-                    //{
-                    //    IList<IWebElement> anchors = TDs[7].FindElements(By.XPath("a"));
-
-                    //    foreach (IWebElement anchor in anchors)
-                    //    {
-                    //        Link link = new Link();
-                    //        link.Title = "Link To NOOH Letter - " + anchor.Text;
-                    //        link.url = anchor.GetAttribute("href");
-                    //        DisqualifiedClinicalInvestigator.Links.Add(link);
-                    //    }
-                    //}
 
                     _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
                         DisqualifiedClinicalInvestigator);

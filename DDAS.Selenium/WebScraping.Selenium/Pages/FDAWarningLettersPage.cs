@@ -289,8 +289,10 @@ namespace WebScraping.Selenium.Pages
                     driver.Navigate().GoToUrl(Url);
                     IsPageLoaded();
                 }
+                _FDAWarningSiteData.DataExtractionRequired = true;
                 DownloadFDAWarningLettersList();
-                ReadFDAWarningLetters(_config.AppDataDownloadsFolder + "FDAWarningLetters.xls");
+                ReadFDAWarningLetters(_config.FDAWarningLettersFolder + "FDAWarningLetters.xls");
+                _FDAWarningSiteData.DataExtractionSucceeded = true;
             }
             catch(Exception e)
             {
@@ -316,7 +318,8 @@ namespace WebScraping.Selenium.Pages
 
         private void DownloadFDAWarningLettersList()
         {
-            string fileName = _config.AppDataDownloadsFolder + "FDAWarningLetters.xls";
+            //string fileName = _config.AppDataDownloadsFolder + "FDAWarningLetters.xls";
+            string fileName = _config.FDAWarningLettersFolder + "FDAWarningLetters.xls";
 
             if (File.Exists(fileName))
                 File.Delete(fileName);

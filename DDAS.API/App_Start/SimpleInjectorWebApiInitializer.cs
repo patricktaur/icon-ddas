@@ -102,10 +102,18 @@ namespace DDAS.API.App_Start
                System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"],
                WordTemplateFolder = RootPath +
                System.Configuration.ConfigurationManager.AppSettings["WordTemplateFolder"],
-               CIILZipFolder = RootPath +
-               System.Configuration.ConfigurationManager.AppSettings["CIILZipFolder"],
+               CIILFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["CIILFolder"],
                OutputFileFolder = RootPath +
-               System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"]
+               System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"],
+               ExclusionDatabaseFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["ExclusionDatabaseFolder"],
+               FDAWarningLettersFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["FDAWarningLettersFolder"],
+               SAMFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["SAMFolder"],
+               SDNFolder = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["SDNFolder"]
             });
             //container.RegisterWebApiRequest<IUserService, UserService>();
             container.Register<IUserService, UserService>();

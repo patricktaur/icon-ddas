@@ -95,7 +95,7 @@ namespace DDAS.LiveSiteExtractor
             }
         }
 
-        public string CIILZipFolder
+        public string CIILFolder
         {
             get
             {
@@ -156,6 +156,32 @@ namespace DDAS.LiveSiteExtractor
             }
         }
 
+        public string ExclusionDatabaseFolder
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string FDAWarningLettersFolder
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public string OutputFileFolder
         {
             get
@@ -166,6 +192,32 @@ namespace DDAS.LiveSiteExtractor
             set
             {
                 value = "";
+            }
+        }
+
+        public string SAMFolder
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string SDNFolder
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
             }
         }
 

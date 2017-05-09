@@ -26,3 +26,18 @@ Indexing the documents in a collection is possible => https://code.tutsplus.com/
 
 Saving local date into MongoDb. (By default the date is stored in UTC format)
 http://stackoverflow.com/questions/8063323/how-to-save-date-properly
+
+8 May 2017
+to find/retrieve a field from a collection
+db.inventory.find( { type: 'food' }, { item: 1, qty: 1 } )
+=> item is name of the field, qty is the number of records the field is to be picked up from.
+
+Also, this command by default, will give _id of the record. This can be avoided by using-
+db.inventory.find( { type: 'food' }, { item: 1, _id: 0 } )
+=> _id: 0 will not display _id of the record(s)
+
+ex:
+db.ComplianceForm.Find({Institute: 'Apollo'}, {UploadedFileName:1, qty:1})
+output:
+{"_id":"abc", "UploadedFileName":"DDAS_Upload_CaseStudy_3.xlsx"}
+--------------------------------------------------------------------------------------

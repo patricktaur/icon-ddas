@@ -84,11 +84,12 @@ namespace WebScraping.Selenium.Pages
 
         private void DownloadCIIList()
         {
-            string fileName = _config.CIILZipFolder + "cliil_" + 
+            string fileName = _config.CIILFolder + "cliil_" + 
                 DateTime.Now.ToString("dd_MM_yyyy") +
                 ".zip";
 
-            string UnZipPath = _config.AppDataDownloadsFolder;
+            //string UnZipPath = _config.AppDataDownloadsFolder;
+            string UnZipPath = _config.CIILFolder;
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.
@@ -113,7 +114,7 @@ namespace WebScraping.Selenium.Pages
 
             string[] LinesFromTextFile = 
                 File.ReadAllLines(
-                    _config.AppDataDownloadsFolder + "cliil.txt");
+                    _config.CIILFolder + "cliil.txt");
 
             DateTime CurrentRowInspectionDate = new DateTime();
 
@@ -142,6 +143,7 @@ namespace WebScraping.Selenium.Pages
                     string DeficiencyCode = null;
                     int TempCounter = Counter + 1;
 
+                    //merge def code of records with similar Insp date
                     while(FieldData[0] == NextRowData[0])
                     {
                         DateTime NextRowInspectionDate = new DateTime(); 

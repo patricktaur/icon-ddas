@@ -76,8 +76,12 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadExclusionList()
         {
-            string DownloadFilePath = _config.AppDataDownloadsFolder + 
-                "ExclusionDatabaseList.csv";
+            //string DownloadFilePath = _config.AppDataDownloadsFolder + 
+            //    "ExclusionDatabaseList.csv";
+
+            string DownloadFilePath = 
+                _config.ExclusionDatabaseFolder + "ExclusionDatabaseList.csv";
+
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
             // Concatenate the domain with the Web resource filename.

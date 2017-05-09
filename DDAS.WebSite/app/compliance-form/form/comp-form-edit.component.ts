@@ -3,11 +3,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding } from '../../search/search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel } from '../../search/search.classes';
 import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
-
 
 @Component({
     moduleId: module.id,
@@ -64,6 +63,8 @@ export class CompFormEditComponent implements OnInit {
     public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
     private pageChanged: boolean = false;
 
+    public InstituteSearchSummary : InstituteFindingsSummaryViewModel[] = [];
+
     private rootPath: string;
     private page: number;
     private currentTab: string;
@@ -104,8 +105,8 @@ export class CompFormEditComponent implements OnInit {
                this.setInvestigatorTab();
             }
             this.LoadOpenComplainceForm();
+            this.LoadInstituteSiteSummary();
         });
-
     }
 
     
@@ -133,6 +134,25 @@ export class CompFormEditComponent implements OnInit {
         // .subscribe(data => this.onValueChanged(data));
         //  this.onValueChanged(); // (re)set validation messages now
     }
+
+//===============Institute tab
+LoadInstituteSiteSummary(){
+      this.formLoading = true;
+        this.service.getInstituteFindingsSummary(this.ComplianceFormId)
+            .subscribe((item: any) => {
+                this.InstituteSearchSummary = item;
+                this.formLoading = false;
+            },
+            error => {
+                this.formLoading = false;
+            });
+  }
+
+gotoSiteDetails(SiteSourceId: number){
+    this.router.navigate(['institute-findings', this.ComplianceFormId,  SiteSourceId, {rootPath:this.rootPath}], 
+    { relativeTo: this.route.parent});
+}
+//===============institute tab
 
     InitInvestigatorControls() {
         return this.fb.group({
