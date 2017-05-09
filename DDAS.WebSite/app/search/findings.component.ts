@@ -17,7 +17,7 @@ export class FindingsComponent implements OnInit {
     private ComplianceFormId: string;
     private InvestigatorId: number;
     //private SiteEnum: number;
-    private siteSourceId: number;
+    private SiteId: string;
 
     public SitesAvailable : SiteSourceToSearch[] = [];
     public searchInProgress: boolean = false;
@@ -31,7 +31,6 @@ export class FindingsComponent implements OnInit {
      private recordToDelete: Finding = new Finding;
      public pageNumber: number;
      public filterRecordDetails: string = "";
-     private hideReviewCompleted: boolean;
     
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
@@ -50,9 +49,7 @@ export class FindingsComponent implements OnInit {
             this.ComplianceFormId = params['formId'];
             this.InvestigatorId = +params['investigatorId'];
             //this.SiteEnum = +params['siteEnum']; 
-            this.siteSourceId = +params['siteSourceId']
-            this.hideReviewCompleted = params['hideReviewCompleted']
-
+            this.SiteId = params['siteId']
             this.rootPath =  params['rootPath'];
             this.LoadOpenComplainceForm();
 
@@ -109,7 +106,7 @@ export class FindingsComponent implements OnInit {
         let site = new SiteSourceToSearch;
         //let site1 = this.CompForm.SiteSources.find(x => x.SiteEnum == this.SiteEnum);
        
-        let site1 = this.CompForm.SiteSources.find(x => x.Id == this.siteSourceId);
+        let site1 = this.CompForm.SiteSources.find(x => x.SiteId == this.SiteId);
         if (site1 == undefined){
             site.SiteName = "Not found";
             return site;
@@ -199,7 +196,7 @@ export class FindingsComponent implements OnInit {
         //  return this.CompForm.Findings.filter(x => x.InvestigatorSearchedId == this.InvestigatorId 
         //  && x.SiteEnum == this.SiteEnum);
           return this.CompForm.Findings.filter(x => x.InvestigatorSearchedId == this.InvestigatorId 
-         && x.SiteSourceId == this.siteSourceId);
+         && x.SiteId == this.SiteId);
     }
 
     get SelectedFindings(){
@@ -247,11 +244,13 @@ export class FindingsComponent implements OnInit {
         }
     }
 
+
+    
     get  SiteSearchStatus(){
 
         let siteSearched = new SiteSearchStatus;
         //let siteSearched1 = this.Investigator.SitesSearched.find(x => x.siteEnum == this.SiteEnum);
-        let siteSearched1 = this.Investigator.SitesSearched.find(x => x.SiteSourceId == this.siteSourceId);
+        let siteSearched1 = this.Investigator.SitesSearched.find(x => x.SiteId == this.SiteId);
         
         if (siteSearched1 == undefined){
              //siteSearched.siteEnum = -1;
@@ -263,18 +262,23 @@ export class FindingsComponent implements OnInit {
  
     }
 
-
+    
+    // AddNewSearchStatusItem(){
+        
+    //     if (this.SiteSearchStatus.siteEnum = -1){
+    //         this.SiteSearchStatus.siteEnum = this.SiteEnum;
+    //         this.Investigator.SitesSearched.push(this.SiteSearchStatus);
+    //     }
+    // }
 
  
     Add(){
         let finding = new Finding;
         finding.IsMatchedRecord = false;
         finding.InvestigatorSearchedId = this.InvestigatorId;
-        finding.SiteSourceId = this.Site.Id //this.Site.DisplayPosition;
-        finding.SiteDisplayPosition = this.Site.DisplayPosition;
         finding.SiteId = this.Site.SiteId;
         finding.SiteEnum = this.Site.SiteEnum; //this.SiteEnum;
-        
+        finding.SourceNumber = this.Site.DisplayPosition;
         //finding.DateOfInspection = new Date() ;
         finding.Selected = true;
         finding.InvestigatorName = this.Investigator.Name;
@@ -301,13 +305,11 @@ export class FindingsComponent implements OnInit {
                    let finding = new Finding;
                     finding.IsMatchedRecord = true;
                     finding.InvestigatorSearchedId = this.InvestigatorId;
-                    finding.InvestigatorName = this.Investigator.Name;
-                    finding.SiteSourceId =this.Site.Id  // this.Site.DisplayPosition;
-
                     finding.SiteId = this.Site.SiteId
                     finding.SiteEnum = this.Site.SiteEnum // this.SiteEnum;
-                    
+                    finding.SourceNumber = this.Site.DisplayPosition;
                     finding.Selected = true;
+                    finding.InvestigatorName = this.Investigator.Name;
                     finding.IsAnIssue = true;
                     finding.MatchCount = 1; //for determining if the finding was added through single match action
                     finding.RecordDetails = item.RecordDetails;
@@ -399,7 +401,7 @@ export class FindingsComponent implements OnInit {
               
               updateFindings.FormId= this.ComplianceFormId;
               
-              updateFindings.SiteSourceId = this.Site.Id// this.SiteEnum;
+              updateFindings.SiteEnum = this.Site.SiteEnum// this.SiteEnum;
               updateFindings.InvestigatorSearchedId = this.InvestigatorId;
               updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted; 
               updateFindings.Findings = this.Findings;
@@ -450,8 +452,8 @@ export class FindingsComponent implements OnInit {
     }
     
     goBack() {
-        
-        this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId,  {siteId:this.siteSourceId, rootPath: this.rootPath, hideReviewCompleted:this.hideReviewCompleted}], { relativeTo: this.route.parent});
+ 
+        this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId,  {siteId:this.SiteId, rootPath: this.rootPath}], { relativeTo: this.route.parent});
         //this.router.navigate(['comp-form-edit', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
       
     }

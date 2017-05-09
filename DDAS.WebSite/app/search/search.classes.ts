@@ -204,8 +204,6 @@ export class SearchList{
     StatusEnum: ComplianceFormStatusEnum = ComplianceFormStatusEnum.NotScanned;
 
     SearchPending: boolean = true;
-
-    InstituteSearchSiteCount : number;
     }
  
 
@@ -255,14 +253,13 @@ export class SearchList{
   }
 
   export class SiteSearchStatus{
+
         SiteSourceId: number;
         SiteId: string;
+
         siteEnum: number = 0;
         SiteName: string = "";
         SiteUrl: string = "";
-        SiteDataId: string = "";
-        DisplayPosition: number;
-        
         ExtractedOn: Date;
         HasExtractionError : boolean;
         ExtractionErrorMessage : string;
@@ -296,35 +293,29 @@ export class SearchList{
     }  
 
     export class Finding{
-        Id: string;
         SiteId: string;
         SiteEnum: number;
-        SiteSourceId: number; //Refers to CompForm.SiteSources.Id
-        DisplayPosition: number;
-        SiteDisplayPosition: number;
-
-        InvestigatorSearchedId: number;
-        InvestigatorName: string;
-
-        RowNumberInSource : number;
-
         IsFullMatch: boolean;
+        InvestigatorSearchedId: number;
         MatchCount : number;
-
-        IsMatchedRecord: boolean;
-
-        Status : string;
-        
-        RecordDetails : string;
-        DateOfInspection: Date;
+        RowNumberInSource : number;
         Observation: string;
+        RecordDetails : string;
+        Status : string;
+        //HiddenStatus : string = "";
+        Selected: boolean = false;
+        UISelected: boolean = false;
+        IsMatchedRecord: boolean;
+        SourceNumber: number;
+        DateOfInspection: Date;
+        InvestigatorName: string;
+        DisplayPosition: number;
         IsAnIssue: boolean = false;
         Links: Link[] = [];
-
-        UISelected: boolean = false;
-        Selected: boolean = false;
     }
+  
 
+     
     export class SiteSource{
         RecId: string;
         SiteName :string;
@@ -351,21 +342,13 @@ export class SearchList{
     {
         //Guid id,  SiteEnum siteEnum, int InvestigatorId, bool ReviewCompleted, List<Finding> Findings
         FormId :string;
-        //SiteEnum : number;
-        SiteSourceId: number;
+        SiteEnum : number;
         InvestigatorSearchedId : number;
         ReviewCompleted : boolean;
         //InvestigatorSearched: InvestigatorSearched;
         Findings: Finding[];
     }
  
-
-    export class UpdateInstituteFindings
-    {
-        FormId : string;
-        SiteSourceId : number;
-        Findings: Finding[];
-    }
 
    export enum ComplianceFormStatusEnum
     {
@@ -398,13 +381,4 @@ export class SearchList{
          date: { year: number, month: number, day: number} 
     } 
 
-   export class InstituteFindingsSummaryViewModel
-   {
-       SiteId: string;
-       DisplayPosition : number;
-       IsMandatory: Boolean; 
-       SiteName : string; 
-       SiteShortName : string; 
-       SiteUrl : string; 
-       IssuesFound : number; 
-   }
+  

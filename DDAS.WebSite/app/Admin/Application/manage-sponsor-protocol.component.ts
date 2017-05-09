@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
-import { ConfigService } from '../shared/utils/config.service';
+import {  IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
+import { ConfigService } from '../../shared/utils/config.service';
+import {Country} from './appAdmin.classes';
+import {SiteSourceViewModel} from './appAdmin.classes';
 import {SponsorProtocol} from './appAdmin.classes';
 
 @Component({
@@ -19,9 +21,6 @@ export class ManageSponsorProtocolComponent implements OnInit {
     public pageNumber: number;
     public formLoading: boolean;
     public message: string;
-    public selectedRecId: string;
-    public selectedRecordName: string;
-
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -31,15 +30,26 @@ export class ManageSponsorProtocolComponent implements OnInit {
 
     ngOnInit(){
         this.message = "";
-        this.loadSponsorProtocols();
+        this.loadSponsorProtocol();
+        this.loadSiteSources();
     }
 
-    loadSponsorProtocols(){
+    loadSiteSources(){
+        this.service.getSiteSources()
+        .subscribe((item: any[]) =>{
+            this.SiteSource = item;
+        },
+        error => {
+
+        });
+    }
+
+    loadSponsorProtocol(){
         // this.formLoading = false;
         this.sponsorProtocol.SponsorProtocolNumber = "";
         this.sponsorProtocol.SiteId = "";
         
-        this.service.getSponsorProtocols()
+        this.service.getSponsorProtocol()
         .subscribe((item : any[]) => {
             this.sponsorProtocolsAdded = item;
             // this.formLoading = true;
@@ -49,38 +59,21 @@ export class ManageSponsorProtocolComponent implements OnInit {
         });
     }
 
-    // addSponsorProtocol(){
-    //     this.service.addSponsorProtocol(this.sponsorProtocol)
-    //     .subscribe((item: any) => {
-    //         this.message = item;
-    //         this.loadSponsorProtocol();
-    //     },
-    //     error => {
-        
-    //     });
-    // }
-
-    extractionModeIsManual(extractionMode: string){
-        return (extractionMode.toLowerCase() == "manual");
-    }
-
-  setSelectedRecordDetails(rec: any) {
-       this.selectedRecId = rec.RecId;
-       this.selectedRecordName = rec.SiteName;   
-   }
-
-    Edit(RecId: string){
-        this.router.navigate(['sponsor-protocol-edit', RecId], { relativeTo: this.route.parent});
-    }
-    
-    Add(){
-        this.router.navigate(['sponsor-protocol-edit', ""], { relativeTo: this.route.parent});
-    }
-
-    Delete(){
-        this.service.removeSponsorProtocol(this.selectedRecId)
+    addSponsorProtocol(){
+        this.service.addSponsorProtocol(this.sponsorProtocol)
         .subscribe((item: any) => {
-            this.loadSponsorProtocols();
+            this.message = item;
+            this.loadSponsorProtocol();
+        },
+        error => {
+        
+        });
+    }
+
+    removeSponsorProtocol(RecId: string){
+        this.service.removeSponsorProtocol(RecId)
+        .subscribe((item: any) => {
+            this.loadSponsorProtocol();
         },
         error => {
         

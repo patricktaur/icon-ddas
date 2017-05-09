@@ -1,28 +1,20 @@
 import { ModuleWithProviders }   from '@angular/core';
 import { Routes, RouterModule }  from '@angular/router';
 
-
+import { ReportComponent }     from './report.component';
   
 import { AuthGuard }             from '../auth/auth-guard.service';
-import { ReportComponent }     from './report.component'; 
-import { OutputReportComponent }     from './output-report.component'; 
 
 const reportRoutes: Routes = [
-  
- {
+  {
     path: '',
-    redirectTo: '/reports',
+    redirectTo: '/report',
     pathMatch: 'full'
   },
   {
-    path: 'reports',
-    component: ReportComponent, canActivate: [AuthGuard],
-    children: [
-      { path: '', component: OutputReportComponent },
-
-    ]
+    path: 'report',
+    component: ReportComponent , canActivate: [AuthGuard],
   }
-
 ];
 
 export const reportRouting: ModuleWithProviders = RouterModule.forChild(reportRoutes);

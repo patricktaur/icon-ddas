@@ -28,7 +28,6 @@
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews        </a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches        </a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/reports" routerLinkActive="active">Output Report</a></li>
 							<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-compliance-forms" routerLinkActive="active">Manage Reassignments</a></li>
 
 							<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
@@ -41,7 +40,7 @@
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-site-sources" routerLinkActive="active">Site Sources</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/default-sites" routerLinkActive="active">Default Site Sources</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/country-site" routerLinkActive="active">Country Specific Site Sources</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/add-country" routerLinkActive="active">Country Specific Site Sources</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-sponsor-protocol" routerLinkActive="active">Sponsor Specific Site Sources</a></li>
 									</ul>
 								</div>
@@ -54,12 +53,23 @@
 								<div class="collapse" id="logs" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
-												<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Error Log</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
 									</ul>
 								</div>
 							</li>
 
-						
+							<!--<li class="active" *ngIf="authService.isAdmin">
+								<a data-toggle="collapse" data-target="#reports" data-parent="#sidenav01" class="collapsed">
+						 			Reports<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
+								</a>
+								<div class="collapse" id="reports" style="height: 0px;">
+									<ul class="nav nav-list  panel-body">
+										<li class="active" > <a routerLink="/output-report" routerLinkActive="active">Output Report</a></li>
+										
+									</ul>
+								</div>
+							</li>-->
 
 							<li class="active" *ngIf="authService.isAppAdmin">
 								<a data-toggle="collapse" data-target="#appadminMenu" data-parent="#sidenav01" class="collapsed">
@@ -68,7 +78,7 @@
 								<div class="collapse" id="appadminMenu" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
-										<!--<li class="active"> <a routerLink="/app-admin-dashboard" routerLinkActive="active">App Admin Dashboard</a></li>-->
+										<li class="active"> <a routerLink="/app-admin-dashboard" routerLinkActive="active">App Admin Dashboard</a></li>
 
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
 

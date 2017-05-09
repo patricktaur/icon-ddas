@@ -5,11 +5,10 @@ import { UserInputComponent} from './user-input.component';
 // import { routing,
 //          appRoutingProviders } from './app.routing';
 import { SearchComponent }     from '../search/search.component';
-import { AuthGuard } from '../auth/auth-guard.service';
 
 export const UserRoutes: Routes = [
-  { path: 'users', component: UserComponent, canActivate: [AuthGuard]},
-  { path: 'user-input/:userid', component: UserInputComponent, canActivate: [AuthGuard]},
+  { path: 'users', component: UserComponent},
+  { path: 'user-input/:userid', component: UserInputComponent},
   { path: '',redirectTo: '/users', pathMatch: 'full'}
 ]
 

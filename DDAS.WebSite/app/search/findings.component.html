@@ -110,7 +110,11 @@
 									</td>
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
+<<<<<<< HEAD
+											<p *ngIf="SiteSearchStatus.SingleComponentMatchedValues != '0' && SiteSearchStatus.SingleComponentMatchedValues != ''">
+=======
 											<p *ngIf="SiteSearchStatus.SingleMatchCount != '0' ">
+>>>>>>> 53a0ebd47670a64ecf02a7bc5f32a03fb9626e9e
 												
 												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open()">
 												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;</a>

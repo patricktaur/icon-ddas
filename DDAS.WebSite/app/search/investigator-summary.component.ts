@@ -59,10 +59,6 @@ export class InvestigatorSummaryComponent {
         this.retSiteId =  params['siteId'];
         
         this.rootPath =  params['rootPath'];
-             
-        // if (params['hideReviewCompleted'] != null){
-        //     this.HideReviewCompletedSites = params['hideReviewCompleted'];
-        // }
 
         this.LoadOpenComplainceForm();
         this.LoggedInUserIsAppAdmin = this.authService.isAppAdmin;
@@ -180,9 +176,9 @@ get Summary(){
 //     { relativeTo: this.route.parent});
 // }
  
-gotoSiteDetails(siteSourceId: number){
-  //console.log("XXXXX");
-    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteSourceId, {rootPath:this.rootPath, hideReviewCompleted:this.HideReviewCompletedSites}], 
+gotoSiteDetails(siteId: string){
+ 
+    this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteId, {rootPath:this.rootPath}], 
     { relativeTo: this.route.parent});
 }
 
@@ -214,16 +210,10 @@ dividerGeneration(indexVal : number){
 }
 
 isUrl(url: string){
-
-      if (url == null){
+         if (url.toLowerCase().startsWith("http")){
+             return true;
+         }else{
              return false;
-         }
-         else{
-            if (url.toLowerCase().startsWith("http")){
-                return true;
-            }else{
-                return false;
-            }
          }
      }
 
