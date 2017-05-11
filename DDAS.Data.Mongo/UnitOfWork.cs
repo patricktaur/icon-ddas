@@ -19,10 +19,6 @@ namespace DDAS.Data.Mongo
 
         #region PrivateRepositoryMembers
         private IFDADebarPageRepository _FDADebarPageRepository;
-
-        //***
-        //private IFDADebarPageRepository _FDADebarPageRepository1; ???Pradeep 3Jan2017
-
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
         private IPHSAdministrativeActionListingRepository 
@@ -59,6 +55,7 @@ namespace DDAS.Data.Mongo
         private ISponsorProtocolRepository _SponsorProtocolRepository;
         private IDefaultSiteRepository _DefaultSiteRepository;
 
+        private IExceptionLoggerRepository _ExceptionLoggerRepository;
         #endregion
 
         /*
@@ -330,26 +327,21 @@ namespace DDAS.Data.Mongo
                     (_DefaultSiteRepository = new DefaultSiteRepository(_db));
             }
         }
+        
+        public IExceptionLoggerRepository ExceptionLoggerRepository
+        {
+            get
+            {
+                return _ExceptionLoggerRepository ??
+                    (_ExceptionLoggerRepository = new ExceptionLoggerRepository(_db));
+            } 
+        }
         #endregion
 
         private void InitializeMaps()
         {
             MongoMaps.Initialize();
-            //BsonClassMap.RegisterClassMap<FDADebarPageSiteData>(map =>
-            //{
-            //    map.MapIdProperty(u => u.RecId);
-            //});
-            //MongoConfiguration.Initialize(config =>
-            //config.AddMap<FDADebarPageSiteDataMap>());
-
-            //MongoConfiguration.Initialize(config =>
-            //config.AddMap<ERRProposalToDebarPageSiteDataMap>());
-
-            //MongoConfiguration.Initialize(config =>
-            //config.AddMap<PHSAdministrativeActionListingSiteDataMap>());
-
         }
-
 
     #region Methods
 

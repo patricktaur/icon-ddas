@@ -41,5 +41,13 @@ namespace DDAS.Models.Interfaces
         DefaultSite GetSingleDefaultSite(Guid? RecId);
         bool UpdateDefaultSite(DefaultSite defaultSite);
         void DeleteDefaultSite(Guid? RecId);
+
+        List<UploadsViewModel> GetUploadedFiles();
+        bool DeleteUploadedFile(string GeneratedFileName);
+        bool DeleteAllUploadedFiles();
+
+        List<OutputFileViewModel> GetOutputFiles();
+
+        List<ExceptionLoggerViewModel> GetExceptionLogs();
     }
 }

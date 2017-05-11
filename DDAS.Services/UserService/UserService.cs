@@ -117,7 +117,7 @@ namespace DDAS.Services.UserService
             //  }
             //return retUsers;
 
-            return GetAllUsers();
+            return GetAllUsers().OrderBy(x => x.UserName).ToList();
         }
 
         public List<UserViewModel> GetAdmins()

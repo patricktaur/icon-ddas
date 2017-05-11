@@ -20,6 +20,7 @@ import {DefaultSitesComponent} from './default-site-source.component';
 import {DefaultSiteSourceEditComponent} from './default-site-source-edit.component';
 import { CountrySiteEditComponent } from './country-site-edit.component';
 import { SponsorSpecificSiteEditComponent} from './sponsor-protocol-edit.component';
+import { ExceptionLogComponent } from './exception-logger.component';
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 //C:\Development\p926-ddas-admin\DDAS.WebSite\app\shared\components\site-source-toadd.component.ts
 //import { SiteSourceToAddComponent } from '../shared/components/site-source-toadd.component';
@@ -44,7 +45,8 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
       DefaultSitesComponent,
       DefaultSiteSourceEditComponent,
       CountrySiteEditComponent,
-      SponsorSpecificSiteEditComponent
+      SponsorSpecificSiteEditComponent,
+      ExceptionLogComponent
       //SiteSourceToAddComponent
   ],
  

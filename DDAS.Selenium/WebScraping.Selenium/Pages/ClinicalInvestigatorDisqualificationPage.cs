@@ -112,10 +112,11 @@ namespace WebScraping.Selenium.Pages
                     DisqualifiedClinicalInvestigator.LinkToNIDPOELetter = TDs[6].Text;
                     DisqualifiedClinicalInvestigator.LinkToNOOHLetter = TDs[7].Text;
 
-                    var AnchorTag = TDs[0].FindElement(By.XPath("a"));
+                    var Anchors = TDs[0].FindElements(By.XPath("a"));
 
-                    if(AnchorTag != null)
+                    if(Anchors.Count > 0)
                     {
+                        var AnchorTag = TDs[0].FindElement(By.XPath("a"));
                         Link link = new Link();
                         link.Title = "Name";
                         link.url = AnchorTag.GetAttribute("href");

@@ -17,6 +17,8 @@ namespace DDAS.Models
         ISponsorProtocolRepository SponsorProtocolRepository { get; }
         IDefaultSiteRepository DefaultSiteRepository { get; }
 
+        IExceptionLoggerRepository ExceptionLoggerRepository { get; }
+
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
         IAdequateAssuranceListRepository AdequateAssuranceListRepository { get; }

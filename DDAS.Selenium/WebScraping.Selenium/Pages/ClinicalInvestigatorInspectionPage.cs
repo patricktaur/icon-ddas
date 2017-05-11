@@ -38,7 +38,6 @@ namespace WebScraping.Selenium.Pages
             _clinicalSiteData.RecId = Guid.NewGuid();
             _clinicalSiteData.ReferenceId = _clinicalSiteData.RecId;
             _clinicalSiteData.Source = driver.Url;
-            //SaveScreenShot("ClinicalInvestigatorInspectionPage.png");
         }
 
         public override string Url
@@ -88,16 +87,15 @@ namespace WebScraping.Selenium.Pages
                 DateTime.Now.ToString("dd_MM_yyyy") +
                 ".zip";
 
-            //string UnZipPath = _config.AppDataDownloadsFolder;
             string UnZipPath = _config.CIILFolder;
-            // Create a new WebClient instance.
+            
             WebClient myWebClient = new WebClient();
-            // Concatenate the domain with the Web resource filename.
+            
             string myStringWebResource = ClinicalInvestigatorZipAnchor.GetAttribute("href");
 
             Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
                 fileName, myStringWebResource);
-            // Download the Web resource and save it into the current filesystem folder.
+
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
             if (File.Exists(UnZipPath + "cliil.txt")) //filename is cliil.txt by default
@@ -118,7 +116,6 @@ namespace WebScraping.Selenium.Pages
 
             DateTime CurrentRowInspectionDate = new DateTime();
 
-            //foreach (string line in LinesFromTextFile)
             for (int Counter = 0; Counter < LinesFromTextFile.Length; Counter++)
             {
                 string[] FieldData = LinesFromTextFile[Counter].Split('~');

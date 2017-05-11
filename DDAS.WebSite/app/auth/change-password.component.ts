@@ -26,7 +26,10 @@ export class ChangePasswordComponent {
              this.error = "New Password and Confirm New Password do not match";
          }
          
+<<<<<<< HEAD
          
+=======
+>>>>>>> b4bb3f1db861f32bcf43e41f4479904fadf52b57
          if (!this.error){
              this.service.changePassword(this.changePasswordModel)
             .subscribe((item: any) => {

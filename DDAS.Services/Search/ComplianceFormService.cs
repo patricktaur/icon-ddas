@@ -20,25 +20,29 @@ namespace DDAS.Services.Search
     {
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
+        private IConfig _config;
 
         private const int _MatchCountLowerLimit = 2;
         private int _NumberOfRunningExtractionProcesses = 4;
 
-        public ComplianceFormService(IUnitOfWork uow, ISearchEngine SearchEngine)
+        public ComplianceFormService(IUnitOfWork uow, 
+            ISearchEngine SearchEngine,
+            IConfig Config)
         {
             _UOW = uow;
             _SearchEngine = SearchEngine;
+            _config = Config;
         }
 
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
-        public ComplianceForm GetNewComplianceForm(ILog log, string UserName)
+        public ComplianceForm GetNewComplianceForm(string UserName)
         {
             ComplianceForm newForm = new ComplianceForm();
             newForm.AssignedTo = UserName;
             newForm.SearchStartedOn = DateTime.Now;
-            AddMandatorySitesToComplianceForm(newForm, log);
+            AddMandatorySitesToComplianceForm(newForm);
 
             return newForm;
         }
@@ -170,8 +174,7 @@ namespace DDAS.Services.Search
             //return Validations.Count > 0 ? Validations : ComplianceFormDetails;
         }
 
-        public List<ComplianceForm> ReadUploadedFileData(ExcelInput DataFromExcelFile, 
-            ILog log,
+        public List<ComplianceForm> ReadUploadedFileData(ExcelInput DataFromExcelFile,
             string UserName, 
             string FilePathWithGUID,
             string UploadedFileName)
@@ -182,7 +185,7 @@ namespace DDAS.Services.Search
 
             for (int Index = 0; Index < InputRows.Count; Index++)
             {
-                var form = GetNewComplianceForm(log, UserName);
+                var form = GetNewComplianceForm(UserName);
 
                 form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
@@ -197,8 +200,8 @@ namespace DDAS.Services.Search
                 form.Address = InputRows[Index].Address;
                 form.Country = InputRows[Index].Country;
 
-                AddCountrySpecificSites(form, log);
-                AddSponsorSpecificSites(form, log);
+                AddCountrySpecificSites(form);
+                AddSponsorSpecificSites(form);
 
                 int InvId = 1;
                 if(InputRows[Index].Role.ToLower() == "principal")
@@ -244,76 +247,6 @@ namespace DDAS.Services.Search
                 }
                 ComplianceForms.Add(form);
             }
-            //for (int Counter = 0; Counter < DataFromExcelFile.Count; Counter++)
-            //{
-            //    var DetailsInEachRow = DataFromExcelFile[Counter];
-
-            //    var Investigator = new InvestigatorSearched();
-
-            //    var form = GetNewComplianceForm(log, UserName);
-
-            //    form.AssignedTo = UserName;
-            //    form.UploadedFileName = UploadedFileName;
-            //    form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
-            //    form.ProjectNumber = DetailsInEachRow[1];
-            //    form.SponsorProtocolNumber = DetailsInEachRow[2];
-            //    form.Institute = DetailsInEachRow[9];
-            //    var Address = "";
-
-            //    if (DetailsInEachRow[10].Trim().Length > 0)
-            //        Address += DetailsInEachRow[10] + " ";
-            //    if (DetailsInEachRow[11].Trim().Length > 0)
-            //        Address += DetailsInEachRow[11] + " ";
-            //    if (DetailsInEachRow[12].Trim().Length > 0)
-            //        Address += DetailsInEachRow[12] + " ";
-            //    if (DetailsInEachRow[13].Trim().Length > 0)
-            //        Address += DetailsInEachRow[13] + " ";
-            //    if (DetailsInEachRow[14].Trim().Length > 0)
-            //        Address += DetailsInEachRow[14];
-
-            //    form.Address = Address.Trim();
-            //    form.Country = DetailsInEachRow[15];
-
-            //    AddCountrySpecificSites(form);
-            //    AddSponsorSpecificSites(form);
-
-            //    int InvId = 1;
-            //    if (DetailsInEachRow[0].ToLower() == "principal")
-            //    {  
-            //        Investigator.Id = InvId;
-            //        InvId += 1;
-
-            //        Investigator.Name =
-            //            DetailsInEachRow[5].Trim() +
-            //            DetailsInEachRow[6].Trim() +
-            //            DetailsInEachRow[7].Trim();
-
-            //        Investigator.Role = DetailsInEachRow[0];
-            //        Investigator.MedicalLiceseNumber = DetailsInEachRow[16];
-            //        //Investigator.Qualification = DetailsInEachRow[3];
-                   
-            //        form.InvestigatorDetails.Add(Investigator);
-
-            //        if (DetailsInEachRow.Count > 9)
-            //        {
-            //            for(int Index = 9; Index < DetailsInEachRow.Count; Index++)
-            //            {
-            //                var Inv = new InvestigatorSearched();
-
-            //                Inv.Id = InvId;
-            //                InvId += 1;
-            //                Inv.Name = DetailsInEachRow[Index];
-            //                Inv.Role = DetailsInEachRow[Index + 1];
-            //                Inv.MedicalLiceseNumber = DetailsInEachRow[Index + 2];
-            //                Inv.Qualification = DetailsInEachRow[Index + 3];
-
-            //                Index += 8;
-            //                form.InvestigatorDetails.Add(Inv);
-            //            }
-            //        }
-            //    }
-            //    ComplianceForms.Add(form);
-            //}
             return ComplianceForms;
         }
 
@@ -332,7 +265,7 @@ namespace DDAS.Services.Search
         }
 
         //used by Excel File Upload method.
-        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm, ILog log,  string ErrorScreenCaptureFolder, string siteType = "db")
+        public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm)
         {
             //Creates or Updates form
             //Remove Inv + Sites if marked for delete:
@@ -340,7 +273,7 @@ namespace DDAS.Services.Search
 
             AddMissingSearchStatusRecords(frm);
             //Check and Search if required:
-            AddMatchingRecords(frm, log,  ErrorScreenCaptureFolder, siteType);
+            AddMatchingRecords(frm);
             //AddLiveScanFindings(frm, log, ErrorScreenCaptureFolder, siteType);
 
             //return SaveComplianceForm(frm);
@@ -527,12 +460,12 @@ namespace DDAS.Services.Search
         #region Client side update
 
         // Called by ComplianceForm Save
-        public ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form, ILog log, string ErrorScreenCaptureFolder)
+        public ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
             if (form.RecId == null)
             {
                 AddMissingSearchStatusRecords(form);
-                AddMatchingRecords(form, log, ErrorScreenCaptureFolder, "db");
+                AddMatchingRecords(form);
 
                 RollUpSummary(form);
                 _UOW.ComplianceFormRepository.Add(form);
@@ -576,7 +509,7 @@ namespace DDAS.Services.Search
                     {
                         dbForm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
                     }
-                    AddMatchingRecords(dbForm, log, ErrorScreenCaptureFolder, "db");
+                    AddMatchingRecords(dbForm);
 
                     RollUpSummary(dbForm);
                     _UOW.ComplianceFormRepository.UpdateCollection(dbForm);
@@ -589,10 +522,7 @@ namespace DDAS.Services.Search
             }
             
         }
-
-        
-        
-        
+ 
         // Called by Findings.
         public bool UpdateFindings(UpdateFindigs updateFindings)
         {
@@ -711,7 +641,7 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        private void AddCountrySpecificSites(ComplianceForm compForm, ILog log)
+        private void AddCountrySpecificSites(ComplianceForm compForm)
         {
             //var test = _UOW.CountryRepository.GetAll();
             //var test1 = test.Where(x => x.CountryName == "");
@@ -733,7 +663,7 @@ namespace DDAS.Services.Search
             foreach (Country country in Countries)
             {
                 lastDisplayPosition += 1;
-                AddToComplianceFormSiteSource(compForm, country, lastDisplayPosition, log);
+                AddToComplianceFormSiteSource(compForm, country, lastDisplayPosition);
 
                 //var SiteToAdd = _UOW.SiteSourceRepository.FindById(country.SiteId);
                 //if (SiteToAdd != null)
@@ -757,28 +687,19 @@ namespace DDAS.Services.Search
             }
         }
 
-        private void AddSponsorSpecificSites(ComplianceForm compForm, ILog log)
+        private void AddSponsorSpecificSites(ComplianceForm compForm)
         {
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
-            //var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
-            //    sponsor => sponsor.SponsorProtocolNumber ==
-            //    compForm.SponsorProtocolNumber).ToList();
-            //if (compForm.Country.Trim().ToLower() == "")
-            //{
-            //    return;
-            //}
             var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
                sponsor => sponsor.SponsorProtocolNumber ==
                compForm.ProjectNumber.Substring(0, 4)); //.ToList();
-            //if (SponsorProtocols == null)
-            //{
-            //    return;
-            //}
+
             foreach (SponsorProtocol sponsorProtocol in SponsorProtocols)
             {
                 lastDisplayPosition += 1;
-                AddToComplianceFormSiteSource(compForm, sponsorProtocol, lastDisplayPosition, log);
+                AddToComplianceFormSiteSource(
+                    compForm, sponsorProtocol, lastDisplayPosition);
 
                 //var SiteToAdd = _UOW.SiteSourceRepository.FindById(sponsorProtocol.SiteId);
 
@@ -801,38 +722,37 @@ namespace DDAS.Services.Search
         }
 
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
-        private void AddMandatorySitesToComplianceForm(ComplianceForm compForm, ILog log)
+        private void AddMandatorySitesToComplianceForm(ComplianceForm compForm)
         {
-            
             var siteSources = _UOW.SiteSourceRepository.GetAll();
 
-            
-            
             int SrNo = 0;
 
             var MandatorySites = _UOW.DefaultSiteRepository.GetAll()
                 .Where (x => x.IsMandatory == true)
                 .OrderBy(x => x.OrderNo).ToList();
+
             foreach (DefaultSite site in MandatorySites)
             {
                 SrNo += 1;
-                AddToComplianceFormSiteSource(compForm, site, SrNo,  log);
+                AddToComplianceFormSiteSource(compForm, site, SrNo);
             }
 
             var OptionalSites = _UOW.DefaultSiteRepository.GetAll()
                 .Where(x => x.IsMandatory == false)
                 .OrderBy(x => x.OrderNo).ToList();
+
             foreach (DefaultSite site in OptionalSites)
             {
                 SrNo += 1;
-                AddToComplianceFormSiteSource(compForm, site, SrNo,  log);
+                AddToComplianceFormSiteSource(compForm, site, SrNo);
             }
 
         }
 
-        private void AddToComplianceFormSiteSource(ComplianceForm compForm, ComplianceFormBaseSite siteToAdd, int SrNo,  ILog log)
+        private void AddToComplianceFormSiteSource(ComplianceForm compForm, ComplianceFormBaseSite siteToAdd, int SrNo)
         {
-            var ScanData = new SiteScanData(_UOW, _SearchEngine);
+            var ScanData = new SiteScanData(_UOW);
             var sourceSite = _UOW.SiteSourceRepository.FindById(siteToAdd.SiteId);
             if (sourceSite == null)
             {
@@ -844,7 +764,7 @@ namespace DDAS.Services.Search
             siteScan = null;
             if (sourceSite.ExtractionMode.ToLower() == "db")
                 //Patrick-Pradeep 02Dec2016 -  Exception is raised in GetSiteScanData therefore will not return null
-                siteScan = ScanData.GetSiteScanData(sourceSite.SiteEnum, "", log);
+                siteScan = ScanData.GetSiteScanData(sourceSite.SiteEnum);
 
             if (siteScan != null)
             {
@@ -852,6 +772,11 @@ namespace DDAS.Services.Search
                 siteSourceToAdd.SiteSourceUpdatedOn = siteScan.SiteLastUpdatedOn;
                 //Patrick Is this required?
                 siteSourceToAdd.SiteDataId = siteScan.DataId;
+            }
+            else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
+            {
+                //extraction error
+                sourceSite.ExtractionMode += "- Extraction error";
             }
 
             siteSourceToAdd.CreatedOn = DateTime.Now;
@@ -1191,7 +1116,7 @@ namespace DDAS.Services.Search
             return true;
         }
 
-        public void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType)
+        public void AddMatchingRecords(ComplianceForm frm)
         {
             int InvestigatorId = 1;
             frm.ExtractedOn = DateTime.Now; //last extracted on
@@ -1244,8 +1169,7 @@ namespace DDAS.Services.Search
                     }
 
                     //10Feb2017-todo: siteSource.ExtractionMode.ToLower() = "db") //get db Sites only, live sites are extracted through windows service
-                    if (searchRequired == true && 
-                        siteSource.ExtractionMode.ToLower() == siteType)
+                    if (searchRequired == true)
                     {
                         try
                         {
@@ -1256,7 +1180,6 @@ namespace DDAS.Services.Search
                             DateTime? SiteLastUpdatedOn = null;
                             var MatchedRecords = GetMatchedRecords(
                                 siteSource, InvestigatorName,
-                                log, ErrorScreenCaptureFolder,
                                 ComponentsInInvestigatorName, out SiteLastUpdatedOn);
 
                             siteSource.SiteSourceUpdatedOn = SiteLastUpdatedOn;
@@ -1334,7 +1257,6 @@ namespace DDAS.Services.Search
                             searchStatus.HasExtractionError = true;
                             searchStatus.ExtractionErrorMessage = 
                                 "Data Extraction not successful - " + ex.Message;
-                            log.WriteLog("Data extraction failed. Details: " + ex.Message);
                             // Log -- ex.Message + ex.InnerException.Message
                         }
                         finally
@@ -1350,7 +1272,7 @@ namespace DDAS.Services.Search
             }
         }
 
-        public void AddLiveScanFindings(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder)
+        public void AddLiveScanFindings(ComplianceForm frm)
         {
             throw new NotImplementedException();
 
@@ -1478,9 +1400,12 @@ namespace DDAS.Services.Search
             //}
         }
 
-        private List<Finding> getFindings(SiteSource siteSource, string InvestigatorName, 
-            int InvestigatorId, ILog log,  string ErrorScreenCaptureFolder, 
-            int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
+        private List<Finding> getFindings(
+            SiteSource siteSource, 
+            string InvestigatorName, 
+            int InvestigatorId, 
+            int ComponentsInInvestigatorName, 
+            out DateTime? SiteLastUpdatedOn)
         {
             throw new NotImplementedException();
 
@@ -1562,7 +1487,6 @@ namespace DDAS.Services.Search
         }
 
         #region Save related
-
 
         private void RemoveDeleteMarkedItemsFromFormCollections(ComplianceForm frm)
         {
@@ -1699,20 +1623,22 @@ namespace DDAS.Services.Search
         }
         #endregion
 
-        private List<MatchedRecord> GetMatchedRecords(SiteSource site,
-            string NameToSearch, ILog log, string ErrorScreenCaptureFolder,
+        private List<MatchedRecord> GetMatchedRecords(
+            SiteSource site, string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
             switch (site.SiteEnum)
             {
                 case SiteEnum.FDADebarPage:
-                    return GetFDADebarPageMatchedRecords(site.SiteDataId,
+                    return GetFDADebarPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return GetClinicalInvestigatorPageMatchedRecords(site.SiteDataId,
+                    return GetClinicalInvestigatorPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
@@ -1720,61 +1646,68 @@ namespace DDAS.Services.Search
                 case SiteEnum.FDAWarningLettersPage:
                     return GetFDAWarningLettersPageMatchedRecords(
                         site.SiteDataId, NameToSearch,
-                        ErrorScreenCaptureFolder,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.ERRProposalToDebarPage:
-                    return GetERRProposalToDebarPageMatchedRecords(site.SiteDataId,
+                    return GetERRProposalToDebarPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.AdequateAssuranceListPage:
-                    return GetAdequateAssurancePageMatchedRecords(site.SiteDataId,
+                    return GetAdequateAssurancePageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
                     return GetClinicalInvestigatorDisqualificationPageMatchedRecords(
-                        site.SiteDataId, NameToSearch,
-                        ErrorScreenCaptureFolder,
+                        site.SiteDataId, 
+                        NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                    return GetCBERClinicalInvestigatorPageMatchedRecords(site.SiteDataId,
+                    return GetCBERClinicalInvestigatorPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.PHSAdministrativeActionListingPage:
-                    return GetPHSAdministrativeActionPageMatchedRecords(site.SiteDataId,
+                    return GetPHSAdministrativeActionPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.ExclusionDatabaseSearchPage:
-                    return GetExclusionDatabasePageMatchedRecords(site.SiteDataId,
+                    return GetExclusionDatabasePageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
-                    return GetCIAPageMatchedRecords(site.SiteDataId,
+                    return GetCIAPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.SystemForAwardManagementPage:
-                    return GetSAMPageMatchedRecords(site.SiteDataId, NameToSearch,
-                        ErrorScreenCaptureFolder,
+                    return GetSAMPageMatchedRecords(
+                        site.SiteDataId, 
+                        NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    return GetSDNPageMatchedRecords(site.SiteDataId,
+                    return GetSDNPageMatchedRecords(
+                        site.SiteDataId,
                         NameToSearch,
                         ComponentsInInvestigatorName,
                         out SiteLastUpdatedOn);
@@ -2044,26 +1977,10 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        #region ComplianceFormGeneration
-        public string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplateFolder, 
-            string DownloadFolder)
-        {
-            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-
-            IWriter writer = new CreateComplianceFormWord();
-
-            GenerateComplianceForm(DownloadFolder, TemplateFolder, 
-                ComplianceFormId, writer,
-                ".docx");
- 
-            return DownloadFolder;
-        }
-        #endregion
-
         #region ComplianceFormGeneration - both PDF and Word
         public string GenerateComplianceForm(
-            string DownloadFolder, string TemplateFolder,
-            Guid? ComplianceFormId, IWriter writer, 
+            Guid? ComplianceFormId, 
+            IWriter writer, 
             string FileExtension)
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
@@ -2077,9 +1994,10 @@ namespace DDAS.Services.Search
                 DateTime.Now.ToString("dd MMM yyyy HH_mm") +
                 FileExtension;
 
-            var GeneratedFileNameNPath = DownloadFolder + GeneratedFileName;
+            var GeneratedFileNameNPath =
+                _config.ComplianceFormFolder + GeneratedFileName;
 
-            writer.Initialize(TemplateFolder, GeneratedFileNameNPath);
+            writer.Initialize(_config.WordTemplateFolder, GeneratedFileNameNPath);
 
             writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
@@ -2203,6 +2121,7 @@ namespace DDAS.Services.Search
 
             //SearchedByTable
             writer.WriteParagraph("Search Performed By:");
+
             writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
 
             writer.SaveChanges();
@@ -2213,7 +2132,7 @@ namespace DDAS.Services.Search
 
             //writer.AttachFile(@"C:\Development\test.pdf", GeneratedFileNameNPath);
 
-            return DownloadFolder + GeneratedFileName;
+            return _config.ComplianceFormFolder + GeneratedFileName;
         }
 
         private string[] InvestigatorTableHeaders()
@@ -2422,7 +2341,7 @@ namespace DDAS.Services.Search
         }
 
         public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
-            string NameToSearch, string ErrorScreenCaptureFolder,
+            string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
             //DateTime? temp = null; 
@@ -2501,7 +2420,7 @@ namespace DDAS.Services.Search
         }
 
       public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
-            Guid? SiteDataId, string NameToSearch, string ErrorScreenCaptureFolder,
+            Guid? SiteDataId, string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
             var DisqualificationSiteData =
@@ -2626,7 +2545,7 @@ namespace DDAS.Services.Search
         }
 
        public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
-            string NameToSearch, string ErrorScreenCaptureFolder, 
+            string NameToSearch, 
             int ComponentsInIvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
             //DateTime? temp = null;
@@ -3577,8 +3496,7 @@ namespace DDAS.Services.Search
         
         public string GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile, 
-            List<ComplianceForm> forms,
-            IConfig Config)
+            List<ComplianceForm> forms)
         {
             int Row = 2;
             foreach(ComplianceForm form in forms)
@@ -3640,10 +3558,10 @@ namespace DDAS.Services.Search
                 DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
                 ".xlsx";
             
-            GenerateOutputFile.SaveChanges(Config.OutputFileFolder + 
+            GenerateOutputFile.SaveChanges(_config.OutputFileFolder + 
                 OutputFileName);
 
-            return Config.OutputFileFolder + OutputFileName;
+            return _config.OutputFileFolder + OutputFileName;
         }
         
         #endregion

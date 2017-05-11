@@ -10,6 +10,7 @@ using DDAS.Services.LiveScan;
 using System.Diagnostics;
 using System.ComponentModel;
 using DDAS.Models.ViewModels;
+using DDAS.Models.Entities;
 
 namespace DDAS.Services.AppAdminService
 {
@@ -1350,6 +1351,89 @@ namespace DDAS.Services.AppAdminService
         {
             _UOW.DefaultSiteRepository.RemoveById(RecId);
         }
+        #endregion
+
+        #region Get/Delete UploadedFiles
+
+        public List<UploadsViewModel> GetUploadedFiles()
+        {
+            var forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (forms.Count == 0)
+                return null;
+
+            forms.RemoveAll(x => x.GeneratedFileName == null || x.GeneratedFileName == "");
+
+            var UploadedFiles = new List<UploadsViewModel>();
+
+            foreach(ComplianceForm form in forms)
+            {
+                var UploadedFile = new UploadsViewModel();
+                //if(form.GeneratedFileName != null || form.GeneratedFileName != "")
+                //{
+                UploadedFile.UploadedFileName = form.UploadedFileName;
+                UploadedFile.GeneratedFileName = form.GeneratedFileName;
+                UploadedFile.AssignedTo = form.AssignedTo;
+                UploadedFile.UploadedOn = form.SearchStartedOn;
+                UploadedFiles.Add(UploadedFile);
+                //}
+            }
+            return UploadedFiles;
+        }
+
+        public bool DeleteUploadedFile(string GeneratedFileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteAllUploadedFiles()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Get/Delete OutputFiles
+        
+        public List<OutputFileViewModel> GetOutputFiles()
+        {
+
+            return null;
+        }
+
+        #endregion
+
+        #region ExceptionLogs
+        
+        public List<ExceptionLoggerViewModel> GetExceptionLogs()
+        {
+            if(_UOW.ExceptionLoggerRepository.GetAll().Count <= 0)
+                return null;
+
+            var ExceptionLogs = 
+                _UOW.ExceptionLoggerRepository
+                .GetAll()
+                .OrderByDescending(x => x.AddedOn).ToList();
+
+            var Exceptions = new List<ExceptionLoggerViewModel>();
+
+            foreach(ExceptionLogger log in ExceptionLogs)
+            {
+                var ExceptionViewModel = new ExceptionLoggerViewModel();
+
+                ExceptionViewModel.Id = log.Id;
+                ExceptionViewModel.AddedOn = log.AddedOn;
+                ExceptionViewModel.Address = log.Address;
+                ExceptionViewModel.Request = log.Request;
+                ExceptionViewModel.UserId = log.UserId;
+                ExceptionViewModel.Message = log.Message;
+                ExceptionViewModel.StackTrace = log.StackTrace;
+
+                Exceptions.Add(ExceptionViewModel);
+            }
+            return Exceptions;
+        }
+        
         #endregion
     }
 }

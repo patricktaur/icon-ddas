@@ -44,7 +44,7 @@ namespace DDAS.LiveSiteExtractor
                 
                 ILog log = new DBLog(uow, "Live Extractor Service", true);
                 
-                LiveScan liveScan = new LiveScan(uow, searchEngine, log, _config.ErrorScreenCaptureFolder, procId);
+                LiveScan liveScan = new LiveScan(uow, null, searchEngine, log, _config.ErrorScreenCaptureFolder, procId);
                 Console.WriteLine("Before StartLiveScan");
                 
                 liveScan.StartLiveScan();

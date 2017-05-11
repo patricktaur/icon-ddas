@@ -43,6 +43,7 @@
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/default-sites" routerLinkActive="active">Default Site Sources</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/country-site" routerLinkActive="active">Country Specific Site Sources</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-sponsor-protocol" routerLinkActive="active">Sponsor Specific Site Sources</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/exception-logger" routerLinkActive="active">Error Logs</a></li>
 									</ul>
 								</div>
 							</li>
@@ -59,8 +60,6 @@
 								</div>
 							</li>
 
-						
-
 							<li class="active" *ngIf="authService.isAppAdmin">
 								<a data-toggle="collapse" data-target="#appadminMenu" data-parent="#sidenav01" class="collapsed">
 						 			App Admin<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
@@ -73,6 +72,8 @@
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
 
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction History</a></li>
+
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-uploads" routerLinkActive="active">Manange Uploads</a></li>
 									</ul>
 								</div>
 							</li>

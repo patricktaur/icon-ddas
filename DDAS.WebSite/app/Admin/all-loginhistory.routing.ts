@@ -14,6 +14,7 @@ import {DefaultSitesComponent} from './default-site-source.component';
 import {DefaultSiteSourceEditComponent} from './default-site-source-edit.component';
 import { CountrySiteEditComponent } from './country-site-edit.component';
 import { SponsorSpecificSiteEditComponent} from './sponsor-protocol-edit.component';
+import { ExceptionLogComponent } from './exception-logger.component';
 import { AuthGuard } from '../auth/auth-guard.service';
 
 export const LoggedInUserRoutes: Routes = [
@@ -29,7 +30,8 @@ export const LoggedInUserRoutes: Routes = [
   {path: 'default-sites', component: DefaultSitesComponent, canActivate: [AuthGuard]},
   {path: 'default-site-edit/:RecId', component: DefaultSiteSourceEditComponent, canActivate: [AuthGuard]},
   {path: 'country-site-edit/:RecId', component: CountrySiteEditComponent, canActivate: [AuthGuard]},
-  {path: 'sponsor-protocol-edit/:RecId', component: SponsorSpecificSiteEditComponent, canActivate: [AuthGuard]}
+  {path: 'sponsor-protocol-edit/:RecId', component: SponsorSpecificSiteEditComponent, canActivate: [AuthGuard]},
+  {path: 'exception-logger', component: ExceptionLogComponent, canActivate: [AuthGuard]}
   //{ path: 'error-log', component: ErrorLogComponent},
 ]
 
