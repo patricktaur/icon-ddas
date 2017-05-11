@@ -1,0 +1,267 @@
+﻿
+/* everywhere else */
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* CSS used here will be applied after bootstrap.css */
+
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #CC3333;
+}
+a :hover{
+  cursor: pointer;
+}
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
+
+/**************New Changes ****************/
+
+body{ background: #fff}
+.well{
+    border: 1px solid #ccc;
+    padding: 2em;
+    background: white; border-radius: 0
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{ font-weight: 400}
+.btn{ border-radius: 2px}
+.btn-primary{ background-color: #188574; border-color: #0D5F52}
+.border-line{ margin-left: -2em; margin-right: -2em;}
+.form-control{ border-width: 0 0 1px 0 !important; box-shadow: none !important; border-radius: 0; margin-bottom: 1em}
+.align-left{ float: left}
+.align-right{ float: right}
+.no-margin-top{ margin-top: 0}
+
+.label{ padding: 1em}
+.table-bordered{ margin-top: 2em}
+.table-bordered th, .table-bordered tr{ padding: 1em; text-align: center}
+.sidebar .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 1em 2em;
+    margin: 0 -2em;
+    color: #666; font-weight: 400; font-size: 1.2em
+}
+
+
+.main{ padding: 2em !important; }
+.header-top{ background: #188574; color: white; padding: 2em; margin: -2em}
+.header-top .page-header{ border: 0; padding-bottom: 2em; margin: 0}
+.well-top{ margin-top: -5em}
+/*.sidebar {
+  display: none;
+}*/
+.sidebar-white{ background: white; height: 10vh}
+.logo-area {
+    background: white;  padding: 1em; text-align: center;  margin: -2em -2em 0;
+}
+.logo-area img{ margin: 2em auto 1em}
+
+
+
+
+
+@media (min-width: 768px) {
+  /*.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; 
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }*/
+}
+
+.sidebar .nav>li.active>a {
+    color: #0D5F52; font-weight: bold
+}
+
+.login-box{ margin-top: 10vh}
+
+.label:hover{
+  cursor: pointer;
+  cursor: hand;
+}
+a:hover{
+    cursor: pointer;
+}
+a {
+  cursor: pointer;
+}
+
+
+/*******merged all css *****/
+
+
+/* everywhere else */
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* CSS used here will be applied after bootstrap.css */
+
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #CC3333;
+}
+a :hover{
+  cursor: pointer;
+}
+/*
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/
+
+/**************New Changes ****************/
+
+body{ background: #fff}
+.well{
+    border: 1px solid #ccc;
+    padding: 2em;
+    background: white; border-radius: 0
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{ font-weight: 400}
+.btn{ border-radius: 2px}
+.btn-primary{ background-color: #188574; border-color: #0D5F52}
+.border-line{ margin-left: -2em; margin-right: -2em;}
+.form-control{ border-width: 0 0 1px 0 !important; box-shadow: none !important; border-radius: 0; margin-bottom: 1em}
+.align-left{ float: left}
+.align-right{ float: right}
+.no-margin-top{ margin-top: 0}
+
+.label{ padding: 1em}
+.table-bordered{ margin-top: 2em}
+.table-bordered th, .table-bordered tr{ padding: 1em; text-align: center}
+.sidebar .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 1em 2em;
+    margin: 0 -2em;
+    color: #666; font-weight: 400; font-size: 1.2em
+}
+
+
+.main{ 
+  padding: 0em !important;
+  margin:1em;
+ background: #f2f2f2 }
+ .mainLogin{
+ background: #f2f2f2;
+ height: 100vh
+ }
+.header-top{ background: #188574; color: white; padding: 2em; margin: -2em}
+.header-top .page-header{ border: 0; padding-bottom: 2em; margin: 0}
+.well-top{ margin-top: -5em}
+/*.sidebar {
+  display: none;
+}*/
+.sidebar-white{ background: white; height: 10vh}
+.collapse .panel-body{ padding: 0 15px}
+.logo-area {
+    background: white;  padding: 1em; text-align: center;  margin: -2em -2em 0;
+}
+.logo-area img{ margin: 2em auto 1em}
+
+.sidebar .navbar-nav>li{ width: 100%}
+.sidebar .nav>li>a{ font-size: 1em}
+
+.table>tbody>tr.active>td, .table>tbody>tr.active>th, .table>tbody>tr>td.active, .table>tbody>tr>th.active, .table>tfoot>tr.active>td, .table>tfoot>tr.active>th, .table>tfoot>tr>td.active, .table>tfoot>tr>th.active, .table>thead>tr.active>td, .table>thead>tr.active>th, .table>thead>tr>td.active, .table>thead>tr>th.active{ background-color: white !important}
+
+.ng2-pagination{ padding-left: 0}
+.ng2-pagination .current{ background: #188574}
+/*.dropdown span.caret {
+    float: right;
+    margin-right: 1em;
+    line-height: 1;
+    vertical-align: middle;
+}*/
+
+li svg {
+    padding-right: 1em;
+    margin-right: .5em;
+    margin-bottom: 1em;}
+
+td .form-control{ margin-bottom: 0; background: transparent;}
+
+.dropdown .panel-group{
+  margin-bottom: 0
+}
+
+.dropdown .panel{ box-shadow: none}
+.plus-glyphicon {
+    float: right;
+    margin-right: .5em;
+}
+
+.login-back{
+  background: #f2f2f2;
+  /*background: rebeccapurple;*/
+}
+
+@media (min-width: 768px) {
+  /*.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; 
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }*/
+}
+
+.sidebar .nav>li.active>a {
+    color: #0D5F52; font-weight: bold
+}
+
+.login-box{ margin-top: 10vh}
+
+.label:hover{
+  cursor: pointer;
+  cursor: hand;
+}
+a:hover{
+    cursor: pointer;
+}
+a {
+  cursor: pointer;
+}
+
+.Red {
+    color: red; 
+}
+
+.Green {
+    color: green;
+}
+.activity_indicator{
+  align-content: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width:100%;
+  height:100%
+}
+.shape_circle{
+  align-content: center;
+  text-align: center;
+  margin:10px;
+  width:25px;
+  height:25px;
+  border-radius:13px;
+}

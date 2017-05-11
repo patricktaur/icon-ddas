@@ -5,14 +5,12 @@
   -->
 <configuration>
   <configSections>
-    
-    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
-    <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <section name="DDAS.API.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
-    </sectionGroup>
+    <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+    <!-- <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />-->
   </configSections>
   <appSettings>
-    <add key="DataExtractionLogFile" value="Logs\DataExtraction.log" />
+ 
+	<add key="DataExtractionLogFile" value="Logs\DataExtraction.log" />
     <add key="AppDataDownloadsFolder" value="App_Data\Downloads\" />
     <add key="ComplianceFormFolder" value="DataFiles\ComplianceForms\" />
     <add key="UploadsFolder" value="DataFiles\Uploads\" />
@@ -31,7 +29,9 @@
 		<add key="FromEMailPassword" value="Clarity2148" />
 		<add key="FromEMailId" value="test@claritytechnologies.com" />
 		<add key="EMailPort" value="587" />
-  </appSettings>
+ 
+
+</appSettings>
 
   <connectionStrings>
     <add name="DefaultConnection" connectionString="mongodb://127.0.0.1/DDAS" />
@@ -48,9 +48,14 @@
     <compilation debug="true" targetFramework="4.6.1" />
     <httpRuntime targetFramework="4.5" />
     <customErrors mode="Off" />
+	
   </system.web>
   <system.webServer>
-    <handlers>
+    	<httpErrors errorMode="Detailed" />
+        <asp scriptErrorSentToBrowser="true"/>
+
+
+	<handlers>
       <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
       <remove name="OPTIONSVerbHandler" />
       <remove name="TRACEVerbHandler" />
@@ -67,9 +72,17 @@
             <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
             <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
           </conditions>
-
           <action type="Rewrite" url="/" />
-
+        </rule>
+      <!--https://github.com/angular/angular/issues/11046-->
+        <rule name="angularjs routes" stopProcessing="true">
+          <match url=".*" />
+          <conditions logicalGrouping="MatchAll">
+            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+            <add input="{REQUEST_URI}" pattern="^/$" negate="true"/>
+          </conditions>
+          <action type="Rewrite" url="/" />
         </rule>
       </rules>
     </rewrite>
@@ -131,22 +144,17 @@
       </dependentAssembly>
     </assemblyBinding>
   </runtime>
-  <entityFramework>
-    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.SqlConnectionFactory, EntityFramework" />
-    <providers>
-      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
-      
-    </providers>
-  </entityFramework>
   
-  <applicationSettings>
-    <DDAS.API.Properties.Settings>
-      <setting name="adminCanLogin" serializeAs="String">
-        <value>False</value>
-      </setting>
-      <setting name="userCanLogin" serializeAs="String">
-        <value>False</value>
-      </setting>
-    </DDAS.API.Properties.Settings>
-  </applicationSettings>
+  <system.data>
+    <DbProviderFactories>
+      <remove invariant="MySql.Data.MySqlClient" />
+      <add name="MySQL Data Provider" invariant="MySql.Data.MySqlClient" description=".Net Framework Data Provider for MySQL" type="MySql.Data.MySqlClient.MySqlClientFactory, MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d" />
+    </DbProviderFactories>
+  </system.data>
+  <system.codedom>
+    <compilers>
+      <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:6 /nowarn:1659;1699;1701" />
+      <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:14 /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+" />
+    </compilers>
+  </system.codedom>
 </configuration>

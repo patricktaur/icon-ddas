@@ -26,7 +26,7 @@ export class ChangePasswordComponent {
              this.error = "New Password and Confirm New Password do not match";
          }
          
-         console.log("Before" + this.error);
+         
          if (!this.error){
              this.service.changePassword(this.changePasswordModel)
             .subscribe((item: any) => {
