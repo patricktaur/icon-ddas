@@ -1,7 +1,10 @@
-﻿using System;
+﻿using DDAS.Data.Mongo;
+using DDAS.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 
 //ref: http://www.nesterovsky-bros.com/weblog/2014/03/10/CustomErrorHandlingWithWebAPI.aspx
@@ -9,15 +12,20 @@ namespace DDAS.API.App_Start
 {
     public class GlobalExceptionLogger:ExceptionLogger
     {
+        private IUnitOfWork _UOW;
+
+        public GlobalExceptionLogger()
+        {
+            _UOW = new UnitOfWork("DefaultConnection");
+        }
+
         public override void Log(ExceptionLoggerContext context)
         {
-            //context.RequestContext.Principal.Identity.Name
-            //context.RequestContext.ClientCertificate.
-            //context.ExceptionContext.ControllerContext.ControllerDescriptor.ControllerName
-            //context.Request.Content.
-            
             var log = context.Exception.ToString();
 
+            //_UOW =
+            //    GlobalConfiguration.Configuration.DependencyResolver.GetService(
+            //        typeof(IUnitOfWork)) as IUnitOfWork;
 
             try
             {
@@ -35,20 +43,40 @@ namespace DDAS.API.App_Start
                 // associates retrieved error ID with the current exception
                 exception.Data["NesterovskyBros:id"] = id;
             }
-            catch
+            catch (Exception)
             {
                 // logger shouldn't throw an exception!!!
             }
         }
 
-        private long LogError(   string address,
-               string userid,
-               string request,
-               string message,
-               string stackTrace
+        private long LogError(
+            string address,
+            string userid,
+            string request,
+            string message,
+            string stackTrace
             )
         {
-            return 0;
-  }
+            long LastId = 0;
+
+            var LastRec = _UOW.ExceptionLoggerRepository.GetAll().LastOrDefault();
+
+            if (LastRec != null)
+                LastId = LastRec.Id;
+            
+            var logger = new Models.Entities.ExceptionLogger();
+
+            logger.AddedOn = DateTime.Now;
+            logger.Address = address;
+            logger.UserId = userid;
+            logger.Request = request;
+            logger.Message = message;
+            logger.StackTrace = stackTrace;
+            logger.Id = LastId + 1;
+
+            _UOW.ExceptionLoggerRepository.Add(logger);
+
+            return LastId;
+        }
     }
 }

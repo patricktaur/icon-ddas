@@ -25,10 +25,10 @@ namespace DDAS.API.Controllers
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
-        private ISearchEngine _SearchEngine;
+        //private ISearchEngine _SearchEngine;
         private ISearchService _SearchService;
         private IUnitOfWork _UOW;
-        private ILog _log;
+        //private ILog _log;
         private IConfig _config;
 
         //private string DataExtractionLogFile;
@@ -41,26 +41,21 @@ namespace DDAS.API.Controllers
 
         private string RootPath;
 
-        public SearchController(ISearchEngine search, ISearchService SearchSummary,
-            IUnitOfWork uow, IConfig Config)
+        public SearchController(
+            IUnitOfWork UOW,
+            ISearchService SearchSummary, 
+            IConfig Config)
         {
             RootPath = HttpRuntime.AppDomainAppPath;
-
+            _UOW = UOW;
             _config = Config;
-            _SearchEngine = search;
             _SearchService = SearchSummary;
-            _UOW = uow;
-            _log = new DummyLog(); //Need to refactor
-
-            //_userName = User.Identity.GetUserName(); //returns null in constructor, returns correct value in method.
         }
 
         [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
-        {
-            _log.LogStart();
-            
+        {   
             // Check if the request contains multipart/form-data.
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -113,19 +108,22 @@ namespace DDAS.API.Controllers
                         }
                     }
 
-                    var forms = _SearchService.ReadUploadedFileData(excelInput,
-                        _log, userName, FilePathWithGUID, UploadedFileName);
+                    var forms = _SearchService.ReadUploadedFileData(
+                        excelInput,
+                        userName, 
+                        FilePathWithGUID, 
+                        UploadedFileName);
 
-                    var extQuery = new Services.LiveScan.ExtractionQueries(_UOW, 2);
-                    DateTime nextEstimatedLiveScanCompletion = extQuery.getNextExtractionCompletion();
-                   
+                    //var extQuery = new Services.LiveScan.ExtractionQueries(_UOW, 2);
+                    //DateTime nextEstimatedLiveScanCompletion = extQuery.getNextExtractionCompletion();
+
                     foreach (ComplianceForm form in forms)
                     {
-                        form.ExtractionEstimatedCompletion = nextEstimatedLiveScanCompletion;
+                        //form.ExtractionEstimatedCompletion = nextEstimatedLiveScanCompletion;
                         complianceForms.Add(
                             _SearchService.ScanUpdateComplianceForm(
-                                form, _log, _config.ErrorScreenCaptureFolder));
-                        nextEstimatedLiveScanCompletion = nextEstimatedLiveScanCompletion.AddSeconds(extQuery.AverageExtractionTimeInSecs * 3);
+                                form));
+                        //nextEstimatedLiveScanCompletion = nextEstimatedLiveScanCompletion.AddSeconds(extQuery.AverageExtractionTimeInSecs * 3);
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
@@ -134,14 +132,12 @@ namespace DDAS.API.Controllers
             }
             catch (Exception e)
             {
-                _log.WriteLog("ErrorMessage: " + e.ToString());
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
                     "Error Details: " + e.Message);
             }
             finally
             {
-                _log.WriteLog("=================================================================================");
-                _log.LogEnd();
+
             }
         }
  
@@ -318,7 +314,7 @@ namespace DDAS.API.Controllers
             var UserName = User.Identity.GetUserName();
             if (formId == null)
             {
-                return Ok(_SearchService.GetNewComplianceForm(_log, UserName));
+                return Ok(_SearchService.GetNewComplianceForm(UserName));
             }
             else
             {
@@ -346,15 +342,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
-           _log.LogStart();
             if (form.InvestigatorDetails.First().Name == "" ||
                 form.InvestigatorDetails.First().Name == null)
                 return Ok("PI name cannot be empty");
 
-            var result = _SearchService.ScanUpdateComplianceForm(form, _log,
-                _config.ErrorScreenCaptureFolder);
-            _log.WriteLog("=================================================================================");
-            _log.LogEnd();
+            var result = _SearchService.ScanUpdateComplianceForm(form);
             return Ok(result);
         }
         #endregion
@@ -375,8 +367,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
-            return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form, _log, _config.ErrorScreenCaptureFolder));
-           
+            return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form));   
         }
 
 
@@ -412,8 +403,9 @@ namespace DDAS.API.Controllers
                 IWriter writer = new CreateComplianceFormWord();
 
                 var FilePath = _SearchService.GenerateComplianceForm(
-                    _config.ComplianceFormFolder, _config.WordTemplateFolder, RecId,
-                    writer, ".docx");
+                    RecId,
+                    writer, 
+                    ".docx");
 
                 string path = FilePath.Replace(RootPath, "");
 
@@ -423,26 +415,6 @@ namespace DDAS.API.Controllers
             {
                 return  Content(HttpStatusCode.BadRequest, e.Message);
             }
-        }
-
-        [Route("GenerateOutputFile")]
-        [HttpGet]
-        public IHttpActionResult GenerateOutputFile()
-        {
-            var GenerateOutputFile = 
-                new GenerateOutputFile(
-                    _config.ExcelTempateFolder + "Output_File.xlsx");
-
-            var forms = _UOW.ComplianceFormRepository.GetAll();
-
-            var FilePath = _SearchService.GenerateOutputFile(
-                GenerateOutputFile,
-                forms, 
-                _config);
-
-            var Path = FilePath.Replace(RootPath, "");
-
-            return Ok(Path);
         }
 
         [Route("GenerateComplianceFormPDF")]
@@ -459,8 +431,9 @@ namespace DDAS.API.Controllers
                 IWriter writer = new CreateComplianceFormPDF();
 
                 var FilePath = _SearchService.GenerateComplianceForm(
-                    _config.ComplianceFormFolder, _config.WordTemplateFolder, RecId,
-                    writer, ".pdf");
+                    RecId,
+                    writer,
+                    ".pdf");
 
                 string path = FilePath.Replace(RootPath, "");
 
@@ -473,6 +446,25 @@ namespace DDAS.API.Controllers
                 //    "Error Details: " + e.Message);
                 return Content(HttpStatusCode.BadRequest, e.Message);
             }
+        }
+
+        [Route("GenerateOutputFile")]
+        [HttpGet]
+        public IHttpActionResult GenerateOutputFile()
+        {
+            var GenerateOutputFile = 
+                new GenerateOutputFile(
+                    _config.ExcelTempateFolder + "Output_File.xlsx");
+
+            var forms = _UOW.ComplianceFormRepository.GetAll();
+
+            var FilePath = _SearchService.GenerateOutputFile(
+                GenerateOutputFile,
+                forms);
+
+            var Path = FilePath.Replace(RootPath, "");
+
+            return Ok(Path);
         }
 
         //3Dec2016
@@ -507,12 +499,12 @@ namespace DDAS.API.Controllers
 
         //Not required
         [Route("TestDownload")]
-        [HttpGet]
+        [HttpPost]
         public HttpResponseMessage DownloadComplianceForm()
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
-            var localFilePath = _config.UploadsFolder + "SITE LIST REQUEST FORM_Updated.docx";
+            var localFilePath = _config.ExcelTempateFolder + "Output_File_Query.xlsx";
             if (!File.Exists(localFilePath))
             {
                 result = Request.CreateResponse(HttpStatusCode.Gone);
@@ -528,7 +520,13 @@ namespace DDAS.API.Controllers
                 result.Content.Headers.ContentDisposition = 
                     new ContentDispositionHeaderValue("attachment");
 
+                result.Content.Headers.ContentType = 
+                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
                 result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
+
+                result.Content.Headers.Add("Filename", "OutputFile_Test");
+                result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
             }
             return result;
         }

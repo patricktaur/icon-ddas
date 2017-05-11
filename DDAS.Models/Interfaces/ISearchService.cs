@@ -14,12 +14,11 @@ namespace DDAS.Models.Interfaces
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
 
-        ComplianceForm GetNewComplianceForm(ILog log, string UserName);
+        ComplianceForm GetNewComplianceForm(string UserName);
 
-        void AddMatchingRecords(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder, string siteType);
+        void AddMatchingRecords(ComplianceForm frm);
 
-        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form, ILog log, 
-            string ErrorScreenCaptureFolder, string siteType = "db");
+        ComplianceForm ScanUpdateComplianceForm(ComplianceForm form);
 
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
         bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form);
@@ -27,7 +26,7 @@ namespace DDAS.Models.Interfaces
        
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 
-        ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form, ILog log, string ErrorScreenCaptureFolder);
+        ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form);
         bool UpdateFindings(UpdateFindigs updateFindings);
         bool UpdateInstituteFindings(UpdateInstituteFindings InstitueFinding);
 
@@ -41,20 +40,16 @@ namespace DDAS.Models.Interfaces
         ComplianceForm RollUpSummary(ComplianceForm form);
         bool UpdateRollUpSummary(Guid formId);
 
-        void AddLiveScanFindings(ComplianceForm frm, ILog log, string ErrorScreenCaptureFolder);
+        void AddLiveScanFindings(ComplianceForm frm);
 
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
-
-        //To be removed
-        string GenerateComplianceFormAlt(Guid? ComplianceFormId, string TemplatesFolder, string DownloadFolder);
 
         List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row);
         ExcelInput ReadDataFromExcelFile(string FilePathWithGUID);
         List<ComplianceForm> ReadUploadedFileData(ExcelInput ExcelInputData, 
-            ILog log, string UserName, string FilePathWithGUID, string UploadedFileName);
+            string UserName, string FilePathWithGUID, string UploadedFileName);
 
         string GenerateComplianceForm(
-            string DownloadFolder, string TemplateFolder,
             Guid? ComplianceFormId, IWriter writer,
             string FileExtension);
 
@@ -67,7 +62,6 @@ namespace DDAS.Models.Interfaces
 
         string GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile,
-            List<ComplianceForm> forms,
-            IConfig Config);
+            List<ComplianceForm> forms);
     }
 }

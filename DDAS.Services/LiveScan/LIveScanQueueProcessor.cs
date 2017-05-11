@@ -25,10 +25,10 @@ namespace DDAS.Services.LiveScan
         private Stopwatch _stopWatch;
         private int _QueueNumber;
 
-        public LiveScanQueueProcessor(int QueueNumber, IUnitOfWork uow, ISearchEngine SearchEngine, ILog log, string ErrorScreenCaptureFolder)
+        public LiveScanQueueProcessor(int QueueNumber, IConfig Config, IUnitOfWork uow, ISearchEngine SearchEngine, ILog log, string ErrorScreenCaptureFolder)
         {
             _UOW = uow;
-            _compFormService = new ComplianceFormService(uow, SearchEngine);
+            _compFormService = new ComplianceFormService(uow, SearchEngine, Config);
             _Log = log;
             _continue = true;
             _ErrorScreenCaptureFolder = ErrorScreenCaptureFolder;
@@ -115,7 +115,7 @@ namespace DDAS.Services.LiveScan
                 _Log.WriteLog("Live Scan started", InvNameNProjNumber);
                 _sitesScanned += getScanPendingSiteCount(frm);
                 _stopWatch.Restart();
-                _compFormService.ScanUpdateComplianceForm(frm, _Log, _ErrorScreenCaptureFolder, "live");
+                _compFormService.ScanUpdateComplianceForm(frm);
                 _stopWatch.Stop();
 
 

@@ -20,7 +20,9 @@ namespace DDAS.DataExtractor
     {
         //public static string ConfigurationManager { get; private set; }
 
-        private static LogText _WriteLog;
+        //private static LogText _WriteLog;
+        private static DBLog _WriteLog;
+
         private IWebDriver _Driver;
 
         static void Main(string[] args)
@@ -40,10 +42,13 @@ namespace DDAS.DataExtractor
             //string appRootFolder = "";
             string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
 
+            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+
             if (configFile == null)
             {
                 string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                _WriteLog = new LogText(exePath + @"\ERROR-DATA-EXTRACTION.log", true);
+                //_WriteLog = new LogText(exePath + @"\ERROR-DATA-EXTRACTION.log", true);
+                _WriteLog = new DBLog(uow, "DDAS.Extractor");
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "Data Extractor: Entry in AppSettings: APIWebConfigFile not found");
                 _WriteLog.LogEnd();
@@ -57,13 +62,13 @@ namespace DDAS.DataExtractor
 
             //string DataExtractionLogFile = ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
-            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
             IConfig _config = new Config();
             ISearchEngine searchEngine = new SearchEngine(uow, _config);
 
             var extractData = new ExtractData(searchEngine);
 
-            _WriteLog = new LogText(_config.DataExtractionLogFile, true);
+            //_WriteLog = new LogText(_config.DataExtractionLogFile, true);
+            _WriteLog = new DBLog(uow, "DDAS.Extractor", true);
             _WriteLog.LogStart();
             _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
 

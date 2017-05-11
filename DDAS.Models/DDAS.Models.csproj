@@ -77,6 +77,7 @@
     <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementEntitySiteData.cs" />
     <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementPageSiteData.cs" />
     <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\ExceptionLogger.cs" />
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Interfaces\IAppAdminService.cs" />
@@ -118,11 +119,15 @@
     <Compile Include="Repository\Domain\SiteData\IUserRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IUserRole.cs" />
     <Compile Include="Entities\Log.cs" />
+    <Compile Include="Repository\IExceptionLoggerRepository.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
+    <Compile Include="ViewModels\ExceptionLoggerViewModel.cs" />
+    <Compile Include="ViewModels\OutputFileViewModel.cs" />
     <Compile Include="ViewModels\Search\InstituteFindingsSummaryViewModel.cs" />
     <Compile Include="ViewModels\SponsorViewModel.cs" />
+    <Compile Include="ViewModels\UploadsViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

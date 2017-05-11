@@ -73,8 +73,6 @@ namespace DDAS.API.App_Start
             //container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
             container.Register<ISearchEngine, SearchEngine>();
             
-            
-
             //container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
             container.Register<ILog>(() => new LogText(logFile, true));
@@ -115,6 +113,7 @@ namespace DDAS.API.App_Start
                SDNFolder = RootPath +
                System.Configuration.ConfigurationManager.AppSettings["SDNFolder"]
             });
+            
             //container.RegisterWebApiRequest<IUserService, UserService>();
             container.Register<IUserService, UserService>();
 

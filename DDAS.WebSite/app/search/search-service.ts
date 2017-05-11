@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@angular/http';
 //Grab everything with import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import 'rxjs/Rx';
 
 import { Pagination, PaginatedResult } from '../shared/interfaces';
 import {
     SiteInfo, StudyNumbers, SearchSummaryItem, SearchSummary, NameSearch,
-    SearchResultSaveData, 
+    SearchResultSaveData,
     //Site, 
     ComplianceFormA,
     SiteSource,
@@ -37,16 +38,16 @@ export class SearchService {
     constructor(private http: Http,
         private configService: ConfigService,
         private authService: AuthService
-        ) {
+    ) {
         this._baseUrl = configService.getApiURI() + this._controller;
-          let headers = new Headers();
-            headers.append('Content-Type', 'application/json');
-            headers.append("Authorization","Bearer " + this.authService.token);
-            this._options = new RequestOptions({headers: headers});
-        }
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        this._options = new RequestOptions({ headers: headers });
+    }
 
     getStudyNumbers(): Observable<StudyNumbers[]> {
-       
+
         return this.http.get(this._baseUrl + 'StudyNumbers')
             .map((res: Response) => {
                 return res.json();
@@ -57,10 +58,10 @@ export class SearchService {
 
 
 
-  
+
 
     CloseComplianceForm(RecId: string) {
-         return this.http.put(this._baseUrl + 'search/CloseComplianceForm?ComplianceFormId=' + RecId, null, this._options)
+        return this.http.put(this._baseUrl + 'search/CloseComplianceForm?ComplianceFormId=' + RecId, null, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -88,17 +89,17 @@ export class SearchService {
     }
 
     //Patrick 27Nov2016:--------------------
-    
-      getPrincipalInvestigators() {
+
+    getPrincipalInvestigators() {
 
         // let headers = new Headers();
         // headers.append('Content-Type', 'application/json');
         // headers.append("Authorization","Bearer " + this.authService.token);
         // let options = new RequestOptions({headers: headers});
-        
- 
-        
-    return this.http.get(this._baseUrl + 'search/GetPrincipalInvestigators', this._options)
+
+
+
+        return this.http.get(this._baseUrl + 'search/GetPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -107,9 +108,9 @@ export class SearchService {
 
     //Pradeep 5Jan2017
     getPrincipalInvestigatorsByFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]> {
-       let Filter1 = JSON.stringify(Filters);
-      
-        return this.http.post(this._baseUrl + 'search/ComplianceFormFilters', Filter1,  this._options)
+        let Filter1 = JSON.stringify(Filters);
+
+        return this.http.post(this._baseUrl + 'search/ComplianceFormFilters', Filter1, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -117,9 +118,8 @@ export class SearchService {
 
     }
 
-    getAllUsers()
-    {
-        
+    getAllUsers() {
+
         return this.http.get(this._baseUrl + 'Account/GetUsers', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -128,7 +128,7 @@ export class SearchService {
     }
 
     getMyReviewPendingPrincipalInvestigators() {
-         
+
         return this.http.get(this._baseUrl + 'search/GetMyReviewPendingPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -137,7 +137,7 @@ export class SearchService {
     }
 
     getMyReviewCompletedPrincipalInvestigators() {
-         
+
         return this.http.get(this._baseUrl + 'search/GetMyReviewCompletedPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -145,10 +145,10 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    
-    
+
+
     getComplianceForm(formId: string): Observable<ComplianceFormA> {
-        
+
         return this.http.get(this._baseUrl + 'search/GetComplianceFormA/?formId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -156,11 +156,10 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    SaveAssignedTo(AssignedTo: string, Active: boolean, ComplianceFormId: string): Observable<boolean> 
-    {
-        return this.http.get(this._baseUrl + 'search/SaveAssignedToData?' + 
-        'AssignedTo=' + AssignedTo +'&Active=' + Active +'&ComplianceFormId=' + ComplianceFormId,
-        this._options)
+    SaveAssignedTo(AssignedTo: string, Active: boolean, ComplianceFormId: string): Observable<boolean> {
+        return this.http.get(this._baseUrl + 'search/SaveAssignedToData?' +
+            'AssignedTo=' + AssignedTo + '&Active=' + Active + '&ComplianceFormId=' + ComplianceFormId,
+            this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -181,7 +180,7 @@ export class SearchService {
     }
 
     scanSaveComplianceForm(form: ComplianceFormA): Observable<ComplianceFormA> {
-         let body = JSON.stringify(form);
+        let body = JSON.stringify(form);
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
@@ -191,8 +190,8 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
-    
-    getInvestigatorSiteSummary(formId: string, investigatorId:number) {
+
+    getInvestigatorSiteSummary(formId: string, investigatorId: number) {
 
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -203,7 +202,7 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
-    
+
     getInstituteFindingsSummary(formId: string) {
 
         let headers = new Headers();
@@ -215,20 +214,20 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
-    generateComplianceForm(formId: string){
+    generateComplianceForm(formId: string) {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        return this.http.get(this._baseUrl + 'search/GenerateComplianceForm/?ComplianceFormId=' + formId, this._options )
+        return this.http.get(this._baseUrl + 'search/GenerateComplianceForm/?ComplianceFormId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(
-                this.handleError
+            this.handleError
             );
     }
-    
-    generateOutputFile(){
+
+    generateOutputFile() {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
@@ -237,33 +236,32 @@ export class SearchService {
                 return res.json();
             })
             .catch(
-                this.handleError
-            );        
+            this.handleError
+            );
     }
 
-    downLoadComplianceForm(formId: string){
-
+    downLoadComplianceForm(formId: string) {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        return this.http.get(this._baseUrl + 'search/DownloadComplianceForm/?ComplianceFormId=' + formId, this._options )
+        return this.http.get(this._baseUrl + 'search/DownloadComplianceForm/?ComplianceFormId=' + formId, this._options)
             .map((res: Response) => {
                 //return res.json();
             })
             .catch(this.handleError);
     }
-    
-    
+
+
     getSiteSources(): Observable<SiteSource[]> {
-        
+
         return this.http.get(this._baseUrl + 'search/GetSiteSources', this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
     }
-    
-    saveCompFormGeneralNInvestigatorsNOptionalSites(form: ComplianceFormA){
+
+    saveCompFormGeneralNInvestigatorsNOptionalSites(form: ComplianceFormA) {
 
         let body = JSON.stringify(form);
         let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -276,8 +274,8 @@ export class SearchService {
             .catch(this.handleError);
 
     }
-    
-    saveFindingsAndObservations(updateFindings: UpdateFindigs){
+
+    saveFindingsAndObservations(updateFindings: UpdateFindigs) {
 
         let body = JSON.stringify(updateFindings);
         let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -289,9 +287,9 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
- 
+
     //UpdateInstituteFindings(string FormId, int SiteDisplayPosition, List<Finding> Findings)
-    updateInstituteFindings(findingsModel: UpdateInstituteFindings){
+    updateInstituteFindings(findingsModel: UpdateInstituteFindings) {
 
         let body = JSON.stringify(findingsModel);
         let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -304,13 +302,11 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    getSingleComponentMatchedRecords(SiteDataId: string, SiteEnum:number, FullName: string){
-
-
-        return this.http.get(this._baseUrl + 'search/GetSingleComponentMatchedRecords/?SiteDataId=' + SiteDataId 
-        + '&SiteEnum=' + SiteEnum 
-        + '&FullName=' + FullName , 
-        this._options)
+    getSingleComponentMatchedRecords(SiteDataId: string, SiteEnum: number, FullName: string) {
+        return this.http.get(this._baseUrl + 'search/GetSingleComponentMatchedRecords/?SiteDataId=' + SiteDataId
+            + '&SiteEnum=' + SiteEnum
+            + '&FullName=' + FullName,
+            this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -318,14 +314,38 @@ export class SearchService {
 
     }
     //string SiteDataId, SiteEnum Enum, string FullName
-    
+
     //-------------------------
 
     private extractData(res: Response) {
         let body = res.json();
         return body.data || {};
-
     }
+
+    downloadComplianceFormTest() {
+        let headers = new Headers();
+        //headers.append('Content-Type', 'application/json');
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        //let options = new RequestOptions({ headers: headers });
+        let file = {};
+        return this.http.post(this._baseUrl + 'search/TestDownload/', '',
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            .map((res: Response) => {
+                //return res;
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                var filename = res.headers.get('FileName');
+                console.log("Downloaded filename: " + filename);
+                window.open(window.URL.createObjectURL(file));
+            })
+            .catch(this.handleError);
+    }
+
+            // .map(res => new Blob([res.arrayBuffer()], {
+            //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            // }))
+            // .catch(this.handleError);
 
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

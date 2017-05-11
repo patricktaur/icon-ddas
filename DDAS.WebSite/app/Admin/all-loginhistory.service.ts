@@ -270,6 +270,13 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
     
+    getExceptionLogs(){
+        return this.http.get(this._baseUrl + 'admin/GetExceptionLogs', this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
     
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

@@ -49,7 +49,6 @@ export class AppAdminService {
             .catch(this.handleError);      
     }
     KillLiveScanner(){
-        
             return this.http.get(this._baseUrl + 'AppAdmin/KillLiveScanner'
                 , this._options)
             .map((res: Response) => {
@@ -57,8 +56,81 @@ export class AppAdminService {
             })
             .catch(this.handleError);      
     }
-       
-    
+
+    getUploadsFolderPath(){
+            return this.http.get(this._baseUrl + 'AppAdmin/GetUploadsFolderPath',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getUploadedFiles(){
+            return this.http.get(this._baseUrl + 'AppAdmin/GetUploadedFiles',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    deleteUploadedFile(generatedFileName: string){
+            return this.http.get(this._baseUrl + 'AppAdmin/DeleteUploadedFile?GeneratedFileName=' 
+            + generatedFileName,
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
+    deleteAllUploadedFiles(){
+            return this.http.get(this._baseUrl + 'AppAdmin/DeleteAllUploadedFiles',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getOutputFilePath(){
+            return this.http.get(this._baseUrl + 'AppAdmin/GetOutputFilePath',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
+    getOutputFiles(){
+            return this.http.get(this._baseUrl + 'AppAdmin/GetOutputFiles',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
+    deleteOutputFile(outputFileName: string){
+            return this.http.get(this._baseUrl + 'AppAdmin/DeleteOutputFile?OutputFileName=' 
+            + outputFileName,
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
+    deleteAllOutputFiles(){
+            return this.http.get(this._baseUrl + 'AppAdmin/DeleteAllOutputFiles',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

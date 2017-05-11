@@ -109,8 +109,7 @@ namespace DDAS.API.Controllers
 
             var FilePath = _SearchSummary.GenerateOutputFile(
                 GenerateOutputFile,
-                forms2,
-                _config);
+                forms2);
 
             var Path = FilePath.Replace(RootPath, "");
 

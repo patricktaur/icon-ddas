@@ -48,7 +48,6 @@ namespace DDAS.Data.Mongo
         private void UpdateLog(string caption, string message)
         {
             var log = new Log();
-           
             log.CreatedBy = _LogStartedBy;
             log.Caption = caption;
             log.Message = message;

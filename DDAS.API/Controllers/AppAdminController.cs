@@ -17,9 +17,10 @@ namespace DDAS.API.Controllers
     public class AppAdminController : ApiController
     {
         private IAppAdminService _AppAdminService;
-        private string ErrorScreenCaptureFolder;
+        private string _ErrorScreenCaptureFolder;
+        private string _UploadsFolder;
         private string _RootPath;
-
+        private string _OutputFilePath;
 
         public AppAdminController(IAppAdminService AppAdmin)
         {
@@ -27,10 +28,14 @@ namespace DDAS.API.Controllers
 
             _RootPath = HttpRuntime.AppDomainAppPath;
 
-            ErrorScreenCaptureFolder = _RootPath +
+            _ErrorScreenCaptureFolder = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
-            //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
+            
+            _UploadsFolder = _RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["UploadsFolder"];
 
+            _OutputFilePath = _RootPath +
+                System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"];
         }
 
         #region Get/Delete/Download ErrorImages
@@ -41,7 +46,7 @@ namespace DDAS.API.Controllers
   
             var ListOfErrorImages = new List<ErrorScreenCapture>();
 
-            DirectoryInfo info = new DirectoryInfo(ErrorScreenCaptureFolder);
+            DirectoryInfo info = new DirectoryInfo(_ErrorScreenCaptureFolder);
             FileInfo[] files = info.GetFiles().OrderByDescending(o => o.CreationTime).ToArray();
 
             foreach (FileInfo File in files)
@@ -61,7 +66,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteAllErrorImages()
         {
-            var ErrorImages = Directory.GetFiles(ErrorScreenCaptureFolder);
+            var ErrorImages = Directory.GetFiles(_ErrorScreenCaptureFolder);
 
             foreach (string file in ErrorImages)
             {
@@ -74,8 +79,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteErrorImage(string FileName)
         {
-            if(File.Exists(ErrorScreenCaptureFolder + FileName))
-                File.Delete(ErrorScreenCaptureFolder + FileName);
+            if(File.Exists(_ErrorScreenCaptureFolder + FileName))
+                File.Delete(_ErrorScreenCaptureFolder + FileName);
             return Ok(true);
         }
 
@@ -83,7 +88,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DownloadErrorImage()
         {
-            string FilePath = ErrorScreenCaptureFolder;
+            string FilePath = _ErrorScreenCaptureFolder;
             string path = FilePath.Replace(_RootPath, "");
             return Ok(path);
         }
@@ -112,9 +117,69 @@ namespace DDAS.API.Controllers
 
         #endregion
 
+        #region get/delete Uploaded Files
+        
+        [Route("GetUploadsFolderPath")]
+        [HttpGet]
+        public IHttpActionResult GetUploadsFolderPath()
+        {
+            string FilePath = _UploadsFolder;
+            string path = FilePath.Replace(_RootPath, "");
+            return Ok(path);
+        }
+
+        [Route("GetUploadedFiles")]
+        [HttpGet]
+        public IHttpActionResult GetUploadedFiles()
+        {
+            var UploadedFiles = _AppAdminService.GetUploadedFiles();
+            return Ok(UploadedFiles);
+        }
+
+        [Route("DeleteUploadedFile")]
+        [HttpGet]
+        public IHttpActionResult DeleteUploadedFile(string GeneratedFileName)
+        {
+            return Ok();
+        }
+
+        [Route("DeleteAllUploadedFiles")]
+        [HttpGet]
+        public IHttpActionResult DeleteAllUploadedFiles()
+        {
+            return Ok();
+        }
+
+        #endregion
+
+        #region get/delete Output Files
+        
+        [Route("GetOutputFilePath")]
+        [HttpGet]
+        public IHttpActionResult GetOutputFilePath()
+        {
+            string FilePath = _OutputFilePath;
+            string path = FilePath.Replace(_RootPath, "");
+            return Ok(path);
+        }
+        
+        [Route("GetOutputFiles")]
+        [HttpGet]
+        public IHttpActionResult GetOutputFiles()
+        {
+            return Ok();
+        }
+
+        [Route("DeleteOutputFile")]
+        [HttpGet]
+        public IHttpActionResult DeleteOutputFile()
+        {
+            return Ok();
+        }
+        #endregion
         #region LiveScanner
 
-       
+
         [Route("LaunchLiveScanner")]
         [HttpGet]
         public IHttpActionResult LaunchLiveScanner()

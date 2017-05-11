@@ -51,7 +51,7 @@ export class ClosedICFsComponent implements OnInit {
         this.downloadUrl = this.configService.getApiHost() + "Downloads";
 
         this.downloadTemplateUrl = this.configService.getApiHost() + "DataFiles/Templates/DDAS_Upload_Template.xlsx";
-     
+
         this.zone = new NgZone({ enableLongStackTrace: false });
         this.basicOptions = {
             url: this.uploadUrl,
@@ -60,8 +60,8 @@ export class ClosedICFsComponent implements OnInit {
         };
 
         this.route.params.forEach((params: Params) => {
-             let page = +params['page'];
-            if (page != null){
+            let page = +params['page'];
+            if (page != null) {
                 this.pageNumber = page;
             }
         });
@@ -81,29 +81,29 @@ export class ClosedICFsComponent implements OnInit {
         return this.PrincipalInvestigators;
     }
 
-    setCompFormActiveValue(DataItem: PrincipalInvestigatorDetails){
-        
+    setCompFormActiveValue(DataItem: PrincipalInvestigatorDetails) {
+
         this.makeActiveCompFormId = DataItem.RecId;
         this.makeActivePrincipalInvestigatorName = DataItem.Name;
     }
     makeCompFormActiveValue() {
         this.service.OpenComplianceForm(this.makeActiveCompFormId)
             .subscribe((item: any) => {
-                 this.LoadPrincipalInvestigators();
+                this.LoadPrincipalInvestigators();
             },
             error => {
             });
-     }
+    }
 
     OpenNew() {
-        this.router.navigate(['complianceform', "", {rootPath:'closed-icfs', page:this.pageNumber}], { relativeTo: this.route });
+        this.router.navigate(['complianceform', "", { rootPath: 'closed-icfs', page: this.pageNumber }], { relativeTo: this.route });
     }
 
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
         //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
-         this.router.navigate(['comp-form-edit', DataItem.RecId, {rootPath:'closed-icfs', page:this.pageNumber}], { relativeTo: this.route });
-         
+        this.router.navigate(['comp-form-edit', DataItem.RecId, { rootPath: 'closed-icfs', page: this.pageNumber }], { relativeTo: this.route });
+
 
     }
 
@@ -118,26 +118,26 @@ export class ClosedICFsComponent implements OnInit {
         this.downloadUrl = "";
         this.service.generateComplianceForm(formid)
             .subscribe((item: any) => {
-                this.downloadUrl = this.configService.getApiHost() +  item;
+                this.downloadUrl = this.configService.getApiHost() + item;
                 console.log("item:" + item);
-                 console.log("this.downloadUrl:" + this.downloadUrl);
+                console.log("this.downloadUrl:" + this.downloadUrl);
             },
             error => {
                 this.ComplianceFormGenerationError = "Error: Compliance Form could not be generated."
             });
     }
 
-    GenerateOutputFile(){
+    GenerateOutputFile() {
         this.downloadUrl = "";
         this.service.generateOutputFile()
-        .subscribe((item: any) => {
-            this.downloadUrl = this.configService.getApiHost() + item;
-            console.log("item:" + item);
-            console.log("this.downloadUrl:" + this.downloadUrl);            
-        },
-        error => {
-            this.ComplianceFormGenerationError = "Error: Output File could not be generated."
-        });
+            .subscribe((item: any) => {
+                this.downloadUrl = this.configService.getApiHost() + item;
+                console.log("item:" + item);
+                console.log("this.downloadUrl:" + this.downloadUrl);
+            },
+            error => {
+                this.ComplianceFormGenerationError = "Error: Output File could not be generated."
+            });
     }
 
     handleUpload(data: any): void {
@@ -159,13 +159,19 @@ export class ClosedICFsComponent implements OnInit {
     }
 
     DownloadCompForm(formid: string) {
-
         this.service.downLoadComplianceForm(formid)
             .subscribe((item: any) => {
 
             },
             error => {
             });
+    }
+
+    testDownloadComplianceForm() {
+        this.service.downloadComplianceFormTest()
+            .subscribe(),
+            error => console.log("Error downloading the file."),
+            () => console.log('Completed file download.');
     }
 
     getBackgroundColor(color: number) {

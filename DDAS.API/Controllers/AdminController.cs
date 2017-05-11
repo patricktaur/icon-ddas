@@ -199,5 +199,16 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
         #endregion
+
+        #region GetExceptionLogs
+        
+        [Route("GetExceptionLogs")]
+        [HttpGet]
+        public IHttpActionResult GetExceptionLogs()
+        {
+            return Ok(_AppAdminService.GetExceptionLogs());
+        }
+
+        #endregion
     }
 }
