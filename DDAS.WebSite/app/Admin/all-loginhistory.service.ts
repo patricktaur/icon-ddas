@@ -131,8 +131,6 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    
-
     saveSiteSource(SiteSource: SiteSourceViewModel): Observable<SiteSourceViewModel>{
         let body = JSON.stringify(SiteSource);
         return this.http.post(this._baseUrl + 'admin/SaveSiteSource/', body, this._options)
@@ -150,7 +148,6 @@ export class LoginHistoryService {
         })
         .catch(this.handleError);
     }
-
     
     getCountries(){
         return this.http.get(this._baseUrl + 'admin/GetCountries',

@@ -228,7 +228,7 @@ namespace DDAS.DataExtractor
         {
             get
             {
-                return ConfigurationManager.AppSettings["CIILZipFolder"];
+                return ConfigurationManager.AppSettings["CIILFolder"];
             }
 
             set

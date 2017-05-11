@@ -724,16 +724,14 @@ namespace DDAS.Services.Search
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         private void AddMandatorySitesToComplianceForm(ComplianceForm compForm)
         {
-            
             var siteSources = _UOW.SiteSourceRepository.GetAll();
 
-            
-            
             int SrNo = 0;
 
             var MandatorySites = _UOW.DefaultSiteRepository.GetAll()
                 .Where (x => x.IsMandatory == true)
                 .OrderBy(x => x.OrderNo).ToList();
+
             foreach (DefaultSite site in MandatorySites)
             {
                 SrNo += 1;
@@ -743,6 +741,7 @@ namespace DDAS.Services.Search
             var OptionalSites = _UOW.DefaultSiteRepository.GetAll()
                 .Where(x => x.IsMandatory == false)
                 .OrderBy(x => x.OrderNo).ToList();
+
             foreach (DefaultSite site in OptionalSites)
             {
                 SrNo += 1;
@@ -773,6 +772,11 @@ namespace DDAS.Services.Search
                 siteSourceToAdd.SiteSourceUpdatedOn = siteScan.SiteLastUpdatedOn;
                 //Patrick Is this required?
                 siteSourceToAdd.SiteDataId = siteScan.DataId;
+            }
+            else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
+            {
+                //extraction error
+                sourceSite.ExtractionMode += "- Extraction error";
             }
 
             siteSourceToAdd.CreatedOn = DateTime.Now;

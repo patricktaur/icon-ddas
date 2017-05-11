@@ -28,7 +28,6 @@ namespace WebScraping.Selenium.Pages
             _FDADebarPageSiteData.RecId = Guid.NewGuid();
             _FDADebarPageSiteData.ReferenceId = _FDADebarPageSiteData.RecId;
             _FDADebarPageSiteData.Source = driver.Url;
-            //SaveScreenShot("abc.png");
         }
 
         public override string Url
@@ -90,10 +89,10 @@ namespace WebScraping.Selenium.Pages
                 debarredPerson.FrDateText = TDs[3].Text;
                 debarredPerson.VolumePage = TDs[4].Text;
 
-                var AnchorTag = TDs[4].FindElement(By.XPath("a"));
+                var AnchorTags = TDs[4].FindElements(By.XPath("a"));
 
                 //if (IsElementPresent(TDs[4], By.XPath("a")))
-                if(AnchorTag != null)
+                if(AnchorTags.Count > 0)
                 {
                     IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
                     Link link = new Link();

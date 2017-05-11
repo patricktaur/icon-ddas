@@ -99,13 +99,25 @@ namespace DDAS.Setup
 
             _WriteLog.WriteLog("Reading Web.config for:", "ExcelTemplateFolder");
             string ExcelTemplateFolder = GetWebConfigAppSetting(configFile, "ExcelTemplateFolder");
-            CreateFolder(appRootFolder + @"\" + UploadFolder);
+            CreateFolder(appRootFolder + @"\" + ExcelTemplateFolder);
             //Copy Excel Template from ...
 
             _WriteLog.WriteLog("Reading Web.config for:", "WordTemplateFolder");
             string WordTemplateFolder = GetWebConfigAppSetting(configFile, "WordTemplateFolder");
-            CreateFolder(appRootFolder + @"\" + UploadFolder);
+            CreateFolder(appRootFolder + @"\" + WordTemplateFolder);
             //Copy Word Template from ...
+
+            _WriteLog.WriteLog("Reading Web.config for:", "ErrorScreenCaptureFolder");
+            string ErrorScreenCaptureFolder = GetWebConfigAppSetting(configFile, "ErrorScreenCaptureFolder");
+            CreateFolder(appRootFolder + @"\" + ErrorScreenCaptureFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "OutputFileFolder");
+            string OutputFileFolder = GetWebConfigAppSetting(configFile, "OutputFileFolder");
+            CreateFolder(appRootFolder + @"\" + OutputFileFolder);
+
+            _WriteLog.WriteLog("Reading Web.config for:", "AttachmentsFolder");
+            string AttachmentsFolder = GetWebConfigAppSetting(configFile, "AttachmentsFolder");
+            CreateFolder(appRootFolder + @"\" + AttachmentsFolder);
 
             _WriteLog.WriteLog("Reading Web.config for:", "ComplianceFormFolder");
             string ComplianceFormFolder = GetWebConfigAppSetting(configFile, "ComplianceFormFolder");
