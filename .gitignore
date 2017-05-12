@@ -16879,8 +16879,6 @@ DDAS.Setup/bin/
 Prod/bin/
 DDAS.Setup/obj/
 Prod/
-DDAS.API/App_Data/BodyPart_06cf9cbe-f389-4452-bd2f-6740f18944a7
-DDAS.API/App_Data/
 DDAS.API/Logs/
 DDAS.WebSite (2).zip
 *.zip
@@ -16905,36 +16903,30 @@ npm-debug.log
 DDAS.WebSite/npm-debug.log.*
 *.d.ts
 DDAS.WebSite/aot/node_modules/
-<<<<<<< HEAD
 DDAS.WebSite-BackUp/
-=======
 DDAS.WebSite/aot/app/
 DDAS.WebSite/npm-debug.log.*
-
 Bak/
 DDAS.WebSite-bak/
->>>>>>> b24a8e0ed1bfdfd0138a03370653620eb2d479af
 Documents/Technical/TestUpload/DDAS_Upload - 1A.xlsx
 Documents/Technical/TestUpload/DDAS_Upload - 3-Error.xlsx
 Documents/Technical/TestUpload/~$DDAS_Upload - 1A.xlsx
 DDAS.API/Controllers/SearchController.cs.bak
-DDAS.API/DataFiles/ErrorScreenCapture/FDAWarningLetters_16 Feb 2017 05_19.png
 DDAS.API/DataFiles/ErrorScreenCapture/
 Documents/Technical/Images/
 DDAS.LiveSiteExtractionService/bin/
 DDAS.LiveSiteExtractionService/obj/
 TestSevice/
 TestService1/
-<<<<<<< HEAD
 OpenXmlEmbedObjectNew/obj/
 OpenXmlEmbedObject/
 OpenXmlEmbedObjectNew/bin/
-=======
 DDAS.LiveSiteExtractor/bin/
 DDAS.LiveSiteExtractor/obj/
 Documents/Technical/Errors/fromServer/MongoDBLog/mongod.log.2017-03-15T04-52-34
->>>>>>> abb3a9b28110b3c6731456f9a952f543380bfd4d
 DDAS - Copy.sln
-DDAS.API/DataFiles/Templates/~$DDAS_Upload_Template.xlsx
 Documents/Technical/~$~$ProjectPlan-Internal.xlsx
 Documents/Technical/Design/~$DefaultSites.xlsx
+DDAS.API/App_Data/Downloads/CIILFolder/cliil.txt
+*.csv
+*.xls

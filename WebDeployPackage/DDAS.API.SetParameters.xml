@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="DDAS" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="mongodb://127.0.0.1/DDAS" />
+</parameters>

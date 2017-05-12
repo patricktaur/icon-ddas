@@ -154,6 +154,8 @@ namespace DDAS.Setup
         static void CreateUsers()
         {
             CreateUser("clarityadmin", "app-admin", "Clarity@148");
+            CreateUser("clarityadmin", "admin", "Clarity@148");
+            CreateUser("admin", "admin", "Clarity@148"); 
 
         }
 

@@ -76,6 +76,10 @@ export class UserService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         headers.append("Authorization","Bearer " + this.authService.token);
         let options = new RequestOptions({ headers: headers });
+<<<<<<< HEAD
+ 
+=======
+>>>>>>> b4bb3f1db861f32bcf43e41f4479904fadf52b57
 
         return this.http.post(this._baseUrl + 'Account/SetPassword', body, options)
             .map((res: Response) => {
