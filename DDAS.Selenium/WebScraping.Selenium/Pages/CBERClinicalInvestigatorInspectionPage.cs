@@ -8,6 +8,7 @@ using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -117,10 +118,42 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         public override void LoadContent()
         {
             try
             {
+                if (!IsPageLoaded())
+                    throw new Exception("Page is not loaded");
+
+                if (IsFeedbackPopUpDisplayed)
+                {
+                    var ErrorCaptureFilePath =
+                        _config.ErrorScreenCaptureFolder +
+                         "PopUp_CBERClinicalInvesigator_" +
+                        DateTime.Now.ToString("dd MMM yyyy hh_mm");
+                    SaveScreenShot(ErrorCaptureFilePath);
+                    driver.Navigate().GoToUrl(Url);
+                    IsPageLoaded();
+                }
+
                 _CBERSiteData.DataExtractionRequired = true;
                 LoadNextInspectionList();
                 _CBERSiteData.DataExtractionSucceeded = true;

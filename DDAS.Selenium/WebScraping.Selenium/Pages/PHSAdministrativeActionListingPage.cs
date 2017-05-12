@@ -10,6 +10,7 @@ using WebScraping.Selenium.BaseClasses;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -98,7 +99,10 @@ namespace WebScraping.Selenium.Pages
                     AdministrativeActionListing.CorrectionOfArticle = TDs[8].Text;
                     AdministrativeActionListing.Memo = TDs[9].Text;
 
-                    if(IsElementPresent(TDs[0], By.XPath("a")))
+                    var Anchors = TDs[0].FindElements(By.XPath("a"));
+
+                    if(Anchors.Count > 0)
+                    //if(IsElementPresent(TDs[0], By.XPath("a")))
                     {
                         IWebElement anchor = TDs[0].FindElement(By.XPath("a"));
                         Link link = new Link();
@@ -107,7 +111,12 @@ namespace WebScraping.Selenium.Pages
                         AdministrativeActionListing.Links.Add(link);
                     }
 
-                    if (IsElementPresent(TDs[1], By.XPath("a")))
+                    Anchors = null;
+
+                    Anchors = TDs[1].FindElements(By.XPath("a"));
+
+                    if(Anchors.Count > 0)
+                    //if (IsElementPresent(TDs[1], By.XPath("a")))
                     {
                         IWebElement anchor = TDs[1].FindElement(By.XPath("a"));
                         Link link = new Link();
@@ -116,7 +125,12 @@ namespace WebScraping.Selenium.Pages
                         AdministrativeActionListing.Links.Add(link);
                     }
 
-                    if (IsElementPresent(TDs[2], By.XPath("a")))
+                    Anchors = null;
+
+                    Anchors = TDs[2].FindElements(By.XPath("a"));
+
+                    if (Anchors.Count > 0)
+                    //if (IsElementPresent(TDs[2], By.XPath("a")))
                     {
                         IWebElement anchor = TDs[2].FindElement(By.XPath("a"));
                         Link link = new Link();
@@ -200,10 +214,31 @@ namespace WebScraping.Selenium.Pages
             //        _PHSAdministrativeSiteData.RecId;
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         public override void LoadContent()
         {
             try
             {
+                if (!IsPageLoaded())
+                    throw new Exception("page is not loaded");
+
                 _PHSAdministrativeSiteData.DataExtractionRequired = true;
                 LoadAdministrativeActionList();
                 _PHSAdministrativeSiteData.DataExtractionSucceeded = true;

@@ -11,6 +11,7 @@ using DDAS.Models.Repository;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models;
 using DDAS.Models.Interfaces;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -135,10 +136,31 @@ namespace WebScraping.Selenium.Pages
                 _adequateAssuranceListSiteData);
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         public override void LoadContent()
         {
             try
             {
+                if (!IsPageLoaded())
+                    throw new Exception("Page is not loaded");
+
                 _adequateAssuranceListSiteData.DataExtractionRequired = true;
                 LoadAdequateAssuranceInvestigators();
                 _adequateAssuranceListSiteData.DataExtractionSucceeded = true;

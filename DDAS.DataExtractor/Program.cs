@@ -54,13 +54,6 @@ namespace DDAS.DataExtractor
                 _WriteLog.LogEnd();
                 return;
             }
-            //appRootFolder = Path.GetDirectoryName(configFile);
-            //string DataExtractionLogFile = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "DataExtractionLogFile");
-            //_WriteLog = new LogText(DataExtractionLogFile, true);
-
-            //DownloadFolder = appRootFolder + @"\" + GetWebConfigAppSetting(configFile, "AppDataDownloadFolder");
-
-            //string DataExtractionLogFile = ConfigurationManager.AppSettings["DataExtractionLogFile"];
 
             IConfig _config = new Config();
             ISearchEngine searchEngine = new SearchEngine(uow, _config);
@@ -98,8 +91,8 @@ namespace DDAS.DataExtractor
             }
             finally
             {
-                _WriteLog.WriteLog("=================================================================================");
                 _WriteLog.LogEnd();
+                _WriteLog.WriteLog("=================================================================================");
 
                 Process currentProcess = Process.GetCurrentProcess();
                 currentProcess.CloseMainWindow();

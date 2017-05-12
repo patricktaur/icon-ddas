@@ -110,15 +110,7 @@ namespace DDAS.Services.AppAdminService
 
             AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory10, CIASiteData, 10, SiteEnum.CorporateIntegrityAgreementsListPage);
 
-
-            //var ExtractionHistory11 - LiveSite
-
-            //11 SAM / SYSTEM FOR AWARD MANAGEMENT Live No
-            //Live Site - Data not extracted
             var ExtractionHistory11 = new DataExtractionHistory();
-
-            //var site11 = new BaseSiteData();
-            //site11.DataExtractionRequired = false;
 
             var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll().
                 OrderByDescending(x => x.CreatedOn).
@@ -144,12 +136,6 @@ namespace DDAS.Services.AppAdminService
             int SiteNumber, 
             SiteEnum siteEnum)
         {
-            //var ExtractionHistory9 = new DataExtractionHistory();
-
-            //var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
-            //    OrderByDescending(x => x.CreatedOn).
-            //    First();
-
             ExtractionHistory.SiteNumber = SiteNumber;
             ExtractionHistory.SiteName = siteEnum.ToString();
             ExtractionHistory.Enum = siteEnum;
@@ -372,7 +358,6 @@ namespace DDAS.Services.AppAdminService
             return DataExtractionList;
         }
 
-        
         private List<DataExtractionHistory> GetClinicalInvestigatorDisqualificationRepository()
         {
             //SiteEnum.ClinicalInvestigatorDisqualificationPage
