@@ -1,6 +1,20 @@
 9May2017
-Remove Roslyn packages
+Visual Studio Pulish notes:
+1. Folders and files to be created on IIS server - Mark files to be moved to IIS 
 
+	Build Action: Content
+	Copy to Output Directory: Do not copy
+	Note: Copy always / Copy newer will copy the file to the local bin folder and then also to IIS bin folder
+	In publishxxx.pubxml:
+	<Target Name="CustomCollectFiles">
+    <ItemGroup>
+      <_CustomFiles Include="..\Utilities\**\*" />
+      <FilesForPackagingFromProject Include="%(_CustomFiles.Identity)">
+        <DestinationRelativePath>%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+
+  </Target> 
 1.
 uninstall-package Microsoft.CodeDom.Providers.DotNetCompilerPlatform  
 uninstall-package Microsoft.Net.Compilers  
