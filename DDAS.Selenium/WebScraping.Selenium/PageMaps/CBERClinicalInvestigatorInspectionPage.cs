@@ -12,6 +12,17 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class CBERClinicalInvestigatorInspectionPage : BaseSearchPage //BaseClasses.BasePage
     {
+        public bool IsFeedbackPopUpDisplayed
+        {
+            get
+            {
+                if (driver.PageSource.ToLower().Contains("give feeback"))
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         public IWebElement CBERClinicalInvestigatorTable
         {
             get

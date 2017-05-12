@@ -8,6 +8,7 @@ using DDAS.Models;
 using System.Linq;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -84,7 +85,10 @@ namespace WebScraping.Selenium.Pages
                 proposalToDebarList.date = TDs[2].Text;
                 proposalToDebarList.IssuingOffice = TDs[3].Text;
 
-                if (IsElementPresent(TDs[0], By.XPath("p/a")))
+                var Anchors = TDs[0].FindElements(By.XPath("p/a"));
+
+                if(Anchors.Count > 0)
+                //if (IsElementPresent(TDs[0], By.XPath("p/a")))
                 {
                     Link link = new Link();
                     IList<IWebElement> anchors = TDs[0].FindElements(By.XPath("a"));
@@ -96,7 +100,6 @@ namespace WebScraping.Selenium.Pages
                         proposalToDebarList.Links.Add(link);
                     }
                 }
-
                 _proposalToDebarSiteData.ProposalToDebar.Add(proposalToDebarList);
             }
         }
@@ -166,10 +169,31 @@ namespace WebScraping.Selenium.Pages
             _proposalToDebarSiteData.ReferenceId = SiteData.RecId;
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         public override void LoadContent()
         {
             try
             {
+                if (!IsPageLoaded())
+                    throw new Exception("page is not loaded");
+
                 _proposalToDebarSiteData.DataExtractionRequired = true;
                 LoadProposalToDebarList();
                 _proposalToDebarSiteData.DataExtractionSucceeded = true;

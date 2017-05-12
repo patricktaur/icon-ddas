@@ -249,7 +249,7 @@ namespace WebScraping.Selenium.Pages
             try
             {
                 if (!IsPageLoaded())
-                    throw new Exception("Could not load the page");
+                    throw new Exception("Page is not loaded");
 
                 if (IsFeedbackPopUpDisplayed)
                 {

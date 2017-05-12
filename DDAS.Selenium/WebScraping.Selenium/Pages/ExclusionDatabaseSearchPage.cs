@@ -11,6 +11,7 @@ using System.Linq;
 using DDAS.Models.Entities.Domain;
 using Microsoft.VisualBasic.FileIO;
 using DDAS.Models.Interfaces;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -193,12 +194,32 @@ namespace WebScraping.Selenium.Pages
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         public override void LoadContent()
         {
             try
             {
-                _exclusionSearchSiteData.DataExtractionRequired = true;
+                if (!IsPageLoaded())
+                    throw new Exception("page is not loaded");
 
+                _exclusionSearchSiteData.DataExtractionRequired = true;
                 string FilePath = DownloadExclusionList();
                 LoadExclusionDatabaseListFromCSV(FilePath);
 

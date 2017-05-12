@@ -12,6 +12,7 @@ using System.Net;
 using System.IO;
 using System.IO.Compression;
 using Microsoft.VisualBasic.FileIO;
+using System.Threading;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -290,16 +291,33 @@ namespace WebScraping.Selenium.Pages
             _UOW.SAMSiteDataRepository.DropAll();
         }
 
+        private bool IsPageLoaded()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            bool PageLoaded = false;
+
+            for (int Index = 1; Index <= 25; Index++)
+            {
+                Thread.Sleep(500);
+                if (executor.ExecuteScript("return document.readyState").ToString().
+                    Equals("complete"))
+                {
+                    PageLoaded = true;
+                    break;
+                }
+            }
+            return PageLoaded;
+        }
+
         public override void LoadContent()
         {
             try
             {
+                if (!IsPageLoaded())
+                    throw new Exception("page is not loaded");
+
                 _SAMSiteData.DataExtractionRequired = true;
-
                 var FilePath = DownloadExclusionFile();
-                //var FilePath = _config.AppDataDownloadsFolder +
-                //    "SAM_Exclusions_Public_Extract_17110.CSV";
-
                 DelteAllSAMSiteDataRecords();
                 LoadSAMDatafromCSV(FilePath);
 
