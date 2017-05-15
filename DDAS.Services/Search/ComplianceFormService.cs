@@ -773,11 +773,11 @@ namespace DDAS.Services.Search
                 //Patrick Is this required?
                 siteSourceToAdd.SiteDataId = siteScan.DataId;
             }
-            else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
-            {
-                //extraction error
-                sourceSite.ExtractionMode += "- Extraction error";
-            }
+            //else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
+            //{
+            //    //extraction error
+            //    sourceSite.ExtractionMode += "- Extraction error";
+            //}
 
             siteSourceToAdd.CreatedOn = DateTime.Now;
             //The Id and DisplayPosition are identical when form is created.
@@ -3608,14 +3608,54 @@ namespace DDAS.Services.Search
                     "RowNumber: 2 - First Investigator must be a Principal Investigator");
 
             var FullName = InputRow.FullName;
-
+            
             var InvComponent = FullName.Split(' ').Count();
 
             if (InvComponent <= 1)
                 ValidationMessages.Add("Row number: " + Row +
                     " - please provide at least two components to search - First Name/Middle Name/Last Name");
 
-            if(InputRow.DisplayName == null || InputRow.DisplayName.Trim() == "")
+            var Components = FullName.Split(' ');
+
+            foreach(string Component in Components)
+            {
+                if (Component.Trim().Length == 1)
+                    ValidationMessages.Add("Row number: " + Row + 
+                        " - FirstName/Middle Name/Last Name - single characters are not " +
+                        "accepted. Please provide two or more characters to search");
+                else if(Component.Trim().Length == 2 && 
+                    HasSpecialCharacters(Component.Trim()) || 
+                    Component.Trim().Contains("."))
+                    ValidationMessages.Add("Row number: " + Row +
+                        " - FirstName/Middle Name/Last Name - special characters are not " +
+                        "accepted. Please provide two or more characters to search");
+            }
+
+            //if(InputRow.FirstName.Trim().Length > 0 &&
+            //    HasSpecialCharacters(InputRow.FirstName))
+            //{
+            //    ValidationMessages.Add("Row number: " + Row +
+            //        " - FirstName has special characters. Remove special characters " +
+            //        "and upload");
+            //}
+
+            //if (InputRow.MiddleName.Trim().Length > 0 &&
+            //    HasSpecialCharacters(InputRow.MiddleName))
+            //{
+            //    ValidationMessages.Add("Row number: " + Row +
+            //        " - Middle Name has special characters. Remove special characters " +
+            //        "and upload");
+            //}
+
+            //if (InputRow.LastName.Trim().Length > 0 &&
+            //    HasSpecialCharacters(InputRow.LastName))
+            //{
+            //    ValidationMessages.Add("Row number: " + Row +
+            //        " - First Name has special characters. Remove special characters " +
+            //        "and upload");
+            //}
+
+            if (InputRow.DisplayName == null || InputRow.DisplayName.Trim() == "")
                 ValidationMessages.Add("Row number: " + Row +
                     " - Display Name is mandatory");
 
@@ -3859,7 +3899,6 @@ namespace DDAS.Services.Search
             return Regex.IsMatch(Value, Expression);
         }
 
-      
         #endregion
     }
 }

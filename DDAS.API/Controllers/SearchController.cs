@@ -454,7 +454,7 @@ namespace DDAS.API.Controllers
         {
             var GenerateOutputFile = 
                 new GenerateOutputFile(
-                    _config.ExcelTempateFolder + "Output_File.xlsx");
+                    _config.ExcelTempateFolder + "Output_File_Template.xlsx");
 
             var forms = _UOW.ComplianceFormRepository.GetAll();
 
