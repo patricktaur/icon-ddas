@@ -12,7 +12,7 @@ import { ComplianceFormStatusEnum } from '../../search.classes';
         <ul style="list-style-type:none; font-size:12px; font-weight: normal; padding-left: 0">
             <li><div statusCircle size=16 [status]="NotScanned" style="float:left;"></div><div >&nbsp;Not scanned.</div><div style="clear: left;"></div>  </li>
             <li><div statusCircle size=16 [status]="NoMatchFoundReviewPending" style="float:left;"></div><div >&nbsp;No match found, Review pending</div><div style="clear: left;"></div>  </li>
-            <li><div statusCircle size=16 [status]="FullMatchFoundReviewPending" style="float:left;"></div><div >&nbsp;Full / Partial match found / Issues Identified, Review pending</div><div style="clear: left;"></div>  </li>
+            <li><div statusCircle size=16 [status]="FullMatchFoundReviewPending" style="float:left;"></div><div >&nbsp;Matches Found / Issues Identified, Review pending</div><div style="clear: left;"></div>  </li>
             <li><div statusCircle size=16 [status]="ReviewCompletedIssuesNotIdentified" style="float:left;"></div><div >&nbsp;Review Completed, Issues not identified.</div><div style="clear: left;"></div>  </li>
             <li><div statusCircle size=16 [status]="ReviewCompletedIssuesIdentified" style="float:left;"></div><div >&nbsp;Review Completed, Issues identified.</div><div style="clear: left;"></div>  </li>
         </ul>

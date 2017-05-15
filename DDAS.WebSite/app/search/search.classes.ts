@@ -274,6 +274,7 @@ export class SearchList{
         SiteSourceUpdatedOn: Date;
         ExtractionMode: string;
         Exclude : boolean = false;
+         SearchAppliesTo: number;
    }
   
   
@@ -293,6 +294,8 @@ export class SearchList{
         IssuesIdentified : boolean = false;
         Deleted: boolean = false;
         IsMandatory: boolean = true;  //temp
+        SearchAppliesTo: number;
+        SearchAppliesToText: string;
     }  
 
     export class Finding{
@@ -335,8 +338,10 @@ export class SearchList{
         Selected: boolean = false;
         Included: boolean = false; //Included in SiteSource collectio n
         ExtractionMode: string;
-        ExcludeSI : boolean = false;
-        ExcludePI : boolean = false;
+        //ExcludeSI : boolean = false;
+        //ExcludePI : boolean = false;
+        SearchAppliesTo: number;
+        SearchAppliesToText: string;
 
     }  
 

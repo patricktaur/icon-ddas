@@ -462,6 +462,8 @@ namespace DDAS.Services.Search
         // Called by ComplianceForm Save
         public ComplianceForm UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
+            var ScanData = new SiteScanData(_UOW);
+
             if (form.RecId == null)
             {
                 AddMissingSearchStatusRecords(form);
@@ -489,6 +491,20 @@ namespace DDAS.Services.Search
                     //Remove Optional sites not found in client collection
                     dbForm.SiteSources.Clear();
                     dbForm.SiteSources.AddRange(form.SiteSources);
+
+                    //Get SiteDataId for newly added DB Sites:
+                    foreach (var site in dbForm.SiteSources)
+                    {
+                        if (site.SiteDataId == null && site.ExtractionMode.ToLower() == "db")
+                        {
+                            var sourceSite = _UOW.SiteSourceRepository.FindById(site.SiteId);
+                            var siteScan = ScanData.GetSiteScanData(sourceSite.SiteEnum);
+                            if (siteScan != null)
+                            {
+                                site.SiteDataId = siteScan.DataId;
+                            }
+                         }
+                    }
 
                     dbForm.Findings.Clear();
                     dbForm.Findings.AddRange(form.Findings);

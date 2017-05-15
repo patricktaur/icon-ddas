@@ -8,6 +8,14 @@ import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
+//import {SiteSourceViewModel} from '../../admin/appAdmin.classes';
+import {DefaultSite, SiteSourceViewModel} from '../../admin/appAdmin.classes';
+//import {XXX} from '../../admin/appAdmin.classes';
+
+
+
+// C:\Development\p926-ddas\DDAS.WebSite\app\app-admin\app-admin.classes.ts
+
 @Component({
     moduleId: module.id,
 
@@ -74,6 +82,12 @@ export class CompFormEditComponent implements OnInit {
     public defaultTabInActive: string = " in active";
     
     public selectedFinding: Finding = new Finding;
+
+     public SiteSources: any[];
+     //public SourceSite: DefaultSite = new DefaultSite;
+     //public SourceSite: DefaultSite = new DefaultSite;
+     public SiteSource: SiteSource = new SiteSource;
+    
     @ViewChild('FindingsAddModal') FindingsAddModal: ModalComponent;
 
     public myDatePickerOptions = {
@@ -245,7 +259,8 @@ gotoSiteDetails(SiteSourceId: number){
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
-                this.LoadSitesAvailable();
+                //this.LoadSitesAvailable();
+                this.loadSiteSources();
                 this.Initialize();
                 this.SetInvestigatorsSavedFlag();
                 this.pageChanged = false;
@@ -429,6 +444,16 @@ gotoSiteDetails(SiteSourceId: number){
             });
     }
 
+    loadSiteSources(){
+        this.service.getSiteSources()
+        .subscribe((item: any[]) =>{
+            this.SiteSources = item;
+        },
+        error => {
+
+        });
+    }
+
     LoadMockSitesAvailable() {
         this.SitesAvailable = [];
 
@@ -485,36 +510,92 @@ gotoSiteDetails(SiteSourceId: number){
         return this.SitesAvailable.filter(x => x.Included == false);
     }
 
-    AddSelectedSite() {
-        var index = 0;
+    get AppliesToItems(){       
+        var items: { id: number, name: string }[] = [
+        { "id": 0, "name": "PIs and SIs" },
+        { "id": 1, "name": "PIs" },
+        { "id": 2, "name": "Institute" }];
+        return items;
+    }
 
-        for (index = 0; index < this.SitesAvailable.length; ++index) {
-            if (this.SitesAvailable[index].Selected == true) {
-                //Check if site is already included
-                let enumOfSiteToAdd = this.SitesAvailable[index].SiteEnum;
-                let siteIdToAdd = this.SitesAvailable[index].RecId;
-                //let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
-                let check = this.CompForm.SiteSources.find(x => x.SiteId == siteIdToAdd)
-                if (check) { //If found then it was possibly marked as deleted 
-                    check.Deleted = false;
-                }
-                else {  //add it to the collection
-                    let siteToAdd = new SiteSourceToSearch;
-                    siteToAdd.SiteId = this.SitesAvailable[index].RecId;
-                    siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
-                    siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
-                    siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
-                    siteToAdd.Id = this.LastSiteSourceId + 1;
-                    siteToAdd.IsMandatory = false;
-                    siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;
-                    this.CompForm.SiteSources.push(siteToAdd);
-                    this.SitesAvailable[index].Included = true;
-                }
-                //one or more sites are added.
-                this.pageChanged = true;
-            }
-            this.SitesAvailable[index].Selected = false;
+     onSiteSourceChange(value:any){
+      var site = this.SiteSources.find(x => x.RecId == value);
+      
+      this.SiteSource.RecId = site.RecId;
+      this.SiteSource.SiteName = site.SiteName;
+      this.SiteSource.ExtractionMode = site.ExtractionMode;
+   }
+    
+   onSearchAppliesToChange(value:any){
+        this.SiteSource.SearchAppliesToText = value;
+        console.log(value);
+    }
+   
+    clearSelectedSite(){
+        
+        this.SiteSource = new SiteSource;
+    }
+    AddSelectedSite() {
+  
+      
+        let siteToAdd = new SiteSourceToSearch;
+        siteToAdd.SiteId = this.SiteSource.RecId;
+        siteToAdd.SiteName = this.SiteSource.SiteName;
+        //siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
+        siteToAdd.SiteUrl = this.SiteSource.SiteUrl;
+        siteToAdd.Id = this.LastSiteSourceId + 1;
+        siteToAdd.IsMandatory = false;
+        siteToAdd.SearchAppliesTo = this.SiteSource.SearchAppliesTo;
+        siteToAdd.SearchAppliesToText = this.SiteSource.SearchAppliesToText;
+
+        console.log("SearchAppliesTo : " + this.SiteSource.SearchAppliesTo);
+
+        let extractionMode: string = "Manual";
+        if (this.SiteSource.ExtractionMode != null){
+            extractionMode = this.SiteSource.ExtractionMode;
         }
+ 
+        if (this.SiteSource.SearchAppliesTo == 2)  //Applies to Institute
+        {
+            extractionMode = "Manual"
+        }
+        siteToAdd.ExtractionMode = extractionMode; 
+
+        
+        this.CompForm.SiteSources.push(siteToAdd);
+ 
+        
+        // var index = 0;
+
+        // for (index = 0; index < this.SitesAvailable.length; ++index) {
+        //     if (this.SitesAvailable[index].Selected == true) {
+        //         //Check if site is already included
+        //         let enumOfSiteToAdd = this.SitesAvailable[index].SiteEnum;
+        //         let siteIdToAdd = this.SitesAvailable[index].RecId;
+        //         //let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
+        //         let check = this.CompForm.SiteSources.find(x => x.SiteId == siteIdToAdd)
+        //         if (check) { //If found then it was possibly marked as deleted 
+        //             check.Deleted = false;
+        //         }
+        //         else {  //add it to the collection
+        //             let siteToAdd = new SiteSourceToSearch;
+        //             siteToAdd.SiteId = this.SitesAvailable[index].RecId;
+        //             siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
+        //             siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
+        //             siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
+        //             siteToAdd.Id = this.LastSiteSourceId + 1;
+        //             siteToAdd.IsMandatory = false;
+        //             siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;
+        //             this.CompForm.SiteSources.push(siteToAdd);
+        //             this.SitesAvailable[index].Included = true;
+        //         }
+        //         //one or more sites are added.
+        //         this.pageChanged = true;
+        //     }
+        //     this.SitesAvailable[index].Selected = false;
+        // }
+        
+        
         this.SetSiteDisplayPosition();
     }
 
