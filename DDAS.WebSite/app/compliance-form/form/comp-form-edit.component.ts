@@ -434,15 +434,15 @@ gotoSiteDetails(SiteSourceId: number){
     //SitesParticpatingInSearch  
     //================================   
 
-    LoadSitesAvailable() {
-        this.service.getSiteSources()
-            .subscribe((item: any) => {
-                this.SitesAvailable = item;
-                this.InitializeSitesAvailableToAdd();
-            },
-            error => {
-            });
-    }
+    // LoadSitesAvailable() {
+    //     this.service.getSiteSources()
+    //         .subscribe((item: any) => {
+    //             this.SitesAvailable = item;
+    //             this.InitializeSitesAvailableToAdd();
+    //         },
+    //         error => {
+    //         });
+    // }
 
     loadSiteSources(){
         this.service.getSiteSources()
@@ -477,22 +477,22 @@ gotoSiteDetails(SiteSourceId: number){
 
     }
 
-    InitializeSitesAvailableToAdd() {
-        //Mark sites that are already included Comp Form:
+    // InitializeSitesAvailableToAdd() {
+    //     //Mark sites that are already included Comp Form:
 
-        for (let site of this.SitesAvailable) {
+    //     for (let site of this.SitesAvailable) {
 
-            //let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteEnum == site.SiteEnum);
-            let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteId == site.RecId);
-            site.Selected = false;
-            if (siteInCompForm == null) {
-                site.Included = false;
-            }
-            else {
-                site.Included = true;
-            }
-        }
-    }
+    //         //let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteEnum == site.SiteEnum);
+    //         let siteInCompForm = this.CompForm.SiteSources.find(x => x.SiteId == site.RecId);
+    //         site.Selected = false;
+    //         if (siteInCompForm == null) {
+    //             site.Included = false;
+    //         }
+    //         else {
+    //             site.Included = true;
+    //         }
+    //     }
+    // }
 
     get SitesParticpatingInSearch() {
         return this.CompForm.SiteSources.filter(x => x.Deleted == false)
