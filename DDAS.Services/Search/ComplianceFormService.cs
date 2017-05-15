@@ -3523,25 +3523,24 @@ namespace DDAS.Services.Search
 
                 foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
                 {
-                    foreach (Finding finding in form.Findings)
+                    foreach(SiteSource Site in form.SiteSources)
                     {
-                        if (finding.SiteEnum == SiteEnum.WorldCheckPage &&
-                            finding.InvestigatorSearchedId == Investigator.Id)
-                        {
-                            WorldCheckCompletedOn = finding.DateOfInspection;
-                        }
-                        else if (finding.SiteEnum == SiteEnum.PfizerDMCChecksPage &&
-                            finding.InvestigatorSearchedId == Investigator.Id)
-                        {
-                            DMCCheckCompletedOn = finding.DateOfInspection;
-                        }
+                        WorldCheckCompletedOn =
+                            form.SiteSources.Where(x => 
+                            x.SiteEnum == SiteEnum.WorldCheckPage)
+                            .FirstOrDefault().SiteSourceUpdatedOn;
 
-                        if (finding.InvestigatorName == null ||
-                            finding.InvestigatorName == "" &&
-                            finding.InvestigatorSearchedId == Investigator.Id &&
-                            Investigator.Role.ToLower() == "principal")
-                            InstituteWorldCheckCompletedOn =
-                                finding.DateOfInspection;
+                        InstituteWorldCheckCompletedOn =
+                            form.SiteSources.Where(x =>
+                           x.SiteEnum == SiteEnum.WorldCheckPage &&
+                           x.SearchAppliesTo == SearchAppliesToEnum.Institute)
+                            .FirstOrDefault().SiteSourceUpdatedOn;
+
+                        var DMCCheck = form.SiteSources.Where(x =>
+                        x.SiteEnum == SiteEnum.PfizerDMCChecksPage)
+                        .FirstOrDefault();
+                        if(DMCCheck != null)
+                            DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
                     }
 
                     if (Investigator.ReviewCompletedOn != null)
