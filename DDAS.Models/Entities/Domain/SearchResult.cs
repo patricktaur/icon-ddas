@@ -211,10 +211,17 @@ namespace DDAS.Models.Entities.Domain
         {
             string plural = "";
             string plural1 = "";
-            var InvIssuesIdentifiedCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending).ToList().Count;
+            //var InvIssuesIdentifiedCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending).ToList().Count;
+            var InvIssuesIdentifiedCount = InvestigatorDetails.Where(s => (s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending 
+            || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
+            ).ToList().Count;
+
             var InvFullMatchCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending).ToList().Count;
+
             var InvPartialMatchCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending).ToList().Count;
+
             var InvSingleMatchCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending).ToList().Count;
+
             var InvExtractionErrorsCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors).ToList().Count;
             var InvNotScannedCount = InvestigatorDetails.Where(s => s.StatusEnum == ComplianceFormStatusEnum.NotScanned).ToList().Count;
 
@@ -537,7 +544,12 @@ namespace DDAS.Models.Entities.Domain
             string plural = "";
             string plural1 = "";
             var ReviewCompleted = false;
-            var searchStatusIssuesIdentifiedCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending).ToList().Count;
+            //var searchStatusIssuesIdentifiedCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending).ToList().Count;
+            var searchStatusIssuesIdentifiedCount = SitesSearched.Where(
+                s => s.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending
+                || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
+                ).ToList().Count;
+
             var searchStatusFullMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending).ToList().Count;
             var searchStatusPartialMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending).ToList().Count;
             var searchStatusSingleMatchCount = SitesSearched.Where(s => s.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending).ToList().Count;
