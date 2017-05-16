@@ -99,7 +99,7 @@ const searchRoutes: Routes = [
 
         path: 'findings/:formId/:investigatorId/:siteSourceId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
-
+        
         // path: 'findings/:formId/:investigatorId/:siteId',
         // component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       },
@@ -137,9 +137,9 @@ const searchRoutes: Routes = [
       {
         //path: 'findings/:formId/:investigatorId/:siteEnum',
 
-        path: 'findings/:formId/:investigatorId/:siteSourceId',
+         path: 'findings/:formId/:investigatorId/:siteSourceId',
         component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
-
+        
         // path: 'findings/:formId/:investigatorId/:siteId',
         // component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       },

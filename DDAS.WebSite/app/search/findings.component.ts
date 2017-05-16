@@ -338,17 +338,19 @@ export class FindingsComponent implements OnInit {
     }
 
     RemoveFinding(){
+        
         this.pageChanged = true;
-        if (this.recordToDelete.IsMatchedRecord || this.recordToDelete.MatchCount == 1){
+        if (this.recordToDelete.IsMatchedRecord ){
+            this.recordToDelete.IsAnIssue = false;
+            this.recordToDelete.Observation = "";
+            this.recordToDelete.Selected = false;
+        }
+        else{
             var index = this.CompForm.Findings.indexOf(this.recordToDelete, 0);
             if (index > -1) {
                 this.CompForm.Findings.splice(index, 1);
             }
-        }
-        else{
-            this.recordToDelete.IsAnIssue = false;
-            this.recordToDelete.Observation = "";
-            this.recordToDelete.Selected = false;
+            
         }
    
 } 

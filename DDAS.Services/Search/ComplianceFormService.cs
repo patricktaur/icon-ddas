@@ -574,31 +574,39 @@ namespace DDAS.Services.Search
                         finding.Id = Guid.NewGuid();
                     }
                 }
-                //Remove manually added Findings (IsMatched = false) from db and add again from the client
+
+                //REvised on 15May2017
                 dbForm.Findings.RemoveAll(
                     x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
-                    && x.SiteSourceId == updateFindings.SiteSourceId
-                    && (x.IsMatchedRecord == false || x.MatchCount ==1));
+                    && x.SiteSourceId == updateFindings.SiteSourceId);
+                dbForm.Findings.AddRange(updateFindings.Findings);
 
-                //Add all IsMatchedRecord = false OR MatchCount == 1 records from client
-                //MatchCount == 1  are added to comp Form by client.
-                dbForm.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false || x.MatchCount == 1));
+                ////***** commented, replaced by above code
+                ////Remove manually added Findings (IsMatched = false) from db and add again from the client
+                //dbForm.Findings.RemoveAll(
+                //    x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
+                //    && x.SiteSourceId == updateFindings.SiteSourceId
+                //    && (x.IsMatchedRecord == false || x.MatchCount ==1));
 
-                var matchedRecords = updateFindings.Findings.Where(x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
-                   && x.SiteSourceId == updateFindings.SiteSourceId
-                   && (x.IsMatchedRecord == true && x.MatchCount > 1));
+                ////Add all IsMatchedRecord = false OR MatchCount == 1 records from client
+                ////MatchCount == 1  are added to comp Form by client.
+                //dbForm.Findings.AddRange(updateFindings.Findings.Where(x => x.IsMatchedRecord == false || x.MatchCount == 1));
 
-                //Replace existing generated records (IsMatchedRecord = true) records with records received from client.
-                foreach (var rec in matchedRecords)
-                {
-                    var findingInForm = dbForm.Findings.Find(x => x.Id == rec.Id);
-                    if (findingInForm != null)
-                    {
-                        findingInForm.Observation = rec.Observation;
-                        findingInForm.IsAnIssue = rec.IsAnIssue;
-                        findingInForm.Selected = rec.Selected;
-                     }
-                }
+                //var matchedRecords = updateFindings.Findings.Where(x => x.InvestigatorSearchedId == updateFindings.InvestigatorSearchedId
+                //   && x.SiteSourceId == updateFindings.SiteSourceId
+                //   && (x.IsMatchedRecord == true && x.MatchCount > 1));
+
+                ////Replace existing generated records (IsMatchedRecord = true) records with records received from client.
+                //foreach (var rec in matchedRecords)
+                //{
+                //    var findingInForm = dbForm.Findings.Find(x => x.Id == rec.Id);
+                //    if (findingInForm != null)
+                //    {
+                //        findingInForm.Observation = rec.Observation;
+                //        findingInForm.IsAnIssue = rec.IsAnIssue;
+                //        findingInForm.Selected = rec.Selected;
+                //     }
+                //}
 
                 RollUpSummary(dbForm);
 
