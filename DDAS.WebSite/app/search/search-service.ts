@@ -328,7 +328,7 @@ export class SearchService {
         headers.append("Authorization", "Bearer " + this.authService.token);
         //let options = new RequestOptions({ headers: headers });
         let file = {};
-        return this.http.post(this._baseUrl + 'search/TestDownload/', '',
+        return this.http.get(this._baseUrl + 'search/GenerateOutputFile/',
             { headers: headers, responseType: ResponseContentType.ArrayBuffer })
             .map((res: Response) => {
                 //return res;
@@ -337,7 +337,11 @@ export class SearchService {
                 });
                 var filename = res.headers.get('FileName');
                 console.log("Downloaded filename: " + filename);
-                window.open(window.URL.createObjectURL(file));
+                var anchor = document.createElement("a");
+                anchor.download = filename;
+                anchor.href = window.URL.createObjectURL(file);
+                anchor.click();
+                //window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }

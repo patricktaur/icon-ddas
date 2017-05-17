@@ -170,12 +170,17 @@
   <ItemGroup>
     <None Include="..\packages\PhantomJS.2.1.1\tools\phantomjs\phantomjs.exe">
       <Link>phantomjs.exe</Link>
+<!--<<<<<<< HEAD
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+=======-->
     </None>
     <Content Include="App_Data\Downloads\CIILFolder\Dummy.txt" />
     <Content Include="App_Data\Downloads\ExclusionDatabase\Dummy.txt" />
     <Content Include="App_Data\Downloads\FDAWarningLetters\Dummy.txt" />
     <Content Include="App_Data\Downloads\SAM\Dummy.txt" />
     <Content Include="App_Data\Downloads\SDN\Dummy.txt" />
+<!-->>>>>>> 7d42b2c3ecdbd571d333973ee99110660aacedf3-->
     <Content Include="assets\bootstrap\css\bootstrap-theme.css" />
     <Content Include="assets\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="assets\bootstrap\css\bootstrap.css" />
@@ -200,11 +205,18 @@
     <Content Include="DataFiles\OutputFileFolder\Dummy.txt" />
     <Content Include="DataFiles\Templates\Dummy.txt" />
     <Content Include="DataFiles\Uploads\Dummy.txt" />
+
     <Content Include="dist\build.js" />
     <Content Include="dist\lib\long-stack-trace-zone.min.js" />
     <Content Include="dist\lib\shim.min.js" />
     <Content Include="dist\lib\zone.min.js" />
+<!--<<<<<<< HEAD
+    <Content Include="index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+=======-->
     <Content Include="index.html" />
+
     <Content Include="JS\TestPDFMake.js" />
     <Content Include="Logs\Dummy.txt" />
     <None Include="phantomjs-license.txt" />
@@ -259,6 +271,7 @@
     <Content Include="dist\build.js.map" />
     <Content Include="DataFiles\Templates\DDAS_Upload_Template.xlsx" />
     <Content Include="DataFiles\Templates\Output_File.xlsx" />
+
     <Content Include="App_Data\Templates\ComplianceFormTemplate.docx" />
     <None Include="Properties\PublishProfiles\DDAS Custom.pubxml">
       <SubType>Designer</SubType>
@@ -271,7 +284,14 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+<!--<<<<<<< HEAD
+  <ItemGroup>
+    <Folder Include="Downloads\" />
+    <Folder Include="Logs\" />
+  </ItemGroup>
+=======-->
   <ItemGroup />
+
   <ItemGroup>
     <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
       <Project>{95F621B2-EFA7-4329-A232-5EA1EFE44844}</Project>

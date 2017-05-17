@@ -3,7 +3,11 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
 using Utilities;
@@ -68,52 +72,79 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateOutputFile")]
         [HttpPost]
-        public IHttpActionResult GenerateOutputFile(ComplianceFormFilter CompFormFilter)
+        public HttpResponseMessage GenerateOutputFile(ComplianceFormFilter CompFormFilter)
         {
-            var GenerateOutputFile =
-                new GenerateOutputFile(
-                    _config.ExcelTempateFolder + "Output_File.xlsx");
+            HttpResponseMessage response = null;
 
-            var fromDate = CompFormFilter.SearchedOnFrom.Value;
-
-            var allForms = _UOW.ComplianceFormRepository.GetAll();
-
-            var forms = allForms
-                .Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
-                || x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
-                .OrderBy(x => x.SearchStartedOn).ToList();
-
-            var forms1 = forms;
-
-            if (CompFormFilter.SearchedOnFrom != null)
+            if (!File.Exists(
+                _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
             {
-                DateTime startDate;
-                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
-                forms1 = forms.Where(x =>
-               x.SearchStartedOn >= startDate)
-               .ToList();
+                response = Request.CreateResponse(HttpStatusCode.Gone);
             }
-
-            var forms2 = forms1;
-
-            if (CompFormFilter.SearchedOnTo != null)
+            else
             {
+                response = Request.CreateResponse(HttpStatusCode.OK);
 
-                DateTime endDate;
-                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
-                forms2 = forms1.Where(x =>
-                x.SearchStartedOn <
-                endDate)
-                .ToList();
+                var GenerateOutputFile =
+                    new GenerateOutputFile(
+                        _config.ExcelTempateFolder + "Output_File_Template.xlsx");
+
+                var fromDate = CompFormFilter.SearchedOnFrom.Value;
+
+                var allForms = _UOW.ComplianceFormRepository.GetAll();
+
+                var forms = allForms
+                    .Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
+                    || x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
+                    .OrderBy(x => x.SearchStartedOn).ToList();
+
+                var forms1 = forms;
+
+                if (CompFormFilter.SearchedOnFrom != null)
+                {
+                    DateTime startDate;
+                    startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+                    forms1 = forms.Where(x =>
+                   x.SearchStartedOn >= startDate)
+                   .ToList();
+                }
+
+                var forms2 = forms1;
+
+                if (CompFormFilter.SearchedOnTo != null)
+                {
+
+                    DateTime endDate;
+                    endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+                    forms2 = forms1.Where(x =>
+                    x.SearchStartedOn <
+                    endDate)
+                    .ToList();
+                }
+
+                var memoryStream =
+                    _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
+
+                response.Content = new ByteArrayContent(memoryStream.ToArray());
+
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                var OutputFileName = "OutputFile_" +
+                    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+                    ".xlsx";
+
+                response.Content.Headers.ContentDisposition.FileName = OutputFileName;
+
+                //add custom headers to the response
+                //easy for angular2 to read this header
+                response.Content.Headers.Add("Filename", OutputFileName);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
             }
-
-            var FilePath = _SearchSummary.GenerateOutputFile(
-                GenerateOutputFile,
-                forms2);
-
-            var Path = FilePath.Replace(RootPath, "");
-
-            return Ok(Path);
+            return response;
         }
     }
 }

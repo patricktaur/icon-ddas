@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers , RequestOptions } from '@angular/http';
+import { Http, Response, Headers , RequestOptions, ResponseContentType } from '@angular/http';
 //Grab everything with import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
@@ -68,16 +68,37 @@ export class ReportService {
      
     generateOutputFile(Filters: CompFormFilter){
         let Filter1 = JSON.stringify(Filters);
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+        // let headers = new Headers();
+        // headers.append('Content-Type', 'application/json');
 
-        return this.http.post(this._baseUrl + 'Reports/GenerateOutputFile', Filter1, this._options)
+        // return this.http.post(this._baseUrl + 'Reports/GenerateOutputFile', Filter1, this._options)
+        //     .map((res: Response) => {
+        //         return res.json();
+        //     })
+        //     .catch(
+        //         this.handleError
+        //     );
+
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+        
+        let file = {};
+        return this.http.post(this._baseUrl + 'Reports/GenerateOutputFile', Filter1,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
             .map((res: Response) => {
-                return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                var filename = res.headers.get('FileName');
+                console.log("Downloaded filename: " + filename);
+                var anchor = document.createElement("a");
+                anchor.download = filename;
+                anchor.href = window.URL.createObjectURL(file);
+                anchor.click();
+                //window.open(window.URL.createObjectURL(file));
             })
-            .catch(
-                this.handleError
-            );        
+            .catch(this.handleError);
     }
      
 

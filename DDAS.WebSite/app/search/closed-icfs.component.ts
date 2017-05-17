@@ -167,13 +167,6 @@ export class ClosedICFsComponent implements OnInit {
             });
     }
 
-    // testDownloadComplianceForm() {
-    //     this.service.downloadComplianceFormTest()
-    //         .subscribe(),
-    //         error => console.log("Error downloading the file."),
-    //         () => console.log('Completed file download.');
-    // }
-
     getBackgroundColor(color: number) {
         let retColor: string;
 

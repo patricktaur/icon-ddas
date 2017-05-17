@@ -797,11 +797,11 @@ namespace DDAS.Services.Search
                 //Patrick Is this required?
                 siteSourceToAdd.SiteDataId = siteScan.DataId;
             }
-            else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
-            {
-                //extraction error
-                sourceSite.ExtractionMode += "- Extraction error";
-            }
+            //else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
+            //{
+            //    //extraction error
+            //    sourceSite.ExtractionMode += "- Extraction error";
+            //}
 
             siteSourceToAdd.CreatedOn = DateTime.Now;
             //The Id and DisplayPosition are identical when form is created.
@@ -3518,7 +3518,7 @@ namespace DDAS.Services.Search
 
         #region OutputFile
         
-        public string GenerateOutputFile(
+        public MemoryStream GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile, 
             List<ComplianceForm> forms)
         {
@@ -3531,25 +3531,24 @@ namespace DDAS.Services.Search
 
                 foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
                 {
-                    foreach (Finding finding in form.Findings)
+                    foreach(SiteSource Site in form.SiteSources)
                     {
-                        if (finding.SiteEnum == SiteEnum.WorldCheckPage &&
-                            finding.InvestigatorSearchedId == Investigator.Id)
-                        {
-                            WorldCheckCompletedOn = finding.DateOfInspection;
-                        }
-                        else if (finding.SiteEnum == SiteEnum.PfizerDMCChecksPage &&
-                            finding.InvestigatorSearchedId == Investigator.Id)
-                        {
-                            DMCCheckCompletedOn = finding.DateOfInspection;
-                        }
+                        WorldCheckCompletedOn =
+                            form.SiteSources.Where(x => 
+                            x.SiteEnum == SiteEnum.WorldCheckPage)
+                            .FirstOrDefault().SiteSourceUpdatedOn;
 
-                        if (finding.InvestigatorName == null ||
-                            finding.InvestigatorName == "" &&
-                            finding.InvestigatorSearchedId == Investigator.Id &&
-                            Investigator.Role.ToLower() == "principal")
-                            InstituteWorldCheckCompletedOn =
-                                finding.DateOfInspection;
+                        InstituteWorldCheckCompletedOn =
+                            form.SiteSources.Where(x =>
+                           x.SiteEnum == SiteEnum.WorldCheckPage &&
+                           x.SearchAppliesTo == SearchAppliesToEnum.Institute)
+                            .FirstOrDefault().SiteSourceUpdatedOn;
+
+                        var DMCCheck = form.SiteSources.Where(x =>
+                        x.SiteEnum == SiteEnum.PfizerDMCChecksPage)
+                        .FirstOrDefault();
+                        if(DMCCheck != null)
+                            DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
                     }
 
                     if (Investigator.ReviewCompletedOn != null)
@@ -3578,14 +3577,15 @@ namespace DDAS.Services.Search
                     }
                 }
             }
-            var OutputFileName = "OutputFile_" + 
-                DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-                ".xlsx";
-            
-            GenerateOutputFile.SaveChanges(_config.OutputFileFolder + 
-                OutputFileName);
+            //var OutputFileName = "OutputFile_" +
+            //    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+            //    ".xlsx";
 
-            return _config.OutputFileFolder + OutputFileName;
+            //GenerateOutputFile.SaveChanges(_config.OutputFileFolder +
+            //    OutputFileName);
+
+            return GenerateOutputFile.GetMemoryStream();
+            //return _config.OutputFileFolder + OutputFileName;
         }
         
         #endregion
@@ -3632,14 +3632,54 @@ namespace DDAS.Services.Search
                     "RowNumber: 2 - First Investigator must be a Principal Investigator");
 
             var FullName = InputRow.FullName;
-
+            
             var InvComponent = FullName.Split(' ').Count();
 
             if (InvComponent <= 1)
                 ValidationMessages.Add("Row number: " + Row +
                     " - please provide at least two components to search - First Name/Middle Name/Last Name");
 
-            if(InputRow.DisplayName == null || InputRow.DisplayName.Trim() == "")
+            var Components = FullName.Split(' ');
+
+            foreach(string Component in Components)
+            {
+                if (Component.Trim().Length == 1)
+                    ValidationMessages.Add("Row number: " + Row + 
+                        " - FirstName/Middle Name/Last Name - single characters are not " +
+                        "accepted. Please provide two or more characters to search");
+                else if(Component.Trim().Length == 2 && 
+                    HasSpecialCharacters(Component.Trim()) || 
+                    Component.Trim().Contains("."))
+                    ValidationMessages.Add("Row number: " + Row +
+                        " - FirstName/Middle Name/Last Name - special characters are not " +
+                        "accepted. Please provide two or more characters to search");
+            }
+
+            //if(InputRow.FirstName.Trim().Length > 0 &&
+            //    HasSpecialCharacters(InputRow.FirstName))
+            //{
+            //    ValidationMessages.Add("Row number: " + Row +
+            //        " - FirstName has special characters. Remove special characters " +
+            //        "and upload");
+            //}
+
+            //if (InputRow.MiddleName.Trim().Length > 0 &&
+            //    HasSpecialCharacters(InputRow.MiddleName))
+            //{
+            //    ValidationMessages.Add("Row number: " + Row +
+            //        " - Middle Name has special characters. Remove special characters " +
+            //        "and upload");
+            //}
+
+            //if (InputRow.LastName.Trim().Length > 0 &&
+            //    HasSpecialCharacters(InputRow.LastName))
+            //{
+            //    ValidationMessages.Add("Row number: " + Row +
+            //        " - First Name has special characters. Remove special characters " +
+            //        "and upload");
+            //}
+
+            if (InputRow.DisplayName == null || InputRow.DisplayName.Trim() == "")
                 ValidationMessages.Add("Row number: " + Row +
                     " - Display Name is mandatory");
 
@@ -3883,7 +3923,6 @@ namespace DDAS.Services.Search
             return Regex.IsMatch(Value, Expression);
         }
 
-      
         #endregion
     }
 }

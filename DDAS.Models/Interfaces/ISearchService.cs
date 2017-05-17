@@ -60,8 +60,13 @@ namespace DDAS.Models.Interfaces
             SiteEnum Enum,
             string FullName);
 
-        string GenerateOutputFile(
+        //string GenerateOutputFile(
+        //    IGenerateOutputFile GenerateOutputFile,
+        //    List<ComplianceForm> forms);
+
+        MemoryStream GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile,
             List<ComplianceForm> forms);
+
     }
 }

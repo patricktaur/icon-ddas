@@ -613,7 +613,6 @@ namespace Utilities.WordTemplate
         public void CloseDocument()
         {
             _document.Close();
-            //_stream.Close();
             _stream.Dispose();
         }
         #endregion

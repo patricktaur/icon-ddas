@@ -2,6 +2,7 @@
 using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +12,16 @@ namespace Utilities
     public class GenerateOutputFile : IGenerateOutputFile
     {
         private SLDocument _Document;
+        private MemoryStream _Stream;
+        private MemoryStream _OutputStream;
 
         public GenerateOutputFile(string FilePath)
         {
-            _Document = new SLDocument(FilePath);
+            var byteArray = File.ReadAllBytes(FilePath);
+            _Stream = new MemoryStream();
+            _Stream.Write(byteArray, 0, byteArray.Length);
+
+            _Document = new SLDocument(_Stream);
         }
 
         public void AddInvestigator(
@@ -71,6 +78,13 @@ namespace Utilities
         public void SaveChanges(string FileSaveAs)
         {
             _Document.SaveAs(FileSaveAs);
+        }
+
+        public MemoryStream GetMemoryStream()
+        {
+            _OutputStream = new MemoryStream();
+            _Document.SaveAs(_OutputStream);
+            return _OutputStream;
         }
     }
 }
