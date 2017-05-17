@@ -220,15 +220,9 @@
     <Content Include="JS\TestPDFMake.js" />
     <Content Include="Logs\Dummy.txt" />
     <None Include="phantomjs-license.txt" />
-    <None Include="Utilities\DDAS.DataExtractor.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="Utilities\DDAS.Setup.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Web.config">
+    <None Include="Web.config">
       <SubType>Designer</SubType>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\GlobalExceptionHandler.cs" />
@@ -283,12 +277,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Local File.pubxml" />
-    <Content Include="Utilities\DDAS.DataExtractor.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Utilities\DDAS.Setup.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

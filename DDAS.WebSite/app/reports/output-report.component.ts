@@ -95,9 +95,13 @@ export class OutputReportComponent implements OnChanges {
         //this.generating = true;
         //this.downloadUrl = "";
         this.service.generateOutputFile(this.ComplianceFormFilter)
-            .subscribe(),
-            error => console.log("Error downloading the file."),
-            () => console.log('Completed file download.');
+            .subscribe(
+            error => {
+
+            });
+        // .subscribe(),
+        // error => console.log("Error downloading the file."),
+        // () => console.log('Completed file download.');
     }
 
     get diagnostic() { return JSON.stringify(null); }

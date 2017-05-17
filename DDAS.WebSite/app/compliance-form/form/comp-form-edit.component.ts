@@ -296,6 +296,9 @@ gotoSiteDetails(SiteSourceId: number){
         }
     }
 
+    formValueChanged(){
+        this.pageChanged = true;
+    }    
     get PrincipalInvestigatorName() {
         let p = this.CompForm.InvestigatorDetails.find(x => x.Role == "Principal");
         if (p != null) {
@@ -563,7 +566,7 @@ gotoSiteDetails(SiteSourceId: number){
 
         
         this.CompForm.SiteSources.push(siteToAdd);
- 
+        this.pageChanged = true;
         
         // var index = 0;
 
