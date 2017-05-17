@@ -3518,7 +3518,7 @@ namespace DDAS.Services.Search
 
         #region OutputFile
         
-        public string GenerateOutputFile(
+        public MemoryStream GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile, 
             List<ComplianceForm> forms)
         {
@@ -3577,14 +3577,15 @@ namespace DDAS.Services.Search
                     }
                 }
             }
-            var OutputFileName = "OutputFile_" + 
-                DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-                ".xlsx";
-            
-            GenerateOutputFile.SaveChanges(_config.OutputFileFolder + 
-                OutputFileName);
+            //var OutputFileName = "OutputFile_" +
+            //    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+            //    ".xlsx";
 
-            return _config.OutputFileFolder + OutputFileName;
+            //GenerateOutputFile.SaveChanges(_config.OutputFileFolder +
+            //    OutputFileName);
+
+            return GenerateOutputFile.GetMemoryStream();
+            //return _config.OutputFileFolder + OutputFileName;
         }
         
         #endregion

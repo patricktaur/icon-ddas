@@ -450,21 +450,54 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateOutputFile")]
         [HttpGet]
-        public IHttpActionResult GenerateOutputFile()
+        public HttpResponseMessage GenerateOutputFile()
         {
-            var GenerateOutputFile = 
-                new GenerateOutputFile(
-                    _config.ExcelTempateFolder + "Output_File_Template.xlsx");
+            HttpResponseMessage response = null;
 
-            var forms = _UOW.ComplianceFormRepository.GetAll();
+            if(!File.Exists(
+                _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
+            {
+                response = Request.CreateResponse(HttpStatusCode.Gone);
+            }
+            else
+            {
+                response = Request.CreateResponse(HttpStatusCode.OK);
 
-            var FilePath = _SearchService.GenerateOutputFile(
-                GenerateOutputFile,
-                forms);
+                var GenerateOutputFile =
+                    new GenerateOutputFile(
+                        _config.ExcelTempateFolder + "Output_File_Template.xlsx");
 
-            var Path = FilePath.Replace(RootPath, "");
+                var forms = _UOW.ComplianceFormRepository.GetAll();
 
-            return Ok(Path);
+                //var FilePath = _SearchService.GenerateOutputFile(
+                //    GenerateOutputFile,
+                //    forms);
+
+                //var Path = FilePath.Replace(RootPath, "");
+
+                var memoryStream =
+                    _SearchService.GenerateOutputFile(GenerateOutputFile, forms);
+                
+                response.Content = new ByteArrayContent(memoryStream.ToArray());
+
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                var OutputFileName = "OutputFile_" +
+                    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+                    ".xlsx";
+
+                response.Content.Headers.ContentDisposition.FileName = OutputFileName;
+
+                //add custom headers to the response
+                //easy for angular2 to read this header
+                response.Content.Headers.Add("Filename", OutputFileName);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+            }
+            return response;
         }
 
         //3Dec2016
@@ -504,7 +537,7 @@ namespace DDAS.API.Controllers
         {
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
-            var localFilePath = _config.ExcelTempateFolder + "Output_File_Query.xlsx";
+            var localFilePath = _config.ExcelTempateFolder + "Output_File_Template.xlsx";
             if (!File.Exists(localFilePath))
             {
                 result = Request.CreateResponse(HttpStatusCode.Gone);
@@ -525,6 +558,7 @@ namespace DDAS.API.Controllers
 
                 result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
 
+                //add custom headers to the response
                 result.Content.Headers.Add("Filename", "OutputFile_Test");
                 result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
             }
