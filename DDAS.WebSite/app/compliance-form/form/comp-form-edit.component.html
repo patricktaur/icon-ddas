@@ -80,7 +80,7 @@
 														<div class="form-group">
 															<label for="ProjectNumber">ICON Project Number (1234/1234):</label>
 															<input type="text" class="form-control" name="projNumber" [(ngModel)]="CompForm.ProjectNumber" #projNumber="ngModel" required
-															 pattern="\d{4}/\d{4}">
+															 pattern="\d{4}/\d{4}"   (change)="formValueChanged()">
 
 															<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
 																Project Number format 9999/9999 expected.
@@ -95,7 +95,8 @@
 													<div class="col-lg-6">
 														<div class="form-group">
 															<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
-															<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber">
+															<input type="text" class="form-control" name="SponsorProtocolNumber"
+															 [(ngModel)]="CompForm.SponsorProtocolNumber" (change)="formValueChanged()">
 														</div>
 													</div>
 													<div class="col-lg-6">
@@ -106,7 +107,8 @@
 													<div class="col-lg-6">
 														<div class="form-group">
 															<label for="Country">Country:</label>
-															<input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country">
+															<input type="text" class="form-control" name="Country" 
+															[(ngModel)]="CompForm.Country" (change)="formValueChanged()">
 														</div>
 													</div>
 													<div class="col-lg-6">
@@ -117,7 +119,10 @@
 											<div class="col-lg-6">
 												<div class="form-group">
 													<label for="NameToSeaICONrch">Address:</label>
-													<textarea name="Address" class="form-control" id="Address" rows="9" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"></textarea>
+													<textarea name="Address" class="form-control" id="Address" rows="9" cols="30" 
+													placeholder="Address" name="Address" 
+													[(ngModel)]="CompForm.Address"
+													(change)="formValueChanged()"></textarea>
 												</div>
 											</div>
 										</div>
@@ -130,7 +135,9 @@
 										<div class="form-group">
 											<label for="institute">Institute:</label>
 											<p>
-												<input type="text" class="form-control" name="institute" [(ngModel)]="CompForm.Institute">
+												<input type="text" class="form-control" 
+												name="institute" [(ngModel)]="CompForm.Institute"
+												(change)="formValueChanged()">
 											</p>
 										</div>
 										<div class="row">
@@ -434,7 +441,7 @@
 																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
 																		{{item.SiteName}}
 																	</div>
-
+																
 																</td>
 																<td>
 																	{{item.ExtractionMode}}
