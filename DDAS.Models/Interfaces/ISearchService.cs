@@ -49,9 +49,11 @@ namespace DDAS.Models.Interfaces
         List<ComplianceForm> ReadUploadedFileData(ExcelInput ExcelInputData, 
             string UserName, string FilePathWithGUID, string UploadedFileName);
 
-        string GenerateComplianceForm(
-            Guid? ComplianceFormId, IWriter writer,
-            string FileExtension);
+        MemoryStream GenerateComplianceForm(
+            Guid? ComplianceFormId, 
+            IWriter writer,
+            string FileExtension,
+            out string FileName);
 
         bool AddAttachmentsToFindings(ComplianceForm from);
 

@@ -11,6 +11,7 @@ namespace Utilities.WordTemplate
         private Document _document;
         private PdfWriter _writer;
         private PdfPTable _table;
+        private MemoryStream _memoryStream;
 
         public MemoryStream CreateComplianceForm()
         {
@@ -133,6 +134,8 @@ namespace Utilities.WordTemplate
             table.AddCell(cell);
         }
 
+        #region IWriter Implementation
+
         public void Initialize(string TemplateFolder, string ComplianceFormFolder)
         {
             _document = new Document(PageSize.LETTER, 10, 10, 42, 35);
@@ -179,8 +182,6 @@ namespace Utilities.WordTemplate
 
         public void AddTableHeaders(string[] Headers, int Columns, int TableIndex)
         {
-            //_document.Add(new Chunk("\n"));
-
             _table = new PdfPTable(Columns);
             
             for (int Index = 0; Index < Columns; Index++)
@@ -231,5 +232,12 @@ namespace Utilities.WordTemplate
             _document.Close();
             _writer.Close();
         }
+
+        public MemoryStream ReturnStream()
+        {
+            return null;
+        }
+
+        #endregion
     }
 }

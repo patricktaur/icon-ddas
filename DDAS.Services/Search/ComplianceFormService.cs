@@ -2002,10 +2002,11 @@ namespace DDAS.Services.Search
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
-        public string GenerateComplianceForm(
+        public MemoryStream GenerateComplianceForm(
             Guid? ComplianceFormId, 
             IWriter writer, 
-            string FileExtension)
+            string FileExtension,
+            out string FileName)
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -2017,6 +2018,8 @@ namespace DDAS.Services.Search
                 ProjectNumber + "_" + PI + "_" + 
                 DateTime.Now.ToString("dd MMM yyyy HH_mm") +
                 FileExtension;
+
+            FileName = GeneratedFileName;
 
             var GeneratedFileNameNPath =
                 _config.ComplianceFormFolder + GeneratedFileName;
@@ -2156,7 +2159,8 @@ namespace DDAS.Services.Search
 
             //writer.AttachFile(@"C:\Development\test.pdf", GeneratedFileNameNPath);
 
-            return _config.ComplianceFormFolder + GeneratedFileName;
+            return writer.ReturnStream();
+            //return _config.ComplianceFormFolder + GeneratedFileName;
         }
 
         private string[] InvestigatorTableHeaders()

@@ -142,7 +142,7 @@ namespace DDAS.API.Controllers
                 //add custom headers to the response
                 //easy for angular2 to read this header
                 response.Content.Headers.Add("Filename", OutputFileName);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "FileName");
             }
             return response;
         }

@@ -19,7 +19,8 @@ namespace Utilities.WordTemplate
         private WordprocessingDocument _document;
         private Table _table;
         private TableRow _row;
-
+        private MemoryStream _memoryStream;
+        
         #region Old working code
         public MemoryStream CreateComplianceForm(ComplianceForm form, string TemplateFolder, string fileName = "")
         {
@@ -469,18 +470,16 @@ namespace Utilities.WordTemplate
         #region IWriter Implementation
 
         public void Initialize(string TemplateFolder, string ComplianceFormFolder)
-        {
-            //if (File.Exists(ComplianceFormFolder))
-            //    File.Delete(ComplianceFormFolder);
-            
+        {   
             byte[] ByteArray = File.ReadAllBytes(
                 TemplateFolder + "ComplianceFormTemplate.docx");
 
-            _stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+            //_stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
 
-            _stream.Write(ByteArray, 0, ByteArray.Length);
+            _memoryStream = new MemoryStream();
+            _memoryStream.Write(ByteArray, 0, ByteArray.Length);
 
-            _document = WordprocessingDocument.Open(_stream, true);
+            _document = WordprocessingDocument.Open(_memoryStream, true);
 
             //var FilePath = @"c:\Development\EmbedFile.pdf";
             //var document = new OpenXmlHelper(_document, _document.MainDocumentPart);
@@ -613,7 +612,12 @@ namespace Utilities.WordTemplate
         public void CloseDocument()
         {
             _document.Close();
-            _stream.Dispose();
+            //_stream.Dispose();
+        }
+
+        public MemoryStream ReturnStream()
+        {
+            return _memoryStream;
         }
         #endregion
     }

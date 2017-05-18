@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,5 +29,7 @@ namespace DDAS.Models.Interfaces
         void AttachFile(string FilePath, string ComplianceFormDocPath);
 
         void CloseDocument();
+
+        MemoryStream ReturnStream();
     }
 }

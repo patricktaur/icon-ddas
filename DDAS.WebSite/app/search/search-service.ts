@@ -81,7 +81,7 @@ export class SearchService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        return this.http.get(this._baseUrl + 'search/DeleteComplianceForm/?ComplianceFormId=' + CompFormId, this._options)
+        return this.http.get(this._baseUrl + 'search/DeleteComplianceForm?ComplianceFormId=' + CompFormId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -149,7 +149,7 @@ export class SearchService {
 
     getComplianceForm(formId: string): Observable<ComplianceFormA> {
 
-        return this.http.get(this._baseUrl + 'search/GetComplianceFormA/?formId=' + formId, this._options)
+        return this.http.get(this._baseUrl + 'search/GetComplianceFormA?formId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -196,7 +196,7 @@ export class SearchService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        return this.http.get(this._baseUrl + 'search/GetInvestigatorSiteSummary/?formId=' + formId + "&investigatorId=" + investigatorId, this._options)
+        return this.http.get(this._baseUrl + 'search/GetInvestigatorSiteSummary?formId=' + formId + "&investigatorId=" + investigatorId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -208,23 +208,44 @@ export class SearchService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        return this.http.get(this._baseUrl + 'search/getInstituteFindingsSummary/?formId=' + formId, this._options)
+        return this.http.get(this._baseUrl + 'search/getInstituteFindingsSummary?formId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
     }
     generateComplianceForm(formId: string) {
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+        // let headers = new Headers();
+        // headers.append('Content-Type', 'application/json');
 
-        return this.http.get(this._baseUrl + 'search/GenerateComplianceForm/?ComplianceFormId=' + formId, this._options)
+        // return this.http.get(this._baseUrl + 'search/GenerateComplianceForm?ComplianceFormId=' + formId, this._options)
+        //     .map((res: Response) => {
+        //         return res.json();
+        //     })
+        //     .catch(
+        //     this.handleError
+        //     );
+
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+        
+        let file = {};
+        return this.http.get(this._baseUrl + 'Search/GenerateComplianceForm?ComplianceFormId=' + formId,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
             .map((res: Response) => {
-                return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/ms-word'
+                });
+                var filename = res.headers.get('Filename');
+                console.log("Downloaded filename: " + filename);
+                var anchor = document.createElement("a");
+                anchor.download = filename;
+                anchor.href = window.URL.createObjectURL(file);
+                anchor.click();
+                //window.open(window.URL.createObjectURL(file));
             })
-            .catch(
-            this.handleError
-            );
+            .catch(this.handleError);
     }
 
     generateOutputFile() {
@@ -242,11 +263,23 @@ export class SearchService {
 
     downLoadComplianceForm(formId: string) {
         let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
-
-        return this.http.get(this._baseUrl + 'search/DownloadComplianceForm/?ComplianceFormId=' + formId, this._options)
+        
+        let file = {};
+        return this.http.get(this._baseUrl + 'Search/GenerateComplianceForm?ComplianceFormId=' + formId,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
             .map((res: Response) => {
-                //return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/ms-word'
+                });
+                var filename = res.headers.get('Filename');
+                console.log("Downloaded filename: " + filename);
+                var anchor = document.createElement("a");
+                anchor.download = filename;
+                anchor.href = window.URL.createObjectURL(file);
+                anchor.click();
+                //window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }
@@ -303,7 +336,7 @@ export class SearchService {
     }
 
     getSingleComponentMatchedRecords(SiteDataId: string, SiteEnum: number, FullName: string) {
-        return this.http.get(this._baseUrl + 'search/GetSingleComponentMatchedRecords/?SiteDataId=' + SiteDataId
+        return this.http.get(this._baseUrl + 'search/GetSingleComponentMatchedRecords?SiteDataId=' + SiteDataId
             + '&SiteEnum=' + SiteEnum
             + '&FullName=' + FullName,
             this._options)

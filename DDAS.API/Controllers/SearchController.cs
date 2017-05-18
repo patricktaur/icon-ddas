@@ -277,7 +277,6 @@ namespace DDAS.API.Controllers
             return Ok();
         }
 
-      
         [Route("GetSingleComponentMatchedRecords")]
         [HttpGet]
         public IHttpActionResult GetSingleComponentMatchRecords(
@@ -391,61 +390,94 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
-        public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
+        public HttpResponseMessage GenerateComplianceForm(string ComplianceFormId)
         {
-            try
-            {
-                Guid? RecId = Guid.Parse(ComplianceFormId);
+            HttpResponseMessage response = null;
 
-                //var FilePath = _SearchService.GenerateComplianceFormAlt(
-                //    RecId, WordTemplateFolder, ComplianceFormFolder);
+            var localFilePath = 
+                _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
+
+            if (!File.Exists(localFilePath))
+            {
+                response = Request.CreateResponse(HttpStatusCode.Gone);
+            }
+            else
+            {
+                response = Request.CreateResponse(HttpStatusCode.OK);
+
+                Guid? RecId = Guid.Parse(ComplianceFormId);
 
                 IWriter writer = new CreateComplianceFormWord();
 
-                var FilePath = _SearchService.GenerateComplianceForm(
+                string FileName = null;
+
+                var memoryStream = _SearchService.GenerateComplianceForm(
                     RecId,
-                    writer, 
-                    ".docx");
+                    writer,
+                    ".docx",
+                    out FileName);
 
-                string path = FilePath.Replace(RootPath, "");
+                response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                return Ok(path);
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/ms-word");
+
+                response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                //add custom headers to the response
+                //easy for angular2 to read this header
+                response.Content.Headers.Add("Filename", FileName);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
             }
-            catch (Exception e)
-            {
-                return  Content(HttpStatusCode.BadRequest, e.Message);
-            }
+            return response;
         }
 
         [Route("GenerateComplianceFormPDF")]
         [HttpGet]
-        public IHttpActionResult GenerateComplianceFormPDF(string ComplianceFormId)
+        public HttpResponseMessage GenerateComplianceFormPDF(string ComplianceFormId)
         {
-            try
+            HttpResponseMessage response = null;
+
+            var localFilePath = 
+                _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
+
+            if (!File.Exists(localFilePath))
+            {
+                response = Request.CreateResponse(HttpStatusCode.Gone);
+            }
+            else
             {
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
-                //var FilePath = _SearchService.GenerateComplianceFormAlt(
-                //    RecId, WordTemplateFolder, ComplianceFormFolder);
-
                 IWriter writer = new CreateComplianceFormPDF();
 
-                var FilePath = _SearchService.GenerateComplianceForm(
+                string FileName = null;
+
+                var memoryStream = _SearchService.GenerateComplianceForm(
                     RecId,
                     writer,
-                    ".pdf");
+                    ".pdf",
+                    out FileName);
 
-                string path = FilePath.Replace(RootPath, "");
+                response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                return Ok(path);
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
 
+                response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/pdf");
+
+                response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                //add custom headers to the response
+                //easy for angular2 to read this header
+                response.Content.Headers.Add("Filename", FileName);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "FileName");
             }
-            catch (Exception e)
-            {
-                //return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
-                //    "Error Details: " + e.Message);
-                return Content(HttpStatusCode.BadRequest, e.Message);
-            }
+            return response;
         }
 
         [Route("GenerateOutputFile")]

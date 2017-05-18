@@ -129,8 +129,6 @@ export class ManageICFsComponent implements OnInit {
   }
   
      get filteredRecords() {
-       
-
         let filter1: PrincipalInvestigatorDetails[];
 
         filter1 = this.PrincipalInvestigators;
@@ -202,6 +200,14 @@ export class ManageICFsComponent implements OnInit {
         this.router.navigate(['comp-form-edit', DataItem.RecId, {rootPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
 
 
+    }
+
+    generateComplianceForm(formId: string){
+        this.service.generateComplianceForm(formId)
+            .subscribe(
+            error => {
+
+            });        
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
