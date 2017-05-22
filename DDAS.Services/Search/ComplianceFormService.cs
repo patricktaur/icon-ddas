@@ -187,7 +187,8 @@ namespace DDAS.Services.Search
             {
                 var form = GetNewComplianceForm(UserName);
 
-                form.AssignedTo = UserName;
+                //Already assigning the name in GetNewComplianceForm
+                //form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName = 
                     Path.GetFileName(FilePathWithGUID);

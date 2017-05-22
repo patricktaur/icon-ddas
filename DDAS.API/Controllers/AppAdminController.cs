@@ -140,14 +140,14 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteUploadedFile(string GeneratedFileName)
         {
-            return Ok();
+            return Ok(_AppAdminService.DeleteUploadedFile(GeneratedFileName));
         }
 
         [Route("DeleteAllUploadedFiles")]
         [HttpGet]
         public IHttpActionResult DeleteAllUploadedFiles()
         {
-            return Ok();
+            return Ok(_AppAdminService.DeleteAllUploadedFiles());
         }
 
         #endregion

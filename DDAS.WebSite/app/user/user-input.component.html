@@ -26,11 +26,16 @@
             						Single word, only alphabets allowed, min: 3, max: 15
  								</small>
 							</div>
-
 						</div>
-
 					</div>
 					<div class="col-lg-8">
+					</div>
+				</div>
+				<div class="row">
+					<label for="FullName">Full Name:</label>
+					<label *ngIf="!isNew" class="form-control">{{user.UserFullName}}</label>
+					<div *ngIf="isNew">
+						<input type="text" class="form-control" name="FullName" [(ngModel)]="user.UserFullName">
 					</div>
 				</div>
 				<div class="row">
@@ -42,7 +47,7 @@
 							pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*">
 							<small [hidden]="emailId.valid || (emailId.pristine && !f.submitted)" class="text-danger">
             						Invalid EMail.
- 								</small>
+							</small>
 						</div>
 					</div>
 					<div class="col-lg-8">
@@ -55,7 +60,6 @@
 							<label for="Active">Active:</label>
 							<input type="checkbox" name="Active" [(ngModel)]="user.Active">
 						</div>
-
 					</div>
 					<div class="col-lg-8">
 					</div>

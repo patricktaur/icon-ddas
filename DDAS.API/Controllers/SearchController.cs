@@ -64,6 +64,9 @@ namespace DDAS.API.Controllers
 
             try
             {
+                string WebBrowserName = HttpContext.Current.Request.Browser.Browser;
+                var BrowserName = HttpContext.Current.Request.Browser.Type;
+
                 var userName = User.Identity.GetUserName();
                 //CustomMultipartFormDataStreamProvider provider = 
                 //    new CustomMultipartFormDataStreamProvider(UploadsFolder);

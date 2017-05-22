@@ -214,6 +214,7 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
+    
     generateComplianceForm(formId: string) {
         // let headers = new Headers();
         // headers.append('Content-Type', 'application/json');
@@ -239,11 +240,12 @@ export class SearchService {
                 });
                 var filename = res.headers.get('Filename');
                 console.log("Downloaded filename: " + filename);
-                var anchor = document.createElement("a");
-                anchor.download = filename;
-                anchor.href = window.URL.createObjectURL(file);
-                anchor.click();
-                //window.open(window.URL.createObjectURL(file));
+                // var anchor = document.createElement("a");
+                // anchor.download = filename;
+                // anchor.href = window.URL.createObjectURL(file);
+                // anchor.click();
+                window.navigator.msSaveOrOpenBlob(file, filename);
+                ////window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }

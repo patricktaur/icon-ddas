@@ -21,6 +21,8 @@ export class UserComponent {
     public passwordReset: boolean; // temp until email is ready.
     public loggedInUserName: string;
     public LoggedInUserIsAppAdmin: boolean;
+    
+    public selectedRecordName: string;
 
     public pageNumber: number;
     constructor(
@@ -44,6 +46,7 @@ export class UserComponent {
         this.service.getUsers()
         .subscribe((item: any) => {
             this.Users = item;
+            console.log(this.Users);
          },
         error => {
         });
@@ -73,7 +76,8 @@ export class UserComponent {
             });
    }
 
-   ResetPassword(userId: string){
+   ResetPassword(userId: string, userName: string){
+       this.selectedRecordName = userName;
        this.passwordReset = false;
        this.service.resetPassword(userId)
             .subscribe((item: any) => {
@@ -105,8 +109,7 @@ export class UserComponent {
 getDeleteButtonTitle(userName: string){
     if (userName == this.loggedInUserName){
         return "You cannot delete your own record. Request another user to delete the record";
-    }
-       
+        }  
    }
 
  

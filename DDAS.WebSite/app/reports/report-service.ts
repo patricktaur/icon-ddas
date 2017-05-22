@@ -92,11 +92,12 @@ export class ReportService {
                 });
                 var filename = res.headers.get('FileName');
                 console.log("Downloaded filename: " + filename);
-                var anchor = document.createElement("a");
-                anchor.download = filename;
-                anchor.href = window.URL.createObjectURL(file);
-                anchor.click();
-                //window.open(window.URL.createObjectURL(file));
+                // var anchor = document.createElement("a");
+                // anchor.download = filename;
+                // anchor.href = window.URL.createObjectURL(file);
+                // anchor.click();
+                window.navigator.msSaveOrOpenBlob(file, filename);
+                // //window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }
