@@ -474,12 +474,16 @@ namespace Utilities.WordTemplate
             byte[] ByteArray = File.ReadAllBytes(
                 TemplateFolder + "ComplianceFormTemplate.docx");
 
-            //_stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+            _stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
 
-            _memoryStream = new MemoryStream();
-            _memoryStream.Write(ByteArray, 0, ByteArray.Length);
+            //_memoryStream = new MemoryStream();
+            //_memoryStream.Write(ByteArray, 0, ByteArray.Length);
 
-            _document = WordprocessingDocument.Open(_memoryStream, true);
+            //_document = WordprocessingDocument.Open(_memoryStream, true);
+
+            _stream.Write(ByteArray, 0, ByteArray.Length);
+
+            _document = WordprocessingDocument.Open(_stream, true);
 
             //var FilePath = @"c:\Development\EmbedFile.pdf";
             //var document = new OpenXmlHelper(_document, _document.MainDocumentPart);
@@ -612,7 +616,7 @@ namespace Utilities.WordTemplate
         public void CloseDocument()
         {
             _document.Close();
-            //_stream.Dispose();
+            _stream.Dispose();
         }
 
         public MemoryStream ReturnStream()

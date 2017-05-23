@@ -69,7 +69,6 @@ namespace DDAS.API.Providers
                         return;
                     }
 
-
                     IdentityUser user = 
                         await userManager.FindAsync(context.UserName, context.Password);
 

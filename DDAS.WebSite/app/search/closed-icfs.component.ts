@@ -161,7 +161,9 @@ export class ClosedICFsComponent implements OnInit {
     DownloadCompForm(formid: string) {
         this.service.downLoadComplianceForm(formid)
             .subscribe((item: any) => {
-
+                this.downloadUrl = this.configService.getApiHost() + item;
+                console.log("item:" + item);
+                console.log("this.downloadUrl:" + this.downloadUrl);
             },
             error => {
             });

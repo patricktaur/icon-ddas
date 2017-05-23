@@ -4,6 +4,7 @@ using DDAS.Data.Mongo.Indexes;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
+using DDAS.Models.Interfaces;
 using DDAS.Services.AppAdminService;
 using Microsoft.AspNet.Identity;
 using System;
@@ -18,6 +19,7 @@ namespace DDAS.Setup
         private static LogText _WriteLog;
         private static UnitOfWork _UOW;
         private static AppAdminService _AppAdminService;
+        private static IConfig _config;
 
         static void Main(string[] args)
         {
@@ -42,7 +44,8 @@ namespace DDAS.Setup
                     CreateRoles();
                     CreateUsers();
 
-                    _AppAdminService = new AppAdminService(_UOW);
+                    _config = new Config(); //empty values for config prop.. ?
+                    _AppAdminService = new AppAdminService(_UOW, _config);
 
                     //Executed on FindMeServerOn 1April2017.
                     var sitesInDB = _UOW.SiteSourceRepository.GetAll();

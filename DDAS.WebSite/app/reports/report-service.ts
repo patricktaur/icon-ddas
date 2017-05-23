@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers , RequestOptions, ResponseContentType } from '@angular/http';
+import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@angular/http';
 //Grab everything with import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
-import {Observer} from 'rxjs/Observer';
+import { Observer } from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { ComplianceForm} from '../search//search.classes';
+import { ComplianceForm } from '../search//search.classes';
 import {
     CompFormFilter,
 } from '../search//search.classes';
@@ -18,21 +18,21 @@ import { AuthService } from '../auth/auth.service';
 export class ReportService {
     _baseUrl: string = '';
     //_controller: string = 'search/'; 
-    _controller: string = ''; 
+    _controller: string = '';
     _options: RequestOptions;
 
     constructor(private http: Http,
         private configService: ConfigService,
         private authService: AuthService
-        ) {
-            this._baseUrl = configService.getApiURI() + this._controller;
-            let headers = new Headers();
-            headers.append('Content-Type', 'application/json');
-            headers.append("Authorization","Bearer " + this.authService.token);
-            this._options = new RequestOptions({headers: headers});
+    ) {
+        this._baseUrl = configService.getApiURI() + this._controller;
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        this._options = new RequestOptions({ headers: headers });
     }
-   
-    
+
+
     getPrincipalInvestigators() {
 
         let headers = new Headers();
@@ -44,15 +44,15 @@ export class ReportService {
             })
             .catch(this.handleError);
     }
-    
-    getDeleteComplianceForm(RecId:string){
-             return this.http.get(this._baseUrl + 'Reports/DeleteComplianceForm?ComplianceFormId=' +RecId, this._options)
+
+    getDeleteComplianceForm(RecId: string) {
+        return this.http.get(this._baseUrl + 'Reports/DeleteComplianceForm?ComplianceFormId=' + RecId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
     }
-    
+
     //   generateOutputFile(){
     //     let headers = new Headers();
     //     headers.append('Content-Type', 'application/json');
@@ -65,8 +65,8 @@ export class ReportService {
     //             this.handleError
     //         );        
     // }
-     
-    generateOutputFile(Filters: CompFormFilter){
+
+    generateOutputFile(Filters: CompFormFilter) {
         let Filter1 = JSON.stringify(Filters);
         // let headers = new Headers();
         // headers.append('Content-Type', 'application/json');
@@ -82,34 +82,55 @@ export class ReportService {
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
-        
+
         let file = {};
         return this.http.post(this._baseUrl + 'Reports/GenerateOutputFile', Filter1,
-            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            { headers: headers }) //responseType: ResponseContentType.ArrayBuffer
             .map((res: Response) => {
-                file = new Blob([res.arrayBuffer()], {
-                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                });
-                var filename = res.headers.get('FileName');
-                console.log("Downloaded filename: " + filename);
-                // var anchor = document.createElement("a");
-                // anchor.download = filename;
-                // anchor.href = window.URL.createObjectURL(file);
-                // anchor.click();
-                window.navigator.msSaveOrOpenBlob(file, filename);
+                return res.json();
+                // file = new Blob([res.arrayBuffer()], {
+                //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                // });
+                // var filename = res.headers.get('Filename');
+                // var browser = res.headers.get('Browser');
+
+                // console.log("Downloaded filename: " + filename);
+                // console.log("Browser: " + browser);
+
+                // if (browser.toLowerCase() == "edge" ||
+                //     browser.toLowerCase() == "ie") {
+                //     window.navigator.msSaveOrOpenBlob(file, filename);
+                // }
+
+                // if (browser.toLowerCase() == "chrome") {
+                //     var anchor = document.createElement("a");
+                //     anchor.download = filename;
+                //     anchor.href = window.URL.createObjectURL(file);
+                //     anchor.click();
+                // }
+                // if (browser.toLowerCase() == "unknown") {
+                //     alert("could not identify the browser. File download failed");
+                // }
+                // if (browser == null) {
+                //     window.navigator.msSaveOrOpenBlob(file, filename);
+                //     //alert("Error. could not download file for browser: " + browser);
+                // }
+                // if(browser.length == 0){
+                //     window.navigator.msSaveOrOpenBlob(file, filename);
+                // }
                 // //window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }
-     
 
-     private handleError(error: any) {
+
+    private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();
         var modelStateErrors: string = '';
-           
+
         if (!serverError.type) {
-            
+
             console.log(serverError);
             for (var key in serverError) {
                 if (serverError[key])

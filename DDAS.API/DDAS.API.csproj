@@ -215,7 +215,6 @@
     </Content>
 =======-->
     <Content Include="index.html" />
-    <Content Include="JS\TestPDFMake.js" />
     <Content Include="Logs\Dummy.txt" />
     <Content Include="DataFiles\Templates\Output_File_Template.xlsx" />
     <None Include="phantomjs-license.txt" />
@@ -287,7 +286,9 @@
     <Folder Include="Logs\" />
   </ItemGroup>
 =======-->
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="JS\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DDAS.Data.Mongo\DDAS.Data.Mongo.csproj">
       <Project>{95F621B2-EFA7-4329-A232-5EA1EFE44844}</Project>
