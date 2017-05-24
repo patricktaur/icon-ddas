@@ -215,7 +215,6 @@
     </Content>
 =======-->
     <Content Include="index.html" />
-    <Content Include="JS\TestPDFMake.js" />
     <Content Include="Logs\Dummy.txt" />
     <Content Include="DataFiles\Templates\Output_File_Template.xlsx" />
     <None Include="phantomjs-license.txt" />

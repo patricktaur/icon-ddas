@@ -151,15 +151,20 @@ export class CompFormEditComponent implements OnInit {
 
 //===============Institute tab
 LoadInstituteSiteSummary(){
-      this.formLoading = true;
-        this.service.getInstituteFindingsSummary(this.ComplianceFormId)
-            .subscribe((item: any) => {
-                this.InstituteSearchSummary = item;
-                this.formLoading = false;
-            },
-            error => {
-                this.formLoading = false;
-            });
+      
+      if (this.ComplianceFormId != null && this.ComplianceFormId.length > 0){  //ComplianceFormId is null when the form is created manually
+            //console.log("*:" + this.ComplianceFormId + "*");
+            this.formLoading = true;
+            this.service.getInstituteFindingsSummary(this.ComplianceFormId)
+                .subscribe((item: any) => {
+                    this.InstituteSearchSummary = item;
+                    this.formLoading = false;
+                },
+                error => {
+                    this.formLoading = false;
+                });
+      }
+      
   }
 
 gotoSiteDetails(SiteSourceId: number){
