@@ -76,11 +76,10 @@ export class OutputReportComponent implements OnChanges {
         }
     }
 
-
-
     onDateChanged(event: IMyDateModel) {
         this.generating = false;
     }
+
     GenerateOutputFile() {
         if (this.FromDate != null) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
@@ -95,15 +94,15 @@ export class OutputReportComponent implements OnChanges {
         this.generating = true;
         this.downloadUrl = "";
         this.service.generateOutputFile(this.ComplianceFormFilter)
-            .subscribe((item: any) => {
-                this.downloadUrl = this.configService.getApiHost() + item;
-            },
-            error => {
+            // .subscribe((item: any) => {
+            //     this.downloadUrl = this.configService.getApiHost() + item;
+            // },
+            // error => {
 
-            });
-        // .subscribe(),
-        // error => console.log("Error downloading the file."),
-        // () => console.log('Completed file download.');
+            // });
+            .subscribe(),
+            error => console.log("Error downloading the file."),
+            () => console.log('Completed file download.');
     }
 
     get diagnostic() { return JSON.stringify(null); }

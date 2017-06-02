@@ -127,19 +127,6 @@ export class ClosedICFsComponent implements OnInit {
             });
     }
 
-    GenerateOutputFile() {
-        this.downloadUrl = "";
-        this.service.generateOutputFile()
-            .subscribe((item: any) => {
-                this.downloadUrl = this.configService.getApiHost() + item;
-                console.log("item:" + item);
-                console.log("this.downloadUrl:" + this.downloadUrl);
-            },
-            error => {
-                this.ComplianceFormGenerationError = "Error: Output File could not be generated."
-            });
-    }
-
     handleUpload(data: any): void {
         this.Loading = true;
         this.zone.run(() => {
@@ -158,12 +145,10 @@ export class ClosedICFsComponent implements OnInit {
         });
     }
 
-    DownloadCompForm(formid: string) {
-        this.service.downLoadComplianceForm(formid)
+    downloadComplianceForm(formId: string) {
+        this.service.generateComplianceForm(formId)
             .subscribe((item: any) => {
-                this.downloadUrl = this.configService.getApiHost() + item;
-                console.log("item:" + item);
-                console.log("this.downloadUrl:" + this.downloadUrl);
+
             },
             error => {
             });

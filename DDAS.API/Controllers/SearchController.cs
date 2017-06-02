@@ -393,24 +393,24 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
-        public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
+        public HttpResponseMessage GenerateComplianceForm(string ComplianceFormId)
         {
-            //HttpResponseMessage response = null;
+            HttpResponseMessage response = null;
 
             var localFilePath = 
                 _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
 
             if (!File.Exists(localFilePath))
             {
-                return Ok("Could not find Compliance form template");
-               //response = Request.CreateResponse(HttpStatusCode.Gone);
+               //return Ok("Could not find Compliance form template");
+               response = Request.CreateResponse(HttpStatusCode.Gone);
             }
             else
             {
-                //var UserAgent = Request.Headers.UserAgent.ToString();
-                //var Browser = GetBrowserType(UserAgent);
+                var UserAgent = Request.Headers.UserAgent.ToString();
+                var Browser = GetBrowserType(UserAgent);
 
-                //response = Request.CreateResponse(HttpStatusCode.OK);
+                response = Request.CreateResponse(HttpStatusCode.OK);
 
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
@@ -418,39 +418,42 @@ namespace DDAS.API.Controllers
 
                 string FileName = null;
 
-                var FilePath = _SearchService.GenerateComplianceForm(
-                    RecId, 
-                    writer, 
-                    ".docx", 
-                    out FileName);
-
-                string path = FilePath.Replace(_RootPath, "");
-                return Ok(path);
-
-                //var memoryStream = _SearchService.GenerateComplianceForm(
-                //    RecId,
-                //    writer,
-                //    ".docx",
+                //var FilePath = _SearchService.GenerateComplianceForm(
+                //    RecId, 
+                //    writer, 
+                //    ".docx", 
                 //    out FileName);
 
-                //response.Content = new ByteArrayContent(memoryStream.ToArray());
+                //string path = FilePath.Replace(_RootPath, "");
+                //return Ok(path);
 
-                //response.Content.Headers.ContentDisposition =
-                //    new ContentDispositionHeaderValue("attachment");
+                //'out FileName' is retained in case the code needs to be rolled back
+                //to return file path to the client
+                var memoryStream = _SearchService.GenerateComplianceForm(
+                    RecId,
+                    writer,
+                    ".docx",
+                    out FileName);
 
-                //response.Content.Headers.ContentType =
-                //    new MediaTypeHeaderValue("application/ms-word");
+                response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                //response.Content.Headers.ContentDisposition.FileName = FileName;
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
 
-                ////add custom headers to the response
-                ////easy for angular2 to read this header
-                //response.Content.Headers.Add("Filename", FileName);
+                response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/ms-word");
+
+                response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                var FileNameHeader = FileName + " " + Browser;
+                //add custom headers to the response
+                //easy for angular2 to read this header
+                response.Content.Headers.Add("Filename", FileNameHeader);
                 //response.Content.Headers.Add("Browser", Browser);
-                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
                 //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
             }
-            //return response;
+            return response;
         }
 
         [Route("GenerateComplianceFormPDF")]
@@ -472,20 +475,20 @@ namespace DDAS.API.Controllers
                 //var UserAgent = Request.Headers.UserAgent.ToString();
                 //var Browser = GetBrowserType(UserAgent);
 
-                Guid? RecId = Guid.Parse(ComplianceFormId);
+                //Guid? RecId = Guid.Parse(ComplianceFormId);
 
-                IWriter writer = new CreateComplianceFormPDF();
+                //IWriter writer = new CreateComplianceFormPDF();
 
-                string FileName = null;
+                //string FileName = null;
 
-                var FilePath = _SearchService.GenerateComplianceForm(
-                    RecId,
-                    writer,
-                    ".pdf",
-                    out FileName);
+                //var FilePath = _SearchService.GenerateComplianceForm(
+                //    RecId,
+                //    writer,
+                //    ".pdf",
+                //    out FileName);
 
-                string path = FilePath.Replace(_RootPath, "");
-                return Ok(path);
+                //string path = FilePath.Replace(_RootPath, "");
+                return Ok();
 
                 //var memoryStream = _SearchService.GenerateComplianceForm(
                 //    RecId,

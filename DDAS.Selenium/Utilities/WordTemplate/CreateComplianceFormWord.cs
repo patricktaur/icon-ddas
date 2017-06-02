@@ -474,18 +474,18 @@ namespace Utilities.WordTemplate
             byte[] ByteArray = File.ReadAllBytes(
                 TemplateFolder + "ComplianceFormTemplate.docx");
 
-            _stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+            //required to create file on server
+            //_stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+            //_stream.Write(ByteArray, 0, ByteArray.Length);
+            //_document = WordprocessingDocument.Open(_stream, true);
 
-            //_memoryStream = new MemoryStream();
-            //_memoryStream.Write(ByteArray, 0, ByteArray.Length);
+            //creates file in memorystream
+            _memoryStream = new MemoryStream();
+            _memoryStream.Write(ByteArray, 0, ByteArray.Length);
 
-            //_document = WordprocessingDocument.Open(_memoryStream, true);
+            _document = WordprocessingDocument.Open(_memoryStream, true);
 
-            _stream.Write(ByteArray, 0, ByteArray.Length);
-
-            _document = WordprocessingDocument.Open(_stream, true);
-
-            //var FilePath = @"c:\Development\EmbedFile.pdf";
+            //var FilePath = @"c:\Development\test.pdf";
             //var document = new OpenXmlHelper(_document, _document.MainDocumentPart);
             //document.AddObject(FilePath, Path.GetFileName(FilePath));
         }
@@ -584,20 +584,26 @@ namespace Utilities.WordTemplate
 
         public void AttachFile(string EmbeddingFilePath, string ComplianceFormDocPath)
         {
-            Start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath);
+            var start = new Start();
+            start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath);
 
             //var ProcessInfo = new ProcessStartInfo();
+            ////ProcessInfo.FileName = @"C:\Development\p926-ddas\ddas.selenium\webscraping\bin\Debug\webscraping.exe";
             //ProcessInfo.FileName = @"C:\Development\OpenXmlDocumentGenerator-master\OpenXmlCidGenerator\bin\Debug\OpenXmlCidGenerator.exe";
-            //ProcessInfo.Arguments = EmbeddingFilePath + " \"" + ComplianceFormDocPath + "\"";
-            //ProcessInfo.CreateNoWindow = true;
+            ////ProcessInfo.Arguments = "\"" + EmbeddingFilePath + "  \"" + ComplianceFormDocPath + "\"";
+            ////ProcessInfo.Arguments =
+            ////    @"C:\Development\test.pdf ""C:\Development\p926-ddas\DDAS.API\App_Data\Templates\ComplianceFormTemplate.docx""";
+            //ProcessInfo.CreateNoWindow = false;
             //ProcessInfo.RedirectStandardOutput = true;
+            //ProcessInfo.RedirectStandardError = true;
             //ProcessInfo.UseShellExecute = false;
-
+            
             //var MyProcess = new Process();
             //MyProcess.StartInfo = ProcessInfo;
 
             //MyProcess.Start();
             //string output = MyProcess.StandardOutput.ReadToEnd();
+            //string Error = MyProcess.StandardError.ReadToEnd();
             //MyProcess.WaitForExit();
             //MyProcess.Close();
 
@@ -616,7 +622,7 @@ namespace Utilities.WordTemplate
         public void CloseDocument()
         {
             _document.Close();
-            _stream.Dispose();
+            //_stream.Dispose();
         }
 
         public MemoryStream ReturnStream()

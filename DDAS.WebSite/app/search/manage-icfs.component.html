@@ -115,16 +115,16 @@
 					</td>
 					<td class="text-center">
 						<div class="btn-group">
-							<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
+							<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
 								[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
-								<span class="glyphicon glyphicon-download-alt" ></span>
-								</button>
-
-							<!--<button type="button" class="btn btn-sm btn-primary" (click)="generateComplianceForm(item.RecId)"
-								[disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
 								<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
 
+							<button type="button" class="btn btn-sm btn-primary" (click)="generateComplianceForm(item.RecId)"
+								[disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
+								<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>
+								
 							<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open"> <span class="glyphicon glyphicon-folder-open"></span> </button>
 							<button type="button" class="btn btn-sm btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-retweet"></span> </button>
 							<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()"

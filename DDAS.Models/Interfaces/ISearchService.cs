@@ -49,7 +49,7 @@ namespace DDAS.Models.Interfaces
         List<ComplianceForm> ReadUploadedFileData(ExcelInput ExcelInputData, 
             string UserName, string FilePathWithGUID, string UploadedFileName);
 
-        string GenerateComplianceForm(
+        MemoryStream GenerateComplianceForm(
             Guid? ComplianceFormId, 
             IWriter writer,
             string FileExtension,
@@ -62,13 +62,13 @@ namespace DDAS.Models.Interfaces
             SiteEnum Enum,
             string FullName);
 
-        string GenerateOutputFile(
-            IGenerateOutputFile GenerateOutputFile,
-            List<ComplianceForm> forms);
-
-        //MemoryStream GenerateOutputFile(
+        //string GenerateOutputFile(
         //    IGenerateOutputFile GenerateOutputFile,
         //    List<ComplianceForm> forms);
+
+        MemoryStream GenerateOutputFile(
+            IGenerateOutputFile GenerateOutputFile,
+            List<ComplianceForm> forms);
 
     }
 }

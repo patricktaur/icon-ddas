@@ -233,34 +233,43 @@ export class SearchService {
 
         let file = {};
         return this.http.get(this._baseUrl + 'Search/GenerateComplianceForm?ComplianceFormId=' + formId,
-            { headers: headers })
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
             .map((res: Response) => {
-                return res.json();
-                // file = new Blob([res.arrayBuffer()], {
-                //     type: 'application/ms-word'
-                // });
-                // var filename = res.headers.get('Filename');
+                // return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/ms-word'
+                });
+
+                //header 'Browser' in the response is not read by Microsoft 'Edge'. Not sure why
+                //hence the work around of 'split with space'!
                 // var browser = res.headers.get('Browser');
+                var fileNameHeader = res.headers.get('Filename');
+                var fileName = fileNameHeader.split(' ')[0].trim();
+                // var browser = res.headers.get('Browser');
+                var browser = fileNameHeader.split(' ')[1].trim();
 
-                // console.log("Downloaded filename: " + filename);
-                // console.log("Browser: " + browser);
+                console.log("Filename header: " + fileNameHeader);
+                console.log("File Name: " + fileName);
+                console.log("Browser: " + browser);
 
-                // if (browser.toLowerCase() == "edge" ||
-                //     browser.toLowerCase() == "ie") {
-                //     window.navigator.msSaveOrOpenBlob(file, filename);
-                // }
-                // else if (browser.toLowerCase() == "chrome") {
-                //     var anchor = document.createElement("a");
-                //     anchor.download = filename;
-                //     anchor.href = window.URL.createObjectURL(file);
-                //     anchor.click();
-                // }
-                // else if(browser.toLowerCase() == "unknown"){
-                //     alert("could not identify the browser. File donwload failed");
-                // }
-                // else{
-                //     alert("Error. could not download file for browser: " + browser);
-                // }
+                if (browser.toLowerCase() == "edge" ||
+                    browser.toLowerCase() == "ie") {
+                    window.navigator.msSaveBlob(file, fileName);
+                }
+
+                if (browser.toLowerCase() == "chrome") {
+                    var anchor = document.createElement("a");
+                    anchor.download = fileName;
+                    anchor.text = fileName;
+                    anchor.href = window.URL.createObjectURL(file, fileName);
+                    anchor.click();
+                }
+                if (browser.toLowerCase() == "unknown") {
+                    alert("could not identify the browser. File download failed");
+                }
+                if (browser == null) {
+                    //...
+                }
                 ////window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
@@ -312,7 +321,6 @@ export class SearchService {
                     alert("could not identify the browser. File donwload failed");
                 }
                 if(browser == null){
-                    window.navigator.msSaveOrOpenBlob(file, filename);
                     //alert("Error. could not download file for browser: " + browser);
                 }
                 //window.open(window.URL.createObjectURL(file));
