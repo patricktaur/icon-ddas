@@ -22,7 +22,6 @@ namespace DDAS.API
             //    "api/{controller}/{id}",
             //    new { id = RouteParameter.Optional });
 
-           
             SimpleInjectorWebApiInitializer.Initialize(config);
 
             WebApiConfig.Register(config);

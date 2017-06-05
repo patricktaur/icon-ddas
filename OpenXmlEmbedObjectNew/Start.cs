@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace OpenXmlEmbedObjectNew
 {
-    
-    public static class Start
+    public class Start
     {
-        [STAThread]
-        public static void EmbedObjectIntoDocument(
+        public void EmbedObjectIntoDocument(
             string EmbeddingObjectPath, 
             string WordDocumentPath)
         {

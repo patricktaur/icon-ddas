@@ -178,7 +178,6 @@ namespace Utilities
         }
     }
 
-
     public class RowData
     {
         public List<string> DetailsInEachRow { get; set; }

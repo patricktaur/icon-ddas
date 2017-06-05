@@ -18,7 +18,7 @@ namespace Utilities
             _logFile = logFile;
             
             _showMessage = showMessage;
-           }
+        }
 
         public void LogStart()
         {

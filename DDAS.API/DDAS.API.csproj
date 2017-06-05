@@ -58,6 +58,10 @@
       <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries1\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -313,6 +317,10 @@
     <ProjectReference Include="..\DDAS.Services\DDAS.Services.csproj">
       <Project>{b9fc373c-8e1b-49ba-a170-cf34e23cef60}</Project>
       <Name>DDAS.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenXmlEmbedObjectNew\OpenXmlEmbedObjectNew.csproj">
+      <Project>{c3278f37-c0dc-4740-bdaa-3169905cb301}</Project>
+      <Name>OpenXmlEmbedObjectNew</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

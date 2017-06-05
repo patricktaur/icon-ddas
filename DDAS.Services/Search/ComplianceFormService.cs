@@ -48,7 +48,7 @@ namespace DDAS.Services.Search
         }
 
         #region ByPradeep
-
+        //need to re-factor, no 
         public ExcelInputRow FillUpExcelInputRowObject(ExcelInputRow RowData,
             List<string> ExcelRow)
         {
@@ -89,8 +89,10 @@ namespace DDAS.Services.Search
             {
                 var RowData = new ExcelInputRow();
 
+                //reading headers and first row
                 var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
+                //if headers are missing
                 if(ExcelRow.Where(x => x.Contains("cannot find column")).Count() > 0)
                 {
                     ExcelRow.ForEach(row =>
@@ -108,9 +110,7 @@ namespace DDAS.Services.Search
  
                 FillUpExcelInputRowObject(RowData, ExcelRow);
 
-                //Validate RowData
                 ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
-                //ValidationMessages = ValidateExcelInputs(ExcelRow, RowIndex);
 
                 if (ValidationMessages.Count > 0)
                 {
@@ -126,7 +126,6 @@ namespace DDAS.Services.Search
 
                 excelInput.ExcelInputRows.Add(RowData);
 
-                //if(ExcelRow[1].ToLower() == "principal")
                 if (RowData.Role.ToLower() == "principal")
                 {
                     RowIndex += 1;
@@ -136,9 +135,10 @@ namespace DDAS.Services.Search
                     while (SubInvestigator[0].ToLower() == "sub")
                     {
                         var SubInvRowData = new ExcelInputRow();
+
                         FillUpExcelInputRowObject(SubInvRowData, SubInvestigator);
+
                         ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
-                        //ValidationMessages = ValidateExcelInputs(SubInvestigator, RowIndex);
 
                         if (ValidationMessages.Count > 0)
                         {
@@ -150,28 +150,13 @@ namespace DDAS.Services.Search
                             //Validations.Add(ValidationMessages);
                             //break;
                         }
-
-                        //foreach (string Inv in SubInvestigator)
-                        //{
-                        //    ExcelRow.Add(Inv);
-                        //}
                         excelInput.ExcelInputRows.Add(SubInvRowData);
                         RowIndex += 1;
                         SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
                     }
                 }
-                //ComplianceFormDetails.Add(ExcelRow);
             }
-
             return excelInput;
-            //if(RowData.ErrorMessages.Count > 0)
-            //if (Validations.Count > 0)
-            //{
-            //    List<string> temp = new List<string>() {"errors found"};
-            //    //RowData.ErrorMessages.Add(temp);
-            //    Validations.Add(temp);
-            //}
-            //return Validations.Count > 0 ? Validations : ComplianceFormDetails;
         }
 
         public List<ComplianceForm> ReadUploadedFileData(ExcelInput DataFromExcelFile,
@@ -800,8 +785,8 @@ namespace DDAS.Services.Search
             }
             //else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
             //{
-            //    //extraction error
-            //    sourceSite.ExtractionMode += "- Extraction error";
+            ////    extraction error - siteScan is NULL when data extraction fails
+            ////    which has not been handled... pending
             //}
 
             siteSourceToAdd.CreatedOn = DateTime.Now;
@@ -2003,7 +1988,7 @@ namespace DDAS.Services.Search
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
-        public string GenerateComplianceForm(
+        public MemoryStream GenerateComplianceForm(
             Guid? ComplianceFormId, 
             IWriter writer, 
             string FileExtension,
@@ -2020,7 +2005,7 @@ namespace DDAS.Services.Search
                 DateTime.Now.ToString("dd MMM yyyy HH_mm") +
                 FileExtension;
 
-            FileName = GeneratedFileName;
+            FileName = GeneratedFileName.Replace(' ','_');
 
             var GeneratedFileNameNPath =
                 _config.ComplianceFormFolder + GeneratedFileName;
@@ -2028,6 +2013,11 @@ namespace DDAS.Services.Search
             {
                 return GeneratedFileNameNPath;
             }
+
+            //Below condition is required when file is created on the server and
+            //path is returned to the client
+            //if (File.Exists(GeneratedFileNameNPath))
+            //    return GeneratedFileNameNPath;
 
             writer.Initialize(_config.WordTemplateFolder, GeneratedFileNameNPath);
 
@@ -2164,8 +2154,8 @@ namespace DDAS.Services.Search
 
             //writer.AttachFile(@"C:\Development\test.pdf", GeneratedFileNameNPath);
 
-            return _config.ComplianceFormFolder + GeneratedFileName;
-            //return writer.ReturnStream();
+            //return GeneratedFileNameNPath;
+            return writer.ReturnStream();
         }
 
         private string[] InvestigatorTableHeaders()
@@ -3527,7 +3517,7 @@ namespace DDAS.Services.Search
 
         #region OutputFile
         
-        public string GenerateOutputFile(
+        public MemoryStream GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile, 
             List<ComplianceForm> forms)
         {
@@ -3590,11 +3580,11 @@ namespace DDAS.Services.Search
                 DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
                 ".xlsx";
 
-            GenerateOutputFile.SaveChanges(_config.OutputFileFolder +
-                OutputFileName);
+            //GenerateOutputFile.SaveChanges(_config.OutputFileFolder +
+            //    OutputFileName);
 
-            return _config.OutputFileFolder + OutputFileName;
-            //return GenerateOutputFile.GetMemoryStream();
+            //return _config.OutputFileFolder + OutputFileName;
+            return GenerateOutputFile.GetMemoryStream();
         }
 
         #endregion
