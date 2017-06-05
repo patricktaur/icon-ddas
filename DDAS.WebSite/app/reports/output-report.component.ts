@@ -92,10 +92,12 @@ export class OutputReportComponent implements OnChanges {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
-        //this.generating = true;
-        //this.downloadUrl = "";
+        this.generating = true;
+        this.downloadUrl = "";
         this.service.generateOutputFile(this.ComplianceFormFilter)
-            .subscribe(
+            .subscribe((item: any) => {
+                this.downloadUrl = this.configService.getApiHost() + item;
+            },
             error => {
 
             });

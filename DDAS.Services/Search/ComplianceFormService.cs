@@ -187,7 +187,8 @@ namespace DDAS.Services.Search
             {
                 var form = GetNewComplianceForm(UserName);
 
-                form.AssignedTo = UserName;
+                //Already assigning the name in GetNewComplianceForm
+                //form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName = 
                     Path.GetFileName(FilePathWithGUID);
@@ -2002,7 +2003,7 @@ namespace DDAS.Services.Search
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
-        public MemoryStream GenerateComplianceForm(
+        public string GenerateComplianceForm(
             Guid? ComplianceFormId, 
             IWriter writer, 
             string FileExtension,
@@ -2023,6 +2024,10 @@ namespace DDAS.Services.Search
 
             var GeneratedFileNameNPath =
                 _config.ComplianceFormFolder + GeneratedFileName;
+            if (File.Exists(GeneratedFileNameNPath))
+            {
+                return GeneratedFileNameNPath;
+            }
 
             writer.Initialize(_config.WordTemplateFolder, GeneratedFileNameNPath);
 
@@ -2159,8 +2164,8 @@ namespace DDAS.Services.Search
 
             //writer.AttachFile(@"C:\Development\test.pdf", GeneratedFileNameNPath);
 
-            return writer.ReturnStream();
-            //return _config.ComplianceFormFolder + GeneratedFileName;
+            return _config.ComplianceFormFolder + GeneratedFileName;
+            //return writer.ReturnStream();
         }
 
         private string[] InvestigatorTableHeaders()
@@ -3522,7 +3527,7 @@ namespace DDAS.Services.Search
 
         #region OutputFile
         
-        public MemoryStream GenerateOutputFile(
+        public string GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile, 
             List<ComplianceForm> forms)
         {
@@ -3581,17 +3586,17 @@ namespace DDAS.Services.Search
                     }
                 }
             }
-            //var OutputFileName = "OutputFile_" +
-            //    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-            //    ".xlsx";
+            var OutputFileName = "OutputFile_" +
+                DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+                ".xlsx";
 
-            //GenerateOutputFile.SaveChanges(_config.OutputFileFolder +
-            //    OutputFileName);
+            GenerateOutputFile.SaveChanges(_config.OutputFileFolder +
+                OutputFileName);
 
-            return GenerateOutputFile.GetMemoryStream();
-            //return _config.OutputFileFolder + OutputFileName;
+            return _config.OutputFileFolder + OutputFileName;
+            //return GenerateOutputFile.GetMemoryStream();
         }
-        
+
         #endregion
 
         #region Helpers

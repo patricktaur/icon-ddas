@@ -11,16 +11,20 @@ using System.Diagnostics;
 using System.ComponentModel;
 using DDAS.Models.ViewModels;
 using DDAS.Models.Entities;
+using System.IO;
 
 namespace DDAS.Services.AppAdminService
 {
     public class AppAdminService : IAppAdminService
     {
         private IUnitOfWork _UOW;
+        private IConfig _config;
+
         private string _LiveSiteScannerExeName = "DDAS.LiveSiteExtractor";
-        public AppAdminService(IUnitOfWork UOW)
+        public AppAdminService(IUnitOfWork UOW, IConfig config)
         {
             _UOW = UOW;
+            _config = config;
         }
 
         public List<DataExtractionHistory> GetDataExtractionHistory()
@@ -1351,16 +1355,34 @@ namespace DDAS.Services.AppAdminService
 
             var UploadedFiles = new List<UploadsViewModel>();
 
-            foreach(ComplianceForm form in forms)
+            int Counter = 0;
+            foreach (string file in Directory.GetFiles(_config.UploadsFolder))
             {
-                var UploadedFile = new UploadsViewModel();
-                //if(form.GeneratedFileName != null || form.GeneratedFileName != "")
+                var fileName = Path.GetFileNameWithoutExtension(file);
+
+                var form = forms.Find(x =>
+                x.GeneratedFileName == fileName);
+
+                if(form != null)
+                {
+                    var UploadedFile = new UploadsViewModel();
+                    UploadedFile.UploadedFileName = form.UploadedFileName;
+                    UploadedFile.GeneratedFileName = form.GeneratedFileName;
+                    UploadedFile.AssignedTo = form.AssignedTo;
+                    UploadedFile.UploadedOn = form.SearchStartedOn;
+                    UploadedFiles.Add(UploadedFile);
+                }
+                Counter += 1;
+
+                //if (Counter < forms.Count &&
+                //    fileName == forms[Counter].GeneratedFileName)
                 //{
-                UploadedFile.UploadedFileName = form.UploadedFileName;
-                UploadedFile.GeneratedFileName = form.GeneratedFileName;
-                UploadedFile.AssignedTo = form.AssignedTo;
-                UploadedFile.UploadedOn = form.SearchStartedOn;
-                UploadedFiles.Add(UploadedFile);
+                //    var UploadedFile = new UploadsViewModel();
+                //    UploadedFile.UploadedFileName = forms[Counter].UploadedFileName;
+                //    UploadedFile.GeneratedFileName = forms[Counter].GeneratedFileName;
+                //    UploadedFile.AssignedTo = forms[Counter].AssignedTo;
+                //    UploadedFile.UploadedOn = forms[Counter].SearchStartedOn;
+                //    UploadedFiles.Add(UploadedFile);
                 //}
             }
             return UploadedFiles;
@@ -1368,12 +1390,25 @@ namespace DDAS.Services.AppAdminService
 
         public bool DeleteUploadedFile(string GeneratedFileName)
         {
-            throw new NotImplementedException();
+            foreach(string file in Directory.GetFiles(_config.UploadsFolder))
+            {
+                var fileName = Path.GetFileNameWithoutExtension(file);
+                if(fileName == GeneratedFileName)
+                {
+                    File.Delete(file);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool DeleteAllUploadedFiles()
         {
-            throw new NotImplementedException();
+            foreach(string file in Directory.GetFiles(_config.UploadsFolder))
+            {
+                File.Delete(file);
+            }
+            return true;
         }
 
         #endregion

@@ -160,7 +160,7 @@ export class ManageICFsComponent implements OnInit {
 
       this.service.deleteComplianceForm(this.SelectedComplianceFormId)
             .subscribe((item: any) => {
-              this.LoadPrincipalInvestigators();
+                
             },
             error => {
 
@@ -204,10 +204,9 @@ export class ManageICFsComponent implements OnInit {
 
     generateComplianceForm(formId: string){
         this.service.generateComplianceForm(formId)
-            .subscribe(
-            error => {
-
-            });        
+            .subscribe((item: any) => {
+                
+            });
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }

@@ -102,7 +102,13 @@ export class UserService {
             .catch(this.handleError);
     }
     
- 
+    checkUserName(userName: string): Observable<boolean>{
+         return this.http.get(this._baseUrl + 'Account/CheckUserName?UserName=' + userName, this._options)
+            .map((res: Response) => {
+                return true;
+            })
+            .catch(this.handleError);
+    }
      
      
      private handleError(error: any) {

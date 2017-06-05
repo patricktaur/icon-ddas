@@ -39,14 +39,14 @@ namespace DDAS.API.Controllers
         //private string AttachmentsFolder;
         //private string WordTemplateFolder;
 
-        private string RootPath;
+        private string _RootPath;
 
         public SearchController(
             IUnitOfWork UOW,
             ISearchService SearchSummary, 
             IConfig Config)
         {
-            RootPath = HttpRuntime.AppDomainAppPath;
+            _RootPath = HttpRuntime.AppDomainAppPath;
             _UOW = UOW;
             _config = Config;
             _SearchService = SearchSummary;
@@ -63,10 +63,13 @@ namespace DDAS.API.Controllers
             }
 
             try
-            {
+            {   
                 var userName = User.Identity.GetUserName();
+
+                //to retain name of the file-to-be-saved/uploaded, 
+                //by default a guid is generated as filename for security reasons
                 //CustomMultipartFormDataStreamProvider provider = 
-                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+                //    new CustomMultipartFormDataStreamProvider(UploadsFolder); 
 
                 var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
 
@@ -74,7 +77,7 @@ namespace DDAS.API.Controllers
 
                 var complianceForms = new List<ComplianceForm>();
 
-                List<string> ValidationMessages = new List<string>();                
+                List<string> ValidationMessages = new List<string>();
 
                 foreach (MultipartFileData file in provider.FileData)
                 {
@@ -390,20 +393,24 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateComplianceForm")]
         [HttpGet]
-        public HttpResponseMessage GenerateComplianceForm(string ComplianceFormId)
+        public IHttpActionResult GenerateComplianceForm(string ComplianceFormId)
         {
-            HttpResponseMessage response = null;
+            //HttpResponseMessage response = null;
 
             var localFilePath = 
                 _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
 
             if (!File.Exists(localFilePath))
             {
-                response = Request.CreateResponse(HttpStatusCode.Gone);
+                return Ok("Could not find Compliance form template");
+               //response = Request.CreateResponse(HttpStatusCode.Gone);
             }
             else
             {
-                response = Request.CreateResponse(HttpStatusCode.OK);
+                //var UserAgent = Request.Headers.UserAgent.ToString();
+                //var Browser = GetBrowserType(UserAgent);
+
+                //response = Request.CreateResponse(HttpStatusCode.OK);
 
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
@@ -411,128 +418,160 @@ namespace DDAS.API.Controllers
 
                 string FileName = null;
 
-                var memoryStream = _SearchService.GenerateComplianceForm(
-                    RecId,
-                    writer,
-                    ".docx",
+                var FilePath = _SearchService.GenerateComplianceForm(
+                    RecId, 
+                    writer, 
+                    ".docx", 
                     out FileName);
 
-                response.Content = new ByteArrayContent(memoryStream.ToArray());
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
 
-                response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
+                //var memoryStream = _SearchService.GenerateComplianceForm(
+                //    RecId,
+                //    writer,
+                //    ".docx",
+                //    out FileName);
 
-                response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/ms-word");
+                //response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                response.Content.Headers.ContentDisposition.FileName = FileName;
+                //response.Content.Headers.ContentDisposition =
+                //    new ContentDispositionHeaderValue("attachment");
 
-                //add custom headers to the response
-                //easy for angular2 to read this header
-                response.Content.Headers.Add("Filename", FileName);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                //response.Content.Headers.ContentType =
+                //    new MediaTypeHeaderValue("application/ms-word");
+
+                //response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                ////add custom headers to the response
+                ////easy for angular2 to read this header
+                //response.Content.Headers.Add("Filename", FileName);
+                //response.Content.Headers.Add("Browser", Browser);
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
             }
-            return response;
+            //return response;
         }
 
         [Route("GenerateComplianceFormPDF")]
         [HttpGet]
-        public HttpResponseMessage GenerateComplianceFormPDF(string ComplianceFormId)
+        public IHttpActionResult GenerateComplianceFormPDF(string ComplianceFormId)
         {
-            HttpResponseMessage response = null;
+            //HttpResponseMessage response = null;
 
             var localFilePath = 
                 _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
 
             if (!File.Exists(localFilePath))
             {
-                response = Request.CreateResponse(HttpStatusCode.Gone);
+                return Ok("Could not find Compliance form template");
+                //response = Request.CreateResponse(HttpStatusCode.Gone);
             }
             else
             {
+                //var UserAgent = Request.Headers.UserAgent.ToString();
+                //var Browser = GetBrowserType(UserAgent);
+
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
                 IWriter writer = new CreateComplianceFormPDF();
 
                 string FileName = null;
 
-                var memoryStream = _SearchService.GenerateComplianceForm(
+                var FilePath = _SearchService.GenerateComplianceForm(
                     RecId,
                     writer,
                     ".pdf",
                     out FileName);
 
-                response.Content = new ByteArrayContent(memoryStream.ToArray());
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
 
-                response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
+                //var memoryStream = _SearchService.GenerateComplianceForm(
+                //    RecId,
+                //    writer,
+                //    ".pdf",
+                //    out FileName);
 
-                response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/pdf");
+                //response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                response.Content.Headers.ContentDisposition.FileName = FileName;
+                //response.Content.Headers.ContentDisposition =
+                //    new ContentDispositionHeaderValue("attachment");
 
-                //add custom headers to the response
-                //easy for angular2 to read this header
-                response.Content.Headers.Add("Filename", FileName);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "FileName");
+                //response.Content.Headers.ContentType =
+                //    new MediaTypeHeaderValue("application/pdf");
+
+                //response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                ////add custom headers to the response
+                ////easy for angular2 to read this header
+                //response.Content.Headers.Add("Filename", FileName);
+                //response.Content.Headers.Add("Browser", Browser);
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
             }
-            return response;
+            //return response;
         }
 
-        [Route("GenerateOutputFile")]
-        [HttpGet]
-        public HttpResponseMessage GenerateOutputFile()
-        {
-            HttpResponseMessage response = null;
+        //[Route("GenerateOutputFile")]
+        //[HttpGet]
+        //public HttpResponseMessage GenerateOutputFile()
+        //{
+        //    HttpResponseMessage response = null;
 
-            if(!File.Exists(
-                _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
-            {
-                response = Request.CreateResponse(HttpStatusCode.Gone);
-            }
-            else
-            {
-                response = Request.CreateResponse(HttpStatusCode.OK);
+        //    if(!File.Exists(
+        //        _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
+        //    {
+        //        response = Request.CreateResponse(HttpStatusCode.Gone);
+        //    }
+        //    else
+        //    {
+        //        var UserAgent = Request.Headers.UserAgent.ToString();
+        //        var Browser = GetBrowserType(UserAgent);
 
-                var GenerateOutputFile =
-                    new GenerateOutputFile(
-                        _config.ExcelTempateFolder + "Output_File_Template.xlsx");
+        //        response = Request.CreateResponse(HttpStatusCode.OK);
 
-                var forms = _UOW.ComplianceFormRepository.GetAll();
+        //        var GenerateOutputFile =
+        //            new GenerateOutputFile(
+        //                _config.ExcelTempateFolder + "Output_File_Template.xlsx");
 
-                //var FilePath = _SearchService.GenerateOutputFile(
-                //    GenerateOutputFile,
-                //    forms);
+        //        var forms = _UOW.ComplianceFormRepository.GetAll();
 
-                //var Path = FilePath.Replace(RootPath, "");
+        //        //var FilePath = _SearchService.GenerateOutputFile(
+        //        //    GenerateOutputFile,
+        //        //    forms);
 
-                var memoryStream =
-                    _SearchService.GenerateOutputFile(GenerateOutputFile, forms);
+        //        //var Path = FilePath.Replace(RootPath, "");
+
+        //        var memoryStream =
+        //            _SearchService.GenerateOutputFile(GenerateOutputFile, forms);
                 
-                response.Content = new ByteArrayContent(memoryStream.ToArray());
+        //        response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
+        //        response.Content.Headers.ContentDisposition =
+        //            new ContentDispositionHeaderValue("attachment");
 
-                response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        //        response.Content.Headers.ContentType =
+        //            new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-                var OutputFileName = "OutputFile_" +
-                    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-                    ".xlsx";
+        //        var OutputFileName = "OutputFile_" +
+        //            DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+        //            ".xlsx";
 
-                response.Content.Headers.ContentDisposition.FileName = OutputFileName;
+        //        response.Content.Headers.ContentDisposition.FileName = OutputFileName;
 
-                //add custom headers to the response
-                //easy for angular2 to read this header
-                response.Content.Headers.Add("Filename", OutputFileName);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
-            }
-            return response;
-        }
+        //        //add custom headers to the response
+        //        //easy for angular2 to read this header
+        //        response.Content.Headers.Add("Filename", OutputFileName);
+        //        response.Content.Headers.Add("Browser", Browser);
+        //        response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+        //        response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+        //    }
+        //    return response;
+        //}
 
         //3Dec2016
+
         [Route("DownloadComplianceForm")]
         [HttpGet]
         public HttpResponseMessage DownloadForm(string ComplianceFormId = null)
@@ -675,6 +714,20 @@ namespace DDAS.API.Controllers
                 //retValue += l + "---";
             }
             return retValue;
+        }
+
+        public string GetBrowserType(string BrowserType)
+        {
+            if (BrowserType.ToLower().Contains("edge"))
+                return "Edge";
+            else if (BrowserType.ToLower().Contains("trident"))
+                return "IE";
+            else if (BrowserType.ToLower().Contains("chrome"))
+                return "Chrome";
+            else if (BrowserType.ToLower().Contains("mozilla"))
+                return "Mozilla";
+
+            return "unknown";
         }
     }
 

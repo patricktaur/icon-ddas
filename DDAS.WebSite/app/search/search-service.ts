@@ -214,6 +214,7 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
+
     generateComplianceForm(formId: string) {
         // let headers = new Headers();
         // headers.append('Content-Type', 'application/json');
@@ -229,21 +230,38 @@ export class SearchService {
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
-        
+
         let file = {};
         return this.http.get(this._baseUrl + 'Search/GenerateComplianceForm?ComplianceFormId=' + formId,
-            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            { headers: headers })
             .map((res: Response) => {
-                file = new Blob([res.arrayBuffer()], {
-                    type: 'application/ms-word'
-                });
-                var filename = res.headers.get('Filename');
-                console.log("Downloaded filename: " + filename);
-                var anchor = document.createElement("a");
-                anchor.download = filename;
-                anchor.href = window.URL.createObjectURL(file);
-                anchor.click();
-                //window.open(window.URL.createObjectURL(file));
+                return res.json();
+                // file = new Blob([res.arrayBuffer()], {
+                //     type: 'application/ms-word'
+                // });
+                // var filename = res.headers.get('Filename');
+                // var browser = res.headers.get('Browser');
+
+                // console.log("Downloaded filename: " + filename);
+                // console.log("Browser: " + browser);
+
+                // if (browser.toLowerCase() == "edge" ||
+                //     browser.toLowerCase() == "ie") {
+                //     window.navigator.msSaveOrOpenBlob(file, filename);
+                // }
+                // else if (browser.toLowerCase() == "chrome") {
+                //     var anchor = document.createElement("a");
+                //     anchor.download = filename;
+                //     anchor.href = window.URL.createObjectURL(file);
+                //     anchor.click();
+                // }
+                // else if(browser.toLowerCase() == "unknown"){
+                //     alert("could not identify the browser. File donwload failed");
+                // }
+                // else{
+                //     alert("Error. could not download file for browser: " + browser);
+                // }
+                ////window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }
@@ -265,7 +283,7 @@ export class SearchService {
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
-        
+
         let file = {};
         return this.http.get(this._baseUrl + 'Search/GenerateComplianceForm?ComplianceFormId=' + formId,
             { headers: headers, responseType: ResponseContentType.ArrayBuffer })
@@ -274,11 +292,29 @@ export class SearchService {
                     type: 'application/ms-word'
                 });
                 var filename = res.headers.get('Filename');
+                var browser = res.headers.get('Browser');
+
                 console.log("Downloaded filename: " + filename);
-                var anchor = document.createElement("a");
-                anchor.download = filename;
-                anchor.href = window.URL.createObjectURL(file);
-                anchor.click();
+                console.log("Browser: " + browser);
+                
+                if (browser.toLowerCase() == "edge" ||
+                    browser.toLowerCase() == "ie") {
+                    window.navigator.msSaveOrOpenBlob(file, filename);
+                }
+                
+                if (browser.toLowerCase() == "chrome") {
+                    var anchor = document.createElement("a");
+                    anchor.download = filename;
+                    anchor.href = window.URL.createObjectURL(file);
+                    anchor.click();
+                }
+                if(browser.toLowerCase() == "unknown"){
+                    alert("could not identify the browser. File donwload failed");
+                }
+                if(browser == null){
+                    window.navigator.msSaveOrOpenBlob(file, filename);
+                    //alert("Error. could not download file for browser: " + browser);
+                }
                 //window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
@@ -379,10 +415,10 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-            // .map(res => new Blob([res.arrayBuffer()], {
-            //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            // }))
-            // .catch(this.handleError);
+    // .map(res => new Blob([res.arrayBuffer()], {
+    //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    // }))
+    // .catch(this.handleError);
 
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

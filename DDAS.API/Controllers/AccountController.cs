@@ -17,7 +17,7 @@ using System.Globalization;
 
 namespace DDAS.API.Controllers
 {
-    [Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
@@ -34,7 +34,7 @@ namespace DDAS.API.Controllers
         #region WorkingCode
 
         #region User
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "app-admin, admin")]
         [Route("GetUsers")]
         [HttpGet]
         public IHttpActionResult GetUsers()
@@ -43,6 +43,7 @@ namespace DDAS.API.Controllers
             return Ok(Users);
         }
 
+        [Authorize(Roles = "app-admin, admin, user")]
         [Route("GetAdminList")]
         [HttpGet]
         public IHttpActionResult GetAdminList()
@@ -57,6 +58,7 @@ namespace DDAS.API.Controllers
             return Ok(AdminList);
         }
 
+        [Authorize(Roles = "app-admin, admin")]
         [Route("GetUser")]
         [HttpGet]
         public IHttpActionResult GetUser(string UserId)
@@ -79,6 +81,7 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Authorize(Roles = "app-admin, admin")]
         [Route("SaveUser")]
         [HttpPost]
         public IHttpActionResult SaveUser(UserViewModel user)
@@ -86,6 +89,7 @@ namespace DDAS.API.Controllers
            return Ok( _userService.SaveUser(user));
         }
 
+        [Authorize(Roles = "app-admin, admin")]
         [Route("DeleteUser")]
         [HttpDelete]
         public IHttpActionResult DeleteUser(Guid userId)
@@ -93,6 +97,7 @@ namespace DDAS.API.Controllers
             return Ok(_userService.DeleteUser(userId));
         }
 
+        [Authorize(Roles = "app-admin,admin,user")]
         // POST api/Account/SetPassword
         [Route("SetPassword")]
         [HttpPost]
@@ -127,6 +132,7 @@ namespace DDAS.API.Controllers
             return Ok("Password change successful");
         }
 
+        [Authorize(Roles = "app-admin, admin, user")]
         [Route("ResetPassword")]
         [HttpGet]
         public IHttpActionResult ResetPassword(Guid userId)
@@ -158,6 +164,7 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
+        [Authorize(Roles = "app-admin, admin")]
         [Route("getLogHistory")]
         [HttpGet]
         public IHttpActionResult GetAllLoginHistory(string DateFrom, string DateTo)
@@ -181,6 +188,7 @@ namespace DDAS.API.Controllers
 
         }
 
+        [Authorize(Roles = "app-admin, admin, user")]
         [Route("getMyLogHistory")]
         [HttpGet]
         public IHttpActionResult GetMyLoginHistory(string UserName, string DateFrom, string DateTo)

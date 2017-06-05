@@ -38,76 +38,70 @@ import { ConfigService } from '../../../shared/utils/config.service';
 export class DownloadComplianceFormComponent implements OnInit {
     @ViewChild('DownloadComplianceFormModal') modal: ModalComponent;
     public PrincipalInvestigatorNameToDownload: string;
-     public Loading: boolean = false;
- 
+    public Loading: boolean = false;
+
     private error: any;
 
     public downloadUrl: string;
     public ComplianceFormGenerationError: string;
 
-    @Input('formId') formId:string = "";
-    @Input('caption') caption:string = "";
+    @Input('formId') formId: string = "";
+    @Input('caption') caption: string = "";
 
     constructor(
-        
+
         private service: SearchService,
         private configService: ConfigService
-        
+
     ) { }
-    
+
     ngOnInit() {
         this.ComplianceFormGenerationError = "";
     }
 
-    open(){
+    open() {
         this.modal.open();
         this.GenerateComplianceForm();
     }
-    
-    generate(formId: string, caption: string){
+
+    generate(formId: string, caption: string) {
         this.formId = formId;
         this.caption = caption;
         this.modal.open();
         this.GenerateComplianceForm();
     }
-                        
-    canGenerate(status: ComplianceFormStatusEnum):boolean{
+
+    canGenerate(status: ComplianceFormStatusEnum): boolean {
         if (status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
-            status == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-            {
-               return true;     
-            }
-            else
-            {
-                return false;
-            }
-        
-    }
-    
-    Info(status: ComplianceFormStatusEnum):string{
-        if (status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
-            status == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-            {
-               return "Generate and download Compliance Form";     
-            }
-            else
-            {
-                return "Review not completed.  Cannot generate Compliance Form";
-            }
-        
+            status == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
-    close(){
+    Info(status: ComplianceFormStatusEnum): string {
+        if (status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+            status == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified) {
+            return "Generate and download Compliance Form";
+        }
+        else {
+            return "Review not completed.  Cannot generate Compliance Form";
+        }
+    }
+
+    close() {
         this.modal.close();
     }
 
-     GenerateComplianceForm() {   //(formid: string){
-
+    GenerateComplianceForm() {   //(formid: string){
         this.ComplianceFormGenerationError = "";
         this.downloadUrl = "";
         this.service.generateComplianceForm(this.formId)
             .subscribe((item: any) => {
-                this.downloadUrl = this.configService.getApiHost() +  item;
+                this.downloadUrl = this.configService.getApiHost() + item;
                 console.log("item:" + item);
                 console.log("this.downloadUrl:" + this.downloadUrl);
             },

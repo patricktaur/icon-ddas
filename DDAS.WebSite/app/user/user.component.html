@@ -15,9 +15,10 @@
 						<thead>
 							<tr>
 								<th class="col-md-2">Name</th>
+								<th class="col-md-1">Full Name</th>
 								<th class="col-md-2">Role</th>
 								<th class="col-md-1">Active</th>
-								<th class="col-md-3">EMail</th>
+								<th class="col-md-2">EMail</th>
 								<th class="col-md-4">Actions</th>
 							</tr>
 						</thead>
@@ -28,7 +29,8 @@
 										{{item.UserName}} 
 									</div>
 								</td>
-
+								<td class="text-left">
+									{{item.UserFullName}}
 								<td>
 									{{item.ActiveRoles}}
 								</td>
@@ -44,7 +46,7 @@
 								<td>
 									<div *ngIf="(item.isAppAdmin == false) || (item.isAppAdmin == true && LoggedInUserIsAppAdmin == true)">
 										<button class="btn btn-primary" (click)="OpenForEdit(item.UserId)" [disabled]="item.UserName == loggedInUserName" [title]="getEditButtonTitle(item.UserName)">Edit</button>
-										<button class="btn btn-primary" (click)="ResetPassword(item.UserId)">Reset Password</button>
+										<button class="btn btn-primary" (click)="ResetPassword(item.UserId, item.UserName)">Reset Password</button>
 										<button class="btn btn-danger" (click)="setUserToDelete(item); DeleteUserModal.open()" [disabled]="item.UserName == loggedInUserName"
 											[title]="getDeleteButtonTitle(item.UserName)">Delete</button>
 									</div>
@@ -53,7 +55,7 @@
 
 							</tr>
 							<tr>
-								<td colspan="4" style="align-left">
+								<td colspan="8" style="align-left">
 									<div class="text-left">
 										<button class="btn btn-primary" (click)="AddNew()">Add</button>
 									</div>
@@ -62,7 +64,7 @@
 							<tr *ngIf="passwordReset">
 								<td colspan="3" style="align-left">
 									<div class="text-left">
-										Password Reset. Mail sent to the user.
+										Password Reset. Mail sent to the user - {{selectedRecordName}}
 									</div>
 								</td>
 							</tr>

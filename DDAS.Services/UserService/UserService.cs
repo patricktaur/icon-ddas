@@ -62,9 +62,6 @@ namespace DDAS.Services.UserService
             return retUser;
         }
 
-    
-
-
         public UserViewModel GetUser(Guid? UserId, bool IncludeAppAdminrole)
         {
             var retUserViewMOdel = new UserViewModel();
@@ -144,6 +141,7 @@ namespace DDAS.Services.UserService
                 userToUpdate.UserName = userViewModel.UserName.Trim();
                 userToUpdate.Active = userViewModel.Active;
                 userToUpdate.EmailId = userViewModel.EmailId;
+                userToUpdate.UserFullName = userViewModel.UserFullName;
                 _UOW.UserRepository.Add(userToUpdate);
             }
             else
@@ -155,6 +153,7 @@ namespace DDAS.Services.UserService
                 }
                 userToUpdate.Active = userViewModel.Active;
                 userToUpdate.EmailId = userViewModel.EmailId;
+                userToUpdate.UserFullName = userViewModel.UserFullName;
                 _UOW.UserRepository.UpdateUser(userToUpdate);
 
             }

@@ -26,7 +26,6 @@ namespace DDAS.API.Controllers
             ErrorScreenCaptureFolder = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
-
         }
 
         [Route("GetDataExtractionHistory")]

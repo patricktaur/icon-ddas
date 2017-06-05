@@ -21,11 +21,11 @@ namespace DDAS.API.Controllers
         private ISearchService _SearchSummary;
         private IUnitOfWork _UOW;
         private IConfig _config;
-        private string RootPath;
+        private string _RootPath;
 
         public ReportsController(ISearchService SearchSummary, IUnitOfWork UOW, IConfig Config)
         {
-            RootPath = HttpRuntime.AppDomainAppPath;
+            _RootPath = HttpRuntime.AppDomainAppPath;
             _SearchSummary = SearchSummary;
             _UOW = UOW;
             _config = Config;
@@ -72,18 +72,22 @@ namespace DDAS.API.Controllers
 
         [Route("GenerateOutputFile")]
         [HttpPost]
-        public HttpResponseMessage GenerateOutputFile(ComplianceFormFilter CompFormFilter)
+        public IHttpActionResult GenerateOutputFile(ComplianceFormFilter CompFormFilter)
         {
-            HttpResponseMessage response = null;
+            //HttpResponseMessage response = null;
 
             if (!File.Exists(
                 _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
             {
-                response = Request.CreateResponse(HttpStatusCode.Gone);
+                return Ok("Could not find Output file template");
+               // response = Request.CreateResponse(HttpStatusCode.Gone);
             }
             else
             {
-                response = Request.CreateResponse(HttpStatusCode.OK);
+                //var UserAgent = Request.Headers.UserAgent.ToString();
+                //var Browser = GetBrowserType(UserAgent);
+
+                //response = Request.CreateResponse(HttpStatusCode.OK);
 
                 var GenerateOutputFile =
                     new GenerateOutputFile(
@@ -122,29 +126,51 @@ namespace DDAS.API.Controllers
                     .ToList();
                 }
 
-                var memoryStream =
+                var FilePath = 
                     _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
 
-                response.Content = new ByteArrayContent(memoryStream.ToArray());
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
 
-                response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
+                //var memoryStream =
+                //    _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
 
-                response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                //response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                var OutputFileName = "OutputFile_" +
-                    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-                    ".xlsx";
+                //response.Content.Headers.ContentDisposition =
+                //    new ContentDispositionHeaderValue("attachment");
 
-                response.Content.Headers.ContentDisposition.FileName = OutputFileName;
+                //response.Content.Headers.ContentType =
+                //    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-                //add custom headers to the response
-                //easy for angular2 to read this header
-                response.Content.Headers.Add("Filename", OutputFileName);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "FileName");
+                //var OutputFileName = "OutputFile_" +
+                //    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+                //    ".xlsx";
+
+                //response.Content.Headers.ContentDisposition.FileName = OutputFileName;
+
+                ////add custom headers to the response
+                ////easy for angular2 to read this header
+                //response.Content.Headers.Add("Filename", OutputFileName);
+                //response.Content.Headers.Add("Browser", Browser);
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
             }
-            return response;
+            //return response;
+        }
+
+        public string GetBrowserType(string BrowserType)
+        {
+            if (BrowserType.ToLower().Contains("edge"))
+                return "Edge";
+            else if (BrowserType.ToLower().Contains("trident"))
+                return "IE";
+            else if (BrowserType.ToLower().Contains("chrome"))
+                return "Chrome";
+            else if (BrowserType.ToLower().Contains("mozilla"))
+                return "Mozilla";
+
+            return "unknown";
         }
     }
 }

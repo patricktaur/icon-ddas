@@ -32,9 +32,7 @@ export class LoginComponent implements OnInit{
   
   setMessage() {
     this.message = 'Logged ' + (this.authService.isLoggedIn ? 'in' : 'out');
-   
   }
-
  
   login() {
   
