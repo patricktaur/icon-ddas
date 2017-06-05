@@ -2009,10 +2009,11 @@ namespace DDAS.Services.Search
 
             var GeneratedFileNameNPath =
                 _config.ComplianceFormFolder + GeneratedFileName;
-            if (File.Exists(GeneratedFileNameNPath))
-            {
-                return GeneratedFileNameNPath;
-            }
+
+            //if (File.Exists(GeneratedFileNameNPath))
+            //{
+            //    return GeneratedFileNameNPath;
+            //}
 
             //Below condition is required when file is created on the server and
             //path is returned to the client
