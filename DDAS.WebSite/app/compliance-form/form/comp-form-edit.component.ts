@@ -7,6 +7,7 @@ import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
 import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
+import { ConfigService } from '../../shared/utils/config.service';
 
 //import {SiteSourceViewModel} from '../../admin/appAdmin.classes';
 import {DefaultSite, SiteSourceViewModel} from '../../admin/appAdmin.classes';
@@ -82,8 +83,8 @@ export class CompFormEditComponent implements OnInit {
     public defaultTabInActive: string = " in active";
     
     public selectedFinding: Finding = new Finding;
-
-     public SiteSources: any[];
+    public fileUploaded: string;
+    public SiteSources: any[];
      //public SourceSite: DefaultSite = new DefaultSite;
      //public SourceSite: DefaultSite = new DefaultSite;
      public SiteSource: SiteSource = new SiteSource;
@@ -102,12 +103,11 @@ export class CompFormEditComponent implements OnInit {
         private _location: Location,
         private service: SearchService,
         private fb: FormBuilder,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private configService: ConfigService
     ) { }
 
     ngOnInit() {
-            
-    
         this.formLoading = true;
         this.route.params.forEach((params: Params) => {
             this.ComplianceFormId = params['formId'];
@@ -270,11 +270,26 @@ gotoSiteDetails(SiteSourceId: number){
                 this.SetInvestigatorsSavedFlag();
                 this.pageChanged = false;
                 this.buildForm();
+                this.setFileUploadFolderPath();
                 this.formLoading = false;
             },
             error => {
                 this.formLoading = false;
             });
+    }
+
+    setFileUploadFolderPath(){
+        this.service.getUploadsFolderPath()
+        .subscribe((item: any) => {
+            this.fileUploaded = this.configService.getApiHost() + item;
+        })
+    }
+
+    downloadUploadedFile(generatedFileName: string){
+        this.service.getUploadedFile(generatedFileName, this.CompForm.UploadedFileName)
+        .subscribe((item: any) => {
+            this.fileUploaded = this.configService.getApiHost() + item;
+        })
     }
 
     Initialize() {

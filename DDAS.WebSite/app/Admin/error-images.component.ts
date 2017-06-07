@@ -24,7 +24,7 @@ export class ErrorImagesComponent implements OnInit {
 
     ngOnInit() {
         this.service.getErrorImageFolderPath()
-            .subscribe((item: any[]) => {
+            .subscribe((item: any) => {
                 this.ApiHost = this.configService.getApiHost() + item;
             });
         this.LoadErrorImages();

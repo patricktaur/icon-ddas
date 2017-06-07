@@ -214,7 +214,7 @@ namespace DDAS.API.Controllers
                 }
 
                 var memoryStream =
-                    _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
+                    _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms2);
 
                 response.Content = new ByteArrayContent(memoryStream.ToArray());
 

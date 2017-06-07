@@ -140,13 +140,15 @@ namespace Utilities.WordTemplate
         {
             _document = new Document(PageSize.LETTER, 10, 10, 42, 35);
 
-            if (File.Exists(ComplianceFormFolder))
-                File.Delete(ComplianceFormFolder);
+            //if (File.Exists(ComplianceFormFolder))
+            //    File.Delete(ComplianceFormFolder);
 
-            _stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+            //_stream = new FileStream(ComplianceFormFolder, FileMode.CreateNew);
+
+            _memoryStream = new MemoryStream();
 
             _writer = PdfWriter.GetInstance(_document,
-                _stream);
+                _memoryStream); //_stream
 
             _document.Open();
             _writer.CloseStream = false;
@@ -230,12 +232,12 @@ namespace Utilities.WordTemplate
         public void CloseDocument()
         {
             _document.Close();
-            _writer.Close();
+            //_writer.Close();
         }
 
         public MemoryStream ReturnStream()
         {
-            return null;
+            return _memoryStream;
         }
 
         #endregion

@@ -154,6 +154,15 @@ export class ClosedICFsComponent implements OnInit {
             });
     }
 
+    downloadComplianceFormPDF(formId: string){
+        this.service.generateComplianceFormPDF(formId)
+            .subscribe((item: any) => {
+
+            },
+            error => {
+            });        
+    }
+
     getBackgroundColor(color: number) {
         let retColor: string;
 

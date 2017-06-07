@@ -124,6 +124,7 @@ namespace DDAS.Models.Entities.Domain
         public int TotalIssuesFound { get; set; }
         public List<SearchSummaryItem> SearchSummaryItems { get; set; }
     }
+
     public class SearchSummaryItem
     {
         public Guid? RecId { get; set; }

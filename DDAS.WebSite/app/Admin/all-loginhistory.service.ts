@@ -106,7 +106,7 @@ export class LoginHistoryService {
     }
 
     getErrorImageFolderPath(){
-        return this.http.get(this._baseUrl + 'AppAdmin/DownloadErrorImage',
+        return this.http.get(this._baseUrl + 'AppAdmin/GetErrorScreenCaptureFolderPath',
         this._options)
         .map((res: Response) => {
             return res.json();

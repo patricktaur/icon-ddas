@@ -84,7 +84,7 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
 
-        [Route("DownloadErrorImage")]
+        [Route("GetErrorScreenCaptureFolderPath")]
         [HttpGet]
         public IHttpActionResult DownloadErrorImage()
         {
@@ -177,6 +177,7 @@ namespace DDAS.API.Controllers
             return Ok();
         }
         #endregion
+
         #region LiveScanner
 
 

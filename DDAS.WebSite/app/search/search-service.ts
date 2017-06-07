@@ -156,6 +156,56 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    getUploadsFolderPath() {
+        return this.http.get(this._baseUrl + 'search/GetUploadsFolderPath', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getUploadedFile(generatedFileName: string, originalFileName: string){
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+
+        let file = {};
+        return this.http.get(this._baseUrl + 'Search/DownloadUploadedFile?GeneratedFileName=' + generatedFileName,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            .map((res: Response) => {
+                // return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+
+                var browser = res.headers.get('Browser');
+
+                console.log("Original Filename: " + originalFileName);
+                console.log("Browser: " + browser);
+
+                if (browser.toLowerCase() == "edge" ||
+                    browser.toLowerCase() == "ie") {
+                    window.navigator.msSaveBlob(file, originalFileName);
+                }
+
+                if (browser.toLowerCase() == "chrome") {
+                    var anchor = document.createElement("a");
+                    anchor.download = originalFileName;
+                    anchor.text = originalFileName;
+                    anchor.href = window.URL.createObjectURL(file, originalFileName);
+                    anchor.click();
+                }
+                if (browser.toLowerCase() == "unknown") {
+                    alert("could not identify the browser. File download failed");
+                }
+                if (browser == null) {
+                    //...
+                }
+                ////window.open(window.URL.createObjectURL(file));
+            })
+            .catch(this.handleError);
+    }
+
     SaveAssignedTo(AssignedTo: string, Active: boolean, ComplianceFormId: string): Observable<boolean> {
         return this.http.get(this._baseUrl + 'search/SaveAssignedToData?' +
             'AssignedTo=' + AssignedTo + '&Active=' + Active + '&ComplianceFormId=' + ComplianceFormId,
@@ -275,6 +325,55 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    generateComplianceFormPDF(formId: string) {
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+
+        let file = {};
+        return this.http.get(this._baseUrl + 'Search/GenerateComplianceFormPDF?ComplianceFormId=' + formId,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            .map((res: Response) => {
+                // return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/pdf'
+                });
+
+                //header 'Browser' in the response is not read by Microsoft 'Edge'. Not sure why
+                //hence the work around of 'split with space'!
+                // var browser = res.headers.get('Browser');
+                var fileNameHeader = res.headers.get('Filename');
+                var fileName = fileNameHeader.split(' ')[0].trim();
+                // var browser = res.headers.get('Browser');
+                var browser = fileNameHeader.split(' ')[1].trim();
+
+                console.log("Filename header: " + fileNameHeader);
+                console.log("File Name: " + fileName);
+                console.log("Browser: " + browser);
+
+                if (browser.toLowerCase() == "edge" ||
+                    browser.toLowerCase() == "ie") {
+                    window.navigator.msSaveBlob(file, fileName);
+                }
+
+                if (browser.toLowerCase() == "chrome") {
+                    var anchor = document.createElement("a");
+                    anchor.download = fileName;
+                    anchor.text = fileName;
+                    anchor.href = window.URL.createObjectURL(file, fileName);
+                    anchor.click();
+                }
+                if (browser.toLowerCase() == "unknown") {
+                    alert("could not identify the browser. File download failed");
+                }
+                if (browser == null) {
+                    //...
+                }
+                ////window.open(window.URL.createObjectURL(file));
+            })
+            .catch(this.handleError);
+    }
+
     generateOutputFile() {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -305,22 +404,22 @@ export class SearchService {
 
                 console.log("Downloaded filename: " + filename);
                 console.log("Browser: " + browser);
-                
+
                 if (browser.toLowerCase() == "edge" ||
                     browser.toLowerCase() == "ie") {
                     window.navigator.msSaveOrOpenBlob(file, filename);
                 }
-                
+
                 if (browser.toLowerCase() == "chrome") {
                     var anchor = document.createElement("a");
                     anchor.download = filename;
                     anchor.href = window.URL.createObjectURL(file);
                     anchor.click();
                 }
-                if(browser.toLowerCase() == "unknown"){
+                if (browser.toLowerCase() == "unknown") {
                     alert("could not identify the browser. File donwload failed");
                 }
-                if(browser == null){
+                if (browser == null) {
                     //alert("Error. could not download file for browser: " + browser);
                 }
                 //window.open(window.URL.createObjectURL(file));

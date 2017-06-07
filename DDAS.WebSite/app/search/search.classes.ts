@@ -188,6 +188,7 @@ export class SearchList{
     ExtractionEstimatedCompletion : Date ;
     EstimatedExtractionCompletionWithin: string;
      
+    UploadedFileName: string;
     ExtractedOn: Date;
     ExtractionErrorInvestigatorCount: number;
 
