@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, ResponseContentType, RequestOptions } from '@angular/http';
 //Grab everything with import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
@@ -71,6 +71,57 @@ export class AppAdminService {
             this._options)
             .map((res: Response) => {
                 return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getcberRecords(){
+            return this.http.get(this._baseUrl + 'AppAdmin/GetCBERRecords',
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getUploadedFile(generatedFileName: string, originalFileName: string){
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+
+        let file = {};
+        return this.http.get(this._baseUrl + 'Search/DownloadUploadedFile?GeneratedFileName=' + generatedFileName,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            .map((res: Response) => {
+                // return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+
+                var browser = res.headers.get('Browser');
+
+                console.log("Original Filename: " + originalFileName);
+                console.log("Browser: " + browser);
+
+                if (browser.toLowerCase() == "edge" ||
+                    browser.toLowerCase() == "ie") {
+                    window.navigator.msSaveBlob(file, originalFileName);
+                }
+
+                if (browser.toLowerCase() == "chrome") {
+                    var anchor = document.createElement("a");
+                    anchor.download = originalFileName;
+                    anchor.text = originalFileName;
+                    anchor.href = window.URL.createObjectURL(file, originalFileName);
+                    anchor.click();
+                }
+                if (browser.toLowerCase() == "unknown") {
+                    alert("could not identify the browser. File download failed");
+                }
+                if (browser == null) {
+                    //...
+                }
+                ////window.open(window.URL.createObjectURL(file));
             })
             .catch(this.handleError);
     }

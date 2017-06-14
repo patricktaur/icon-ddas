@@ -5,10 +5,10 @@ import {AppAdminRouting} from './app-admin.routing'
 import {AppAdminService} from './app-admin.service';
 import {AppAdminDashboardComponent} from './app-admin-dashboard.component';
 import { ManageUploadsComponent } from './manage-uploads.component';
+import {CBERComponent} from './cber-investigate.component';
 
 @NgModule({ 
   imports: [
-      
       CommonModule,
       FormsModule,
       AppAdminRouting
@@ -16,9 +16,8 @@ import { ManageUploadsComponent } from './manage-uploads.component';
   declarations: [
       AppAdminDashboardComponent,
       ManageUploadsComponent,
-      
+      CBERComponent
   ],
- 
   providers: [      
       AppAdminService
 ]

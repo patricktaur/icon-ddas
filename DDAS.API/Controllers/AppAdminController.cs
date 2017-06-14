@@ -1,4 +1,5 @@
-﻿using DDAS.Models.Entities.Domain;
+﻿using DDAS.API.Helpers;
+using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using System;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
 
@@ -36,6 +38,13 @@ namespace DDAS.API.Controllers
 
             _OutputFilePath = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"];
+        }
+
+        [Route("GetCBERRecords")]
+        [HttpGet]
+        public IHttpActionResult GetCBERData()
+        {
+            return Ok(_AppAdminService.GetCBERData());
         }
 
         #region Get/Delete/Download ErrorImages
@@ -134,6 +143,38 @@ namespace DDAS.API.Controllers
         {
             var UploadedFiles = _AppAdminService.GetUploadedFiles();
             return Ok(UploadedFiles);
+        }
+
+        [Route("GetUploadedFile")]
+        [HttpGet]
+        public HttpResponseMessage GetUploadedFile(string GeneratedFileName)
+        {
+            HttpResponseMessage Response = null;
+
+            if (!File.Exists(_UploadsFolder + GeneratedFileName))
+                Response = Request.CreateResponse(HttpStatusCode.Gone);
+            else
+            {
+                Response = Request.CreateResponse(HttpStatusCode.OK);
+
+                var UserAgent = Request.Headers.UserAgent.ToString();
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+
+                byte[] ByteArray =
+                    File.ReadAllBytes(_UploadsFolder + GeneratedFileName);
+
+                Response.Content = new ByteArrayContent(ByteArray);
+
+                Response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                Response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                Response.Content.Headers.Add("Browser", Browser);
+                Response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+            }
+            return Response;
         }
 
         [Route("DeleteUploadedFile")]

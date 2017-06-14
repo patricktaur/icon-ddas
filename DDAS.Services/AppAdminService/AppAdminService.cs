@@ -27,6 +27,16 @@ namespace DDAS.Services.AppAdminService
             _config = config;
         }
 
+        public List<CBERClinicalInvestigator> GetCBERData()
+        {
+            var CBERData = _UOW.CBERClinicalInvestigatorRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+
+            var Data = CBERData.ClinicalInvestigator;
+            return Data;
+        }
+
         public List<DataExtractionHistory> GetDataExtractionHistory()
         {
             var FDADebarSiteData = _UOW.FDADebarPageRepository.GetAll().
@@ -1040,6 +1050,9 @@ namespace DDAS.Services.AppAdminService
             var site20 =
                     new SitesToSearch { ExtractionMode = "Manual", SiteName = "HEALTH GUIDE USA", SiteShortName = "HEALTH GUIDE USA", SiteEnum = SiteEnum.HealthGuideUSAPage, SiteUrl = "http://www.healthguideusa.org/medical_license_lookup.htm"};
             _UOW.SiteSourceRepository.Add(site20);
+            var site21 =
+                    new SitesToSearch { ExtractionMode = "Manual", SiteName = "India - Medical Council of India", SiteShortName = "Indian Medical...", SiteEnum = SiteEnum.MedicalCouncilOfIndiaPage, SiteUrl = "http://online.mciindia.org/online//Index.aspx?qstr_level=01" };
+            _UOW.SiteSourceRepository.Add(site21);
         }
         #endregion
 

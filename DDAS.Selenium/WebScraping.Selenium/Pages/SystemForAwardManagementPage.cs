@@ -266,6 +266,10 @@ namespace WebScraping.Selenium.Pages
                 SAMSiteRecord.Middle = fields[4].Trim();
                 SAMSiteRecord.Last = fields[5].Trim();
 
+                SAMSiteRecord.City = fields[11].Trim();
+                SAMSiteRecord.State = fields[12].Trim();
+                SAMSiteRecord.Country = fields[13].Trim();
+
                 SAMSiteRecord.ExcludingAgency = fields[17].Trim();
                 SAMSiteRecord.ExclusionType = fields[19].Trim();
                 SAMSiteRecord.AdditionalComments = fields[20].Trim();

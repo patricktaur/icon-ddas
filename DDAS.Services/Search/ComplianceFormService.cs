@@ -464,6 +464,7 @@ namespace DDAS.Services.Search
                 var dbForm = _UOW.ComplianceFormRepository.FindById(form.RecId);
                 if (dbForm != null)
                 {
+                    dbForm.UpdatedOn = DateTime.Now;
                     dbForm.ProjectNumber = form.ProjectNumber;
                     dbForm.SponsorProtocolNumber = form.SponsorProtocolNumber;
                     dbForm.Institute = form.Institute;
@@ -533,9 +534,10 @@ namespace DDAS.Services.Search
             
             //get Comp form from db.
             var dbForm = _UOW.ComplianceFormRepository.FindById(updateFindings.FormId);
+
             if (dbForm != null)
             {
-                
+                dbForm.UpdatedOn = DateTime.Now;
                 //Set  Review Completed value:
                 foreach (InvestigatorSearched Investigator in dbForm.InvestigatorDetails)
                 {
@@ -620,8 +622,10 @@ namespace DDAS.Services.Search
 
             //get Comp form from db.
             var dbForm = _UOW.ComplianceFormRepository.FindById(InstitueFindings.FormId);
+
             if (dbForm != null)
             {
+                dbForm.UpdatedOn = DateTime.Now;
 
                 dbForm.Findings.RemoveAll(x => x.SiteSourceId == InstitueFindings.SiteSourceId);
   
@@ -840,6 +844,12 @@ namespace DDAS.Services.Search
                                 {
                                     FullNameDB[Counter] = RemoveExtraCharacters(FullNameDB[Counter]);
 
+                                    if (FullNameDB[Counter].ToLower().Contains("punnee") ||
+                                        FullNameDB[Counter].ToLower().Contains("MERCEDES"))
+                                    {
+
+                                    }
+
                                     bool FullNameComponentIsEqualsToNameComponentAndIsNotNull =
                                     (FullNameDB[Counter] != null && 
                                     FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower())
@@ -869,6 +879,8 @@ namespace DDAS.Services.Search
             IEnumerable<SiteDataItemBase> items, 
             string InvestigatorName)
         {
+            InvestigatorName = RemoveExtraCharacters(InvestigatorName);
+
             var NameComponents = InvestigatorName.Split(' ');
 
             int Count = 0;
@@ -1257,7 +1269,7 @@ namespace DDAS.Services.Search
                             {
                                 searchStatus.ReviewCompleted = true;
                             }
-                            frm.UpdatedOn = DateTime.Now;
+                            //frm.UpdatedOn = DateTime.Now;
                             //ListOfSiteSearchStatus.Add(searchStatus);
                         }
                         catch (Exception ex)
@@ -1271,7 +1283,7 @@ namespace DDAS.Services.Search
                         }
                         finally
                         {
-                           
+                            frm.UpdatedOn = DateTime.Now;
                         }
                     }
                 }
@@ -1600,7 +1612,6 @@ namespace DDAS.Services.Search
                 }
              }
         }
-
 
         private void CorrectSiteDisplayPositionInFindings(ComplianceForm frm)
         {
@@ -2620,6 +2631,9 @@ namespace DDAS.Services.Search
                 recToAdd.Middle = rec.Middle;
                 recToAdd.ParentId = rec.ParentId;
                 recToAdd.RecId = rec.RecId;
+                recToAdd.City = rec.City;
+                recToAdd.State = rec.State;
+                recToAdd.Country = rec.Country;
                 recToAdd.RecordNumber = rec.RecordNumber;
                 recToAdd.RecordStatus = rec.RecordStatus;
                 recToAdd.RowNumber = rec.RowNumber;

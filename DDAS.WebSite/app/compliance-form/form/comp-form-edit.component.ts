@@ -546,6 +546,8 @@ gotoSiteDetails(SiteSourceId: number){
       
       this.SiteSource.RecId = site.RecId;
       this.SiteSource.SiteName = site.SiteName;
+      this.SiteSource.SiteShortName = site.SiteShortName;
+      this.SiteSource.SiteUrl = site.SiteUrl;
       this.SiteSource.ExtractionMode = site.ExtractionMode;
    }
     
@@ -566,6 +568,7 @@ gotoSiteDetails(SiteSourceId: number){
         siteToAdd.SiteName = this.SiteSource.SiteName;
         //siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
         siteToAdd.SiteUrl = this.SiteSource.SiteUrl;
+        siteToAdd.SiteShortName = this.SiteSource.SiteShortName;
         siteToAdd.Id = this.LastSiteSourceId + 1;
         siteToAdd.IsMandatory = false;
         siteToAdd.SearchAppliesTo = this.SiteSource.SearchAppliesTo;

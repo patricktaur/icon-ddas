@@ -74,9 +74,12 @@ namespace WebScraping.Selenium.Pages
 
         private int RowCount = 1;
 
-        private void LoadNextInspectionList()
+        private CBERClinicalInvestigatorInspectionSiteData _CBERSiteData;
+
+        private void GetDataFromAllLists()
         {
-            //links to extract records starting with E-K, L-P, Q-S and T-Z 
+            //links to extract records starting with E-K, L-P, Q-S and T-Z
+            //link for A-D records is the in the 'Url' property
             string[] InspectionList = new string[] {
                 "http://www.fda.gov/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/ComplianceActivities/ucm195367.htm",
                 "http://www.fda.gov/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/ComplianceActivities/ucm195632.htm",
@@ -89,11 +92,23 @@ namespace WebScraping.Selenium.Pages
             foreach(string arrItem in InspectionList)
             {
                 driver.Url = arrItem;
+
+                if (!IsPageLoaded())
+                    throw new Exception("Page is not loaded for Url - " + driver.Url);
+
+                if (IsFeedbackPopUpDisplayed)
+                {
+                    var ErrorCaptureFilePath =
+                        _config.ErrorScreenCaptureFolder +
+                         "PopUp_CBERClinicalInvesigator_" +
+                        DateTime.Now.ToString("dd MMM yyyy hh_mm");
+                    SaveScreenShot(ErrorCaptureFilePath);
+                    //driver.Navigate().GoToUrl(arrItem);
+                    //IsPageLoaded();
+                }
                 LoadCBERClinicalInvestigators();
             }
         }
-
-        private CBERClinicalInvestigatorInspectionSiteData _CBERSiteData;
 
         private void LoadCBERClinicalInvestigators()
         {
@@ -155,7 +170,7 @@ namespace WebScraping.Selenium.Pages
                 }
 
                 _CBERSiteData.DataExtractionRequired = true;
-                LoadNextInspectionList();
+                GetDataFromAllLists();
                 _CBERSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)

@@ -1,4 +1,5 @@
-﻿using DDAS.Models;
+﻿using DDAS.API.Helpers;
+using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
 using System;
@@ -173,7 +174,7 @@ namespace DDAS.API.Controllers
             else
             {
                 var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = GetBrowserType(UserAgent);
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
 
                 response = Request.CreateResponse(HttpStatusCode.OK);
 
@@ -239,20 +240,6 @@ namespace DDAS.API.Controllers
                 //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
             }
             return response;
-        }
-
-        public string GetBrowserType(string BrowserType)
-        {
-            if (BrowserType.ToLower().Contains("edge"))
-                return "Edge";
-            else if (BrowserType.ToLower().Contains("trident"))
-                return "IE";
-            else if (BrowserType.ToLower().Contains("chrome"))
-                return "Chrome";
-            else if (BrowserType.ToLower().Contains("mozilla"))
-                return "Mozilla";
-
-            return "unknown";
         }
     }
 }

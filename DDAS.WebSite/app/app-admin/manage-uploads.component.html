@@ -39,7 +39,7 @@
 								<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
 								<tr *ngFor="let item of AllUploadedFiles" class="active">
 									<td class="text-center">
-										<a href="{{ApiHost}}{{item.GeneratedFileName}}" target="_blank">{{item.UploadedFileName}}</a>
+										{{item.UploadedFileName}}
 									</td>
                                     <td class="text-center">
                                         {{item.AssignedTo}}
@@ -49,6 +49,9 @@
 									</td>
 									<td>
 										<!--<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete File">-->
+										<button type="button" class="btn btn-sm btn-primary" (click)="downloadFile(item.GeneratedFileName, item.UploadedFileName)" title="Download File">
+											<span class="glyphicon glyphicon-download-alt"></span>
+										</button>
 										<button type="button" class="btn btn-sm btn-primary" (click)="Delete(item.GeneratedFileName)" title="Delete File">
 											<span class="glyphicon glyphicon-remove"></span>
 										</button>

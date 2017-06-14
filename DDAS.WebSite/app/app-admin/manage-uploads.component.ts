@@ -38,6 +38,13 @@ export class ManageUploadsComponent implements OnInit {
             });
     }
 
+    downloadFile(generatedFileName: string, uploadedFileName: string){
+        this.service.getUploadedFile(generatedFileName, uploadedFileName)
+        .subscribe((item: any) => {
+            
+        });
+    }
+
     setSelectedRecordDetails(rec: any) {
         this.selectedRecordName = "";
         this.selectedRecordName = rec.GeneratedFileName;

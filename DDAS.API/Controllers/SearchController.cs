@@ -18,10 +18,11 @@ using System.Web;
 using Utilities.WordTemplate;
 using System.Linq;
 using DDAS.Models.Enums;
+using DDAS.API.Helpers;
 
 namespace DDAS.API.Controllers
 {
-    [Authorize(Roles = "user, admin")]
+    //[Authorize(Roles = "user, admin")]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {
@@ -385,7 +386,7 @@ namespace DDAS.API.Controllers
                 Response = Request.CreateResponse(HttpStatusCode.OK);
 
                 var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = GetBrowserType(UserAgent);
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
 
                 byte[] ByteArray = 
                     File.ReadAllBytes(_config.UploadsFolder + GeneratedFileName);
@@ -449,7 +450,7 @@ namespace DDAS.API.Controllers
             else
             {
                 var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = GetBrowserType(UserAgent);
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
 
                 response = Request.CreateResponse(HttpStatusCode.OK);
 
@@ -514,7 +515,7 @@ namespace DDAS.API.Controllers
             else
             {
                 var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = GetBrowserType(UserAgent);
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
 
                 Guid? RecId = Guid.Parse(ComplianceFormId);
 
@@ -728,8 +729,7 @@ namespace DDAS.API.Controllers
         {
             //return Ok(SearchSites.GetNewSearchQuery());
             var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
-            return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName));
-            
+            return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
         }
 
         string ListToString(ExcelInput excelInput)
@@ -759,20 +759,6 @@ namespace DDAS.API.Controllers
                 //retValue += l + "---";
             }
             return retValue;
-        }
-
-        public string GetBrowserType(string BrowserType)
-        {
-            if (BrowserType.ToLower().Contains("edge"))
-                return "Edge";
-            else if (BrowserType.ToLower().Contains("trident"))
-                return "IE";
-            else if (BrowserType.ToLower().Contains("chrome"))
-                return "Chrome";
-            else if (BrowserType.ToLower().Contains("mozilla"))
-                return "Mozilla";
-
-            return "unknown";
         }
     }
 

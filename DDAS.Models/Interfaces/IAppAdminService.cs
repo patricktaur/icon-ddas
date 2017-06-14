@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
 using DDAS.Models.ViewModels;
 using System;
@@ -49,5 +50,7 @@ namespace DDAS.Models.Interfaces
         List<OutputFileViewModel> GetOutputFiles();
 
         List<ExceptionLoggerViewModel> GetExceptionLogs();
+
+        List<CBERClinicalInvestigator> GetCBERData();
     }
 }

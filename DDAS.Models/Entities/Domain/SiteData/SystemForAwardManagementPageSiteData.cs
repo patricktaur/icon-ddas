@@ -46,6 +46,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string AdditionalComments { get; set; }
         public string ActiveDate { get; set; }
         public string RecordStatus { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
 
         //return Entity for live search
         public override string FullName {
@@ -89,6 +92,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "First: " + First.Trim() + "~" +
                     "Middle: " + Middle.Trim() + "~" +
                     "Last: " + Last.Trim() + "~" +
+                    "City: " + City.Trim() + "~" +
+                    "State: " + State.Trim() + "~" +
+                    "Country: " + Country.Trim() + "~" +
                     "Excluding Agency: " + ExcludingAgency + "~" +
                     "Exclusion Type: " + ExclusionType + "~" +
                     "Additional Comments: " + AdditionalComments + "~" +

@@ -684,14 +684,16 @@
 									<select class="form-control" [(ngModel)]="SiteSource.RecId" name="siteSources" (change)="onSiteSourceChange($event.target.value)"
 										required>
 										<option *ngFor="let item of SiteSources" value={{item.RecId}} selected="selected" >
-											{{item.SiteName  + ' - ' + item.SiteUrl}}
+											{{item.SiteName}}
 											<!--{{item.SiteUrl}}-->
 										</option>
 									</select>
 
-									<label for="name">Name:</label>
-									<input type="text" name="name" class="form-control" value="SiteSource.SiteName" [(ngModel)]="SiteSource.SiteName" required>
+									<label for="siteShortName">Site Short Name:</label>
+									<input type="text" name="siteShortName" class="form-control" value="SiteSource.SiteShortName" [(ngModel)]="SiteSource.SiteShortName" required>
 
+									<label for="url"> Url:</label>
+									<input type="text" name="url" class="form-control" value="SiteSource.SiteUrl" [(ngModel)]="SiteSource.SiteUrl" required>
 
 									<label for="appliesTo">Search Applies To:</label>
 									<select class="form-control" [(ngModel)]="SiteSource.SearchAppliesTo" name="appliesTo" (change)="onSearchAppliesToChange($event.target.value)"
