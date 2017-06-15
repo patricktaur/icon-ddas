@@ -100,9 +100,13 @@ export class OutputReportComponent implements OnChanges {
             // error => {
 
             // });
-            .subscribe(),
-            error => console.log("Error downloading the file."),
-            () => console.log('Completed file download.');
+            .subscribe((item : any) => {
+
+            },
+            error => {
+                // console.log("Error downloading the file."),
+                //     () => console.log('Completed file download.')
+            });
     }
 
     get diagnostic() { return JSON.stringify(null); }

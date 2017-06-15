@@ -22,7 +22,7 @@ using DDAS.API.Helpers;
 
 namespace DDAS.API.Controllers
 {
-    //[Authorize(Roles = "user, admin")]
+    [Authorize(Roles = "user, admin")]
     [RoutePrefix("api/search")]
     public class SearchController : ApiController
     {

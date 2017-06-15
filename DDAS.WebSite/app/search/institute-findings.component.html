@@ -84,7 +84,9 @@
 								<h4>Date of Inspection:</h4>
 
 								<div *ngIf="!matchedRecord.IsMatchedRecord">
-									<div date-picker [(DateValue)]="matchedRecord.DateOfInspection"></div>
+									<input type="date" [(ngModel)]="matchedRecord.DateOfInspection" name="dateOfInspection">
+									<b>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy'}}</b>									
+									<!--<div date-picker [(DateValue)]="matchedRecord.DateOfInspection"></div>-->
 								</div>
 								<div *ngIf="matchedRecord.IsMatchedRecord">
 									<label>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy'}}</label>

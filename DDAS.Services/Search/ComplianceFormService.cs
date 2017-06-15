@@ -1200,6 +1200,12 @@ namespace DDAS.Services.Search
                             frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.DisplayPosition == searchStatus.DisplayPosition) && x.IsMatchedRecord == true);
 
                             DateTime? SiteLastUpdatedOn = null;
+
+                            if (siteSource.SiteDataId == null)
+                                throw new Exception(
+                                    "SiteDataId is null for: " +
+                                    siteSource.SiteEnum);
+
                             var MatchedRecords = GetMatchedRecords(
                                 siteSource, InvestigatorName,
                                 ComponentsInInvestigatorName, out SiteLastUpdatedOn);
@@ -1278,7 +1284,7 @@ namespace DDAS.Services.Search
                             ExtractionErrorSiteCount += 1;
                             searchStatus.HasExtractionError = true;
                             searchStatus.ExtractionErrorMessage = 
-                                "Data Extraction not successful - " + ex.Message;
+                                "search not successful - " + ex.Message;
                             // Log -- ex.Message + ex.InnerException.Message
                         }
                         finally
@@ -2335,6 +2341,12 @@ namespace DDAS.Services.Search
             var FDASearchResult =
                 _UOW.FDADebarPageRepository.FindById(SiteDataId);
 
+            if (FDASearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
+
             UpdateMatchStatus(
                 FDASearchResult.DebarredPersons,
                 InvestigatorName);  //updates list with match count
@@ -2359,6 +2371,12 @@ namespace DDAS.Services.Search
             var CIILSearchResult =
                 _UOW.ClinicalInvestigatorInspectionListRepository
                 .FindById(SiteDataId);
+
+            if (CIILSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(CIILSearchResult.ClinicalInvestigatorInspectionList,
                 InvestigatorName);  //updates list with match count
@@ -2393,6 +2411,12 @@ namespace DDAS.Services.Search
 
             var FDAWarningSiteData = _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
 
+            if (FDAWarningSiteData == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
+
             UpdateMatchStatus(FDAWarningSiteData.FDAWarningLetterList, NameToSearch);
 
             var FDAWarningLetterList =
@@ -2416,6 +2440,12 @@ namespace DDAS.Services.Search
             var ERRSearchResult =
                 _UOW.ERRProposalToDebarRepository.FindById(SiteDataId);
 
+            if (ERRSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
+
             UpdateMatchStatus(ERRSearchResult.ProposalToDebar,
                 InvestigatorName);  //updates list with match count
 
@@ -2437,6 +2467,12 @@ namespace DDAS.Services.Search
         {
             var AdequateAssuranceSearchResult =
                 _UOW.AdequateAssuranceListRepository.FindById(SiteDataId);
+
+            if (AdequateAssuranceSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(
                 AdequateAssuranceSearchResult.AdequateAssurances,
@@ -2460,6 +2496,12 @@ namespace DDAS.Services.Search
         {
             var DisqualificationSiteData =
                 _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteDataId);
+
+            if (DisqualificationSiteData == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(DisqualificationSiteData.DisqualifiedInvestigatorList,
                 NameToSearch);
@@ -2494,8 +2536,14 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            CBERClinicalInvestigatorInspectionSiteData CBERSearchResult =
+            var CBERSearchResult =
                 _UOW.CBERClinicalInvestigatorRepository.FindById(SiteDataId);
+
+            if (CBERSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: " 
+                    + SiteDataId + 
+                    " does not contain any records");
 
             UpdateMatchStatus(
                 CBERSearchResult.ClinicalInvestigator,
@@ -2516,8 +2564,14 @@ namespace DDAS.Services.Search
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            ExclusionDatabaseSearchPageSiteData ExclusionSearchResult =
+            var ExclusionSearchResult =
                 _UOW.ExclusionDatabaseSearchRepository.FindById(SiteDataId);
+
+            if (ExclusionSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(
                 ExclusionSearchResult.ExclusionSearchList,
@@ -2538,8 +2592,14 @@ namespace DDAS.Services.Search
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            PHSAdministrativeActionListingSiteData PHSSearchResult =
+            var PHSSearchResult =
                 _UOW.PHSAdministrativeActionListingRepository.FindById(SiteDataId);
+
+            if (PHSSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(
                 PHSSearchResult.PHSAdministrativeSiteData,
@@ -2563,6 +2623,12 @@ namespace DDAS.Services.Search
         {
             var CIASearchResult =
                 _UOW.CorporateIntegrityAgreementRepository.FindById(SiteDataId);
+
+            if (CIASearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(
                 CIASearchResult.CIAListSiteData,
@@ -2593,6 +2659,12 @@ namespace DDAS.Services.Search
 
             var siteData = 
                 _UOW.SystemForAwardManagementRepository.FindById(SiteDataId);
+
+            if (siteData == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             var tempData = _UOW.SAMSiteDataRepository.GetAll();
 
@@ -2646,8 +2718,14 @@ namespace DDAS.Services.Search
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            SpeciallyDesignatedNationalsListSiteData SDNSearchResult =
+            var SDNSearchResult =
                 _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
+
+            if (SDNSearchResult == null)
+                throw new Exception(
+                    "Document with RecId: "
+                    + SiteDataId +
+                    " does not contain any records");
 
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,

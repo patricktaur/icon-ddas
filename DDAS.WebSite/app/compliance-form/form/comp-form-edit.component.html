@@ -377,9 +377,12 @@
 																	{{item.ExtractionMode}}
 																</td>
 																<td>
-																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
+																	<!--<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>-->
+																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'">
+																		<input type="date" [(ngModel)]="item.SiteSourceUpdatedOn">
+																		{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
+																	</div>
 																	<div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
-
 																</td>
 
 																<td>
@@ -438,11 +441,12 @@
 																	{{item.ExtractionMode}}
 																</td>
 																<td>
-
-
-																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>
+																	<!--<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>-->
+																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'">
+																		<input type="date" [(ngModel)]="item.SiteSourceUpdatedOn">
+																		{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
+																	</div>
 																	<div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
-
 																</td>
 																<td>
 																	{{item.SearchAppliesToText}}
