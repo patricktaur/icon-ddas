@@ -20,13 +20,15 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
         public ExclusionDatabaseSearchPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) 
+            IConfig Config, ILog Log) 
             : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
             _exclusionSearchSiteData.RecId = Guid.NewGuid();

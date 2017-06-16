@@ -35,6 +35,13 @@ namespace DDAS.API.Controllers
             return Ok(_AppAdminService.GetDataExtractionHistory());
         }
 
+        [Route("GetExtractionLog")]
+        [HttpGet]
+        public IHttpActionResult GetExtractionLog()
+        {
+            return Ok(_AppAdminService.GetExtractionLog());
+        }
+
         #region Add/Delete sites
 
         [Route("AddSite")]

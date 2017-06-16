@@ -51,6 +51,8 @@ namespace DDAS.Models.Interfaces
 
         List<ExceptionLoggerViewModel> GetExceptionLogs();
 
+        List<ExtractionLogViewModel> GetExtractionLog();
+
         List<CBERClinicalInvestigator> GetCBERData();
     }
 }

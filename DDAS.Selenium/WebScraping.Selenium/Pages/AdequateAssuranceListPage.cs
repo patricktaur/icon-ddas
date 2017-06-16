@@ -20,12 +20,14 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private DateTime? _SiteLastUpdatedFromPage;
         private IConfig _config;
+        private ILog _log;
 
         public AdequateAssuranceListPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) : base(driver)
+            IConfig Config, ILog Log) : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _adequateAssuranceListSiteData = new AdequateAssuranceListSiteData();
             _adequateAssuranceListSiteData.RecId = Guid.NewGuid();
@@ -78,7 +80,12 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadAdequateAssuranceInvestigators()
         {
+            _log.WriteLog("Total Records Found - " +
+                AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")).Count());
+
             int RowCount = 1;
+            int NullRecords = 0;
+
             foreach(IWebElement TR in 
                 AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")))
             {
@@ -94,11 +101,20 @@ namespace WebScraping.Selenium.Pages
                     AdequateAssuranceInvestigator.ActionDate = TDs[3].Text;
                     AdequateAssuranceInvestigator.Comments = TDs[4].Text;
 
-                    _adequateAssuranceListSiteData.AdequateAssurances.Add
-                        (AdequateAssuranceInvestigator);
+                    if (AdequateAssuranceInvestigator.NameAndAddress != null ||
+                        AdequateAssuranceInvestigator.NameAndAddress != "")
+                        _adequateAssuranceListSiteData.AdequateAssurances.Add
+                            (AdequateAssuranceInvestigator);
+                    else
+                        NullRecords += 1;
+
                     RowCount = RowCount + 1;
                 }
             }
+            _log.WriteLog("Total records inserted - " +
+                (_adequateAssuranceListSiteData.AdequateAssurances.Count() + 1));
+
+            _log.WriteLog("Total null records found - " + NullRecords);
         }
 
         public override void LoadContent(

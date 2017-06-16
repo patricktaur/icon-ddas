@@ -22,17 +22,19 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL,
             string szFileName, long dwReserved, long lpfnCB);
 
         public ClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) 
+            IConfig Config, ILog Log) 
             : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _clinicalSiteData = new ClinicalInvestigatorInspectionSiteData();
             _clinicalSiteData.RecId = Guid.NewGuid();
@@ -93,8 +95,9 @@ namespace WebScraping.Selenium.Pages
             
             string myStringWebResource = ClinicalInvestigatorZipAnchor.GetAttribute("href");
 
-            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
-                fileName, myStringWebResource);
+            _log.WriteLog(
+                string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
+                fileName, myStringWebResource));
 
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
@@ -102,6 +105,10 @@ namespace WebScraping.Selenium.Pages
                 File.Delete(UnZipPath + "cliil.txt");
 
             ZipFile.ExtractToDirectory(fileName, UnZipPath);
+
+            _log.WriteLog("File - " 
+                + fileName +
+                " downloaded");
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
@@ -187,6 +194,8 @@ namespace WebScraping.Selenium.Pages
                     RowNumber += 1;
                 }
             }
+            _log.WriteLog("Total records inserted - " +
+                (_clinicalSiteData.ClinicalInvestigatorInspectionList.Count() + 1));
         }
 
         public override void LoadContent(string NameToSearch,

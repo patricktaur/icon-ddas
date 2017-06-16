@@ -18,12 +18,14 @@ namespace WebScraping.Selenium.Pages
         IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
         public FDADebarPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) : base(driver)
+            IConfig Config, ILog Log) : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _FDADebarPageSiteData = new FDADebarPageSiteData();
             _FDADebarPageSiteData.RecId = Guid.NewGuid();

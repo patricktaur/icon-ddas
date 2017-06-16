@@ -19,6 +19,6 @@ namespace DDAS.Models.Interfaces
 
         void SaveData();
 
-        bool IsDataExtractionRequired(SiteEnum siteEnum);
+        bool IsDataExtractionRequired(SiteEnum siteEnum, ILog log);
     }
 }

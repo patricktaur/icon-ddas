@@ -17,13 +17,15 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
         public ClinicalInvestigatorDisqualificationPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config)
+            IConfig Config, ILog Log)
             : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _DisqualificationSiteData = 
                 new ClinicalInvestigatorDisqualificationSiteData();
@@ -87,10 +89,15 @@ namespace WebScraping.Selenium.Pages
         private void LoadDisqualificationProceedingsList(string NameToSearch,
             int MatchCountLowerLimit = 0)
         {
+            int NullRecords = 0;
+
             if (DisqualifiedInvestigatorTable == null)
                 throw new Exception(
                     "Could not find DisqualifiedInvestigatorTable in " +
                     "LoadDisqualificationProceedingsList()");
+
+            _log.WriteLog("Total records found - " +
+                DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")).Count());
 
             foreach (IWebElement TR in
                 DisqualifiedInvestigatorTable.FindElements(By.XPath("tbody/tr")))
@@ -99,8 +106,8 @@ namespace WebScraping.Selenium.Pages
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
-                if (TDs.Count > 0 && 
-                    GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
+                if (TDs.Count > 0 ) //&& condition required for live search 
+                    //GetMatchCount(NameToSearch, TDs[0].Text) >= MatchCountLowerLimit)
                 {
                     DisqualifiedClinicalInvestigator.RowNumber = RowNumber;
                     DisqualifiedClinicalInvestigator.Name = TDs[0].Text;
@@ -150,11 +157,20 @@ namespace WebScraping.Selenium.Pages
                         }
                     }
 
-                    _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
-                        DisqualifiedClinicalInvestigator);
+                    if (DisqualifiedClinicalInvestigator.Name != null ||
+                        DisqualifiedClinicalInvestigator.Name != "")
+                        _DisqualificationSiteData.DisqualifiedInvestigatorList.Add(
+                            DisqualifiedClinicalInvestigator);
+                    else
+                        NullRecords += 1;
+
                     RowNumber += 1;
                 }
             }
+            _log.WriteLog("Total reocrds inserted - " +
+                (_DisqualificationSiteData.DisqualifiedInvestigatorList.Count() + 1));
+
+            _log.WriteLog("Total null records found - " + NullRecords);
         }
 
         private int GetMatchCount(string NameToSearch, string FullName)
