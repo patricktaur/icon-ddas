@@ -1,6 +1,7 @@
 ﻿using DDAS.Models.Entities;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Entities.Domain.SiteData;
+using DDAS.Models.Repository;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
@@ -50,6 +51,14 @@ namespace DDAS.Data.Mongo.Maps
             });
 
             BsonClassMap.RegisterClassMap<ExceptionLogger>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<Log>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);

@@ -17,12 +17,14 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
         public ERRProposalToDebarPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) : base(driver)
+            IConfig Config, ILog Log) : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _proposalToDebarSiteData = new ERRProposalToDebarPageSiteData();
             _proposalToDebarSiteData.RecId = Guid.NewGuid();

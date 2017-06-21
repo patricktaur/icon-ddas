@@ -26,16 +26,18 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
         [DllImport("urlmon.dll")]
         public static extern long URLDownloadToFile(long pCaller, string szURL,
             string szFileName, long dwReserved, long lpfnCB);
 
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) : base(driver)
+            IConfig Config, ILog Log) : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _FDAWarningSiteData = new FDAWarningLettersSiteData();
             _FDAWarningSiteData.RecId = Guid.NewGuid();

@@ -17,13 +17,15 @@ namespace WebScraping.Selenium.Pages
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
+        private ILog _log;
 
-        public CBERClinicalInvestigatorInspectionPage(IWebDriver driver, IUnitOfWork uow,
-            IConfig Config) :
-            base(driver)
+        public CBERClinicalInvestigatorInspectionPage(
+            IWebDriver driver, IUnitOfWork uow,
+            IConfig Config, ILog Log) : base(driver)
         {
             _UOW = uow;
             _config = Config;
+            _log = Log;
             Open();
             _CBERSiteData = new CBERClinicalInvestigatorInspectionSiteData();
             _CBERSiteData.RecId = Guid.NewGuid();
@@ -87,10 +89,16 @@ namespace WebScraping.Selenium.Pages
                 "http://www.fda.gov/BiologicsBloodVaccines/GuidanceComplianceRegulatoryInformation/ComplianceActivities/ucm197065.htm"
             };
 
-            LoadCBERClinicalInvestigators();
+            var List = new string[] { "A-D", "E-K", "L-P", "Q-S", "T-Z" };
+
+            int Index = 0;
+
+            LoadCBERClinicalInvestigators(List[Index]);
 
             foreach(string arrItem in InspectionList)
             {
+                Index += 1;
+
                 driver.Url = arrItem;
 
                 if (!IsPageLoaded())
@@ -106,12 +114,29 @@ namespace WebScraping.Selenium.Pages
                     //driver.Navigate().GoToUrl(arrItem);
                     //IsPageLoaded();
                 }
-                LoadCBERClinicalInvestigators();
+                LoadCBERClinicalInvestigators(List[Index]);
             }
         }
 
-        private void LoadCBERClinicalInvestigators()
+        private int TotalRecordsFound = 0;
+        private int NullRecords = 0;
+
+        private void LoadCBERClinicalInvestigators(string AlphabetList)
         {
+            var RecordsFound = 
+                CBERClinicalInvestigatorTable.FindElements(By.XPath("tbody/tr")).Count();
+
+            _log.WriteLog("Records found for list - " +
+                AlphabetList + " " +
+                RecordsFound);
+
+            TotalRecordsFound += RecordsFound;
+
+            var RecordsAdded = _CBERSiteData.ClinicalInvestigator.Count();
+
+            if (RecordsAdded != 0)
+                RecordsAdded += 1;
+
             foreach (IWebElement TR in 
                 CBERClinicalInvestigatorTable.FindElements(By.XPath("tbody/tr")))
             {
@@ -127,10 +152,19 @@ namespace WebScraping.Selenium.Pages
                     ClinicalInvestigatorCBER.InspectionStartAndEndDate = TDs[3].Text;
                     ClinicalInvestigatorCBER.Classification = TDs[4].Text;
 
-                    _CBERSiteData.ClinicalInvestigator.Add(ClinicalInvestigatorCBER);
+                    if (ClinicalInvestigatorCBER.Name != null ||
+                        ClinicalInvestigatorCBER.Name != "")
+                        _CBERSiteData.ClinicalInvestigator.Add(ClinicalInvestigatorCBER);
+                    else
+                        NullRecords += 1;
+
                     RowCount = RowCount + 1;
                 }
             }
+            _log.WriteLog("Records inserted for list - " +
+                AlphabetList + " " +
+                ((_CBERSiteData.ClinicalInvestigator.Count() + 1) - RecordsAdded));
+            //RowCount is equivivalent to records added to the collection
         }
 
         private bool IsPageLoaded()
@@ -258,7 +292,14 @@ namespace WebScraping.Selenium.Pages
 
         public override void SaveData()
         {
+            _log.WriteLog("Total records Found - " + TotalRecordsFound);
+
             _UOW.CBERClinicalInvestigatorRepository.Add(_CBERSiteData);
+
+            _log.WriteLog("Total records inserted - " +
+                _CBERSiteData.ClinicalInvestigator.Count());
+
+            _log.WriteLog("Total null records(name field) found - " + NullRecords);
         }
     }
 }

@@ -31,34 +31,34 @@ namespace WebScraping.Selenium.SearchEngine
             //_Driver = webDriver;
         }
 
-        private ISearchPage GetSearchPage(SiteEnum siteEnum)
+        private ISearchPage GetSearchPage(SiteEnum siteEnum, ILog Log)
         {
             switch (siteEnum)
             {
                 case SiteEnum.FDADebarPage:
-                    return new FDADebarPage(Driver, _uow, _config);
+                    return new FDADebarPage(Driver, _uow, _config, Log);
                 case SiteEnum.AdequateAssuranceListPage:
-                    return new AdequateAssuranceListPage(Driver, _uow, _config);
+                    return new AdequateAssuranceListPage(Driver, _uow, _config, Log);
                 case SiteEnum.ClinicalInvestigatorDisqualificationPage:
-                    return new ClinicalInvestigatorDisqualificationPage(Driver, _uow, _config);
+                    return new ClinicalInvestigatorDisqualificationPage(Driver, _uow, _config, Log);
                 case SiteEnum.ERRProposalToDebarPage:
-                    return new ERRProposalToDebarPage(Driver, _uow, _config);
+                    return new ERRProposalToDebarPage(Driver, _uow, _config, Log);
                 case SiteEnum.ClinicalInvestigatorInspectionPage:
-                    return new ClinicalInvestigatorInspectionPage(Driver, _uow, _config);
+                    return new ClinicalInvestigatorInspectionPage(Driver, _uow, _config, Log);
                 case SiteEnum.CBERClinicalInvestigatorInspectionPage:
-                    return new CBERClinicalInvestigatorInspectionPage(Driver, _uow, _config);
+                    return new CBERClinicalInvestigatorInspectionPage(Driver, _uow, _config, Log);
                 case SiteEnum.ExclusionDatabaseSearchPage:
-                    return new ExclusionDatabaseSearchPage(Driver, _uow, _config);
+                    return new ExclusionDatabaseSearchPage(Driver, _uow, _config, Log);
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
-                    return new SpeciallyDesignatedNationalsListPage(_uow, Driver, _config);
+                    return new SpeciallyDesignatedNationalsListPage(_uow, Driver, _config, Log);
                 case SiteEnum.FDAWarningLettersPage:
-                    return new FDAWarningLettersPage(Driver, _uow, _config);
+                    return new FDAWarningLettersPage(Driver, _uow, _config, Log);
                 case SiteEnum.PHSAdministrativeActionListingPage:
-                    return new PHSAdministrativeActionListingPage(Driver, _uow, _config);
+                    return new PHSAdministrativeActionListingPage(Driver, _uow, _config, Log);
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
-                    return new CorporateIntegrityAgreementsListPage(Driver, _uow, _config);
+                    return new CorporateIntegrityAgreementsListPage(Driver, _uow, _config, Log);
                 case SiteEnum.SystemForAwardManagementPage:
-                    return new SystemForAwardManagementPage(Driver, _uow, _config);
+                    return new SystemForAwardManagementPage(Driver, _uow, _config, Log);
                         
                 default: return null;
             }
@@ -309,9 +309,9 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
-        public bool IsDataExtractionRequired(SiteEnum siteEnum)
+        public bool IsDataExtractionRequired(SiteEnum siteEnum, ILog Log)
         {
-            _searchPage = GetSearchPage(siteEnum);
+            _searchPage = GetSearchPage(siteEnum, Log);
 
             //Pradeep 21Dec2016 return true for live sites - Need to refactor
             //if (siteEnum == SiteEnum.SystemForAwardManagementPage)
@@ -460,7 +460,7 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void ExtractData(SiteEnum siteEnum, ILog log)
         {
-            var ExtractionRequired = IsDataExtractionRequired(siteEnum);
+            var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
 
             var SiteData = _searchPage.baseSiteData;
             SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
@@ -486,10 +486,12 @@ namespace WebScraping.Selenium.SearchEngine
             int MatchCountLowerLimit,
             out DateTime? SiteLastUpdatedOn)
         {
+            //this function is for live sites
+
             //var SiteData = _searchPage.baseSiteData;
             //SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
 
-            _searchPage = GetSearchPage(siteEnum);
+            _searchPage = GetSearchPage(siteEnum, null); //need to pass Log here
             SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
             _searchPage.LoadContent(
                 NameToSearch, MatchCountLowerLimit);

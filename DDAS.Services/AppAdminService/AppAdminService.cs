@@ -12,6 +12,7 @@ using System.ComponentModel;
 using DDAS.Models.ViewModels;
 using DDAS.Models.Entities;
 using System.IO;
+using DDAS.Models.Repository;
 
 namespace DDAS.Services.AppAdminService
 {
@@ -1465,6 +1466,27 @@ namespace DDAS.Services.AppAdminService
                 Exceptions.Add(ExceptionViewModel);
             }
             return Exceptions;
+        }
+
+        #endregion
+
+        #region ExtrationLog
+        public List<ExtractionLogViewModel> GetExtractionLog()
+        {
+            var ExtractionLog = _UOW.LogRepository.GetAll();
+
+            var Logs = new List<ExtractionLogViewModel>();
+
+            foreach(Log DBLog in ExtractionLog)
+            {
+                var Log = new ExtractionLogViewModel();
+                Log.CreatedBy = DBLog.CreatedBy;
+                Log.Caption = DBLog.Caption;
+                Log.Message = DBLog.Message;
+
+                Logs.Add(Log);
+            }
+            return Logs;
         }
         
         #endregion
