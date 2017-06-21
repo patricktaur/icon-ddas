@@ -26,7 +26,7 @@ namespace DDAS.API.Providers
 
         private IUserService _UserService;
 
-        private string _ClientVer = "Ver: D2.0.0"; 
+        private string _ClientVer = "D2.2"; 
 
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{
@@ -62,7 +62,9 @@ namespace DDAS.API.Providers
 
                     var form = await context.Request.ReadFormAsync();
                     var verSubmitted = form["Ver"];
-                    if (verSubmitted != _ClientVer)
+                    
+
+                    if (verSubmitted.Substring(0, _ClientVer.Length) != _ClientVer)
                     {
                         context.SetError(
                            "invalid_grant", "Incorrect version used.  The current version is: " + _ClientVer + "  Close the web page to clear the cache and reopen.");

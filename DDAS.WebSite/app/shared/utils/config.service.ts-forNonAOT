@@ -37,7 +37,7 @@ export class ConfigService {
      }
 
      getVer(){
-         return "Ver: D2.0.0"
+         return "D2.2.0"
      }
 
 }
