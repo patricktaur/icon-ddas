@@ -80,6 +80,11 @@ namespace WebScraping.Selenium.Pages
         private void LoadDebarredPersonList()
         {
             int RowCount = 1;
+            int NullRecords = 0;
+
+            _log.WriteLog("Total records found - " +
+                PersonsTable.FindElements(By.XPath("tbody/tr")).Count());
+
             foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
             {
                 var debarredPerson = new DebarredPerson();
@@ -103,9 +108,16 @@ namespace WebScraping.Selenium.Pages
                     link.url = anchor.GetAttribute("href");
                     debarredPerson.Links.Add(link);
                 }
-                _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
+                if (debarredPerson.NameOfPerson != "" ||
+                    debarredPerson.NameOfPerson != null)
+                    _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
+                else
+                    NullRecords += 1;
+
                 RowCount = RowCount + 1;
             }
+            _log.WriteLog("Total records inserted - " +
+                _FDADebarPageSiteData.DebarredPersons.Count());
         }
 
         public override void LoadContent(

@@ -168,7 +168,7 @@ namespace WebScraping.Selenium.Pages
                 }
             }
             _log.WriteLog("Total reocrds inserted - " +
-                (_DisqualificationSiteData.DisqualifiedInvestigatorList.Count() + 1));
+                _DisqualificationSiteData.DisqualifiedInvestigatorList.Count());
 
             _log.WriteLog("Total null records found - " + NullRecords);
         }

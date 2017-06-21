@@ -76,12 +76,19 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadProposalToDebarList()
         {
+            _log.WriteLog("Total records found - " +
+                ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")).Count());
+
+            int RowNumber = 1;
+            int NullRecords = 0;
+
             foreach (IWebElement TR in ProposalToDebarTable.FindElements(By.XPath("//tbody/tr")))
             {
                 var proposalToDebarList = new ProposalToDebar();
 
                 IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
 
+                proposalToDebarList.RowNumber = RowNumber;
                 proposalToDebarList.Name = TDs[0].Text;
                 proposalToDebarList.center = TDs[1].Text;
                 proposalToDebarList.date = TDs[2].Text;
@@ -102,8 +109,16 @@ namespace WebScraping.Selenium.Pages
                         proposalToDebarList.Links.Add(link);
                     }
                 }
-                _proposalToDebarSiteData.ProposalToDebar.Add(proposalToDebarList);
+                if (proposalToDebarList.Name != "" ||
+                    proposalToDebarList.Name != null)
+                    _proposalToDebarSiteData.ProposalToDebar.Add(proposalToDebarList);
+                else
+                    NullRecords += 1;
             }
+            _log.WriteLog("Total records inserted - " +
+                _proposalToDebarSiteData.ProposalToDebar.Count());
+
+            _log.WriteLog("Total null records found - " + NullRecords);
         }
 
         public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)

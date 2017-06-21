@@ -81,7 +81,7 @@ namespace WebScraping.Selenium.Pages
         private void LoadAdequateAssuranceInvestigators()
         {
             _log.WriteLog("Total Records Found - " +
-                AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")).Count());
+                (AdequateAssuranceListTable.FindElements(By.XPath("//tbody/tr")).Count() - 1));//exclude th
 
             int RowCount = 1;
             int NullRecords = 0;
@@ -112,7 +112,7 @@ namespace WebScraping.Selenium.Pages
                 }
             }
             _log.WriteLog("Total records inserted - " +
-                (_adequateAssuranceListSiteData.AdequateAssurances.Count() + 1));
+                _adequateAssuranceListSiteData.AdequateAssurances.Count());
 
             _log.WriteLog("Total null records found - " + NullRecords);
         }

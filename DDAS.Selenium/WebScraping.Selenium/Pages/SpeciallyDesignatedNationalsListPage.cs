@@ -85,17 +85,24 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadSDNList()
         {
-            //string fileName = _config.AppDataDownloadsFolder + "SDNList.txt";
-            string fileName = _config.SDNFolder + "SDNList.txt";
+            string fileName = _config.SDNFolder + 
+                "SDNList_" +
+                DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
+                ".txt";
 
             WebClient myWebClient = new WebClient();
 
             // PDF file path --> https://www.treasury.gov/ofac/downloads/sdnlist.pdf
 
             string myStringWebResource = "https://www.treasury.gov/ofac/downloads/sdnlist.txt";
-            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", fileName, myStringWebResource);
+
+            _log.WriteLog(
+                string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
+                System.IO.Path.GetFileName(fileName), myStringWebResource));
             
             myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            _log.WriteLog("download complete");
 
             return fileName;
         }
@@ -144,12 +151,11 @@ namespace WebScraping.Selenium.Pages
             return Names;
         }
 
-        private void LoadSDNList()
+        private void LoadSDNList(string FilePath)
         {
             //Patrick: 24April2017
             //string AllRecords = File.ReadAllText(_config.AppDataDownloadsFolder);
-            var dataFile = _config.SDNFolder + "SDNList.txt";
-            string AllRecords = File.ReadAllText(dataFile);
+            string AllRecords = File.ReadAllText(FilePath);
 
             string[] Records = 
                 AllRecords.Split(new string[] { "\n\n" }, StringSplitOptions.None);
@@ -165,6 +171,8 @@ namespace WebScraping.Selenium.Pages
                 _SDNSiteData.SDNListSiteData.Add(SDNRecord);
                 RecordNumber += 1;
             }
+            _log.WriteLog("Total records inserted - " +
+                _SDNSiteData.SDNListSiteData.Count());
         }
 
         private bool CheckSiteUpdatedDate()
@@ -256,9 +264,9 @@ namespace WebScraping.Selenium.Pages
                     throw new Exception("Page is not loaded");
 
                 _SDNSiteData.DataExtractionRequired = true;
-                DownloadSDNList();
+                var FilePath = DownloadSDNList();
                 //GetTextFromPDF("", DownloadFolder);
-                LoadSDNList();
+                LoadSDNList(FilePath);
                 _SDNSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)

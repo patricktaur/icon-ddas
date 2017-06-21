@@ -198,10 +198,11 @@ namespace WebScraping.Selenium.Pages
                         FDAWarningList.Links.Add(link);
                     }
                 }
-
                 _FDAWarningSiteData.FDAWarningLetterList.Add(FDAWarningList);
                 RowNumber += 1;
             }
+            _log.WriteLog("Total records inserted - " +
+                _FDAWarningSiteData.FDAWarningLetterList.Count());
         }
 
         public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
@@ -292,8 +293,8 @@ namespace WebScraping.Selenium.Pages
                     IsPageLoaded();
                 }
                 _FDAWarningSiteData.DataExtractionRequired = true;
-                DownloadFDAWarningLettersList();
-                ReadFDAWarningLetters(_config.FDAWarningLettersFolder + "FDAWarningLetters.xls");
+                var FilePath = DownloadFDAWarningLettersList();
+                ReadFDAWarningLetters(FilePath);
                 _FDAWarningSiteData.DataExtractionSucceeded = true;
             }
             catch(Exception e)
@@ -318,13 +319,17 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private void DownloadFDAWarningLettersList()
+        private string DownloadFDAWarningLettersList()
         {
             //string fileName = _config.AppDataDownloadsFolder + "FDAWarningLetters.xls";
-            string fileName = _config.FDAWarningLettersFolder + "FDAWarningLetters.xls";
 
-            if (File.Exists(fileName))
-                File.Delete(fileName);
+            string fileName = _config.FDAWarningLettersFolder + 
+                "FDAWarningLetters_" +
+                DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
+                ".xls";
+
+            //if (File.Exists(fileName))
+            //    File.Delete(fileName);
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
@@ -334,12 +339,16 @@ namespace WebScraping.Selenium.Pages
             string myStringWebResource = 
                 "https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";
 
-            Console.WriteLine(
+            _log.WriteLog(string.Format(
                 "Downloading File \"{0}\" from \"{1}\" .......\n\n", 
-                fileName, myStringWebResource);
+                Path.GetFileName(fileName), myStringWebResource));
             
             // Download the Web resource and save it into the current filesystem folder.
             myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            _log.WriteLog("download complete");
+
+            return fileName;
         }
 
         private void DownloadFDAWarningLettersCSVFileXXXX(string LetterIssuedDateFrom)
@@ -420,6 +429,8 @@ namespace WebScraping.Selenium.Pages
                     }
                 }
             }
+            _log.WriteLog("Total records inserted - " +
+                (_FDAWarningSiteData.FDAWarningLetterList.Count() + 1));
         }
 
         private Stream GenerateStreamFromString(string s)

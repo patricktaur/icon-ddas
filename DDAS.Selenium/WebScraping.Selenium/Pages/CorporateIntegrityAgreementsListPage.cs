@@ -74,10 +74,15 @@ namespace WebScraping.Selenium.Pages
         private CorporateIntegrityAgreementListSiteData _CIASiteData;
 
         private void LoadCIAList()
-        {            
+        {
+            //_log.WriteLog("Total records found - " +
+            //    CIAListTable.FindElements(By.XPath("//tbody/tr")).Count());
+
             IList<IWebElement> TRs = CIAListTable.FindElements(By.XPath("//tbody/tr"));
 
             int RowCount = 1;
+            int NullRecords = 0;
+
             for (int TableRow = 9; TableRow < TRs.Count; TableRow++)
             {
                 var CiaList = new CIAList();
@@ -101,10 +106,19 @@ namespace WebScraping.Selenium.Pages
                     //    CiaList.Links.Add(link);
                     //}
 
-                    _CIASiteData.CIAListSiteData.Add(CiaList);
+                    if (CiaList.Provider != "" ||
+                        CiaList.Provider != null)
+                        _CIASiteData.CIAListSiteData.Add(CiaList);
+                    else
+                        NullRecords += 1;
+
                     RowCount = RowCount + 1;
                 }
             }
+            _log.WriteLog("Total records inserted - " +
+                _CIASiteData.CIAListSiteData.Count());
+
+            _log.WriteLog("Total null records found - " + NullRecords);
         }
 
         private bool IsPageLoaded()

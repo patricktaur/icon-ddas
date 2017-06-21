@@ -79,11 +79,11 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadExclusionList()
         {
-            //string DownloadFilePath = _config.AppDataDownloadsFolder + 
-            //    "ExclusionDatabaseList.csv";
-
             string DownloadFilePath = 
-                _config.ExclusionDatabaseFolder + "ExclusionDatabaseList.csv";
+                _config.ExclusionDatabaseFolder + 
+                "ExclusionDatabaseList_" +
+                DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
+                ".csv";
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
@@ -91,13 +91,13 @@ namespace WebScraping.Selenium.Pages
             string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
                 GetAttribute("href");
 
-            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n",
-                DownloadFilePath, myStringWebResource);
-
-            if (File.Exists(DownloadFilePath))
-                File.Delete(DownloadFilePath);
-            // Download the Web resource and save it into the current filesystem folder.
+            _log.WriteLog(
+            string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
+                Path.GetFileName(DownloadFilePath), myStringWebResource));
+            
             myWebClient.DownloadFile(myStringWebResource, DownloadFilePath);
+
+            _log.WriteLog("download complete");
 
             return DownloadFilePath;
         }
@@ -155,6 +155,8 @@ namespace WebScraping.Selenium.Pages
                     RowNumber += 1;
                 }
             }
+            _log.WriteLog("Total records inserted - " +
+                _exclusionSearchSiteData.ExclusionSearchList.Count());
         }
 
         public override void LoadContent(
@@ -222,7 +224,7 @@ namespace WebScraping.Selenium.Pages
                     throw new Exception("page is not loaded");
 
                 _exclusionSearchSiteData.DataExtractionRequired = true;
-                string FilePath = DownloadExclusionList();
+                var FilePath = DownloadExclusionList();
                 LoadExclusionDatabaseListFromCSV(FilePath);
 
                 _exclusionSearchSiteData.DataExtractionSucceeded = true;

@@ -83,10 +83,11 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        private void DownloadCIIList()
+        private string DownloadCIIList()
         {
-            string fileName = _config.CIILFolder + "cliil_" + 
-                DateTime.Now.ToString("dd_MM_yyyy") +
+            string fileName = _config.CIILFolder + 
+                "cliil_" +
+                DateTime.Now.ToString("dd_MM_yyyy_hh_mm") +
                 ".zip";
 
             string UnZipPath = _config.CIILFolder;
@@ -97,7 +98,7 @@ namespace WebScraping.Selenium.Pages
 
             _log.WriteLog(
                 string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
-                fileName, myStringWebResource));
+                Path.GetFileName(fileName), myStringWebResource));
 
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
@@ -106,20 +107,18 @@ namespace WebScraping.Selenium.Pages
 
             ZipFile.ExtractToDirectory(fileName, UnZipPath);
 
-            _log.WriteLog("File - " 
-                + fileName +
-                " downloaded");
+            _log.WriteLog("download complete");
+
+            return (UnZipPath + "cliil.txt");
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        private void LoadClinicalInvestigatorList()
+        private void LoadClinicalInvestigatorList(string FilePath)
         {
             int RowNumber = 1;
 
-            string[] LinesFromTextFile = 
-                File.ReadAllLines(
-                    _config.CIILFolder + "cliil.txt");
+            string[] LinesFromTextFile = File.ReadAllLines(FilePath);
 
             DateTime CurrentRowInspectionDate = new DateTime();
 
@@ -195,7 +194,7 @@ namespace WebScraping.Selenium.Pages
                 }
             }
             _log.WriteLog("Total records inserted - " +
-                (_clinicalSiteData.ClinicalInvestigatorInspectionList.Count() + 1));
+                _clinicalSiteData.ClinicalInvestigatorInspectionList.Count());
         }
 
         public override void LoadContent(string NameToSearch,
@@ -206,8 +205,6 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadSiteLastUpdatedDateFromPage()
         {
-            //ClinicalInvestigatorInspectionSiteData ClinicalSiteData = null;
-
             string[] DatabaseLastUpdated = DatabaseLastUpdatedElement.Text.Split(' ');
 
             string LastUpdatedDate = 
@@ -220,38 +217,6 @@ namespace WebScraping.Selenium.Pages
                 DateTimeStyles.None, out RecentLastUpdatedDate);
 
             _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
-            //var ExistingClinicalSiteData =
-            //    _UOW.ClinicalInvestigatorInspectionListRepository.GetAll();
-
-            //if (ExistingClinicalSiteData.Count == 0)
-            //{
-            //    _clinicalSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //    _clinicalSiteData.DataExtractionRequired = true;
-            //}
-            //else
-            //{
-            //    ClinicalSiteData = ExistingClinicalSiteData.OrderByDescending(
-            //        x => x.CreatedOn).First();
-
-            //    if (RecentLastUpdatedDate > ClinicalSiteData.SiteLastUpdatedOn)
-            //    {
-            //        _clinicalSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //        _clinicalSiteData.DataExtractionRequired = true;
-            //    }
-            //    else
-            //    {
-            //        _clinicalSiteData.SiteLastUpdatedOn =
-            //            ClinicalSiteData.SiteLastUpdatedOn;
-            //        _clinicalSiteData.DataExtractionRequired = false;
-            //    }
-            //}
-
-            //if (!_clinicalSiteData.DataExtractionRequired)
-            //    _clinicalSiteData.ReferenceId = ClinicalSiteData.RecId;
-            //else
-            //    _clinicalSiteData.ReferenceId =
-            //        _clinicalSiteData.RecId;
         }
 
         public string GetSiteLastUpdatedDate()
@@ -285,8 +250,8 @@ namespace WebScraping.Selenium.Pages
                     throw new Exception("page is not loaded");
 
                 _clinicalSiteData.DataExtractionRequired = true;
-                DownloadCIIList();
-                LoadClinicalInvestigatorList();
+                var FilePath = DownloadCIIList();
+                LoadClinicalInvestigatorList(FilePath);
                 _clinicalSiteData.DataExtractionSucceeded = true;
             }
             catch (Exception e)
