@@ -987,9 +987,15 @@ namespace DDAS.Services.AppAdminService
                     new SitesToSearch { ExtractionMode = "DB", SiteName = "LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName = "SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl = "http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx"};
             _UOW.SiteSourceRepository.Add(s12);
             var s13 =
-                    new SitesToSearch { ExtractionMode = "Manual", SiteName = "World Check (Only for PI)", SiteShortName = "World Check...", SiteEnum = SiteEnum.WorldCheckPage, SiteUrl = "http://www.truthtechnologies.com/"};
+                    new SitesToSearch { ExtractionMode = "Manual", SiteName = "World Check (PI)", SiteShortName = "World Check...", SiteEnum = SiteEnum.WorldCheckPage, SiteUrl = "http://www.truthtechnologies.com/"};
             _UOW.SiteSourceRepository.Add(s13);
-
+            //27July2017 adding world check(institute) and Icon internal flag check sites
+            var s14 =
+                    new SitesToSearch { ExtractionMode = "Manual", SiteName = "World Check (Institute)", SiteShortName = "World Check...", SiteEnum = SiteEnum.WorldCheckPage, SiteUrl = "http://www.truthtechnologies.com/" };
+            _UOW.SiteSourceRepository.Add(s14);
+            var s15 =
+                    new SitesToSearch { ExtractionMode = "Manual", SiteName = "Icon Internal Flag Check", SiteShortName = "Icon Internal...", SiteEnum = SiteEnum.IconInternalFlagCheck, SiteUrl = "" };
+            _UOW.SiteSourceRepository.Add(s15);
 
             var site1 =
                     new SitesToSearch { ExtractionMode = "Manual", SiteName = "Pfizer DMC Checks", SiteShortName = "Pfizer DMC Checks", SiteEnum = SiteEnum.PfizerDMCChecksPage, SiteUrl = " http://ecf12.pfizer.com/sites/clinicaloversightcommittees/default.aspx"};

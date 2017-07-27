@@ -39,7 +39,8 @@
         SingaporeMedicalCouncilPage,
         SriLankaMedicalCouncilPage,
         HealthGuideUSAPage,
-        WorldCheckPage //27Jan2017 Pradeep
+        WorldCheckPage, //27Jan2017 Pradeep
+        IconInternalFlagCheck
     };
 
     public enum ComplianceFormStatusEnum
