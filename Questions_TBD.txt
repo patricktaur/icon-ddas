@@ -1,0 +1,2 @@
+Que: should the 'Findings' header in the Findings page 
+be changed to 'Observations' ?

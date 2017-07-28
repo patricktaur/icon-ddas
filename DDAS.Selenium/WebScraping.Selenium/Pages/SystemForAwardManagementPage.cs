@@ -198,15 +198,10 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadExclusionFile()
         {
-            //string fileName = 
-            //    _config.AppDataDownloadsFolder + "SAM_Exclusions_Public_Extract_";
-
             string fileName =
                 _config.SAMFolder + "SAM_Exclusions_Public_Extract_";
 
             string CSVFilePath = fileName;
-
-            //string UnZipPath = _config.AppDataDownloadsFolder;
             string UnZipPath = _config.SAMFolder;
 
             WebClient myWebClient = new WebClient();
@@ -220,7 +215,9 @@ namespace WebScraping.Selenium.Pages
             fileName += Year + JulianDate + ".ZIP";
             CSVFilePath += Year + JulianDate + ".CSV";
 
-            Console.WriteLine("Downloading File \"{0}\" from \"{1}\" .......\n\n", fileName, myStringWebResource);
+            _log.WriteLog(
+                string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
+                Path.GetFileName(fileName), myStringWebResource));
 
             if (File.Exists(CSVFilePath))
                 File.Delete(CSVFilePath);
@@ -228,6 +225,8 @@ namespace WebScraping.Selenium.Pages
             myWebClient.DownloadFile(myStringWebResource, fileName);
 
             ZipFile.ExtractToDirectory(fileName, _config.SAMFolder);
+
+            _log.WriteLog("download complete");
 
             return CSVFilePath;
         }
@@ -282,6 +281,8 @@ namespace WebScraping.Selenium.Pages
                 _UOW.SAMSiteDataRepository.Add(SAMSiteRecord);
                 RowNumber += 1;
             }
+            _log.WriteLog("Total records inserted - " +
+                _UOW.SAMSiteDataRepository.GetAll().Count);
         }
 
         private void DelteAllSAMSiteDataRecords()
@@ -326,7 +327,6 @@ namespace WebScraping.Selenium.Pages
                 var FilePath = DownloadExclusionFile();
                 DelteAllSAMSiteDataRecords();
                 LoadSAMDatafromCSV(FilePath);
-
                 _SAMSiteData.DataExtractionSucceeded = true;
             }
             catch(Exception e)

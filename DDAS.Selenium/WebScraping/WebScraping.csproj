@@ -64,6 +64,10 @@
       <Project>{c3278f37-c0dc-4740-bdaa-3169905cb301}</Project>
       <Name>OpenXmlEmbedObjectNew</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebScraping.Tests\WebScraping.Tests.csproj">
+      <Project>{908981D6-0471-4AEF-A5AA-7AF3F59FCBAF}</Project>
+      <Name>WebScraping.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

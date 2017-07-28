@@ -78,9 +78,14 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadAdministrativeActionList()
         {
+            int RowCount = 1;
+            int NullRecords = 0;
+
+            _log.WriteLog("Total records found - " +
+                PHSTable.FindElements(By.XPath("//tbody/tr")).Count());
+
             IList<IWebElement> TRs = PHSTable.FindElements(By.XPath("//tbody/tr"));
 
-            int RowCount = 1;
             foreach (IWebElement TR in TRs)
             {
                 var AdministrativeActionListing = new PHSAdministrativeAction();
@@ -141,11 +146,20 @@ namespace WebScraping.Selenium.Pages
                         AdministrativeActionListing.Links.Add(link);
                     }
 
-                    _PHSAdministrativeSiteData.PHSAdministrativeSiteData.Add
-                        (AdministrativeActionListing);
+                    if (AdministrativeActionListing.FullName != "" ||
+                        AdministrativeActionListing.FullName != null)
+                        _PHSAdministrativeSiteData.PHSAdministrativeSiteData.Add
+                            (AdministrativeActionListing);
+                    else
+                        NullRecords += 1;
+
                     RowCount = RowCount + 1;
                 }
             }
+            _log.WriteLog("Total records inserted - " +
+                _PHSAdministrativeSiteData.PHSAdministrativeSiteData.Count());
+
+            _log.WriteLog("Total null records found - " + NullRecords);
         }
 
         public override void LoadContent(string NameToSearch, int MatchCountLowerLimit)
