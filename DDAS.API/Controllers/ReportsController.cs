@@ -241,5 +241,53 @@ namespace DDAS.API.Controllers
             }
             return response;
         }
+
+        [Route("UserManual")]
+        [HttpGet]
+        public HttpResponseMessage DownloadUserManual()
+        {
+            HttpResponseMessage response = null;
+            var FilePath = 
+                _config.ExcelTempateFolder + 
+                "User Manual - ICON - DDAS - Draft.pdf";
+
+            if (!File.Exists(
+                FilePath))
+            {
+                response = Request.CreateResponse(HttpStatusCode.Gone);
+            }
+            else
+            {
+                var UserAgent = Request.Headers.UserAgent.ToString();
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+
+                response = Request.CreateResponse(HttpStatusCode.OK);
+
+                var byteArray = File.ReadAllBytes(FilePath);
+                var memoryStream = new MemoryStream();
+                memoryStream.Write(byteArray, 0, byteArray.Length);
+
+                response.Content = new ByteArrayContent(memoryStream.ToArray());
+
+                response.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment");
+
+                response.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/pdf");
+
+                var FileName = "ICON_User_Manual.pdf";
+
+                response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                var Name = FileName + " " + Browser;
+                //add custom headers to the response
+                //easy for angular2 to read this header
+                response.Content.Headers.Add("Filename", Name);
+                //response.Content.Headers.Add("Browser", Browser);
+                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+            }
+            return response;
+        }
     }
 }

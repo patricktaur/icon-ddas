@@ -1,14 +1,10 @@
 import { ModuleWithProviders }   from '@angular/core';
 import { Routes, RouterModule }  from '@angular/router';
-
-
-  
 import { AuthGuard }             from '../auth/auth-guard.service';
 import { ReportComponent }     from './report.component'; 
 import { OutputReportComponent }     from './output-report.component'; 
 
 const reportRoutes: Routes = [
-  
  {
     path: '',
     redirectTo: '/reports',

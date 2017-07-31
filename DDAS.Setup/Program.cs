@@ -158,8 +158,11 @@ namespace DDAS.Setup
         {
             CreateUser("clarityadmin", "app-admin", "Clarity@148");
             CreateUser("clarityadmin", "admin", "Clarity@148");
-            CreateUser("admin", "admin", "Clarity@148"); 
+            CreateUser("admin", "admin", "Clarity@148");
 
+            CreateUser("user1", "user", "Pass!234");
+            CreateUser("admin1", "admin", "Pass!234");
+            CreateUser("appadmin1", "app-admin", "Pass!234");
         }
 
         static void CreateFolder(string path)

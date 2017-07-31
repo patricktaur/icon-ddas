@@ -51,7 +51,6 @@ export class AuthService {
     var body = "grant_type=password&username=" +  username + "&password=" + password + "&Ver=" + this.configService.getVer();
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });
-        console.log('body: ', body);
         return this.http.post(this._baseUrl + 'token', body, options )
             .map((response: Response) => {
   
