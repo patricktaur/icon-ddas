@@ -95,7 +95,6 @@ namespace DDAS.API.Identity
         //Patrick -- review code:
         public Task SetPasswordHashAsync(IdentityUser user, string passwordHash)
         {
-
             User updateUser = _UOW.UserRepository.FindById(user.Id);
             if (updateUser != null)
             {

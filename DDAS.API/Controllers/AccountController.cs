@@ -137,7 +137,6 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ResetPassword(Guid userId)
         {
-  
             UserStore userStore = new UserStore(_UOW);
             var userManager = new UserManager<IdentityUser, Guid>(userStore);
 

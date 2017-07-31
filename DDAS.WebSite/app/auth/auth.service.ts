@@ -43,7 +43,11 @@ export class AuthService {
     
     this.token = null;
     this.isLoggedIn = false;
-    
+
+    //encoding the password so that special characters in the password are not treated
+    //as separators (eg. &)
+    password = encodeURIComponent(password);
+
     var body = "grant_type=password&username=" +  username + "&password=" + password + "&Ver=" + this.configService.getVer();
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });

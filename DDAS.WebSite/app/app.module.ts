@@ -24,6 +24,7 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 
 import {LoginHistoryModule} from './admin/all-loginhistory.module';
 import {AppAdminModule} from './app-admin/app-admin.module';
+import { HelpModule } from './help/help.module';
 
 import {CommonService} from './shared/common.service';
 
@@ -38,7 +39,8 @@ import {CommonService} from './shared/common.service';
     UserModule,
     LoggedInUserModule,
     LoginHistoryModule,
-    AppAdminModule
+    AppAdminModule,
+    HelpModule
   ],
   declarations: [ 
     AppComponent,

@@ -5,11 +5,10 @@ import { ConfigService } from '../shared/utils/config.service';
 import { ReportService } from './report-service';
 import { CompFormFilter } from '../search/search.classes';
 import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-date-picker/interfaces';
+
 @Component({
     moduleId: module.id,
-
-    templateUrl: 'output-report.component.html',
-
+    templateUrl: 'output-report.component.html'
 })
 
 export class OutputReportComponent implements OnChanges {

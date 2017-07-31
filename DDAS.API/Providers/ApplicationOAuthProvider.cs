@@ -59,11 +59,9 @@ namespace DDAS.API.Providers
             {
                 try
                 {
-
                     var form = await context.Request.ReadFormAsync();
                     var verSubmitted = form["Ver"];
                     
-
                     if (verSubmitted.Substring(0, _ClientVer.Length) != _ClientVer)
                     {
                         context.SetError(
