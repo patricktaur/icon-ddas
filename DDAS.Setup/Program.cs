@@ -40,7 +40,8 @@ namespace DDAS.Setup
                     //Initialize DB for creating Roles and Users:
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
                       MongoMaps.Initialize();
-                     _UOW = new UnitOfWork(connString);
+                    //_UOW = new UnitOfWork(connString);
+                    _UOW = new UnitOfWork("DefaultConnection");
                     CreateRoles();
                     CreateUsers();
 
@@ -156,10 +157,6 @@ namespace DDAS.Setup
 
         static void CreateUsers()
         {
-            CreateUser("clarityadmin", "app-admin", "Clarity@148");
-            CreateUser("clarityadmin", "admin", "Clarity@148");
-            CreateUser("admin", "admin", "Clarity@148");
-
             CreateUser("user1", "user", "Pass!234");
             CreateUser("admin1", "admin", "Pass!234");
             CreateUser("appadmin1", "app-admin", "Pass!234");
