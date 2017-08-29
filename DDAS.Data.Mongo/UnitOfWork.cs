@@ -68,12 +68,12 @@ namespace DDAS.Data.Mongo
         {
             //InitializeMaps();
             //_provider = Norm.Mongo.Create(nameOrConnectionString);
-            var conn = System.Configuration.ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
+            //var conn = System.Configuration.ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
             //var mongo = new MongoClient("mongodb://127.0.0.1");
-            var mongo = new MongoClient(conn);
-            string[] arr = null;
+            //var mongo = new MongoClient(conn);
+            var mongo = new MongoClient(nameOrConnectionString);
 
-            arr = conn.Split('/');
+            var arr = nameOrConnectionString.Split('/');
 
             string db = arr[arr.Length-1];
 

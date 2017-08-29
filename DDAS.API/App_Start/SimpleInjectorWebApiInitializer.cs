@@ -43,7 +43,10 @@ namespace DDAS.API.App_Start
         private static void InitializeContainer(Container container)
         {
             //container.RegisterWebApiRequest<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
-            container.Register<IUnitOfWork>(() => new UnitOfWork("DefaultConnection"));
+            var ConnectionString = 
+                System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+            container.Register<IUnitOfWork>(() => new UnitOfWork(ConnectionString));
 
             //For Automapper <<<< 
             //Get all my Profiles from the assembly (in my case was the webapi)
