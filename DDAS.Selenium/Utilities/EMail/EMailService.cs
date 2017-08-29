@@ -21,7 +21,7 @@ namespace Utilities.EMail
             _smtpClient.Credentials = new System.Net.NetworkCredential(cred.FromEMailId, cred.FromEMailPassword);
             
             _smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            _smtpClient.EnableSsl = true;
+            _smtpClient.EnableSsl = cred.SSLEnabled;
             _fromEMailId = cred.FromEMailId;
         }
 
@@ -53,6 +53,7 @@ namespace Utilities.EMail
         public int EMailPort { get; set; }
         public string FromEMailId { get; set; }
         public string FromEMailPassword { get; set; }
+        public bool SSLEnabled { get; set; }
     }
 
     public class EMailModel

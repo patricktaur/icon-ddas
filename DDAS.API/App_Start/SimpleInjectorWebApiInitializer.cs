@@ -123,8 +123,7 @@ namespace DDAS.API.App_Start
             cred.EMailPort = Int32.Parse(port); 
             cred.FromEMailId = System.Configuration.ConfigurationManager.AppSettings["FromEMailId"];
             cred.FromEMailPassword = System.Configuration.ConfigurationManager.AppSettings["FromEMailPassword"];
-
-            //container.RegisterWebApiRequest<IEMailService>(() => new EMailService(cred));
+            cred.SSLEnabled = Boolean.Parse( System.Configuration.ConfigurationManager.AppSettings["EMailSSLEnabled"]);
             container.Register<IEMailService>(() => new EMailService(cred));
 
             container.Register<IAppAdminService, AppAdminService>();
