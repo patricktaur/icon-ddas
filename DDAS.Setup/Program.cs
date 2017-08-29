@@ -39,8 +39,8 @@ namespace DDAS.Setup
 
                     //Initialize DB for creating Roles and Users:
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
-                      MongoMaps.Initialize();
-                     _UOW = new UnitOfWork(connString);
+                     MongoMaps.Initialize();
+                    _UOW = new UnitOfWork(connString);
                     CreateRoles();
                     CreateUsers();
 
@@ -156,10 +156,6 @@ namespace DDAS.Setup
 
         static void CreateUsers()
         {
-            CreateUser("clarityadmin", "app-admin", "Clarity@148");
-            CreateUser("clarityadmin", "admin", "Clarity@148");
-            CreateUser("admin", "admin", "Clarity@148");
-
             CreateUser("user1", "user", "Pass!234");
             CreateUser("admin1", "admin", "Pass!234");
             CreateUser("appadmin1", "app-admin", "Pass!234");
@@ -225,7 +221,7 @@ namespace DDAS.Setup
             string error;
             ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
             fileMap.ExeConfigFilename = configFile;
-            System.Configuration.Configuration config =
+            Configuration config =
                 ConfigurationManager.OpenMappedExeConfiguration
                 (fileMap, ConfigurationUserLevel.None);
             if (config == null)
@@ -283,6 +279,9 @@ namespace DDAS.Setup
                 newUser.SecurityStamp = Guid.NewGuid().ToString();
                 newUser.Active = true;
                 userManager.CreateAsync(newUser, password);
+
+                newUser = userManager.FindByName(userName);
+
                 //CreateAsync does not set the password:
                 String hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
                 userStore.SetPasswordHashAsync(newUser, hashedNewPassword);

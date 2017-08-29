@@ -68,9 +68,17 @@ namespace DDAS.Data.Mongo
         {
             //InitializeMaps();
             //_provider = Norm.Mongo.Create(nameOrConnectionString);
+            //var conn = System.Configuration.ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
+            //var mongo = new MongoClient("mongodb://127.0.0.1");
+            //var mongo = new MongoClient(conn);
+            var mongo = new MongoClient(nameOrConnectionString);
 
-            var mongo = new MongoClient("mongodb://127.0.0.1");
-             _db = mongo.GetDatabase("DDAS");
+            var arr = nameOrConnectionString.Split('/');
+
+            string db = arr[arr.Length-1];
+
+            //_db = mongo.GetDatabase("DDAS");
+            _db = mongo.GetDatabase(db);
 
             //Forcing exception if Mongo is not running.
             try

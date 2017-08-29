@@ -29,7 +29,7 @@ namespace DDAS.API.Controllers
             _UOW = uow;
             _userService = userService;
             _EMailService = email;
-         }
+        }
 
         #region WorkingCode
 
@@ -141,7 +141,7 @@ namespace DDAS.API.Controllers
             var userManager = new UserManager<IdentityUser, Guid>(userStore);
 
             var password = GeneratePassword();
-            String hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
+            string hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
             
             var user = userManager.FindById(userId);
             userStore.SetPasswordHashAsync(user, hashedNewPassword);

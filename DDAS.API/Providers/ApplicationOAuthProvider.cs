@@ -48,7 +48,7 @@ namespace DDAS.API.Providers
             _publicClientId = publicClientId;
             _userManagerFactory = userManagerFactory;
             //temp - until Mongo Identity is implemented:
-            _UOW = new UnitOfWork("");
+            //_UOW = new UnitOfWork("DefaultConnection");
             _UserService = UserService;
         }
 

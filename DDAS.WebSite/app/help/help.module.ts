@@ -20,7 +20,6 @@ import { SharedModule } from '../shared/shared.module'
     //ModalModule
   ],
   declarations: [
-    HelpComponent,
     HelpComponent
   ],
   providers: [

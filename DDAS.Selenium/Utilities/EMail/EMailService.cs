@@ -62,7 +62,6 @@ namespace Utilities.EMail
         public List<string>  CC { get; set; } = new List<string>();
         public string Subject { get; set; }
         public string Body { get; set; }
-
     }
 
     public interface IEMailService

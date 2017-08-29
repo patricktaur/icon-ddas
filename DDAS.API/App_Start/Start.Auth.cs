@@ -18,7 +18,6 @@ namespace DDAS.API
         public static string PublicClientId { get; private set; }
         public static Func<UserManager<IdentityUser, Guid>> UserManagerFactory { get; set; }
 
-
         static Startup()
         {
             PublicClientId = "self";
@@ -26,7 +25,10 @@ namespace DDAS.API
             //???
             //ninject.mvc3 or ninject.mvc5 has to be included in the project, otherwise uow is assigned to null 
             //var uow = DependencyResolver.Current.GetService<IUnitOfWork>();
-            var uow = new UnitOfWork("DefaultConnection");
+            var ConnStr = 
+                System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+            var uow = new UnitOfWork(ConnStr);
             var userService = new UserService(uow);
 
             UserManagerFactory = () => new UserManager<IdentityUser, Guid>(new UserStore(uow));

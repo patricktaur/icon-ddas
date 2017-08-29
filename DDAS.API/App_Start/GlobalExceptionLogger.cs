@@ -14,9 +14,12 @@ namespace DDAS.API.App_Start
     {
         private IUnitOfWork _UOW;
 
+        private string _ConnStr =
+            System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
         public GlobalExceptionLogger()
         {
-            _UOW = new UnitOfWork("DefaultConnection");
+            _UOW = new UnitOfWork(_ConnStr);
         }
 
         public override void Log(ExceptionLoggerContext context)

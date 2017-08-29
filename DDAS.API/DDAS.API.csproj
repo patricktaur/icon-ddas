@@ -221,6 +221,7 @@
     <Content Include="index.html" />
     <Content Include="Logs\Dummy.txt" />
     <Content Include="DataFiles\Templates\Output_File_Template.xlsx" />
+    <Content Include="DataFiles\Templates\User Manual - ICON - DDAS - Draft.pdf" />
     <None Include="phantomjs-license.txt" />
     <None Include="Web.config">
       <SubType>Designer</SubType>

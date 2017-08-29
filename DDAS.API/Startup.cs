@@ -33,7 +33,6 @@ namespace DDAS.API
             ConfigureAuth(app);
             app.UseWebApi(config);
             MongoMaps.Initialize();
-           
         }
     }
 }
