@@ -118,6 +118,8 @@ namespace WebScraping.Selenium.Pages
         {
             int RowNumber = 1;
 
+            _log.WriteLog("Reading records from the file - " + Path.GetFileName(FilePath));
+
             string[] LinesFromTextFile = File.ReadAllLines(FilePath);
 
             DateTime CurrentRowInspectionDate = new DateTime();
@@ -127,6 +129,8 @@ namespace WebScraping.Selenium.Pages
                 string[] FieldData = LinesFromTextFile[Counter].Split('~');
 
                 var InvestigatorList = new ClinicalInvestigator();
+                InvestigatorList.RecId = Guid.NewGuid();
+                InvestigatorList.ParentId = _clinicalSiteData.RecId;
 
                 if (FieldData.Length > 1)
                 {
@@ -188,13 +192,17 @@ namespace WebScraping.Selenium.Pages
                     else
                         InvestigatorList.DeficiencyCode = FieldData[12];
 
-                    _clinicalSiteData.ClinicalInvestigatorInspectionList.Add(
-                        InvestigatorList);
+                    //_clinicalSiteData.ClinicalInvestigatorInspectionList.Add(
+                    //    InvestigatorList);
+                    _UOW.ClinicalInvestigatorInspectionRepository.Add(InvestigatorList);
+
                     RowNumber += 1;
                 }
             }
+            //_log.WriteLog("Total records inserted - " +
+            //    _clinicalSiteData.ClinicalInvestigatorInspectionList.Count());
             _log.WriteLog("Total records inserted - " +
-                _clinicalSiteData.ClinicalInvestigatorInspectionList.Count());
+                _UOW.ClinicalInvestigatorInspectionRepository.GetAll().Count());
         }
 
         public override void LoadContent(string NameToSearch,
@@ -212,11 +220,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(LastUpdatedDate, "M'/'d'/'yyyy", 
+            var IsDateParsed = DateTime.TryParseExact(
+                LastUpdatedDate, 
+                "M'/'d'/'yyyy", 
                 CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out RecentLastUpdatedDate);
+                DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    LastUpdatedDate +
+                    "' to DateTime.");
         }
 
         public string GetSiteLastUpdatedDate()
@@ -242,6 +259,19 @@ namespace WebScraping.Selenium.Pages
                 _clinicalSiteData);
         }
 
+        private void DeleteAllClinicalInvestigatorInspectionRecords()
+        {
+            var Record = _UOW.ClinicalInvestigatorInspectionRepository.GetAll()
+                .FirstOrDefault();
+
+            if (Record != null)
+            {
+                _log.WriteLog("Old records found.. Deleting old records...");
+                _UOW.ClinicalInvestigatorInspectionRepository.DropAll(Record);
+                _log.WriteLog("Old records deleted...");
+            }
+        }
+
         public override void LoadContent()
         {
             try
@@ -251,6 +281,7 @@ namespace WebScraping.Selenium.Pages
 
                 _clinicalSiteData.DataExtractionRequired = true;
                 var FilePath = DownloadCIIList();
+                DeleteAllClinicalInvestigatorInspectionRecords();
                 LoadClinicalInvestigatorList(FilePath);
                 _clinicalSiteData.DataExtractionSucceeded = true;
             }

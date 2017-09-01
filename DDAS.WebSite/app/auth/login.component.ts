@@ -43,6 +43,10 @@ export class LoginComponent implements OnInit{
             .subscribe(
                 data => {
                     
+                    if(this.authService.isAppAdmin){
+                       this.router.navigate(['/']);                      
+                    }
+
                     if (this.authService.isAdmin){
                        this.router.navigate(['/']);
                        // this.router.navigate(['/users']);

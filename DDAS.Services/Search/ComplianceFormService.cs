@@ -1760,7 +1760,6 @@ namespace DDAS.Services.Search
                     SearchStatus.PartialMatchCount += 1;
                 }
             }
-
         }
 
         #endregion

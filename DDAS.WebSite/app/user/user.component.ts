@@ -25,6 +25,7 @@ export class UserComponent {
     public selectedRecordName: string;
 
     public pageNumber: number;
+    public error: string;
     constructor(
         private router: Router, 
         private route: ActivatedRoute,
@@ -82,9 +83,10 @@ export class UserComponent {
        this.service.resetPassword(userId)
             .subscribe((item: any) => {
               this.passwordReset = item;
+              this.error = null;
             },
             error => {
-
+                this.error = "Password Reset Failed";
             });
    }
     

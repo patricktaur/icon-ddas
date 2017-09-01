@@ -70,7 +70,7 @@ namespace WebScraping.Selenium.Pages
                         "updated leie database"))
                         return Anchor;
                 }
-                throw new Exception("Could not download LEIE database file!");
+                throw new Exception("PageMaps - Could not download LEIE database file!");
             }
         }
 
@@ -83,9 +83,11 @@ namespace WebScraping.Selenium.Pages
                     IList<IWebElement> Elements = driver.FindElements(By.XPath("//h2"));
                     return Elements[1];
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw new Exception("Unable to find PageLastUpdatedElement");
+                    throw new Exception("Unable to find PageLastUpdatedElement. " +
+                        "Site may have been updated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

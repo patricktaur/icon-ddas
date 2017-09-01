@@ -21,33 +21,55 @@ namespace DDAS.Models
 
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
+
         IAdequateAssuranceListRepository AdequateAssuranceListRepository { get; }
+
         IERRProposalToDebarRepository ERRProposalToDebarRepository { get; }
+
         IPHSAdministrativeActionListingRepository 
             PHSAdministrativeActionListingRepository { get; }
+
         IClinicalInvestigatorInspectionListRepository
             ClinicalInvestigatorInspectionListRepository { get; }
+        IClinicalInvestigatorInspectionRepository
+            ClinicalInvestigatorInspectionRepository { get; }
+
         ISaveSearchResultRepository
             SaveSearchResultRepository { get; }
+
         ISpeciallyDesignatedNationalsRepository
             SpeciallyDesignatedNationalsRepository { get; }
+        ISDNSiteDataRepository SDNSiteDataRepository { get; }
+
         IRoleRepository RoleRepository { get; }
+
         IUserRepository UserRepository { get; }
+
         IUserRoleRepository UserRoleRepository { get; }
+
         ICBERClinicalInvestigatorInspectionRepository 
             CBERClinicalInvestigatorRepository { get; }
+
         IExclusionDatabaseSearchRepository 
             ExclusionDatabaseSearchRepository { get; }
+        IExclusionDatabaseRepository 
+            ExclusionDatabaseRepository { get; }
+
         ICorporateIntegrityAgreementRepository 
             CorporateIntegrityAgreementRepository { get; }
+
         IFDAWarningLettersRepository FDAWarningLettersRepository { get; }
+        IFDAWarningRepository FDAWarningRepository { get; }
+
         IClinicalInvestigatorDisqualificationRepository
             ClinicalInvestigatorDisqualificationRepository { get; }
+
         ISystemForAwardManagementRepository 
             SystemForAwardManagementRepository { get; }
         ISystemForAwardManagementEntityRepository
             SystemForAwardManagementEntityRepository { get; }
         ISAMSiteDataRepository SAMSiteDataRepository { get; }
+
         IComplianceFormRepository ComplianceFormRepository { get; }
         #endregion
 

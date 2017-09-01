@@ -42,7 +42,11 @@ namespace DDAS.DataExtractor
             //string appRootFolder = "";
             string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
 
-            IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+            //var ConnString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+            string ConnString = GetWebConfigConnectionString(configFile, "DefaultConnection");
+
+            IUnitOfWork uow = new UnitOfWork(ConnString);
 
             if (configFile == null)
             {
@@ -142,7 +146,8 @@ namespace DDAS.DataExtractor
             if (config == null)
             {
                 error = "Config file : " + configFile + " could not be loaded.";
-                _WriteLog.WriteLog(error);
+                //_WriteLog is null at this point. Hence commenting...
+                //_WriteLog.WriteLog(error);
                 throw new Exception(error);
             }
             else
@@ -150,13 +155,13 @@ namespace DDAS.DataExtractor
                 string connStr = config.ConnectionStrings.ConnectionStrings[keyName].ConnectionString;
                 if (connStr != null)
                 {
-                    _WriteLog.WriteLog("Connection String: " + connStr);
+                    //_WriteLog.WriteLog("Connection String: " + connStr);
                     return connStr;
                 }
                 else
                 {
                     error = "ConnectionString could not be read";
-                    _WriteLog.WriteLog(error);
+                    //_WriteLog.WriteLog(error);
                     throw new Exception(error);
                 }
             }

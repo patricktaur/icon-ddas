@@ -26,9 +26,11 @@ namespace WebScraping.Selenium.Pages
                     IWebElement Element = driver.FindElement(By.XPath("//h1"));
                     return Element;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw new Exception("Could not find PageLastUpdatedElement");
+                    throw new Exception("Could not find PageLastUpdatedElement. " +
+                        "Site may have been updated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

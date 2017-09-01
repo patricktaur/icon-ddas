@@ -19,40 +19,68 @@ namespace DDAS.Data.Mongo
 
         #region PrivateRepositoryMembers
         private IFDADebarPageRepository _FDADebarPageRepository;
+
         private IAdequateAssuranceListRepository _AdequateAssuranceListRepository;
+
         private IERRProposalToDebarRepository _ERRProposalToDebarRepository;
+
         private IPHSAdministrativeActionListingRepository 
             _PHSAdministrativeActionListingRepository;
+
         private IClinicalInvestigatorInspectionListRepository
             _ClinicalInvestigatorInspectionListRepository;
+        private IClinicalInvestigatorInspectionRepository
+            _ClinicalInvestigatorInspectionRepository;
+
         private ISaveSearchResultRepository
             _SaveSearchResultRepository;
+
         private ISpeciallyDesignatedNationalsRepository
             _SpeciallyDesignatedNationalsRepository;
+        private ISDNSiteDataRepository _SDNSiteDataRepository;
+
         private ICBERClinicalInvestigatorInspectionRepository
             _CBERClinicalInvestigatorRepository;
+
         private IExclusionDatabaseSearchRepository
             _ExclusionDatabaseSearchRepository;
+        private IExclusionDatabaseRepository 
+            _ExclusionDatabaseRepository;
+
         private ICorporateIntegrityAgreementRepository
             _CorporateIntegrityAgreemnetRepository;
-        private IFDAWarningLettersRepository _FDAWarningLettersRepository;
+
+        private IFDAWarningLettersRepository 
+            _FDAWarningLettersRepository;
+        private IFDAWarningRepository _FDAWarningRepository;
+
         private IClinicalInvestigatorDisqualificationRepository
             _ClinicalInvestigatorDisqualificationRepository;
+
         private ISystemForAwardManagementRepository
             _SystemForAwardManagementRepository;
         private ISystemForAwardManagementEntityRepository
             _SystemForAwardManagementEntityRepository;
         private ISAMSiteDataRepository _SAMSiteDataRepository;
+
         private IComplianceFormRepository _ComplianceFormRepository;
 
         private IRoleRepository _RoleRepository;
+
         private IUserRepository _UserRepository;
+
         private IUserRoleRepository _UserRoleRepository;
+
         private ILoginDetailsRepository _LoginDetailsRepository;
+
         private ILogRepository _LogRepository;
+
         private ISiteSourceRepository _SiteSourceRepository;
+
         private ICountryRepository _CountryRepository;
+
         private ISponsorProtocolRepository _SponsorProtocolRepository;
+
         private IDefaultSiteRepository _DefaultSiteRepository;
 
         private IExceptionLoggerRepository _ExceptionLoggerRepository;
@@ -143,6 +171,17 @@ namespace DDAS.Data.Mongo
             }
         }
 
+        public IClinicalInvestigatorInspectionRepository
+            ClinicalInvestigatorInspectionRepository
+        {
+            get
+            {
+                return _ClinicalInvestigatorInspectionRepository ??
+                    (_ClinicalInvestigatorInspectionRepository =
+                    new ClinicalInvestigatorInspectionRepository(_db));
+            }
+        }
+
         public ISaveSearchResultRepository SaveSearchResultRepository
         {
             get
@@ -160,6 +199,15 @@ namespace DDAS.Data.Mongo
                 return _SpeciallyDesignatedNationalsRepository ??
                     (_SpeciallyDesignatedNationalsRepository = 
                     new SpeciallyDesignatedNationalsRepository(_db));
+            }
+        }
+
+        public ISDNSiteDataRepository SDNSiteDataRepository
+        {
+            get
+            {
+                return _SDNSiteDataRepository ??
+                    (_SDNSiteDataRepository = new SDNSiteDataRepository(_db));
             }
         }
 
@@ -220,6 +268,16 @@ namespace DDAS.Data.Mongo
             }
         }
 
+        public IExclusionDatabaseRepository ExclusionDatabaseRepository
+        {
+            get
+            {
+                return _ExclusionDatabaseRepository ??
+                    (_ExclusionDatabaseRepository =
+                    new ExclusionDatabaseRepository(_db));
+            }
+        }
+
         public ICorporateIntegrityAgreementRepository 
             CorporateIntegrityAgreementRepository
         {
@@ -237,6 +295,15 @@ namespace DDAS.Data.Mongo
             {
                 return _FDAWarningLettersRepository ??
                     (_FDAWarningLettersRepository = new FDAWarningLettersRepository(_db));
+            }
+        }
+
+        public IFDAWarningRepository FDAWarningRepository
+        {
+            get
+            {
+                return _FDAWarningRepository ??
+                    (_FDAWarningRepository = new FDAWarningRepository(_db));
             }
         }
 

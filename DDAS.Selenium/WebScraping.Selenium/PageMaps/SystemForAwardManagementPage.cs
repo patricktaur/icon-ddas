@@ -163,6 +163,8 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
+        #endregion
+
         public IWebElement PageLastUpdatedTextElement
         {
             get
@@ -176,14 +178,14 @@ namespace WebScraping.Selenium.Pages
                     else
                         throw new Exception();
                 }
-                catch(Exception)
+                catch (Exception ex)
                 {
-                    throw new Exception("Could not find PageLastUpdatedTextElement");
+                    throw new Exception("Could not find PageLastUpdatedTextElement. " +
+                        "Site may have been updated. Error Message: "
+                        + ex.Message);
                 }
             }
         }
-
-        #endregion
 
         public IWebElement DataAccessAnchorTag
         {

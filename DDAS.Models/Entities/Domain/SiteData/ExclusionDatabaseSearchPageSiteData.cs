@@ -18,6 +18,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ExclusionDatabaseSearchList : SiteDataItemBase
     {
+        public Guid? RecId { get; set; }
+        public Guid? ParentId { get; set; }
+
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string LastName { get; set; }
@@ -77,6 +80,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
 
         }
+
         public override DateTime? DateOfInspection {
             get {
                 if (ExclusionDate == "" || ExclusionDate == null)

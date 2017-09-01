@@ -34,10 +34,17 @@ db.inventory.find( { type: 'food' }, { item: 1, qty: 1 } )
 
 Also, this command by default, will give _id of the record. This can be avoided by using-
 db.inventory.find( { type: 'food' }, { item: 1, _id: 0 } )
-=> _id: 0 will not display _id of the record(s)
+here _id: 0 => will not display _id of the record(s)
 
 ex:
 db.ComplianceForm.Find({Institute: 'Apollo'}, {UploadedFileName:1, qty:1})
 output:
 {"_id":"abc", "UploadedFileName":"DDAS_Upload_CaseStudy_3.xlsx"}
 --------------------------------------------------------------------------------------
+
+29 Aug 2017
+to update single field in a document of a collection
+db.SitesToSearch.updateOne({"SiteEnum":10}, {$set:{"ExtractionMode":"DB"}})
+
+Response:
+{ "acknowledged" : true, "matchedcount" : 1, "modifiedcount" : 1 }

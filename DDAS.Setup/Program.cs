@@ -245,7 +245,6 @@ namespace DDAS.Setup
                     throw new Exception(error);
                 }
             }
-
         }
 
         static void CreateRole(string roleName)

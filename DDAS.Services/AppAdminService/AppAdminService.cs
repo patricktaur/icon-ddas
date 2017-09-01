@@ -40,106 +40,181 @@ namespace DDAS.Services.AppAdminService
 
         public List<DataExtractionHistory> GetDataExtractionHistory()
         {
-            var FDADebarSiteData = _UOW.FDADebarPageRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var FDADebarSiteData = _UOW.FDADebarPageRepository.GetAll();
 
             var ListOfExtractionHistory = new List<DataExtractionHistory>();
-            var ExtractionHistory1 = new DataExtractionHistory();
-            AddToExtractionHistoryList(
-                ListOfExtractionHistory, ExtractionHistory1, 
-                FDADebarSiteData, 1, SiteEnum.FDADebarPage);
-            
 
+            var ExtractionHistory1 = new DataExtractionHistory();
+
+            if (FDADebarSiteData.Count > 0)
+            {
+                var SiteData = FDADebarSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory1,
+                    SiteData, 1, SiteEnum.FDADebarPage);
+            }
 
             var ExtractionHistory2 = new DataExtractionHistory();
 
             var ClinicalInvestigatorSiteData =
-                _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+                _UOW.ClinicalInvestigatorInspectionListRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory2, ClinicalInvestigatorSiteData, 2, SiteEnum.ClinicalInvestigatorInspectionPage);
-            
+            if(ClinicalInvestigatorSiteData.Count > 0)
+            {
+                var SiteData = ClinicalInvestigatorSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory2,
+                    SiteData, 1, SiteEnum.ClinicalInvestigatorInspectionPage);
+            }
 
             var ExtractionHistory3 = new DataExtractionHistory();
-            var FDAWarningLetters = _UOW.FDAWarningLettersRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory3, FDAWarningLetters, 3, SiteEnum.FDAWarningLettersPage);
+            var FDAWarningLetters = _UOW.FDAWarningLettersRepository.GetAll();
+
+            if (FDAWarningLetters.Count > 0)
+            {
+                var SiteData = FDAWarningLetters.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory3,
+                    SiteData, 3, SiteEnum.FDAWarningLettersPage);
+            }
 
             var ExtractionHistory4 = new DataExtractionHistory();
 
-            var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory4, ERRSiteData, 4, SiteEnum.ERRProposalToDebarPage);
+            var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll();
 
+            if (ERRSiteData.Count > 0)
+            {
+                var SiteData = ERRSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory4, 
+                    SiteData, 4, SiteEnum.ERRProposalToDebarPage);
+            }
 
             var ExtractionHistory5 = new DataExtractionHistory();
 
-            var AdequateAssuraceSiteData = _UOW.AdequateAssuranceListRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var AdequateAssuraceSiteData = _UOW.AdequateAssuranceListRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory5, AdequateAssuraceSiteData, 5, SiteEnum.AdequateAssuranceListPage);   
+            if (AdequateAssuraceSiteData.Count > 0)
+            {
+                var SiteData = AdequateAssuraceSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
 
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory5,
+                    SiteData, 5, SiteEnum.AdequateAssuranceListPage);
+            }
 
             var ExtractionHistory6 = new DataExtractionHistory();
 
-            var ClinicalInvestigatorDisqualificationData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var ClinicalInvestigatorDisqualificationData = 
+                _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory6, ClinicalInvestigatorDisqualificationData, 6, SiteEnum.ClinicalInvestigatorDisqualificationPage);
+            if (ClinicalInvestigatorDisqualificationData.Count > 0)
+            {
+                var SiteData = ClinicalInvestigatorDisqualificationData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory6, 
+                    SiteData, 6, SiteEnum.ClinicalInvestigatorDisqualificationPage);
+            }
 
             var ExtractionHistory7 = new DataExtractionHistory();
 
-            var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory7, PHSSiteData, 7, SiteEnum.PHSAdministrativeActionListingPage);
+            if (PHSSiteData.Count > 0)
+            {
+                var SiteData = PHSSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory7, 
+                    SiteData, 7, SiteEnum.PHSAdministrativeActionListingPage);
+            }
 
             var ExtractionHistory8 = new DataExtractionHistory();
 
-            var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory8, CBERSiteData, 8, SiteEnum.CBERClinicalInvestigatorInspectionPage);
+            if (CBERSiteData.Count > 0)
+            {
+                var SiteData = CBERSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory8, 
+                    SiteData, 8, SiteEnum.CBERClinicalInvestigatorInspectionPage);
+            }
 
             var ExtractionHistory9 = new DataExtractionHistory();
 
-            var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory9, ExclusionSiteData, 9, SiteEnum.ExclusionDatabaseSearchPage);
+            if (ExclusionSiteData.Count > 0)
+            {
+                var SiteData = ExclusionSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory9, 
+                    SiteData, 9, SiteEnum.ExclusionDatabaseSearchPage);
+            }
 
             var ExtractionHistory10 = new DataExtractionHistory();
 
-            var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory10, CIASiteData, 10, SiteEnum.CorporateIntegrityAgreementsListPage);
+            if (CIASiteData.Count > 0)
+            {
+                var SiteData = CIASiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory10, 
+                    SiteData, 10, SiteEnum.CorporateIntegrityAgreementsListPage);
+            }
 
             var ExtractionHistory11 = new DataExtractionHistory();
 
-            var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11, SamSiteData, 11, SiteEnum.SystemForAwardManagementPage);
+            if (SamSiteData.Count > 0)
+            {
+                var SiteData = SamSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11, 
+                    SiteData, 11, SiteEnum.SystemForAwardManagementPage);
+            }
 
             var ExtractionHistory12 = new DataExtractionHistory();
 
-            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).
-                First();
+            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll();
 
-            AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory12, SDNSiteData, 12, SiteEnum.SpeciallyDesignedNationalsListPage);
+            if (SDNSiteData.Count > 0)
+            {
+                var SiteData = SDNSiteData.OrderByDescending(
+                    x => x.CreatedOn)
+                    .First();
+
+                AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory12, 
+                    SiteData, 12, SiteEnum.SpeciallyDesignedNationalsListPage);
+            }
 
             return ListOfExtractionHistory;
         }
@@ -1479,7 +1554,8 @@ namespace DDAS.Services.AppAdminService
         #region ExtrationLog
         public List<ExtractionLogViewModel> GetExtractionLog()
         {
-            var ExtractionLog = _UOW.LogRepository.GetAll();
+            var ExtractionLog = _UOW.LogRepository.GetAll()
+                .OrderByDescending(x => x.CreatedOn).ToList();
 
             var Logs = new List<ExtractionLogViewModel>();
 

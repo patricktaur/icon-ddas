@@ -22,6 +22,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class FDAWarningLetter : SiteDataItemBase
     {
+        public Guid? RecId { get; set; }
+        public Guid? ParentId { get; set; }
+
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Company { get; set; }

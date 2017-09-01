@@ -20,9 +20,11 @@ namespace WebScraping.Selenium.Pages
                         driver.FindElements(By.ClassName("updated"));
                     return Divs[0];
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-                    throw new Exception("Could not find PageLastUpdatedElement");
+                    throw new Exception("Could not find PageLastUpdatedElement. " +
+                        "Site may have been updated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

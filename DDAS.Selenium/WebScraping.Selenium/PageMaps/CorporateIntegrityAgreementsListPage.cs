@@ -26,9 +26,11 @@ namespace WebScraping.Selenium.Pages
                     IWebElement Element = driver.FindElement(By.Id("updated-list"));
                     return Element;
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-                    throw new Exception("Unable to find PageLastUpdatedElement");
+                    throw new Exception("Unable to find PageLastUpdatedElement. " +
+                        "Site may have been updated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

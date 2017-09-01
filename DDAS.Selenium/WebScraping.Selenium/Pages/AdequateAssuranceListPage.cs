@@ -132,10 +132,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(SiteLastUpdated, "M'/'d'/'yyyy", null,
-                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+            var IsDateParsed = DateTime.TryParseExact(
+                SiteLastUpdated, 
+                "M'/'d'/'yyyy", 
+                null,
+                System.Globalization.DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    SiteLastUpdated +
+                    "' to DateTime.");
         }
 
         private void AssignReferenceIdOfPreviousDocument()

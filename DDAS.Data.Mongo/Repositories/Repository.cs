@@ -35,6 +35,29 @@ namespace DDAS.Data.Mongo.Repositories
             _db.GetCollection<TEntity>(typeof(TEntity).Name).InsertOne(entity);
         }
 
+        public bool DropAll(TEntity Entity)
+        {
+            var collection = _db.GetCollection<TEntity>
+                (typeof(TEntity).Name);
+
+            var entity = collection.DeleteMany("{ }");
+            return true;
+        }
+
+        public bool DropRecord(TEntity Entity)
+        {
+            var filter = Builders<TEntity>
+                .Filter.Eq(
+                "_id", 
+                typeof(TEntity).GetMember("RecId"));
+
+            var collection = _db.GetCollection<TEntity>
+                (typeof(TEntity).Name);
+
+            var entity = collection.DeleteOne(filter);
+            return true;
+        }
+
         public TEntity FindById(object id)
         {
             //Can this return more than one item? 
