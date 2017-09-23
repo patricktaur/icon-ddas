@@ -303,7 +303,7 @@ export class FindingsComponent implements OnInit {
                     finding.InvestigatorSearchedId = this.InvestigatorId;
                     finding.InvestigatorName = this.Investigator.Name;
                     finding.SiteSourceId =this.Site.Id  // this.Site.DisplayPosition;
-
+                    finding.SiteDisplayPosition = this.Site.DisplayPosition;
                     finding.SiteId = this.Site.SiteId
                     finding.SiteEnum = this.Site.SiteEnum // this.SiteEnum;
                     
@@ -402,8 +402,6 @@ export class FindingsComponent implements OnInit {
               updateFindings.FormId= this.ComplianceFormId;
               
               updateFindings.SiteSourceId = this.Site.Id// this.SiteEnum;
-              console.log('Id - ', updateFindings.SiteSourceId);
-              console.log('Site - ', this.Site);
               updateFindings.InvestigatorSearchedId = this.InvestigatorId;
               updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted; 
               updateFindings.Findings = this.Findings;
