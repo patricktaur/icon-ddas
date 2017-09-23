@@ -29,8 +29,7 @@ namespace WebScraping.Selenium.Pages
         private ILog _log;
 
         [DllImport("urlmon.dll")]
-        public static extern long URLDownloadToFile(long pCaller, string szURL,
-            string szFileName, long dwReserved, long lpfnCB);
+        static extern Int32 URLDownloadToFile(Int32 pCaller, string szURL, string szFileName, Int32 dwReserved, Int32 lpfnCB);
 
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow,
             IConfig Config, ILog Log) : base(driver)
@@ -355,20 +354,25 @@ namespace WebScraping.Selenium.Pages
             //if (File.Exists(fileName))
             //    File.Delete(fileName);
 
-            // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
 
             // Concatenate the domain with the Web resource filename.
-
             string myStringWebResource = 
                 "https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";
 
             _log.WriteLog(string.Format(
                 "Downloading File \"{0}\" from \"{1}\" .......\n\n", 
                 Path.GetFileName(fileName), myStringWebResource));
-            
-            // Download the Web resource and save it into the current filesystem folder.
-            myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            try
+            {
+                // Download the Web resource and save it into the current filesystem folder.
+                myWebClient.DownloadFile(myStringWebResource, fileName);
+            }
+            catch (WebException Ex)
+            {
+                throw new Exception("file download failed - " + Ex.ToString());
+            }
 
             _log.WriteLog("download complete");
 

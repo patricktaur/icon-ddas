@@ -25,6 +25,8 @@ namespace OpenXmlEmbedObjectNew
                 EmbeddingObjectPath, Path.GetFileName(EmbeddingObjectPath));
 
             openXmlDocument.Close();
+
+            return;
         }
     }
 }

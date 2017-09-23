@@ -94,8 +94,15 @@ namespace WebScraping.Selenium.Pages
             _log.WriteLog(
             string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
                 Path.GetFileName(DownloadFilePath), myStringWebResource));
-            
-            myWebClient.DownloadFile(myStringWebResource, DownloadFilePath);
+
+            try
+            {
+                myWebClient.DownloadFile(myStringWebResource, DownloadFilePath);
+            }
+            catch (WebException Ex)
+            {
+                throw new Exception("file download failed - " + Ex.ToString());
+            }
 
             _log.WriteLog("download complete");
 

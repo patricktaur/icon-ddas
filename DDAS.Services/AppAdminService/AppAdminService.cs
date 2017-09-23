@@ -281,6 +281,9 @@ namespace DDAS.Services.AppAdminService
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     return GetCIARepository();
 
+                case SiteEnum.SystemForAwardManagementPage:
+                    return GetSAMRepository();
+
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
                     return GetSDNRepository();
 
@@ -290,8 +293,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetFDADebarRepository()
         {
-            var FDASiteData = _UOW.FDADebarPageRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.FDADebarPageRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var FDASiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -322,8 +329,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetCiilRepository()
         {
-            var CIILSiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var CIILSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -354,8 +365,12 @@ namespace DDAS.Services.AppAdminService
         
         private List<DataExtractionHistory> GetFDAWarningLetters()
         {
-            var FDAWarningLetterData = _UOW.FDAWarningLettersRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.FDAWarningLettersRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var FDAWarningLetterData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -386,8 +401,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetErrProposalToDebarRepository()
         {
-            var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.ERRProposalToDebarRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var ERRSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -418,8 +437,13 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetAdequateAssuranceRepository()
         {
-            var AdequateAssuranceSiteData = _UOW.AdequateAssuranceListRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.AdequateAssuranceListRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var AdequateAssuranceSiteData = 
+                Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -450,10 +474,13 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetClinicalInvestigatorDisqualificationRepository()
         {
-            //SiteEnum.ClinicalInvestigatorDisqualificationPage
+            var Data = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll();
 
-            var ClinicalInvestigatorDisqualificationData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            if (Data.Count == 0)
+                return null;
+
+            var ClinicalInvestigatorDisqualificationData = 
+                Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -484,8 +511,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetCBERRepository()
         {
-            var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.CBERClinicalInvestigatorRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var CBERSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -516,8 +547,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetPHSRepository()
         {
-            var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.PHSAdministrativeActionListingRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var PHSSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -548,8 +583,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetExclusionDatabaseRepository()
         {
-            var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.ExclusionDatabaseSearchRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var ExclusionSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -580,8 +619,12 @@ namespace DDAS.Services.AppAdminService
 
         private List<DataExtractionHistory> GetCIARepository()
         {
-            var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.CorporateIntegrityAgreementRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var CIASiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -610,10 +653,50 @@ namespace DDAS.Services.AppAdminService
             return DataExtractionList;
         }
 
+        private List<DataExtractionHistory> GetSAMRepository()
+        {
+            var Data = _UOW.SystemForAwardManagementRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var SAMSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
+
+            var DataExtractionList = new List<DataExtractionHistory>();
+
+            foreach (SystemForAwardManagementPageSiteData SiteData in SAMSiteData)
+            {
+                var DataExtraction = new DataExtractionHistory();
+
+                DataExtraction.ExtractionDate = SiteData.CreatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    DataExtraction.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                {
+                    DataExtraction.ExtractionMessage = "Source Date is not updated";
+                }
+                else
+                    DataExtraction.ExtractionMessage = "Data extracted successfully";
+
+                DataExtraction.RecId = SiteData.RecId;
+                DataExtraction.SiteLastUpdatedOn = SiteData.SiteLastUpdatedOn;
+
+                DataExtractionList.Add(DataExtraction);
+            }
+            return DataExtractionList;
+        }
+
         private List<DataExtractionHistory> GetSDNRepository()
         {
-            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll().
-                OrderByDescending(x => x.CreatedOn).ToList();
+            var Data = _UOW.SpeciallyDesignatedNationalsRepository.GetAll();
+
+            if (Data.Count == 0)
+                return null;
+
+            var SDNSiteData = Data.OrderByDescending(x => x.CreatedOn).ToList();
 
             var DataExtractionList = new List<DataExtractionHistory>();
 
@@ -687,6 +770,10 @@ namespace DDAS.Services.AppAdminService
 
                 case SiteEnum.CorporateIntegrityAgreementsListPage:
                     DeleteCIAExtractionEntry(RecId);
+                    return;
+
+                case SiteEnum.SystemForAwardManagementPage:
+                    DeleteSAMExtractionEntry(RecId);
                     return;
 
                 case SiteEnum.SpeciallyDesignedNationalsListPage:
@@ -889,6 +976,25 @@ namespace DDAS.Services.AppAdminService
             _UOW.CorporateIntegrityAgreementRepository.RemoveById(RecId);
         }
 
+        private void DeleteSAMExtractionEntry(Guid? RecId)
+        {
+            var CurrentDocument = 
+                _UOW.SystemForAwardManagementRepository.FindById(RecId);
+
+            if (CurrentDocument.DataExtractionSucceeded)
+            {
+                var SDNSiteData = _UOW.SystemForAwardManagementRepository.GetAll().
+                    OrderByDescending(x => x.CreatedOn).ToList();
+
+                foreach (SystemForAwardManagementPageSiteData SiteData in SDNSiteData)
+                {
+                    if (SiteData.ReferenceId == RecId)
+                        _UOW.SystemForAwardManagementRepository.RemoveById(SiteData.RecId);
+                }
+            }
+            _UOW.SystemForAwardManagementRepository.RemoveById(RecId);
+        }
+
         private void DeleteSDNExtractionEntry(Guid? RecId)
         {
             var CurrentDocument = _UOW.SpeciallyDesignatedNationalsRepository.FindById(RecId);
@@ -1056,7 +1162,7 @@ namespace DDAS.Services.AppAdminService
                     new SitesToSearch { ExtractionMode = "DB", SiteName = "HHS/OIG Corporate Integrity Agreements/Watch List", SiteShortName = "HHS/OIG Corporate Integrity", SiteEnum = SiteEnum.CorporateIntegrityAgreementsListPage, SiteUrl = "http://oig.hhs.gov/compliance/corporate-integrity-agreements/cia-documents.asp"};
             _UOW.SiteSourceRepository.Add(s10);
             var s11 =
-                    new SitesToSearch { ExtractionMode = "Live", SiteName = "SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName = "SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl = "https://www.sam.gov/portal/public/SAM"};
+                    new SitesToSearch { ExtractionMode = "DB", SiteName = "SAM/SYSTEM FOR AWARD MANAGEMENT", SiteShortName = "SAM/SYSTEM FOR AWARD ...", SiteEnum = SiteEnum.SystemForAwardManagementPage, SiteUrl = "https://www.sam.gov/portal/public/SAM"};
             _UOW.SiteSourceRepository.Add(s11);
             var s12 =
                     new SitesToSearch { ExtractionMode = "DB", SiteName = "LIST OF SPECIALLY DESIGNATED NATIONALS", SiteShortName = "SPECIALLY DESIGNATED ...", SiteEnum = SiteEnum.SpeciallyDesignedNationalsListPage, SiteUrl = "http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx"};
@@ -1352,7 +1458,6 @@ namespace DDAS.Services.AppAdminService
                 defaultSiteViewModel.OrderNo = defaultSite.OrderNo;
                 defaultSiteViewModel.IsMandatory = defaultSite.IsMandatory;
 
-                
                 defaultSiteViewModel.SearchAppliesTo = defaultSite.SearchAppliesTo;
                 defaultSiteViewModel.SearchAppliesToText = defaultSite.SearchAppliesTo.ToString();
                 //defaultSiteViewModel.ExcludeSI = defaultSite.ExcludeSI;

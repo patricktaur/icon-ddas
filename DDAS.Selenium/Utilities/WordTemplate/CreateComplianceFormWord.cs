@@ -584,28 +584,31 @@ namespace Utilities.WordTemplate
 
         public void AttachFile(string EmbeddingFilePath, string ComplianceFormDocPath)
         {
-            var start = new Start();
-            start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath);
+            //var start = new Start();
+            //start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath);
+            //start.EmbedObjectIntoDocument("C:\\Development\\test.pdf", 
+            //    "C:\\Development\\p926-ddas\\DDAS.API\\App_Data\\Templates\\ComplianceFormTemplate.docx");
 
-            //var ProcessInfo = new ProcessStartInfo();
-            ////ProcessInfo.FileName = @"C:\Development\p926-ddas\ddas.selenium\webscraping\bin\Debug\webscraping.exe";
+            var ProcessInfo = new ProcessStartInfo();
+            ProcessInfo.FileName = @"C:\Development\p926-ddas\ddas.selenium\webscraping\bin\Debug\webscraping.exe";
             //ProcessInfo.FileName = @"C:\Development\OpenXmlDocumentGenerator-master\OpenXmlCidGenerator\bin\Debug\OpenXmlCidGenerator.exe";
             ////ProcessInfo.Arguments = "\"" + EmbeddingFilePath + "  \"" + ComplianceFormDocPath + "\"";
-            ////ProcessInfo.Arguments =
-            ////    @"C:\Development\test.pdf ""C:\Development\p926-ddas\DDAS.API\App_Data\Templates\ComplianceFormTemplate.docx""";
-            //ProcessInfo.CreateNoWindow = false;
-            //ProcessInfo.RedirectStandardOutput = true;
-            //ProcessInfo.RedirectStandardError = true;
-            //ProcessInfo.UseShellExecute = false;
-            
-            //var MyProcess = new Process();
-            //MyProcess.StartInfo = ProcessInfo;
+            ProcessInfo.Arguments = @"C:\Development\test.pdf" + " " +
+                @"C:\Development\p926-ddas\DDAS.API\App_Data\Templates\ComplianceFormTemplate.docx";
+            //@"C:\Development\test.pdf ""C:\Development\p926-ddas\DDAS.API\App_Data\Templates\ComplianceFormTemplate.docx""";
+            ProcessInfo.CreateNoWindow = false;
+            ProcessInfo.RedirectStandardOutput = true;
+            ProcessInfo.RedirectStandardError = true;
+            ProcessInfo.UseShellExecute = false;
 
-            //MyProcess.Start();
-            //string output = MyProcess.StandardOutput.ReadToEnd();
-            //string Error = MyProcess.StandardError.ReadToEnd();
-            //MyProcess.WaitForExit();
-            //MyProcess.Close();
+            var MyProcess = new Process();
+            MyProcess.StartInfo = ProcessInfo;
+
+            MyProcess.Start();
+            string output = MyProcess.StandardOutput.ReadToEnd();
+            string Error = MyProcess.StandardError.ReadToEnd();
+            MyProcess.WaitForExit();
+            MyProcess.Close();
 
             //ThreadStart ths = new ThreadStart(() =>
             //Start.EmbedObjectIntoDocument(EmbeddingFilePath, ComplianceFormDocPath));
@@ -622,7 +625,6 @@ namespace Utilities.WordTemplate
         public void CloseDocument()
         {
             _document.Close();
-            //_stream.Dispose();
         }
 
         public MemoryStream ReturnStream()

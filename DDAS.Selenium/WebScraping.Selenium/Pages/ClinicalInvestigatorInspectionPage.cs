@@ -100,7 +100,14 @@ namespace WebScraping.Selenium.Pages
                 string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
                 Path.GetFileName(fileName), myStringWebResource));
 
-            myWebClient.DownloadFile(myStringWebResource, fileName);
+            try
+            {
+                myWebClient.DownloadFile(myStringWebResource, fileName);
+            }
+            catch (WebException Ex)
+            {
+                throw new Exception("file download failed - " + Ex.ToString());
+            }
 
             if (File.Exists(UnZipPath + "cliil.txt")) //filename is cliil.txt by default
                 File.Delete(UnZipPath + "cliil.txt");

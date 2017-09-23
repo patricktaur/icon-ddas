@@ -210,7 +210,7 @@ namespace WebScraping.Selenium.Pages
             string CSVFilePath = fileName;
             string UnZipPath = _config.SAMFolder;
 
-            //WebClient myWebClient = new WebClient();
+            WebClient myWebClient = new WebClient();
             string myStringWebResource = "https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_";
             string Year = DateTime.Now.ToString("yy");
 
@@ -227,18 +227,24 @@ namespace WebScraping.Selenium.Pages
             if (File.Exists(CSVFilePath))
                 File.Delete(CSVFilePath);
 
-            //myWebClient.DownloadData(myStringWebResource, fileName);
-            //URLDownloadToFile(0, myStringWebResource, fileName, 0, 0);
-
-            URLDownloadToFile(0, myStringWebResource, fileName, 0, 0);
-
             try
             {
+                myWebClient.DownloadFile(myStringWebResource, fileName);
+                //URLDownloadToFile(0, myStringWebResource, fileName, 0, 0);
                 ZipFile.ExtractToDirectory(fileName, _config.SAMFolder);
             }
+            catch(WebException) //when using WebClient
+            {
+                throw new Exception("Could not download file. " +
+                    "Possible Http 404 File not found error on SAM site");
+                //throw new Exception("Could not extract file - " + e.ToString());
+            }
+            //When using URLDownloadToFile win32 API
+            //ZipFile.ExtractToDirectory throws up this exception
             catch (InvalidDataException)
             {
-                throw new Exception("Could not extract file. Possible Http 404 error");
+                throw new Exception("Could not extract file. " +
+                    "Possible Http 404 File not found error on SAM site");
             }
 
             _log.WriteLog("download complete");
@@ -357,7 +363,7 @@ namespace WebScraping.Selenium.Pages
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
-
+                
                 _SAMSiteData.DataExtractionSucceeded = false;
                 _SAMSiteData.DataExtractionErrorMessage = e.ToString();
                 _SAMSiteData.ReferenceId = null;

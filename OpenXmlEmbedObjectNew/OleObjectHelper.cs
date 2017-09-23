@@ -13,7 +13,7 @@ namespace OpenXmlEmbedObjectNew
         {
             errorMessages = new StringBuilder();
             CoUninitialize();
-            var n = CoInitializeEx((IntPtr)null, 2);
+            //var n = CoInitializeEx((IntPtr)null, 2);
             IStorage storage;
             Guid IID_IStorage = new Guid("0000000b-0000-0000-C000-000000000046");
             Guid IID_IOleObject = new Guid("00000112-0000-0000-C000-000000000046");

@@ -402,6 +402,8 @@ export class FindingsComponent implements OnInit {
               updateFindings.FormId= this.ComplianceFormId;
               
               updateFindings.SiteSourceId = this.Site.Id// this.SiteEnum;
+              console.log('Id - ', updateFindings.SiteSourceId);
+              console.log('Site - ', this.Site);
               updateFindings.InvestigatorSearchedId = this.InvestigatorId;
               updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted; 
               updateFindings.Findings = this.Findings;

@@ -738,7 +738,7 @@ namespace DDAS.Services.Search
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         private void AddMandatorySitesToComplianceForm(ComplianceForm compForm)
         {
-            var siteSources = _UOW.SiteSourceRepository.GetAll();
+            //var siteSources = _UOW.SiteSourceRepository.GetAll();
 
             int SrNo = 0;
 
@@ -761,7 +761,6 @@ namespace DDAS.Services.Search
                 SrNo += 1;
                 AddToComplianceFormSiteSource(compForm, site, SrNo);
             }
-
         }
 
         private void AddToComplianceFormSiteSource(ComplianceForm compForm, ComplianceFormBaseSite siteToAdd, int SrNo)
@@ -789,7 +788,8 @@ namespace DDAS.Services.Search
             }
             //else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
             //{
-            ////    extraction error - siteScan is NULL when data extraction fails
+            ////    siteScan can be null when there's no repository
+            ////    created for a site due to extraction error
             ////    which has not been handled... pending
             //}
 
@@ -2010,6 +2010,8 @@ namespace DDAS.Services.Search
             string FileExtension,
             out string FileName)
         {
+            //writer.AttachFile("", "");
+
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
@@ -2332,7 +2334,7 @@ namespace DDAS.Services.Search
         //    return form;
         //}
 
-        public List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2362,7 +2364,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(DebarList);
         }
 
-        public List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2392,7 +2394,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ClinicalInvestigatorList);
         }
 
-        public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -2431,7 +2433,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(FDAWarningLetterList);
         }
 
-        public List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2459,7 +2461,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ERRList);
         }
 
-        public List<MatchedRecord> GetAdequateAssurancePageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetAdequateAssurancePageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2489,7 +2491,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(AdequateAssuranceList);
         }
 
-      public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
+        private List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
             Guid? SiteDataId, string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -2530,7 +2532,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(SiteData);
         }
 
-        public List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2559,7 +2561,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ClinicalInvestigatorList);
         }
 
-        public List<MatchedRecord> GetExclusionDatabasePageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetExclusionDatabasePageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
@@ -2587,7 +2589,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ExclusionDBList);
         }
 
-        public List<MatchedRecord> GetPHSAdministrativeActionPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetPHSAdministrativeActionPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
@@ -2615,7 +2617,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(PHSList);
         }
 
-        public List<MatchedRecord> GetCIAPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetCIAPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2644,7 +2646,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(CIAList);
         }
 
-       public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch, 
             int ComponentsInIvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -2677,7 +2679,7 @@ namespace DDAS.Services.Search
             var DisqualificationSiteData =
                 siteData.SAMSiteData.Where(site => site.MatchCount > 0);
 
-            if (siteData == null)
+            if (DisqualificationSiteData == null)
                 return null;
 
             return ConvertToMatchedRecords(DisqualificationSiteData);
@@ -2713,7 +2715,7 @@ namespace DDAS.Services.Search
             }
         }
 
-        public List<MatchedRecord> GetSDNPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetSDNPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
@@ -3625,7 +3627,7 @@ namespace DDAS.Services.Search
                     foreach(SiteSource Site in form.SiteSources)
                     {
                         WorldCheckCompletedOn =
-                            form.SiteSources.Where(x => 
+                            form.SiteSources.Where(x =>
                             x.SiteEnum == SiteEnum.WorldCheckPage)
                             .FirstOrDefault().SiteSourceUpdatedOn;
 
@@ -3702,8 +3704,6 @@ namespace DDAS.Services.Search
             }
             return sb.ToString();
         }
-
-      
 
         public string AddSpaceBetweenWords(string Name)
         {

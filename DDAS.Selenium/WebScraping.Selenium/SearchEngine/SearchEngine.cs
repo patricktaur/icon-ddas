@@ -414,10 +414,10 @@ namespace WebScraping.Selenium.SearchEngine
             PhantomJSDriver
         };
 
-        ~SearchEngine()
-        {
-            Dispose();
-        }
+        //~SearchEngine()
+        //{
+        //    Dispose();
+        //}
 
         public void Dispose()
         {

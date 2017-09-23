@@ -43,6 +43,7 @@ namespace Utilities
         {
             _writer.Close();
         }
+
         public void Dispose()
         {
             if (_writer != null)

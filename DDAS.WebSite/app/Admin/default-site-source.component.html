@@ -57,9 +57,10 @@
 										<button type="button" class="btn btn-sm btn-primary" (click)="Edit(item.RecId)" data-toggle="tooltip" data-placement="top">
 											<span class="glyphicon glyphicon-edit" ></span>
 										</button>
-										<button type="button" *ngIf="extractionModeIsManual(item.ExtractionMode)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="delete"> 
+										 <button type="button" *ngIf="extractionModeIsManual(item.ExtractionMode)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="delete"> 
 											<span class="glyphicon glyphicon-remove"></span> 
-										</button>
+										</button> 
+
 										<!--<modal #EditModal>
 											<modal-header>
 												<h4 class="modal-title">Edit </h4>
