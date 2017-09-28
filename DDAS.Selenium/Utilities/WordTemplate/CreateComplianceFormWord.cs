@@ -175,7 +175,7 @@ namespace Utilities.WordTemplate
 
         //Pradeep 12Dec2016 - Clean up required
 
-        public void AddSearchedByDetails(Table SearchedByTable, 
+        private void AddSearchedByDetails(Table SearchedByTable, 
             string Value, int RowIndex, int CellIndex)
         {
             TableRow Row = SearchedByTable.Elements<TableRow>().ElementAt(RowIndex);
@@ -186,32 +186,7 @@ namespace Utilities.WordTemplate
             text.Text += " " +Value;
         }
 
-        public TableCell CellWithVerticalAlign()
-        {
-            var tableCell = new TableCell();
-            var SitesTableProperties = new TableCellProperties();
-            var VerticalAlignProperty = new TableCellVerticalAlignment() {
-                Val = TableVerticalAlignmentValues.Center };
-
-            SitesTableProperties.Append(VerticalAlignProperty);
-            tableCell.Append(SitesTableProperties);
-
-            return tableCell;
-        }
-
-        public Paragraph ParagraphWithCenterAlign()
-        {
-            var paragraph = new Paragraph();
-            var paragraphProperties = new ParagraphProperties();
-            var justification = new Justification() {
-                Val = JustificationValues.Center };
-
-            paragraphProperties.Append(justification);
-            paragraph.Append(paragraphProperties);
-            return paragraph;
-        }
-
-        public void AddInvestigatorDetails(Table HeaderTable, string InvestigatorName, 
+        private void AddInvestigatorDetails(Table HeaderTable, string InvestigatorName, 
             string Qualification, string MLNumber, string Role)
         {
             var tr = new TableRow();
@@ -288,7 +263,7 @@ namespace Utilities.WordTemplate
             _row.Append(TableCell);
         }
 
-        public void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
+        private void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
             string SourceDate, string WebLink, string IssueIdentified)
         {
             var tr = new TableRow();
@@ -335,7 +310,7 @@ namespace Utilities.WordTemplate
             SitesTable.Append(tr);
         }
 
-        public void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
+        private void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
         {
 
             if(IsIssueIdentified)
@@ -350,7 +325,7 @@ namespace Utilities.WordTemplate
             }
         }
 
-        public void AddFindings(Table table, string SourceNumber, 
+        private void AddFindings(Table table, string SourceNumber, 
             string InvestigatorName, DateTime DateOfInspection, 
             string DescriptionOfFindings)
         {
@@ -466,8 +441,64 @@ namespace Utilities.WordTemplate
                 }
             }
         }
-        
+
         #region IWriter Implementation
+
+        private void AddCellValue(string[] Values)
+        {
+            var TableCell = CellWithVerticalAlign();
+            var paragraph = ParagraphWithLeftAlign();
+
+            paragraph.Append(new Run(new Text(Values.ToString())
+            { Space = SpaceProcessingModeValues.Preserve }));
+
+            TableCell.Append(paragraph);
+            _row.Append(TableCell);
+        }
+
+        private TableCell CellWithVerticalAlign()
+        {
+            var tableCell = new TableCell();
+            
+            var SitesTableProperties = new TableCellProperties();
+            var VerticalAlignProperty = new TableCellVerticalAlignment()
+            {
+                Val = TableVerticalAlignmentValues.Center,
+            };
+
+            SitesTableProperties.Append(VerticalAlignProperty);
+            tableCell.Append(SitesTableProperties);
+
+            return tableCell;
+        }
+
+        private Paragraph ParagraphWithCenterAlign()
+        {
+            var paragraph = new Paragraph();
+            var paragraphProperties = new ParagraphProperties();
+            var justification = new Justification()
+            {
+                Val = JustificationValues.Center
+            };
+
+            paragraphProperties.Append(justification);
+            paragraph.Append(paragraphProperties);
+            return paragraph;
+        }
+
+        private Paragraph ParagraphWithLeftAlign()
+        {
+            var paragraph = new Paragraph();
+            var paragraphProperties = new ParagraphProperties();
+            var justification = new Justification()
+            {
+                Val = JustificationValues.Left
+            };
+
+            paragraphProperties.Append(justification);
+            paragraph.Append(paragraphProperties);
+            return paragraph;
+        }
 
         public void Initialize(string TemplateFolder, string ComplianceFormFolder)
         {   
@@ -527,18 +558,6 @@ namespace Utilities.WordTemplate
             _table.Append(_row);
         }
 
-        private void AddCellValue(string[] Values)
-        {
-            var TableCell = CellWithVerticalAlign();
-            var paragraph = ParagraphWithCenterAlign();
-
-            paragraph.Append(new Run(new Text(Values.ToString())
-            { Space = SpaceProcessingModeValues.Preserve }));
-
-            TableCell.Append(paragraph);
-            _row.Append(TableCell);
-        }
-
         public void WriteParagraph(string Text)
         {
             
@@ -550,7 +569,7 @@ namespace Utilities.WordTemplate
             var SearchedByTable = body.Descendants<Table>().ElementAt(5);
             AddSearchedByDetails(SearchedByTable, SearchedBy, 0, 0);
             AddSearchedByDetails(SearchedByTable, Date,
-                1, 0);
+                0, 1);
         }
 
         public void SaveChanges()

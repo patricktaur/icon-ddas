@@ -2036,11 +2036,15 @@ namespace DDAS.Services.Search
 
             var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
 
-            var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+            //var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+
+            var ProjectNumber = form.ProjectNumber.Replace('/', '-');
 
             var GeneratedFileName = 
-                ProjectNumber + "_" + PI + "_" + 
-                DateTime.Now.ToString("dd MMM yyyy HH_mm") +
+                ProjectNumber + "_" + 
+                form.Country + "_" +
+                PI + "_" + 
+                DateTime.Now.ToString("ddMMMyyyy") +
                 FileExtension;
 
             FileName = GeneratedFileName.Replace(' ','_');
@@ -2196,7 +2200,8 @@ namespace DDAS.Services.Search
 
             writer.SaveChanges();
 
-            writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
+            //as per ICON requirement commenting this line
+            //writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
 
             writer.CloseDocument();
 
@@ -2977,6 +2982,10 @@ namespace DDAS.Services.Search
                 _UOW.ClinicalInvestigatorInspectionListRepository
                 .FindById(SiteDataId);
 
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+
+            AddRecordsToCIILSiteData(SiteData, CIILRecords);
+
             string FullName = null;
             foreach (string Name in NameComponents)
             {
@@ -2985,8 +2994,6 @@ namespace DDAS.Services.Search
                 else
                     FullName += " " + Name;
             }
-
-            var Matches = new int[NameComponents.Count()];
 
             UpdateMatchStatus(SiteData.ClinicalInvestigatorInspectionList, FullName, 0);
 
@@ -3019,6 +3026,10 @@ namespace DDAS.Services.Search
             var SiteData =
                 _UOW.FDAWarningLettersRepository
                 .FindById(SiteDataId);
+
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+
+            AddRecordsToWarningLettersSiteData(SiteData, FDAWarningRecords);
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3536,7 +3547,11 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("Full Name cannot be null");
+
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+
+            AddRecordsToCIILSiteData(SiteData, CIILRecords);
 
             UpdateMatchStatus(SiteData.ClinicalInvestigatorInspectionList, FullName, 0); //include single match count as well
 
@@ -3557,7 +3572,10 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("Full Name cannot be null");
+
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+            AddRecordsToWarningLettersSiteData(SiteData, FDAWarningRecords);
 
             UpdateMatchStatus(SiteData.FDAWarningLetterList, FullName, 0); //include single match count as well
 
