@@ -26,16 +26,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
-        //public string BusinessName { get; set; }
+        public string BusinessName { get; set; }
         public string General { get; set; }
         public string Specialty { get; set; }
-        //public string UPIN { get; set; }
+        public string UPIN { get; set; }
         //public string NPI { get; set; }
         //public string DOB { get; set; }
-        //public string Address { get; set; }
-        //public string City { get; set; }
-        //public string State { get; set; }
-        //public string Zip { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
         public string ExclusionType { get; set; }
         public string ExclusionDate { get; set; }
         //public string WaiverDate { get; set; }
@@ -57,8 +57,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "First Name: " + FirstName + "~" +
                     "Last Name: " + LastName + "~" +
                     "Middle Name: " + MiddleName + "~" +
+                    "Business Name: " + BusinessName + "~" +
                     "General: " + General + "~" +
                     "Specialty: " + Specialty + "~" +
+                    "Address: " + Address + "~" +
+                    "City: " + City + "~" +
+                    "State: " + State + "~" +
+                    "Zip: " + Zip + "~" +
                     "Exclusion Type: " + ExclusionType + "~" +
                     "Exclusion Date: " + DateOfAction;
             }
