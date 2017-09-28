@@ -50,7 +50,14 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (Effective == "" || Effective == null)
                     return null;
 
-                return DateTime.ParseExact(Effective.Trim(), "M-d-yyyy", null,
+                string[] Formats =
+                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd", "dd-MM-yyyy",
+                    "M/d/yyyy", "dd MMM yyyy", "MM-dd-yyyy" };
+
+                //var Formats = new string[] { "MM-dd-yyyy", "MM/dd/yyyy" };
+
+                return DateTime.ParseExact(
+                    Effective.Trim(), Formats, null,
                     System.Globalization.DateTimeStyles.None);
             }
         }

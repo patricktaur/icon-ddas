@@ -15,7 +15,7 @@ namespace Utilities.WordTemplate
 {
     public class CreateComplianceFormWord : IWriter
     {
-        private FileStream _stream;
+        //private FileStream _stream;
         private WordprocessingDocument _document;
         private Table _table;
         private TableRow _row;

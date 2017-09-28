@@ -49,9 +49,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (date == "" || date == null)
                     return null;
 
-                return DateTime.ParseExact(date.Trim(),
-                    "M'/'d'/'yy", null,
+                string[] Formats =
+                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
+                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy", "M/d/yy" };
+
+                return DateTime.ParseExact(
+                    date.Trim(), Formats, null,
                     System.Globalization.DateTimeStyles.None);
+                //return DateTime.ParseExact(date.Trim(),
+                //    "M'/'d'/'yy", null,
+                //    System.Globalization.DateTimeStyles.None);
             }
         }
     }

@@ -22,11 +22,11 @@ namespace DDAS.Models.Interfaces
 
         void AddSearchedBy(string SearchedBy, string Date);
 
-        void SaveChanges();
-
         void AddFooterPart(string FooterText);
 
         void AttachFile(string FilePath, string ComplianceFormDocPath);
+
+        void SaveChanges();
 
         void CloseDocument();
 

@@ -186,10 +186,10 @@ namespace DDAS.API.Controllers
 
                 var allForms = _UOW.ComplianceFormRepository.GetAll();
 
-                var forms = allForms
-                    .Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
-                    || x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
-                    .OrderBy(x => x.SearchStartedOn).ToList();
+                var forms = 
+                    allForms.OrderBy(x => x.SearchStartedOn).ToList();
+                //.Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
+                //|| x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
 
                 var forms1 = forms;
 

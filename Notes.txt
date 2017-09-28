@@ -1,3 +1,18 @@
+25Sept2017
+1. ReviewCompletedOn for each investigator was not set properly. Fixed
+2. Bug - Date format for the field DateOfInspection was not consistant in CIA site, fixed
+3. Output file generation - Institute Compliance issue (yes/no)
+   Currently Institute Compliance Issue was set to Yes/No by checking 
+   InstituteWorldCheckCompletedOn date, which should not be the case. It should be set by checking
+   IssuesIdentified for InstituteWorldCheck site. 
+   Similar check should be carried out to add Compliance Issue for any site in the output file.
+
+23Sept2017
+1. SiteDisplayPosition was not matching with the order of the sites added to the compliance form.
+   On the angular side updated the findings.component.ts to set SiteDisplayPosition correctly
+2. Error while downloading the output file when Insitute site was not added to default sites.
+   It was handled by updating output file generation code in complianceformservice.cs
+
 22Sept2017
 1. DDAS.DataExtractor.Exe which was triggered from a task scheduler on ICON test server
    was throwing an 'Argument Null' exception.
@@ -16,7 +31,7 @@
 1. Call with ICON tech team to resolve access denied error encountered on the server
    for a few sites
 2. Tried to make the embedding object into the word document work with different
-   approaches. No luck so far
+   approaches. Not able to make it work
 
 19Sept2017
 1. Unable to access sites - SAM, SDN and Exclusion database on the ICON test server

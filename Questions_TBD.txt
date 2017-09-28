@@ -9,3 +9,8 @@
    that the site was last updated on 'this date'
 8. Should we retain the extraction entries for sites which download files ?
 9. Any page on 'Refresh' return a 404
+10. Findings marked as 'Not an Issue' are appearing in the ICSF
+11. 'Date of inspection' for a matched record (coming from db) can be null. should we provide a date filter?
+12. Provision to download DB extraction log
+13. Date of Inspection for PHS site cannot be added as the date is within a free flowing text (sentence).
+    There's no provision for the user to add Date of Inspection

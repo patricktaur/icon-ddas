@@ -117,8 +117,8 @@ namespace Utilities
 
             var ValidationMessages = new List<string>();
 
-            if(doc.GetCellValueAsString("A1").ToLower() != "role (principal/sub)")
-                ValidationMessages.Add("cannot find column - Role (Principal/Sub) in cell A1");
+            if(doc.GetCellValueAsString("A1").ToLower() != "role (pi/sub i)")
+                ValidationMessages.Add("cannot find column - Role (PI/Sub I) in cell A1");
             if (doc.GetCellValueAsString("B1").ToLower() != "project number")
                 ValidationMessages.Add("cannot find column - Project Number in cell B1");
             if (doc.GetCellValueAsString("C1").ToLower() != "sponsor protocol number")

@@ -63,20 +63,26 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Exclusion Date: " + DateOfAction;
             }
         }
-        public string DateOfAction {
+
+        private string DateOfAction {
             get
             {
                 if (ExclusionDate == "" || ExclusionDate == null)
                     return null;
-                try
-                {
-                    return DateTime.ParseExact(ExclusionDate.Trim(), "yyyyMMdd", null,
-                        System.Globalization.DateTimeStyles.None).ToString();
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
+                //try
+                //{
+
+                string[] Formats =
+                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
+                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy", "yyyyMMdd" };
+
+                return DateTime.ParseExact(ExclusionDate.Trim(), Formats, null,
+                    System.Globalization.DateTimeStyles.None).ToShortDateString();
+                //}
+                //catch (FormatException)
+                //{
+                //    return null;
+                //}
             }
 
         }
@@ -85,15 +91,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get {
                 if (ExclusionDate == "" || ExclusionDate == null)
                     return null;
-                try
-                {
-                    return DateTime.ParseExact(ExclusionDate.Trim(), "yyyyMMdd", null,
-                        System.Globalization.DateTimeStyles.None);
-                }
-                catch(Exception)
-                {
-                    return null;
-                }
+
+                string[] Formats =
+                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
+                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy", "yyyyMMdd" };
+
+                return DateTime.ParseExact(ExclusionDate.Trim(), Formats, null,
+                    System.Globalization.DateTimeStyles.None); //yyyyMMdd
             }
         }
     }
