@@ -30,7 +30,13 @@ export class FindingsComponent implements OnInit {
      private singleMatchRecords: Finding[]=[];
      private recordToDelete: Finding = new Finding;
      public pageNumber: number;
+     public fullPageNumber: number;
+     public partialPageNumber: number;
+     
      public filterRecordDetails: string = "";
+     public filterPartialRecordDetails: string = "";
+     public filterFullRecordDetails: string = "";
+     
      private hideReviewCompleted: boolean;
     
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
@@ -217,11 +223,66 @@ export class FindingsComponent implements OnInit {
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == true).sort(s=> s.MatchCount).reverse();
     }
 
+
+    get filteredFullMatchRecords(){
+        if (this.FullMatchRecords == null){
+            return null;    
+        }
+        else{
+          if (this.filterFullRecordDetails.trim().length > 0){
+               return this.FullMatchRecords.filter(x => x.RecordDetails.toLowerCase().indexOf(this.filterFullRecordDetails.toLowerCase().trim() ) > 0);
+               //return this.SiteSources.filter(x => x.SiteUrl.indexOf(this.filterSiteURL.trim() ) > 0);
+           }
+           else{
+               return this.FullMatchRecords;
+           }
+        }
+        
+    }
+
+    get filteredFullMatchCount(){
+        if (this.filteredFullMatchRecords == null){
+            return 0;
+        }
+        else{
+            return this.filteredFullMatchRecords.length;
+        }
+    }
+
+
+
     get PartialMatchRecords(){
         
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == false).sort(s=> s.MatchCount).reverse();
     }
     
+    get filteredPartialMatchRecords(){
+        if (this.PartialMatchRecords == null){
+            return null;    
+        }
+        else{
+          if (this.filterPartialRecordDetails.trim().length > 0){
+               return this.PartialMatchRecords.filter(x => x.RecordDetails.toLowerCase().indexOf(this.filterPartialRecordDetails.toLowerCase().trim() ) > 0);
+               //return this.SiteSources.filter(x => x.SiteUrl.indexOf(this.filterSiteURL.trim() ) > 0);
+           }
+           else{
+               return this.PartialMatchRecords;
+           }
+        }
+        
+    }
+
+    get filteredPartialMatchCount(){
+        if (this.filteredPartialMatchRecords == null){
+            return 0;
+        }
+        else{
+            return this.filteredPartialMatchRecords.length;
+        }
+    }
+
+
+
     get filteredSingleMatchRecords(){
         if (this.singleMatchRecords == null){
             return null;    

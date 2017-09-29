@@ -41,7 +41,7 @@ namespace DDAS.Services.Search
         {
             ComplianceForm newForm = new ComplianceForm();
 
-            newForm.AssignedTo = GetUserFullName(UserName);
+            newForm.AssignedTo = UserName;//GetUserFullName(UserName);
 
             newForm.SearchStartedOn = DateTime.Now;
             AddMandatorySitesToComplianceForm(newForm);
@@ -1798,8 +1798,6 @@ namespace DDAS.Services.Search
 
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active)
         {
-            AssignedTo = GetUserFullName(AssignedTo);
-
             var retList = new List<PrincipalInvestigator>();
             List<ComplianceForm> compForms;
             if (AssignedTo != null && AssignedTo.Length > 0)
@@ -1823,9 +1821,7 @@ namespace DDAS.Services.Search
         {
             var retList = new List<PrincipalInvestigator>();
 
-            var UserFullName = GetUserFullName(AssignedTo);
-
-            retList = getPrincipalInvestigators(UserFullName, Active);
+            retList = getPrincipalInvestigators(AssignedTo, Active);
 
             return retList.Where(x =>  x.ReviewCompleted == ReviewCompleted).ToList();
         }
@@ -1850,7 +1846,7 @@ namespace DDAS.Services.Search
             compForms1 = compForms.OrderByDescending(x => x.SearchStartedOn).ToList();
             if (PricipalInvestigatorName.Length > 0)
             {
-                compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role=="Principal"))).ToList();
+                compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role=="PI"))).ToList();
             }
             else
             {
@@ -1889,7 +1885,7 @@ namespace DDAS.Services.Search
 
             foreach (InvestigatorSearched Investigator in compForm.InvestigatorDetails)
             {
-                if(Investigator.Role.ToLower() == "sub")
+                if(Investigator.Role.ToLower() == "sub i")
                 {
                     var SubInv = new SubInvestigator();
                     SubInv.Name = Investigator.Name;
@@ -2196,7 +2192,8 @@ namespace DDAS.Services.Search
             //SearchedByTable
             writer.WriteParagraph("Search Performed By:");
 
-            writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
+            var UserFullName = GetUserFullName(form.AssignedTo);
+            writer.AddSearchedBy(UserFullName, DateTime.Now.ToString("dd MMM yyyy"));
 
             writer.SaveChanges();
 
@@ -2701,6 +2698,11 @@ namespace DDAS.Services.Search
                 RecordToAdd.RecordNumber = Record.RecordNumber;
                 RecordToAdd.Status = Record.Status;
                 RecordToAdd.General = Record.General;
+                RecordToAdd.BusinessName = Record.BusinessName;
+                RecordToAdd.Address = Record.Address;
+                RecordToAdd.City = Record.City;
+                RecordToAdd.State = Record.State;
+                RecordToAdd.Zip = Record.Zip;
                 RecordToAdd.Specialty = Record.Specialty;
                 RecordToAdd.Links = Record.Links;
                 RecordToAdd.RowNumber = Record.RowNumber;
