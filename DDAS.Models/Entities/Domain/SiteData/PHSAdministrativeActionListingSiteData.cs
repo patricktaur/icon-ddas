@@ -62,7 +62,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     return null;
 
                 string[] Formats =
-                    { "MM/dd/yyyy", "MM-dd-yyyy", "yyyy-MM-dd", "dd MMM yyyy" };
+                    { "M/d/yyyy", "M-d-yyyy" };
 
                 return DateTime.ParseExact(
                     NoPHSAdvisoryUntil.Trim(), Formats, null,

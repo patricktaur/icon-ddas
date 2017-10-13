@@ -78,8 +78,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 //{
 
                 string[] Formats =
-                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
-                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy", "yyyyMMdd" };
+                    { "MM/dd/yyyy", "yyyy-MM-dd",
+                    "MM-dd-yyyy", "M/d/yyyy", "yyyyMMdd" };
 
                 return DateTime.ParseExact(ExclusionDate.Trim(), Formats, null,
                     System.Globalization.DateTimeStyles.None).ToShortDateString();
@@ -98,8 +98,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     return null;
 
                 string[] Formats =
-                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
-                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy", "yyyyMMdd" };
+                    { "yyyy-MM-dd", "MM-dd-yyyy",
+                    "M/d/yyyy", "yyyyMMdd" };
 
                 return DateTime.ParseExact(ExclusionDate.Trim(), Formats, null,
                     System.Globalization.DateTimeStyles.None); //yyyyMMdd

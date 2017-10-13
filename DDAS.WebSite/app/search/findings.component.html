@@ -12,6 +12,7 @@
 					<h3 class="align-left no-margin-top">
 						Findings for {{Investigator.Name}} (Role:{{Investigator.Role}})
 					</h3>
+					<!-- 111{{diagnostic}}222 -->
 				</div>
 			</div>
 			<div class="row">
@@ -198,21 +199,16 @@
 									<!--<div date-picker [(DateValue)]="matchedRecord.DateOfInspection"></div>-->
 								</div>
 								<div *ngIf="matchedRecord.IsMatchedRecord">
-									<label>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy'}}</label>
-
+									<label>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy Z'}}</label>
 								</div>
-
-
 							</div>
 							<div class="col-md-6">
 							</div>
 						</div>
-
 						<div class="row">
 							<div class="col-md-12">
 								<label for="IsAnIssue"><h4>Is an Issue:</h4></label>
 								<input type="checkbox" name="IsAnIssue" [(ngModel)]="matchedRecord.IsAnIssue" />
-
 							</div>
 						</div>
 						<br/>

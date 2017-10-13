@@ -305,7 +305,32 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
         {
-            return Ok(_SearchService.GetComplianceFormsFromFilters(CompFormFilter));
+            try
+            {
+                return Ok(_SearchService.GetComplianceFormsFromFilters(CompFormFilter));
+            }
+            catch (Exception Ex)
+            {
+                return Ok(Ex.ToString());
+            }
+        }
+
+        [Route("ClosedComplianceFormFilters")]
+        [HttpPost]
+        public IHttpActionResult GetClosedComplianceFormFilters(
+            ComplianceFormFilter CompFormFilter)
+        {
+            try
+            {
+                var AssignedTo = User.Identity.GetUserName();
+                return Ok(
+                    _SearchService.GetClosedComplianceFormsFromFilters(
+                        CompFormFilter, AssignedTo));
+            }
+            catch (Exception Ex)
+            {
+                return Ok(Ex.ToString());
+            }
         }
 
         #region Patrick

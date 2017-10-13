@@ -27,15 +27,15 @@ export class AllISCFsComponent implements OnInit {
     public Users: any[];
 
     public myDatePickerOptions = {
-        
+
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
-     };
-    public FromSelDate: string ;  //default calendar start dates
-    public ToSelDate: string ;//default calendar start dates
+    };
+    public FromSelDate: string;  //default calendar start dates
+    public ToSelDate: string;//default calendar start dates
     public FromDate: IMyDateModel;// Object = { date: { year: 2018, month: 10, day: 9 } };
     public ToDate: IMyDateModel;  // Object = { date: { year: 2018, month: 10, day: 9 } };
-    
+
     public p: number;
     public formLoading: boolean;
     constructor(
@@ -48,66 +48,72 @@ export class AllISCFsComponent implements OnInit {
 
     }
 
-    
+
     ngOnInit() {
 
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
+        this.LoadUsers();
+    }
+
+    LoadUsers() {
+        this.service.getAllUsers()
+            .subscribe((item: any[]) => {
+                this.Users = item;
+            });
     }
 
     SetDefaultFilterValues() {
         this.ComplianceFormFilter.InvestigatorName = null;
         this.ComplianceFormFilter.ProjectNumber = null;
         this.ComplianceFormFilter.SponsorProtocolNumber = null;
-        
+        this.ComplianceFormFilter.AssignedTo = "-1";
+        this.ComplianceFormFilter.Country = null;
+        this.ComplianceFormFilter.Status = -1;
+        this.ComplianceFormFilter.SearchedOnFrom = null;
+        this.ComplianceFormFilter.SearchedOnTo = null;
+
         var fromDay = new Date();
- 
         fromDay.setDate(fromDay.getDate() - 10);
-  
-      
-    this.FromDate = {
-            date:{ year:fromDay.getFullYear(), month:fromDay.getMonth()+1, day:fromDay.getDate()
-                
+
+        this.FromDate = {
+            date: {
+                year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
             },
-            jsdate : '',
+            jsdate: '',
             formatted: '',
-            epoc:null
- 
+            epoc: null
         }
 
-    
-   
         var today = new Date();
-    this.ToDate = {
-            date:{
-            year:today.getFullYear(), month:today.getMonth()+1, day:today.getDate()
+        this.ToDate = {
+            date: {
+                year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
             },
-            jsdate : '',
+            jsdate: '',
             formatted: '',
-            epoc:null
+            epoc: null
         }
-
-    this.ComplianceFormFilter.Country = null;
-    this.ComplianceFormFilter.Status = -1;
-
+        this.ComplianceFormFilter.Country = null;
+        this.ComplianceFormFilter.Status = -1;
     }
 
     LoadPrincipalInvestigators() {
- 
-        if (this.FromDate != null){
+
+        if (this.FromDate != null) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
-            this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month-1,  this.FromDate.date.day+1);
+            this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
         }
 
-        if (this.ToDate != null){
-              this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month-1,  this.ToDate.date.day+1);
+        if (this.ToDate != null) {
+            this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
-        
+
         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
-              
+
                 this.PrincipalInvestigators = item;
             });
     }
@@ -117,14 +123,14 @@ export class AllISCFsComponent implements OnInit {
         this.SelectedInvestigatorName = Investigator.Name;
     }
 
-    
-    private Todate = new Date(); 
+
+    private Todate = new Date();
     private testDate: Date;
-    dateChanged(event: Date){
-            this.testDate = event;
+    dateChanged(event: Date) {
+        this.testDate = event;
     }
 
-    get diagnostic() { return JSON.stringify(this.FromDate); }
-   
+    get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
+
 
 }

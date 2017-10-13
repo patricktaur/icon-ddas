@@ -236,32 +236,7 @@ namespace Utilities.WordTemplate
             HeaderTable.Append(tr);
         }
 
-        private void AddTableCell(string Text)
-        {
-            var TableCell = CellWithVerticalAlign();
-            var paragraph = ParagraphWithCenterAlign();
 
-            if(Text != null && Text.Length > 2 && Text.Contains("\n"))
-            {
-                var Values = 
-                    Text.Split('\n');
-
-                var run = new Run();
-                for(int Index = 0; Index < Values.Count(); Index++)
-                {
-                    if(Index > 0)
-                        run.Append(new Break());
-
-                    run.Append(new Text(Values[Index]));
-                }
-                paragraph.Append(run);
-            }
-            else
-                paragraph.Append(new Run(new Text(Text)));
-
-            TableCell.Append(paragraph);
-            _row.Append(TableCell);
-        }
 
         private void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
             string SourceDate, string WebLink, string IssueIdentified)
@@ -446,11 +421,40 @@ namespace Utilities.WordTemplate
 
         private void AddCellValue(string[] Values)
         {
+            var tableCell = CellWithVerticalAlign();
+            var paragraph = ParagraphWithLeftAlign();
+
+            paragraph.Append(
+                new Run(new Text(Values.ToString())
+                { Space = SpaceProcessingModeValues.Preserve }));
+
+            tableCell.Append(paragraph);
+            _row.Append(tableCell);
+        }
+
+        private void AddTableCell(string Text)
+        {
             var TableCell = CellWithVerticalAlign();
             var paragraph = ParagraphWithLeftAlign();
 
-            paragraph.Append(new Run(new Text(Values.ToString())
-            { Space = SpaceProcessingModeValues.Preserve }));
+            if (Text != null && Text.Length > 2 && Text.Contains("\n"))
+            {
+                var Values =
+                    Text.Split('\n');
+
+                for (int Index = 0; Index < Values.Count(); Index++)
+                {
+                    var run = new Run();
+                    run.Append(new Text(Values[Index]));
+                    run.Append(new Break());
+                    paragraph.Append(run);
+                }
+            }
+            else
+            {
+                paragraph = ParagraphWithCenterAlign();
+                paragraph.Append(new Run(new Text(Text)));
+            }
 
             TableCell.Append(paragraph);
             _row.Append(TableCell);
@@ -460,14 +464,15 @@ namespace Utilities.WordTemplate
         {
             var tableCell = new TableCell();
             
-            var SitesTableProperties = new TableCellProperties();
+            var CellProperties = new TableCellProperties();
+
             var VerticalAlignProperty = new TableCellVerticalAlignment()
             {
                 Val = TableVerticalAlignmentValues.Center,
             };
 
-            SitesTableProperties.Append(VerticalAlignProperty);
-            tableCell.Append(SitesTableProperties);
+            CellProperties.Append(VerticalAlignProperty);
+            tableCell.Append(CellProperties);
 
             return tableCell;
         }
@@ -490,6 +495,7 @@ namespace Utilities.WordTemplate
         {
             var paragraph = new Paragraph();
             var paragraphProperties = new ParagraphProperties();
+
             var justification = new Justification()
             {
                 Val = JustificationValues.Left
@@ -544,15 +550,9 @@ namespace Utilities.WordTemplate
         public void FillUpTable(string[] CellValues)
         {
             _row = new TableRow();
+            
             foreach (string Value in CellValues)
             {
-                //string[] temp = new string[] { };
-                //if(Value.Contains("\n"))
-                //{
-                //    temp = Value.Split('\n');
-                //    AddCellValue(temp);
-                //}
-                //else
                 AddTableCell(Value);
             }
             _table.Append(_row);

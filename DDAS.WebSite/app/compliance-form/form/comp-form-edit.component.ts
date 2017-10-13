@@ -87,8 +87,8 @@ export class CompFormEditComponent implements OnInit {
     public SiteSources: any[];
      //public SourceSite: DefaultSite = new DefaultSite;
      //public SourceSite: DefaultSite = new DefaultSite;
-     public SiteSource: SiteSource = new SiteSource;
-    
+    public SiteSource: SiteSource = new SiteSource;
+
     @ViewChild('FindingsAddModal') FindingsAddModal: ModalComponent;
 
     public myDatePickerOptions = {
@@ -276,6 +276,15 @@ gotoSiteDetails(SiteSourceId: number){
             error => {
                 this.formLoading = false;
             });
+    }
+
+    get isFileUploaded(): boolean {
+        if(this.CompForm.UploadedFileName == null)
+            return false;
+        else if(this.CompForm.UploadedFileName.trim().length == 0)
+            return false;
+        else
+            return true;
     }
 
     setFileUploadFolderPath(){

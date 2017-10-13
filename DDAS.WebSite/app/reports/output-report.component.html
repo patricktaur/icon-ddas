@@ -31,7 +31,10 @@
 
 							<!--<div *ngIf="!generating">-->
 								<button type="button" class="btn btn-primary" (click)="GenerateOutputFile()">Generate</button>
-							<!--</div>-->
+								<button type="button" class="btn btn-primary" (click)="GetInvestigationsCompleted()">
+									Get Investigation Completed Report
+								</button>
+								<!--</div>-->
 							
 							<!--<div *ngIf="generating">
 								<h4>
@@ -50,6 +53,36 @@
 
 				</div>
 			</div>
+
+
+			<div class="row">
+				<div class="col-lg-10">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Assigned To</th>
+								<th>Investigations Completed</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let item of InvestigationsCompletedReport | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+								<td class="text-center">
+									{{item.AssignedTo}}
+								</td>
+								<td class="text-center">
+									{{item.Count}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					 <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+				</div>
+				<div class="col-lg-2">
+                    
+				</div>
+			</div>
+
+
 		</div>
 	</div>
 </div>

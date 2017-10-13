@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { PrincipalInvestigatorDetails } from './search.classes';
+import { PrincipalInvestigatorDetails, ComplianceFormManage, CompFormFilter } from './search.classes';
 import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
-
+import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
 //import { Http, Response, Headers , RequestOptions } from '@angular/http';
 
 @Component({
@@ -34,7 +34,18 @@ export class ClosedICFsComponent implements OnInit {
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
     public makeActiveCompFormId: string;
-    public makeActivePrincipalInvestigatorName: string
+    public makeActivePrincipalInvestigatorName: string;
+
+    public ComplianceFormFilter: CompFormFilter;
+
+    public FromDate: IMyDateModel;
+    public ToDate: IMyDateModel;
+
+    public myDatePickerOptions = {
+
+        dateFormat: 'dd mmm yyyy',
+        selectionTxtFontSize: 14
+    };
 
     public pageNumber: number;
     constructor(
@@ -65,16 +76,67 @@ export class ClosedICFsComponent implements OnInit {
                 this.pageNumber = page;
             }
         });
+        this.ComplianceFormFilter = new CompFormFilter;
+
+        this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
     }
 
+    SetDefaultFilterValues() {
+        this.ComplianceFormFilter.InvestigatorName = null;
+        this.ComplianceFormFilter.ProjectNumber = null;
+        this.ComplianceFormFilter.SponsorProtocolNumber = null;
+        this.ComplianceFormFilter.SearchedOnFrom = null;
+        this.ComplianceFormFilter.SearchedOnTo = null;
+        this.ComplianceFormFilter.Country = null;
+        this.ComplianceFormFilter.AssignedTo = "-1";
+        this.ComplianceFormFilter.Status = -1;
+
+        var fromDay = new Date();
+        fromDay.setDate(fromDay.getDate() - 10);
+
+        this.FromDate = {
+            date: {
+                year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+        var today = new Date();
+        this.ToDate = {
+            date: {
+                year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+    }
+
     LoadPrincipalInvestigators() {
-        this.service.getMyReviewCompletedPrincipalInvestigators()
+
+        if (this.FromDate != null) {
+            //minus one month, plus one day is made so that the value is correctly converted on the server side.  
+            //Otherwise incorrect values are produced when the property is read on API end point.
+            this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        }
+
+        if (this.ToDate != null) {
+            this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
+        }
+
+        this.service.getClosedComplianceFormFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
-            },
-            error => {
             });
+
+        // this.service.getMyReviewCompletedPrincipalInvestigators()
+        //     .subscribe((item: any) => {
+        //         this.PrincipalInvestigators = item;
+        //     },
+        //     error => {
+        //     });
     }
 
     get filteredRecords() {
@@ -154,13 +216,13 @@ export class ClosedICFsComponent implements OnInit {
             });
     }
 
-    downloadComplianceFormPDF(formId: string){
+    downloadComplianceFormPDF(formId: string) {
         this.service.generateComplianceFormPDF(formId)
             .subscribe((item: any) => {
 
             },
             error => {
-            });        
+            });
     }
 
     getBackgroundColor(color: number) {
@@ -192,5 +254,5 @@ export class ClosedICFsComponent implements OnInit {
 
     }
 
-    get diagnostic() { return JSON.stringify(this.response); }
+    get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 }

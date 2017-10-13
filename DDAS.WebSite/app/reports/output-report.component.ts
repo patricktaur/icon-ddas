@@ -4,6 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { ConfigService } from '../shared/utils/config.service';
 import { ReportService } from './report-service';
 import { CompFormFilter } from '../search/search.classes';
+import { ReportFilters } from './report.classes';
 import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-date-picker/interfaces';
 
 @Component({
@@ -29,6 +30,9 @@ export class OutputReportComponent implements OnChanges {
     public OutputGenerationError: string;
 
     public ComplianceFormFilter: CompFormFilter;
+    public ReportFilter: ReportFilters
+    public InvestigationsCompletedReport: any[];
+    public pageNumber: number;
 
     constructor(
         private service: ReportService,
@@ -40,6 +44,7 @@ export class OutputReportComponent implements OnChanges {
 
     ngOnInit() {
         this.ComplianceFormFilter = new CompFormFilter;
+        this.ReportFilter = new ReportFilters;
         this.SetDefaultFilterValues();
     }
 
@@ -106,6 +111,30 @@ export class OutputReportComponent implements OnChanges {
                 // console.log("Error downloading the file."),
                 //     () => console.log('Completed file download.')
             });
+    }
+
+    GetInvestigationsCompleted() {
+        if (this.FromDate != null) {
+            //minus one month, plus one day is made so that the value is correctly converted on the server side.  
+            //Otherwise incorrect values are produced when the property is read on API end point.
+            this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        }
+
+        if (this.ToDate != null) {
+            this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
+        }
+
+        this.ReportFilter.FromDate = this.ComplianceFormFilter.SearchedOnFrom;
+        this.ReportFilter.ToDate = this.ComplianceFormFilter.SearchedOnTo;
+        this.ReportFilter.AssignedTo = "user1";
+        console.log('ReportFilter - ', this.ReportFilter);
+        this.service.getInvestigationsCompletedReport(this.ReportFilter)
+        .subscribe((item: any[]) => {
+            this.InvestigationsCompletedReport = item;
+        },
+        error => {
+
+        });
     }
 
     get diagnostic() { return JSON.stringify(null); }

@@ -2,6 +2,7 @@
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,13 +24,18 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         private IConfig _config;
         private string _RootPath;
+        private IReport _Report;
 
-        public ReportsController(ISearchService SearchSummary, IUnitOfWork UOW, IConfig Config)
+        public ReportsController(ISearchService SearchSummary, 
+            IUnitOfWork UOW, 
+            IConfig Config,
+            IReport Report)
         {
             _RootPath = HttpRuntime.AppDomainAppPath;
             _SearchSummary = SearchSummary;
             _UOW = UOW;
             _config = Config;
+            _Report = Report;
         }
 
         [Route("GetNamesFromClosedComplianceForms")]
@@ -178,6 +184,9 @@ namespace DDAS.API.Controllers
 
                 response = Request.CreateResponse(HttpStatusCode.OK);
 
+                var IsAdmin = User.IsInRole("admin");
+                var UserName = User.Identity.GetUserName();
+
                 var GenerateOutputFile =
                     new GenerateOutputFile(
                         _config.ExcelTempateFolder + "Output_File_Template.xlsx");
@@ -185,6 +194,12 @@ namespace DDAS.API.Controllers
                 var fromDate = CompFormFilter.SearchedOnFrom.Value;
 
                 var allForms = _UOW.ComplianceFormRepository.GetAll();
+
+                if(!IsAdmin)
+                {
+                    allForms = _UOW.ComplianceFormRepository.GetAll().Where(x =>
+                    x.AssignedTo == UserName).ToList();
+                }
 
                 var forms = 
                     allForms.OrderBy(x => x.SearchStartedOn).ToList();
@@ -247,8 +262,8 @@ namespace DDAS.API.Controllers
         public HttpResponseMessage DownloadUserManual()
         {
             HttpResponseMessage response = null;
-            var FilePath = 
-                _config.ExcelTempateFolder + 
+            var FilePath =
+                _config.ExcelTempateFolder +
                 "User Manual - ICON - DDAS - Draft.pdf";
 
             if (!File.Exists(
@@ -288,6 +303,21 @@ namespace DDAS.API.Controllers
                 //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
             }
             return response;
+        }
+
+        [Route("InvestigationsCompletedReport")]
+        [HttpPost]
+        public IHttpActionResult GetInvestigationCompletedReport(ReportFilters Filters)
+        {
+            if (Filters.ToDate != null)
+            {
+                Filters.ToDate = Filters.ToDate.Date.AddDays(1);
+            }
+
+            var Report = _Report.GetInvestigationsCompletedReport(
+                Filters.FromDate, Filters.ToDate);
+
+            return Ok(Report);
         }
     }
 }

@@ -19,6 +19,7 @@ using Utilities.EMail;
 using DDAS.Models.Entities.Domain;
 using DDAS.Services.AppAdminService;
 using System.Web;
+using DDAS.Services.Reports;
 
 namespace DDAS.API.App_Start
 {
@@ -46,7 +47,10 @@ namespace DDAS.API.App_Start
             var ConnectionString = 
                 System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
-            container.Register<IUnitOfWork>(() => new UnitOfWork(ConnectionString));
+            var DBName =
+                System.Configuration.ConfigurationManager.AppSettings["DBName"];
+
+            container.Register<IUnitOfWork>(() => new UnitOfWork(ConnectionString, DBName));
 
             //For Automapper <<<< 
             //Get all my Profiles from the assembly (in my case was the webapi)
@@ -130,6 +134,8 @@ namespace DDAS.API.App_Start
             container.Register<IEMailService>(() => new EMailService(cred));
 
             container.Register<IAppAdminService, AppAdminService>();
+
+            container.Register<IReport, Report>();
         }
     }
 }

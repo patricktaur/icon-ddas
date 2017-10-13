@@ -485,10 +485,11 @@ namespace DDAS.Models.Entities.Domain
         public string Role { get; set; }
         public string Qualification { get; set; }
         public string MedicalLiceseNumber { get; set; }
-        public string InvestigatorId { get; set; }
+        public string InvestigatorId { get; set; } = "";
 
         //changed ExtractedOn to AddedOn
-        public DateTime? AddedOn { get; set; } //null indicates 'Not extracted' 
+        public DateTime? AddedOn { get; set; } //null indicates 'Not extracted'
+        public DateTime SearchCompletedOn { get; set; } //10Oct2017 Pradeep
         public bool HasExtractionError { get; set; }
         public int ExtractionErrorSiteCount { get; set; }
         public int ExtractionPendingSiteCount { get; set; }
@@ -1026,8 +1027,7 @@ namespace DDAS.Models.Entities.Domain
         public string SponsorProtocolNumber { get; set; }
         public DateTime? SearchedOnFrom { get; set; }
         public DateTime? SearchedOnTo { get; set; }
-
-      
+        public string AssignedTo { get; set; }
         public string Country { get; set; }
         public ComplianceFormStatusEnum Status { get; set; }
     }
@@ -1194,6 +1194,17 @@ namespace DDAS.Models.Entities.Domain
        
         //public SearchAppliesToEnum SearchAppliesTo { get; set; }
     }
+    #endregion
+
+    #region ReportFilters
+    
+    public class ReportFilters
+    {
+        public string AssignedTo { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+    }
+    
     #endregion
 
     public class ValidationError
