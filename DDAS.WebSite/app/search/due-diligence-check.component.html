@@ -9,15 +9,15 @@
 					<button type="button" class="btn-lg btn btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Manual Search</button>
 
 					<button type="button" class="btn-lg btn btn-primary" (click)="CleanUpValidationMessage();UploadComplianceFormInputsModal.open()"
-						title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created."><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Batch Upload</button>
+					 title="Upload an excel file with Compliance Form details. Compliance Forms and search results will be created."><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Batch Upload</button>
 
 				</div>
 				<div class="col-md-6 ">
 					<!--center	-->
 					<div class="text-right vertical-center">
 						<p><a class="btn btn-default btn-sm" href="{{downloadTemplateUrl}}" download title="Download a sample/template file, fill in the Compliance Form Details and then upload using Due Diligence Search / Batch Upload"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>  Batch Upload Template</a></p>
-						<p>Review Pending: {{reviewPendingRecordCount}} </p>						
-						
+						<p>Review Pending: {{reviewPendingRecordCount}} </p>
+
 						<!--<p>Extraction Pending: {{extractionPendingRecordCount}} 
 							<span *ngIf="extractionPendingRecordCount > 0">&nbsp;</span>
 							<button type="button"
@@ -61,15 +61,16 @@
 						</ul>-->
 						<h5> <a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
 							<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
-							</a> 
+							</a>
 						</h5>
 
 						<div class="panel-group" role="tablist" style="border:0">
 							<div class="panel panel-default" style="border:0">
-								<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1" aria-expanded="false" style="border:0"> 
+								<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
+								 aria-expanded="false" style="border:0">
 									<ul class="list-group" style="border:0">
-										<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li> 
-									</ul>  
+										<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
+									</ul>
 								</div>
 							</div>
 						</div>
@@ -109,7 +110,7 @@
 	<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 </div>
 
-<modal #UploadComplianceFormInputsModal>
+<modal #UploadComplianceFormInputsModal [backdrop]='false'>
 	<modal-header [show-close]="true">
 		<h4 class="modal-title">Upload file</h4>
 	</modal-header>
@@ -120,10 +121,15 @@
 
 					<label for="fileupload">Upload a file - (.xlsx file with data to create compliance forms.)</label>
 					<input type="file" id="fileupload" ngFileSelect [options]="basicOptions" (onUpload)="handleUpload($event)" class="form-control"
-						name="Upload">
+					 name="Upload">
+					<div style="width: 50px; height: 50px;">
+						<img width="100%" height="100%"
+						src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+						/>
+					</div>
 				</div>
 				<div *ngIf="Loading">
-
+					
 					<p class="help-block">Uploading and Scanning Sources for Investigator Names will take a while... </p>
 					<p class="help-block">You can close this Window if you wish to continue with other activities and</p>
 					<p class="help-block">the process will continue in the background.</p>

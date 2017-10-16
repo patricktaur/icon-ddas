@@ -130,9 +130,11 @@ namespace WebScraping.Selenium.Pages
                         driver.FindElements(By.XPath("//div/ul/li"));
                     return Elements[28];
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw new Exception("Unable to find DatabaseLastUpdatedElement");
+                    throw new Exception("Unable to find DatabaseLastUpdatedElement. " +
+                        "Site may have been updated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

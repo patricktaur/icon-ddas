@@ -23,13 +23,18 @@ export class ChangePasswordComponent {
          //Validate:
          this.error = "";
          if (this.changePasswordModel.NewPassword != this.changePasswordModel.ConfirmPassword){
-             this.error = "New Password and Confirm New Password do not match";
+            this.result = false; 
+            this.error = "New Password and Confirm New Password do not match";
          }
          
          if (!this.error){
              this.service.changePassword(this.changePasswordModel)
             .subscribe((item: any) => {
                this.result = item;
+               this.changePasswordModel.CurrrentPassword = null;
+               this.changePasswordModel.NewPassword = null;
+               this.changePasswordModel.CurrrentPassword = null;
+               this.error = null;
             },
             error => {
                 this.error = "Password change not successful";

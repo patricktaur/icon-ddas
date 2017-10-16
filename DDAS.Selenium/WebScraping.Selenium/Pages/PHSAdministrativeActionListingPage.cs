@@ -191,43 +191,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
-                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+            var IsDateParsed = DateTime.TryParseExact(
+                PageLastUpdated, 
+                "M'/'d'/'yyyy", 
+                null,
+                System.Globalization.DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
-            //var ExistingPHSSiteData = 
-            //    _UOW.PHSAdministrativeActionListingRepository.GetAll();
-
-            //PHSAdministrativeActionListingSiteData PHSSiteData = null;
-
-            //if (ExistingPHSSiteData.Count == 0)
-            //{
-            //    _PHSAdministrativeSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //    _PHSAdministrativeSiteData.DataExtractionRequired = true;
-            //}
-            //else
-            //{
-            //    PHSSiteData = ExistingPHSSiteData.OrderByDescending(
-            //        x => x.CreatedOn).First();
-
-            //    if (RecentLastUpdatedDate > PHSSiteData.SiteLastUpdatedOn)
-            //    {
-            //        _PHSAdministrativeSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //        _PHSAdministrativeSiteData.DataExtractionRequired = true;
-            //    }
-            //    else
-            //    {
-            //        _PHSAdministrativeSiteData.SiteLastUpdatedOn =
-            //            PHSSiteData.SiteLastUpdatedOn;
-            //        _PHSAdministrativeSiteData.DataExtractionRequired = false;
-            //    }
-            //}
-            //if (!_PHSAdministrativeSiteData.DataExtractionRequired)
-            //    _PHSAdministrativeSiteData.ReferenceId = PHSSiteData.RecId;
-            //else
-            //    _PHSAdministrativeSiteData.ReferenceId =
-            //        _PHSAdministrativeSiteData.RecId;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    PageLastUpdated +
+                    "' to DateTime.");
         }
 
         private bool IsPageLoaded()

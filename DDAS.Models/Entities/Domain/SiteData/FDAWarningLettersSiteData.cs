@@ -22,6 +22,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class FDAWarningLetter : SiteDataItemBase
     {
+        public Guid? RecId { get; set; }
+        public Guid? ParentId { get; set; }
+
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Company { get; set; }
@@ -56,8 +59,12 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (LetterIssued == "" || LetterIssued == null)
                     return null;
 
-                return DateTime.ParseExact(LetterIssued.Trim(),
-                    "M'/'d'/'yyyy", null,
+                string[] Formats =
+                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
+                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy" };
+
+                return DateTime.ParseExact(
+                    LetterIssued.Trim(), Formats, null,
                     System.Globalization.DateTimeStyles.None);
             }
         }

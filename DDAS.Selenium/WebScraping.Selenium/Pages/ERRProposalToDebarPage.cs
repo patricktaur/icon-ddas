@@ -134,41 +134,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(SiteLastUpdated, "M'/'d'/'yyyy", null,
-                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+            var IsDateParsed = DateTime.TryParseExact(
+                SiteLastUpdated, 
+                "M'/'d'/'yyyy", 
+                null,
+                System.Globalization.DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
-            //var ExistingERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll();
-
-            //if (ExistingERRSiteData.Count == 0)
-            //{
-            //    _proposalToDebarSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //    _proposalToDebarSiteData.DataExtractionRequired = true;
-            //}
-            //else
-            //{
-            //    ERRSiteData = ExistingERRSiteData.OrderByDescending(
-            //        x => x.CreatedOn).First();
-
-            //    if (RecentLastUpdatedDate > ERRSiteData.SiteLastUpdatedOn)
-            //    {
-            //        _proposalToDebarSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //        _proposalToDebarSiteData.DataExtractionRequired = true;
-            //    }
-            //    else
-            //    {
-            //        _proposalToDebarSiteData.SiteLastUpdatedOn =
-            //            ERRSiteData.SiteLastUpdatedOn;
-            //        _proposalToDebarSiteData.DataExtractionRequired = false;
-            //    }
-            //}
-
-            //if (!_proposalToDebarSiteData.DataExtractionRequired)
-            //    _proposalToDebarSiteData.ReferenceId = ERRSiteData.RecId;
-            //else
-            //    _proposalToDebarSiteData.ReferenceId =
-            //        _proposalToDebarSiteData.RecId;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    SiteLastUpdated +
+                    "' to DateTime.");
         }
 
         public string GetSiteLastUpdatedDate()

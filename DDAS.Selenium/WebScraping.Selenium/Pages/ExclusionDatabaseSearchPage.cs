@@ -94,8 +94,15 @@ namespace WebScraping.Selenium.Pages
             _log.WriteLog(
             string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
                 Path.GetFileName(DownloadFilePath), myStringWebResource));
-            
-            myWebClient.DownloadFile(myStringWebResource, DownloadFilePath);
+
+            try
+            {
+                myWebClient.DownloadFile(myStringWebResource, DownloadFilePath);
+            }
+            catch (WebException Ex)
+            {
+                throw new Exception("file download failed - " + Ex.ToString());
+            }
 
             _log.WriteLog("download complete");
 
@@ -106,6 +113,9 @@ namespace WebScraping.Selenium.Pages
 
         private void LoadExclusionDatabaseListFromCSV(string CSVFilePath)
         {
+            _log.WriteLog("Reading records from the file - " + 
+                Path.GetFileName(CSVFilePath));
+
             TextFieldParser parser = new TextFieldParser(CSVFilePath);
 
             parser.HasFieldsEnclosedInQuotes = true;
@@ -119,7 +129,7 @@ namespace WebScraping.Selenium.Pages
                 fields = parser.ReadFields();
 
                 if (fields.Count() != 18)
-                    throw new Exception("record with First Name:" + fields[1] +
+                    throw new Exception("Error - record with First Name:" + fields[1] +
                         " and Last Name:" + fields[0] +
                         "does not have 18 fields");
 
@@ -130,6 +140,8 @@ namespace WebScraping.Selenium.Pages
                 if (fields[0].Length > 1)
                 {
                     var ExclusionList = new ExclusionDatabaseSearchList();
+                    ExclusionList.RecId = Guid.NewGuid();
+                    ExclusionList.ParentId = _exclusionSearchSiteData.RecId;
 
                     ExclusionList.RowNumber = RowNumber;
                     ExclusionList.LastName = fields[0];
@@ -150,13 +162,16 @@ namespace WebScraping.Selenium.Pages
                     //ExclusionList.WaiverDate = RecordDetails[16];
                     //ExclusionList.WaiverState = RecordDetails[17];
 
-                    _exclusionSearchSiteData.ExclusionSearchList.Add(
-                        ExclusionList);
+                    //_exclusionSearchSiteData.ExclusionSearchList.Add(
+                    //    ExclusionList);
+                    _UOW.ExclusionDatabaseRepository.Add(ExclusionList);
                     RowNumber += 1;
                 }
             }
+            //_log.WriteLog("Total records inserted - " +
+            //    _exclusionSearchSiteData.ExclusionSearchList.Count());
             _log.WriteLog("Total records inserted - " +
-                _exclusionSearchSiteData.ExclusionSearchList.Count());
+                _UOW.ExclusionDatabaseRepository.GetAll().Count());
         }
 
         public override void LoadContent(
@@ -192,10 +207,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
-                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+            var IsDateParsed = DateTime.TryParseExact(
+                PageLastUpdated, 
+                "M'/'d'/'yyyy", 
+                null,
+                System.Globalization.DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    PageLastUpdated +
+                    "' to DateTime.");
         }
 
         private bool IsPageLoaded()
@@ -216,6 +241,18 @@ namespace WebScraping.Selenium.Pages
             return PageLoaded;
         }
 
+        private void DeleteAllExclusionDatabaseRecords()
+        {
+            var Record = _UOW.ExclusionDatabaseRepository.GetAll().FirstOrDefault();
+
+            if (Record != null)
+            {
+                _log.WriteLog("Old records found.. Deleting old records...");
+                _UOW.ExclusionDatabaseRepository.DropAll(Record);
+                _log.WriteLog("Old records deleted...");
+            }
+        }
+
         public override void LoadContent()
         {
             try
@@ -225,6 +262,7 @@ namespace WebScraping.Selenium.Pages
 
                 _exclusionSearchSiteData.DataExtractionRequired = true;
                 var FilePath = DownloadExclusionList();
+                DeleteAllExclusionDatabaseRecords();
                 LoadExclusionDatabaseListFromCSV(FilePath);
 
                 _exclusionSearchSiteData.DataExtractionSucceeded = true;

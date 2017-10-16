@@ -99,9 +99,15 @@ namespace WebScraping.Selenium.Pages
             _log.WriteLog(
                 string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
                 System.IO.Path.GetFileName(fileName), myStringWebResource));
-            
-            myWebClient.DownloadFile(myStringWebResource, fileName);
 
+            try
+            {
+                myWebClient.DownloadFile(myStringWebResource, fileName);
+            }
+            catch(WebException Ex)
+            {
+                throw new Exception("file download failed - " + Ex.ToString());
+            }
             _log.WriteLog("download complete");
 
             return fileName;
@@ -155,6 +161,10 @@ namespace WebScraping.Selenium.Pages
         {
             //Patrick: 24April2017
             //string AllRecords = File.ReadAllText(_config.AppDataDownloadsFolder);
+
+            _log.WriteLog("Reading records from the file - " +
+                System.IO.Path.GetFileName(FilePath));
+
             string AllRecords = File.ReadAllText(FilePath);
 
             string[] Records = 
@@ -164,15 +174,20 @@ namespace WebScraping.Selenium.Pages
             foreach(string Record in Records)
             {
                 SDNList SDNRecord = new SDNList();
+                SDNRecord.RecId = Guid.NewGuid();
+                SDNRecord.ParentId = _SDNSiteData.RecId;
 
                 SDNRecord.Name = Record;
                 SDNRecord.RecordNumber = RecordNumber;
 
-                _SDNSiteData.SDNListSiteData.Add(SDNRecord);
+                //_SDNSiteData.SDNListSiteData.Add(SDNRecord);
+                _UOW.SDNSiteDataRepository.Add(SDNRecord);
                 RecordNumber += 1;
             }
+            //_log.WriteLog("Total records inserted - " +
+            //    _SDNSiteData.SDNListSiteData.Count());
             _log.WriteLog("Total records inserted - " +
-                _SDNSiteData.SDNListSiteData.Count());
+                _UOW.SDNSiteDataRepository.GetAll().Count());
         }
 
         private bool CheckSiteUpdatedDate()
@@ -216,26 +231,24 @@ namespace WebScraping.Selenium.Pages
                 Add(_SDNSiteData);
         }
 
-        public void ReadSiteLastUpdatedDateFromPage()
+        private void ReadSiteLastUpdatedDateFromPage()
         {
             string temp = PageLastUpdatedElement.Text.Replace("Last Updated: ", "").Trim();
 
             DateTime CurrentSiteUpdatedDate;
 
-            //DateTime.TryParseExact(temp, "M'/'d'/'yyyy",
-            //CultureInfo.InvariantCulture,
-            //DateTimeStyles.None, out CurrentSiteUpdatedDate);
+            var result = DateTime.TryParseExact(
+                temp, "M'/'dd'/'yyyy hh:mm tt",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out CurrentSiteUpdatedDate);
 
-            var result = DateTime.TryParse(temp, out CurrentSiteUpdatedDate);
-
-            
-            
-            if (result == true)
-            {
+            if (result)
                 _SiteLastUpdatedFromPage = CurrentSiteUpdatedDate;
-            }
-            
-            
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    temp +
+                    "' to DateTime.");
         }
 
         private bool IsPageLoaded()
@@ -256,6 +269,19 @@ namespace WebScraping.Selenium.Pages
             return PageLoaded;
         }
 
+        private void DeleteAllSDNSiteDataRecords()
+        {
+            var Record = _UOW.SDNSiteDataRepository.GetAll()
+                .FirstOrDefault();
+
+            if (Record != null)
+            {
+                _log.WriteLog("Old records found.. Deleting old records...");
+                _UOW.SDNSiteDataRepository.DropAll(Record);
+                _log.WriteLog("Old records deleted...");
+            }
+        }
+
         public void LoadContent()
         {
             try
@@ -265,6 +291,7 @@ namespace WebScraping.Selenium.Pages
 
                 _SDNSiteData.DataExtractionRequired = true;
                 var FilePath = DownloadSDNList();
+                DeleteAllSDNSiteDataRecords();
                 //GetTextFromPDF("", DownloadFolder);
                 LoadSDNList(FilePath);
                 _SDNSiteData.DataExtractionSucceeded = true;

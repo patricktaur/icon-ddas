@@ -22,11 +22,9 @@ namespace DDAS.API.Providers
         private readonly string _publicClientId;
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
 
-        private IUnitOfWork _UOW;
-
         private IUserService _UserService;
 
-        private string _ClientVer = "D2.2"; 
+        private string _ClientVer = "T1.0.1"; 
 
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{

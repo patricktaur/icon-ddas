@@ -40,11 +40,20 @@ namespace DDAS.Services.Search
         public ComplianceForm GetNewComplianceForm(string UserName)
         {
             ComplianceForm newForm = new ComplianceForm();
-            newForm.AssignedTo = UserName;
+
+            newForm.AssignedTo = GetUserFullName(UserName);
+
             newForm.SearchStartedOn = DateTime.Now;
             AddMandatorySitesToComplianceForm(newForm);
 
             return newForm;
+        }
+
+        private string GetUserFullName(string UserName)
+        {
+            var User = _UOW.UserRepository.FindByUserName(UserName);
+
+            return (User == null ? null : User.UserFullName);
         }
 
         #region ByPradeep
@@ -126,13 +135,13 @@ namespace DDAS.Services.Search
 
                 excelInput.ExcelInputRows.Add(RowData);
 
-                if (RowData.Role.ToLower() == "principal")
+                if (RowData.Role.ToLower() == "pi")
                 {
                     RowIndex += 1;
                     var SubInvestigator =
                         readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
-                    while (SubInvestigator[0].ToLower() == "sub")
+                    while (SubInvestigator[0].ToLower() == "sub i")
                     {
                         var SubInvRowData = new ExcelInputRow();
 
@@ -190,7 +199,7 @@ namespace DDAS.Services.Search
                 AddSponsorSpecificSites(form);
 
                 int InvId = 1;
-                if(InputRows[Index].Role.ToLower() == "principal")
+                if(InputRows[Index].Role.ToLower() == "pi")
                 {
                     var Investigator = new InvestigatorSearched();
                     Investigator.Id = InvId;
@@ -210,7 +219,7 @@ namespace DDAS.Services.Search
 
                     int tempIndex = Index + 1; //to add SI's
                     while(tempIndex < InputRows.Count && 
-                        InputRows[tempIndex].Role.ToLower() == "sub")
+                        InputRows[tempIndex].Role.ToLower() == "sub i")
                     {
                         var Inv = new InvestigatorSearched();
                         Inv.Id = InvId;
@@ -738,7 +747,7 @@ namespace DDAS.Services.Search
         //Patrick 27Nov2016 - check with Pradeep if alt code is available?
         private void AddMandatorySitesToComplianceForm(ComplianceForm compForm)
         {
-            var siteSources = _UOW.SiteSourceRepository.GetAll();
+            //var siteSources = _UOW.SiteSourceRepository.GetAll();
 
             int SrNo = 0;
 
@@ -761,7 +770,6 @@ namespace DDAS.Services.Search
                 SrNo += 1;
                 AddToComplianceFormSiteSource(compForm, site, SrNo);
             }
-
         }
 
         private void AddToComplianceFormSiteSource(ComplianceForm compForm, ComplianceFormBaseSite siteToAdd, int SrNo)
@@ -789,7 +797,8 @@ namespace DDAS.Services.Search
             }
             //else if(siteScan == null && sourceSite.ExtractionMode.ToLower() == "db")
             //{
-            ////    extraction error - siteScan is NULL when data extraction fails
+            ////    siteScan can be null when there's no repository
+            ////    created for a site due to extraction error
             ////    which has not been handled... pending
             //}
 
@@ -955,6 +964,8 @@ namespace DDAS.Services.Search
                 int ReviewCompletedSiteCount = 0;
                 int ExtractionPendingSiteCount = 0;
 
+                Investigator.ReviewCompletedOn = null;
+
                 //Pradeep 20Dec2016
                 Investigator.Sites_PartialMatchCount = 0;
                 Investigator.Sites_FullMatchCount = 0;
@@ -1034,9 +1045,14 @@ namespace DDAS.Services.Search
                     if (searchStatus.ReviewCompleted)
                     {
                         ReviewCompletedSiteCount += 1;
-                        Investigator.ReviewCompletedOn = DateTime.Now;
+                        //Investigator.ReviewCompletedOn = DateTime.Now;
                     }
                 }
+
+                if(sitesSearched.Where(x => x.ReviewCompleted).ToList().Count 
+                    == sitesSearchedCount)
+                    Investigator.ReviewCompletedOn = DateTime.Now;
+
                 Investigator.Sites_PartialMatchCount = PartialMatchSiteCount;
                 Investigator.Sites_FullMatchCount = FullMatchSiteCount;
                 Investigator.Sites_SingleMatchCount = SingleMatchSiteCount;
@@ -1760,7 +1776,6 @@ namespace DDAS.Services.Search
                     SearchStatus.PartialMatchCount += 1;
                 }
             }
-
         }
 
         #endregion
@@ -1783,6 +1798,8 @@ namespace DDAS.Services.Search
 
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active)
         {
+            AssignedTo = GetUserFullName(AssignedTo);
+
             var retList = new List<PrincipalInvestigator>();
             List<ComplianceForm> compForms;
             if (AssignedTo != null && AssignedTo.Length > 0)
@@ -1805,6 +1822,8 @@ namespace DDAS.Services.Search
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active=true, bool ReviewCompleted = false)
         {
             var retList = new List<PrincipalInvestigator>();
+
+            //var UserFullName = GetUserFullName(AssignedTo);
 
             retList = getPrincipalInvestigators(AssignedTo, Active);
 
@@ -2011,6 +2030,8 @@ namespace DDAS.Services.Search
             string FileExtension,
             out string FileName)
         {
+            //writer.AttachFile("", "");
+
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
@@ -2042,7 +2063,7 @@ namespace DDAS.Services.Search
             writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
             writer.AddFormHeaders(form.ProjectNumber, form.SponsorProtocolNumber,
-                form.Institute, form.Address);
+                form.Institute, (form.Address + " " + form.Country));
 
             //InvestigatorDetailsTable
             writer.WriteParagraph("Investigators:");
@@ -2062,6 +2083,7 @@ namespace DDAS.Services.Search
                 };
                 writer.FillUpTable(CellValues);
             }
+            //SaveChanges is required for PDF generation
             writer.SaveChanges();
 
             //SitesTable
@@ -2128,7 +2150,6 @@ namespace DDAS.Services.Search
                     RowIndex += 1;
                 }
             }
-
             writer.SaveChanges();
 
             //FindingsTable
@@ -2149,14 +2170,23 @@ namespace DDAS.Services.Search
                 {
                     string[] CellValues = new string[]
                     {
-                        finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
                         finding.SiteSourceId.ToString(),
+                        finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
                         DateOfInspection,
                         finding.Observation
                     };
                     writer.FillUpTable(CellValues);
                 }
             }
+
+            if (form.IssuesFoundInvestigatorCount == 0)
+            {
+                string[] CellValues = new string[]
+                {
+                    "", "", "", "No Findings"
+                };
+            }
+
             writer.SaveChanges();
 
             //SearchedByTable
@@ -2333,7 +2363,7 @@ namespace DDAS.Services.Search
         //    return form;
         //}
 
-        public List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetFDADebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2363,7 +2393,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(DebarList);
         }
 
-        public List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2377,6 +2407,10 @@ namespace DDAS.Services.Search
                     "Document with RecId: "
                     + SiteDataId +
                     " does not contain any records");
+
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+
+            AddRecordsToCIILSiteData(CIILSearchResult, CIILRecords);
 
             UpdateMatchStatus(CIILSearchResult.ClinicalInvestigatorInspectionList,
                 InvestigatorName);  //updates list with match count
@@ -2393,7 +2427,36 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ClinicalInvestigatorList);
         }
 
-        public List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
+        private void AddRecordsToCIILSiteData(
+            ClinicalInvestigatorInspectionSiteData SiteData,
+            List<ClinicalInvestigator> Records)
+        {
+            foreach(ClinicalInvestigator Record in Records)
+            {
+                var RecordToAdd = new ClinicalInvestigator();
+                RecordToAdd.Name = Record.Name;
+                RecordToAdd.Address = Record.Address;
+                RecordToAdd.City = Record.City;
+                RecordToAdd.ClassificationCode = Record.ClassificationCode;
+                RecordToAdd.Country = Record.Country;
+                RecordToAdd.DeficiencyCode = Record.DeficiencyCode;
+                RecordToAdd.IdNumber = Record.IdNumber;
+                RecordToAdd.InspectionDate = Record.InspectionDate;
+                RecordToAdd.InspectionType = Record.InspectionType;
+                RecordToAdd.State = Record.State;
+                RecordToAdd.Status = Record.Status;
+                RecordToAdd.Zip = Record.Zip;
+                RecordToAdd.Location = Record.Location;
+                RecordToAdd.Links = Record.Links;
+                RecordToAdd.MatchCount = Record.MatchCount;
+                RecordToAdd.RowNumber = Record.RowNumber;
+                RecordToAdd.RecordNumber = Record.RecordNumber;
+
+                SiteData.ClinicalInvestigatorInspectionList.Add(RecordToAdd);
+            }
+        }
+
+        private List<MatchedRecord> GetFDAWarningLettersPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -2417,6 +2480,10 @@ namespace DDAS.Services.Search
                     + SiteDataId +
                     " does not contain any records");
 
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+
+            AddRecordsToWarningLettersSiteData(FDAWarningSiteData, FDAWarningRecords);
+
             UpdateMatchStatus(FDAWarningSiteData.FDAWarningLetterList, NameToSearch);
 
             var FDAWarningLetterList =
@@ -2432,7 +2499,29 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(FDAWarningLetterList);
         }
 
-        public List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,
+        private void AddRecordsToWarningLettersSiteData(
+            FDAWarningLettersSiteData SiteData, List<FDAWarningLetter> Records)
+        {
+            foreach(FDAWarningLetter Record in Records)
+            {
+                var RecordToAdd = new FDAWarningLetter();
+                RecordToAdd.Company = Record.Company;
+                RecordToAdd.IssuingOffice = Record.IssuingOffice;
+                RecordToAdd.LetterIssued = Record.LetterIssued;
+                RecordToAdd.Links = Record.Links;
+                RecordToAdd.MatchCount = Record.MatchCount;
+                RecordToAdd.CloseoutDate = Record.CloseoutDate;
+                RecordToAdd.RecordNumber = Record.RecordNumber;
+                RecordToAdd.ResponseLetterPosted = Record.ResponseLetterPosted;
+                RecordToAdd.RowNumber = Record.RowNumber;
+                RecordToAdd.Status = Record.Status;
+                RecordToAdd.Subject = Record.Subject;
+
+                SiteData.FDAWarningLetterList.Add(RecordToAdd);
+            }
+        }
+
+        private List<MatchedRecord> GetERRProposalToDebarPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2460,7 +2549,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ERRList);
         }
 
-        public List<MatchedRecord> GetAdequateAssurancePageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetAdequateAssurancePageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2490,7 +2579,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(AdequateAssuranceList);
         }
 
-      public List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
+        private List<MatchedRecord> GetClinicalInvestigatorDisqualificationPageMatchedRecords(
             Guid? SiteDataId, string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -2531,7 +2620,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(SiteData);
         }
 
-        public List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetCBERClinicalInvestigatorPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2560,7 +2649,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ClinicalInvestigatorList);
         }
 
-        public List<MatchedRecord> GetExclusionDatabasePageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetExclusionDatabasePageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
@@ -2572,6 +2661,10 @@ namespace DDAS.Services.Search
                     "Document with RecId: "
                     + SiteDataId +
                     " does not contain any records");
+
+            var ExclusionRecords = _UOW.ExclusionDatabaseRepository.GetAll();
+
+            AddRecordsToExclusionSiteData(ExclusionSearchResult, ExclusionRecords);
 
             UpdateMatchStatus(
                 ExclusionSearchResult.ExclusionSearchList,
@@ -2588,7 +2681,31 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(ExclusionDBList);
         }
 
-        public List<MatchedRecord> GetPHSAdministrativeActionPageMatchedRecords(Guid? SiteDataId,
+        private void AddRecordsToExclusionSiteData(
+            ExclusionDatabaseSearchPageSiteData siteData,
+            List<ExclusionDatabaseSearchList> Records)
+        {
+            foreach(ExclusionDatabaseSearchList Record in Records)
+            {
+                var RecordToAdd = new ExclusionDatabaseSearchList();
+                RecordToAdd.FirstName = Record.FirstName;
+                RecordToAdd.LastName = Record.LastName;
+                RecordToAdd.MiddleName = Record.MiddleName;
+                RecordToAdd.ExclusionDate = Record.ExclusionDate;
+                RecordToAdd.ExclusionType = Record.ExclusionType;
+                RecordToAdd.RecordNumber = Record.RecordNumber;
+                RecordToAdd.Status = Record.Status;
+                RecordToAdd.General = Record.General;
+                RecordToAdd.Specialty = Record.Specialty;
+                RecordToAdd.Links = Record.Links;
+                RecordToAdd.RowNumber = Record.RowNumber;
+                RecordToAdd.MatchCount = Record.MatchCount;
+
+                siteData.ExclusionSearchList.Add(RecordToAdd);
+            }
+        }
+
+        private List<MatchedRecord> GetPHSAdministrativeActionPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
@@ -2616,7 +2733,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(PHSList);
         }
 
-        public List<MatchedRecord> GetCIAPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetCIAPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName,
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
@@ -2645,7 +2762,7 @@ namespace DDAS.Services.Search
             return ConvertToMatchedRecords(CIAList);
         }
 
-       public List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetSAMPageMatchedRecords(Guid? SiteDataId,
             string NameToSearch, 
             int ComponentsInIvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
@@ -2678,7 +2795,7 @@ namespace DDAS.Services.Search
             var DisqualificationSiteData =
                 siteData.SAMSiteData.Where(site => site.MatchCount > 0);
 
-            if (siteData == null)
+            if (DisqualificationSiteData == null)
                 return null;
 
             return ConvertToMatchedRecords(DisqualificationSiteData);
@@ -2714,7 +2831,7 @@ namespace DDAS.Services.Search
             }
         }
 
-        public List<MatchedRecord> GetSDNPageMatchedRecords(Guid? SiteDataId,
+        private List<MatchedRecord> GetSDNPageMatchedRecords(Guid? SiteDataId,
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
@@ -2726,6 +2843,10 @@ namespace DDAS.Services.Search
                     "Document with RecId: "
                     + SiteDataId +
                     " does not contain any records");
+
+            var SDNRecords = _UOW.SDNSiteDataRepository.GetAll();
+
+            AddRecordsToSDNSiteData(SDNSearchResult, SDNRecords);
 
             UpdateMatchStatus(
                 SDNSearchResult.SDNListSiteData,
@@ -2740,6 +2861,24 @@ namespace DDAS.Services.Search
                 return null;
 
             return ConvertToMatchedRecords(SDNList);
+        }
+
+        private void AddRecordsToSDNSiteData(
+            SpeciallyDesignatedNationalsListSiteData SiteData,
+            List<SDNList> Records)
+        {
+            foreach(SDNList Record in Records)
+            {
+                var RecordToAdd = new SDNList();
+                RecordToAdd.Name = Record.Name;
+                RecordToAdd.RecordNumber = Record.RecordNumber;
+                RecordToAdd.RowNumber = Record.RowNumber;
+                RecordToAdd.Status = Record.Status;
+                RecordToAdd.MatchCount = Record.MatchCount;
+                RecordToAdd.Links = Record.Links;
+
+                SiteData.SDNListSiteData.Add(Record);
+            }
         }
 
         #endregion
@@ -3136,7 +3275,9 @@ namespace DDAS.Services.Search
 
         private int GetExclusionSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            return -1;
+            return 0;
+            //return -1; //returning -1 will not mark the site as review completed automatically
+            
             //var SiteData =
             //    _UOW.ExclusionDatabaseSearchRepository
             //    .FindById(SiteDataId);
@@ -3226,7 +3367,9 @@ namespace DDAS.Services.Search
 
         private int GetSAMSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            return -1;
+            return 0;
+            //return -1; //returning -1 will not mark the site as review completed automatically
+            
             //var SiteData =
             //    _UOW.SystemForAwardManagementRepository
             //    .FindById(SiteDataId);
@@ -3261,7 +3404,9 @@ namespace DDAS.Services.Search
 
         private int GetSDNSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            return -1;
+            return 0;
+            //return -1; //returning -1 will not mark the site as review completed automatically
+            
             //var SiteData =
             //    _UOW.SpeciallyDesignatedNationalsRepository
             //    .FindById(SiteDataId);
@@ -3623,25 +3768,28 @@ namespace DDAS.Services.Search
 
                 foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
                 {
-                    foreach(SiteSource Site in form.SiteSources)
-                    {
-                        WorldCheckCompletedOn =
-                            form.SiteSources.Where(x => 
-                            x.SiteEnum == SiteEnum.WorldCheckPage)
-                            .FirstOrDefault().SiteSourceUpdatedOn;
+                    var WorldCheckSite =
+                        form.SiteSources.Where(x =>
+                        x.SiteEnum == SiteEnum.WorldCheckPage).FirstOrDefault();
 
-                        InstituteWorldCheckCompletedOn =
-                            form.SiteSources.Where(x =>
-                           x.SiteEnum == SiteEnum.WorldCheckPage &&
-                           x.SearchAppliesTo == SearchAppliesToEnum.Institute)
-                            .FirstOrDefault().SiteSourceUpdatedOn;
+                    if(WorldCheckSite != null)
+                        WorldCheckCompletedOn = WorldCheckSite.SiteSourceUpdatedOn;
 
-                        var DMCCheck = form.SiteSources.Where(x =>
-                        x.SiteEnum == SiteEnum.PfizerDMCChecksPage)
-                        .FirstOrDefault();
-                        if(DMCCheck != null)
-                            DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
-                    }
+                    var InstituteSite = form.SiteSources.Where(x =>
+                    x.SiteEnum == SiteEnum.WorldCheckPage &&
+                    x.SearchAppliesTo == SearchAppliesToEnum.Institute)
+                    .FirstOrDefault();
+
+                    if (InstituteSite != null)
+                        InstituteWorldCheckCompletedOn = 
+                            InstituteSite.SiteSourceUpdatedOn;
+
+                    var DMCCheck = form.SiteSources.Where(x =>
+                    x.SiteEnum == SiteEnum.PfizerDMCChecksPage)
+                    .FirstOrDefault();
+
+                    if(DMCCheck != null)
+                        DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
 
                     if (Investigator.ReviewCompletedOn != null)
                     {
@@ -3658,9 +3806,11 @@ namespace DDAS.Services.Search
                             WorldCheckCompletedOn,
                             1,
                             InstituteWorldCheckCompletedOn,
-                            InstituteWorldCheckCompletedOn == null ? "No" : "Yes",
+                            //InstituteWorldCheckCompletedOn == null ? "No" : "Yes",
+                            InstituteSite.IssuesIdentified ? "Yes" : "No",
                             DMCCheckCompletedOn,
-                            DMCCheckCompletedOn == null ? "No" : "Yes",
+                            //DMCCheckCompletedOn == null ? "No" : "Yes",
+                            DMCCheck.IssuesIdentified ? "Yes" : "No",
                             Row);
                         Row += 1;
                         WorldCheckCompletedOn = null;
@@ -3704,8 +3854,6 @@ namespace DDAS.Services.Search
             return sb.ToString();
         }
 
-      
-
         public string AddSpaceBetweenWords(string Name)
         {
             string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
@@ -3719,9 +3867,9 @@ namespace DDAS.Services.Search
         {
             var ValidationMessages = new List<string>();
 
-            if (Row == 2 && InputRow.Role.ToLower() != "principal")
+            if (Row == 2 && InputRow.Role.ToLower() != "pi")
                 ValidationMessages.Add(
-                    "RowNumber: 2 - First Investigator must be a Principal Investigator");
+                    "RowNumber: 2 - First Investigator must be a PI");
 
             var FullName = InputRow.FullName;
             
@@ -3775,10 +3923,10 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add("Row number: " + Row +
                     " - Display Name is mandatory");
 
-            if (InputRow.Role.ToLower() != "principal" &&
-                InputRow.Role.ToLower() != "sub")
+            if (InputRow.Role.ToLower() != "pi" &&
+                InputRow.Role.ToLower() != "sub i")
                 ValidationMessages.Add("Row number: " + Row +
-                    " - Role column should have either 'Principal' or 'Sub'");
+                    " - Role column should have either 'PI' or 'Sub I'");
 
             if(InputRow.Role.Length > 9)
                 ValidationMessages.Add("RowNumber: " + Row +
@@ -3834,153 +3982,6 @@ namespace DDAS.Services.Search
             //        " - Medical License Number should not be more than 20 characters");
             #endregion
 
-            return ValidationMessages;
-        }
-
-        public List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row)
-        {
-            var ValidationMessages = new List<string>();
-
-            string ValidationMessage = null;
-
-            var PrincipalInv = ExcelInputRow[0].Split(' ').Count();
-
-            if (Row == 2 && ExcelInputRow[6].ToLower() != "principal")
-            {
-                ValidationMessages.Add(
-                    "RowNumber: 1 - First Investigator must be a Principal Investigator");
-            }
-
-            if (ExcelInputRow[0].Trim() == "")
-            {
-                ValidationMessage = "RowNumber: " + Row + 
-                    " - Investigator Name is null!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if(ExcelInputRow[0].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[0]);
-            }
-            if(PrincipalInv <= 1)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Investigator Name must have atleast two components " +
-                    "separated with a space!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if(IsNumericOrHasSpecialCharacters(ExcelInputRow[0]))
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Investigator Name should not have any " +
-                    "numbers or special characters!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if(ExcelInputRow[0].Length > 100)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Investigator Name exceeds max character(100) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if(ExcelInputRow[1].ToLower() != "principal" &&
-                ExcelInputRow[1].ToLower() != "sub")
-            {
-                ValidationMessages.Add( "RowNumber: " + Row +
-                    " - Role column should have either 'Principal' or 'Sub'");
-            }
-            if (ExcelInputRow[1].Length > 10)
-            {
-                ValidationMessages.Add("RowNumber: " + Row +
-                    " - Role column exceeds max character(9) limit");
-            }
-            if (ExcelInputRow[2].Length > 100)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Investigator ML Number exceeds max character(100) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (ExcelInputRow[2].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[2]);
-            }
-            if (ExcelInputRow[3].Length > 100)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Investigator Qualification exceeds max character(100) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (ExcelInputRow[3].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[3]);
-            }
-            if (IsNumericOrHasSpecialCharacters(ExcelInputRow[3]))
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Qualification should not have any " +
-                    "numbers or special characters!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-
-            if (ExcelInputRow[1].ToLower() == "sub")
-                return ValidationMessages;
-
-            if (ExcelInputRow[4] == "")
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Project Number is mandatory!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if(ExcelInputRow[4].Length > 100)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Project Number exceeds max character(100) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if(HasSpecialCharacters(ExcelInputRow[4]))
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Project Number should not have any special characters!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (!IsValidProjectNumber(ExcelInputRow[4]))
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Change the project number format to - \"1234/5678\"";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (ExcelInputRow[4].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[4]);
-            }
-            if (ExcelInputRow[5].Length > 100)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Sponsor protocol number exceeds max character(100) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (ExcelInputRow[5].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[5]);
-            }
-            if (ExcelInputRow[6].Length > 100)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Institute Name exceeds max character(100) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (ExcelInputRow[6].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[6]);
-            }
-            if (ExcelInputRow[7].Length > 500)
-            {
-                ValidationMessage = "RowNumber: " + Row +
-                    " - Address exceeds max character(500) limit!";
-                ValidationMessages.Add(ValidationMessage);
-            }
-            if (ExcelInputRow[7].ToLower().Contains("cannot find column"))
-            {
-                ValidationMessages.Add(ExcelInputRow[7]);
-            }
             return ValidationMessages;
         }
 

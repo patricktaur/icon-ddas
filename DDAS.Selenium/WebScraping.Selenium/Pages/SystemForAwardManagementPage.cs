@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using DDAS.Models.Enums;
 using OpenQA.Selenium;
@@ -13,11 +14,16 @@ using System.IO;
 using System.IO.Compression;
 using Microsoft.VisualBasic.FileIO;
 using System.Threading;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 
 namespace WebScraping.Selenium.Pages
 {
     public partial class SystemForAwardManagementPage : BaseSearchPage
     {
+        [DllImport("urlmon.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern Int32 URLDownloadToFile(Int32 pCaller, string szURL, string szFileName, Int32 dwReserved, Int32 lpfnCB);
+
         private IUnitOfWork _UOW;
         private IConfig _config;
         private DateTime? _SiteLastUpdatedFromPage;
@@ -205,7 +211,6 @@ namespace WebScraping.Selenium.Pages
             string UnZipPath = _config.SAMFolder;
 
             WebClient myWebClient = new WebClient();
-
             string myStringWebResource = "https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_";
             string Year = DateTime.Now.ToString("yy");
 
@@ -222,17 +227,36 @@ namespace WebScraping.Selenium.Pages
             if (File.Exists(CSVFilePath))
                 File.Delete(CSVFilePath);
 
-            myWebClient.DownloadFile(myStringWebResource, fileName);
-
-            ZipFile.ExtractToDirectory(fileName, _config.SAMFolder);
+            try
+            {
+                myWebClient.DownloadFile(myStringWebResource, fileName);
+                //URLDownloadToFile(0, myStringWebResource, fileName, 0, 0);
+                ZipFile.ExtractToDirectory(fileName, _config.SAMFolder);
+            }
+            catch(WebException) //when using WebClient
+            {
+                throw new Exception("Could not download file. " +
+                    "Possible Http 404 File not found error on SAM site");
+                //throw new Exception("Could not extract file - " + e.ToString());
+            }
+            //When using URLDownloadToFile win32 API
+            //ZipFile.ExtractToDirectory throws up this exception
+            catch (InvalidDataException)
+            {
+                throw new Exception("Could not extract file. " +
+                    "Possible Http 404 File not found error on SAM site");
+            }
 
             _log.WriteLog("download complete");
 
             return CSVFilePath;
         }
-
+        
         private void LoadSAMDatafromCSV(string CSVFilePath)
         {
+            _log.WriteLog("Reading records from the file - " +
+                Path.GetFileName(CSVFilePath));
+
             TextFieldParser parser = new TextFieldParser(CSVFilePath);
 
             parser.HasFieldsEnclosedInQuotes = true;
@@ -287,15 +311,18 @@ namespace WebScraping.Selenium.Pages
 
         private void DelteAllSAMSiteDataRecords()
         {
-            var records = _UOW.SAMSiteDataRepository.GetAll();
-            //foreach (var rec in records)
-            //{
-            //    //_UOW.SAMSiteDataRepository.Remove(rec);
-            //    //_UOW.SAMSiteDataRepository.RemoveById(rec.RecId);
-            //    Guid RecId = rec.RecId.Value;
-            //    _UOW.SAMSiteDataRepository.DropRecord(RecId);
-            //}
-            _UOW.SAMSiteDataRepository.DropAll();
+            //var record = _UOW.SAMSiteDataRepository.GetAll().FirstOrDefault();
+            //_UOW.SAMSiteDataRepository.DropAll(record);
+
+            var Record = _UOW.SAMSiteDataRepository.GetAll()
+                .FirstOrDefault();
+
+            if (Record != null)
+            {
+                _log.WriteLog("Old records found.. Deleting old records...");
+                _UOW.SAMSiteDataRepository.DropAll(Record);
+                _log.WriteLog("Old records deleted...");
+            }
         }
 
         private bool IsPageLoaded()
@@ -336,7 +363,7 @@ namespace WebScraping.Selenium.Pages
                     DateTime.Now.ToString("dd MMM yyyy hh_mm")
                     + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
-
+                
                 _SAMSiteData.DataExtractionSucceeded = false;
                 _SAMSiteData.DataExtractionErrorMessage = e.ToString();
                 _SAMSiteData.ReferenceId = null;
@@ -456,14 +483,13 @@ namespace WebScraping.Selenium.Pages
 
                 DateTime RecentLastUpdatedDate;
 
-                DateTime.TryParseExact(PageLastUpdated, 
+                var IsDateParsed = DateTime.TryParseExact(PageLastUpdated, 
                     "yyyyMMdd", 
                     System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.None, 
                     out RecentLastUpdatedDate);
 
-                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
+                    _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
             }
             catch (Exception)
             {

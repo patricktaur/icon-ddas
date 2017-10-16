@@ -138,7 +138,7 @@ namespace WebScraping.Selenium.Pages
                 catch (Exception ex)
                 {
                     throw new Exception(
-                        "Could not find Table with search count. Error Message: " +
+                        "Could not find Table with records. Error Message: " +
                         ex.Message);
                 }
             }
@@ -168,7 +168,8 @@ namespace WebScraping.Selenium.Pages
                 catch (Exception ex)
                 {
                     throw new Exception(
-                        "Unable to find PageLastUpdatedTextElement. Error Message: " +
+                        "Unable to find PageLastUpdatedTextElement. " +
+                        "Site May have been updated. Error Message: " +
                         ex.Message);
                 }
             }

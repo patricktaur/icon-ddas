@@ -29,8 +29,7 @@ namespace WebScraping.Selenium.Pages
         private ILog _log;
 
         [DllImport("urlmon.dll")]
-        public static extern long URLDownloadToFile(long pCaller, string szURL,
-            string szFileName, long dwReserved, long lpfnCB);
+        static extern Int32 URLDownloadToFile(Int32 pCaller, string szURL, string szFileName, Int32 dwReserved, Int32 lpfnCB);
 
         public FDAWarningLettersPage(IWebDriver driver, IUnitOfWork uow,
             IConfig Config, ILog Log) : base(driver)
@@ -256,10 +255,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
-                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+            var IsDateParsed = DateTime.TryParseExact(
+                PageLastUpdated, 
+                "M'/'d'/'yyyy", 
+                null,
+                System.Globalization.DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    PageLastUpdated +
+                    "' to DateTime.");
         }
 
         private void AssignReferenceIdOfPreviousDocument()
@@ -273,6 +282,19 @@ namespace WebScraping.Selenium.Pages
         public override void SaveData()
         {
             _UOW.FDAWarningLettersRepository.Add(_FDAWarningSiteData);
+        }
+
+        private void DeleteAllFDAWarningRecords()
+        {
+            var Record = _UOW.FDAWarningRepository.GetAll()
+                .FirstOrDefault();
+
+            if (Record != null)
+            {
+                _log.WriteLog("Old records found.. Deleting old records...");
+                _UOW.FDAWarningRepository.DropAll(Record);
+                _log.WriteLog("Old records deleted...");
+            }
         }
 
         public override void LoadContent()
@@ -294,6 +316,7 @@ namespace WebScraping.Selenium.Pages
                 }
                 _FDAWarningSiteData.DataExtractionRequired = true;
                 var FilePath = DownloadFDAWarningLettersList();
+                DeleteAllFDAWarningRecords();
                 ReadFDAWarningLetters(FilePath);
                 _FDAWarningSiteData.DataExtractionSucceeded = true;
             }
@@ -331,20 +354,25 @@ namespace WebScraping.Selenium.Pages
             //if (File.Exists(fileName))
             //    File.Delete(fileName);
 
-            // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
 
             // Concatenate the domain with the Web resource filename.
-
             string myStringWebResource = 
                 "https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";
 
             _log.WriteLog(string.Format(
                 "Downloading File \"{0}\" from \"{1}\" .......\n\n", 
                 Path.GetFileName(fileName), myStringWebResource));
-            
-            // Download the Web resource and save it into the current filesystem folder.
-            myWebClient.DownloadFile(myStringWebResource, fileName);
+
+            try
+            {
+                // Download the Web resource and save it into the current filesystem folder.
+                myWebClient.DownloadFile(myStringWebResource, fileName);
+            }
+            catch (WebException Ex)
+            {
+                throw new Exception("file download failed - " + Ex.ToString());
+            }
 
             _log.WriteLog("download complete");
 
@@ -367,6 +395,9 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadFDAWarningLetters(string DownloadFolder)
         {
+            _log.WriteLog("Reading records from the file - " +
+                Path.GetFileName(DownloadFolder));
+
             TextFieldParser parser = new TextFieldParser(DownloadFolder);
             
             parser.HasFieldsEnclosedInQuotes = false;
@@ -412,6 +443,8 @@ namespace WebScraping.Selenium.Pages
                         }
 
                         var FDAWarningLetterRecord = new FDAWarningLetter();
+                        FDAWarningLetterRecord.RecId = Guid.NewGuid();
+                        FDAWarningLetterRecord.ParentId = _FDAWarningSiteData.RecId;
 
                         FDAWarningLetterRecord.Company = cols[0];
                         FDAWarningLetterRecord.LetterIssued = cols[1];
@@ -424,13 +457,16 @@ namespace WebScraping.Selenium.Pages
                         link.Title = "Company";
                         link.url = cols[6];
                         FDAWarningLetterRecord.Links.Add(link);
-                        _FDAWarningSiteData.FDAWarningLetterList.Add(
-                            FDAWarningLetterRecord);
+                        //_FDAWarningSiteData.FDAWarningLetterList.Add(
+                        //    FDAWarningLetterRecord);
+                        _UOW.FDAWarningRepository.Add(FDAWarningLetterRecord);
                     }
                 }
             }
+            //_log.WriteLog("Total records inserted - " +
+            //    (_FDAWarningSiteData.FDAWarningLetterList.Count() + 1));
             _log.WriteLog("Total records inserted - " +
-                (_FDAWarningSiteData.FDAWarningLetterList.Count() + 1));
+                (_UOW.FDAWarningRepository.GetAll().Count() + 1));
         }
 
         private Stream GenerateStreamFromString(string s)

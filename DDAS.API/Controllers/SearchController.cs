@@ -414,12 +414,10 @@ namespace DDAS.API.Controllers
             return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form));   
         }
 
-
         [Route("UpdateFindings")]
         [HttpPost]
         public IHttpActionResult UpdateFindings(UpdateFindigs updateFindings)
         {
-
             return Ok(_SearchService.UpdateFindings(updateFindings));
             //return Ok( _UOW.ComplianceFormRepository.UpdateFindings(updateFindings));
         }

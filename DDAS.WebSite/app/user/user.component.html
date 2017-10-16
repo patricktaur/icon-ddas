@@ -68,6 +68,11 @@
 									</div>
 								</td>
 							</tr>
+							<tr *ngIf="!passwordReset">
+								<td>
+								<div class="alert alert-danger">{{error}}</div>
+								</td>
+							</tr>							
 						</tbody>
 					</table>
 					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>

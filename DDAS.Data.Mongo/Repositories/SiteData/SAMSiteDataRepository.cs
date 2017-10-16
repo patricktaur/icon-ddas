@@ -21,15 +21,18 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         public bool DropRecord(object RecId)
         {
             var filter = Builders<SystemForAwardManagement>.Filter.Eq("_id", RecId);
-            var collection = _db.GetCollection<SystemForAwardManagement>(typeof(SystemForAwardManagement).Name);
+            var collection = _db.GetCollection<SystemForAwardManagement>
+                (typeof(SystemForAwardManagement).Name);
+
             var entity = collection.DeleteOne(filter);
             return true;
         }
 
         public bool DropAll()
         {
-            
-            var collection = _db.GetCollection<SystemForAwardManagement>(typeof(SystemForAwardManagement).Name);
+            var collection = _db.GetCollection<SystemForAwardManagement>
+                (typeof(SystemForAwardManagement).Name);
+
             var entity = collection.DeleteMany("{ }");
             return true;
         }

@@ -119,12 +119,16 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                    //IWebElement Element = driver.FindElement(By.Id("pagetools_right"));
+                    IWebElement Element = driver.FindElement(By.TagName("small"));
                     return Element;
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-                    throw new Exception("Could not find PageLastUpdatedElement");
+                    throw new Exception(
+                        "Could not find PageLastUpdatedElement. " +
+                        "Site May have been updated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

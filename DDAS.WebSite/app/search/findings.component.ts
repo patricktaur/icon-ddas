@@ -303,9 +303,9 @@ export class FindingsComponent implements OnInit {
                     finding.InvestigatorSearchedId = this.InvestigatorId;
                     finding.InvestigatorName = this.Investigator.Name;
                     finding.SiteSourceId =this.Site.Id  // this.Site.DisplayPosition;
-
-                    finding.SiteId = this.Site.SiteId
-                    finding.SiteEnum = this.Site.SiteEnum // this.SiteEnum;
+                    finding.SiteDisplayPosition = this.Site.DisplayPosition;
+                    finding.SiteId = this.Site.SiteId;
+                    finding.SiteEnum = this.Site.SiteEnum; // this.SiteEnum;
                     
                     finding.Selected = true;
                     finding.IsAnIssue = true;

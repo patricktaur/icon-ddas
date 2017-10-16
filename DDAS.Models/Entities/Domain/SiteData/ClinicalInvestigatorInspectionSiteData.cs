@@ -18,6 +18,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class ClinicalInvestigator : SiteDataItemBase
     {
+        public Guid? RecId { get; set; }
+        public Guid? ParentId { get; set; }
+
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string IdNumber { get; set; }
@@ -64,8 +67,12 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (InspectionDate == "" || InspectionDate == null)
                     return null;
 
+                string[] Formats =
+                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
+                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy" };
+
                 return DateTime.ParseExact(InspectionDate.Trim(),
-                    "M'/'d'/'yyyy", null,
+                    Formats, null,
                     System.Globalization.DateTimeStyles.None);
             }
         }

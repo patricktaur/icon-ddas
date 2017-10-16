@@ -1,6 +1,55 @@
+25Sept2017
+1. ReviewCompletedOn for each investigator was not set properly. Fixed
+2. Bug - Date format for the field DateOfInspection was not consistant in CIA site, fixed
+3. Output file generation - Institute Compliance issue (yes/no)
+   Currently Institute Compliance Issue was set to Yes/No by checking 
+   InstituteWorldCheckCompletedOn date, which should not be the case. It should be set by checking
+   IssuesIdentified for InstituteWorldCheck site. 
+   Similar check should be carried out to add Compliance Issue for any site in the output file.
+
+23Sept2017
+1. SiteDisplayPosition was not matching with the order of the sites added to the compliance form.
+   On the angular side updated the findings.component.ts to set SiteDisplayPosition correctly
+2. Error while downloading the output file when Insitute site was not added to default sites.
+   It was handled by updating output file generation code in complianceformservice.cs
+
+22Sept2017
+1. DDAS.DataExtractor.Exe which was triggered from a task scheduler on ICON test server
+   was throwing an 'Argument Null' exception.
+   Cause -> Extractor was not able to read its config file
+   Fix -> Task scheduler has on option under the 'Actions' tab to provide a folder path
+   to start the execution of the given file. Providing the path where 
+   extractor exe was saved solved the problem
+
+21Sept2017
+1. Files were not being downloaded on the ICON test server during extraction process.
+   The below setting worked -
+   Go to IE --> Internet Options --> Connections tab --> LAN Settings --> Uncheck
+   'Automatically detect settings'
+
+20Sept2017
+1. Call with ICON tech team to resolve access denied error encountered on the server
+   for a few sites
+2. Tried to make the embedding object into the word document work with different
+   approaches. Not able to make it work
+
+19Sept2017
+1. Unable to access sites - SAM, SDN and Exclusion database on the ICON test server
+2. Screenshot is not saved/captured while reading PageLastUpdated element.
+3. Some sites may have a Pop-up or alert window when accessed. In such cases,
+   window is not captured and PageElement not found exception is thrown
+
+18Sept2017
+1. update DB log to provide boolean value for each site on the extraction status
+3. SAM site was not updated as 'DB' site - updated
+
+15Sept2017
+1. Archive extracted zip files for SAM site.
+2. Explore 'Sounds like' for database search
+
 9May2017
 Visual Studio Pulish notes:
-1. Folders and files to be created on IIS server - Mark files to be moved to IIS 
+1. Folders and files to be created on IIS server - Mark files to be moved to IIS
 
 	Build Action: Content
 	Copy to Output Directory: Do not copy
@@ -13,7 +62,6 @@ Visual Studio Pulish notes:
         <DestinationRelativePath>%(RecursiveDir)%(Filename)%(Extension)</DestinationRelativePath>
       </FilesForPackagingFromProject>
     </ItemGroup>
-
   </Target> 
 1.
 uninstall-package Microsoft.CodeDom.Providers.DotNetCompilerPlatform  

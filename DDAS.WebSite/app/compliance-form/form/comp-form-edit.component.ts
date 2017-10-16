@@ -320,7 +320,7 @@ gotoSiteDetails(SiteSourceId: number){
         this.pageChanged = true;
     }    
     get PrincipalInvestigatorName() {
-        let p = this.CompForm.InvestigatorDetails.find(x => x.Role == "Principal");
+        let p = this.CompForm.InvestigatorDetails.find(x => x.Role == "PI");
         if (p != null) {
             return p.Name;
         }
@@ -418,10 +418,10 @@ gotoSiteDetails(SiteSourceId: number){
         let index: number = 0
         for (let item of this.Investigators) {
             if (index == 0) {
-                item.Role = "Principal"
+                item.Role = "PI"
             }
             else {
-                item.Role = "Sub"
+                item.Role = "Sub I"
             }
             index += 1;
         }

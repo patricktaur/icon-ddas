@@ -18,6 +18,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
     public class SDNList : SiteDataItemBase
     {
+        public Guid? RecId { get; set; }
+        public Guid? ParentId { get; set; }
+
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         //public int RecordNumber { get; set; }

@@ -58,13 +58,13 @@ namespace DDAS.Data.Mongo.Maps
                 u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
-            BsonClassMap.RegisterClassMap<Log>(map =>
-            {
-                map.AutoMap();
-                map.SetIgnoreExtraElements(true);
-                map.MapIdProperty(u =>
-                u.RecId).SetIdGenerator(GuidGenerator.Instance);
-            });
+            //BsonClassMap.RegisterClassMap<Log>(map =>
+            //{
+            //    map.AutoMap();
+            //    map.SetIgnoreExtraElements(true);
+            //    map.MapIdProperty(u =>
+            //    u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            //});
 
             #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
@@ -130,30 +130,32 @@ namespace DDAS.Data.Mongo.Maps
                 });
             });
 
-            BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>
-                (map =>
+            BsonClassMap.RegisterClassMap<ClinicalInvestigatorInspectionSiteData>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-                BsonClassMap.RegisterClassMap<ClinicalInvestigator>(child =>
-                {
-                    child.AutoMap();
-                    child.SetIgnoreExtraElements(true);
-                });
             });
 
-            BsonClassMap.RegisterClassMap<FDAWarningLettersSiteData>
-                (map =>
+            BsonClassMap.RegisterClassMap<ClinicalInvestigator>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-                BsonClassMap.RegisterClassMap<FDAWarningLetter>(child =>
-                {
-                    child.AutoMap();
-                    child.SetIgnoreExtraElements(true);
-                });
+            });
+
+            BsonClassMap.RegisterClassMap<FDAWarningLettersSiteData>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<FDAWarningLetter>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<AdequateAssuranceListSiteData>(map =>
@@ -169,8 +171,7 @@ namespace DDAS.Data.Mongo.Maps
 
             });
 
-            BsonClassMap.RegisterClassMap<ClinicalInvestigatorDisqualificationSiteData>
-                (map =>
+            BsonClassMap.RegisterClassMap<ClinicalInvestigatorDisqualificationSiteData>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
@@ -223,11 +224,13 @@ namespace DDAS.Data.Mongo.Maps
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-                BsonClassMap.RegisterClassMap<ExclusionDatabaseSearchList>(child =>
-                {
-                    child.AutoMap();
-                    child.SetIgnoreExtraElements(true);
-                });
+            });
+
+            BsonClassMap.RegisterClassMap<ExclusionDatabaseSearchList>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
             BsonClassMap.RegisterClassMap<CorporateIntegrityAgreementListSiteData>(map =>
@@ -242,39 +245,47 @@ namespace DDAS.Data.Mongo.Maps
                 });
             });
 
-            BsonClassMap.RegisterClassMap<SystemForAwardManagementPageSiteData>
-            (map =>
-            {
-                map.AutoMap();
-                map.SetIgnoreExtraElements(true);
-                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-                BsonClassMap.RegisterClassMap<SystemForAwardManagement>(child =>
-                {
-                    child.AutoMap();
-                    child.SetIgnoreExtraElements(true);
-                });
-            });
-
-            BsonClassMap.RegisterClassMap<SAMSiteData>
-            (map =>
+            BsonClassMap.RegisterClassMap<SystemForAwardManagementPageSiteData>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
-            BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>
-                (map =>
+            BsonClassMap.RegisterClassMap<SystemForAwardManagement>(map =>
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
                 map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
-                BsonClassMap.RegisterClassMap<SDNList>(child =>
-                {
-                    child.AutoMap();
-                    child.SetIgnoreExtraElements(true);
-                });
             });
+
+            BsonClassMap.RegisterClassMap<SAMSiteData>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<SpeciallyDesignatedNationalsListSiteData>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                //BsonClassMap.RegisterClassMap<SDNList>(child =>
+                //{
+                //    child.AutoMap();
+                //    child.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                //    child.SetIgnoreExtraElements(true);
+                //});
+            });
+
+            BsonClassMap.RegisterClassMap<SDNList>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             #endregion
 
             #region Identity

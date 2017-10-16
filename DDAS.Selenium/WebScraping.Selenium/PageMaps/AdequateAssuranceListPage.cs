@@ -31,7 +31,9 @@ namespace WebScraping.Selenium.Pages
                 }
                 catch(Exception)
                 {
-                    throw new Exception("Unable to find PageLastUpdatedElement");
+                    throw new Exception(
+                        "Unable to find PageLastUpdatedElement. " + 
+                        "Site May have been updated");
                 }
             }
         }

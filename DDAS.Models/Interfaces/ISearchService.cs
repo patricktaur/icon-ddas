@@ -44,7 +44,7 @@ namespace DDAS.Models.Interfaces
 
         MemoryStream GenerateComplianceForm(Guid? ComplianceFormId);
 
-        List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row);
+        //List<string> ValidateExcelInputs(List<string> ExcelInputRow, int Row);
         ExcelInput ReadDataFromExcelFile(string FilePathWithGUID);
         List<ComplianceForm> ReadUploadedFileData(ExcelInput ExcelInputData, 
             string UserName, string FilePathWithGUID, string UploadedFileName);

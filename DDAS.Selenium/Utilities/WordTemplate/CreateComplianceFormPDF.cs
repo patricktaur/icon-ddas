@@ -7,7 +7,7 @@ namespace Utilities.WordTemplate
 {
     public class CreateComplianceFormPDF : IWriter
     {
-        private FileStream _stream;
+        //private FileStream _stream;
         private Document _document;
         private PdfWriter _writer;
         private PdfPTable _table;

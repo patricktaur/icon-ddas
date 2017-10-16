@@ -414,10 +414,10 @@ namespace WebScraping.Selenium.SearchEngine
             PhantomJSDriver
         };
 
-        ~SearchEngine()
-        {
-            Dispose();
-        }
+        //~SearchEngine()
+        //{
+        //    Dispose();
+        //}
 
         public void Dispose()
         {
@@ -477,6 +477,7 @@ namespace WebScraping.Selenium.SearchEngine
                 SiteData.ReferenceId = GetRecIdOfPreviousDocument(siteEnum);
                 log.WriteLog(DateTime.Now.ToString(), siteEnum + ": Source data has not been updated. Extraction is not required");
             }
+            log.WriteLog("SiteLastUpdatedOn : " + SiteData.SiteLastUpdatedOn);
             SaveData();
             log.WriteLog(DateTime.Now.ToString(), "Data Saved");
         }

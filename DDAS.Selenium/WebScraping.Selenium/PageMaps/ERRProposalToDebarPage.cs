@@ -10,7 +10,6 @@ namespace WebScraping.Selenium.Pages
 {
     public partial class ERRProposalToDebarPage : BaseSearchPage //BaseClasses.BasePage
     {
-
         public IWebElement ProposalToDebarTable
         {
             get
@@ -30,9 +29,11 @@ namespace WebScraping.Selenium.Pages
                     IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
                     return Elements[0];
                 }
-                catch(Exception)
+                catch(Exception ex)
                 {
-                    throw new Exception("Unable to find PageLastUpdatedElement");
+                    throw new Exception("Unable to find PageLastUpdatedElement. " +
+                        "Site may have been udpated. Error Message: " +
+                        ex.Message);
                 }
             }
         }

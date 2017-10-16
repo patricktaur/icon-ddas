@@ -49,6 +49,7 @@ namespace DDAS.Data.Mongo
         {
             var log = new Log();
             log.CreatedBy = _LogStartedBy;
+            log.CreatedOn = DateTime.Now;
             log.Caption = caption;
             log.Message = message;
             _UOW.LogRepository.Add(log);

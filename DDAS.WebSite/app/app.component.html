@@ -68,16 +68,16 @@
 								</a>
 								<div class="collapse" id="appadminMenu" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
+										<li class="active" *ngIf="authService.isAppAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
 										<!--<li class="active"> <a routerLink="/app-admin-dashboard" routerLinkActive="active">App Admin Dashboard</a></li>-->
 
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
+										<li class="active" *ngIf="authService.isAppAdmin"> <a routerLink="/error-images" routerLinkActive="active">Error Images</a></li>
 
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction History</a></li>
+										<li class="active" *ngIf="authService.isAppAdmin"> <a routerLink="/data-extraction" routerLinkActive="active">Data Extraction History</a></li>
 
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-uploads" routerLinkActive="active">Manange Uploads</a></li>
+										<li class="active" *ngIf="authService.isAppAdmin"> <a routerLink="/manage-uploads" routerLinkActive="active">Manange Uploads</a></li>
 
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/cber-investigate" routerLinkActive="active">CBER Data</a></li>
+										<li class="active" *ngIf="authService.isAppAdmin"> <a routerLink="/cber-investigate" routerLinkActive="active">CBER Data</a></li>
 									</ul>
 								</div>
 							</li>

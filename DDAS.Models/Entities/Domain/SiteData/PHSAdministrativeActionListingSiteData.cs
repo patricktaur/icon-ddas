@@ -57,7 +57,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override DateTime? DateOfInspection {
             get {
-                return null;
+                return null; //have to read date from a sentence
                 //No date field available
                 //return DateTime.ParseExact(,
                 //    "M'/'d'/'yyyy", null,

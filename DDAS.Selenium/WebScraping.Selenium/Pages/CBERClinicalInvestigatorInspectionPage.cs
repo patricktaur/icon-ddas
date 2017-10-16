@@ -243,43 +243,20 @@ namespace WebScraping.Selenium.Pages
 
             DateTime RecentLastUpdatedDate;
 
-            DateTime.TryParseExact(PageLastUpdated, "M'/'d'/'yyyy", null,
-                System.Globalization.DateTimeStyles.None, out RecentLastUpdatedDate);
+            var IsDateParsed = DateTime.TryParseExact(
+                PageLastUpdated, 
+                "M'/'d'/'yyyy", 
+                null,
+                System.Globalization.DateTimeStyles.None, 
+                out RecentLastUpdatedDate);
 
-            _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
-
-            //var ExistingCBERSiteData = 
-            //    _UOW.CBERClinicalInvestigatorRepository.GetAll();
-
-            //CBERClinicalInvestigatorInspectionSiteData CBERSiteData = null;
-
-            //if (ExistingCBERSiteData.Count == 0)
-            //{
-            //    _CBERSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //    _CBERSiteData.DataExtractionRequired = true;
-            //}
-            //else
-            //{
-            //    CBERSiteData = ExistingCBERSiteData.OrderByDescending(
-            //        x => x.CreatedOn).First();
-
-            //    if (RecentLastUpdatedDate > CBERSiteData.SiteLastUpdatedOn)
-            //    {
-            //        _CBERSiteData.SiteLastUpdatedOn = RecentLastUpdatedDate;
-            //        _CBERSiteData.DataExtractionRequired = true;
-            //    }
-            //    else
-            //    {
-            //        _CBERSiteData.SiteLastUpdatedOn =
-            //            CBERSiteData.SiteLastUpdatedOn;
-            //        _CBERSiteData.DataExtractionRequired = false;
-            //    }
-            //}
-            //if (!_CBERSiteData.DataExtractionRequired)
-            //    _CBERSiteData.ReferenceId = CBERSiteData.RecId;
-            //else
-            //    _CBERSiteData.ReferenceId =
-            //        _CBERSiteData.RecId;
+            if(IsDateParsed)
+                _SiteLastUpdatedFromPage = RecentLastUpdatedDate;
+            else
+                throw new Exception(
+                    "Could not parse Page last updated string - '" +
+                    PageLastUpdated +
+                    "' to DateTime.");
         }
 
         private void AssignReferenceIdOfPreviousDocument()
