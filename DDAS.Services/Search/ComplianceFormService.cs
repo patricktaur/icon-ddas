@@ -1901,7 +1901,7 @@ namespace DDAS.Services.Search
             var Filter = _UOW.ComplianceFormRepository.GetAll();
 
             if (Filter.Count == 0)
-                throw new Exception("No compliance forms found!");
+                return null;
 
             var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
 
@@ -2006,7 +2006,7 @@ namespace DDAS.Services.Search
             var Filter = _UOW.ComplianceFormRepository.GetAll();
 
             if (Filter.Count == 0)
-                throw new Exception("No compliance forms found!");
+                return null;
 
             var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
 
