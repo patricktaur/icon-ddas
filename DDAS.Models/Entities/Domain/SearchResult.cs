@@ -1203,8 +1203,52 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
+        public ReportPeriodEnum ReportPeriodEnum { get; set; }
     }
     
+    public class InvestigationsReport
+    {
+        public List<ReportByUser> ReportByUsers { get; set; }
+    }
+
+    public class ReportByUser
+    {
+        public string UserName { get; set; }
+        public List<ReportItem> ReportItems { get; set; } 
+            = new List<ReportItem>();
+    }
+
+    public class ReportItem
+    {
+        public string ReportPeriod { get; set; }
+        public decimal Value { get; set; }
+    }
+
+    public static class DateTimeExtensions
+    {
+        public static DateTime LastDayOfMonth(this DateTime Value)
+        {
+            return new DateTime(
+                Value.Year,
+                Value.Month,
+                DateTime.DaysInMonth(Value.Year, Value.Month));
+        }
+
+        public static DateTime FirstDayOfMonth(this DateTime Value)
+        {
+            return new DateTime(Value.Year, Value.Month, 1);
+        }
+
+        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = dt.DayOfWeek - startOfWeek;
+            if (diff < 0)
+            {
+                diff += 7;
+            }
+            return dt.AddDays(-1 * diff).Date;
+        }
+    }
     #endregion
 
     public class ValidationError

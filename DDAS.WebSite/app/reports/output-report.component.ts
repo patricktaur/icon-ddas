@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { ConfigService } from '../shared/utils/config.service';
 import { ReportService } from './report-service';
 import { CompFormFilter } from '../search/search.classes';
-import { ReportFilters } from './report.classes';
+import { ReportFilters, InvestigationsReport } from './report.classes';
 import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-date-picker/interfaces';
 
 @Component({
@@ -31,7 +31,8 @@ export class OutputReportComponent implements OnChanges {
 
     public ComplianceFormFilter: CompFormFilter;
     public ReportFilter: ReportFilters
-    public InvestigationsCompletedReport: any[];
+    public InvestigationsCompletedReport: InvestigationsReport;
+    public reportByUser: any;
     public pageNumber: number;
 
     constructor(
@@ -126,10 +127,11 @@ export class OutputReportComponent implements OnChanges {
 
         this.ReportFilter.FromDate = this.ComplianceFormFilter.SearchedOnFrom;
         this.ReportFilter.ToDate = this.ComplianceFormFilter.SearchedOnTo;
+        this.ReportFilter.ReportPeriodEnum = 2;
         this.ReportFilter.AssignedTo = "user1";
         console.log('ReportFilter - ', this.ReportFilter);
         this.service.getInvestigationsCompletedReport(this.ReportFilter)
-        .subscribe((item: any[]) => {
+        .subscribe((item: InvestigationsReport) => {
             this.InvestigationsCompletedReport = item;
         },
         error => {
@@ -137,6 +139,23 @@ export class OutputReportComponent implements OnChanges {
         });
     }
 
-    get diagnostic() { return JSON.stringify(null); }
+    get userName(){
+        return this.InvestigationsCompletedReport.ReportByUsers;
+    }
+
+    get headers(){
+        if(this.InvestigationsCompletedReport != null){
+            return this.recordsByUserName[0].ReportItems;
+        }
+    }
+
+    get recordsByUserName(){
+        if(this.InvestigationsCompletedReport != null)
+            return this.InvestigationsCompletedReport.ReportByUsers;
+        else
+            return null;
+    }
+    
+    get diagnostic() { return JSON.stringify(this.InvestigationsCompletedReport); }
 
 }

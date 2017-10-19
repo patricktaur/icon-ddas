@@ -10,10 +10,6 @@ namespace DDAS.Models.Interfaces
 {
     public interface IReport
     {
-        List<ReportViewModel> 
-            GetInvestigationsCompletedReport(ReportFilters Filters);
-
-        List<ReportViewModel> GetInvestigationsCompletedReport(
-            DateTime FromDate, DateTime ToDate);
+        InvestigationsReport GetInvestigationsReport(ReportFilters Filters);
     }
 }
