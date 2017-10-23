@@ -23,37 +23,25 @@ namespace DDAS.Services.Reports
         {
             var InvestigationsReport = new InvestigationsReport();
 
-            var AdjustedStartDate = DateTimeExtensions.FirstDayOfMonth(Filters.FromDate.Date);
-            var AdjustedEndDate = DateTimeExtensions.LastDayOfMonth(Filters.ToDate.Date);
+            //var AdjustedStartDate = DateTimeExtensions.FirstDayOfMonth(Filters.FromDate.Date);
+            //var AdjustedEndDate = DateTimeExtensions.LastDayOfMonth(Filters.ToDate.Date);
 
-            var AdjustedStartOfWeek = 
-                DateTimeExtensions.StartOfWeek(Filters.FromDate.Date, DayOfWeek.Monday);
+            var AdjustedStartDate = AdjustStartDate(Filters.FromDate.Date,
+                Filters.ReportPeriodEnum, 0);
 
-            var AdjustedEndOfWeek = 
-                DateTimeExtensions.StartOfWeek(Filters.ToDate.Date, DayOfWeek.Monday);
-            AdjustedEndOfWeek = AdjustedEndOfWeek.Date.AddDays(7);
+            var AdjustedEndDate = AdjustEndDate(Filters.FromDate.Date, 
+                Filters.ToDate.Date, 
+                Filters.ReportPeriodEnum, 0);
 
-            int EndPeriod = 0;
+            //var AdjustedStartOfWeek = 
+            //    DateTimeExtensions.StartOfWeek(Filters.FromDate.Date, DayOfWeek.Monday);
 
-            if (Filters.ReportPeriodEnum == ReportPeriodEnum.Day)
-                EndPeriod = (int)(Filters.ToDate.Date - Filters.FromDate.Date).TotalDays;
-            else if (Filters.ReportPeriodEnum == ReportPeriodEnum.Week)
-            {
-                EndPeriod = (int)(AdjustedEndOfWeek.Date - AdjustedStartOfWeek.Date).TotalDays / 7;
-            }
-            else if (Filters.ReportPeriodEnum == ReportPeriodEnum.Month)
-            {
-                EndPeriod = (AdjustedEndDate.Year * 12 + AdjustedEndDate.Month) -
-                    (AdjustedStartDate.Year * 12 + AdjustedStartDate.Month);
-            }
-            else if (Filters.ReportPeriodEnum == ReportPeriodEnum.Quarter)
-            {
+            //var AdjustedEndOfWeek = 
+            //    DateTimeExtensions.StartOfWeek(Filters.ToDate.Date, DayOfWeek.Monday);
+            //AdjustedEndOfWeek = AdjustedEndOfWeek.Date.AddDays(7);
 
-            }
-            else if (Filters.ReportPeriodEnum == ReportPeriodEnum.Year)
-            {
-                EndPeriod = AdjustedEndDate.Year - AdjustedStartDate.Year;
-            }
+            int EndPeriod = GetEndPeriod(AdjustedStartDate, AdjustedEndDate,
+                Filters.ReportPeriodEnum);
 
             InvestigationsReport.ReportByUsers = FillUpUserNames();
 
@@ -64,24 +52,25 @@ namespace DDAS.Services.Reports
             
             foreach(ReportByUser Report in InvestigationsReport.ReportByUsers)
             {
-                for(int IncrementBy = 0; IncrementBy < EndPeriod; IncrementBy++)
+                for(int IncrementPeriodBy = 0; IncrementPeriodBy < EndPeriod; IncrementPeriodBy++)
                 {
-                    string Period = "";
                     var reportItem = new ReportItem();
 
-                    AdjustedStartDate = AdjustStartDate(
+                    var CurrentStartDate = AdjustStartDate(
                         Filters.FromDate, Filters.ReportPeriodEnum, 
-                        IncrementBy, out Period);
+                        IncrementPeriodBy);
 
-                     AdjustedEndDate = AdjustEndDate(
+                    var CurrentEndDate = AdjustEndDate(
                         Filters.FromDate, Filters.ToDate, 
-                        Filters.ReportPeriodEnum, IncrementBy);
+                        Filters.ReportPeriodEnum, IncrementPeriodBy);
 
                     reportItem.Value = GetInvestigationsReport(
-                        AdjustedStartDate, AdjustedEndDate,
+                        CurrentStartDate, CurrentEndDate,
                         ComplianceForms, Report.UserName);
 
-                    reportItem.ReportPeriod = Period;
+                    reportItem.ReportPeriod = GetCurrentPeriod(
+                        AdjustedStartDate, AdjustedEndDate, 
+                        Filters.ReportPeriodEnum);
 
                     Report.ReportItems.Add(reportItem);
                 }
@@ -90,30 +79,26 @@ namespace DDAS.Services.Reports
         }
 
         private DateTime AdjustStartDate(DateTime StartDate, ReportPeriodEnum Enum, 
-            int IncrementBy, out string Period)
+            int IncrementBy)
         {
             var tempStartDate = StartDate.Date;
-            Period = "";
             int Count = 0;
             switch (Enum)
             {
                 case ReportPeriodEnum.Day:
                     Count = IncrementBy;
                     tempStartDate = tempStartDate.AddDays(Count);
-                    Period = tempStartDate.Day.ToString();
                     break;
                 case ReportPeriodEnum.Week:
                     Count = IncrementBy * 7;
                     tempStartDate = tempStartDate.AddDays(Count);
                     
                     tempStartDate = DateTimeExtensions.StartOfWeek(tempStartDate, DayOfWeek.Monday);
-                    Period = "week " + (IncrementBy + 1).ToString();
                     break;
                 case ReportPeriodEnum.Month:
                     Count = IncrementBy;
                     tempStartDate = tempStartDate.AddMonths(Count);
                     tempStartDate = DateTimeExtensions.FirstDayOfMonth(tempStartDate);
-                    Period = tempStartDate.Month.ToString("MMM");
                     break;
                 case ReportPeriodEnum.Quarter:
                     tempStartDate = DateTimeExtensions.FirstDayOfMonth(tempStartDate);
@@ -121,7 +106,6 @@ namespace DDAS.Services.Reports
                 case ReportPeriodEnum.Year:
                     Count = IncrementBy;
                     tempStartDate = DateTimeExtensions.FirstDayOfMonth(StartDate);
-                    Period = tempStartDate.Year.ToString();
                     break;
                 default: throw new Exception("Invalid ReportPeriodEnum");
             }
@@ -131,17 +115,18 @@ namespace DDAS.Services.Reports
         private DateTime AdjustEndDate(DateTime StartDate, DateTime EndDate, 
             ReportPeriodEnum Enum, int IncrementBy)
         {
-            var tempEndDate = EndDate.Date;
+            var tempEndDate = StartDate.Date;
+            //var tempEndDate = EndDate.Date;
             int Count = 0;
             switch (Enum)
             {
                 case ReportPeriodEnum.Day:
                     Count = IncrementBy + 1;
-                    tempEndDate = StartDate.AddDays(Count).Date;
+                    tempEndDate = tempEndDate.AddDays(Count);
                     break;
                 case ReportPeriodEnum.Week:
                     Count = (IncrementBy + 1) * 7;
-                    tempEndDate = DateTimeExtensions.StartOfWeek(StartDate.Date, DayOfWeek.Monday);
+                    tempEndDate = DateTimeExtensions.StartOfWeek(tempEndDate, DayOfWeek.Monday);
                     tempEndDate = tempEndDate.Date.AddDays(Count).AddSeconds(-1);
                     break;
                 case ReportPeriodEnum.Month:
@@ -159,6 +144,63 @@ namespace DDAS.Services.Reports
                 default: throw new Exception("Invalid ReportPeriodEnum");
             }
             return tempEndDate.Date;
+        }
+
+        private string GetCurrentPeriod(DateTime StartDate, DateTime EndDate,
+            ReportPeriodEnum Enum)
+        {
+            var Period = "";
+            switch(Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    Period = StartDate.Day.ToString();
+                    break;
+                case ReportPeriodEnum.Week:
+                    Period = StartDate.Day.ToString() + " " + StartDate.ToString("MMM") +
+                        "-" + 
+                        EndDate.Day.ToString() + " " + EndDate.ToString("MMM");
+                    break;
+                case ReportPeriodEnum.Month:
+                    Period = StartDate.ToString("MMM");
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    Period = StartDate.ToString("MMM");
+                    break;
+                case ReportPeriodEnum.Year:
+                    Period = StartDate.Year.ToString();
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return Period;
+        }
+
+        private int GetEndPeriod(DateTime StartDate, DateTime EndDate,
+            ReportPeriodEnum Enum)
+        {
+            int EndPeriod = 0;
+            switch (Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    EndPeriod = (int)(EndDate.Date - StartDate.Date).TotalDays;
+                    break;
+                case ReportPeriodEnum.Week:
+                    EndPeriod = (int)(EndDate.Date - StartDate.Date).TotalDays / 7;
+                    break;
+                case ReportPeriodEnum.Month:
+                    EndPeriod = (EndDate.Year * 12 + EndDate.Month) -
+                        (StartDate.Year * 12 + StartDate.Month);
+
+                    EndPeriod += 1; //because month is zero indexed                    
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    break;
+                case ReportPeriodEnum.Year:
+                    EndPeriod = EndDate.Year - StartDate.Year;
+                    EndPeriod += 1;
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return EndPeriod;
         }
 
         private int GetInvestigationsReport(DateTime StartDate, DateTime EndDate,

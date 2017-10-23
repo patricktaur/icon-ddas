@@ -3,6 +3,7 @@ import { Routes, RouterModule }  from '@angular/router';
 import { AuthGuard }             from '../auth/auth-guard.service';
 import { ReportComponent }     from './report.component'; 
 import { OutputReportComponent }     from './output-report.component'; 
+import {InvestigationsCompletedReportComponent} from './investigations-completed.component';
 
 const reportRoutes: Routes = [
  {
@@ -17,8 +18,11 @@ const reportRoutes: Routes = [
       { path: '', component: OutputReportComponent },
 
     ]
+  },
+  {
+    path: 'investigations-completed',
+    component: InvestigationsCompletedReportComponent
   }
-
 ];
 
 export const reportRouting: ModuleWithProviders = RouterModule.forChild(reportRoutes);

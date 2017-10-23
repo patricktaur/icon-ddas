@@ -28,14 +28,9 @@
 									</div>
 								</div>
 							</div>
-
 							<!--<div *ngIf="!generating">-->
 								<button type="button" class="btn btn-primary" (click)="GenerateOutputFile()">Generate</button>
-								 <button type="button" class="btn btn-primary" (click)="GetInvestigationsCompleted()">
-									 Get Investigation Completed Report 
-								 </button> 
 								<!--</div>
-							
 							<div *ngIf="generating">
 								<h4>
 									<div *ngIf="!downloadUrl">Generating Output File, Please wait ... </div>
@@ -45,45 +40,10 @@
 									<p *ngIf="ComplianceFormGenerationError">{{ComplianceFormGenerationError}} </p>
 								</h4>
 							</div>-->
-
 						</div>
-
 					</div>
-
-
 				</div>
 			</div>
-
-			 <div class="row">
-				<div class="col-lg-10">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th>Assigned To</th>
-								<th *ngFor="let item of headers">
-									{{item.ReportPeriod}}
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							 <tr *ngFor="let item of recordsByUserName | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> 
-								<td class="text-center">
-									 {{item.UserName}} 
-								</td>
-								 <td *ngFor="let subitem of item.ReportItems" class="text-center">
-									 {{subitem.Value}} 
-								</td> 
-							</tr>
-						</tbody>
-					</table>
-					 <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
-				</div>
-				<div class="col-lg-2">
-                    
-				</div>
-			</div> 
-
-
 		</div>
 	</div>
 </div>
