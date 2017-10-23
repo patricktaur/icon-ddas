@@ -48,8 +48,8 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public override DateTime? DateOfInspection {
             get {
                 string[] Formats = {
-                    "MM/dd/yyyy", "M/d/yyyy",
-                    "yyyy-MM-dd", "MM-dd-yyyy"
+                    "M/d/yyyy",
+                    "yyyy-MM-dd", "M-d-yyyy"
                 };
 
                 if (InspectionStartAndEndDate.Contains("-"))
