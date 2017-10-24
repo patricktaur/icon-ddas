@@ -37,9 +37,8 @@ export class ConfigService {
      }
 
      getVer(){
-         return "1.0.2"
+         return "T1.0.15"
      }
-
 }
 
 /*

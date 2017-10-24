@@ -5,6 +5,7 @@ using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DDAS.Models.Enums;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,118 +19,280 @@ namespace DDAS.Services.Reports
             _UOW = UOW;
         }
 
-        public List<ReportViewModel> GetInvestigationsCompletedReport(
-            ReportFilters Filters)
+        public InvestigationsReport GetInvestigationsReport(ReportFilters Filters)
         {
-            var AllCompForms = _UOW.ComplianceFormRepository.GetAll();
+            var InvestigationsReport = new InvestigationsReport();
 
-            if (AllCompForms.Count == 0)
-                throw new Exception("No compliance forms found!");
+            var AdjustedStartDate = AdjustStartDate(
+                Filters.FromDate, Filters.ReportPeriodEnum);
 
-            var Investigators = new List<InvestigatorSearched>();
+            var AdjustedEndDate = AdjustEndDate(
+                Filters.ToDate, Filters.ReportPeriodEnum);
 
-            var ReportList = new List<ReportViewModel>();
+            InvestigationsReport.DatesAdjustedTo = 
+                "Review Completed On From and To dates are adjusted to " +
+                AdjustedStartDate.Date.ToString("dd MMM yyyy") +
+                " - " +
+                AdjustedEndDate.Date.ToString("dd MMM yyyy");
 
-            if (Filters.AssignedTo != null &&
-                Filters.AssignedTo.Length > 0 &&
-                Filters.AssignedTo.ToLower() != "all")
-            {
-                var Report = new ReportViewModel();
-                Report.AssignedTo = Filters.AssignedTo;
+            int EndPeriod = GetEndPeriod(AdjustedStartDate, AdjustedEndDate,
+                Filters.ReportPeriodEnum);
 
-                var Filter1 = GetInvestigationsCompletedReport(
-                    AllCompForms, Filters.AssignedTo);
+            InvestigationsReport.ReportByUsers = FillUpUserNames();
 
-                var ReviewCompletedInvestigators = Filter1.SelectMany(x =>
-                    x.InvestigatorDetails).Where(s =>
-                    s.ReviewCompletedOn != null &&
-                    s.AddedOn >= Filters.FromDate &&
-                    s.AddedOn <= Filters.ToDate)
-                    .ToList();
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
-                if (ReviewCompletedInvestigators.Count > 0)
-                {
-                    Report.Count = ReviewCompletedInvestigators.Count;
-                    ReportList.Add(Report);
-                }
-                return ReportList;
-            }
-
-            if (Filters.AssignedTo != null &&
-                Filters.AssignedTo.Length > 0 &&
-                Filters.AssignedTo.ToLower() == "all")
-            {
-
-            }
-            return ReportList;
-        }
-
-        public List<ReportViewModel> GetInvestigationsCompletedReport(
-            DateTime FromDate, DateTime ToDate)
-        {
-            var AllComplianceForms = _UOW.ComplianceFormRepository.GetAll();
-
-            if (AllComplianceForms.Count == 0)
-                throw new Exception("No compliance forms found!");
-
-            var Reports = new List<ReportViewModel>();
-            var Report = new ReportViewModel();
-
-            Report.Count = AllComplianceForms.SelectMany(s =>
-            s.InvestigatorDetails).Where(x =>
-            x.ReviewCompletedOn != null &&
-            x.AddedOn >= FromDate &&
-            x.AddedOn <= ToDate).Count();
-
-            Reports.Add(Report);
-
-            return Reports;
-        }
-
-        public List<ReportViewModel> GetInvestigationsCompletedReport(
-            DateTime FromDate, DateTime ToDate, string AssignedTo)
-        {
-            var AllComplianceForms = _UOW.ComplianceFormRepository.GetAll();
-
-            var Filter1 = GetInvestigationsCompletedReport(AllComplianceForms, AssignedTo);
-
+            if (ComplianceForms.Count == 0)
+                return null;
             
+            foreach(ReportByUser Report in InvestigationsReport.ReportByUsers)
+            {
+                for(int IncrementPeriodBy = 0; IncrementPeriodBy < EndPeriod; IncrementPeriodBy++)
+                {
+                    var reportItem = new ReportItem();
 
-            return null;
+                    var CurrentStartDate = GetCurrentStartDate(
+                        AdjustedStartDate, Filters.ReportPeriodEnum, 
+                        IncrementPeriodBy);
+
+                    var CurrentEndDate = GetCurrentEndDate(
+                        AdjustedStartDate, AdjustedEndDate, 
+                        Filters.ReportPeriodEnum, IncrementPeriodBy);
+
+                    reportItem.Value = GetInvestigationsReport(
+                        CurrentStartDate, CurrentEndDate,
+                        ComplianceForms, Report.UserName);
+
+                    reportItem.ReportPeriod = GetCurrentPeriod(
+                        CurrentStartDate, CurrentEndDate, 
+                        Filters.ReportPeriodEnum);
+
+                    Report.ReportItems.Add(reportItem);
+                }
+            }
+            return InvestigationsReport;
         }
 
-        private List<ComplianceForm> GetInvestigationsCompletedReport(
-            List<ComplianceForm> AllComplianceForms, string UserName)
+        private DateTime GetCurrentStartDate(DateTime StartDate, ReportPeriodEnum Enum, 
+            int IncrementBy)
         {
-            return
-                AllComplianceForms
-                .Where(x => x.AssignedTo == UserName).ToList();
+            var tempStartDate = StartDate.Date;
+            int Count = 0;
+            switch (Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    Count = IncrementBy;
+                    tempStartDate = tempStartDate.AddDays(Count);
+                    break;
+                case ReportPeriodEnum.Week:
+                    Count = IncrementBy * 7;
+                    tempStartDate = tempStartDate.AddDays(Count);
+                    
+                    //tempStartDate = DateTimeExtensions.StartOfWeek(tempStartDate, DayOfWeek.Monday);
+                    break;
+                case ReportPeriodEnum.Month:
+                    Count = IncrementBy;
+                    tempStartDate = tempStartDate.AddMonths(Count);
+                    //tempStartDate = DateTimeExtensions.FirstDayOfMonth(tempStartDate);
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    Count = IncrementBy * 3;
+                    tempStartDate = tempStartDate.AddMonths(Count);
+                    //tempStartDate = DateTimeExtensions.FirstDayOfQuarter(tempStartDate);
+                    break;
+                case ReportPeriodEnum.Year:
+                    Count = IncrementBy;
+                    tempStartDate = StartDate.AddYears(Count);
+                    //tempStartDate = DateTimeExtensions.FirstDayOfYear(tempStartDate);
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return tempStartDate.Date;
         }
 
-        private int GetInvestigationsCompletedReport(
-            List<ComplianceForm> ComplianceForms,
-            int Day, int Month, int Year)
+        private DateTime GetCurrentEndDate(DateTime StartDate, DateTime EndDate, 
+            ReportPeriodEnum Enum, int IncrementBy)
         {
-            return
-            ComplianceForms.SelectMany(s =>
-            s.InvestigatorDetails)
-            .Where(x =>
-            x.AddedOn.Value.Month >= Month &&
-            x.AddedOn.Value.Year >= Year &&
-            x.AddedOn.Value.Month <= Month &&
-            x.AddedOn.Value.Year <= Year &&
-            x.ReviewCompletedOn != null).Count();
+            var tempEndDate = StartDate.Date;
+            //var tempEndDate = EndDate.Date;
+            int Count = 0;
+            switch (Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    Count = IncrementBy + 1;
+                    tempEndDate = tempEndDate.AddDays(Count);
+                    break;
+                case ReportPeriodEnum.Week:
+                    Count = (IncrementBy + 1) * 7;
+                    //tempEndDate = DateTimeExtensions.StartOfWeek(tempEndDate, DayOfWeek.Monday);
+                    tempEndDate = tempEndDate.Date.AddDays(Count).AddSeconds(-1);
+                    break;
+                case ReportPeriodEnum.Month:
+                    Count = IncrementBy;
+                    tempEndDate = tempEndDate.AddMonths(Count);
+                    tempEndDate = DateTimeExtensions.LastDayOfMonth(tempEndDate);
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    Count = IncrementBy * 3;
+                    //tempEndDate = DateTimeExtensions.FirstDayOfQuarter(tempEndDate);
+                    tempEndDate = DateTimeExtensions.LastDayOfQuarter(tempEndDate);
+                    tempEndDate = tempEndDate.AddMonths(Count);
+                    break;
+                case ReportPeriodEnum.Year:
+                    Count = IncrementBy;
+                    tempEndDate = tempEndDate.AddYears(Count);
+                    tempEndDate = DateTimeExtensions.LastDayOfYear(tempEndDate);
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return tempEndDate.Date;
         }
 
-        private void GetInvestigations(List<ComplianceForm> ComplianceForms)
+        private DateTime AdjustStartDate(DateTime StartDate, ReportPeriodEnum Enum)
+        {
+            var tempStartDate = new DateTime();
+            switch (Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    tempStartDate = StartDate;
+                    break;
+                case ReportPeriodEnum.Week:
+                    tempStartDate = DateTimeExtensions.StartOfWeek(StartDate.Date, DayOfWeek.Monday);
+                    break;
+                case ReportPeriodEnum.Month:
+                    tempStartDate = DateTimeExtensions.FirstDayOfMonth(StartDate.Date);
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    tempStartDate = DateTimeExtensions.FirstDayOfQuarter(StartDate.Date);
+                    break;
+                case ReportPeriodEnum.Year:
+                    tempStartDate = DateTimeExtensions.FirstDayOfYear(StartDate.Date);
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return tempStartDate.Date;
+        }
+
+        private DateTime AdjustEndDate(DateTime EndDate, ReportPeriodEnum Enum)
+        {
+            var tempEndDate = new DateTime();
+            switch (Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    tempEndDate = EndDate;
+                    break;
+                case ReportPeriodEnum.Week:
+                    tempEndDate = DateTimeExtensions.StartOfWeek(EndDate.Date, DayOfWeek.Monday);
+                    tempEndDate = tempEndDate.Date.AddDays(7);
+                    break;
+                case ReportPeriodEnum.Month:
+                    tempEndDate = DateTimeExtensions.LastDayOfMonth(EndDate.Date);
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    tempEndDate = DateTimeExtensions.FirstDayOfQuarter(EndDate.Date);
+                    tempEndDate = DateTimeExtensions.LastDayOfQuarter(tempEndDate);
+                    break;
+                case ReportPeriodEnum.Year:
+                    tempEndDate = DateTimeExtensions.LastDayOfYear(EndDate.Date);
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return tempEndDate.Date;
+        }
+
+        private string GetCurrentPeriod(DateTime StartDate, DateTime EndDate,
+            ReportPeriodEnum Enum)
+        {
+            var Period = "";
+            switch(Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    Period = StartDate.Day.ToString();
+                    break;
+                case ReportPeriodEnum.Week:
+                    Period = StartDate.Day.ToString() + " " + StartDate.ToString("MMM") +
+                        " - " + 
+                        EndDate.Day.ToString() + " " + EndDate.ToString("MMM");
+                    break;
+                case ReportPeriodEnum.Month:
+                    Period = StartDate.ToString("MMM yy");
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    Period = StartDate.ToString("MMM yy") 
+                        + " - "
+                        + EndDate.ToString("MMM yy");
+                    break;
+                case ReportPeriodEnum.Year:
+                    Period = StartDate.Year.ToString();
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return Period;
+        }
+
+        private int GetEndPeriod(DateTime StartDate, DateTime EndDate,
+            ReportPeriodEnum Enum)
+        {
+            int EndPeriod = 0;
+            switch (Enum)
+            {
+                case ReportPeriodEnum.Day:
+                    EndPeriod = (int)(EndDate.Date - StartDate.Date).TotalDays;
+                    EndPeriod += 1; //instead of adding 1 day to the end date
+                    break;
+                case ReportPeriodEnum.Week:
+                    EndPeriod = (int)(EndDate.Date - StartDate.Date).TotalDays / 7;
+                    break;
+                case ReportPeriodEnum.Month:
+                    EndPeriod = (EndDate.Year * 12 + EndDate.Month) -
+                        (StartDate.Year * 12 + StartDate.Month);
+
+                    EndPeriod += 1; //because month is zero indexed                    
+                    break;
+                case ReportPeriodEnum.Quarter:
+                    EndPeriod = DateTimeExtensions.QuarterDifference(StartDate, EndDate);
+                    break;
+                case ReportPeriodEnum.Year:
+                    EndPeriod = EndDate.Year - StartDate.Year;
+                    EndPeriod += 1;
+                    break;
+                default: throw new Exception("Invalid ReportPeriodEnum");
+            }
+            return EndPeriod;
+        }
+
+        private int GetInvestigationsReport(DateTime StartDate, DateTime EndDate,
+            List<ComplianceForm> ComplianceForms, string UserName)
+        {
+            var Count =
+                 ComplianceForms.Where(x =>
+                 x.AssignedTo == UserName)
+                 .SelectMany(Inv => Inv.InvestigatorDetails)
+                 .Where(s =>
+                 s.ReviewCompletedOn != null &&
+                 s.ReviewCompletedOn >= StartDate &&
+                 s.ReviewCompletedOn <= EndDate).Count();
+            return Count;
+        }
+
+        private List<ReportByUser> FillUpUserNames()
         {
             var Users = _UOW.UserRepository.GetAll();
 
+            if (Users.Count == 0)
+                throw new Exception("No users found in database");
+
+            var ReportByUsers = new List<ReportByUser>();
+
             foreach(User user in Users)
             {
-                ComplianceForms.FindAll(x =>
-                x.AssignedTo == user.UserName);
+                var reportByUser = new ReportByUser();
+                reportByUser.UserName = user.UserName;
+                ReportByUsers.Add(reportByUser);
             }
+
+            return ReportByUsers;
         }
+
     }
 }

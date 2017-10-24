@@ -18,18 +18,10 @@
 				</div>
 				<div class="row">
 					<div class="col-md-6 ">
-						<!--<div class="form-group">
-								<label for="PrincipalInvestigator">Principal Investigator:</label>
-								<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
-							</div>-->
 						<div class="form-group">
 							<label for="PrincipalInvestigator">Principal Investigator:</label>
 							<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
 						</div>
-						<!--<div class="form-group">
-								<label for="SearchedOnFrom">Searched on From:</label>
-								<input type="text" class="form-control" name="SearchedOnFrom" [(ngModel)]="ComplianceFormFilter.SearchedOnFrom">
-							</div>							-->
 						<div class="form-group">
 							<label for="Status">Status:</label>
 							<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
@@ -55,10 +47,6 @@
 								<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
 							</select>
 						</div>
-						<!--<div class="form-group">
-								<label for="SearchedOnTo">Searched on To:</label>
-								<input type="text" class="form-control" name="SearchedOnTo" [(ngModel)]="ComplianceFormFilter.SearchedOnTo">
-							</div>-->
 					</div>
 				</div>
 				<div class="row">

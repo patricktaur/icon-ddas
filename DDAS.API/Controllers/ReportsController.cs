@@ -309,13 +309,12 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetInvestigationCompletedReport(ReportFilters Filters)
         {
-            if (Filters.ToDate != null)
-            {
-                Filters.ToDate = Filters.ToDate.Date.AddDays(1);
-            }
+            //if (Filters.ToDate != null)
+            //{
+            //    Filters.ToDate = Filters.ToDate.Date.AddDays(1);
+            //}
 
-            var Report = _Report.GetInvestigationsCompletedReport(
-                Filters.FromDate, Filters.ToDate);
+            var Report = _Report.GetInvestigationsReport(Filters);
 
             return Ok(Report);
         }
