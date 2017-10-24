@@ -9,16 +9,17 @@ export class ReportFilters {
     AssignedTo: string;
     FromDate: Date;
     ToDate: Date;
-    ReportPeriodEnum: number;
+    ReportPeriodEnum: ReportPeriodEnum;
 }
 
 export class InvestigationsReport {
-    ReportByUsers: ReportByUser[];
+    DatesAdjustedTo: string;
+    ReportByUsers: ReportByUser[] = [];
 }
 
 export class ReportByUser {
     UserName: string;
-    ReportItems: ReportItem[];
+    ReportItems: ReportItem[] = [];
 }
 
 export class ReportItem {
@@ -26,3 +27,10 @@ export class ReportItem {
     Value: number;
 }
 
+export enum ReportPeriodEnum{
+    Day,
+    Week,
+    Month,
+    Quarter,
+    Year
+}

@@ -33,6 +33,8 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
     public InvestigationsCompletedReport: InvestigationsReport;
     public reportByUser: any;
     public pageNumber: number;
+    public DatesAdjustedTo: string = "";
+    public assignedTo: string = "";
 
     constructor(
         private service: ReportService,
@@ -54,6 +56,9 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
 
     SetDefaultFilterValues() {
 
+        this.ReportFilter.ReportPeriodEnum = 0;
+        this.assignedTo = "-1";
+        
         var fromDay = new Date();
 
         fromDay.setDate(fromDay.getDate() - 30);
@@ -101,6 +106,7 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
         this.service.getInvestigationsCompletedReport(this.ReportFilter)
         .subscribe((item: InvestigationsReport) => {
             this.InvestigationsCompletedReport = item;
+            this.DatesAdjustedTo = this.InvestigationsCompletedReport.DatesAdjustedTo;
         },
         error => {
 
@@ -111,6 +117,8 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
         if(this.InvestigationsCompletedReport != null){
             return this.recordsByUserName[0].ReportItems;
         }
+        else
+            return null;
     }
 
     get recordsByUserName(){
