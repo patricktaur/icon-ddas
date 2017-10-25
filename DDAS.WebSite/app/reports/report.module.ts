@@ -11,7 +11,7 @@ import { SharedModule } from '../shared/shared.module'
 //import {ModalModule} from "ng2-modal";
 import {OutputReportComponent} from './output-report.component';
 import {InvestigationsCompletedReportComponent} from './investigations-completed.component';
-
+import {OpenInvestigationsReport} from './open-investigations.component';
 
 @NgModule({
   imports: [
@@ -26,12 +26,12 @@ import {InvestigationsCompletedReportComponent} from './investigations-completed
   declarations: [
     ReportComponent,
     OutputReportComponent,
-    InvestigationsCompletedReportComponent
+    InvestigationsCompletedReportComponent,
+    OpenInvestigationsReport
   ],
 
   providers: [
     ReportService,
   ]
-
 })
 export class ReportModule { }
