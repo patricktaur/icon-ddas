@@ -1222,7 +1222,7 @@ namespace DDAS.Models.Entities.Domain
     public class ReportItem
     {
         public string ReportPeriod { get; set; }
-        public decimal Value { get; set; }
+        public double Value { get; set; }
     }
 
     public static class DateTimeExtensions
