@@ -19,7 +19,9 @@ namespace DDAS.Services.Reports
             _UOW = UOW;
         }
 
-        public InvestigationsReport GetInvestigationsReport(ReportFilters Filters)
+        #region Closed Investigations
+        public InvestigationsReport GetInvestigationsReport(
+            ReportFilters Filters)
         {
             var InvestigationsReport = new InvestigationsReport();
 
@@ -29,7 +31,7 @@ namespace DDAS.Services.Reports
             var AdjustedEndDate = AdjustEndDate(
                 Filters.ToDate, Filters.ReportPeriodEnum);
 
-            InvestigationsReport.DatesAdjustedTo = 
+            InvestigationsReport.DatesAdjustedTo =
                 "Review Completed On From and To dates are adjusted to " +
                 AdjustedStartDate.Date.ToString("dd MMM yyyy") +
                 " - " +
@@ -44,27 +46,27 @@ namespace DDAS.Services.Reports
 
             if (ComplianceForms.Count == 0)
                 return null;
-            
-            foreach(ReportByUser Report in InvestigationsReport.ReportByUsers)
+
+            foreach (ReportByUser Report in InvestigationsReport.ReportByUsers)
             {
-                for(int IncrementPeriodBy = 0; IncrementPeriodBy < EndPeriod; IncrementPeriodBy++)
+                for (int IncrementPeriodBy = 0; IncrementPeriodBy < EndPeriod; IncrementPeriodBy++)
                 {
                     var reportItem = new ReportItem();
 
                     var CurrentStartDate = GetCurrentStartDate(
-                        AdjustedStartDate, Filters.ReportPeriodEnum, 
+                        AdjustedStartDate, Filters.ReportPeriodEnum,
                         IncrementPeriodBy);
 
                     var CurrentEndDate = GetCurrentEndDate(
-                        AdjustedStartDate, AdjustedEndDate, 
+                        AdjustedStartDate, AdjustedEndDate,
                         Filters.ReportPeriodEnum, IncrementPeriodBy);
 
-                    reportItem.Value = GetInvestigationsReport(
+                    reportItem.Value = GetInvestigationsCompletedCount(
                         CurrentStartDate, CurrentEndDate,
                         ComplianceForms, Report.UserName);
 
                     reportItem.ReportPeriod = GetCurrentPeriod(
-                        CurrentStartDate, CurrentEndDate, 
+                        CurrentStartDate, CurrentEndDate,
                         Filters.ReportPeriodEnum);
 
                     Report.ReportItems.Add(reportItem);
@@ -73,7 +75,7 @@ namespace DDAS.Services.Reports
             return InvestigationsReport;
         }
 
-        private DateTime GetCurrentStartDate(DateTime StartDate, ReportPeriodEnum Enum, 
+        private DateTime GetCurrentStartDate(DateTime StartDate, ReportPeriodEnum Enum,
             int IncrementBy)
         {
             var tempStartDate = StartDate.Date;
@@ -87,7 +89,7 @@ namespace DDAS.Services.Reports
                 case ReportPeriodEnum.Week:
                     Count = IncrementBy * 7;
                     tempStartDate = tempStartDate.AddDays(Count);
-                    
+
                     //tempStartDate = DateTimeExtensions.StartOfWeek(tempStartDate, DayOfWeek.Monday);
                     break;
                 case ReportPeriodEnum.Month:
@@ -110,7 +112,7 @@ namespace DDAS.Services.Reports
             return tempStartDate.Date;
         }
 
-        private DateTime GetCurrentEndDate(DateTime StartDate, DateTime EndDate, 
+        private DateTime GetCurrentEndDate(DateTime StartDate, DateTime EndDate,
             ReportPeriodEnum Enum, int IncrementBy)
         {
             var tempEndDate = StartDate.Date;
@@ -204,21 +206,21 @@ namespace DDAS.Services.Reports
             ReportPeriodEnum Enum)
         {
             var Period = "";
-            switch(Enum)
+            switch (Enum)
             {
                 case ReportPeriodEnum.Day:
                     Period = StartDate.Day.ToString();
                     break;
                 case ReportPeriodEnum.Week:
                     Period = StartDate.Day.ToString() + " " + StartDate.ToString("MMM") +
-                        " - " + 
+                        " - " +
                         EndDate.Day.ToString() + " " + EndDate.ToString("MMM");
                     break;
                 case ReportPeriodEnum.Month:
                     Period = StartDate.ToString("MMM yy");
                     break;
                 case ReportPeriodEnum.Quarter:
-                    Period = StartDate.ToString("MMM yy") 
+                    Period = StartDate.ToString("MMM yy")
                         + " - "
                         + EndDate.ToString("MMM yy");
                     break;
@@ -261,7 +263,7 @@ namespace DDAS.Services.Reports
             return EndPeriod;
         }
 
-        private int GetInvestigationsReport(DateTime StartDate, DateTime EndDate,
+        private int GetInvestigationsCompletedCount(DateTime StartDate, DateTime EndDate,
             List<ComplianceForm> ComplianceForms, string UserName)
         {
             var Count =
@@ -284,7 +286,7 @@ namespace DDAS.Services.Reports
 
             var ReportByUsers = new List<ReportByUser>();
 
-            foreach(User user in Users)
+            foreach (User user in Users)
             {
                 var reportByUser = new ReportByUser();
                 reportByUser.UserName = user.UserName;
@@ -293,6 +295,53 @@ namespace DDAS.Services.Reports
 
             return ReportByUsers;
         }
+        #endregion
 
+        #region Open Investigations
+
+        public List<OpenInvestigationsViewModel> GetOpenInvestigations()
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var Users = _UOW.UserRepository.GetAllUsers();
+
+            var OpenInvestigations = new List<OpenInvestigationsViewModel>();
+
+            foreach(User user in Users)
+            {
+                var OpenInvestigation = new OpenInvestigationsViewModel();
+
+                var OpenInvestigators = ComplianceForms.Where(x =>
+                x.AssignedTo.ToLower() == user.UserName.ToLower())
+                .SelectMany(Inv => Inv.InvestigatorDetails)
+                .Where(s => s.ReviewCompletedOn == null)
+                .ToList();
+
+                if (OpenInvestigators.Count == 0)
+                    continue;
+
+                OpenInvestigation.AssignedTo = user.UserName;
+                OpenInvestigation.Count = OpenInvestigators.Count;
+
+                OpenInvestigation.Earliest =
+                OpenInvestigators.OrderBy(x => x.AddedOn)
+                .First()
+                .AddedOn;
+
+                OpenInvestigation.Latest =
+                OpenInvestigators.OrderByDescending(x => x.AddedOn)
+                .First()
+                .AddedOn;
+                OpenInvestigations.Add(OpenInvestigation);
+            }
+            return OpenInvestigations;
+        }
+
+        #endregion
     }
 }
+
+

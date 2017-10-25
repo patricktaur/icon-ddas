@@ -559,6 +559,8 @@ namespace DDAS.Services.Search
                             {
                                 s.ReviewCompleted = updateFindings.ReviewCompleted;
                             }
+                            if (!s.ReviewCompleted)
+                                Investigator.ReviewCompletedOn = null;
                         }
                     }
                 }
@@ -956,7 +958,7 @@ namespace DDAS.Services.Search
                 int ReviewCompletedSiteCount = 0;
                 int ExtractionPendingSiteCount = 0;
 
-                Investigator.ReviewCompletedOn = null;
+                //Investigator.ReviewCompletedOn = null;
 
                 //Pradeep 20Dec2016
                 Investigator.Sites_PartialMatchCount = 0;
@@ -1042,7 +1044,7 @@ namespace DDAS.Services.Search
                 }
 
                 if(sitesSearched.Where(x => x.ReviewCompleted).ToList().Count 
-                    == sitesSearchedCount)
+                    == sitesSearchedCount && Investigator.ReviewCompletedOn == null)
                     Investigator.ReviewCompletedOn = DateTime.Now;
 
                 Investigator.Sites_PartialMatchCount = PartialMatchSiteCount;

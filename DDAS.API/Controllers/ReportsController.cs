@@ -315,8 +315,15 @@ namespace DDAS.API.Controllers
             //}
 
             var Report = _Report.GetInvestigationsReport(Filters);
-
             return Ok(Report);
+        }
+
+        [Route("OpenInvestigationsReport")]
+        [HttpGet]
+        public IHttpActionResult GetOpenInvestigations()
+        {
+            var OpenInvestigations = _Report.GetOpenInvestigations();
+            return Ok(OpenInvestigations);
         }
     }
 }
