@@ -348,8 +348,7 @@ namespace DDAS.Services.Search
             //Guid added to findings added by client.  Null Guid identifies records that are added by client.
             var findingsAddedByClient = frm.Findings.Where(f => f.Id == null).ToList();
             findingsAddedByClient.ForEach(f => f.Id = Guid.NewGuid());
-            
-
+           
             RollUpSummary(frm);
 
             //if (frm.ExtractionPendingInvestigatorCount == 0)

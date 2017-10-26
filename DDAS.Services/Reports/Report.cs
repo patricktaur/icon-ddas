@@ -295,10 +295,6 @@ namespace DDAS.Services.Reports
 
             return ReportByUsers;
         }
-<<<<<<< HEAD
-    }
-}
-=======
         #endregion
 
         #region Open Investigations
@@ -343,10 +339,7 @@ namespace DDAS.Services.Reports
             }
             return OpenInvestigations;
         }
-
         #endregion
     }
 }
 
-
->>>>>>> Development
