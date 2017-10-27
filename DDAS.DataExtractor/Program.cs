@@ -114,7 +114,7 @@ namespace DDAS.DataExtractor
             finally
             {
                 _WriteLog.LogEnd();
-                _WriteLog.WriteLog("=================================================================================");
+                _WriteLog.WriteLog("===============================");
 
                 Process currentProcess = Process.GetCurrentProcess();
                 currentProcess.CloseMainWindow();
