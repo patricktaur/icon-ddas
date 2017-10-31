@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.PhantomJS;
+using DDAS.Models.Repository;
 
 namespace DDAS.DataExtractor
 {
@@ -69,7 +70,15 @@ namespace DDAS.DataExtractor
             //_WriteLog = new LogText(_config.DataExtractionLogFile, true);
             _WriteLog = new DBLog(uow, "DDAS.Extractor", true);
             _WriteLog.LogStart();
-            _WriteLog.WriteLog(DateTime.Now.ToString(), "Extract Data starts");
+
+            var NewLog = new Log();
+            NewLog.CreatedBy = "DDAS.Extractor";
+            NewLog.Message = "Extract Data Starts";
+            NewLog.Step = "Start";
+            NewLog.Status = NewLog.Step;
+            NewLog.CreatedOn = DateTime.Now;
+
+            _WriteLog.WriteLog(NewLog);
 
             try
             {
@@ -92,13 +101,20 @@ namespace DDAS.DataExtractor
             }
             catch (Exception e)
             {
-                _WriteLog.WriteLog("Unable to complete the data extract. Error Details: " + 
-                    e.ToString());
+                NewLog = new Log();
+                NewLog.CreatedBy = "DDAS.Extractor";
+                NewLog.Step = "";
+                NewLog.Status = "Error";
+                NewLog.Message = "Unable to complete the data extract. Error Details: " +
+                    e.ToString();
+                NewLog.CreatedOn = DateTime.Now;
+
+                _WriteLog.WriteLog(NewLog);
             }
             finally
             {
                 _WriteLog.LogEnd();
-                _WriteLog.WriteLog("=================================================================================");
+                _WriteLog.WriteLog("===============================");
 
                 Process currentProcess = Process.GetCurrentProcess();
                 currentProcess.CloseMainWindow();

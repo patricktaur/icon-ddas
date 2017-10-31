@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Interfaces;
 using System;
+using DDAS.Models.Repository;
 
 namespace Utilities
 {
@@ -18,6 +19,11 @@ namespace Utilities
         public void LogStart()
         {
             //throw new NotImplementedException();
+        }
+
+        public void WriteLog(Log log)
+        {
+            throw new NotImplementedException();
         }
 
         public void WriteLog(string message)
