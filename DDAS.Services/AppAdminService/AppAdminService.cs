@@ -1667,7 +1667,11 @@ namespace DDAS.Services.AppAdminService
             foreach(Log DBLog in ExtractionLog)
             {
                 var Log = new ExtractionLogViewModel();
+                Log.SiteEnumString = DBLog.SiteEnumString; 
+                Log.Step = DBLog.Step;
+                Log.Status = DBLog.Status;
                 Log.CreatedBy = DBLog.CreatedBy;
+                Log.CreatedOn = DBLog.CreatedOn;
                 Log.Caption = DBLog.Caption;
                 Log.Message = DBLog.Message;
 

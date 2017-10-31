@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDAS.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,11 @@ namespace DDAS.Models.Repository
 {
     public class Log
     {
-        //public Guid? RecId { get; set; }
-        public Guid Id { get; set; }
-        public bool IsExtractionFailed { get; set; }
+        public Guid? RecId { get; set; }
+        //public Guid Id { get; set; }
+        public string SiteEnumString { get; set; }
+        public string Step { get; set; }
+        public string Status { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Caption { get; set; }

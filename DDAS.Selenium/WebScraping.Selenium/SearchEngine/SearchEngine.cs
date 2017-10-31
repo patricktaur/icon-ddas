@@ -14,6 +14,7 @@ using DDAS.Models.Entities.Domain.SiteData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using DDAS.Models.Repository;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -319,17 +320,19 @@ namespace WebScraping.Selenium.SearchEngine
                 //siteEnum == SiteEnum.ClinicalInvestigatorDisqualificationPage)
                 //return true;
 
-            var SiteUpdatedDateFromPage =
-                _searchPage.SiteLastUpdatedDateFromPage;
+            //Pradeep 26Oct2017 - decided to extract data every 24 hours
+            //checking site updated date is not required
+            //var SiteUpdatedDateFromPage =
+            //    _searchPage.SiteLastUpdatedDateFromPage;
 
-            var SiteUpdatedDateFromDatabase =
-                GetSiteLastUpdatedFromDatabase(siteEnum);
+            //var SiteUpdatedDateFromDatabase =
+            //    GetSiteLastUpdatedFromDatabase(siteEnum);
 
-            if (SiteUpdatedDateFromDatabase == null ||
-                SiteUpdatedDateFromPage > SiteUpdatedDateFromDatabase)
+            //if (SiteUpdatedDateFromDatabase == null ||
+            //    SiteUpdatedDateFromPage > SiteUpdatedDateFromDatabase)
                 return true;
-            else
-                return false;
+            //else
+                //return false;
         }
         
         #endregion
@@ -442,7 +445,15 @@ namespace WebScraping.Selenium.SearchEngine
         {
             var DBSites = query.Where(x => x.ExtractionMode.ToLower() == "db").ToList();
 
-            log.WriteLog("Processing:" + DBSites.Count + " sites");
+            var NewLog = new Log();
+            NewLog.Step = "";
+            NewLog.Status = NewLog.Step;
+            NewLog.Message = "Processing:" + DBSites.Count + " sites";
+            NewLog.CreatedBy = "DDAS.Extractor";
+            NewLog.CreatedOn = DateTime.Now;
+
+            log.WriteLog(NewLog);
+
             foreach (SitesToSearch site in DBSites)
             {
                 try
@@ -451,8 +462,16 @@ namespace WebScraping.Selenium.SearchEngine
                 }
                 catch (Exception e)
                 {
-                    log.WriteLog("Unable to extract data for: " + site.SiteEnum +
-                        "Error Details: " + e.ToString());
+                    NewLog = new Log();
+                    NewLog.Step = "";
+                    NewLog.SiteEnumString = site.SiteEnum.ToString();
+                    NewLog.Status = "Error";
+                    NewLog.Message = "Unable to extract data. " +
+                        "Error Details: " + e.ToString();
+                    NewLog.CreatedOn = DateTime.Now;
+                    NewLog.CreatedBy = "DDAS.Extractor";
+
+                    log.WriteLog(NewLog);
                     continue;
                 }
             }
@@ -460,26 +479,50 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void ExtractData(SiteEnum siteEnum, ILog log)
         {
+            var NewLog = new Log();
+
             var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
 
             var SiteData = _searchPage.baseSiteData;
             SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
-
+            
             if (ExtractionRequired)
             {
-                log.WriteLog(DateTime.Now.ToString(), "Start extracting from: " + siteEnum);
+                NewLog.SiteEnumString = siteEnum.ToString();
+                NewLog.Message = "Extraction Begins " + NewLog.SiteEnumString;
+                NewLog.CreatedBy = "DDAS.Extractor";
+                NewLog.CreatedOn = DateTime.Now;
+                log.WriteLog(NewLog);
+
                 _searchPage.LoadContent();
-                log.WriteLog(DateTime.Now.ToString(), "End extracting from: " + siteEnum);
+
+                NewLog = new Log();
+                NewLog.SiteEnumString = siteEnum.ToString();
+                NewLog.Step = "Intermediate";
+                NewLog.Status = NewLog.Step;
+                NewLog.Message = "Extraction Ends";
+                NewLog.CreatedOn = DateTime.Now;
+                log.WriteLog(NewLog);
             }
             else
             {
                 SiteData.CreatedOn = DateTime.Now;
                 SiteData.ReferenceId = GetRecIdOfPreviousDocument(siteEnum);
-                log.WriteLog(DateTime.Now.ToString(), siteEnum + ": Source data has not been updated. Extraction is not required");
+                //log.WriteLog(DBLog);
             }
             log.WriteLog("SiteLastUpdatedOn : " + SiteData.SiteLastUpdatedOn);
+
             SaveData();
-            log.WriteLog(DateTime.Now.ToString(), "Data Saved");
+
+            NewLog = new Log();
+            NewLog.Step = "Final";
+            NewLog.Status = "Success";
+            NewLog.SiteEnumString = siteEnum.ToString();
+            NewLog.Message = "Data Saved";
+            NewLog.CreatedBy = "DDAS.Extractor";
+            NewLog.CreatedOn = DateTime.Now;
+
+            log.WriteLog(NewLog);
         }
 
         public void ExtractData(SiteEnum siteEnum, 

@@ -17,9 +17,13 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-                                <th>Created By</th>
+								<th>Created By</th>
+								<th>Created On</th>
+								<th>Site</th>
+								<th>Step</th>
                                 <th>Caption</th>
 								<th>Message</th>
+								<th>Status</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -28,11 +32,23 @@
 									{{item.CreatedBy}}
 								</td>
 								<td class="text-center">
+									{{item.CreatedOn | date: 'dd MMM yyyy hh:mm'}}
+								</td>
+								<td class="text-center">
+									{{item.SiteEnumString}}
+								</td>
+								<td class="text-center">
+									{{item.Step}}
+								</td>
+								<td class="text-center">
 									{{item.Caption}}
 								</td>
 								<td class="text-center">
 									{{item.Message}}
-								</td>                                                                
+								</td>
+								<td class="text-center">
+									{{item.Status}}
+								</td>								                                                      
 							</tr>
 						</tbody>
 					</table>
