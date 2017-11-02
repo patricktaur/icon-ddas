@@ -1124,7 +1124,14 @@ namespace DDAS.Services.Search
                     site.IssuesIdentified = false;
                 }
             }
-            
+            //Institute sites will not be added under SiteSearchStatus
+            var InstituteSiteSources = form.SiteSources.Where(x => 
+            x.SearchAppliesTo == SearchAppliesToEnum.Institute)
+            .ToList();
+
+            if (InstituteSiteSources.Any(x => x.IssuesIdentified))
+                IssuesFoundInvestigatorCount += 1;
+
             form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
             form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
             form.SingleMatchFoundInvestigatorCount = SingleMatchFoundInvestigatorCount;
