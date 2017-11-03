@@ -1203,8 +1203,88 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
+        public ReportPeriodEnum ReportPeriodEnum { get; set; }
     }
     
+    public class InvestigationsReport
+    {
+        public List<ReportByUser> ReportByUsers { get; set; }
+        public string DatesAdjustedTo;
+    }
+
+    public class ReportByUser
+    {
+        public string UserName { get; set; }
+        public List<ReportItem> ReportItems { get; set; } 
+            = new List<ReportItem>();
+    }
+
+    public class ReportItem
+    {
+        public string ReportPeriod { get; set; }
+        public double Value { get; set; }
+    }
+
+    public static class DateTimeExtensions
+    {
+        public static DateTime LastDayOfMonth(DateTime Value)
+        {
+            return new DateTime(
+                Value.Year,
+                Value.Month,
+                DateTime.DaysInMonth(Value.Year, Value.Month));
+        }
+
+        public static DateTime FirstDayOfMonth(DateTime Value)
+        {
+            return new DateTime(Value.Year, Value.Month, 1);
+        }
+
+        public static DateTime StartOfWeek(DateTime Value, DayOfWeek startOfWeek)
+        {
+            int diff = Value.DayOfWeek - startOfWeek;
+            if (diff < 0)
+            {
+                diff += 7;
+            }
+            return Value.AddDays(-1 * diff).Date;
+        }
+
+        public static int QuarterDifference(DateTime first, DateTime second)
+        {
+            int firstQuarter = getQuarter(first);
+            int secondQuarter = getQuarter(second);
+            return 1 + Math.Abs(secondQuarter - firstQuarter);
+        }
+
+        private static int getQuarter(DateTime date)
+        {
+            return (date.Year * 4) + ((date.Month - 1) / 3);
+        }
+
+        public static DateTime FirstDayOfQuarter(DateTime Value)
+        {
+            int quarterNumber = (Value.Month - 1) / 3 + 1;
+
+            return new DateTime(Value.Year, 
+                (quarterNumber - 1) * 3 + 1, 1);
+        }
+
+        public static DateTime LastDayOfQuarter(DateTime firstDayOfQuarter)
+        {
+            return firstDayOfQuarter.AddMonths(3).AddDays(-1);
+        }
+
+        public static DateTime FirstDayOfYear(DateTime Value)
+        {
+            return new DateTime(Value.Year, 1, 1);
+        }
+
+        public static DateTime LastDayOfYear(DateTime Value)
+        {
+            return new DateTime(Value.Year, 12, 31);
+        }
+    }
     #endregion
 
     public class ValidationError
