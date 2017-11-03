@@ -64,4 +64,12 @@
         Institute
     }
 
+    public enum ReportPeriodEnum
+    {
+        Day,
+        Week,
+        Month,
+        Quarter,
+        Year
+    }
 }

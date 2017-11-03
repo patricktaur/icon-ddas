@@ -12,7 +12,7 @@ import {
 
 import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
-import { ReportFilters } from './report.classes';
+import { ReportFilters, InvestigationsReport } from './report.classes';
 
 @Injectable()
 export class ReportService {
@@ -126,7 +126,7 @@ export class ReportService {
             .catch(this.handleError);
     }
 
-    getInvestigationsCompletedReport(Filters: ReportFilters){
+    getInvestigationsCompletedReport(Filters: ReportFilters): Observable<InvestigationsReport>{
         let filter1 = JSON.stringify(Filters);
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
@@ -137,6 +137,31 @@ export class ReportService {
             return res.json();
         })
         .catch(this.handleError);
+    }
+
+    getAverageInvestigationsCompletedReport(Filters: ReportFilters): Observable<InvestigationsReport>{
+        let filter1 = JSON.stringify(Filters);
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+        
+        return this.http.post(this._baseUrl + 'Reports/AverageInvestigationsCompletedReport', filter1, this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
+    getOpenInvestigations():Observable<any>{
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+        
+        return this.http.get(this._baseUrl + 'Reports/OpenInvestigationsReport', this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);        
     }
 
     private handleError(error: any) {

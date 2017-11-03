@@ -57,7 +57,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     return null;
 
                 string[] Formats = {
-                    "MM/dd/yyyy", "MM-dd-yyyy"
+                    "M/d/yyyy", "M-d-yyyy"
                 };
 
                 return 
@@ -66,16 +66,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     System.Globalization.DateTimeStyles.None);
             }
         }
-
-        //public override List<Link> Links
-        //{
-        //    get
-        //    {
-        //        return new List<Link> {
-        //            new Link { Title = "NIDPOE Letter", url = LinkToNIDPOELetter },
-        //            new Link { Title = "NOOH Letter", url = LinkToNOOHLetter }
-        //        };
-        //    }
-        //}
     }
 }

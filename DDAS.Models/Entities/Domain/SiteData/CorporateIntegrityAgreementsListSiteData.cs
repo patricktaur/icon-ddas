@@ -50,7 +50,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     return null;
 
                 string[] Formats =
-                    { "yyyy-MM-dd", "M/d/yyyy", "M-d-yyyy" };
+                    { "M/d/yyyy", "M-d-yyyy" };
 
                 //var Formats = new string[] { "MM-dd-yyyy", "MM/dd/yyyy" };
 

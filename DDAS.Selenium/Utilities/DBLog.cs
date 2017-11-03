@@ -36,6 +36,13 @@ namespace DDAS.Data.Mongo
             }
         }
 
+        public void WriteLog(Log log)
+        {
+            log.CreatedBy = _LogStartedBy;
+            log.CreatedOn = DateTime.Now;
+            _UOW.LogRepository.Add(log);
+        }
+
         public void WriteLog(string caption, string message)
         {
             UpdateLog(caption, message);

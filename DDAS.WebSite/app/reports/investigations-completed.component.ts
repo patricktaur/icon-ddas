@@ -9,12 +9,11 @@ import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'output-report.component.html'
+    templateUrl: 'investigations-completed.component.html'
 })
 
-export class OutputReportComponent implements OnChanges {
+export class InvestigationsCompletedReportComponent implements OnChanges {
     public myDatePickerOptions = {
-
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
     };
@@ -34,6 +33,8 @@ export class OutputReportComponent implements OnChanges {
     public InvestigationsCompletedReport: InvestigationsReport;
     public reportByUser: any;
     public pageNumber: number;
+    public DatesAdjustedTo: string = "";
+    public assignedTo: string = "";
 
     constructor(
         private service: ReportService,
@@ -55,6 +56,9 @@ export class OutputReportComponent implements OnChanges {
 
     SetDefaultFilterValues() {
 
+        this.ReportFilter.ReportPeriodEnum = 0;
+        this.assignedTo = "-1";
+        
         var fromDay = new Date();
 
         fromDay.setDate(fromDay.getDate() - 30);
@@ -85,35 +89,6 @@ export class OutputReportComponent implements OnChanges {
         this.generating = false;
     }
 
-    GenerateOutputFile() {
-        if (this.FromDate != null) {
-            //minus one month, plus one day is made so that the value is correctly converted on the server side.  
-            //Otherwise incorrect values are produced when the property is read on API end point.
-            this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
-        }
-
-        if (this.ToDate != null) {
-            this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
-        }
-
-        this.generating = true;
-        this.downloadUrl = "";
-        this.service.generateOutputFile(this.ComplianceFormFilter)
-            // .subscribe((item: any) => {
-            //     this.downloadUrl = this.configService.getApiHost() + item;
-            // },
-            // error => {
-
-            // });
-            .subscribe((item : any) => {
-
-            },
-            error => {
-                // console.log("Error downloading the file."),
-                //     () => console.log('Completed file download.')
-            });
-    }
-
     GetInvestigationsCompleted() {
         if (this.FromDate != null) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
@@ -127,26 +102,23 @@ export class OutputReportComponent implements OnChanges {
 
         this.ReportFilter.FromDate = this.ComplianceFormFilter.SearchedOnFrom;
         this.ReportFilter.ToDate = this.ComplianceFormFilter.SearchedOnTo;
-        this.ReportFilter.ReportPeriodEnum = 2;
-        this.ReportFilter.AssignedTo = "user1";
         console.log('ReportFilter - ', this.ReportFilter);
         this.service.getInvestigationsCompletedReport(this.ReportFilter)
         .subscribe((item: InvestigationsReport) => {
             this.InvestigationsCompletedReport = item;
+            this.DatesAdjustedTo = this.InvestigationsCompletedReport.DatesAdjustedTo;
         },
         error => {
 
         });
     }
 
-    get userName(){
-        return this.InvestigationsCompletedReport.ReportByUsers;
-    }
-
     get headers(){
         if(this.InvestigationsCompletedReport != null){
             return this.recordsByUserName[0].ReportItems;
         }
+        else
+            return null;
     }
 
     get recordsByUserName(){
