@@ -6,7 +6,6 @@ using DDAS.Models.Interfaces;
 using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -41,7 +40,7 @@ namespace DDAS.Services.Search
         {
             ComplianceForm newForm = new ComplianceForm();
 
-            newForm.AssignedTo = GetUserFullName(UserName);
+            newForm.AssignedTo = UserName;//GetUserFullName(UserName);
 
             newForm.SearchStartedOn = DateTime.Now;
             AddMandatorySitesToComplianceForm(newForm);
@@ -256,7 +255,6 @@ namespace DDAS.Services.Search
             //_UOW.ComplianceFormRepository.UpdateCollection(form);
 
             _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
-
         }
 
         //used by Excel File Upload method.
@@ -461,6 +459,9 @@ namespace DDAS.Services.Search
 
             if (form.RecId == null)
             {
+                AddCountrySpecificSites(form);
+                AddSponsorSpecificSites(form);
+
                 AddMissingSearchStatusRecords(form);
                 AddMatchingRecords(form);
 
@@ -558,6 +559,8 @@ namespace DDAS.Services.Search
                             {
                                 s.ReviewCompleted = updateFindings.ReviewCompleted;
                             }
+                            if (!s.ReviewCompleted)
+                                Investigator.ReviewCompletedOn = null;
                         }
                     }
                 }
@@ -669,17 +672,14 @@ namespace DDAS.Services.Search
             //var test = _UOW.CountryRepository.GetAll();
             //var test1 = test.Where(x => x.CountryName == "");
             //var test2 = test1.ToList();
-            //if (compForm.Country.Trim().ToLower() == "")
-            //{
-            //    return;
-            //}
+            if (compForm.Country == null || 
+                compForm.Country.Trim().Length == 0)
+            {
+                return;
+            }
 
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
             country.CountryName.Trim().ToLower() == compForm.Country.Trim().ToLower()); //.ToList();
-            //if (Countries == null)
-            //{
-            //    return;
-            //}
 
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
 
@@ -853,12 +853,6 @@ namespace DDAS.Services.Search
                                 {
                                     FullNameDB[Counter] = RemoveExtraCharacters(FullNameDB[Counter]);
 
-                                    if (FullNameDB[Counter].ToLower().Contains("punnee") ||
-                                        FullNameDB[Counter].ToLower().Contains("MERCEDES"))
-                                    {
-
-                                    }
-
                                     bool FullNameComponentIsEqualsToNameComponentAndIsNotNull =
                                     (FullNameDB[Counter] != null && 
                                     FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower())
@@ -964,7 +958,7 @@ namespace DDAS.Services.Search
                 int ReviewCompletedSiteCount = 0;
                 int ExtractionPendingSiteCount = 0;
 
-                Investigator.ReviewCompletedOn = null;
+                //Investigator.ReviewCompletedOn = null;
 
                 //Pradeep 20Dec2016
                 Investigator.Sites_PartialMatchCount = 0;
@@ -1050,7 +1044,7 @@ namespace DDAS.Services.Search
                 }
 
                 if(sitesSearched.Where(x => x.ReviewCompleted).ToList().Count 
-                    == sitesSearchedCount)
+                    == sitesSearchedCount && Investigator.ReviewCompletedOn == null)
                     Investigator.ReviewCompletedOn = DateTime.Now;
 
                 Investigator.Sites_PartialMatchCount = PartialMatchSiteCount;
@@ -1130,7 +1124,14 @@ namespace DDAS.Services.Search
                     site.IssuesIdentified = false;
                 }
             }
-            
+            //Institute sites will not be added under SiteSearchStatus
+            var InstituteSiteSources = form.SiteSources.Where(x => 
+            x.SearchAppliesTo == SearchAppliesToEnum.Institute)
+            .ToList();
+
+            if (InstituteSiteSources.Any(x => x.IssuesIdentified))
+                IssuesFoundInvestigatorCount += 1;
+
             form.PartialMatchesFoundInvestigatorCount = PartialMatchesFoundInvestigatorCount;
             form.FullMatchesFoundInvestigatorCount = FullMatchesFoundInvestigatorCount;
             form.SingleMatchFoundInvestigatorCount = SingleMatchFoundInvestigatorCount;
@@ -1160,13 +1161,12 @@ namespace DDAS.Services.Search
             frm.ExtractedOn = DateTime.Now; //last extracted on
             foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
             {
-          
                 var InvestigatorName = inv.SearchName;
 
                 var ComponentsInInvestigatorName =
                     InvestigatorName.Split(' ').Count();
 
-                inv.AddedOn = DateTime.Now;
+                //inv.AddedOn = DateTime.Now;
                 inv.HasExtractionError = true; // until set to false.
                 inv.IssuesFoundSiteCount = 0;
                 inv.ReviewCompletedCount = 0;
@@ -1176,8 +1176,7 @@ namespace DDAS.Services.Search
                 //foreach (SiteSource siteSource in frm.SiteSources)
                 foreach (SiteSource siteSource in frm.SiteSources.Where(
                     x => x.ExtractionMode.ToLower() == "db" 
-                    && x.SearchAppliesTo != SearchAppliesToEnum.Institute
-                    ))
+                    && x.SearchAppliesTo != SearchAppliesToEnum.Institute))
                 {
                     SiteSearchStatus searchStatus = null;
 
@@ -1211,6 +1210,7 @@ namespace DDAS.Services.Search
                     {
                         try
                         {
+                            inv.AddedOn = DateTime.Now;
                             //clear previously added matching records.
                             //frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
                             frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.DisplayPosition == searchStatus.DisplayPosition) && x.IsMatchedRecord == true);
@@ -1291,7 +1291,7 @@ namespace DDAS.Services.Search
                             {
                                 searchStatus.ReviewCompleted = true;
                             }
-                            //frm.UpdatedOn = DateTime.Now;
+                            inv.SearchCompletedOn = DateTime.Now;
                             //ListOfSiteSearchStatus.Add(searchStatus);
                         }
                         catch (Exception ex)
@@ -1489,7 +1489,7 @@ namespace DDAS.Services.Search
             //return retFindings;
         }
 
-        private bool UpdateSearchStatus(Guid formId, int InvestigatyorId, SiteSearchStatus siteStatus)
+        private bool UpdateSearchStatus(Guid formId, int InvestigatorId, SiteSearchStatus siteStatus)
         {
             throw new NotImplementedException();
 
@@ -1575,17 +1575,19 @@ namespace DDAS.Services.Search
                         searchStatus.DisplayPosition = site.DisplayPosition;
                         searchStatus.ExtractionMode = site.ExtractionMode;
 
-                        if (site.SearchAppliesTo == SearchAppliesToEnum.PIs && inv.Role.ToLower() == "sub")
+                        if (site.SearchAppliesTo == SearchAppliesToEnum.PIs && inv.Role.ToLower() == "sub i")
                         //if (site.ExcludeSI == true && inv.Role.ToLower() == "sub")
                         {
                             searchStatus.Exclude = true;
                             //searchStatus.ReviewCompleted = true;
                         }
                        
-                        if (site.ExtractionMode.ToLower() == "manual") //requirement of ICON 23-Mar-2017
-                        {
-                            searchStatus.ReviewCompleted = true;
-                        }
+                        //if (site.ExtractionMode.ToLower() == "manual" && //requirement of ICON 23-Mar-2017
+                        //    inv.Role.ToLower() == "sub i") //requirement of ICON 04-Oct-2017
+                        //{
+                        //    searchStatus.ReviewCompleted = true;
+                        //}
+
                         inv.SitesSearched.Add(searchStatus);
                     }
                 }
@@ -1798,8 +1800,6 @@ namespace DDAS.Services.Search
 
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active)
         {
-            AssignedTo = GetUserFullName(AssignedTo);
-
             var retList = new List<PrincipalInvestigator>();
             List<ComplianceForm> compForms;
             if (AssignedTo != null && AssignedTo.Length > 0)
@@ -1850,7 +1850,7 @@ namespace DDAS.Services.Search
             compForms1 = compForms.OrderByDescending(x => x.SearchStartedOn).ToList();
             if (PricipalInvestigatorName.Length > 0)
             {
-                compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role=="Principal"))).ToList();
+                compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role=="PI"))).ToList();
             }
             else
             {
@@ -1889,7 +1889,7 @@ namespace DDAS.Services.Search
 
             foreach (InvestigatorSearched Investigator in compForm.InvestigatorDetails)
             {
-                if(Investigator.Role.ToLower() == "sub")
+                if(Investigator.Role.ToLower() == "sub i")
                 {
                     var SubInv = new SubInvestigator();
                     SubInv.Name = Investigator.Name;
@@ -1904,21 +1904,25 @@ namespace DDAS.Services.Search
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter)
         {
-
             if (CompFormFilter == null)
             {
                 throw new Exception("Invalid CompFormFilter");
             }
 
-            var Filter = _UOW.ComplianceFormRepository.GetAll();  
-            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
+            var Filter = _UOW.ComplianceFormRepository.GetAll();
 
+            if (Filter.Count == 0)
+                return null;
+
+            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
 
             if (CompFormFilter.InvestigatorName != null && 
                 CompFormFilter.InvestigatorName != "")
             {
-                var tempFilter = Filter1.Select(x => x.InvestigatorDetails.Where(inv =>
-                inv.Name == CompFormFilter.InvestigatorName).ToList()).ToList();
+                Filter1 = Filter1.FindAll(x => 
+                x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
+                .Contains(
+                    CompFormFilter.InvestigatorName.ToLower()));
             }
 
             var Filter2 = Filter1;
@@ -1982,10 +1986,123 @@ namespace DDAS.Services.Search
                 x.StatusEnum == CompFormFilter.Status).ToList();
             }
 
+            var Filter8 = Filter7;
+
+            if(CompFormFilter.AssignedTo != null &&
+                CompFormFilter.AssignedTo != "" &&
+                CompFormFilter.AssignedTo != "-1")
+            {
+                Filter8 = Filter7.Where(x =>
+                x.AssignedTo.ToLower() == CompFormFilter.AssignedTo.ToLower())
+                .ToList();
+            }
 
             var ReturnList = new List<PrincipalInvestigator>();
 
-            foreach(ComplianceForm form in Filter7)
+            foreach(ComplianceForm form in Filter8)
+            {
+                ReturnList.Add(getPrincipalInvestigators(form));
+            }
+            return ReturnList;
+        }
+
+        public List<PrincipalInvestigator> GetClosedComplianceFormsFromFilters(
+            ComplianceFormFilter CompFormFilter, string AssignedTo)
+        {
+            if (CompFormFilter == null)
+            {
+                throw new Exception("Invalid CompFormFilter");
+            }
+
+            var Filter = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Filter.Count == 0)
+                return null;
+
+            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
+
+            if (CompFormFilter.InvestigatorName != null &&
+                CompFormFilter.InvestigatorName != "")
+            {
+                Filter1 = Filter1.FindAll(x =>
+                x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
+                .Contains(
+                    CompFormFilter.InvestigatorName.ToLower()));
+            }
+
+            var Filter2 = Filter1;
+
+            if (CompFormFilter.ProjectNumber != null &&
+                CompFormFilter.ProjectNumber != "")
+            {
+                Filter2 = Filter1.Where(x =>
+                x.ProjectNumber == CompFormFilter.ProjectNumber).ToList();
+            }
+
+            var Filter3 = Filter2;
+
+            if (CompFormFilter.SponsorProtocolNumber != null &&
+                CompFormFilter.SponsorProtocolNumber != "")
+            {
+                Filter3 = Filter2.Where(x =>
+                x.SponsorProtocolNumber.ToLower() ==
+                CompFormFilter.SponsorProtocolNumber.ToLower())
+                .ToList();
+            }
+
+            var Filter4 = Filter3;
+
+            if (CompFormFilter.SearchedOnFrom != null)
+            {
+                DateTime startDate;
+                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+                Filter4 = Filter3.Where(x =>
+               x.SearchStartedOn >= startDate)
+               .ToList();
+            }
+
+            var Filter5 = Filter4;
+
+            if (CompFormFilter.SearchedOnTo != null)
+            {
+                DateTime endDate;
+                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+                Filter5 = Filter4.Where(x =>
+                x.SearchStartedOn <
+                endDate)
+                .ToList();
+            }
+
+            var Filter6 = Filter5;
+
+            if (CompFormFilter.Country != null &&
+                CompFormFilter.Country != "")
+            {
+                Filter6 = Filter5.Where(x =>
+                x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
+            }
+
+            var Filter7 = Filter6;
+
+            if((int)CompFormFilter.Status == -1)
+            {
+                Filter7 = Filter6.FindAll(x => x.StatusEnum ==
+                ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                .ToList();
+            }
+            else if ((int)CompFormFilter.Status != -1)
+            {
+                Filter7 = Filter6.Where(x =>
+                x.StatusEnum == CompFormFilter.Status).ToList();
+            }
+
+            var Filter8 = Filter7.Where(x =>
+            x.AssignedTo == AssignedTo).ToList();
+
+            var ReturnList = new List<PrincipalInvestigator>();
+
+            foreach (ComplianceForm form in Filter8)
             {
                 ReturnList.Add(getPrincipalInvestigators(form));
             }
@@ -2020,7 +2137,6 @@ namespace DDAS.Services.Search
             
         }
 
-
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
@@ -2036,11 +2152,17 @@ namespace DDAS.Services.Search
 
             var PI = RemoveSpecialCharacters(form.InvestigatorDetails.FirstOrDefault().Name);
 
-            var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+            //var ProjectNumber = RemoveSpecialCharacters(form.ProjectNumber);
+
+            var ProjectNumber = form.ProjectNumber.Replace('/', '-');
+
+            var PISearchName = form.InvestigatorDetails.FirstOrDefault().SearchName; 
 
             var GeneratedFileName = 
-                ProjectNumber + "_" + PI + "_" + 
-                DateTime.Now.ToString("dd MMM yyyy HH_mm") +
+                ProjectNumber + "_" + 
+                form.Country + "_" +
+                PISearchName + "_" + 
+                DateTime.Now.ToString("ddMMMyyyy") +
                 FileExtension;
 
             FileName = GeneratedFileName.Replace(' ','_');
@@ -2159,44 +2281,48 @@ namespace DDAS.Services.Search
             TableHeaders = FindingsTableHeaders();
             writer.AddTableHeaders(TableHeaders, 4, 4);
 
-            foreach(Finding finding in form.Findings.OrderBy(x => x.DisplayPosition))
-            {
-                string DateOfInspection = "";
-                if (finding.DateOfInspection != null)
-                    DateOfInspection =
-                        finding.DateOfInspection.Value.ToString("dd MMM yyyy");
-
-                if (finding.Selected)
-                {
-                    string[] CellValues = new string[]
-                    {
-                        finding.SiteSourceId.ToString(),
-                        finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
-                        DateOfInspection,
-                        finding.Observation
-                    };
-                    writer.FillUpTable(CellValues);
-                }
-            }
-
             if (form.IssuesFoundInvestigatorCount == 0)
             {
                 string[] CellValues = new string[]
                 {
                     "", "", "", "No Findings"
                 };
+                writer.FillUpTable(CellValues);
             }
+            else
+            {
+                foreach (Finding finding in form.Findings.OrderBy(x => x.DisplayPosition))
+                {
+                    string DateOfInspection = "";
+                    if (finding.DateOfInspection != null)
+                        DateOfInspection =
+                            finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
+                    if (finding.Selected)
+                    {
+                        string[] CellValues = new string[]
+                        {
+                        finding.SiteSourceId.ToString(),
+                        finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
+                        DateOfInspection,
+                        finding.Observation
+                        };
+                        writer.FillUpTable(CellValues);
+                    }
+                }
+            }
             writer.SaveChanges();
 
             //SearchedByTable
             writer.WriteParagraph("Search Performed By:");
 
-            writer.AddSearchedBy(form.AssignedTo, DateTime.Now.ToString("dd MMM yyyy"));
+            var UserFullName = GetUserFullName(form.AssignedTo);
+            writer.AddSearchedBy(UserFullName, DateTime.Now.ToString("dd MMM yyyy"));
 
             writer.SaveChanges();
 
-            writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
+            //as per ICON requirement commenting this line
+            //writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
 
             writer.CloseDocument();
 
@@ -2496,7 +2622,34 @@ namespace DDAS.Services.Search
             if(FDAWarningLetterList == null)
                 return null;
 
+            //only for FDAWarningLetters
+            ConvertFDAWarningLinks(FDAWarningSiteData.FDAWarningLetterList);
+
             return ConvertToMatchedRecords(FDAWarningLetterList);
+        }
+
+        //Only for FDAWarningLettters site, 
+        //link from the downloaded/extracted file is not working
+        //hence converting it to active link
+        private void ConvertFDAWarningLinks(IEnumerable<SiteDataItemBase> Records)
+        {
+            foreach(SiteDataItemBase Record in Records)
+            {
+                foreach(Link link in Record.Links)
+                {
+                    var NewLink = 
+                        "https://www.fda.gov/iceci/enforcementactions/warningletters/";
+
+                    if (!Record.DateOfInspection.HasValue)
+                        continue;
+                    NewLink += Record.DateOfInspection.Value.ToString("yyyy");
+                    NewLink += "/";
+                    NewLink += link.url.Substring(link.url.Length - 9).ToLower();
+                    NewLink += ".htm";
+
+                    link.url = NewLink;
+                }
+            }
         }
 
         private void AddRecordsToWarningLettersSiteData(
@@ -2696,6 +2849,11 @@ namespace DDAS.Services.Search
                 RecordToAdd.RecordNumber = Record.RecordNumber;
                 RecordToAdd.Status = Record.Status;
                 RecordToAdd.General = Record.General;
+                RecordToAdd.BusinessName = Record.BusinessName;
+                RecordToAdd.Address = Record.Address;
+                RecordToAdd.City = Record.City;
+                RecordToAdd.State = Record.State;
+                RecordToAdd.Zip = Record.Zip;
                 RecordToAdd.Specialty = Record.Specialty;
                 RecordToAdd.Links = Record.Links;
                 RecordToAdd.RowNumber = Record.RowNumber;
@@ -2977,6 +3135,10 @@ namespace DDAS.Services.Search
                 _UOW.ClinicalInvestigatorInspectionListRepository
                 .FindById(SiteDataId);
 
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+
+            AddRecordsToCIILSiteData(SiteData, CIILRecords);
+
             string FullName = null;
             foreach (string Name in NameComponents)
             {
@@ -2985,8 +3147,6 @@ namespace DDAS.Services.Search
                 else
                     FullName += " " + Name;
             }
-
-            var Matches = new int[NameComponents.Count()];
 
             UpdateMatchStatus(SiteData.ClinicalInvestigatorInspectionList, FullName, 0);
 
@@ -3019,6 +3179,10 @@ namespace DDAS.Services.Search
             var SiteData =
                 _UOW.FDAWarningLettersRepository
                 .FindById(SiteDataId);
+
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+
+            AddRecordsToWarningLettersSiteData(SiteData, FDAWarningRecords);
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3516,8 +3680,8 @@ namespace DDAS.Services.Search
             var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
-            
+                throw new Exception("FullName cannot be empty");
+
             UpdateMatchStatus(SiteData.DebarredPersons, FullName, 0); //include single match count as well
 
             var MatchedRecords = SiteData.DebarredPersons.Where(x =>
@@ -3536,7 +3700,11 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
+
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+
+            AddRecordsToCIILSiteData(SiteData, CIILRecords);
 
             UpdateMatchStatus(SiteData.ClinicalInvestigatorInspectionList, FullName, 0); //include single match count as well
 
@@ -3557,7 +3725,10 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
+
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+            AddRecordsToWarningLettersSiteData(SiteData, FDAWarningRecords);
 
             UpdateMatchStatus(SiteData.FDAWarningLetterList, FullName, 0); //include single match count as well
 
@@ -3565,6 +3736,9 @@ namespace DDAS.Services.Search
             x.MatchCount == 1)
             .OrderByDescending(x => x.MatchCount)
             .ToList();
+
+            //only for FDAWarningLetters
+            ConvertFDAWarningLinks(SiteData.FDAWarningLetterList);
 
             return ConvertToFindings(
                 MatchedRecords, 
@@ -3577,7 +3751,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.ProposalToDebar, FullName, 0); //include single match count as well
 
@@ -3597,7 +3771,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.AdequateAssurances, FullName, 0); //include single match count as well
 
@@ -3617,7 +3791,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.DisqualifiedInvestigatorList, FullName, 0); //include single match count as well
 
@@ -3637,7 +3811,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.ClinicalInvestigator, FullName, 0); //include single match count as well
 
@@ -3657,7 +3831,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.PHSAdministrativeSiteData, FullName, 0); //include single match count as well
 
@@ -3677,7 +3851,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.ExclusionSearchList, FullName); //include single match count as well
 
@@ -3697,7 +3871,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.CIAListSiteData, FullName, 0); //include single match count as well
 
@@ -3717,7 +3891,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.SAMSiteData, FullName); //include single match count as well
 
@@ -3737,7 +3911,7 @@ namespace DDAS.Services.Search
                 .FindById(SiteDataId);
 
             if (FullName == null || FullName.Trim().Length == 0)
-                throw new Exception("");
+                throw new Exception("FullName cannot be empty");
 
             UpdateMatchStatus(SiteData.SDNListSiteData, FullName); //include single match count as well
 
@@ -3760,6 +3934,7 @@ namespace DDAS.Services.Search
             List<ComplianceForm> forms)
         {
             int Row = 2;
+
             foreach(ComplianceForm form in forms)
             {
                 DateTime? WorldCheckCompletedOn = null;
@@ -3806,11 +3981,9 @@ namespace DDAS.Services.Search
                             WorldCheckCompletedOn,
                             1,
                             InstituteWorldCheckCompletedOn,
-                            //InstituteWorldCheckCompletedOn == null ? "No" : "Yes",
-                            InstituteSite.IssuesIdentified ? "Yes" : "No",
+                            InstituteSite != null ? ToYesNoString(InstituteSite.IssuesIdentified) : "",
                             DMCCheckCompletedOn,
-                            //DMCCheckCompletedOn == null ? "No" : "Yes",
-                            DMCCheck.IssuesIdentified ? "Yes" : "No",
+                            DMCCheck!= null ? ToYesNoString(DMCCheck.IssuesIdentified) : "",
                             Row);
                         Row += 1;
                         WorldCheckCompletedOn = null;
@@ -3834,15 +4007,15 @@ namespace DDAS.Services.Search
 
         #region Helpers
 
-        public string RemoveExtraCharacters(string Value)
+        private string RemoveExtraCharacters(string Value)
         {
             //string CharactersToRemove = ".,/:";
             //return Name.Replace(CharactersToRemove, "");
             //string TempValue = Regex.Unescape(Value);
-            return Regex.Replace(Value, "[,.'/]", "");
+            return Regex.Replace(Value, "[,.'/;]", " ");
         }
 
-        public static string RemoveSpecialCharacters(string str)
+        private static string RemoveSpecialCharacters(string str)
         {
             StringBuilder sb = new StringBuilder();
             foreach (char c in str)
@@ -3854,10 +4027,15 @@ namespace DDAS.Services.Search
             return sb.ToString();
         }
 
-        public string AddSpaceBetweenWords(string Name)
+        private string AddSpaceBetweenWords(string Name)
         {
             string res = Regex.Replace(Name, "[A-Z]", " $0").Trim();
             return res;
+        }
+
+        private string ToYesNoString(bool Value)
+        {
+            return Value ? "Yes" : "No";
         }
         #endregion
 

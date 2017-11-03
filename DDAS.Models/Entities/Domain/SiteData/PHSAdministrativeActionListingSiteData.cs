@@ -57,12 +57,27 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override DateTime? DateOfInspection {
             get {
-                return null; //have to read date from a sentence
-                //No date field available
-                //return DateTime.ParseExact(,
-                //    "M'/'d'/'yyyy", null,
-                //    System.Globalization.DateTimeStyles.None);
+                if (NoPHSAdvisoryUntil.Trim() == null || 
+                    !IsValidDateFormat(NoPHSAdvisoryUntil))
+                    return null;
+
+                string[] Formats =
+                    { "M/d/yyyy", "M-d-yyyy" };
+
+                return DateTime.ParseExact(
+                    NoPHSAdvisoryUntil.Trim(), Formats, null,
+                    System.Globalization.DateTimeStyles.None);
             }
+        }
+
+        private bool IsValidDateFormat(string Format)
+        {
+            foreach(char c in Format)
+            {
+                if((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+                    return false;
+            }
+            return true;
         }
     }
 }

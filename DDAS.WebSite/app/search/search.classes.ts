@@ -321,6 +321,8 @@ export class SearchList{
         
         RecordDetails : string;
         DateOfInspection: Date;
+        DateOfInspectionLocale: Date;
+        TimeZoneOffset: string;
         Observation: string;
         IsAnIssue: boolean = false;
         Links: Link[] = [];
@@ -394,7 +396,7 @@ export class SearchList{
         SponsorProtocolNumber: string;
         SearchedOnFrom: Date;
         SearchedOnTo: Date;
-       
+        AssignedTo: string;
         Country: string;
         Status: ComplianceFormStatusEnum
     }

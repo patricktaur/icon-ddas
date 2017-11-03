@@ -34,7 +34,7 @@ namespace DDAS.API.Controllers
         #region WorkingCode
 
         #region User
-        [Authorize(Roles = "app-admin, admin")]
+        [Authorize(Roles = "app-admin, admin, user")]
         [Route("GetUsers")]
         [HttpGet]
         public IHttpActionResult GetUsers()

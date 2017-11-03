@@ -458,7 +458,7 @@ namespace WebScraping.Selenium.Pages
             DateTime LastUpdatedDate;
 
             DateTime.TryParseExact(Date,
-                "M'/'d'/'yyyy",
+                "M/d/yyyy",
                 System.Globalization.CultureInfo.InvariantCulture,
                 System.Globalization.DateTimeStyles.None,
                 out LastUpdatedDate);

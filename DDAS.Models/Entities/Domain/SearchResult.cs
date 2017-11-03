@@ -485,10 +485,11 @@ namespace DDAS.Models.Entities.Domain
         public string Role { get; set; }
         public string Qualification { get; set; }
         public string MedicalLiceseNumber { get; set; }
-        public string InvestigatorId { get; set; }
+        public string InvestigatorId { get; set; } = "";
 
         //changed ExtractedOn to AddedOn
-        public DateTime? AddedOn { get; set; } //null indicates 'Not extracted' 
+        public DateTime? AddedOn { get; set; } //null indicates 'Not extracted'
+        public DateTime SearchCompletedOn { get; set; } //10Oct2017 Pradeep
         public bool HasExtractionError { get; set; }
         public int ExtractionErrorSiteCount { get; set; }
         public int ExtractionPendingSiteCount { get; set; }
@@ -1026,8 +1027,7 @@ namespace DDAS.Models.Entities.Domain
         public string SponsorProtocolNumber { get; set; }
         public DateTime? SearchedOnFrom { get; set; }
         public DateTime? SearchedOnTo { get; set; }
-
-      
+        public string AssignedTo { get; set; }
         public string Country { get; set; }
         public ComplianceFormStatusEnum Status { get; set; }
     }
@@ -1193,6 +1193,97 @@ namespace DDAS.Models.Entities.Domain
         //public string SiteName { get; set; }
        
         //public SearchAppliesToEnum SearchAppliesTo { get; set; }
+    }
+    #endregion
+
+    #region ReportFilters
+    
+    public class ReportFilters
+    {
+        public string AssignedTo { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public ReportPeriodEnum ReportPeriodEnum { get; set; }
+    }
+    
+    public class InvestigationsReport
+    {
+        public List<ReportByUser> ReportByUsers { get; set; }
+        public string DatesAdjustedTo;
+    }
+
+    public class ReportByUser
+    {
+        public string UserName { get; set; }
+        public List<ReportItem> ReportItems { get; set; } 
+            = new List<ReportItem>();
+    }
+
+    public class ReportItem
+    {
+        public string ReportPeriod { get; set; }
+        public double Value { get; set; }
+    }
+
+    public static class DateTimeExtensions
+    {
+        public static DateTime LastDayOfMonth(DateTime Value)
+        {
+            return new DateTime(
+                Value.Year,
+                Value.Month,
+                DateTime.DaysInMonth(Value.Year, Value.Month));
+        }
+
+        public static DateTime FirstDayOfMonth(DateTime Value)
+        {
+            return new DateTime(Value.Year, Value.Month, 1);
+        }
+
+        public static DateTime StartOfWeek(DateTime Value, DayOfWeek startOfWeek)
+        {
+            int diff = Value.DayOfWeek - startOfWeek;
+            if (diff < 0)
+            {
+                diff += 7;
+            }
+            return Value.AddDays(-1 * diff).Date;
+        }
+
+        public static int QuarterDifference(DateTime first, DateTime second)
+        {
+            int firstQuarter = getQuarter(first);
+            int secondQuarter = getQuarter(second);
+            return 1 + Math.Abs(secondQuarter - firstQuarter);
+        }
+
+        private static int getQuarter(DateTime date)
+        {
+            return (date.Year * 4) + ((date.Month - 1) / 3);
+        }
+
+        public static DateTime FirstDayOfQuarter(DateTime Value)
+        {
+            int quarterNumber = (Value.Month - 1) / 3 + 1;
+
+            return new DateTime(Value.Year, 
+                (quarterNumber - 1) * 3 + 1, 1);
+        }
+
+        public static DateTime LastDayOfQuarter(DateTime firstDayOfQuarter)
+        {
+            return firstDayOfQuarter.AddMonths(3).AddDays(-1);
+        }
+
+        public static DateTime FirstDayOfYear(DateTime Value)
+        {
+            return new DateTime(Value.Year, 1, 1);
+        }
+
+        public static DateTime LastDayOfYear(DateTime Value)
+        {
+            return new DateTime(Value.Year, 12, 31);
+        }
     }
     #endregion
 

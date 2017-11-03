@@ -11,28 +11,29 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            foreach (string arg in args)
-            {
-                Console.WriteLine(arg);
-            }
-            var EmbeddingObjectPath = args[0];
-            var WordDocumentPath = args[1];
+            TestDateFormats();
+            
+            //foreach (string arg in args)
+            //{
+            //    Console.WriteLine(arg);
+            //}
+            //var EmbeddingObjectPath = args[0];
+            //var WordDocumentPath = args[1];
 
-            //var FilePath = @"C:\Development\p926-ddas\DDAS.API\DataFiles\Templates\Output_File.xlsx";
-
-            //var EmbeddingObjectPath = "C:\\Development\\test.pdf";
-            //var WordDocumentPath = "C:\\Development\\p926-ddas\\DDAS.API\\App_Data\\Templates\\ComplianceFormTemplate.docx";
-            Console.WriteLine("Calling DLL to embed file");
-            var start = new Start();
-            start.EmbedObjectIntoDocument(EmbeddingObjectPath, WordDocumentPath);
-            Console.WriteLine("file is embedded successfully");
+            //Console.WriteLine("Calling DLL to embed file");
+            //var start = new Start();
+            //start.EmbedObjectIntoDocument(EmbeddingObjectPath, WordDocumentPath);
+            //Console.WriteLine("file is embedded successfully");
 
             Console.ReadKey();
+        }
 
-            //Test cases
-            //1. Login
-            //var Tests = new TestSites();
-            //Tests.TestLogin();
+        static void TestDateFormats()
+        {
+            Console.WriteLine("M/d/yy - 10/4/17");
+            Console.WriteLine(DateTime.ParseExact("1/4/17","M/d/yy",null, System.Globalization.DateTimeStyles.None));
+            Console.WriteLine("MM/dd/yyyy - 1/4/17");
+            Console.WriteLine(DateTime.ParseExact("10/14/2017", "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None));
         }
     }
 }

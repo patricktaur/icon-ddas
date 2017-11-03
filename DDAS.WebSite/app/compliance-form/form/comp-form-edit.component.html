@@ -94,7 +94,7 @@
 												<div class="row">
 													<div class="col-lg-6">
 														<div class="form-group">
-															<label for="NameToSeaICONrch">Sponsor Protocal No:</label>
+															<label for="NameToSeaICONrch">Sponsor Protocol No:</label>
 															<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber" (change)="formValueChanged()">
 														</div>
 													</div>
@@ -592,19 +592,22 @@
 								</div>
 								<div id="summary" class="tab-pane fade ">
 									<h4>Summary:</h4>
-									<div class="row">
+									<div class="row" *ngIf="isFileUploaded">
 										<b> File Uploaded: </b>
 										{{CompForm.UploadedFileName}}
 										<button type="button" class="btn btn-sm btn-primary" (click)="downloadUploadedFile(CompForm.GeneratedFileName)" title="Download File">
 											<span class="glyphicon glyphicon-download-alt" ></span>
 										</button>
 									</div>
+									<div class="row">
+										<b> Search Started On: </b>
+										{{CompForm.SearchStartedOn | date: 'medium'}}
+									</div>
 									<div class="table-responsive">
 										<table class="table table-bordered table-hover">
 											<thead>
 												<tr>
 													<th>Investigator</th>
-													<th>Search Started On</th>
 													<th>Review Completed On</th>
 												</tr>
 											</thead>
@@ -613,10 +616,7 @@
 													{{item.Name}}
 												</td>
 												<td>
-													{{item.AddedOn | date:'dd MMM yyyy' }}
-												</td>
-												<td>
-													{{item.ReviewCompletedOn | date:'dd MMM yyyy'}}
+													{{item.ReviewCompletedOn | date:'medium'}}
 												</td>
 											</tr>
 										</table>

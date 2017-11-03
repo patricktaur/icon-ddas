@@ -14,7 +14,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
         }
         public Guid? RecId { get; set; }
         public List<CIAList> CIAListSiteData { get; set; }
-
     }
     public class CIAList : SiteDataItemBase
     {
@@ -51,8 +50,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     return null;
 
                 string[] Formats =
-                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd", "dd-MM-yyyy",
-                    "M/d/yyyy", "dd MMM yyyy", "MM-dd-yyyy" };
+                    { "M/d/yyyy", "M-d-yyyy" };
 
                 //var Formats = new string[] { "MM-dd-yyyy", "MM/dd/yyyy" };
 

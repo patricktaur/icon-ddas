@@ -28,7 +28,10 @@ namespace DDAS.API
             var ConnStr = 
                 System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
-            var uow = new UnitOfWork(ConnStr);
+            var DBName =
+                System.Configuration.ConfigurationManager.AppSettings["DBName"];
+
+            var uow = new UnitOfWork(ConnStr, DBName);
             var userService = new UserService(uow);
 
             UserManagerFactory = () => new UserManager<IdentityUser, Guid>(new UserStore(uow));

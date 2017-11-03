@@ -136,7 +136,7 @@ namespace WebScraping.Selenium.Pages
 
             var IsDateParsed = DateTime.TryParseExact(
                 SiteLastUpdated, 
-                "M'/'d'/'yyyy", 
+                "M/d/yyyy", 
                 null,
                 System.Globalization.DateTimeStyles.None, 
                 out RecentLastUpdatedDate);

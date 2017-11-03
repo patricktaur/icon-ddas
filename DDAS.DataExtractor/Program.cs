@@ -46,7 +46,9 @@ namespace DDAS.DataExtractor
 
             string ConnString = GetWebConfigConnectionString(configFile, "DefaultConnection");
 
-            IUnitOfWork uow = new UnitOfWork(ConnString);
+            string DBName = GetWebConfigAppSetting(configFile, "DBName");
+
+            IUnitOfWork uow = new UnitOfWork(ConnString, DBName);
 
             if (configFile == null)
             {

@@ -175,7 +175,7 @@ namespace Utilities.WordTemplate
 
         //Pradeep 12Dec2016 - Clean up required
 
-        public void AddSearchedByDetails(Table SearchedByTable, 
+        private void AddSearchedByDetails(Table SearchedByTable, 
             string Value, int RowIndex, int CellIndex)
         {
             TableRow Row = SearchedByTable.Elements<TableRow>().ElementAt(RowIndex);
@@ -186,32 +186,7 @@ namespace Utilities.WordTemplate
             text.Text += " " +Value;
         }
 
-        public TableCell CellWithVerticalAlign()
-        {
-            var tableCell = new TableCell();
-            var SitesTableProperties = new TableCellProperties();
-            var VerticalAlignProperty = new TableCellVerticalAlignment() {
-                Val = TableVerticalAlignmentValues.Center };
-
-            SitesTableProperties.Append(VerticalAlignProperty);
-            tableCell.Append(SitesTableProperties);
-
-            return tableCell;
-        }
-
-        public Paragraph ParagraphWithCenterAlign()
-        {
-            var paragraph = new Paragraph();
-            var paragraphProperties = new ParagraphProperties();
-            var justification = new Justification() {
-                Val = JustificationValues.Center };
-
-            paragraphProperties.Append(justification);
-            paragraph.Append(paragraphProperties);
-            return paragraph;
-        }
-
-        public void AddInvestigatorDetails(Table HeaderTable, string InvestigatorName, 
+        private void AddInvestigatorDetails(Table HeaderTable, string InvestigatorName, 
             string Qualification, string MLNumber, string Role)
         {
             var tr = new TableRow();
@@ -261,34 +236,9 @@ namespace Utilities.WordTemplate
             HeaderTable.Append(tr);
         }
 
-        private void AddTableCell(string Text)
-        {
-            var TableCell = CellWithVerticalAlign();
-            var paragraph = ParagraphWithCenterAlign();
 
-            if(Text != null && Text.Length > 2 && Text.Contains("\n"))
-            {
-                var Values = 
-                    Text.Split('\n');
 
-                var run = new Run();
-                for(int Index = 0; Index < Values.Count(); Index++)
-                {
-                    if(Index > 0)
-                        run.Append(new Break());
-
-                    run.Append(new Text(Values[Index]));
-                }
-                paragraph.Append(run);
-            }
-            else
-                paragraph.Append(new Run(new Text(Text)));
-
-            TableCell.Append(paragraph);
-            _row.Append(TableCell);
-        }
-
-        public void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
+        private void AddSites(Table SitesTable, string SourceNumber, string SourceName, 
             string SourceDate, string WebLink, string IssueIdentified)
         {
             var tr = new TableRow();
@@ -335,7 +285,7 @@ namespace Utilities.WordTemplate
             SitesTable.Append(tr);
         }
 
-        public void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
+        private void CheckOrUnCheckIssuesIdentified(Table table, int RowIndex, bool IsIssueIdentified)
         {
 
             if(IsIssueIdentified)
@@ -350,7 +300,7 @@ namespace Utilities.WordTemplate
             }
         }
 
-        public void AddFindings(Table table, string SourceNumber, 
+        private void AddFindings(Table table, string SourceNumber, 
             string InvestigatorName, DateTime DateOfInspection, 
             string DescriptionOfFindings)
         {
@@ -466,8 +416,95 @@ namespace Utilities.WordTemplate
                 }
             }
         }
-        
+
         #region IWriter Implementation
+
+        private void AddCellValue(string[] Values)
+        {
+            var tableCell = CellWithVerticalAlign();
+            var paragraph = ParagraphWithLeftAlign();
+
+            paragraph.Append(
+                new Run(new Text(Values.ToString())
+                { Space = SpaceProcessingModeValues.Preserve }));
+
+            tableCell.Append(paragraph);
+            _row.Append(tableCell);
+        }
+
+        private void AddTableCell(string Text)
+        {
+            var TableCell = CellWithVerticalAlign();
+            var paragraph = ParagraphWithLeftAlign();
+
+            if (Text != null && Text.Length > 2 && Text.Contains("\n"))
+            {
+                var Values =
+                    Text.Split('\n');
+
+                for (int Index = 0; Index < Values.Count(); Index++)
+                {
+                    var run = new Run();
+                    run.Append(new Text(Values[Index]));
+                    run.Append(new Break());
+                    paragraph.Append(run);
+                }
+            }
+            else
+            {
+                paragraph = ParagraphWithCenterAlign();
+                paragraph.Append(new Run(new Text(Text)));
+            }
+
+            TableCell.Append(paragraph);
+            _row.Append(TableCell);
+        }
+
+        private TableCell CellWithVerticalAlign()
+        {
+            var tableCell = new TableCell();
+            
+            var CellProperties = new TableCellProperties();
+
+            var VerticalAlignProperty = new TableCellVerticalAlignment()
+            {
+                Val = TableVerticalAlignmentValues.Center,
+            };
+
+            CellProperties.Append(VerticalAlignProperty);
+            tableCell.Append(CellProperties);
+
+            return tableCell;
+        }
+
+        private Paragraph ParagraphWithCenterAlign()
+        {
+            var paragraph = new Paragraph();
+            var paragraphProperties = new ParagraphProperties();
+            var justification = new Justification()
+            {
+                Val = JustificationValues.Center
+            };
+
+            paragraphProperties.Append(justification);
+            paragraph.Append(paragraphProperties);
+            return paragraph;
+        }
+
+        private Paragraph ParagraphWithLeftAlign()
+        {
+            var paragraph = new Paragraph();
+            var paragraphProperties = new ParagraphProperties();
+
+            var justification = new Justification()
+            {
+                Val = JustificationValues.Left
+            };
+
+            paragraphProperties.Append(justification);
+            paragraph.Append(paragraphProperties);
+            return paragraph;
+        }
 
         public void Initialize(string TemplateFolder, string ComplianceFormFolder)
         {   
@@ -513,30 +550,12 @@ namespace Utilities.WordTemplate
         public void FillUpTable(string[] CellValues)
         {
             _row = new TableRow();
+            
             foreach (string Value in CellValues)
             {
-                //string[] temp = new string[] { };
-                //if(Value.Contains("\n"))
-                //{
-                //    temp = Value.Split('\n');
-                //    AddCellValue(temp);
-                //}
-                //else
                 AddTableCell(Value);
             }
             _table.Append(_row);
-        }
-
-        private void AddCellValue(string[] Values)
-        {
-            var TableCell = CellWithVerticalAlign();
-            var paragraph = ParagraphWithCenterAlign();
-
-            paragraph.Append(new Run(new Text(Values.ToString())
-            { Space = SpaceProcessingModeValues.Preserve }));
-
-            TableCell.Append(paragraph);
-            _row.Append(TableCell);
         }
 
         public void WriteParagraph(string Text)
@@ -550,7 +569,7 @@ namespace Utilities.WordTemplate
             var SearchedByTable = body.Descendants<Table>().ElementAt(5);
             AddSearchedByDetails(SearchedByTable, SearchedBy, 0, 0);
             AddSearchedByDetails(SearchedByTable, Date,
-                1, 0);
+                0, 1);
         }
 
         public void SaveChanges()

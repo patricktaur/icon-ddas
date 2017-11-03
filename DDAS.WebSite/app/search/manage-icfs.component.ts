@@ -46,20 +46,16 @@ export class ManageICFsComponent implements OnInit {
     ngOnInit() {
 
         this.route.params.forEach((params: Params) => {
-
             let page = +params['page'];
             if (page != null) {
                 this.pageNumber = page;
             }
             this.LoggedInUserIsAppAdmin = this.authService.isAppAdmin;
         });
-
-
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
         this.LoadUsers();
-
     }
 
     SetDefaultFilterValues() {
@@ -69,25 +65,20 @@ export class ManageICFsComponent implements OnInit {
         this.ComplianceFormFilter.SearchedOnFrom = null;
         this.ComplianceFormFilter.SearchedOnTo = null;
         this.ComplianceFormFilter.Country = null;
+        this.ComplianceFormFilter.AssignedTo = "-1";
         this.ComplianceFormFilter.Status = -1;
+        
         var fromDay = new Date();
-
         fromDay.setDate(fromDay.getDate() - 10);
-
 
         this.FromDate = {
             date: {
                 year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
-
             },
             jsdate: '',
             formatted: '',
             epoc: null
-
         }
-
-
-
         var today = new Date();
         this.ToDate = {
             date: {
@@ -97,8 +88,6 @@ export class ManageICFsComponent implements OnInit {
             formatted: '',
             epoc: null
         }
-
-
     }
 
     LoadUsers() {

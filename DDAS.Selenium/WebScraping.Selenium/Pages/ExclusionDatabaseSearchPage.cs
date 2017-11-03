@@ -147,16 +147,16 @@ namespace WebScraping.Selenium.Pages
                     ExclusionList.LastName = fields[0];
                     ExclusionList.FirstName = fields[1];
                     ExclusionList.MiddleName = fields[2];
-                    //ExclusionList.BusinessName = RecordDetails[3];
+                    ExclusionList.BusinessName = fields[3];
                     ExclusionList.General = fields[4];
                     ExclusionList.Specialty = fields[5];
-                    //ExclusionList.UPIN = RecordDetails[6];
+                    ExclusionList.UPIN = fields[6];
                     //ExclusionList.NPI = RecordDetails[7];
                     //ExclusionList.DOB = RecordDetails[8];
-                    //ExclusionList.Address = RecordDetails[9];
-                    //ExclusionList.City = RecordDetails[10];
-                    //ExclusionList.State = RecordDetails[11];
-                    //ExclusionList.Zip = RecordDetails[12];
+                    ExclusionList.Address = fields[9];
+                    ExclusionList.City = fields[10];
+                    ExclusionList.State = fields[11];
+                    ExclusionList.Zip = fields[12];
                     ExclusionList.ExclusionType = fields[13];
                     ExclusionList.ExclusionDate = fields[14];
                     //ExclusionList.WaiverDate = RecordDetails[16];
@@ -209,7 +209,7 @@ namespace WebScraping.Selenium.Pages
 
             var IsDateParsed = DateTime.TryParseExact(
                 PageLastUpdated, 
-                "M'/'d'/'yyyy", 
+                "M/d/yyyy", 
                 null,
                 System.Globalization.DateTimeStyles.None, 
                 out RecentLastUpdatedDate);

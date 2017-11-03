@@ -12,24 +12,16 @@
 				<div class="row">
 					<div class="col-md-6 ">
 						<h4>Filters:</h4>
-						<!--{{diagnostic}}-->
+						<!-- {{diagnostic}} -->
 					</div>
 
 				</div>
 				<div class="row">
 					<div class="col-md-6 ">
-						<!--<div class="form-group">
-								<label for="PrincipalInvestigator">Principal Investigator:</label>
-								<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
-							</div>-->
 						<div class="form-group">
-							<label for="SponsorProtocolNumber">Sponsor Protocol Number:</label>
-							<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="ComplianceFormFilter.SponsorProtocolNumber">
+							<label for="PrincipalInvestigator">Principal Investigator:</label>
+							<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
 						</div>
-						<!--<div class="form-group">
-								<label for="SearchedOnFrom">Searched on From:</label>
-								<input type="text" class="form-control" name="SearchedOnFrom" [(ngModel)]="ComplianceFormFilter.SearchedOnFrom">
-							</div>							-->
 						<div class="form-group">
 							<label for="Status">Status:</label>
 							<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
@@ -39,7 +31,7 @@
 									<option value="2">Review Completed, No Issues Identified</option>  
  						     		<option value="3">Full Match Found, Review Pending</option>
 									<option value="4">Partial Match Found, Review Pending</option>
-							  		<option value="5">No Matched Found, Review Completed</option>              
+							  		<option value="5">No Matches Found, Review Pending</option>              
 								</select>
 						</div>
 					</div>
@@ -49,13 +41,12 @@
 							<input type="text" class="form-control" name="ProjectNumber" [(ngModel)]="ComplianceFormFilter.ProjectNumber">
 						</div>
 						<div class="form-group">
-							<label for="Country">Country:</label>
-							<input type="text" class="form-control" name="Country" [(ngModel)]="ComplianceFormFilter.Country">
+							<label for="AssignedTo">Assigned To:</label>
+							<select class="form-control" name="AssignedTo" [(ngModel)]="ComplianceFormFilter.AssignedTo">
+								<option value="-1" selected="selected">All</option>
+								<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
+							</select>
 						</div>
-						<!--<div class="form-group">
-								<label for="SearchedOnTo">Searched on To:</label>
-								<input type="text" class="form-control" name="SearchedOnTo" [(ngModel)]="ComplianceFormFilter.SearchedOnTo">
-							</div>-->
 					</div>
 				</div>
 				<div class="row">

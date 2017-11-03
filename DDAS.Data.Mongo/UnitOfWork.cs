@@ -92,21 +92,39 @@ namespace DDAS.Data.Mongo
          * */
 
         #region Constructor
-        public UnitOfWork(string nameOrConnectionString)
+        //public UnitOfWork(string nameOrConnectionString)
+        //{
+        //    //InitializeMaps();
+        //    //_provider = Norm.Mongo.Create(nameOrConnectionString);
+        //    //var conn = System.Configuration.ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
+        //    //var mongo = new MongoClient("mongodb://127.0.0.1");
+        //    //var mongo = new MongoClient(conn);
+
+        //    var mongo = new MongoClient(nameOrConnectionString);
+
+        //    //var arr = nameOrConnectionString.Split('/');
+
+        //    //string db = arr[arr.Length-1];
+
+        //    _db = mongo.GetDatabase("ddastest");
+        //    //_db = mongo.GetDatabase(db);
+
+        //    //Forcing exception if Mongo is not running.
+        //    try
+        //    {
+        //        var x = _db.ListCollections();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("MongoDB is not running",  ex);
+        //    }
+        //}
+
+        public UnitOfWork(string ConnectionString, string DBName)
         {
-            //InitializeMaps();
-            //_provider = Norm.Mongo.Create(nameOrConnectionString);
-            //var conn = System.Configuration.ConfigurationManager.ConnectionStrings[nameOrConnectionString].ConnectionString;
-            //var mongo = new MongoClient("mongodb://127.0.0.1");
-            //var mongo = new MongoClient(conn);
-            var mongo = new MongoClient(nameOrConnectionString);
+            var mongo = new MongoClient(ConnectionString);
 
-            var arr = nameOrConnectionString.Split('/');
-
-            string db = arr[arr.Length-1];
-
-            //_db = mongo.GetDatabase("DDAS");
-            _db = mongo.GetDatabase(db);
+            _db = mongo.GetDatabase(DBName);
 
             //Forcing exception if Mongo is not running.
             try
@@ -115,10 +133,10 @@ namespace DDAS.Data.Mongo
             }
             catch (Exception ex)
             {
-                throw new Exception("MongoDB is not running",  ex);
+                throw new Exception("MongoDB is not running", ex);
             }
-    
         }
+
         #endregion
 
         #region IUnitOfWork Members

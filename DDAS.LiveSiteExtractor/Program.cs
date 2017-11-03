@@ -36,7 +36,7 @@ namespace DDAS.LiveSiteExtractor
                 MongoMaps.Initialize();
                 Console.WriteLine("After Initialize");
                 
-                IUnitOfWork uow = new UnitOfWork("DefaultConnection");
+                IUnitOfWork uow = new UnitOfWork("DefaultConnection", "DBName");
                 Console.WriteLine("After uow");
 
                 var _config = new Config();

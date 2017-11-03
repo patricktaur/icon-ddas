@@ -56,9 +56,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 if (DateOfStatus == "" || DateOfStatus == null)
                     return null;
 
-                string[] Formats =
-                    { "dd/MM/yyyy", "dd-MMM-yyyy", "yyyy-MM-dd",
-                    "dd-MM-yyyy", "M/d/yyyy", "dd MMM yyyy" };
+                string[] Formats = {
+                    "M/d/yyyy", "M-d-yyyy"
+                };
 
                 return 
                     DateTime.ParseExact(
@@ -66,16 +66,5 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     System.Globalization.DateTimeStyles.None);
             }
         }
-
-        //public override List<Link> Links
-        //{
-        //    get
-        //    {
-        //        return new List<Link> {
-        //            new Link { Title = "NIDPOE Letter", url = LinkToNIDPOELetter },
-        //            new Link { Title = "NOOH Letter", url = LinkToNOOHLetter }
-        //        };
-        //    }
-        //}
     }
 }

@@ -24,6 +24,7 @@ export class AboutDDASComponent implements OnInit {
     LoadAdmins(){
         this.service.getAdminList()
         .subscribe((item: any[]) => {
+            console.log('admins - ', item);
             this.Admins = item;
         });
     }

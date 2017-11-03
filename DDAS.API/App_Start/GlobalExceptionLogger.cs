@@ -17,9 +17,12 @@ namespace DDAS.API.App_Start
         private string _ConnStr =
             System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
+        private string _DBName =
+            System.Configuration.ConfigurationManager.AppSettings["DBName"];
+
         public GlobalExceptionLogger()
         {
-            _UOW = new UnitOfWork(_ConnStr);
+            _UOW = new UnitOfWork(_ConnStr, _DBName);
         }
 
         public override void Log(ExceptionLoggerContext context)

@@ -4,7 +4,7 @@
 		<div class="col-lg-2 sidebar" *ngIf="authService.isLoggedIn">
 
 			<div class="logo-area">
-				<img src="assets\images\ICON-logo.gif" width="60%" class="img-responsive">
+				<img src="assets\images\ICON-logo-new.gif" width="60%" class="img-responsive">
 			</div>
 
 			<div class="navbar-collapse collapse sidebar-navbar-collapse">
@@ -24,14 +24,30 @@
 							</ul>
 						</div>
 						<li>
-
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews        </a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches        </a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/reports" routerLinkActive="active">Output Report</a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews</a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
-							
+
+							<!-- <li class="active" *ngIf="authService.isUser || authService.isAdmin"><a routerLink="/reports" routerLinkActive="active">Reports</a></li> -->
+
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin">
+								<a data-toggle="collapse" data-target="#report" data-parent="#sidenav01" class="collapsed">
+						 			Reports<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
+								</a>
+								<div class="collapse" id="report" style="height: 0px;">
+									<ul class="nav nav-list  panel-body">
+										<li class="active">
+											<a routerLink="/output-report" routerLinkActive="active">Output Report</a>
+											<a routerLink="/investigations-completed" routerLinkActive="active">Investigations Completed</a>
+											<a routerLink="/open-investigations" routerLinkActive="active">Open Investigations</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+
 							<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-compliance-forms" routerLinkActive="active">Manage Reassignments</a></li>
+							<!-- <li class="active" *ngIf="authService.isAdmin"> <a routerLink="/reports" routerLinkActive="active">Output Report</a></li> -->
 							<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/users" routerLinkActive="active">Users</a></li>
 
 							<li class="active" *ngIf="authService.isAdmin">

@@ -128,8 +128,16 @@ export class SearchService {
     }
 
     getMyReviewPendingPrincipalInvestigators() {
-
         return this.http.get(this._baseUrl + 'search/GetMyReviewPendingPrincipalInvestigators', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    getClosedComplianceFormFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]>{
+        var compFormFilter = JSON.stringify(Filters);
+        return this.http.post(this._baseUrl + 'search/ClosedComplianceFormFilters', compFormFilter, this._options)
             .map((res: Response) => {
                 return res.json();
             })
