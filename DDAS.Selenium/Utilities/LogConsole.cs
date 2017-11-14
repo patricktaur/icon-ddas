@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DDAS.Models.Repository;
 
 namespace Utilities
 {
@@ -22,6 +23,11 @@ namespace Utilities
         public void LogStart()
         {
             //throw new NotImplementedException();
+        }
+
+        public void WriteLog(Log log)
+        {
+            throw new NotImplementedException();
         }
 
         public void WriteLog(string message)

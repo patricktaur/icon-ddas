@@ -3677,7 +3677,12 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetFDADebarMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
+            //var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
+
+            var SiteData = _UOW.FDADebarPageRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -3747,8 +3752,13 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetERRMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.ERRProposalToDebarRepository
-                .FindById(SiteDataId);
+            //var SiteData = _UOW.ERRProposalToDebarRepository
+            //.FindById(SiteDataId);
+
+            var SiteData = _UOW.ERRProposalToDebarRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -3767,8 +3777,13 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetAdequateAssuranceMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.AdequateAssuranceListRepository
-                .FindById(SiteDataId);
+            //var SiteData = _UOW.AdequateAssuranceListRepository
+            //    .FindById(SiteDataId);
+
+            var SiteData = _UOW.AdequateAssuranceListRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -3787,8 +3802,13 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetDisqualificationMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository
-                .FindById(SiteDataId);
+            //var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository
+            //    .FindById(SiteDataId);
+
+            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -3807,8 +3827,13 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetCBERMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.CBERClinicalInvestigatorRepository
-                .FindById(SiteDataId);
+            //var SiteData = _UOW.CBERClinicalInvestigatorRepository
+            //    .FindById(SiteDataId);
+
+            var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -3827,8 +3852,13 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetPHSMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.PHSAdministrativeActionListingRepository
-                .FindById(SiteDataId);
+            //var SiteData = _UOW.PHSAdministrativeActionListingRepository
+            //    .FindById(SiteDataId);
+
+            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -3867,8 +3897,13 @@ namespace DDAS.Services.Search
 
         private List<Finding> GetCIAMatchedRecords(Guid? SiteDataId, string FullName)
         {
-            var SiteData = _UOW.CorporateIntegrityAgreementRepository
-                .FindById(SiteDataId);
+            //var SiteData = _UOW.CorporateIntegrityAgreementRepository
+            //    .FindById(SiteDataId);
+
+            var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll()
+                .Where(x => x.DataExtractionSucceeded == true)
+                .OrderByDescending(s => s.CreatedOn)
+                .First();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
