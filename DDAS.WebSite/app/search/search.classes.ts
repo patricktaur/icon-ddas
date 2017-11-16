@@ -414,5 +414,23 @@ export class SearchList{
        SiteName : string; 
        SiteShortName : string; 
        SiteUrl : string; 
-       IssuesFound : number; 
+       IssuesFound : number;
+   }
+
+   export class Audit{
+       ComplianceFormId: string;
+       RequestedBy: string;
+       RequestedOn: Date;
+       Auditor: string;
+       CompletedOn: Date;
+       AuditorComments: string;
+       RequestorComments: string;
+       AuditStatus: string;
+       Observations: AuditObservation[] = [];
+   }
+
+   export class AuditObservation{
+        SiteId: number;
+        Comments: string;
+        Status: string;
    }

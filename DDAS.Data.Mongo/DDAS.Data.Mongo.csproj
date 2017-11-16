@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Indexes\Indexes.cs" />
     <Compile Include="Maps\MongoMap.cs" />
+    <Compile Include="Repositories\AuditRepository.cs" />
     <Compile Include="Repositories\ComplianceFormRepository.cs" />
     <Compile Include="Repositories\ExceptionLoggerRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />

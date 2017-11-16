@@ -73,6 +73,7 @@
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Interfaces\IAppAdminService.cs" />
+    <Compile Include="Interfaces\IAudit.cs" />
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Domain\IRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IAuditRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\ICBERClinicalInvestigatorInspectionRepository.cs" />
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorDisqualificationRespository.cs" />
     <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionListRepository.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Repository\IExceptionLoggerRepository.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
+    <Compile Include="ViewModels\AuditListViewModel.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
     <Compile Include="ViewModels\ExceptionLoggerViewModel.cs" />

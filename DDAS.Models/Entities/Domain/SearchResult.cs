@@ -951,11 +951,13 @@ namespace DDAS.Models.Entities.Domain
         public List<Link> Links { get; set; } = new List<Link>();//for DB sites only, not used for Manual sites
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();//not yet used by client
 
+        public string AuditComments { get; set; }
+        public string AuditStatus { get; set; }
+
         //New fields: 11Apr2017
         //guid SiteDataId
         //guid SiteRecordId
         //DateTime AddedOn
-
     }
 
     public class UpdateFindigs
@@ -1367,6 +1369,32 @@ namespace DDAS.Models.Entities.Domain
                 return address.Trim();
             }
         }
+    }
+    #endregion
+
+    #region Audit
+    
+    public class Audit
+    {
+        public Guid? RecId { get; set; }
+        public Guid ComplianceFormId { get; set; }
+        public string RequestedBy { get; set; }
+        public DateTime RequestedOn { get; set; }
+        public string Auditor { get; set; }
+        public bool IsSubmitted { get; set; }
+        public DateTime? CompletedOn { get; set; }
+        public string AuditorComments { get; set; }
+        public string RequestorComments { get; set; }
+        public string AuditStatus { get; set; }
+        public List<AuditObservation> Observations { get; set; }
+    }
+    
+    public class AuditObservation
+    {
+        public int SiteId { get; set; }
+        public string SiteShortName { get; set; }
+        public string Comments { get; set; }
+        public string Status { get; set; }
     }
     #endregion
 }

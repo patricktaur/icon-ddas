@@ -231,6 +231,7 @@
     <Compile Include="App_Start\GlobalExceptionHandler.cs" />
     <Compile Include="App_Start\GlobalExceptionLogger.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AuditController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Helpers\IdentifyBrowser.cs" />
     <Compile Include="ManageAppSettings\ManageAppSettings.cs" />

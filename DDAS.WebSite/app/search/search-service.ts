@@ -18,7 +18,8 @@ import {
     PrincipalInvestigatorDetails,
     Finding,
     UpdateFindigs,
-    UpdateInstituteFindings
+    UpdateInstituteFindings,
+    Audit
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -55,10 +56,6 @@ export class SearchService {
             .catch(this.handleError);
 
     }
-
-
-
-
 
     CloseComplianceForm(RecId: string) {
         return this.http.put(this._baseUrl + 'search/CloseComplianceForm?ComplianceFormId=' + RecId, null, this._options)
@@ -152,8 +149,6 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
-
-
 
     getComplianceForm(formId: string): Observable<ComplianceFormA> {
 
@@ -435,10 +430,21 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-
     getSiteSources(): Observable<SiteSource[]> {
 
         return this.http.get(this._baseUrl + 'search/GetSiteSources', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    requestAudit(audit: Audit){
+        let body = JSON.stringify(audit);
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+
+        return this.http.post(this._baseUrl + 'Audit/RequestAudit', body, this._options)
             .map((res: Response) => {
                 return res.json();
             })

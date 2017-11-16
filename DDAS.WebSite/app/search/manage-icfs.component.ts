@@ -93,7 +93,6 @@ export class ManageICFsComponent implements OnInit {
     LoadUsers() {
         this.service.getAllUsers()
             .subscribe((item: any[]) => {
-
                 this.Users = item;
             });
     }
