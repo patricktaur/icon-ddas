@@ -272,7 +272,16 @@ export class ClosedICFsComponent implements OnInit {
 
     }
 
-    requestAudit(auditor, requestorComments) {
+    requestAudit(auditor: string, requestorComments:string) {
+        if(auditor == null || auditor.length == 0){
+            alert('please select an auditor');
+            return;
+        }        
+        else if(this.authService.userName.toLowerCase() == auditor.toLowerCase()){
+            alert('cannot assign the audit to yourself');
+            return;
+        }
+
         this.audit.ComplianceFormId = this.SelectedComplianceFormId;
         this.audit.Auditor = auditor;
         this.audit.RequestorComments = requestorComments;
