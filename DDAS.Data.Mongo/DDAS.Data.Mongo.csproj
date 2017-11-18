@@ -71,6 +71,7 @@
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\SiteData\AdequateAssuranceListRepository.cs" />
+    <Compile Include="Repositories\SiteData\AssignmentHistoryRepository.cs" />
     <Compile Include="Repositories\SiteData\CBERClinicalInvestigatorRepository.cs" />
     <Compile Include="Repositories\SiteData\ClinicalInvestigatorDisqualificationRepository.cs" />
     <Compile Include="Repositories\SiteData\ClinicalInvestigatorInspectionListRepository.cs" />

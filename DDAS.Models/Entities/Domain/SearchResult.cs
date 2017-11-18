@@ -1397,4 +1397,18 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
     }
     #endregion
+
+    #region Assignment History
+
+    public class AssignmentHistory
+    {
+        public Guid RecId { get; set; }
+        public Guid ComplianceFormId { get; set; }
+        public DateTime AssignedOn { get; set; }
+        public DateTime? RemovedOn { get; set; }
+        public string AssignedTo { get; set; }
+        public string AssignedBy { get; set; }
+    }
+
+    #endregion
 }

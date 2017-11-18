@@ -74,6 +74,14 @@ namespace DDAS.Data.Mongo.Maps
                 u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
+            BsonClassMap.RegisterClassMap<AssignmentHistory>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {

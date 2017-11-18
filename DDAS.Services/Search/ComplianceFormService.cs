@@ -393,6 +393,17 @@ namespace DDAS.Services.Search
             return frm;
         }
 
+        private void AddToAssignementHistory(Guid ComplianceFormId, string AssignedBy)
+        {
+            var AssignmentHistory = new AssignmentHistory();
+            AssignmentHistory.ComplianceFormId = ComplianceFormId;
+            AssignmentHistory.AssignedOn = DateTime.Now;
+            AssignmentHistory.AssignedBy = AssignedBy;
+            AssignmentHistory.AssignedTo = AssignedBy;
+
+            _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
+        }
+
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {
             var form = _UOW.ComplianceFormRepository.FindById(formId);
@@ -1314,6 +1325,7 @@ namespace DDAS.Services.Search
                 //inv.SitesSearched = ListOfSiteSearchStatus;
                 InvestigatorId += 1;
             }
+            AddToAssignementHistory(frm.RecId.Value, frm.AssignedTo);
         }
 
         public void AddLiveScanFindings(ComplianceForm frm)
