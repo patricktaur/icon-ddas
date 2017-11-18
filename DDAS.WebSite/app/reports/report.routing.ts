@@ -4,7 +4,8 @@ import { AuthGuard }             from '../auth/auth-guard.service';
 import { ReportComponent }     from './report.component';
 import { OutputReportComponent }     from './output-report.component';
 import {InvestigationsCompletedReportComponent} from './investigations-completed.component';
-import {OpenInvestigationsReport} from './open-investigations.component';
+import {OpenInvestigationsComponent} from './open-investigations.component';
+import { AdminDashboardComponent } from './admin-dashboard.component';
 
 const reportRoutes: Routes = [
  {
@@ -27,7 +28,11 @@ const reportRoutes: Routes = [
   },
   {
     path: 'open-investigations',
-    component: OpenInvestigationsReport, canActivate: [AuthGuard]
+    component: OpenInvestigationsComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboardComponent, canActivate: [AuthGuard]
   }
 ];
 

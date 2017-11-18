@@ -34,3 +34,11 @@ export enum ReportPeriodEnum{
     Quarter,
     Year
 }
+
+export class AdminDashboardViewModel{
+    UserName: string;
+    OpeningBalance: number;
+    InvestigatorUploaded: number;
+    InvestigatorReviewCompleted: number;
+    ClosingBalance: number;
+}

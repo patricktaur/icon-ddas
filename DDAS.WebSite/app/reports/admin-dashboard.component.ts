@@ -2,30 +2,31 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ReportService } from './report-service';
+import { AdminDashboardViewModel } from './report.classes';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'open-investigations.component.html'
+    templateUrl: 'admin-dashboard.component.html'
 })
 
-export class OpenInvestigationsComponent {
+export class AdminDashboardComponent {
     public generating: boolean = false;
 
-    public openInvestigations: any[];
+    public adminDashboardList: AdminDashboardViewModel[];
     public pageNumber: number;
     public formLoading: boolean;
 
     constructor(
         private service: ReportService,
-        private route: ActivatedRoute,
-    ) {
+        private route: ActivatedRoute) {
+
     }
 
     ngOnInit() {
         this.formLoading = true;
-        this.service.getOpenInvestigations()
-            .subscribe((item: any[]) => {
-                this.openInvestigations = item;
+        this.service.getAdminDashboardList()
+            .subscribe((item: AdminDashboardViewModel[]) => {
+                this.adminDashboardList = item;
                 this.formLoading = false;
             },
             error => {
@@ -34,6 +35,6 @@ export class OpenInvestigationsComponent {
     }
     
     diagnostic(){
-        return JSON.stringify(this.openInvestigations);
+        return JSON.stringify(this.adminDashboardList);
     }
 }

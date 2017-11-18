@@ -325,5 +325,12 @@ namespace DDAS.API.Controllers
             var OpenInvestigations = _Report.GetOpenInvestigations();
             return Ok(OpenInvestigations);
         }
+
+        [Route("AdminDashboard")]
+        [HttpGet]
+        public IHttpActionResult GetAdminDashboard()
+        {
+            return Ok(_Report.GetAdminDashboard());
+        }
     }
 }
