@@ -9,7 +9,7 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-  
+        ComplianceForm GetComplianceForm(Guid ComplianceFormId);
         List<PrincipalInvestigator> getAllPrincipalInvestigators();
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);

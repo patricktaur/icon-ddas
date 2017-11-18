@@ -1784,6 +1784,12 @@ namespace DDAS.Services.Search
 
         #region ComplianceFormQueries
 
+        public ComplianceForm GetComplianceForm(Guid ComplianceFormId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            return form;
+        }
+
         public List<PrincipalInvestigator> getAllPrincipalInvestigators()
         {
             var retList = new List<PrincipalInvestigator>();

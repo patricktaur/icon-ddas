@@ -152,7 +152,7 @@ export class SearchService {
 
     getComplianceForm(formId: string): Observable<ComplianceFormA> {
 
-        return this.http.get(this._baseUrl + 'search/GetComplianceFormA?formId=' + formId, this._options)
+        return this.http.get(this._baseUrl + 'search/GetComplianceForm?formId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
             })

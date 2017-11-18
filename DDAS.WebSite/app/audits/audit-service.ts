@@ -41,6 +41,14 @@ export class AuditService {
         .catch(this.handleError);        
     }
 
+    getComplianceForm(formId: string): Observable<any> {
+        return this.http.get(this._baseUrl + 'search/GetComplianceForm?formId=' + formId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     saveAudit(audit: Audit){
         let body = JSON.stringify(audit);
         return this.http.post(this._baseUrl + 'Audit/SaveAudit', body, this._options)

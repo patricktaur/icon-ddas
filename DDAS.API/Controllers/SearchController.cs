@@ -335,7 +335,7 @@ namespace DDAS.API.Controllers
 
         #region Patrick
 
-        [Route("GetComplianceFormA")]
+        [Route("GetComplianceForm")]
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {

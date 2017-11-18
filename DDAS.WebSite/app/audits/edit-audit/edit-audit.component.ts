@@ -13,12 +13,15 @@ import { AuditService } from '../audit-service';
 export class EditAuditComponent implements OnInit {
     public Loading: boolean = false;
     private error: any;
+    public auditId: string;
     public complianceFormId: string;
     public SelectedComplianceFormId: string;
     public audit: Audit = new Audit;
+    public complianceForm: any;
     public pageNumber: number;
     public observation: string;
-    public siteId: number;
+    public siteId: number = 0;
+    public isSubmitted: boolean = false;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -30,20 +33,60 @@ export class EditAuditComponent implements OnInit {
     ngOnInit() {
         this.Loading = true;
         this.route.params.forEach((params: Params) => {
-            this.complianceFormId = params['AuditId'];
+            this.auditId = params['AuditId'];
         });
+        this.complianceForm = {};
         this.loadAudit();
     }
 
     loadAudit(){
-        this.auditService.loadAudit(this.complianceFormId)
+        this.auditService.loadAudit(this.auditId)
         .subscribe((item: Audit) => {
             this.audit = item;
-            console.log('audit: ', this.audit);
+            this.isSubmitted = this.audit.IsSubmitted;
+            this.loadComplianceForm();
         },
         error => {
 
         });
+    }
+
+    loadComplianceForm(){
+        this.auditService.getComplianceForm(this.audit.ComplianceFormId)
+        .subscribe((item: any) => {
+            this.complianceForm = item;
+        },
+        error => {
+
+        });
+    }
+
+    get Investigators(){
+        if(this.complianceForm != undefined || this.complianceForm != null)
+            return this.complianceForm.InvestigatorDetails;
+        else
+            return null;
+    }
+
+    get SiteSources(){
+        if(this.complianceForm != undefined || this.complianceForm != null)
+            return this.complianceForm.SiteSources;
+        else
+            return null;
+    }
+
+    get additionalSiteSources(){
+        if(this.complianceForm != undefined || this.complianceForm != null)
+            return this.complianceForm.SiteSources.filter(x => x.IsOptional == true);
+        else
+            return null;        
+    }
+
+    get Findings(){
+        if(this.complianceForm != undefined || this.complianceForm != null)
+            return this.complianceForm.Findings;
+        else
+            return null;
     }
 
     get Observations(){
@@ -54,7 +97,7 @@ export class EditAuditComponent implements OnInit {
     }
 
     clearValues(){
-        this.siteId = -1;
+        this.siteId = 0;
         this.observation = null;
     }
 
@@ -69,6 +112,11 @@ export class EditAuditComponent implements OnInit {
     }
 
     rejectObservation(){
+        if(this.observation == null || this.observation.length == 0){
+            alert("Observation cannot be empty. Please provide your observations");
+            return;
+        }
+
         this.audit.Observations.forEach((observation: AuditObservation) => {
             if(this.siteId == observation.SiteId){
                 observation.Comments = this.observation;
@@ -100,10 +148,19 @@ export class EditAuditComponent implements OnInit {
     }
 
     submit(){
+        var observation = 
+        this.audit.Observations.find(x => x.Status == "accepted" || x.Status == "rejected");
+
+        if(observation == null || observation == undefined)
+        {
+            alert("Please provide at least one observation to submit the audit");
+            return;
+        }
+
         this.audit.IsSubmitted = true;
         this.audit.AuditStatus = "Completed";
         this.audit.CompletedOn = new Date();
-        console.log(this.audit);
+
         this.auditService.saveAudit(this.audit)
         .subscribe((item: any) => {
 

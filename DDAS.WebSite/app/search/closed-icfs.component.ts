@@ -281,7 +281,7 @@ export class ClosedICFsComponent implements OnInit {
         this.audit.RequestedBy = this.authService.userName;
 
         var observation = new AuditObservation();
-        observation.SiteId = -1;
+        observation.SiteId = 0;
         observation.SiteShortName = "General";
 
         this.audit.Observations.push(observation);

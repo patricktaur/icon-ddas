@@ -46,7 +46,7 @@
 							 {{item.CompletedOn | date: 'dd MMM yyyy'}} 
 						</td>
 						<td>
-							<button type="button" class="btn btn-sm btn-primary" (click)="editAudit(item.RecId)" title="Opens">
+							<button type="button" class="btn btn-sm btn-primary" (click)="editAudit(item.RecId)" title="Opens" *ngIf="isAuditorOrIsAuditPending(item.Auditor, item.AuditStatus)">
                             	<span class="glyphicon glyphicon-folder-open"></span>
                         	</button>
 						</td>

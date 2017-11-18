@@ -26,11 +26,6 @@ namespace DDAS.Services.AuditService
             var ComplianceForm = 
                 _UOW.ComplianceFormRepository.FindById(Audit.ComplianceFormId);
 
-            //var Observation = new AuditObservation();
-            //Observation.SiteId = -1;
-            //Observation.SiteShortName = "General";
-            //Audit.Observations.Add(Observation);
-
             foreach(SiteSource Site in ComplianceForm.SiteSources)
             {
                 var AuditObservation = new AuditObservation();

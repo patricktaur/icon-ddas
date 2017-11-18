@@ -47,6 +47,16 @@ export class ListAuditsComponent implements OnInit {
         });
     }
 
+    isAuditorOrIsAuditPending(auditor: string, auditStatus: string){
+        console.log('auditor: ', auditor, ' audit status: ', auditStatus);
+        if(this.authService.userName.toLowerCase() == auditor)
+            return true;
+        else if(auditStatus.toLowerCase() != "pending")
+            return true;
+        else
+            return false;
+    }
+
     editAudit(auditId: string){
         console.log("compliance Form Id:", auditId);
         this.router.navigate(['edit-audit', auditId], { relativeTo: this.route.parent});
