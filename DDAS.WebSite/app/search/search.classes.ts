@@ -179,6 +179,7 @@ export class SearchList{
     Country : string = "";
     Address : string = "";
     ProjectNumber : string = "";
+    ProjectNumber2: string = "";
     Institute : string = "";
     AssignedTo: string = "";
     SearchStartedOn : Date ;

@@ -161,6 +161,7 @@ namespace DDAS.Models.Entities.Domain
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
         public string Institute { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public string UploadedFileName { get; set; }
@@ -420,6 +421,7 @@ namespace DDAS.Models.Entities.Domain
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
@@ -1327,6 +1329,7 @@ namespace DDAS.Models.Entities.Domain
     {
         public string Role { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public string DisplayName { get; set; }
         public string InvestigatorID { get; set; }

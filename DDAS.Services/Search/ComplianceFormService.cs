@@ -62,21 +62,22 @@ namespace DDAS.Services.Search
         {
             RowData.Role = ExcelRow[0];
             RowData.ProjectNumber = ExcelRow[1];
-            RowData.SponsorProtocolNumber = ExcelRow[2];
-            RowData.DisplayName = ExcelRow[3];
-            RowData.InvestigatorID = ExcelRow[4];
-            RowData.MemberID = ExcelRow[5];
-            RowData.FirstName = ExcelRow[6];
-            RowData.MiddleName = ExcelRow[7];
-            RowData.LastName = ExcelRow[8];
-            RowData.InstituteName = ExcelRow[9];
-            RowData.AddressLine1 = ExcelRow[10];
-            RowData.AddressLine2 = ExcelRow[11];
-            RowData.City = ExcelRow[12];
-            RowData.State = ExcelRow[13];
-            RowData.PostalCode = ExcelRow[14];
-            RowData.Country = ExcelRow[15];
-            RowData.MedicalLicenseNumber = ExcelRow[16];
+            RowData.ProjectNumber2 = ExcelRow[2];
+            RowData.SponsorProtocolNumber = ExcelRow[3];
+            RowData.DisplayName = ExcelRow[4];
+            RowData.InvestigatorID = ExcelRow[5];
+            RowData.MemberID = ExcelRow[6];
+            RowData.FirstName = ExcelRow[7];
+            RowData.MiddleName = ExcelRow[8];
+            RowData.LastName = ExcelRow[9];
+            RowData.InstituteName = ExcelRow[10];
+            RowData.AddressLine1 = ExcelRow[11];
+            RowData.AddressLine2 = ExcelRow[12];
+            RowData.City = ExcelRow[13];
+            RowData.State = ExcelRow[14];
+            RowData.PostalCode = ExcelRow[15];
+            RowData.Country = ExcelRow[16];
+            RowData.MedicalLicenseNumber = ExcelRow[17];
 
             return RowData;
         }
@@ -113,7 +114,7 @@ namespace DDAS.Services.Search
                     break;
                 }
 
-                if (ExcelRow[0] == null || ExcelRow[0] == "")
+                if (ExcelRow[0] == null || ExcelRow[0] == "") //empty file
                     break;
  
                 FillUpExcelInputRowObject(RowData, ExcelRow);
@@ -186,8 +187,7 @@ namespace DDAS.Services.Search
                 form.GeneratedFileName = 
                     Path.GetFileName(FilePathWithGUID);
                 form.ProjectNumber = InputRows[Index].ProjectNumber;
-                //form.SponsorProtocolNumber = 
-                //    InputRows[Index].ProjectNumber.Split('/')[0];
+                form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
                 form.SponsorProtocolNumber =
                     InputRows[Index].SponsorProtocolNumber;
                 form.Institute = InputRows[Index].InstituteName;
@@ -1878,6 +1878,7 @@ namespace DDAS.Services.Search
             item.Address = compForm.Address;
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;
+            item.ProjectNumber2 = compForm.ProjectNumber2;
             item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
             item.RecId = compForm.RecId;
             item.Active = compForm.Active;
@@ -1937,7 +1938,9 @@ namespace DDAS.Services.Search
                 CompFormFilter.ProjectNumber != "")
             {
                 Filter2 = Filter1.Where(x =>
-                x.ProjectNumber == CompFormFilter.ProjectNumber).ToList();
+                x.ProjectNumber == CompFormFilter.ProjectNumber ||
+                x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+                .ToList();
             }
 
             var Filter3 = Filter2;
@@ -2042,7 +2045,9 @@ namespace DDAS.Services.Search
                 CompFormFilter.ProjectNumber != "")
             {
                 Filter2 = Filter1.Where(x =>
-                x.ProjectNumber == CompFormFilter.ProjectNumber).ToList();
+                x.ProjectNumber == CompFormFilter.ProjectNumber ||
+                x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+                .ToList();
             }
 
             var Filter3 = Filter2;
@@ -4155,7 +4160,11 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
 
-            if(InputRow.DisplayName.Trim().Length == 0)
+            if (!IsValidProjectNumber(InputRow.ProjectNumber2))
+                ValidationMessages.Add("RowNumber: " + Row +
+                    " - change the project number format to '1234/5678'");
+
+            if (InputRow.DisplayName.Trim().Length == 0)
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - Investigator Name With Qualification (ICSF) is missing");
 

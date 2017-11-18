@@ -88,7 +88,15 @@
 														</div>
 													</div>
 													<div class="col-lg-6">
+														<div class="form-group">
+															<label for="ProjectNumber2">ICON Project Number (1234/1234):</label>
+															<input type="text" class="form-control" name="projNumber2" [(ngModel)]="CompForm.ProjectNumber2" #projNumber2="ngModel" required
+																pattern="\d{4}/\d{4}" (change)="formValueChanged()">
 
+															<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
+																Project Number format 9999/9999 expected.
+															</small>
+														</div>
 													</div>
 												</div>
 												<div class="row">
