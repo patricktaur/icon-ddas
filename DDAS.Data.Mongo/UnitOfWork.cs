@@ -443,7 +443,7 @@ namespace DDAS.Data.Mongo
             }
         }
 
-        public IAssignmentHistoryRepository AssignmentHistory
+        public IAssignmentHistoryRepository AssignmentHistoryRepository
         {
             get
             {

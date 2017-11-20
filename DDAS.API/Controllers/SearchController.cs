@@ -384,8 +384,9 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAssginedToData(string AssignedTo, bool Active,
             string ComplianceFormId)
         {
+            var AssignedBy = User.Identity.GetUserName();
             var RecId = Guid.Parse(ComplianceFormId);
-            _SearchService.UpdateAssignedToData(AssignedTo, Active, RecId);
+            _SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
             return Ok(true);
         }
 
