@@ -42,3 +42,13 @@ export class AdminDashboardViewModel{
     InvestigatorReviewCompleted: number;
     ClosingBalance: number;
 }
+
+export class AssignmentHistoryViewModel{
+    PrincipalInvestigator: string;
+    ProjectNumber: string;
+    ProjetNumber2: string;
+    AssignedBy: string;
+    AssingedOn: Date;
+    AssignedTo: string;
+    RemovedOn: Date;
+}

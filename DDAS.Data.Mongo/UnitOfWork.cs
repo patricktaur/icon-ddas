@@ -86,6 +86,8 @@ namespace DDAS.Data.Mongo
         private IExceptionLoggerRepository _ExceptionLoggerRepository;
 
         private IAuditRepository _AuditRepository;
+        private IAssignmentHistoryRepository _AssignmentHistoryRepository;
+
         #endregion
 
         /*
@@ -438,6 +440,16 @@ namespace DDAS.Data.Mongo
             {
                 return _AuditRepository ??
                     (_AuditRepository = new AuditRepository(_db));
+            }
+        }
+
+        public IAssignmentHistoryRepository AssignmentHistoryRepository
+        {
+            get
+            {
+                return _AssignmentHistoryRepository ??
+                    (_AssignmentHistoryRepository = 
+                    new AssignmentHistoryRepository(_db));
             }
         }
         #endregion

@@ -13,6 +13,7 @@ import { OutputReportComponent } from './output-report.component';
 import { InvestigationsCompletedReportComponent } from './investigations-completed.component';
 import { OpenInvestigationsComponent } from './open-investigations.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
+import { AssignmentHistoryComponent } from './assignment-history.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { AdminDashboardComponent } from './admin-dashboard.component';
     OutputReportComponent,
     InvestigationsCompletedReportComponent,
     OpenInvestigationsComponent,
-    AdminDashboardComponent
+    AdminDashboardComponent,
+    AssignmentHistoryComponent
   ],
 
   providers: [

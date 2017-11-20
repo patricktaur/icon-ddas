@@ -246,8 +246,8 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        public void UpdateAssignedToData(string AssignedTo, bool Active,
-            Guid? RecId)
+        public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
+            bool Active, Guid? RecId)
         {
             //var form = _UOW.ComplianceFormRepository.FindById(RecId);
             //form.AssignedTo = AssignedTo;
@@ -255,6 +255,7 @@ namespace DDAS.Services.Search
             //_UOW.ComplianceFormRepository.UpdateCollection(form);
 
             _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
+            AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
         }
 
         //used by Excel File Upload method.
@@ -279,6 +280,10 @@ namespace DDAS.Services.Search
                 _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
             else
                 _UOW.ComplianceFormRepository.Add(frm); //Insert
+            
+            //Add Assignment history
+            AddToAssignementHistory(frm.RecId.Value, frm.AssignedTo);
+
             return frm;
         }
 
@@ -391,6 +396,26 @@ namespace DDAS.Services.Search
             }
            
             return frm;
+        }
+
+        private void AddToAssignementHistory(Guid ComplianceFormId, string AssignedBy, string AssignedTo = "")
+        {
+            var AssignmentHistory = new AssignmentHistory();
+            AssignmentHistory.ComplianceFormId = ComplianceFormId;
+            AssignmentHistory.AssignedOn = DateTime.Now;
+            AssignmentHistory.AssignedBy = AssignedBy;
+            
+            if(AssignedTo != "" && AssignedTo.Trim().Length != 0) //update if re-assigned
+            {
+                AssignmentHistory.AssignedTo = AssignedTo;
+                _UOW.AssignmentHistoryRepository.UpdateRemovedOn(ComplianceFormId);
+                _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
+            }
+            else //new entry
+            {
+                AssignmentHistory.AssignedTo = AssignedBy;
+                _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
+            }
         }
 
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)

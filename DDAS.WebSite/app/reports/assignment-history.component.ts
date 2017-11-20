@@ -2,29 +2,31 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ReportService } from './report-service';
+import { AssignmentHistoryViewModel } from './report.classes';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'open-investigations.component.html'
+    templateUrl: 'assignment-history.component.html'
 })
 
-export class OpenInvestigationsComponent {
+export class AssignmentHistoryComponent {
     public generating: boolean = false;
-    public openInvestigations: any[];
+
+    public assignmentHisotryList: AssignmentHistoryViewModel[];
     public pageNumber: number;
     public formLoading: boolean;
 
     constructor(
         private service: ReportService,
-        private route: ActivatedRoute,
-    ) {
+        private route: ActivatedRoute) {
+
     }
 
     ngOnInit() {
         this.formLoading = true;
-        this.service.getOpenInvestigations()
-            .subscribe((item: any[]) => {
-                this.openInvestigations = item;
+        this.service.getAssignmentHistoryList()
+            .subscribe((item: AssignmentHistoryViewModel[]) => {
+                this.assignmentHisotryList = item;
                 this.formLoading = false;
             },
             error => {
@@ -33,6 +35,6 @@ export class OpenInvestigationsComponent {
     }
     
     diagnostic(){
-        return JSON.stringify(this.openInvestigations);
+        return JSON.stringify(this.assignmentHisotryList);
     }
 }

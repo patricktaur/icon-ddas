@@ -12,7 +12,13 @@ import {
 
 import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
-import { ReportFilters, InvestigationsReport, AdminDashboardViewModel } from './report.classes';
+import { 
+    ReportFilters, 
+    InvestigationsReport, 
+    AdminDashboardViewModel, 
+    AssignmentHistoryViewModel 
+    } 
+    from './report.classes';
 
 @Injectable()
 export class ReportService {
@@ -156,6 +162,14 @@ export class ReportService {
             return res.json();
         })
         .catch(this.handleError);
+    }
+
+    getAssignmentHistoryList():Observable<AssignmentHistoryViewModel[]>{
+        return this.http.get(this._baseUrl + 'Reports/AssignmentHistory', this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);        
     }
 
     private handleError(error: any) {

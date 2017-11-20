@@ -11,5 +11,7 @@ namespace DDAS.Models.Interfaces
         List<OpenInvestigationsViewModel> GetOpenInvestigations();
 
         List<AdminDashboardViewModel> GetAdminDashboard();
+
+        List<AssignmentHistoryViewModel> GetAssignmentHistory();
     }
 }

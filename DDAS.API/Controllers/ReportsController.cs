@@ -332,5 +332,13 @@ namespace DDAS.API.Controllers
         {
             return Ok(_Report.GetAdminDashboard());
         }
+
+        [Route("AssignmentHistory")]
+        [HttpGet]
+        public IHttpActionResult GetAssignmentHistory()
+        {
+            return Ok(
+                _Report.GetAssignmentHistory());
+        }
     }
 }

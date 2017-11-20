@@ -414,6 +414,44 @@ namespace DDAS.Services.Reports
                 .Count();
         }
         #endregion
+
+        public List<AssignmentHistoryViewModel> GetAssignmentHistory()
+        {
+            var AssignmentHistoryList =
+                _UOW.AssignmentHistoryRepository.GetAll();
+
+            if (AssignmentHistoryList.Count == 0)
+                return null;
+
+            var Assignments = new List<AssignmentHistoryViewModel>();
+
+            foreach(AssignmentHistory assignmentHistory in AssignmentHistoryList)
+            {
+                var assignmentHistoryViewModel = new AssignmentHistoryViewModel();
+
+                var ComplianceForm = _UOW.ComplianceFormRepository
+                    .FindById(assignmentHistory.ComplianceFormId);
+
+                assignmentHistoryViewModel.PrincipalInvestigator =
+                    ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
+                assignmentHistoryViewModel.ProjectNumber = 
+                    ComplianceForm.ProjectNumber;
+                assignmentHistoryViewModel.ProjectNumber2 =
+                    ComplianceForm.ProjectNumber2;
+
+                assignmentHistoryViewModel.AssignedBy = 
+                    assignmentHistory.AssignedBy;
+                assignmentHistoryViewModel.AssignedOn =
+                    assignmentHistory.AssignedOn;
+                assignmentHistoryViewModel.AssignedTo =
+                    assignmentHistory.AssignedTo;
+                assignmentHistoryViewModel.RemovedOn =
+                    assignmentHistory.RemovedOn;
+
+                Assignments.Add(assignmentHistoryViewModel);
+            }
+            return Assignments;
+        }
     }
 }
 
