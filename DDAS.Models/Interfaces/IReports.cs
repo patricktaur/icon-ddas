@@ -9,5 +9,9 @@ namespace DDAS.Models.Interfaces
         InvestigationsReport GetInvestigationsReport(ReportFilters Filters);
 
         List<OpenInvestigationsViewModel> GetOpenInvestigations();
+
+        List<AdminDashboardViewModel> GetAdminDashboard();
+
+        List<AssignmentHistoryViewModel> GetAssignmentHistory();
     }
 }

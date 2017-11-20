@@ -5,6 +5,8 @@ import { ReportComponent }     from './report.component';
 import { OutputReportComponent }     from './output-report.component';
 import {InvestigationsCompletedReportComponent} from './investigations-completed.component';
 import {OpenInvestigationsComponent} from './open-investigations.component';
+import { AdminDashboardComponent } from './admin-dashboard.component';
+import { AssignmentHistoryComponent } from './assignment-history.component';
 
 const reportRoutes: Routes = [
  {
@@ -28,6 +30,14 @@ const reportRoutes: Routes = [
   {
     path: 'open-investigations',
     component: OpenInvestigationsComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboardComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'assignment-history',
+    component: AssignmentHistoryComponent, canActivate: [AuthGuard]
   }
 ];
 

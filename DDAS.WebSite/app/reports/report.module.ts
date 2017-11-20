@@ -9,9 +9,11 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
 import { SharedModule } from '../shared/shared.module'
 //import {ModalModule} from "ng2-modal";
-import {OutputReportComponent} from './output-report.component';
-import {InvestigationsCompletedReportComponent} from './investigations-completed.component';
-import {OpenInvestigationsComponent} from './open-investigations.component';
+import { OutputReportComponent } from './output-report.component';
+import { InvestigationsCompletedReportComponent } from './investigations-completed.component';
+import { OpenInvestigationsComponent } from './open-investigations.component';
+import { AdminDashboardComponent } from './admin-dashboard.component';
+import { AssignmentHistoryComponent } from './assignment-history.component';
 
 @NgModule({
   imports: [
@@ -27,7 +29,9 @@ import {OpenInvestigationsComponent} from './open-investigations.component';
     ReportComponent,
     OutputReportComponent,
     InvestigationsCompletedReportComponent,
-    OpenInvestigationsComponent
+    OpenInvestigationsComponent,
+    AdminDashboardComponent,
+    AssignmentHistoryComponent
   ],
 
   providers: [
