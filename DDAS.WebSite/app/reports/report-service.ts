@@ -12,7 +12,7 @@ import {
 
 import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
-import { ReportFilters, InvestigationsReport } from './report.classes';
+import { ReportFilters, InvestigationsReport, AdminDashboardViewModel } from './report.classes';
 
 @Injectable()
 export class ReportService {
@@ -34,10 +34,6 @@ export class ReportService {
 
 
     getPrincipalInvestigators() {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
         return this.http.get(this._baseUrl + 'search/GetPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -128,10 +124,7 @@ export class ReportService {
 
     getInvestigationsCompletedReport(Filters: ReportFilters): Observable<InvestigationsReport>{
         let filter1 = JSON.stringify(Filters);
-        let headers = new Headers();
-        headers.append("Authorization", "Bearer " + this.authService.token);
-        headers.append('Content-Type', 'application/json');
-        
+
         return this.http.post(this._baseUrl + 'Reports/InvestigationsCompletedReport', filter1, this._options)
         .map((res: Response) =>{
             return res.json();
@@ -141,27 +134,28 @@ export class ReportService {
 
     getAverageInvestigationsCompletedReport(Filters: ReportFilters): Observable<InvestigationsReport>{
         let filter1 = JSON.stringify(Filters);
-        let headers = new Headers();
-        headers.append("Authorization", "Bearer " + this.authService.token);
-        headers.append('Content-Type', 'application/json');
         
         return this.http.post(this._baseUrl + 'Reports/AverageInvestigationsCompletedReport', filter1, this._options)
         .map((res: Response) =>{
             return res.json();
         })
-        .catch(this.handleError);        
+        .catch(this.handleError);
     }
 
     getOpenInvestigations():Observable<any>{
-        let headers = new Headers();
-        headers.append("Authorization", "Bearer " + this.authService.token);
-        headers.append('Content-Type', 'application/json');
-        
         return this.http.get(this._baseUrl + 'Reports/OpenInvestigationsReport', this._options)
         .map((res: Response) =>{
             return res.json();
         })
-        .catch(this.handleError);        
+        .catch(this.handleError);
+    }
+
+    getAdminDashboardList():Observable<AdminDashboardViewModel[]>{
+        return this.http.get(this._baseUrl + 'Reports/AdminDashboard', this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     private handleError(error: any) {

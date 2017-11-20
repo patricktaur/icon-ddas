@@ -341,6 +341,79 @@ namespace DDAS.Services.Reports
         }
 
         #endregion
+
+        #region Admin Dashboard
+        
+        public List<AdminDashboardViewModel> GetAdminDashboard()
+        {
+            var Users = _UOW.UserRepository.GetAll();
+
+            if (Users.Count == 0)
+                throw new Exception("No Users found in the database");
+
+            var AdminDashboardList = new List<AdminDashboardViewModel>();
+
+            foreach(User user in Users)
+            {
+                var AdminDashboard = new AdminDashboardViewModel();
+                AdminDashboard.UserName = user.UserName;
+                AdminDashboard.OpeningBalance =
+                    ClosingBalanceOnPreviousDay(user.UserName);
+                AdminDashboard.InvestigatorUploaded =
+                    InvestigatorsUploadedToday(user.UserName);
+                AdminDashboard.InvestigatorReviewCompleted =
+                    InvestigatorReviewCompletedToday(user.UserName);
+
+                AdminDashboardList.Add(AdminDashboard);
+            }
+            return AdminDashboardList;
+        }
+
+        private int ClosingBalanceOnPreviousDay(string UserName)
+        {
+            var forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (forms.Count == 0)
+                return 0;
+
+            var ClosingBalance = forms
+                .Where(x => x.AssignedTo.ToLower() == UserName.ToLower())
+                .SelectMany(Inv => Inv.InvestigatorDetails)
+                .Where(s => s.AddedOn <= DateTime.Now.Date &&
+                s.ReviewCompletedOn == null)
+                .Count();
+
+            return ClosingBalance;
+        }
+
+        private int InvestigatorsUploadedToday(string UserName)
+        {
+            var forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (forms.Count == 0)
+                return 0;
+
+            return forms
+                .Where(x => x.AssignedTo.ToLower() == UserName.ToLower())
+                .SelectMany(Inv => Inv.InvestigatorDetails)
+                .Where(s => s.AddedOn >= DateTime.Now.Date)
+                .Count();
+        }
+
+        private int InvestigatorReviewCompletedToday(string UserName)
+        {
+            var forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (forms.Count == 0)
+                return 0;
+
+            return forms
+                .Where(x => x.AssignedTo.ToLower() == UserName.ToLower())
+                .SelectMany(Inv => Inv.InvestigatorDetails)
+                .Where(s => s.ReviewCompletedOn >= DateTime.Now.Date)
+                .Count();
+        }
+        #endregion
     }
 }
 
