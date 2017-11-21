@@ -452,6 +452,50 @@ namespace DDAS.Services.Reports
             }
             return Assignments;
         }
+
+        public List<InvestigatorReviewCompletedTimeVM>
+            GetInvestigatorsReviewCompletedTime()
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var ReviewCompletedInvestigatorsVM = 
+                new List<InvestigatorReviewCompletedTimeVM>();
+
+            var ReviewCompletedInvestigators = ComplianceForms
+                .SelectMany(x => x.InvestigatorDetails,
+                (ComplianceForm, InvestigatorSearched) =>
+                new {
+                    ComplianceForm, InvestigatorSearched
+                })
+                .Where(s => s.InvestigatorSearched.ReviewCompletedOn != null)
+                .Select(s =>
+                new
+                {
+                    ProjectNumber = s.ComplianceForm.ProjectNumber,
+                    ProjectNumber2 = s.ComplianceForm.ProjectNumber2,
+                    Name = s.InvestigatorSearched.Name,
+                    SearchStartedOn = s.ComplianceForm.SearchStartedOn,
+                    ReviewCompletedOn = s.InvestigatorSearched.ReviewCompletedOn.Value
+                })
+                .ToList();
+
+            ReviewCompletedInvestigators.ForEach(Investigator =>
+            {
+                var VM = new InvestigatorReviewCompletedTimeVM();
+                VM.InvestigatorName = Investigator.Name;
+                VM.ProjectNumber = Investigator.ProjectNumber;
+                VM.ProjectNumber2 = Investigator.ProjectNumber2;
+                VM.SearchStartedOn = Investigator.SearchStartedOn;
+                VM.ReviewCompletedOn = Investigator.ReviewCompletedOn;
+
+                ReviewCompletedInvestigatorsVM.Add(VM);
+            });
+
+            return ReviewCompletedInvestigatorsVM;
+        }
     }
 }
 

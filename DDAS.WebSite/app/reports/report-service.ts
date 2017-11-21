@@ -172,6 +172,14 @@ export class ReportService {
         .catch(this.handleError);        
     }
 
+    getInvestigatorReviewCompletedTime():Observable<any[]>{
+        return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime', this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

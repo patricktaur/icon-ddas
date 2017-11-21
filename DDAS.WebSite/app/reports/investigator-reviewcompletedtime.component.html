@@ -1,0 +1,45 @@
+<div class="col-md-12">
+	<div class="well">
+        <h3 class="no-margin-top">Time Taken To Complete a Review</h3>
+        <!-- {{diagnostic}} -->
+	</div>
+	<div class="alert alert-info" *ngIf="formLoading">
+		<strong>Loading ...</strong>
+	</div>	
+</div>
+
+<div class="col-md-12">
+	<div class="well">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Investigator</th>
+                    <th>Project Number</th>
+                    <th>Search Started On</th>
+                    <th>Review Completed On</th>
+                    <th>TimeTaken (in Minutes) to Complete Review</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let item of reviewCompletedInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+					<td class="text-left">
+						{{item.InvestigatorName}}
+					</td>
+					<td class="text-center">
+						{{item.ProjectNumber}} {{item.ProjectNumber2}}
+                    </td>
+                    <td class="text-center">
+                        {{item.SearchStartedOn | date: 'dd MMM yyyy hh:mm'}}
+                    </td>
+                    <td class="text-center">
+                        {{item.ReviewCompletedOn | date: 'dd MMM yyyy hh:mm'}}
+                    </td>
+                    <td class="text-right">
+                        {{item.TimeTakenToCompleteReview}}
+                    </td>
+				</tr>
+			</tbody>
+		</table>
+		<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+	</div>
+</div>
