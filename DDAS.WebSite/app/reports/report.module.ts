@@ -14,6 +14,7 @@ import { InvestigationsCompletedReportComponent } from './investigations-complet
 import { OpenInvestigationsComponent } from './open-investigations.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AssignmentHistoryComponent } from './assignment-history.component';
+import { StudySpecificInvestigatorComponent } from './study-specific-investigator.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { AssignmentHistoryComponent } from './assignment-history.component';
     InvestigationsCompletedReportComponent,
     OpenInvestigationsComponent,
     AdminDashboardComponent,
-    AssignmentHistoryComponent
+    AssignmentHistoryComponent,
+    StudySpecificInvestigatorComponent
   ],
 
   providers: [
