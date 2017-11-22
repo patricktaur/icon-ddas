@@ -52,3 +52,14 @@ export class AssignmentHistoryViewModel{
     AssignedTo: string;
     RemovedOn: Date;
 }
+
+export class InvestigatorFindingViewModel{
+    ProjectNumber: string;
+    ProjetNumber2: string;
+    InvestigatorName: string;
+    Role: string;
+    ReviewCompletedBy: string;
+    ReviewCompletedOn: Date;
+    SiteName: string;
+    FindingObservation: string;    
+}

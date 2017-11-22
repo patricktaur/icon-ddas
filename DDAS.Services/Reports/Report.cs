@@ -452,7 +452,73 @@ namespace DDAS.Services.Reports
             }
             return Assignments;
         }
+
+        public List<InvestigatorFindingViewModel> GetInvestigatorByFinding()
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var ReviewCompletedInvestigators = ComplianceForms
+                .SelectMany(Form => Form.InvestigatorDetails,
+                (Form, Investigator) =>
+                new { Form, Investigator })
+                .Where(s => s.Investigator.ReviewCompletedOn != null)
+                .Select(s =>
+                new
+                {
+                    ProjectNumber = s.Form.ProjectNumber,
+                    ProjectNumber2 = (s.Form.ProjectNumber2 == null ? "" : s.Form.ProjectNumber2),
+                    AssignedTo = s.Form.AssignedTo,
+                    InvestigatorId = s.Investigator.Id,
+                    InvestigatorName = s.Investigator.Name,
+                    Role = s.Investigator.Role,
+                    ReviewCompletedOn = s.Investigator.ReviewCompletedOn.Value,
+
+                    Findings = s.Form.Findings
+                        .Where(finding => finding.InvestigatorSearchedId ==
+                        s.Investigator.Id && 
+                        finding.InvestigatorName.ToLower() == 
+                        s.Investigator.Name.ToLower()).ToList(),
+                })
+                .ToList();
+
+            var InvestigatorFindingVMList = 
+                new List<InvestigatorFindingViewModel>();
+
+            var Limit = ReviewCompletedInvestigators.Count();
+
+            for(int Index = 0; Index < Limit; Index++)
+            {
+                var VM = new InvestigatorFindingViewModel();
+                VM.ProjectNumber = ReviewCompletedInvestigators[Index].ProjectNumber;
+                VM.ProjectNumber2 = ReviewCompletedInvestigators[Index].ProjectNumber2;
+                VM.InvestigatorName = ReviewCompletedInvestigators[Index].InvestigatorName;
+                VM.Role = ReviewCompletedInvestigators[Index].Role;
+                VM.ReviewCompletedBy = ReviewCompletedInvestigators[Index].AssignedTo;
+                VM.ReviewCompletedOn = ReviewCompletedInvestigators[Index].ReviewCompletedOn;
+
+                var Findings = ReviewCompletedInvestigators[Index].Findings;
+
+                if(Findings.Count() > 0 &&
+                    Findings.Where(x => x.IsAnIssue ==true).Count() > 0)
+                {
+                    Findings
+                        .Where(x => x.IsAnIssue == true)
+                        .ToList()
+                        .ForEach(finding =>
+                    {
+                        var tempVM = VM;
+                        tempVM.SiteName = finding.SiteEnum.ToString();
+                        tempVM.FindingObservation = finding.Observation;
+                        InvestigatorFindingVMList.Add(tempVM);
+                    });
+                }
+                else
+                    InvestigatorFindingVMList.Add(VM);
+            }
+            return InvestigatorFindingVMList;
+        }
     }
 }
-
-

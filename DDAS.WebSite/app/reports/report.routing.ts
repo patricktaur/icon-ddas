@@ -7,6 +7,7 @@ import {InvestigationsCompletedReportComponent} from './investigations-completed
 import {OpenInvestigationsComponent} from './open-investigations.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AssignmentHistoryComponent } from './assignment-history.component';
+import { InvestigatorFindingsComponent } from './investigator-findings.component';
 
 const reportRoutes: Routes = [
  {
@@ -38,6 +39,10 @@ const reportRoutes: Routes = [
   {
     path: 'assignment-history',
     component: AssignmentHistoryComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'investigator-findings',
+    component: InvestigatorFindingsComponent, canActivate: [AuthGuard]
   }
 ];
 

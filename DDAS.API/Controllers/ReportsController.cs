@@ -340,5 +340,13 @@ namespace DDAS.API.Controllers
             return Ok(
                 _Report.GetAssignmentHistory());
         }
+
+        [Route("InvestigatorByFinding")]
+        [HttpGet]
+        public IHttpActionResult GetInvestigatorsByFinding()
+        {
+            return Ok(
+                _Report.GetInvestigatorByFinding());
+        }
     }
 }
