@@ -1,0 +1,76 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<div class="row">
+				<div class="col-lg-12">
+					<h3 class="align-left no-margin-top">
+						Downloaded Data Files
+					</h3>
+				</div>
+			</div>			
+		</div>
+
+		<div class="alert alert-info" *ngIf="formLoading">
+			<strong>Loading ...</strong>
+		</div>
+		<div *ngIf="!formLoading">
+			<div class="well">			
+				<div class="row">
+					<div class="col-lg-8">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Downloaded On</th>
+                                    <th>File Name</th>
+                                    <!-- <th>Downloaded from</th> -->
+                                    <th>Size (in KB)</th>
+									<!-- <th>Action</th> -->
+								</tr>
+							</thead>
+							<tbody>
+								<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
+								<tr *ngFor="let item of dataFiles | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+									<td class="text-center">
+										{{item.DownloadedOn | date: 'dd MMM yyyy HH:mm'}}
+									</td>
+									<td class="text-center">
+										<a href="{{ApiHost}}{{item.FullPath}}" target="_blank">{{item.FileName}}</a>
+                                    </td>
+									<!-- <td class="text-center">
+										{{item.SiteName}}
+									</td> -->
+									<td class="text-center">
+										{{item.FileSize}}
+									</td>
+									<td>
+										<!-- <button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Error Image">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button> -->
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+					</div>
+					<div class="col-lg-4">
+						
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>
+
+<modal #DeleteConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Delete confirm</h4>
+	</modal-header>
+	<modal-body>
+		Site Source <b> {{selectedRecordName}} </b> will be deleted.
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="Delete(); DeleteConfirmModal.close()">Confirm Delete</button>
+		<button type="button" class="btn btn-default" (click)=" DeleteConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>

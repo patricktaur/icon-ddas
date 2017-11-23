@@ -59,6 +59,15 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
+    getAllDataFiles():Observable<any[]>{
+        return this.http.get(this._baseUrl + 'Search/DownloadDataFiles',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
     deleteErrorImage(FileName: string){
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteErrorImage?FileName=' + FileName,
         this._options)

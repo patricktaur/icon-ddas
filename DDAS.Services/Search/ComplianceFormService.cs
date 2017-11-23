@@ -776,7 +776,12 @@ namespace DDAS.Services.Search
 
             int SrNo = 0;
 
-            var MandatorySites = _UOW.DefaultSiteRepository.GetAll()
+            var Sites = _UOW.DefaultSiteRepository.GetAll();
+
+            if (Sites.Count() == 0)
+                return;
+
+            var MandatorySites = Sites
                 .Where (x => x.IsMandatory == true)
                 .OrderBy(x => x.OrderNo).ToList();
 
@@ -4076,6 +4081,57 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        #region Download Data Files
+        public List<DownloadDataFilesViewModel> GetDataFiles()
+        {
+            var DownloadDataFilesVMList = new List<DownloadDataFilesViewModel>();
+
+            var DataFolders = new string[] {
+                _config.CIILFolder,
+                _config.FDAWarningLettersFolder,
+                _config.ExclusionDatabaseFolder,
+                _config.SAMFolder,
+                _config.SDNFolder
+            };
+
+            var FileTypes = new string[] {
+                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
+            };
+
+            int Index = 0;
+            foreach (string Folder in DataFolders)
+            {
+                var Files = GetDataFiles(Folder, FileTypes[Index]);
+                Files.ForEach(fileInfo =>
+                {
+                    var VM = new DownloadDataFilesViewModel();
+                    VM.FileName = fileInfo.Name;
+                    VM.FullPath = Folder + VM.FileName;
+                    VM.FileSize = fileInfo.Length.ToString();
+                    VM.DownloadedOn = fileInfo.CreationTime;
+                    VM.FileType = fileInfo.Extension;
+
+                    DownloadDataFilesVMList.Add(VM);
+                });
+                Index += 1;
+            }
+            return DownloadDataFilesVMList;
+        }
+
+        private List<FileInfo> GetDataFiles(string Folder, string FileType)
+        {
+            var Files = new DirectoryInfo(Folder).GetFiles(FileType);
+
+            var AllFiles = new List<FileInfo>();
+            foreach(FileInfo fileInfo in Files)
+            {
+                AllFiles.Add(fileInfo);
+            }
+            return AllFiles;
+        }
+
+        #endregion
+
         #region Helpers
 
         private string RemoveExtraCharacters(string Value)
@@ -4185,7 +4241,9 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
 
-            if (!IsValidProjectNumber(InputRow.ProjectNumber2))
+            if (InputRow.ProjectNumber2 != null && 
+                InputRow.ProjectNumber2.Trim() != ""
+                && !IsValidProjectNumber(InputRow.ProjectNumber2))
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
 

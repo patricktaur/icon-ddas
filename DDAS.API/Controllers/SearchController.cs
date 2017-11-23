@@ -756,6 +756,22 @@ namespace DDAS.API.Controllers
             return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
         }
 
+        #region Download Data Files
+        [Route("DownloadDataFiles")]
+        [HttpGet]
+        public IHttpActionResult GetDownloadedDataFiles()
+        {
+            var DataFiles = _SearchService.GetDataFiles();
+
+            DataFiles.ForEach(DataFile =>
+            {
+                DataFile.FullPath = 
+                DataFile.FullPath.Replace(_RootPath, "");
+            });
+            return Ok(DataFiles);
+        }
+        #endregion
+
         string ListToString(ExcelInput excelInput)
         {
             string retValue = "";
