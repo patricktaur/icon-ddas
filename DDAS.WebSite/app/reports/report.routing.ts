@@ -7,16 +7,10 @@ import {InvestigationsCompletedReportComponent} from './investigations-completed
 import {OpenInvestigationsComponent} from './open-investigations.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AssignmentHistoryComponent } from './assignment-history.component';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { InvestigatorReviewCompletedTimeComponent } 
   from './investigator-reviewcompletedtime.component';
-=======
 import { InvestigatorFindingsComponent } from './investigator-findings.component';
->>>>>>> Enhancement-FindingsReport
-=======
 import { StudySpecificInvestigatorComponent } from './study-specific-investigator.component';
->>>>>>> Enhancement-StudySpecificReport
 
 const reportRoutes: Routes = [
  {
@@ -50,18 +44,16 @@ const reportRoutes: Routes = [
     component: AssignmentHistoryComponent, canActivate: [AuthGuard]
   },
   {
-<<<<<<< HEAD
-<<<<<<< HEAD
     path: 'investigator-reviewcompletedtime',
     component: InvestigatorReviewCompletedTimeComponent, canActivate: [AuthGuard]
-=======
+  },
+  {
     path: 'investigator-findings',
     component: InvestigatorFindingsComponent, canActivate: [AuthGuard]
->>>>>>> Enhancement-FindingsReport
-=======
+  },
+  {
     path: 'study-specific-investigator',
     component: StudySpecificInvestigatorComponent, canActivate: [AuthGuard]
->>>>>>> Enhancement-StudySpecificReport
   }
 ];
 

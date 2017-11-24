@@ -436,8 +436,16 @@ namespace DDAS.Services.Reports
                     ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
                 assignmentHistoryViewModel.ProjectNumber =
                     ComplianceForm.ProjectNumber;
-                assignmentHistoryViewModel.ProjectNumber2 =
-                    ComplianceForm.ProjectNumber2;
+
+                //try
+                //{
+                    assignmentHistoryViewModel.ProjectNumber2 =
+                        ComplianceForm.ProjectNumber2;
+                //}
+                //catch
+                //{
+                //    //ProjectNumber2 will not be available in old comp forms
+                //}
 
                 assignmentHistoryViewModel.AssignedBy =
                     assignmentHistory.AssignedBy;

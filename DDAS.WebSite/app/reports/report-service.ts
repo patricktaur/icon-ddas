@@ -173,28 +173,30 @@ export class ReportService {
         .catch(this.handleError);        
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     getInvestigatorReviewCompletedTime(fromDate: string, toDate: string):Observable<any[]>{
         return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime' +
         '?FromDate=' + fromDate + '&ToDate=' + toDate 
         , this._options)
-=======
-    getInvestigatorsByFinding():Observable<InvestigatorFindingViewModel[]>{
-        return this.http.get(this._baseUrl + 'Reports/InvestigatorByFinding', this._options)
->>>>>>> Enhancement-FindingsReport
         .map((res: Response) =>{
             return res.json();
         })
         .catch(this.handleError);
-=======
+    }
+
+    getInvestigatorsByFinding():Observable<InvestigatorFindingViewModel[]>{
+        return this.http.get(this._baseUrl + 'Reports/InvestigatorByFinding', this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     getStudySpecificInvestigators(projectNumber: string):Observable<any[]>{
         return this.http.get(this._baseUrl + 'Reports/StudySpecificInvestigators?ProjectNumber=' + projectNumber, this._options)
         .map((res: Response) =>{
             return res.json();
         })
-        .catch(this.handleError);        
->>>>>>> Enhancement-StudySpecificReport
+        .catch(this.handleError);
     }
 
     private handleError(error: any) {

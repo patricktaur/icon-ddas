@@ -5,6 +5,7 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { AuditService } from '../audit-service';
+import { ComplianceFormA, SiteSource, Finding } from '../../search/search.classes';
 import { Location } from '@angular/common';
 
 @Component({
@@ -18,7 +19,7 @@ export class EditAuditComponent implements OnInit {
     public complianceFormId: string;
     public SelectedComplianceFormId: string;
     public audit: Audit = new Audit;
-    public complianceForm: any;
+    public complianceForm: ComplianceFormA;
     public pageNumber: number;
     public observation: string;
     public siteId: number = 0;
@@ -38,7 +39,7 @@ export class EditAuditComponent implements OnInit {
         this.route.params.forEach((params: Params) => {
             this.auditId = params['AuditId'];
         });
-        this.complianceForm = {};
+        this.complianceForm = new ComplianceFormA;
         this.loadAudit();
     }
 
@@ -73,16 +74,16 @@ export class EditAuditComponent implements OnInit {
 
     get SiteSources(){
         if(this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources;
+            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
         else
             return null;
     }
 
     get additionalSiteSources(){
         if(this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources.filter(x => x.IsOptional == true);
+            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
         else
-            return null;        
+            return null;
     }
 
     get Findings(){

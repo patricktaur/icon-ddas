@@ -14,16 +14,10 @@ import { InvestigationsCompletedReportComponent } from './investigations-complet
 import { OpenInvestigationsComponent } from './open-investigations.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AssignmentHistoryComponent } from './assignment-history.component';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { InvestigatorReviewCompletedTimeComponent } 
   from './investigator-reviewcompletedtime.component';
-=======
 import { InvestigatorFindingsComponent } from './investigator-findings.component';
->>>>>>> Enhancement-FindingsReport
-=======
 import { StudySpecificInvestigatorComponent } from './study-specific-investigator.component';
->>>>>>> Enhancement-StudySpecificReport
 
 @NgModule({
   imports: [
@@ -42,15 +36,9 @@ import { StudySpecificInvestigatorComponent } from './study-specific-investigato
     OpenInvestigationsComponent,
     AdminDashboardComponent,
     AssignmentHistoryComponent,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    InvestigatorReviewCompletedTimeComponent
-=======
-    InvestigatorFindingsComponent
->>>>>>> Enhancement-FindingsReport
-=======
+    InvestigatorReviewCompletedTimeComponent,
+    InvestigatorFindingsComponent,
     StudySpecificInvestigatorComponent
->>>>>>> Enhancement-StudySpecificReport
   ],
 
   providers: [
