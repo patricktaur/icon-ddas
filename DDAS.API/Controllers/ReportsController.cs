@@ -340,5 +340,16 @@ namespace DDAS.API.Controllers
             return Ok(
                 _Report.GetAssignmentHistory());
         }
+
+        [Route("InvestigatorReviewCompletedTime")]
+        [HttpGet]
+        public IHttpActionResult 
+            GetInvestigatorReviewCompletedTime(string FromDate, string ToDate)
+        {
+            var fromDate = DateTime.ParseExact(FromDate, "M/d/yyyy", null);
+            var toDate = DateTime.ParseExact(ToDate, "M/d/yyyy", null);
+            return Ok(
+                _Report.GetInvestigatorsReviewCompletedTime(fromDate, toDate));
+        }
     }
 }
