@@ -5,6 +5,7 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { AuditService } from '../audit-service';
+import { Location } from '@angular/common';
 
 @Component({
     moduleId: module.id,
@@ -22,10 +23,12 @@ export class EditAuditComponent implements OnInit {
     public observation: string;
     public siteId: number = 0;
     public isSubmitted: boolean = false;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private configService: ConfigService,
+        private _location: Location,
         private authService: AuthService,
         private auditService: AuditService
     ) { }
@@ -169,4 +172,8 @@ export class EditAuditComponent implements OnInit {
 
         });        
     }
+
+        goBack() {
+            this._location.back();
+    }    
 }

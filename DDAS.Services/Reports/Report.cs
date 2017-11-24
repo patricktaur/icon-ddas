@@ -454,7 +454,7 @@ namespace DDAS.Services.Reports
         }
 
         public List<InvestigatorReviewCompletedTimeVM>
-            GetInvestigatorsReviewCompletedTime()
+            GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate)
         {
             var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
@@ -470,7 +470,9 @@ namespace DDAS.Services.Reports
                 new {
                     ComplianceForm, InvestigatorSearched
                 })
-                .Where(s => s.InvestigatorSearched.ReviewCompletedOn != null)
+                .Where(s => s.InvestigatorSearched.ReviewCompletedOn != null &&
+                s.InvestigatorSearched.ReviewCompletedOn >= FromDate.Date &&
+                s.InvestigatorSearched.ReviewCompletedOn <= ToDate.Date)
                 .Select(s =>
                 new
                 {

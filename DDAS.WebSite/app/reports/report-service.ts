@@ -172,8 +172,10 @@ export class ReportService {
         .catch(this.handleError);        
     }
 
-    getInvestigatorReviewCompletedTime():Observable<any[]>{
-        return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime', this._options)
+    getInvestigatorReviewCompletedTime(fromDate: string, toDate: string):Observable<any[]>{
+        return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime' +
+        '?FromDate=' + fromDate + '&ToDate=' + toDate 
+        , this._options)
         .map((res: Response) =>{
             return res.json();
         })
