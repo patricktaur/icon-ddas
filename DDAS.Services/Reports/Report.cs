@@ -453,27 +453,23 @@ namespace DDAS.Services.Reports
             return Assignments;
         }
 
-<<<<<<< HEAD
         public List<InvestigatorReviewCompletedTimeVM>
             GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate)
-=======
-        public List<InvestigatorFindingViewModel> GetInvestigatorByFinding()
->>>>>>> Enhancement-FindingsReport
         {
             var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
             if (ComplianceForms.Count == 0)
                 return null;
 
-<<<<<<< HEAD
-            var ReviewCompletedInvestigatorsVM = 
+            var ReviewCompletedInvestigatorsVM =
                 new List<InvestigatorReviewCompletedTimeVM>();
 
             var ReviewCompletedInvestigators = ComplianceForms
                 .SelectMany(x => x.InvestigatorDetails,
                 (ComplianceForm, InvestigatorSearched) =>
                 new {
-                    ComplianceForm, InvestigatorSearched
+                    ComplianceForm,
+                    InvestigatorSearched
                 })
                 .Where(s => s.InvestigatorSearched.ReviewCompletedOn != null &&
                 s.InvestigatorSearched.ReviewCompletedOn >= FromDate.Date &&
@@ -502,7 +498,15 @@ namespace DDAS.Services.Reports
             });
 
             return ReviewCompletedInvestigatorsVM;
-=======
+        }
+
+        public List<InvestigatorFindingViewModel> GetInvestigatorByFinding()
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
             var ReviewCompletedInvestigators = ComplianceForms
                 .SelectMany(Form => Form.InvestigatorDetails,
                 (Form, Investigator) =>
@@ -562,7 +566,6 @@ namespace DDAS.Services.Reports
                     InvestigatorFindingVMList.Add(VM);
             }
             return InvestigatorFindingVMList;
->>>>>>> Enhancement-FindingsReport
         }
     }
 }
