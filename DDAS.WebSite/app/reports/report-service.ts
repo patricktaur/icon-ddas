@@ -16,7 +16,8 @@ import {
     ReportFilters, 
     InvestigationsReport, 
     AdminDashboardViewModel, 
-    AssignmentHistoryViewModel 
+    AssignmentHistoryViewModel,
+    InvestigatorFindingViewModel
     } 
     from './report.classes';
 
@@ -172,10 +173,15 @@ export class ReportService {
         .catch(this.handleError);        
     }
 
+<<<<<<< HEAD
     getInvestigatorReviewCompletedTime(fromDate: string, toDate: string):Observable<any[]>{
         return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime' +
         '?FromDate=' + fromDate + '&ToDate=' + toDate 
         , this._options)
+=======
+    getInvestigatorsByFinding():Observable<InvestigatorFindingViewModel[]>{
+        return this.http.get(this._baseUrl + 'Reports/InvestigatorByFinding', this._options)
+>>>>>>> Enhancement-FindingsReport
         .map((res: Response) =>{
             return res.json();
         })

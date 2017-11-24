@@ -14,8 +14,12 @@ import { InvestigationsCompletedReportComponent } from './investigations-complet
 import { OpenInvestigationsComponent } from './open-investigations.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AssignmentHistoryComponent } from './assignment-history.component';
+<<<<<<< HEAD
 import { InvestigatorReviewCompletedTimeComponent } 
   from './investigator-reviewcompletedtime.component';
+=======
+import { InvestigatorFindingsComponent } from './investigator-findings.component';
+>>>>>>> Enhancement-FindingsReport
 
 @NgModule({
   imports: [
@@ -34,7 +38,11 @@ import { InvestigatorReviewCompletedTimeComponent }
     OpenInvestigationsComponent,
     AdminDashboardComponent,
     AssignmentHistoryComponent,
+<<<<<<< HEAD
     InvestigatorReviewCompletedTimeComponent
+=======
+    InvestigatorFindingsComponent
+>>>>>>> Enhancement-FindingsReport
   ],
 
   providers: [

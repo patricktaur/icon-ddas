@@ -128,7 +128,11 @@
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
     <Compile Include="ViewModels\ExceptionLoggerViewModel.cs" />
     <Compile Include="ViewModels\ExtractionLogViewModel.cs" />
+<<<<<<< HEAD
     <Compile Include="ViewModels\InvestigatorReviewCompletedTimeVM.cs" />
+=======
+    <Compile Include="ViewModels\InvestigatorFindingViewModel.cs" />
+>>>>>>> Enhancement-FindingsReport
     <Compile Include="ViewModels\OpenInvestigationsViewModel.cs" />
     <Compile Include="ViewModels\OutputFileViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
