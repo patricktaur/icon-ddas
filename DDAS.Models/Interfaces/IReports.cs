@@ -15,11 +15,12 @@ namespace DDAS.Models.Interfaces
 
         List<AssignmentHistoryViewModel> GetAssignmentHistory();
 
-<<<<<<< HEAD
         List<InvestigatorReviewCompletedTimeVM>
             GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate);
-=======
+
         List<InvestigatorFindingViewModel> GetInvestigatorByFinding();
->>>>>>> Enhancement-FindingsReport
+
+        List<StudySpecificInvestigatorVM> 
+            GetStudySpecificInvestigators(string ProjectNumber);
     }
 }

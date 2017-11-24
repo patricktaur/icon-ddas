@@ -174,6 +174,7 @@ export class ReportService {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     getInvestigatorReviewCompletedTime(fromDate: string, toDate: string):Observable<any[]>{
         return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime' +
         '?FromDate=' + fromDate + '&ToDate=' + toDate 
@@ -186,6 +187,14 @@ export class ReportService {
             return res.json();
         })
         .catch(this.handleError);
+=======
+    getStudySpecificInvestigators(projectNumber: string):Observable<any[]>{
+        return this.http.get(this._baseUrl + 'Reports/StudySpecificInvestigators?ProjectNumber=' + projectNumber, this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);        
+>>>>>>> Enhancement-StudySpecificReport
     }
 
     private handleError(error: any) {

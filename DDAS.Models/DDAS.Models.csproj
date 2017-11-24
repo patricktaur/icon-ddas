@@ -135,6 +135,7 @@
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\Search\InstituteFindingsSummaryViewModel.cs" />
     <Compile Include="ViewModels\SponsorViewModel.cs" />
+    <Compile Include="ViewModels\StudySpecificInvestigatorVM.cs" />
     <Compile Include="ViewModels\UploadsViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>

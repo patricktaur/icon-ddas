@@ -341,24 +341,31 @@ namespace DDAS.API.Controllers
                 _Report.GetAssignmentHistory());
         }
 
-<<<<<<< HEAD
         [Route("InvestigatorReviewCompletedTime")]
         [HttpGet]
-        public IHttpActionResult 
+        public IHttpActionResult
             GetInvestigatorReviewCompletedTime(string FromDate, string ToDate)
         {
             var fromDate = DateTime.ParseExact(FromDate, "M/d/yyyy", null);
             var toDate = DateTime.ParseExact(ToDate, "M/d/yyyy", null);
             return Ok(
                 _Report.GetInvestigatorsReviewCompletedTime(fromDate, toDate));
-=======
+        }
+
         [Route("InvestigatorByFinding")]
         [HttpGet]
         public IHttpActionResult GetInvestigatorsByFinding()
         {
             return Ok(
                 _Report.GetInvestigatorByFinding());
->>>>>>> Enhancement-FindingsReport
+        }
+
+        [Route("StudySpecificInvestigators")]
+        [HttpGet]
+        public IHttpActionResult GetStudySpecificInvestigators(string ProjectNumber)
+        {
+            return Ok(
+                _Report.GetStudySpecificInvestigators(ProjectNumber));
         }
     }
 }

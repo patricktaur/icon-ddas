@@ -310,7 +310,7 @@ namespace DDAS.Services.Reports
 
             var OpenInvestigations = new List<OpenInvestigationsViewModel>();
 
-            foreach(User user in Users)
+            foreach (User user in Users)
             {
                 var OpenInvestigation = new OpenInvestigationsViewModel();
 
@@ -343,7 +343,7 @@ namespace DDAS.Services.Reports
         #endregion
 
         #region Admin Dashboard
-        
+
         public List<AdminDashboardViewModel> GetAdminDashboard()
         {
             var Users = _UOW.UserRepository.GetAll();
@@ -353,7 +353,7 @@ namespace DDAS.Services.Reports
 
             var AdminDashboardList = new List<AdminDashboardViewModel>();
 
-            foreach(User user in Users)
+            foreach (User user in Users)
             {
                 var AdminDashboard = new AdminDashboardViewModel();
                 AdminDashboard.UserName = user.UserName;
@@ -425,7 +425,7 @@ namespace DDAS.Services.Reports
 
             var Assignments = new List<AssignmentHistoryViewModel>();
 
-            foreach(AssignmentHistory assignmentHistory in AssignmentHistoryList)
+            foreach (AssignmentHistory assignmentHistory in AssignmentHistoryList)
             {
                 var assignmentHistoryViewModel = new AssignmentHistoryViewModel();
 
@@ -434,12 +434,12 @@ namespace DDAS.Services.Reports
 
                 assignmentHistoryViewModel.PrincipalInvestigator =
                     ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
-                assignmentHistoryViewModel.ProjectNumber = 
+                assignmentHistoryViewModel.ProjectNumber =
                     ComplianceForm.ProjectNumber;
                 assignmentHistoryViewModel.ProjectNumber2 =
                     ComplianceForm.ProjectNumber2;
 
-                assignmentHistoryViewModel.AssignedBy = 
+                assignmentHistoryViewModel.AssignedBy =
                     assignmentHistory.AssignedBy;
                 assignmentHistoryViewModel.AssignedOn =
                     assignmentHistory.AssignedOn;
@@ -498,6 +498,50 @@ namespace DDAS.Services.Reports
             });
 
             return ReviewCompletedInvestigatorsVM;
+        }
+
+        public List<StudySpecificInvestigatorVM>
+            GetStudySpecificInvestigators(string ProjectNumber)
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var StudySpecificInvestigators =
+                ComplianceForms.Where(form => form.ProjectNumber
+                == ProjectNumber || form.ProjectNumber2 == ProjectNumber)
+                .SelectMany(form => form.InvestigatorDetails, (form, Investigator) =>
+                new { form, Investigator })
+                .Where(s => s.Investigator.ReviewCompletedOn != null)
+                .Select(s =>
+                new
+                {
+                    InvestigatorName = s.Investigator.Name,
+                    ReviewCompletedOn = s.Investigator.ReviewCompletedOn.Value,
+                    FindingStatus = s.Investigator.IssuesFoundSiteCount,
+                    AssigendTo = s.form.AssignedTo
+                })
+                .ToList();
+
+            var Limit = StudySpecificInvestigators.Count();
+
+            var StudySpecificInvestigatorVMList =
+                new List<StudySpecificInvestigatorVM>();
+
+            for (int Index = 0; Index < Limit; Index++)
+            {
+                var VM = new StudySpecificInvestigatorVM();
+
+                VM.InvestigatorName = StudySpecificInvestigators[Index].InvestigatorName;
+                VM.ReviewCompletedOn = StudySpecificInvestigators[Index].ReviewCompletedOn;
+                VM.FindingStatus = StudySpecificInvestigators[Index].FindingStatus == 0
+                    ? "No Issues Identified" : "Issues Identified";
+                VM.AssignedTo = StudySpecificInvestigators[Index].AssigendTo;
+
+                StudySpecificInvestigatorVMList.Add(VM);
+            }
+            return StudySpecificInvestigatorVMList;
         }
 
         public List<InvestigatorFindingViewModel> GetInvestigatorByFinding()
