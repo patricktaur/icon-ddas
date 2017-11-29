@@ -131,13 +131,9 @@ export class EditAuditComponent implements OnInit {
     }
 
     deleteObservation(deleteObservationById: number){
-        this.audit.Observations.forEach((observation: AuditObservation) => {
-            if(observation.SiteId == deleteObservationById){
-                var index = this.audit.Observations.indexOf(observation);
-                if(index !== -1)
-                    this.audit.Observations.splice(index, 1);
-            }
-        });
+        var observation = this.audit.Observations.find(x => x.SiteId == deleteObservationById);
+        observation.Comments = null;
+        observation.Status = null;
     }
 
     save(){
