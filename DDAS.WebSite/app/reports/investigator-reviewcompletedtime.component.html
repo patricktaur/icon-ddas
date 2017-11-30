@@ -39,7 +39,8 @@
 					<th>Investigator</th>
                     <th>Project Number</th>
                     <th>Search Started On</th>
-                    <th>Review Completed On</th>
+					<th>Review Completed On</th>
+					<th>Assigned To</th>
                     <th>TimeTaken (in Minutes) to Complete Review</th>
 				</tr>
 			</thead>
@@ -56,8 +57,11 @@
                     </td>
                     <td class="text-center">
                         {{item.ReviewCompletedOn | date: 'dd MMM yyyy hh:mm'}}
-                    </td>
-                    <td class="text-right">
+					</td>
+					<td class="text-left">
+						{{item.AssignedTo}}
+					</td>
+                    <td class="text-right col-md-2">
                         {{item.TimeTakenToCompleteReview}}
                     </td>
 				</tr>

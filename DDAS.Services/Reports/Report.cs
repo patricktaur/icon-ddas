@@ -489,7 +489,8 @@ namespace DDAS.Services.Reports
                     ProjectNumber2 = s.ComplianceForm.ProjectNumber2,
                     Name = s.InvestigatorSearched.Name,
                     SearchStartedOn = s.ComplianceForm.SearchStartedOn,
-                    ReviewCompletedOn = s.InvestigatorSearched.ReviewCompletedOn.Value
+                    ReviewCompletedOn = s.InvestigatorSearched.ReviewCompletedOn.Value,
+                    AssignedTo = s.ComplianceForm.AssignedTo
                 })
                 .ToList();
 
@@ -501,10 +502,10 @@ namespace DDAS.Services.Reports
                 VM.ProjectNumber2 = Investigator.ProjectNumber2;
                 VM.SearchStartedOn = Investigator.SearchStartedOn;
                 VM.ReviewCompletedOn = Investigator.ReviewCompletedOn;
+                VM.AssignedTo = Investigator.AssignedTo;
 
                 ReviewCompletedInvestigatorsVM.Add(VM);
             });
-
             return ReviewCompletedInvestigatorsVM;
         }
 

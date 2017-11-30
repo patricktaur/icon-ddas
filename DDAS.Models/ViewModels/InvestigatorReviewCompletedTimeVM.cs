@@ -13,6 +13,7 @@ namespace DDAS.Models.ViewModels
         public string ProjectNumber2 { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public DateTime ReviewCompletedOn { get; set; }
+        public string AssignedTo { get; set; }
         public int TimeTakenToCompleteReview {
             get
             {
