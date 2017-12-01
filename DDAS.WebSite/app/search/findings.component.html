@@ -84,7 +84,7 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.FullMatchCount > 0">
-												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open();resetValues()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
 												&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;</a>
 											</p>
 											<p *ngIf="SiteSearchStatus.FullMatchCount == 0">
@@ -98,7 +98,7 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.PartialMatchCount > 0">
-												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open();resetValues()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
 												&nbsp;{{SiteSearchStatus.PartialMatchCount}}&nbsp;</a>
 											</p>
 											<p *ngIf="SiteSearchStatus.PartialMatchCount == 0">
@@ -113,7 +113,7 @@
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.SingleMatchCount != '0' ">
 												
-												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open()">
+												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open(); resetValues()">
 												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;</a>
 											</p>
 											
@@ -249,7 +249,6 @@
 	<modal #MatchedRecordsModal>
 		<modal-header>
 			<h4>Matching records in site.</h4>
-
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">
@@ -282,8 +281,6 @@
 							<td>
 								{{finding.MatchCount}}
 							</td>
-
-
 						</tr>
 
 					</tbody>
@@ -305,6 +302,7 @@
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">
+
 				<label for="filterPartialRecordDetails">Filter:</label>
 
 				<input type="text" class="form-control" name="filterFullRecordDetails" [(ngModel)]="filterFullRecordDetails">
@@ -319,7 +317,7 @@
 					</thead>
 
 					<tbody>
-						<tr *ngFor="let finding of filteredFullMatchRecords | paginate: {itemsPerPage: 5, currentPage: fullPageNumber, id:'full'}">
+						<tr *ngFor="let finding of filteredFullMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: fullPageNumber, id:'full'}">
 							<td>
 								<input type="checkbox" [(ngModel)]="finding.UISelected" />
 								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
@@ -339,23 +337,35 @@
 						</tr>
 
 					</tbody>
-					<pagination-controls (pageChange)="fullPageNumber = $event" id="full"></pagination-controls>
-
 				</table>
+				<pagination-controls (pageChange)="fullPageNumber = $event" id="full"></pagination-controls>
+				<div class="row">
+					<div class="col-md-4">
+						<label for="RecordsPerPage">Records Per Page:</label>
+					</div>
+					<div class="col-md-2">
+						<select class="form-control" [(ngModel)]="recordsPerPage">
+							<option selected="selected">5</option>
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+					</div>
+					<div class="col-md-6">
+					</div>
+				</div>
 			</div>
-
 		</modal-body>
 		<modal-footer>
 			<button type="button" class="btn btn-default" (click)="AddSelectedToFindings(); FullMatchedRecordsModal.close()">Add to Findings</button>
 			<button type="button" class="btn btn-default" (click)=" FullMatchedRecordsModal.close()">Cancel</button>
 		</modal-footer>
-
 	</modal>
 
 	<modal #PartialMatchedRecordsModal>
 		<modal-header>
 			<h4>Partially Matching records in site.</h4>
-
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">
@@ -374,7 +384,7 @@
 
 					<tbody>
 						<!-- <tr *ngFor="let finding of PartialMatchRecords | paginate: {itemsPerPage: 5, currentPage: partialPageNumber, id:'partial'}"> -->
-						<tr *ngFor="let finding of filteredPartialMatchRecords | paginate: {itemsPerPage: 5, currentPage: partialPageNumber, id:'partial'}">
+						<tr *ngFor="let finding of filteredPartialMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: partialPageNumber, id:'partial'}">
 							<td>
 								<input type="checkbox" [(ngModel)]="finding.UISelected" />
 								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
@@ -386,17 +396,28 @@
 									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
 									<!--{{SplitItem}}-->
 								</div>
-
 							</td>
-
-
 						</tr>
-
 					</tbody>
 				</table>
 				<pagination-controls (pageChange)="partialPageNumber = $event" id="partial"></pagination-controls>
+				<div class="row">
+					<div class="col-md-4">
+						<label for="RecordsPerPage">Records Per Page:</label>
+					</div>
+					<div class="col-md-2">
+						<select class="form-control" [(ngModel)]="recordsPerPage">
+							<option selected="selected">5</option>
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+					</div>
+					<div class="col-md-6">
+					</div>
+				</div>
 			</div>
-
 		</modal-body>
 		<modal-footer>
 			<button type="button" class="btn btn-default" (click)="AddSelectedToFindings(); PartialMatchedRecordsModal.close()">Add to Findings</button>
@@ -408,12 +429,10 @@
 	<modal #SingleMatchedRecordsModal>
 		<modal-header>
 			<h4>Single Match Records in site.</h4>
-
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">
 				<label for="filterRecordDetails">Filter:</label>
-
 				<input type="text" class="form-control" name="filterRecordDetails" [(ngModel)]="filterRecordDetails">
 				<label>Found:{{filteredSingleMatchCount}}</label>
 				<table class="table table-bordered table-hover table-striped">
@@ -421,16 +440,14 @@
 						<tr>
 							<th class="col-md-2">Select</th>
 							<th class="col-md-8">Record Details</th>
-
 						</tr>
 					</thead>
-
 					<tbody>
 						<div class="alert alert-info" *ngIf="singleMatchRecordsLoading">
 							<strong>Loading ...</strong>
 						</div>
 
-						<tr *ngFor="let finding of filteredSingleMatchRecords | paginate: {itemsPerPage: 5, currentPage: pageNumber, id:'single'}">
+						<tr *ngFor="let finding of filteredSingleMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: pageNumber, id:'single'}">
 							<td>
 								<input type="checkbox" [(ngModel)]="finding.UISelected" />
 								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
@@ -451,6 +468,22 @@
 					</tbody>
 				</table>
 				<pagination-controls (pageChange)="pageNumber = $event" id="single"></pagination-controls>
+				<div class="row">
+					<div class="col-md-4">
+						<label for="RecordsPerPage">Records Per Page:</label>
+					</div>
+					<div class="col-md-2">
+						<select class="form-control" [(ngModel)]="recordsPerPage">
+							<option selected="selected">5</option>
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+					</div>
+					<div class="col-md-6">
+					</div>
+				</div>
 			</div>
 
 		</modal-body>
