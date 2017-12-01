@@ -101,8 +101,10 @@ namespace DDAS.Services.Search
                 //reading headers and first row
                 var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
+                if (_UOW.DefaultSiteRepository.GetAll().Count() == 0)
+                    ExcelRow.Add("cannot find default sites. Add default sites before uploading");
                 //if headers are missing
-                if(ExcelRow.Where(x => x.Contains("cannot find column")).Count() > 0)
+                if(ExcelRow.Where(x => x.Contains("cannot find")).Count() > 0)
                 {
                     ExcelRow.ForEach(row =>
                     {
@@ -776,7 +778,12 @@ namespace DDAS.Services.Search
 
             int SrNo = 0;
 
-            var MandatorySites = _UOW.DefaultSiteRepository.GetAll()
+            var Sites = _UOW.DefaultSiteRepository.GetAll();
+
+            if (Sites.Count() == 0)
+                return;
+
+            var MandatorySites = Sites
                 .Where (x => x.IsMandatory == true)
                 .OrderBy(x => x.OrderNo).ToList();
 
@@ -4185,7 +4192,9 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
 
-            if (!IsValidProjectNumber(InputRow.ProjectNumber2))
+            if (InputRow.ProjectNumber2 != null &&
+                InputRow.ProjectNumber2.Trim() != ""
+                && !IsValidProjectNumber(InputRow.ProjectNumber2))
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
 
