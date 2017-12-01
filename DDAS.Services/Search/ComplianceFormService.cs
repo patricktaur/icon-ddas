@@ -4082,6 +4082,7 @@ namespace DDAS.Services.Search
         #endregion
 
         #region Download Data Files
+
         public List<DownloadDataFilesViewModel> GetDataFiles()
         {
             var DownloadDataFilesVMList = new List<DownloadDataFilesViewModel>();
@@ -4102,12 +4103,18 @@ namespace DDAS.Services.Search
             foreach (string Folder in DataFolders)
             {
                 var Files = GetDataFiles(Folder, FileTypes[Index]);
+
+                if (Files.Count == 0)
+                    continue;
+
                 Files.ForEach(fileInfo =>
                 {
                     var VM = new DownloadDataFilesViewModel();
                     VM.FileName = fileInfo.Name;
+                    VM.SiteName = VM.FileName.Split('_')[0];
                     VM.FullPath = Folder + VM.FileName;
-                    VM.FileSize = fileInfo.Length.ToString();
+                    VM.FileSize = (fileInfo.Length / 1024) //bytes to KB
+                    .ToString();
                     VM.DownloadedOn = fileInfo.CreationTime;
                     VM.FileType = fileInfo.Extension;
 

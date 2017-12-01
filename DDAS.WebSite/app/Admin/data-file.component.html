@@ -22,10 +22,9 @@
 							<thead>
 								<tr>
 									<th>Downloaded On</th>
-                                    <th>File Name</th>
-                                    <!-- <th>Downloaded from</th> -->
+									<th>Site Name</th>
+									<th>File Name</th>
                                     <th>Size (in KB)</th>
-									<!-- <th>Action</th> -->
 								</tr>
 							</thead>
 							<tbody>
@@ -37,16 +36,11 @@
 									<td class="text-center">
 										<a href="{{ApiHost}}{{item.FullPath}}" target="_blank">{{item.FileName}}</a>
                                     </td>
-									<!-- <td class="text-center">
+									 <td class="text-center">
 										{{item.SiteName}}
-									</td> -->
+									</td> 
 									<td class="text-center">
 										{{item.FileSize}}
-									</td>
-									<td>
-										<!-- <button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Error Image">
-											<span class="glyphicon glyphicon-remove"></span>
-										</button> -->
 									</td>
 								</tr>
 							</tbody>
