@@ -849,7 +849,6 @@ gotoSiteDetails(SiteSourceId: number){
     }
     
     goBack() {
-
         if (this.rootPath == null) {
             this._location.back();
         }

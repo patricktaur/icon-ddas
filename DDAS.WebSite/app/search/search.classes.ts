@@ -298,7 +298,8 @@ export class SearchList{
         IsMandatory: boolean = true;  //temp
         SearchAppliesTo: number;
         SearchAppliesToText: string;
-    }  
+        IsOptional: boolean;
+    }
 
     export class Finding{
         Id: string;

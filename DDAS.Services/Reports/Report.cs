@@ -310,7 +310,7 @@ namespace DDAS.Services.Reports
 
             var OpenInvestigations = new List<OpenInvestigationsViewModel>();
 
-            foreach(User user in Users)
+            foreach (User user in Users)
             {
                 var OpenInvestigation = new OpenInvestigationsViewModel();
 
@@ -343,7 +343,7 @@ namespace DDAS.Services.Reports
         #endregion
 
         #region Admin Dashboard
-        
+
         public List<AdminDashboardViewModel> GetAdminDashboard()
         {
             var Users = _UOW.UserRepository.GetAll();
@@ -353,7 +353,7 @@ namespace DDAS.Services.Reports
 
             var AdminDashboardList = new List<AdminDashboardViewModel>();
 
-            foreach(User user in Users)
+            foreach (User user in Users)
             {
                 var AdminDashboard = new AdminDashboardViewModel();
                 AdminDashboard.UserName = user.UserName;
@@ -425,7 +425,7 @@ namespace DDAS.Services.Reports
 
             var Assignments = new List<AssignmentHistoryViewModel>();
 
-            foreach(AssignmentHistory assignmentHistory in AssignmentHistoryList)
+            foreach (AssignmentHistory assignmentHistory in AssignmentHistoryList)
             {
                 var assignmentHistoryViewModel = new AssignmentHistoryViewModel();
 
@@ -434,12 +434,20 @@ namespace DDAS.Services.Reports
 
                 assignmentHistoryViewModel.PrincipalInvestigator =
                     ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
-                assignmentHistoryViewModel.ProjectNumber = 
+                assignmentHistoryViewModel.ProjectNumber =
                     ComplianceForm.ProjectNumber;
-                assignmentHistoryViewModel.ProjectNumber2 =
-                    ComplianceForm.ProjectNumber2;
 
-                assignmentHistoryViewModel.AssignedBy = 
+                //try
+                //{
+                    assignmentHistoryViewModel.ProjectNumber2 =
+                        ComplianceForm.ProjectNumber2;
+                //}
+                //catch
+                //{
+                //    //ProjectNumber2 will not be available in old comp forms
+                //}
+
+                assignmentHistoryViewModel.AssignedBy =
                     assignmentHistory.AssignedBy;
                 assignmentHistoryViewModel.AssignedOn =
                     assignmentHistory.AssignedOn;
@@ -452,7 +460,165 @@ namespace DDAS.Services.Reports
             }
             return Assignments;
         }
+
+        public List<InvestigatorReviewCompletedTimeVM>
+            GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate)
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var ReviewCompletedInvestigatorsVM =
+                new List<InvestigatorReviewCompletedTimeVM>();
+
+            var ReviewCompletedInvestigators = ComplianceForms
+                .SelectMany(x => x.InvestigatorDetails,
+                (ComplianceForm, InvestigatorSearched) =>
+                new {
+                    ComplianceForm,
+                    InvestigatorSearched
+                })
+                .Where(s => s.InvestigatorSearched.ReviewCompletedOn != null &&
+                s.InvestigatorSearched.ReviewCompletedOn >= FromDate.Date &&
+                s.InvestigatorSearched.ReviewCompletedOn <= ToDate.Date)
+                .Select(s =>
+                new
+                {
+                    ProjectNumber = s.ComplianceForm.ProjectNumber,
+                    ProjectNumber2 = s.ComplianceForm.ProjectNumber2,
+                    Name = s.InvestigatorSearched.Name,
+                    SearchStartedOn = s.ComplianceForm.SearchStartedOn,
+                    ReviewCompletedOn = s.InvestigatorSearched.ReviewCompletedOn.Value,
+                    AssignedTo = s.ComplianceForm.AssignedTo
+                })
+                .ToList();
+
+            ReviewCompletedInvestigators.ForEach(Investigator =>
+            {
+                var VM = new InvestigatorReviewCompletedTimeVM();
+                VM.InvestigatorName = Investigator.Name;
+                VM.ProjectNumber = Investigator.ProjectNumber;
+                VM.ProjectNumber2 = Investigator.ProjectNumber2;
+                VM.SearchStartedOn = Investigator.SearchStartedOn;
+                VM.ReviewCompletedOn = Investigator.ReviewCompletedOn;
+                VM.AssignedTo = Investigator.AssignedTo;
+
+                ReviewCompletedInvestigatorsVM.Add(VM);
+            });
+            return ReviewCompletedInvestigatorsVM;
+        }
+
+        public List<StudySpecificInvestigatorVM>
+            GetStudySpecificInvestigators(string ProjectNumber)
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var StudySpecificInvestigators =
+                ComplianceForms.Where(form => form.ProjectNumber
+                == ProjectNumber || form.ProjectNumber2 == ProjectNumber)
+                .SelectMany(form => form.InvestigatorDetails, (form, Investigator) =>
+                new { form, Investigator })
+                .Where(s => s.Investigator.ReviewCompletedOn != null)
+                .Select(s =>
+                new
+                {
+                    InvestigatorName = s.Investigator.Name,
+                    ReviewCompletedOn = s.Investigator.ReviewCompletedOn.Value,
+                    FindingStatus = s.Investigator.IssuesFoundSiteCount,
+                    AssigendTo = s.form.AssignedTo
+                })
+                .ToList();
+
+            var Limit = StudySpecificInvestigators.Count();
+
+            var StudySpecificInvestigatorVMList =
+                new List<StudySpecificInvestigatorVM>();
+
+            for (int Index = 0; Index < Limit; Index++)
+            {
+                var VM = new StudySpecificInvestigatorVM();
+
+                VM.InvestigatorName = StudySpecificInvestigators[Index].InvestigatorName;
+                VM.ReviewCompletedOn = StudySpecificInvestigators[Index].ReviewCompletedOn;
+                VM.FindingStatus = StudySpecificInvestigators[Index].FindingStatus == 0
+                    ? "No Issues Identified" : "Issues Identified";
+                VM.AssignedTo = StudySpecificInvestigators[Index].AssigendTo;
+
+                StudySpecificInvestigatorVMList.Add(VM);
+            }
+            return StudySpecificInvestigatorVMList;
+        }
+
+        public List<InvestigatorFindingViewModel> GetInvestigatorByFinding()
+        {
+            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (ComplianceForms.Count == 0)
+                return null;
+
+            var ReviewCompletedInvestigators = ComplianceForms
+                .SelectMany(Form => Form.InvestigatorDetails,
+                (Form, Investigator) =>
+                new { Form, Investigator })
+                .Where(s => s.Investigator.ReviewCompletedOn != null)
+                .Select(s =>
+                new
+                {
+                    ProjectNumber = s.Form.ProjectNumber,
+                    ProjectNumber2 = (s.Form.ProjectNumber2 == null ? "" : s.Form.ProjectNumber2),
+                    AssignedTo = s.Form.AssignedTo,
+                    InvestigatorId = s.Investigator.Id,
+                    InvestigatorName = s.Investigator.Name,
+                    Role = s.Investigator.Role,
+                    ReviewCompletedOn = s.Investigator.ReviewCompletedOn.Value,
+
+                    Findings = s.Form.Findings
+                        .Where(finding => finding.InvestigatorSearchedId ==
+                        s.Investigator.Id && 
+                        finding.InvestigatorName.ToLower() == 
+                        s.Investigator.Name.ToLower()).ToList(),
+                })
+                .ToList();
+
+            var InvestigatorFindingVMList = 
+                new List<InvestigatorFindingViewModel>();
+
+            var Limit = ReviewCompletedInvestigators.Count();
+
+            for(int Index = 0; Index < Limit; Index++)
+            {
+                var VM = new InvestigatorFindingViewModel();
+                VM.ProjectNumber = ReviewCompletedInvestigators[Index].ProjectNumber;
+                VM.ProjectNumber2 = ReviewCompletedInvestigators[Index].ProjectNumber2;
+                VM.InvestigatorName = ReviewCompletedInvestigators[Index].InvestigatorName;
+                VM.Role = ReviewCompletedInvestigators[Index].Role;
+                VM.ReviewCompletedBy = ReviewCompletedInvestigators[Index].AssignedTo;
+                VM.ReviewCompletedOn = ReviewCompletedInvestigators[Index].ReviewCompletedOn;
+
+                var Findings = ReviewCompletedInvestigators[Index].Findings;
+
+                if(Findings.Count() > 0 &&
+                    Findings.Where(x => x.IsAnIssue ==true).Count() > 0)
+                {
+                    Findings
+                        .Where(x => x.IsAnIssue == true)
+                        .ToList()
+                        .ForEach(finding =>
+                    {
+                        var tempVM = VM;
+                        tempVM.SiteName = finding.SiteEnum.ToString();
+                        tempVM.FindingObservation = finding.Observation;
+                        InvestigatorFindingVMList.Add(tempVM);
+                    });
+                }
+                else
+                    InvestigatorFindingVMList.Add(VM);
+            }
+            return InvestigatorFindingVMList;
+        }
     }
 }
-
-

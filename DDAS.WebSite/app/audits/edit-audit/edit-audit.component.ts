@@ -5,6 +5,8 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { AuditService } from '../audit-service';
+import { ComplianceFormA, SiteSource, Finding } from '../../search/search.classes';
+import { Location } from '@angular/common';
 
 @Component({
     moduleId: module.id,
@@ -17,15 +19,17 @@ export class EditAuditComponent implements OnInit {
     public complianceFormId: string;
     public SelectedComplianceFormId: string;
     public audit: Audit = new Audit;
-    public complianceForm: any;
+    public complianceForm: ComplianceFormA;
     public pageNumber: number;
     public observation: string;
     public siteId: number = 0;
     public isSubmitted: boolean = false;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private configService: ConfigService,
+        private _location: Location,
         private authService: AuthService,
         private auditService: AuditService
     ) { }
@@ -35,7 +39,7 @@ export class EditAuditComponent implements OnInit {
         this.route.params.forEach((params: Params) => {
             this.auditId = params['AuditId'];
         });
-        this.complianceForm = {};
+        this.complianceForm = new ComplianceFormA;
         this.loadAudit();
     }
 
@@ -70,16 +74,16 @@ export class EditAuditComponent implements OnInit {
 
     get SiteSources(){
         if(this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources;
+            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
         else
             return null;
     }
 
     get additionalSiteSources(){
         if(this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources.filter(x => x.IsOptional == true);
+            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
         else
-            return null;        
+            return null;
     }
 
     get Findings(){
@@ -127,13 +131,9 @@ export class EditAuditComponent implements OnInit {
     }
 
     deleteObservation(deleteObservationById: number){
-        this.audit.Observations.forEach((observation: AuditObservation) => {
-            if(observation.SiteId == deleteObservationById){
-                var index = this.audit.Observations.indexOf(observation);
-                if(index !== -1)
-                    this.audit.Observations.splice(index, 1);
-            }
-        });
+        var observation = this.audit.Observations.find(x => x.SiteId == deleteObservationById);
+        observation.Comments = null;
+        observation.Status = null;
     }
 
     save(){
@@ -169,4 +169,8 @@ export class EditAuditComponent implements OnInit {
 
         });        
     }
+
+        goBack() {
+            this._location.back();
+    }    
 }

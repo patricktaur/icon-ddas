@@ -2,36 +2,36 @@
 	<div class="col-lg-12">
 		<div class="well">
 			<h3 class="no-margin-top">Audit by {{audit.Auditor}} {{audit.CompletedOn | date: 'dd MMM yyyy'}} </h3>
-			<label for="auditStatus">Status:</label>
-			{{audit.AuditStatus}}
+			<label for="auditStatus">Status:</label> {{audit.AuditStatus}}
 		</div>
 	</div>
 
 	<div class="col-lg-12">
-        <div class="well">
+		<div class="well">
+			<div clas="row">
+				<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+			</div>
+			<br/>
+			<!-- <a href="javascript: document.body.scrollIntoView(false);">Scroll to bottom</a> -->
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
-						<label for="PrincipalInvestigator">Principal Investigator:</label>
-						{{complianceForm.ProjectNumber}}
+						<label for="PrincipalInvestigator">Project Number:</label> {{complianceForm.ProjectNumber}}
 					</div>
-				</div>
-				<div class="form-group">
-					<label for="Institute">Institute:</label>
-					{{complianceForm.Institute}}
+					<div class="form-group">
+						<label for="Institute">Institute:</label> {{complianceForm.Institute}}
+					</div>				
 				</div>
 				<div class="col-md-6">
 					<div class="form-group">
-						<label for="SponsorProtocolNumber">Sponsor Protocol Number:</label>
-						{{complianceForm.SponsorProtocolNumber}}
+						<label for="SponsorProtocolNumber">Sponsor Protocol Number:</label> {{complianceForm.SponsorProtocolNumber}}
 					</div>
-				</div>
-				<div class="form-group">
-					<label for="Address">Address:</label>
-					{{complianceForm.Address}}
+					<div class="form-group">
+						<label for="Address">Address:</label> {{complianceForm.Address}}
+					</div>				
 				</div>
 			</div>
-			
+
 			<h4>Investigators:</h4>
 			<div class="well">
 				<table class="table table-bordered table-hover table-striped">
@@ -56,7 +56,7 @@
 							</td>
 							<td class="text-left">
 								{{item.FirstName}}
-							</td>																	
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -64,38 +64,43 @@
 
 			<h4>Site Sources:</h4>
 			<div class="well">
-				<table class="table table-bordered table-hover table-striped">
-					<thead>
-						<tr>
-							<th class="col-md-1 text-left">Source #</th>
-							<th class="col-md-4 text-left">Source Name</th>
-							<th class="col-md-3 text-center">Source Date</th>
-							<th class="col-md-3 text-left">Weblink</th>
-							<th class="col-md-1 text-left">Issues Identified</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="active" *ngFor="let item of SiteSources">
-							<td class="text-left">
-								{{item.Id}}
-							</td>
-							<td class="text-left">
-								{{item.SiteName}}
-							</td>
-							<td class="text-left">
-								{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
-							</td>
-							<td class="text-left">
-								{{item.SiteUrl}}
-							</td>
-							<td class="text-left">
-								{{item.IssuesIdentified | boolToYesNo }}
-							</td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="row">
+					<div class="col-lg-12">
+
+						<table class="table table-bordered table-hover table-striped">
+							<thead>
+								<tr>
+									<th class="text-left">Source #</th>
+									<th class="text-left">Source Name</th>
+									<th class="text-center">Source Date</th>
+									<th class="text-left">Weblink</th>
+									<th class="text-left">Issues Identified</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="active" *ngFor="let item of SiteSources">
+									<td class="text-left">
+										{{item.Id}}
+									</td>
+									<td class="text-left">
+										{{item.SiteName}}
+									</td>
+									<td class="text-left">
+										{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
+									</td>
+									<td class="text-left"title="{{item.SiteUrl}}">
+										{{item.SiteUrl | slice:0:50}}
+									</td>
+									<td class="text-left">
+										{{item.IssuesIdentified | boolToYesNo }}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
-			
+
 			<h4>Additional Site Sources:</h4>
 			<div class="well">
 				<table class="table table-bordered table-hover table-striped">
@@ -109,7 +114,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr class="active" *ngFor="let item of AdditionalSiteSources">
+						<tr class="active" *ngFor="let item of additionalSiteSources">
 							<td class="text-left">
 								{{item.Id}}
 							</td>
@@ -128,7 +133,7 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>			
+			</div>
 
 			<h4>Findings:</h4>
 			<div class="well">
@@ -158,25 +163,25 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>			
+			</div>
 		</div>
 		<div class="well">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="Status" *ngIf="!isSubmitted">Audit Response:</label>
-                        <select class="form-control" [(ngModel)]="siteId" *ngIf="!isSubmitted">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="Status" *ngIf="!isSubmitted">Audit Response:</label>
+						<select class="form-control" [(ngModel)]="siteId" *ngIf="!isSubmitted">
                              <option *ngFor="let item of audit.Observations" [value]="item.SiteId">
 								 {{item.SiteId}} {{item.SiteShortName}}
 								</option>
                         </select>
-                    </div>
-                    <label for="Comments" *ngIf="!isSubmitted">Observation:</label>
-                    <textarea name="Comments" class="form-control" id="Observation" rows="4" cols="20" placeholder="observations"
-                    [(ngModel)]="observation" *ngIf="!isSubmitted"></textarea>
-                </div>
-                <div class="col-md-6">
-                </div>
+					</div>
+					<label for="Comments" *ngIf="!isSubmitted">Observation:</label>
+					<textarea name="Comments" class="form-control" id="Observation" rows="4" cols="20" placeholder="observations" [(ngModel)]="observation"
+					 *ngIf="!isSubmitted"></textarea>
+				</div>
+				<div class="col-md-6">
+				</div>
 			</div>
 			<button type="button" class="btn btn-primary" (click)="acceptObservation()" *ngIf="!isSubmitted">Accepted</button>
 			<button type="button" class="btn btn-primary" (click)="rejectObservation()" *ngIf="!isSubmitted">Rejected</button>
@@ -202,16 +207,21 @@
 							{{item.Status}}
 						</td>
 						<td>
-							<button type="button" class="btn btn-sm btn-primary" (click)="deleteObservation(item.SiteId)" title="delete observation" *ngIf="!isSubmitted">
+							<button type="button" class="btn btn-sm btn-primary" (click)="deleteObservation(item.SiteId)" title="delete observation"
+							 *ngIf="!isSubmitted">
                             	<span class="glyphicon glyphicon-remove"></span>
                         	</button>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-            <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
-            <button type="button" class="btn btn-primary" (click)="save(false)" *ngIf="!isSubmitted" >Save</button>
-            <button type="button" class="btn btn-primary" (click)="submit(true)" *ngIf="!isSubmitted">Submit</button>
-		</div>
+			<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+			<button type="button" class="btn btn-primary" (click)="save(false)" *ngIf="!isSubmitted">Save</button>
+			<button type="button" class="btn btn-primary" (click)="submit(true)" *ngIf="!isSubmitted">Submit</button>
+			
+			<div clas="row">
+				<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+			</div>	
+		</div>		
 	</div>
 </div>

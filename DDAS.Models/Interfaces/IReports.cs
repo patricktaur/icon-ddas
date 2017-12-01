@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain;
 using DDAS.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 
 namespace DDAS.Models.Interfaces
@@ -13,5 +14,13 @@ namespace DDAS.Models.Interfaces
         List<AdminDashboardViewModel> GetAdminDashboard();
 
         List<AssignmentHistoryViewModel> GetAssignmentHistory();
+
+        List<InvestigatorReviewCompletedTimeVM>
+            GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate);
+
+        List<InvestigatorFindingViewModel> GetInvestigatorByFinding();
+
+        List<StudySpecificInvestigatorVM> 
+            GetStudySpecificInvestigators(string ProjectNumber);
     }
 }

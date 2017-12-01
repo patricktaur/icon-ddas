@@ -2227,8 +2227,11 @@ namespace DDAS.Services.Search
 
             writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
-            writer.AddFormHeaders(form.ProjectNumber, form.SponsorProtocolNumber,
-                form.Institute, (form.Address + " " + form.Country));
+            writer.AddFormHeaders(
+                form.ProjectNumber + " " + form.ProjectNumber2, 
+                form.SponsorProtocolNumber,
+                form.Institute, 
+                (form.Address + " " + form.Country));
 
             //InvestigatorDetailsTable
             writer.WriteParagraph("Investigators:");
@@ -2243,7 +2246,7 @@ namespace DDAS.Services.Search
                 {
                     Investigator.Role,
                     Investigator.Name,
-                    Investigator.MedicalLiceseNumber,
+                    Investigator.MedicalLiceseNumber == null ? "NA" : Investigator.MedicalLiceseNumber,
                     Investigator.SearchName
                 };
                 writer.FillUpTable(CellValues);
