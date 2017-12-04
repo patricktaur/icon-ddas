@@ -4111,7 +4111,13 @@ namespace DDAS.Services.Search
                 {
                     var VM = new DownloadDataFilesViewModel();
                     VM.FileName = fileInfo.Name;
-                    VM.SiteName = VM.FileName.Split('_')[0];
+                    var siteEnum = VM.FileName.Split('_')[0];
+                    if (siteEnum.ToLower() != "dummy.txt")
+                        VM.SiteName = _UOW.SiteSourceRepository.GetAll()
+                        .Where(x => x.SiteEnum.ToString() == siteEnum)
+                        .First()
+                        .SiteShortName;
+
                     VM.FullPath = Folder + VM.FileName;
                     VM.FileSize = (fileInfo.Length / 1024) //bytes to KB
                     .ToString();

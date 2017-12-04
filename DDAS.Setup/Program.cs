@@ -98,48 +98,6 @@ namespace DDAS.Setup
             }
           }
 
-        static void RenameDataFiles()
-        {
-            var DataFolders = new string[] {
-                _config.CIILFolder,
-                _config.FDAWarningLettersFolder,
-                _config.ExclusionDatabaseFolder,
-                _config.SAMFolder,
-                _config.SDNFolder
-            };
-
-            var FileTypes = new string[] {
-                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
-            };
-
-            int Index = 0;
-            foreach (string Folder in DataFolders)
-            {
-                var Files = GetDataFiles(Folder, FileTypes[Index]);
-
-                if (Files.Count == 0)
-                    continue;
-
-                Files.ForEach(fileInfo =>
-                {
-                       
-                });
-                Index += 1;
-            }
-        }
-
-        private static List<FileInfo> GetDataFiles(string Folder, string FileType)
-        {
-            var Files = new DirectoryInfo(Folder).GetFiles(FileType);
-
-            var AllFiles = new List<FileInfo>();
-            foreach (FileInfo fileInfo in Files)
-            {
-                AllFiles.Add(fileInfo);
-            }
-            return AllFiles;
-        }
-
         static void CreateFolders(string configFile)
         {
             var appRootFolder = Path.GetDirectoryName(configFile);

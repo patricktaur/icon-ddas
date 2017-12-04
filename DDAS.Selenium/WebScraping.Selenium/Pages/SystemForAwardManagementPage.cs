@@ -208,7 +208,8 @@ namespace WebScraping.Selenium.Pages
                 _config.SAMFolder + SiteName.ToString() + "_";
             //_config.SAMFolder + "SAM_Exclusions_Public_Extract_";
 
-            string CSVFilePath = fileName;
+            //string CSVFilePath = fileName;
+            string CSVFilePath = _config.SAMFolder + "SAM_Exclusions_Public_Extract_";
             string UnZipPath = _config.SAMFolder;
 
             WebClient myWebClient = new WebClient();
@@ -226,7 +227,10 @@ namespace WebScraping.Selenium.Pages
                 Path.GetFileName(fileName), myStringWebResource));
 
             if (File.Exists(CSVFilePath))
-                File.Delete(CSVFilePath);
+                File.Delete(CSVFilePath); //extracted csv file
+
+            if (File.Exists(fileName))
+                File.Delete(fileName); //zip file
 
             try
             {
@@ -307,6 +311,8 @@ namespace WebScraping.Selenium.Pages
             }
             _log.WriteLog("Total records inserted - " +
                 _UOW.SAMSiteDataRepository.GetAll().Count);
+
+            parser.Dispose();
 
             File.Delete(CSVFilePath); //delete CSV file, retain zipped file
         }
