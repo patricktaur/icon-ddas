@@ -28,6 +28,7 @@
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
 							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/list-audit" routerLinkActive="active">QC Audit</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/data-file" routerLinkActive="active">Downloaded Data Files</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
 
 							<!-- <li class="active" *ngIf="authService.isUser || authService.isAdmin"><a routerLink="/reports" routerLinkActive="active">Reports</a></li> -->

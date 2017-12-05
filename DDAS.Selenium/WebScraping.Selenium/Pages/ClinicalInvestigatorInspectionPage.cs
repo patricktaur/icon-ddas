@@ -86,7 +86,7 @@ namespace WebScraping.Selenium.Pages
         private string DownloadCIIList()
         {
             string fileName = _config.CIILFolder + 
-                "cliil_" +
+                SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MM_yyyy_hh_mm") +
                 ".zip";
 
@@ -210,6 +210,8 @@ namespace WebScraping.Selenium.Pages
             //    _clinicalSiteData.ClinicalInvestigatorInspectionList.Count());
             _log.WriteLog("Total records inserted - " +
                 _UOW.ClinicalInvestigatorInspectionRepository.GetAll().Count());
+
+            File.Delete(FilePath); //delete txt file, retain zipped file
         }
 
         public override void LoadContent(string NameToSearch,

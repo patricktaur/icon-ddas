@@ -347,7 +347,7 @@ namespace WebScraping.Selenium.Pages
             //string fileName = _config.AppDataDownloadsFolder + "FDAWarningLetters.xls";
 
             string fileName = _config.FDAWarningLettersFolder + 
-                "FDAWarningLetters_" +
+                SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
                 ".xls";
 
