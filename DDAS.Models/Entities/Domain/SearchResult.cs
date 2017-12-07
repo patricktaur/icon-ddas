@@ -158,6 +158,7 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public bool Active { get; set; } = true;
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
@@ -418,6 +419,7 @@ namespace DDAS.Models.Entities.Domain
         public string Name { get; set; }
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
@@ -1331,6 +1333,7 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public string ProjectNumber2 { get; set; }
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string DisplayName { get; set; }
         public string InvestigatorID { get; set; }
         public string MemberID { get; set; }

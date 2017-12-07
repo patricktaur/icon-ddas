@@ -64,20 +64,21 @@ namespace DDAS.Services.Search
             RowData.ProjectNumber = ExcelRow[1];
             RowData.ProjectNumber2 = ExcelRow[2];
             RowData.SponsorProtocolNumber = ExcelRow[3];
-            RowData.DisplayName = ExcelRow[4];
-            RowData.InvestigatorID = ExcelRow[5];
-            RowData.MemberID = ExcelRow[6];
-            RowData.FirstName = ExcelRow[7];
-            RowData.MiddleName = ExcelRow[8];
-            RowData.LastName = ExcelRow[9];
-            RowData.InstituteName = ExcelRow[10];
-            RowData.AddressLine1 = ExcelRow[11];
-            RowData.AddressLine2 = ExcelRow[12];
-            RowData.City = ExcelRow[13];
-            RowData.State = ExcelRow[14];
-            RowData.PostalCode = ExcelRow[15];
-            RowData.Country = ExcelRow[16];
-            RowData.MedicalLicenseNumber = ExcelRow[17];
+            RowData.SponsorProtocolNumber2 = ExcelRow[4];
+            RowData.DisplayName = ExcelRow[5];
+            RowData.InvestigatorID = ExcelRow[6];
+            RowData.MemberID = ExcelRow[7];
+            RowData.FirstName = ExcelRow[8];
+            RowData.MiddleName = ExcelRow[9];
+            RowData.LastName = ExcelRow[10];
+            RowData.InstituteName = ExcelRow[11];
+            RowData.AddressLine1 = ExcelRow[12];
+            RowData.AddressLine2 = ExcelRow[13];
+            RowData.City = ExcelRow[14];
+            RowData.State = ExcelRow[15];
+            RowData.PostalCode = ExcelRow[16];
+            RowData.Country = ExcelRow[17];
+            RowData.MedicalLicenseNumber = ExcelRow[18];
 
             return RowData;
         }
@@ -190,6 +191,8 @@ namespace DDAS.Services.Search
                 form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
                 form.SponsorProtocolNumber =
                     InputRows[Index].SponsorProtocolNumber;
+                form.SponsorProtocolNumber2 =
+                    InputRows[Index].SponsorProtocolNumber2;
                 form.Institute = InputRows[Index].InstituteName;
                 form.Address = InputRows[Index].Address;
                 form.Country = InputRows[Index].Country;
@@ -1910,6 +1913,7 @@ namespace DDAS.Services.Search
             item.ProjectNumber = compForm.ProjectNumber;
             item.ProjectNumber2 = compForm.ProjectNumber2;
             item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
+            item.SponsorProtocolNumber2 = compForm.SponsorProtocolNumber2;
             item.RecId = compForm.RecId;
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
@@ -1980,6 +1984,8 @@ namespace DDAS.Services.Search
             {
                 Filter3 = Filter2.Where(x =>
                 x.SponsorProtocolNumber.ToLower() == 
+                CompFormFilter.SponsorProtocolNumber.ToLower() ||
+                x.SponsorProtocolNumber2.ToLower() ==
                 CompFormFilter.SponsorProtocolNumber.ToLower())
                 .ToList();
             }
@@ -2087,6 +2093,8 @@ namespace DDAS.Services.Search
             {
                 Filter3 = Filter2.Where(x =>
                 x.SponsorProtocolNumber.ToLower() ==
+                CompFormFilter.SponsorProtocolNumber.ToLower() ||
+                x.SponsorProtocolNumber2.ToLower() ==
                 CompFormFilter.SponsorProtocolNumber.ToLower())
                 .ToList();
             }
@@ -2227,7 +2235,7 @@ namespace DDAS.Services.Search
 
             writer.AddFormHeaders(
                 form.ProjectNumber + " " + form.ProjectNumber2, 
-                form.SponsorProtocolNumber,
+                form.SponsorProtocolNumber + " " + form.SponsorProtocolNumber2,
                 form.Institute, 
                 (form.Address + " " + form.Country));
 
