@@ -124,35 +124,37 @@ namespace Utilities
             if (doc.GetCellValueAsString("C1").ToLower() != "project number 2")
                 ValidationMessages.Add("cannot find column - Project Number 2 in cell C1");
             if (doc.GetCellValueAsString("D1").ToLower() != "sponsor protocol number")
-                ValidationMessages.Add("cannot find column - Sponsor Protocol Number in cell C1");
-            if (doc.GetCellValueAsString("E1").ToLower() != "investigator name with qualification (icsf)")
-                ValidationMessages.Add("cannot find column - Investigator Name with Qualification (ICSF) in cell D1");
-            if (doc.GetCellValueAsString("F1").ToLower() != "lead/investigator id")
-                ValidationMessages.Add("cannot find column - Lead/Investigator ID in cell E1");
-            if (doc.GetCellValueAsString("G1").ToLower() != "member id")
-                ValidationMessages.Add("cannot find column - Member ID in cell F1");
-            if (doc.GetCellValueAsString("H1").ToLower() != ("first name"))
-                ValidationMessages.Add("cannot find column - First Name in cell G1");
-            if (doc.GetCellValueAsString("I1").ToLower() != ("middle name"))
-                ValidationMessages.Add("cannot find column - Middle Name in cell H1");
-            if (doc.GetCellValueAsString("J1").ToLower() != "last name")
-                ValidationMessages.Add("cannot find column - Last Name in cell I1");
-            if (doc.GetCellValueAsString("K1").ToLower() != "selected institute")
-                ValidationMessages.Add("cannot find column - Selected Institute in cell J1");
-            if (doc.GetCellValueAsString("L1").ToLower() != "institute address line 1")
-                ValidationMessages.Add("cannot find column - Institute Address Line 1 in cell K1");
-            if (doc.GetCellValueAsString("M1").ToLower() != "institute address line 2")
-                ValidationMessages.Add("cannot find column - Institute Address Line 2 in cell L1");
-            if (doc.GetCellValueAsString("N1").ToLower() != "institute city")
-                ValidationMessages.Add("cannot find column - Institute City in cell M1");
-            if (doc.GetCellValueAsString("O1").ToLower() != "institute state/province")
-                ValidationMessages.Add("cannot find column - Institute State/Province in cell N1");
-            if (doc.GetCellValueAsString("P1").ToLower() != "institute zip/postal code")
-                ValidationMessages.Add("cannot find column - Institute Zip/Postal Code in cell O1");
-            if (doc.GetCellValueAsString("Q1").ToLower() != "member country")
-                ValidationMessages.Add("cannot find column - Member Country in cell P1");
-            if (doc.GetCellValueAsString("R1").ToLower() != "medical license number")
-                ValidationMessages.Add("cannot find column - Medical License Number in cell Q1");
+                ValidationMessages.Add("cannot find column - Sponsor Protocol Number in cell D1");
+            if (doc.GetCellValueAsString("E1").ToLower() != "sponsor protocol number 2")
+                ValidationMessages.Add("cannot find column - Sponsor Protocol Number 2 in cell E1");
+            if (doc.GetCellValueAsString("F1").ToLower() != "investigator name with qualification (icsf)")
+                ValidationMessages.Add("cannot find column - Investigator Name with Qualification (ICSF) in cell F1");
+            if (doc.GetCellValueAsString("G1").ToLower() != "lead/investigator id")
+                ValidationMessages.Add("cannot find column - Lead/Investigator ID in cell G1");
+            if (doc.GetCellValueAsString("H1").ToLower() != "member id")
+                ValidationMessages.Add("cannot find column - Member ID in cell H1");
+            if (doc.GetCellValueAsString("I1").ToLower() != ("first name"))
+                ValidationMessages.Add("cannot find column - First Name in cell I1");
+            if (doc.GetCellValueAsString("J1").ToLower() != ("middle name"))
+                ValidationMessages.Add("cannot find column - Middle Name in cell J1");
+            if (doc.GetCellValueAsString("K1").ToLower() != "last name")
+                ValidationMessages.Add("cannot find column - Last Name in cell K1");
+            if (doc.GetCellValueAsString("L1").ToLower() != "selected institute")
+                ValidationMessages.Add("cannot find column - Selected Institute in cell L1");
+            if (doc.GetCellValueAsString("M1").ToLower() != "institute address line 1")
+                ValidationMessages.Add("cannot find column - Institute Address Line 1 in cell M1");
+            if (doc.GetCellValueAsString("N1").ToLower() != "institute address line 2")
+                ValidationMessages.Add("cannot find column - Institute Address Line 2 in cell N1");
+            if (doc.GetCellValueAsString("O1").ToLower() != "institute city")
+                ValidationMessages.Add("cannot find column - Institute City in cell O1");
+            if (doc.GetCellValueAsString("P1").ToLower() != "institute state/province")
+                ValidationMessages.Add("cannot find column - Institute State/Province in cell P1");
+            if (doc.GetCellValueAsString("Q1").ToLower() != "institute zip/postal code")
+                ValidationMessages.Add("cannot find column - Institute Zip/Postal Code in cell Q1");
+            if (doc.GetCellValueAsString("R1").ToLower() != "member country")
+                ValidationMessages.Add("cannot find column - Member Country in cell R1");
+            if (doc.GetCellValueAsString("S1").ToLower() != "medical license number")
+                ValidationMessages.Add("cannot find column - Medical License Number in cell S1");
 
             if (ValidationMessages.Count > 0)
                 return ValidationMessages;
@@ -176,7 +178,7 @@ namespace Utilities
             ComplianceForm.Add(doc.GetCellValueAsString("P" + (RowIndex)));
             ComplianceForm.Add(doc.GetCellValueAsString("Q" + (RowIndex)));
             ComplianceForm.Add(doc.GetCellValueAsString("R" + (RowIndex)));
-
+            ComplianceForm.Add(doc.GetCellValueAsString("S" + (RowIndex)));
             return ComplianceForm;
         }
     }

@@ -534,12 +534,42 @@ namespace Utilities.WordTemplate
 
             var HeaderTable = body.Descendants<Table>().ElementAt(0);
 
-            UpdateTable(HeaderTable, 0, 1, ProjectNumber);
-            UpdateTable(HeaderTable, 0, 3, SponsorProtocolNumber);
+            AddProjectNumberAndSponsorProtocol(
+                HeaderTable,
+                ProjectNumber.Split(' '), 0, 1);
+            AddProjectNumberAndSponsorProtocol(
+                HeaderTable,
+                SponsorProtocolNumber.Split(' '), 0, 3);
+            //UpdateTable(HeaderTable, 0, 1, ProjectNumber);
+            //UpdateTable(HeaderTable, 0, 3, SponsorProtocolNumber);
             UpdateTable(HeaderTable, 1, 1, InstituteName);
             UpdateTable(HeaderTable, 1, 3, Address);
 
 
+        }
+
+        private void AddProjectNumberAndSponsorProtocol(Table table,
+            string[] Values,
+            int RowIndex, int CellIndex)
+        {
+            TableRow Row = table.Elements<TableRow>().ElementAt(RowIndex);
+            TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
+            //Paragraph paragraph = Cell.Elements<Paragraph>().First();
+            //Run run = paragraph.Elements<Run>().First();
+            //Text text = run.Elements<Text>().First();
+            //text.Text = null;
+            if(Values.Length > 1)
+            {
+                Cell.AppendChild(new Paragraph(
+                    new Run(
+                        new Text(Values[0]),
+                        new Break(),
+                        new Text(Values[1]))));
+            }
+            else
+                Cell.AppendChild(new Paragraph(
+                    new Run(
+                        new Text(Values[0]))));
         }
 
         public void AddTableHeaders(string[] Headers, int Columns, int TableIndex)

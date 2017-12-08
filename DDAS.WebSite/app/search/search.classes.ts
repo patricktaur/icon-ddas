@@ -150,9 +150,11 @@ export class SearchList{
       RecId : string = "";
       Name: string="";
       SponsorProtocolNumber : string = "";
+      SponsorProtocolNumber2 : string = "";
       Country : string = "";
       Address : string = "";
       ProjectNumber : string = "";
+      ProjectNumber2 : string = "";
       SearchStartedOn : Date ;
       Status: string;
       AssignedTo: string;
@@ -176,6 +178,7 @@ export class SearchList{
     RecId : string = "";
     Active: boolean;
     SponsorProtocolNumber : string = "";
+    SponsorProtocolNumber2 : string = "";
     Country : string = "";
     Address : string = "";
     ProjectNumber : string = "";

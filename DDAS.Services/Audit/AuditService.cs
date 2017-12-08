@@ -118,6 +118,7 @@ namespace DDAS.Services.AuditService
                 ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
 
             AuditViewModel.ProjectNumber = ComplianceForm.ProjectNumber;
+            AuditViewModel.ProjectNumber2 = ComplianceForm.ProjectNumber2;
         }
 
         public Audit GetAudit(Guid RecId)
