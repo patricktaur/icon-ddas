@@ -2248,11 +2248,15 @@ namespace DDAS.Services.Search
 
             foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
+                string MedicalLicenseNumber = null;
+                if (Investigator.MedicalLiceseNumber == null || Investigator.MedicalLiceseNumber.Trim() == "")
+                    MedicalLicenseNumber = "NA";
+
                 string[] CellValues = new string[]
                 {
                     Investigator.Role,
                     Investigator.Name,
-                    Investigator.MedicalLiceseNumber == null ? "NA" : Investigator.MedicalLiceseNumber,
+                    MedicalLicenseNumber,
                     Investigator.SearchName
                 };
                 writer.FillUpTable(CellValues);
