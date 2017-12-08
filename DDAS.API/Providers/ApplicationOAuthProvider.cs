@@ -24,7 +24,7 @@ namespace DDAS.API.Providers
 
         private IUserService _UserService;
 
-        private string _ClientVer = "T1.0.21";
+        private string _ClientVer = "T1.0.22";
 
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{

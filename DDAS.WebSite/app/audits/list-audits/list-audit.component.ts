@@ -28,7 +28,7 @@ export class ListAuditsComponent implements OnInit {
     public Users: any[];
     public SelectedComplianceFormId: string;
     public audits: AuditListViewModel[];
-    public pageNumber: number;
+    public pageNumber: number = 1;
     constructor(
         private route: ActivatedRoute,
         private router: Router,

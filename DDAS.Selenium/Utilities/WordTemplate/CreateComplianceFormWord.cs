@@ -530,7 +530,6 @@ namespace Utilities.WordTemplate
         public void AddFormHeaders(string ProjectNumber,
             string SponsorProtocolNumber, string InstituteName, string Address)
         {
-
             var body = _document.MainDocumentPart.Document.Body;
 
             var HeaderTable = body.Descendants<Table>().ElementAt(0);
@@ -539,6 +538,8 @@ namespace Utilities.WordTemplate
             UpdateTable(HeaderTable, 0, 3, SponsorProtocolNumber);
             UpdateTable(HeaderTable, 1, 1, InstituteName);
             UpdateTable(HeaderTable, 1, 3, Address);
+
+
         }
 
         public void AddTableHeaders(string[] Headers, int Columns, int TableIndex)
