@@ -48,7 +48,7 @@ export class ListAuditsComponent implements OnInit {
     }
 
     isAuditorOrIsAuditPending(auditor: string, auditStatus: string){
-        if(this.authService.userName.toLowerCase() == auditor)
+        if(this.authService.userName.toLowerCase() == auditor.toLowerCase())
             return true;
         else if(auditStatus.toLowerCase() != "pending")
             return true;
