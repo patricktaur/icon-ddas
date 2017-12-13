@@ -356,7 +356,7 @@ namespace DDAS.Services.Reports
             foreach (User user in Users)
             {
                 var AdminDashboard = new AdminDashboardViewModel();
-                AdminDashboard.UserName = user.UserName;
+                AdminDashboard.UserName = user.UserFullName;
                 AdminDashboard.OpeningBalance =
                     ClosingBalanceOnPreviousDay(user.UserName);
                 AdminDashboard.InvestigatorUploaded =
@@ -436,25 +436,22 @@ namespace DDAS.Services.Reports
                     ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
                 assignmentHistoryViewModel.ProjectNumber =
                     ComplianceForm.ProjectNumber;
+                assignmentHistoryViewModel.ProjectNumber2 =
+                    ComplianceForm.ProjectNumber2;
+                assignmentHistoryViewModel.SearchStartedOn =
+                    ComplianceForm.SearchStartedOn;
 
-                //try
-                //{
-                    assignmentHistoryViewModel.ProjectNumber2 =
-                        ComplianceForm.ProjectNumber2;
-                //}
-                //catch
-                //{
-                //    //ProjectNumber2 will not be available in old comp forms
-                //}
+                assignmentHistoryViewModel.InvestigatorCount =
+                    ComplianceForm.InvestigatorDetails.Count - 1;
 
                 assignmentHistoryViewModel.AssignedBy =
-                    assignmentHistory.AssignedBy;
+                    GetUserFullName(assignmentHistory.AssignedBy);
                 assignmentHistoryViewModel.AssignedOn =
                     assignmentHistory.AssignedOn;
                 assignmentHistoryViewModel.AssignedTo =
-                    assignmentHistory.AssignedTo;
-                assignmentHistoryViewModel.RemovedOn =
-                    assignmentHistory.RemovedOn;
+                    GetUserFullName(assignmentHistory.AssignedTo);
+                assignmentHistoryViewModel.PreviouslyAssignedTo =
+                    GetUserFullName(assignmentHistory.PreviouslyAssignedTo);
 
                 Assignments.Add(assignmentHistoryViewModel);
             }
@@ -502,7 +499,9 @@ namespace DDAS.Services.Reports
                 VM.ProjectNumber2 = Investigator.ProjectNumber2;
                 VM.SearchStartedOn = Investigator.SearchStartedOn;
                 VM.ReviewCompletedOn = Investigator.ReviewCompletedOn;
-                VM.AssignedTo = Investigator.AssignedTo;
+
+                VM.AssignedTo = 
+                    GetUserFullName(Investigator.AssignedTo);
 
                 ReviewCompletedInvestigatorsVM.Add(VM);
             });
@@ -510,7 +509,7 @@ namespace DDAS.Services.Reports
         }
 
         public List<StudySpecificInvestigatorVM>
-            GetStudySpecificInvestigators(string ProjectNumber)
+            GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
         {
             var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
@@ -518,18 +517,30 @@ namespace DDAS.Services.Reports
                 return null;
 
             var StudySpecificInvestigators =
-                ComplianceForms.Where(form => form.ProjectNumber
-                == ProjectNumber || form.ProjectNumber2 == ProjectNumber)
-                .SelectMany(form => form.InvestigatorDetails, (form, Investigator) =>
+                ComplianceForms.Where(form => form.ProjectNumber ==
+                ReportFilter.ProjectNumber ||
+                form.ProjectNumber2 == ReportFilter.ProjectNumber)
+                .SelectMany(form => 
+                form.InvestigatorDetails, (form, Investigator) =>
                 new { form, Investigator })
-                .Where(s => s.Investigator.ReviewCompletedOn != null)
+                .Where(s => s.Investigator.ReviewCompletedOn != null &&
+                s.Investigator.ReviewCompletedOn >= ReportFilter.FromDate.Date &&
+                s.Investigator.ReviewCompletedOn <= ReportFilter.ToDate.Date)
                 .Select(s =>
                 new
                 {
+                    ProjectNumber = s.form.ProjectNumber,
+                    ProjectNumber2 = s.form.ProjectNumber2,
                     InvestigatorName = s.Investigator.Name,
                     ReviewCompletedOn = s.Investigator.ReviewCompletedOn.Value,
                     FindingStatus = s.Investigator.IssuesFoundSiteCount,
-                    AssigendTo = s.form.AssignedTo
+                    AssigendTo = s.form.AssignedTo,
+                    Institute = s.form.Institute,
+                    Country = s.form.Country,
+                    SponsorProtocolNumber = s.form.SponsorProtocolNumber,
+                    SponsorProtocolNumber2 = s.form.SponsorProtocolNumber2,
+                    MedicalLicenseNumber = s.Investigator.MedicalLicenseNumber,
+                    Role = s.Investigator.Role
                 })
                 .ToList();
 
@@ -542,18 +553,31 @@ namespace DDAS.Services.Reports
             {
                 var VM = new StudySpecificInvestigatorVM();
 
+                VM.ProjectNumber = StudySpecificInvestigators[Index].ProjectNumber;
+                VM.ProjectNumber2 = StudySpecificInvestigators[Index].ProjectNumber2;
                 VM.InvestigatorName = StudySpecificInvestigators[Index].InvestigatorName;
                 VM.ReviewCompletedOn = StudySpecificInvestigators[Index].ReviewCompletedOn;
+
                 VM.FindingStatus = StudySpecificInvestigators[Index].FindingStatus == 0
                     ? "No Issues Identified" : "Issues Identified";
-                VM.AssignedTo = StudySpecificInvestigators[Index].AssigendTo;
+
+                VM.AssignedTo = 
+                    GetUserFullName(StudySpecificInvestigators[Index].AssigendTo);
+
+                VM.Role = StudySpecificInvestigators[Index].Role;
+                VM.MedicalLicenseNumber = StudySpecificInvestigators[Index].MedicalLicenseNumber;
+                VM.Institute = StudySpecificInvestigators[Index].Institute;
+                VM.SponsorProtocolNumber = StudySpecificInvestigators[Index].SponsorProtocolNumber;
+                VM.SponsorProtocolNumber2 = StudySpecificInvestigators[Index].SponsorProtocolNumber2;
+                VM.Country = StudySpecificInvestigators[Index].Country;
 
                 StudySpecificInvestigatorVMList.Add(VM);
             }
             return StudySpecificInvestigatorVMList;
         }
 
-        public List<InvestigatorFindingViewModel> GetInvestigatorByFinding()
+        public List<InvestigatorFindingViewModel> GetInvestigatorByFinding(
+            ReportFilterViewModel ReportFilter)
         {
             var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
@@ -564,7 +588,10 @@ namespace DDAS.Services.Reports
                 .SelectMany(Form => Form.InvestigatorDetails,
                 (Form, Investigator) =>
                 new { Form, Investigator })
-                .Where(s => s.Investigator.ReviewCompletedOn != null)
+                .Where(s => 
+                s.Investigator.ReviewCompletedOn != null &&
+                s.Investigator.ReviewCompletedOn >= ReportFilter.FromDate.Date &&
+                s.Investigator.ReviewCompletedOn <= ReportFilter.ToDate.Date)
                 .Select(s =>
                 new
                 {
@@ -592,11 +619,15 @@ namespace DDAS.Services.Reports
             for(int Index = 0; Index < Limit; Index++)
             {
                 var VM = new InvestigatorFindingViewModel();
+
                 VM.ProjectNumber = ReviewCompletedInvestigators[Index].ProjectNumber;
                 VM.ProjectNumber2 = ReviewCompletedInvestigators[Index].ProjectNumber2;
                 VM.InvestigatorName = ReviewCompletedInvestigators[Index].InvestigatorName;
                 VM.Role = ReviewCompletedInvestigators[Index].Role;
-                VM.ReviewCompletedBy = ReviewCompletedInvestigators[Index].AssignedTo;
+
+                VM.ReviewCompletedBy = 
+                    GetUserFullName(ReviewCompletedInvestigators[Index].AssignedTo);
+
                 VM.ReviewCompletedOn = ReviewCompletedInvestigators[Index].ReviewCompletedOn;
 
                 var Findings = ReviewCompletedInvestigators[Index].Findings;
@@ -610,7 +641,12 @@ namespace DDAS.Services.Reports
                         .ForEach(finding =>
                     {
                         var tempVM = VM;
-                        tempVM.SiteName = finding.SiteEnum.ToString();
+                        if (finding.SiteEnum != null)
+                            tempVM.SiteShortName = 
+                            _UOW.SiteSourceRepository.GetAll()
+                            .Find(x => x.SiteEnum == finding.SiteEnum).SiteShortName;
+                        else
+                            tempVM.SiteShortName = finding.SiteEnum.ToString();
                         tempVM.FindingObservation = finding.Observation;
                         InvestigatorFindingVMList.Add(tempVM);
                     });
@@ -618,7 +654,40 @@ namespace DDAS.Services.Reports
                 else
                     InvestigatorFindingVMList.Add(VM);
             }
-            return InvestigatorFindingVMList;
+
+            var filter1 = InvestigatorFindingVMList;
+
+            if(ReportFilter.ProjectNumber != null &&
+                ReportFilter.ProjectNumber != "")
+            {
+                filter1 = InvestigatorFindingVMList.Where(x =>
+                x.ProjectNumber == ReportFilter.ProjectNumber ||
+                x.ProjectNumber2 == ReportFilter.ProjectNumber)
+                .ToList();
+            }
+
+            var filter2 = filter1;
+
+            if(ReportFilter.AssignedTo != null && 
+                ReportFilter.AssignedTo.ToLower() != "all")
+            {
+                filter2 = filter1.Where(x =>
+                x.ReviewCompletedBy.ToLower() == ReportFilter.AssignedTo.ToLower())
+                .ToList();
+            }
+            return filter2;
+        }
+
+        private string GetUserFullName(string AssignedTo)
+        {
+            if (AssignedTo == null || AssignedTo == "")
+                return null;
+
+            var User = _UOW.UserRepository.GetAll()
+                .Find(x => x.UserName.ToLower() == AssignedTo.ToLower());
+
+            return 
+                User != null ? User.UserFullName : null;
         }
     }
 }

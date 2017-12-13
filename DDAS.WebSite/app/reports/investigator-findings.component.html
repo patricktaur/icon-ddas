@@ -10,20 +10,60 @@
 
 <div class="col-md-12">
 	<div class="well">
+        <label for="Filter">Filter:</label>        
+        
+        <div class="row">
+            <div class="col-md-3">
+                 <div class="form-group">
+                    <label for="AssignedTo">Assigned To:</label>
+                    <select class="form-control" name="AssignedTo" [(ngModel)]="reportFilter.AssignedTo">
+                        <option value="All" selected="selected">All</option>
+                        <option *ngFor="let item of users" [value]="item.UserName">{{item.UserName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                 <div class="form-group">
+                    <label for="ProjectNumber">Project Number:</label>
+                    <input type="text" class="form-control" name="ProjectNumber" [(ngModel)]="reportFilter.ProjectNumber">
+                </div>            
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="Filter">Filter:</label>
+                    <label for="Date">ICSF Created On (from):</label>
+                    <my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+                </div>
+                <button type="button" class="btn btn-primary" (click)="getInvestigatorByFinding()">Generate</button>
+                <button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
+            </div>
+            <div class="col-md-3 ">
+                <div class="form-group">
+                    <label for="Date">ICSF Created On (to):</label>
+                    <my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="form-group">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="Finding">Finding:</label>
                     <select class="form-control" name="AssignedTo" [(ngModel)]="filterValue">
                         <option value="-1" selected="selected">All</option>
                         <option value="0" selected="selected">No Findings</option>
                         <option value="1" selected="selected">With Findings</option>
                     </select>
                 </div>
-            </div>
-            <div class="col-md-9">
-            </div>
+            </div>        
         </div>
+
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -32,7 +72,7 @@
                     <th>Role</th>
                     <th>Review Completed By</th>
                     <th>Review Completed On</th>
-                    <th>Site Name</th>
+                    <th>Site Short Name</th>
                     <th>Findings</th>
 				</tr>
 			</thead>
@@ -54,7 +94,7 @@
                         {{item.ReviewCompletedOn | date: 'dd MMM yyyy'}}
                     </td>
                     <td class="text-center">
-                        {{item.SiteName}}
+                        {{item.SiteShortName}}
                     </td>
                     <td class="text-center">
                         {{item.FindingObservation}}

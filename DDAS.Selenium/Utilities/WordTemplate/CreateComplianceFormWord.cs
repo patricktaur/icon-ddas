@@ -114,7 +114,7 @@ namespace Utilities.WordTemplate
                         AddInvestigatorDetails(
                             InvestigatorsTable, Investigator.Name,
                             Investigator.Qualification, 
-                            Investigator.MedicalLiceseNumber, Investigator.Role);
+                            Investigator.MedicalLicenseNumber, Investigator.Role);
 
                         foreach (SiteSearchStatus Site in Investigator.SitesSearched)
                         {

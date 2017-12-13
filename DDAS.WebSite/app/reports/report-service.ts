@@ -17,7 +17,8 @@ import {
     InvestigationsReport, 
     AdminDashboardViewModel, 
     AssignmentHistoryViewModel,
-    InvestigatorFindingViewModel
+    InvestigatorFindingViewModel,
+    ReportFilterViewModel
     } 
     from './report.classes';
 
@@ -183,22 +184,31 @@ export class ReportService {
         .catch(this.handleError);
     }
 
-    getInvestigatorsByFinding():Observable<InvestigatorFindingViewModel[]>{
-        return this.http.get(this._baseUrl + 'Reports/InvestigatorByFinding', this._options)
+    getInvestigatorsByFinding(reportFilter: ReportFilterViewModel):Observable<InvestigatorFindingViewModel[]>{
+        var filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/InvestigatorByFinding', filter, this._options)
         .map((res: Response) =>{
             return res.json();
         })
         .catch(this.handleError);
     }
 
-    getStudySpecificInvestigators(projectNumber: string):Observable<any[]>{
-        return this.http.get(this._baseUrl + 'Reports/StudySpecificInvestigators?ProjectNumber=' + projectNumber, this._options)
+    getStudySpecificInvestigators(reportFilter: ReportFilterViewModel):Observable<any[]>{
+        let filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/StudySpecificInvestigators', reportFilter, this._options)
         .map((res: Response) =>{
             return res.json();
         })
         .catch(this.handleError);
     }
 
+    getAllUsers() {
+        return this.http.get(this._baseUrl + 'Account/GetUsers', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

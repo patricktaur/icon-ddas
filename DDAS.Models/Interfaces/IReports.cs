@@ -18,9 +18,10 @@ namespace DDAS.Models.Interfaces
         List<InvestigatorReviewCompletedTimeVM>
             GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate);
 
-        List<InvestigatorFindingViewModel> GetInvestigatorByFinding();
+        List<InvestigatorFindingViewModel> 
+            GetInvestigatorByFinding(ReportFilterViewModel reportFilter);
 
         List<StudySpecificInvestigatorVM> 
-            GetStudySpecificInvestigators(string ProjectNumber);
+            GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter);
     }
 }

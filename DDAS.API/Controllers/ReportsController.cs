@@ -2,6 +2,7 @@
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using DDAS.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -353,19 +354,19 @@ namespace DDAS.API.Controllers
         }
 
         [Route("InvestigatorByFinding")]
-        [HttpGet]
-        public IHttpActionResult GetInvestigatorsByFinding()
+        [HttpPost]
+        public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter)
         {
             return Ok(
-                _Report.GetInvestigatorByFinding());
+                _Report.GetInvestigatorByFinding(ReportFilter));
         }
 
         [Route("StudySpecificInvestigators")]
-        [HttpGet]
-        public IHttpActionResult GetStudySpecificInvestigators(string ProjectNumber)
+        [HttpPost]
+        public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
         {
             return Ok(
-                _Report.GetStudySpecificInvestigators(ProjectNumber));
+                _Report.GetStudySpecificInvestigators(ReportFilter));
         }
     }
 }

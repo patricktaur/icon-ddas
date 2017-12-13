@@ -212,7 +212,7 @@ namespace DDAS.Services.Search
                     Investigator.MiddleName = InputRows[Index].MiddleName;
                     Investigator.LastName = InputRows[Index].LastName;
                     Investigator.Role = InputRows[Index].Role;
-                    Investigator.MedicalLiceseNumber = 
+                    Investigator.MedicalLicenseNumber = 
                         InputRows[Index].MedicalLicenseNumber;
                     Investigator.MemberId = InputRows[Index].MemberID;
                     Investigator.InvestigatorId = InputRows[Index].InvestigatorID;
@@ -232,7 +232,7 @@ namespace DDAS.Services.Search
                         Inv.MiddleName = InputRows[tempIndex].MiddleName;
                         Inv.LastName = InputRows[tempIndex].LastName;
                         Inv.Role = InputRows[tempIndex].Role;
-                        Inv.MedicalLiceseNumber =
+                        Inv.MedicalLicenseNumber =
                             InputRows[tempIndex].MedicalLicenseNumber;
                         Inv.MemberId = InputRows[tempIndex].MemberID;
                         Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
@@ -256,9 +256,8 @@ namespace DDAS.Services.Search
             //form.AssignedTo = AssignedTo;
             //form.Active = Active;
             //_UOW.ComplianceFormRepository.UpdateCollection(form);
-
-            _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
             AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
+            _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
         }
 
         //used by Excel File Upload method.
@@ -283,9 +282,6 @@ namespace DDAS.Services.Search
                 _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
             else
                 _UOW.ComplianceFormRepository.Add(frm); //Insert
-            
-            //Add Assignment history
-            AddToAssignementHistory(frm.RecId.Value, frm.AssignedTo);
 
             return frm;
         }
@@ -401,24 +397,22 @@ namespace DDAS.Services.Search
             return frm;
         }
 
-        private void AddToAssignementHistory(Guid ComplianceFormId, string AssignedBy, string AssignedTo = "")
+        private void AddToAssignementHistory(Guid ComplianceFormId, string AssignedBy, string AssignedTo)
         {
+            var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (ComplianceForm == null)
+                throw new Exception("Compliance form could not be found");
+
             var AssignmentHistory = new AssignmentHistory();
             AssignmentHistory.ComplianceFormId = ComplianceFormId;
-            AssignmentHistory.AssignedOn = DateTime.Now;
+            AssignmentHistory.PreviouslyAssignedTo =
+                ComplianceForm.AssignedTo;
             AssignmentHistory.AssignedBy = AssignedBy;
-            
-            if(AssignedTo != "" && AssignedTo.Trim().Length != 0) //update if re-assigned
-            {
-                AssignmentHistory.AssignedTo = AssignedTo;
-                _UOW.AssignmentHistoryRepository.UpdateRemovedOn(ComplianceFormId);
-                _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
-            }
-            else //new entry
-            {
-                AssignmentHistory.AssignedTo = AssignedBy;
-                _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
-            }
+            AssignmentHistory.AssignedTo = AssignedTo;
+            AssignmentHistory.AssignedOn = DateTime.Now;
+
+            _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
         }
 
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
@@ -2249,7 +2243,7 @@ namespace DDAS.Services.Search
             foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 string MedicalLicenseNumber = null;
-                if (Investigator.MedicalLiceseNumber == null || Investigator.MedicalLiceseNumber.Trim() == "")
+                if (Investigator.MedicalLicenseNumber == null || Investigator.MedicalLicenseNumber.Trim() == "")
                     MedicalLicenseNumber = "NA";
 
                 string[] CellValues = new string[]

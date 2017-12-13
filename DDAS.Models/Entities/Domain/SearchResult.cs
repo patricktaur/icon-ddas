@@ -488,7 +488,7 @@ namespace DDAS.Models.Entities.Domain
 
         public string Role { get; set; }
         public string Qualification { get; set; }
-        public string MedicalLiceseNumber { get; set; }
+        public string MedicalLicenseNumber { get; set; }
         public string InvestigatorId { get; set; } = "";
 
         //changed ExtractedOn to AddedOn
@@ -1411,9 +1411,10 @@ namespace DDAS.Models.Entities.Domain
         public Guid RecId { get; set; }
         public Guid ComplianceFormId { get; set; }
         public DateTime AssignedOn { get; set; }
-        public DateTime? RemovedOn { get; set; }
+        //public DateTime? RemovedOn { get; set; }
         public string AssignedTo { get; set; }
         public string AssignedBy { get; set; }
+        public string PreviouslyAssignedTo { get; set; }
     }
 
     #endregion

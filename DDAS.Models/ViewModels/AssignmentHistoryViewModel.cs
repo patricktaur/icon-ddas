@@ -11,9 +11,11 @@ namespace DDAS.Models.ViewModels
         public string PrincipalInvestigator { get; set; }
         public string ProjectNumber { get; set; }
         public string ProjectNumber2 { get; set; }
+        public DateTime SearchStartedOn { get; set; }
         public string AssignedBy { get; set; }
         public DateTime AssignedOn { get; set; }
         public string AssignedTo { get; set; }
-        public DateTime? RemovedOn { get; set; }
+        public string PreviouslyAssignedTo { get; set; }
+        public int InvestigatorCount { get; set; }
     }
 }
