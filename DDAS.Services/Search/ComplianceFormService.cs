@@ -212,7 +212,7 @@ namespace DDAS.Services.Search
                     Investigator.MiddleName = InputRows[Index].MiddleName;
                     Investigator.LastName = InputRows[Index].LastName;
                     Investigator.Role = InputRows[Index].Role;
-                    Investigator.MedicalLicenseNumber = 
+                    Investigator.MedicalLiceseNumber = 
                         InputRows[Index].MedicalLicenseNumber;
                     Investigator.MemberId = InputRows[Index].MemberID;
                     Investigator.InvestigatorId = InputRows[Index].InvestigatorID;
@@ -232,7 +232,7 @@ namespace DDAS.Services.Search
                         Inv.MiddleName = InputRows[tempIndex].MiddleName;
                         Inv.LastName = InputRows[tempIndex].LastName;
                         Inv.Role = InputRows[tempIndex].Role;
-                        Inv.MedicalLicenseNumber =
+                        Inv.MedicalLiceseNumber =
                             InputRows[tempIndex].MedicalLicenseNumber;
                         Inv.MemberId = InputRows[tempIndex].MemberID;
                         Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
@@ -2245,7 +2245,7 @@ namespace DDAS.Services.Search
             foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
                 string MedicalLicenseNumber = null;
-                if (Investigator.MedicalLicenseNumber == null || Investigator.MedicalLicenseNumber.Trim() == "")
+                if (Investigator.MedicalLiceseNumber == null || Investigator.MedicalLiceseNumber.Trim() == "")
                     MedicalLicenseNumber = "NA";
 
                 string[] CellValues = new string[]

@@ -559,7 +559,7 @@ namespace DDAS.Services.Reports
                     Country = s.form.Country,
                     SponsorProtocolNumber = s.form.SponsorProtocolNumber,
                     SponsorProtocolNumber2 = s.form.SponsorProtocolNumber2,
-                    MedicalLicenseNumber = s.Investigator.MedicalLicenseNumber,
+                    MedicalLicenseNumber = s.Investigator.MedicalLiceseNumber,
                     Role = s.Investigator.Role
                 })
                 .ToList();

@@ -488,7 +488,7 @@ namespace DDAS.Models.Entities.Domain
 
         public string Role { get; set; }
         public string Qualification { get; set; }
-        public string MedicalLicenseNumber { get; set; }
+        public string MedicalLiceseNumber { get; set; }
         public string InvestigatorId { get; set; } = "";
 
         //changed ExtractedOn to AddedOn
