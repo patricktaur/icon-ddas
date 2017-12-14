@@ -726,7 +726,6 @@ namespace DDAS.Models.Entities.Domain
         public string ExtractionErrorMessage { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
-
         public int SingleMatchCount { get; set; }
 
         public int IssuesFound { get; set; }

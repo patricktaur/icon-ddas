@@ -53,22 +53,34 @@
 			<thead>
 				<tr>
                     <th>Project Number</th>
+                    <th>Sponsor Protocol Number</th>
+                    <th>Institute</th>
+                    <th>Country</th>
+                    <th>Medical License Number</th>                    
                     <th>Investigator Name</th>
                     <th>Role</th>
                     <th>Review Completed On</th>
                     <th>Finding Status</th>
                     <th>Assigned To</th>
-                    <th>Sponsor Protocol Number</th>
-                    <th>Institute</th>
-                    <th>Country</th>
-                    <th>Medical License Number</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr *ngFor="let item of studySpecificInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 					<td class="text-center">
 						{{item.ProjectNumber}} {{item.ProjectNumber2}}
-					</td>
+                    </td>
+					<td class="text-center">
+						{{item.SponsorProtocolNumber}} {{item.SponsorProtocolNumber2}}
+					</td>                    
+					<td class="text-left">
+						{{item.Institute}}
+                    </td>
+					<td class="text-center">
+						{{item.Country}}
+                    </td>
+					<td class="text-center">
+						{{item.MedicalLicenseNumber}}
+                    </td>                    
                     <td class="text-left">
 						{{item.InvestigatorName}}
                     </td>
@@ -83,18 +95,6 @@
                     </td>
                     <td class="text-left">
                         {{item.AssignedTo}}
-                    </td>
-					<td class="text-center">
-						{{item.SponsorProtocolNumber}} {{item.SponsorProtocolNumber2}}
-					</td>                    
-					<td class="text-left">
-						{{item.Institute}}
-                    </td>
-					<td class="text-center">
-						{{item.Country}}
-                    </td>
-					<td class="text-center">
-						{{item.MedicalLicenseNumber}}
                     </td>
 				</tr>
 			</tbody>

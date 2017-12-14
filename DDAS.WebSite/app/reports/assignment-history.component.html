@@ -10,6 +10,26 @@
 
 <div class="col-md-12">
 	<div class="well">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="form-group">
+					<label for="Date">ICSF Re-assigned On (from):</label>
+					<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+				</div>
+				<button type="button" class="btn btn-primary" (click)="getAssignmentHistoryList()">Generate Report</button>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<label for="Date">ICSF Re-assigned On (to):</label>
+					<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+				</div>
+			</div>
+			<div class="col-md-6 ">
+				<div class="form-group">
+				</div>
+			</div>
+		</div>
+
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -25,19 +45,19 @@
 			<tbody>
 				<tr *ngFor="let item of assignmentHisotryList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 					<td class="text-left">
-						{{item.PrincipalInvestigator}} + {{item.InvestigatorCount}}
+						{{item.PrincipalInvestigator}}
 					</td>
 					<td class="text-center">
 						{{item.ProjectNumber}} {{item.ProjectNumber2}}
 					</td>
                     <td class="text-center">
-                        {{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+                        {{item.SearchStartedOn | date: 'dd MMM yyyy hh:mm'}}
 					</td>
 					<td class="text-center">
 						{{item.AssignedBy}}
                     </td>
                     <td class="text-center">
-                        {{item.AssignedOn | date: 'dd MMM yyyy'}}
+                        {{item.AssignedOn | date: 'dd MMM yyyy hh:mm'}}
 					</td>
                     <td class="text-center">
                         {{item.PreviouslyAssignedTo}}

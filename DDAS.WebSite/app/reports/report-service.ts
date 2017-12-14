@@ -166,18 +166,18 @@ export class ReportService {
         .catch(this.handleError);
     }
 
-    getAssignmentHistoryList():Observable<AssignmentHistoryViewModel[]>{
-        return this.http.get(this._baseUrl + 'Reports/AssignmentHistory', this._options)
+    getAssignmentHistoryList(reportFilter: ReportFilterViewModel):Observable<AssignmentHistoryViewModel[]>{
+        let filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/AssignmentHistory', filter, this._options)
         .map((res: Response) =>{
             return res.json();
         })
-        .catch(this.handleError);        
+        .catch(this.handleError);
     }
 
-    getInvestigatorReviewCompletedTime(fromDate: string, toDate: string):Observable<any[]>{
-        return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime' +
-        '?FromDate=' + fromDate + '&ToDate=' + toDate 
-        , this._options)
+    getInvestigatorReviewCompletedTime(reportFilter: ReportFilterViewModel):Observable<any[]>{
+        let filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime', filter, this._options)
         .map((res: Response) =>{
             return res.json();
         })

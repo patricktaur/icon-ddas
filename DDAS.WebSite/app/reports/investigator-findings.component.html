@@ -1,6 +1,6 @@
 <div class="col-md-12">
 	<div class="well">
-        <h3 class="no-margin-top">Investigator Findings</h3>
+        <h3 class="no-margin-top">Investigators By Findings</h3>
         <!-- {{diagnostic}} -->
 	</div>
 	<div class="alert alert-info" *ngIf="formLoading">
@@ -18,7 +18,7 @@
                     <label for="AssignedTo">Assigned To:</label>
                     <select class="form-control" name="AssignedTo" [(ngModel)]="reportFilter.AssignedTo">
                         <option value="All" selected="selected">All</option>
-                        <option *ngFor="let item of users" [value]="item.UserName">{{item.UserName}}</option>
+                        <option *ngFor="let item of users" [value]="item.UserName">{{item.UserFullName}}</option>
                     </select>
                 </div>
             </div>
@@ -61,6 +61,8 @@
                         <option value="1" selected="selected">With Findings</option>
                     </select>
                 </div>
+            </div>
+            <div class="col-md-9">
             </div>        
         </div>
 

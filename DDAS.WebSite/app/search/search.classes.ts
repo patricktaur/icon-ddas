@@ -228,7 +228,7 @@ export class SearchList{
 
       Role: string = "";
       Qualification: string;
-      MedicalLiceseNumber: string;
+      MedicalLicenseNumber: string;
       
       ExtractedOn: Date;
       ExtractionErrorSiteCount: number;

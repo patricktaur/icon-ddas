@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ReportService } from './report-service';
-import { AssignmentHistoryViewModel } from './report.classes';
+import { AssignmentHistoryViewModel, ReportFilterViewModel } from './report.classes';
 import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-date-picker/interfaces';
 
 @Component({
@@ -26,6 +26,8 @@ export class InvestigatorReviewCompletedTimeComponent {
     public reviewCompletedInvestigators: any[];
     public pageNumber: number;
     public formLoading: boolean = false;
+    public reportFilter: ReportFilterViewModel;
+    public users: any[];
 
     constructor(
         private service: ReportService,
@@ -34,7 +36,10 @@ export class InvestigatorReviewCompletedTimeComponent {
     }
 
     ngOnInit() {
+        this.reportFilter = new ReportFilterViewModel;
         this.SetDefaultFilterValues();
+        this.LoadUsers();
+        this.getInvestigators();
     }
     
     SetDefaultFilterValues() {
@@ -65,15 +70,22 @@ export class InvestigatorReviewCompletedTimeComponent {
         }
     }
 
+    LoadUsers() {
+        this.service.getAllUsers()
+            .subscribe((item: any[]) => {
+                this.users = item;
+            });
+    }
+
     onDateChanged(event: IMyDateModel) {
         this.generating = false;
     }
 
     getInvestigators(){
         this.formLoading = true;
-        var fromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
-        var toDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
-        this.service.getInvestigatorReviewCompletedTime(fromDate.toLocaleDateString(), toDate.toLocaleDateString())
+        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
+        this.service.getInvestigatorReviewCompletedTime(this.reportFilter)
             .subscribe((item: any[]) => {
                 this.reviewCompletedInvestigators = item;
                 this.formLoading = false;

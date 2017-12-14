@@ -23,6 +23,10 @@ export class AdminDashboardComponent {
     }
 
     ngOnInit() {
+        this.loadAdminDashboardList();
+    }
+    
+    loadAdminDashboardList(){
         this.formLoading = true;
         this.service.getAdminDashboardList()
             .subscribe((item: AdminDashboardViewModel[]) => {
@@ -33,7 +37,7 @@ export class AdminDashboardComponent {
                 this.formLoading = false;
             });
     }
-    
+
     diagnostic(){
         return JSON.stringify(this.adminDashboardList);
     }

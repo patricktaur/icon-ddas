@@ -20,5 +20,8 @@ namespace DDAS.Models.ViewModels
                 return (int)ReviewCompletedOn.Subtract(SearchStartedOn).TotalMinutes;
             }
         }
+        public int FullMatchCount { get; set; }
+        public int PartialMatchCount { get; set; }
+        public int SingleMatchCount { get; set; }
     }
 }

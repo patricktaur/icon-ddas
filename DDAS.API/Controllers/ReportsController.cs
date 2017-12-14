@@ -335,22 +335,20 @@ namespace DDAS.API.Controllers
         }
 
         [Route("AssignmentHistory")]
-        [HttpGet]
-        public IHttpActionResult GetAssignmentHistory()
+        [HttpPost]
+        public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter)
         {
             return Ok(
-                _Report.GetAssignmentHistory());
+                _Report.GetAssignmentHistory(ReportFilter));
         }
 
         [Route("InvestigatorReviewCompletedTime")]
-        [HttpGet]
+        [HttpPost]
         public IHttpActionResult
-            GetInvestigatorReviewCompletedTime(string FromDate, string ToDate)
+            GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter)
         {
-            var fromDate = DateTime.ParseExact(FromDate, "M/d/yyyy", null);
-            var toDate = DateTime.ParseExact(ToDate, "M/d/yyyy", null);
             return Ok(
-                _Report.GetInvestigatorsReviewCompletedTime(fromDate, toDate));
+                _Report.GetInvestigatorsReviewCompletedTime(ReportFilter));
         }
 
         [Route("InvestigatorByFinding")]

@@ -498,7 +498,9 @@ namespace DDAS.Services.Search
                 {
                     dbForm.UpdatedOn = DateTime.Now;
                     dbForm.ProjectNumber = form.ProjectNumber;
+                    dbForm.ProjectNumber2 = form.ProjectNumber2;
                     dbForm.SponsorProtocolNumber = form.SponsorProtocolNumber;
+                    dbForm.SponsorProtocolNumber2 = form.SponsorProtocolNumber2;
                     dbForm.Institute = form.Institute;
                     dbForm.Address = form.Address;
                     dbForm.Country = form.Country;

@@ -415,13 +415,19 @@ namespace DDAS.Services.Reports
         }
         #endregion
 
-        public List<AssignmentHistoryViewModel> GetAssignmentHistory()
+        public List<AssignmentHistoryViewModel> GetAssignmentHistory(
+            ReportFilterViewModel ReportFilter)
         {
             var AssignmentHistoryList =
                 _UOW.AssignmentHistoryRepository.GetAll();
 
             if (AssignmentHistoryList.Count == 0)
                 return null;
+
+            AssignmentHistoryList = AssignmentHistoryList.Where(x =>
+            x.AssignedOn >= ReportFilter.FromDate.Date &&
+            x.AssignedOn <= ReportFilter.ToDate.Date)
+            .ToList();
 
             var Assignments = new List<AssignmentHistoryViewModel>();
 
@@ -459,7 +465,7 @@ namespace DDAS.Services.Reports
         }
 
         public List<InvestigatorReviewCompletedTimeVM>
-            GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate)
+            GetInvestigatorsReviewCompletedTime(ReportFilterViewModel ReportFilter)
         {
             var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
@@ -469,6 +475,11 @@ namespace DDAS.Services.Reports
             var ReviewCompletedInvestigatorsVM =
                 new List<InvestigatorReviewCompletedTimeVM>();
 
+            if (ReportFilter.AssignedTo != null && ReportFilter.AssignedTo.ToLower() != "all")
+                ComplianceForms = ComplianceForms.Where(x =>
+                x.AssignedTo.ToLower() == ReportFilter.AssignedTo.ToLower())
+                .ToList();
+
             var ReviewCompletedInvestigators = ComplianceForms
                 .SelectMany(x => x.InvestigatorDetails,
                 (ComplianceForm, InvestigatorSearched) =>
@@ -477,8 +488,8 @@ namespace DDAS.Services.Reports
                     InvestigatorSearched
                 })
                 .Where(s => s.InvestigatorSearched.ReviewCompletedOn != null &&
-                s.InvestigatorSearched.ReviewCompletedOn >= FromDate.Date &&
-                s.InvestigatorSearched.ReviewCompletedOn <= ToDate.Date)
+                s.InvestigatorSearched.ReviewCompletedOn >= ReportFilter.FromDate.Date &&
+                s.InvestigatorSearched.ReviewCompletedOn <= ReportFilter.ToDate.Date)
                 .Select(s =>
                 new
                 {
@@ -487,7 +498,13 @@ namespace DDAS.Services.Reports
                     Name = s.InvestigatorSearched.Name,
                     SearchStartedOn = s.ComplianceForm.SearchStartedOn,
                     ReviewCompletedOn = s.InvestigatorSearched.ReviewCompletedOn.Value,
-                    AssignedTo = s.ComplianceForm.AssignedTo
+                    AssignedTo = s.ComplianceForm.AssignedTo,
+                    FullMatchCount =
+                    s.InvestigatorSearched.SitesSearched.Sum(x => x.FullMatchCount),
+                    PartialMatchCount =
+                    s.InvestigatorSearched.SitesSearched.Sum(x => x.PartialMatchCount),
+                    SingleMatchCount =
+                    s.InvestigatorSearched.SitesSearched.Sum(x => x.SingleMatchCount)
                 })
                 .ToList();
 
@@ -502,6 +519,9 @@ namespace DDAS.Services.Reports
 
                 VM.AssignedTo = 
                     GetUserFullName(Investigator.AssignedTo);
+                VM.FullMatchCount = Investigator.FullMatchCount;
+                VM.PartialMatchCount = Investigator.PartialMatchCount;
+                VM.SingleMatchCount = Investigator.SingleMatchCount;
 
                 ReviewCompletedInvestigatorsVM.Add(VM);
             });
@@ -584,6 +604,11 @@ namespace DDAS.Services.Reports
             if (ComplianceForms.Count == 0)
                 return null;
 
+            if (ReportFilter.AssignedTo != null && ReportFilter.AssignedTo.ToLower() != "all")
+                ComplianceForms = ComplianceForms.Where(x =>
+                x.AssignedTo.ToLower() == ReportFilter.AssignedTo.ToLower())
+                .ToList();
+
             var ReviewCompletedInvestigators = ComplianceForms
                 .SelectMany(Form => Form.InvestigatorDetails,
                 (Form, Investigator) =>
@@ -665,17 +690,7 @@ namespace DDAS.Services.Reports
                 x.ProjectNumber2 == ReportFilter.ProjectNumber)
                 .ToList();
             }
-
-            var filter2 = filter1;
-
-            if(ReportFilter.AssignedTo != null && 
-                ReportFilter.AssignedTo.ToLower() != "all")
-            {
-                filter2 = filter1.Where(x =>
-                x.ReviewCompletedBy.ToLower() == ReportFilter.AssignedTo.ToLower())
-                .ToList();
-            }
-            return filter2;
+            return filter1;
         }
 
         private string GetUserFullName(string AssignedTo)

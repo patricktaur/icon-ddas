@@ -86,10 +86,26 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr *ngFor="let item of PrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+				<tr *ngFor="let item of PrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
 
 					<td class="text-left">
-						{{item.Name}}
+						<!-- {{item.Name}} -->
+						<h5>
+							<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+								{{item.Name}} 
+								<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+							</a>
+						</h5>
+						<div class="panel-group" role="tablist" style="border:0">
+							<div class="panel panel-default" style="border:0">
+								<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
+									aria-expanded="false" style="border:0">
+									<ul class="list-group" style="border:0">
+										<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</td>
 					<td class="text-center">
 						{{item.ProjectNumber}} {{item.ProjectNumber2}}
