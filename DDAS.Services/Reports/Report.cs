@@ -462,7 +462,8 @@ namespace DDAS.Services.Reports
 
                 Assignments.Add(assignmentHistoryViewModel);
             }
-            return Assignments;
+
+            return Assignments.OrderByDescending(x => x.AssignedOn).ToList();
         }
 
         public List<InvestigatorReviewCompletedTimeVM>
@@ -532,7 +533,10 @@ namespace DDAS.Services.Reports
 
                 ReviewCompletedInvestigatorsVM.Add(VM);
             });
-            return ReviewCompletedInvestigatorsVM;
+            return ReviewCompletedInvestigatorsVM
+                .OrderByDescending(
+                x => x.ReviewCompletedOn)
+                .ToList();
         }
 
         public List<StudySpecificInvestigatorVM>
@@ -600,7 +604,8 @@ namespace DDAS.Services.Reports
 
                 StudySpecificInvestigatorVMList.Add(VM);
             }
-            return StudySpecificInvestigatorVMList;
+            return StudySpecificInvestigatorVMList
+                .OrderByDescending(x => x.ReviewCompletedOn).ToList();
         }
 
         public List<InvestigatorFindingViewModel> GetInvestigatorByFinding(
@@ -697,7 +702,9 @@ namespace DDAS.Services.Reports
                 x.ProjectNumber2 == ReportFilter.ProjectNumber)
                 .ToList();
             }
-            return filter1;
+            return filter1
+                .OrderByDescending(x => x.ReviewCompletedOn)
+                .ToList();
         }
 
         private string GetUserFullName(string AssignedTo)
