@@ -19,6 +19,7 @@ export class InvestigationsReport {
 
 export class ReportByUser {
     UserName: string;
+    UserFullName: string;
     ReportItems: ReportItem[] = [];
 }
 

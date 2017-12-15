@@ -36,10 +36,10 @@
 					<th>Principal Investigator</th>
 					<th>Project Number</th>
 					<th>Search Started On</th>
-                    <th>Re-assigned By</th>
                     <th>Re-assigned On</th>
                     <th>Re-assigned From</th>
-                    <th>Re-assigned To</th>
+					<th>Re-assigned To</th>
+					<th>Re-assigned By</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -53,9 +53,6 @@
                     <td class="text-center">
                         {{item.SearchStartedOn | date: 'dd MMM yyyy hh:mm'}}
 					</td>
-					<td class="text-center">
-						{{item.AssignedBy}}
-                    </td>
                     <td class="text-center">
                         {{item.AssignedOn | date: 'dd MMM yyyy hh:mm'}}
 					</td>
@@ -64,7 +61,10 @@
                     </td>					
                     <td class="text-center">
                         {{item.AssignedTo}}
-                    </td>
+					</td>
+					<td class="text-center">
+						{{item.AssignedBy}}
+                    </td>					
 				</tr>
 			</tbody>
 		</table>

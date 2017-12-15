@@ -187,7 +187,7 @@ namespace DDAS.Services.Search
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName = 
                     Path.GetFileName(FilePathWithGUID);
-                form.ProjectNumber = InputRows[Index].ProjectNumber;
+                form.ProjectNumber = InputRows[Index].ProjectNumber.Trim();
                 form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
                 form.SponsorProtocolNumber =
                     InputRows[Index].SponsorProtocolNumber;
@@ -207,7 +207,7 @@ namespace DDAS.Services.Search
                     Investigator.Id = InvId;
                     InvId += 1;
 
-                    Investigator.Name = InputRows[Index].DisplayName;
+                    Investigator.Name = InputRows[Index].DisplayName.Trim();
                     Investigator.FirstName = InputRows[Index].FirstName;
                     Investigator.MiddleName = InputRows[Index].MiddleName;
                     Investigator.LastName = InputRows[Index].LastName;
@@ -227,7 +227,7 @@ namespace DDAS.Services.Search
                         Inv.Id = InvId;
                         InvId += 1;
 
-                        Inv.Name = InputRows[tempIndex].DisplayName;
+                        Inv.Name = InputRows[tempIndex].DisplayName.Trim();
                         Inv.FirstName = InputRows[tempIndex].FirstName;
                         Inv.MiddleName = InputRows[tempIndex].MiddleName;
                         Inv.LastName = InputRows[tempIndex].LastName;
@@ -2201,6 +2201,9 @@ namespace DDAS.Services.Search
 
             var ProjectNumber = form.ProjectNumber.Replace('/', '-');
 
+            if (form.ProjectNumber2 != null && form.ProjectNumber2.Trim() != "")
+                ProjectNumber += "-" + form.ProjectNumber2.Replace('/', '-');
+
             var PISearchName = form.InvestigatorDetails.FirstOrDefault().SearchName; 
 
             var GeneratedFileName = 
@@ -2230,8 +2233,8 @@ namespace DDAS.Services.Search
             writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
             writer.AddFormHeaders(
-                form.ProjectNumber + " " + form.ProjectNumber2, 
-                form.SponsorProtocolNumber + " " + form.SponsorProtocolNumber2,
+                form.ProjectNumber, form.ProjectNumber2,
+                form.SponsorProtocolNumber, form.SponsorProtocolNumber2,
                 form.Institute, 
                 (form.Address + " " + form.Country));
 
@@ -2247,6 +2250,8 @@ namespace DDAS.Services.Search
                 string MedicalLicenseNumber = null;
                 if (Investigator.MedicalLiceseNumber == null || Investigator.MedicalLiceseNumber.Trim() == "")
                     MedicalLicenseNumber = "NA";
+                else
+                    MedicalLicenseNumber = Investigator.MedicalLiceseNumber;
 
                 string[] CellValues = new string[]
                 {
@@ -2255,7 +2260,7 @@ namespace DDAS.Services.Search
                     MedicalLicenseNumber,
                     Investigator.SearchName
                 };
-                writer.FillUpTable(CellValues);
+                writer.FillUpTable(CellValues, "center");
             }
             //SaveChanges is required for PDF generation
             writer.SaveChanges();
@@ -2290,7 +2295,7 @@ namespace DDAS.Services.Search
                     Site.IssuesIdentified ? "Yes" : "No"
                 };
 
-                writer.FillUpTable(CellValues);
+                writer.FillUpTable(CellValues, "left");
 
                 RowIndex += 1;
                 ColumnIndex += 1;
@@ -2320,7 +2325,7 @@ namespace DDAS.Services.Search
                         Site.SiteUrl,
                         Site.IssuesIdentified ? "Yes" : "No"
                     };
-                    writer.FillUpTable(CellValues);
+                    writer.FillUpTable(CellValues, "left");
                     RowIndex += 1;
                 }
             }
@@ -2339,7 +2344,7 @@ namespace DDAS.Services.Search
                 {
                     "", "", "", "No Findings"
                 };
-                writer.FillUpTable(CellValues);
+                writer.FillUpTable(CellValues, "center");
             }
             else
             {
@@ -2357,9 +2362,9 @@ namespace DDAS.Services.Search
                         finding.SiteSourceId.ToString(),
                         finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
                         DateOfInspection,
-                        finding.Observation
+                        finding.Observation != null ? finding.Observation.Trim() : ""
                         };
-                        writer.FillUpTable(CellValues);
+                        writer.FillUpTable(CellValues, "left");
                     }
                 }
             }

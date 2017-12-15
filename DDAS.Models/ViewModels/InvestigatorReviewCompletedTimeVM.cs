@@ -9,6 +9,7 @@ namespace DDAS.Models.ViewModels
     public class InvestigatorReviewCompletedTimeVM
     {
         public string InvestigatorName { get; set; }
+        public string Role { get; set; }
         public string ProjectNumber { get; set; }
         public string ProjectNumber2 { get; set; }
         public DateTime SearchStartedOn { get; set; }
@@ -23,5 +24,6 @@ namespace DDAS.Models.ViewModels
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
         public int SingleMatchCount { get; set; }
+        public string IssuesIdentifiedStatus { get; set; }
     }
 }

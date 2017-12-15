@@ -54,11 +54,11 @@
 				<tr>
                     <th>Project Number</th>
                     <th>Sponsor Protocol Number</th>
+                    <th>Role</th>
+                    <th>Investigator Name</th>                    
                     <th>Institute</th>
                     <th>Country</th>
-                    <th>Medical License Number</th>                    
-                    <th>Investigator Name</th>
-                    <th>Role</th>
+                    <th>Medical License Number</th>
                     <th>Review Completed On</th>
                     <th>Finding Status</th>
                     <th>Assigned To</th>
@@ -71,7 +71,13 @@
                     </td>
 					<td class="text-center">
 						{{item.SponsorProtocolNumber}} {{item.SponsorProtocolNumber2}}
-					</td>                    
+                    </td>
+					<td class="text-left">
+						{{item.Role}}
+                    </td>
+                    <td class="text-left">
+						{{item.InvestigatorName}}
+                    </td>                                                            
 					<td class="text-left">
 						{{item.Institute}}
                     </td>
@@ -80,13 +86,7 @@
                     </td>
 					<td class="text-center">
 						{{item.MedicalLicenseNumber}}
-                    </td>                    
-                    <td class="text-left">
-						{{item.InvestigatorName}}
-                    </td>
-					<td class="text-left">
-						{{item.Role}}
-					</td>        
+                    </td>                            
                     <td class="text-center">
                         {{item.ReviewCompletedOn | date: 'dd MMM yyyy'}}
                     </td>

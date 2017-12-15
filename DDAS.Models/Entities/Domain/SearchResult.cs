@@ -1220,6 +1220,7 @@ namespace DDAS.Models.Entities.Domain
     public class ReportByUser
     {
         public string UserName { get; set; }
+        public string UserFullName { get; set; }
         public List<ReportItem> ReportItems { get; set; } 
             = new List<ReportItem>();
     }

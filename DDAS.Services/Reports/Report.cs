@@ -290,6 +290,7 @@ namespace DDAS.Services.Reports
             {
                 var reportByUser = new ReportByUser();
                 reportByUser.UserName = user.UserName;
+                reportByUser.UserFullName = user.UserFullName;
                 ReportByUsers.Add(reportByUser);
             }
 
@@ -323,7 +324,7 @@ namespace DDAS.Services.Reports
                 if (OpenInvestigators.Count == 0)
                     continue;
 
-                OpenInvestigation.AssignedTo = user.UserName;
+                OpenInvestigation.AssignedTo = user.UserFullName;
                 OpenInvestigation.Count = OpenInvestigators.Count;
 
                 OpenInvestigation.Earliest =
@@ -496,6 +497,7 @@ namespace DDAS.Services.Reports
                     ProjectNumber = s.ComplianceForm.ProjectNumber,
                     ProjectNumber2 = s.ComplianceForm.ProjectNumber2,
                     Name = s.InvestigatorSearched.Name,
+                    Role = s.InvestigatorSearched.Role,
                     SearchStartedOn = s.ComplianceForm.SearchStartedOn,
                     ReviewCompletedOn = s.InvestigatorSearched.ReviewCompletedOn.Value,
                     AssignedTo = s.ComplianceForm.AssignedTo,
@@ -504,7 +506,8 @@ namespace DDAS.Services.Reports
                     PartialMatchCount =
                     s.InvestigatorSearched.SitesSearched.Sum(x => x.PartialMatchCount),
                     SingleMatchCount =
-                    s.InvestigatorSearched.SitesSearched.Sum(x => x.SingleMatchCount)
+                    s.InvestigatorSearched.SitesSearched.Sum(x => x.SingleMatchCount),
+                    IssuesIdentified = s.InvestigatorSearched.TotalIssuesFound
                 })
                 .ToList();
 
@@ -512,6 +515,7 @@ namespace DDAS.Services.Reports
             {
                 var VM = new InvestigatorReviewCompletedTimeVM();
                 VM.InvestigatorName = Investigator.Name;
+                VM.Role = Investigator.Role;
                 VM.ProjectNumber = Investigator.ProjectNumber;
                 VM.ProjectNumber2 = Investigator.ProjectNumber2;
                 VM.SearchStartedOn = Investigator.SearchStartedOn;
@@ -522,6 +526,9 @@ namespace DDAS.Services.Reports
                 VM.FullMatchCount = Investigator.FullMatchCount;
                 VM.PartialMatchCount = Investigator.PartialMatchCount;
                 VM.SingleMatchCount = Investigator.SingleMatchCount;
+
+                VM.IssuesIdentifiedStatus = Investigator.IssuesIdentified == 0
+                    ? "No Issues Identified" : "Issues Identified";
 
                 ReviewCompletedInvestigatorsVM.Add(VM);
             });

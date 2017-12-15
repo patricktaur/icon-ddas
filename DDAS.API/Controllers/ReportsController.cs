@@ -338,6 +338,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
                 _Report.GetAssignmentHistory(ReportFilter));
         }
@@ -347,6 +352,11 @@ namespace DDAS.API.Controllers
         public IHttpActionResult
             GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
                 _Report.GetInvestigatorsReviewCompletedTime(ReportFilter));
         }
@@ -355,6 +365,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
                 _Report.GetInvestigatorByFinding(ReportFilter));
         }
@@ -363,6 +378,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
                 _Report.GetStudySpecificInvestigators(ReportFilter));
         }
