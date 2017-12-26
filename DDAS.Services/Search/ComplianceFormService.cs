@@ -4280,12 +4280,7 @@ namespace DDAS.Services.Search
             if(!IsValidProjectNumber(InputRow.ProjectNumber))
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
-
-<<<<<<< HEAD
-            if (InputRow.ProjectNumber2 != null &&
-=======
             if (InputRow.ProjectNumber2 != null && 
->>>>>>> 41ce17afda29c2e7a2d6611925f1ddb24e2f91ee
                 InputRow.ProjectNumber2.Trim() != ""
                 && !IsValidProjectNumber(InputRow.ProjectNumber2))
                 ValidationMessages.Add("RowNumber: " + Row +
