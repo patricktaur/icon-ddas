@@ -386,67 +386,35 @@ namespace DDAS.API.Controllers
             return Ok(_Report.GetAdminDashboard());
         }
 
+
         [Route("AssignmentHistory")]
-        [HttpGet]
-        public IHttpActionResult GetAssignmentHistory(string mode = "view")
+        [HttpPost]
+        public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter, string mode = "view")
         {
-            
             if (ReportFilter.ToDate != null)
             {
                 ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
             }
 
-            // return Ok(
-            //     _Report.GetAssignmentHistory(ReportFilter));
+            //return Ok(
+            //_Report.GetAssignmentHistory(ReportFilter));
 
+            //var list = _Report.GetAssignmentHistory(ReportFilter));
+            var list = _Report.GetAssignmentHistory(ReportFilter);
 
-            //var list = _Report.GetAssignmentHistory();
-            var list = _Report.GetAssignmentHistory(ReportFilter));
             switch (mode)
             {
                 case "view":
                     return Ok(list);
                 case "csv":
-                                                
+
                     var headers = new List<string> { "Principal Investigator", "Proj No 1", "Proj No 2", "Assigned By", "Assigned On", "Assigned To", "Removed On" };
                     return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "Report.csv", headers));
                 default:
                     return Ok(list);
             }
-        [HttpPost]
-        public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter)
-        {
-            if (ReportFilter.ToDate != null)
-            {
-                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
-            }
-
-            return Ok(
-                _Report.GetAssignmentHistory(ReportFilter));
         }
-
-        [Route("AssignmentHistory1")]
-        [HttpGet]
-        public IHttpActionResult GetAssignmentHistory1()
-        {
-            //return Ok(
-            //    _Report.GetAssignmentHistory());
-            var list = _Report.GetAssignmentHistory();
-            var headers = new List<string> { "Principal Investigator",  "Project Number",   "Assigned By",  "Assigned On",  "Assigned To",  "Removed On" };
-
-            var contents = _csvConvertor.ConvertToCSVString(_Report.GetAssignmentHistory(), headers);
-
-            
-
-            byte[] byteArray = Encoding.UTF8.GetBytes(contents);
-            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
-            MemoryStream stream = new MemoryStream(byteArray);
-
-            //var result = _fileDownloadRespone.GetResponse(Request, stream, "abc.csv");
-            
-            return ResponseMessage(_fileDownloadResponse.GetResponse(Request, stream, "abc.csv"));
-
-        }
+        
 
 
         [Route("InvestigatorReviewCompletedTime")]
