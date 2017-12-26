@@ -72,4 +72,12 @@
         Quarter,
         Year
     }
+
+    public enum AdminDashboardReportType
+    {
+        OpeningBalance,
+        ComplianceFormsUploaded,
+        ComplianceFormsCompleted,
+        ClosingBalance
+    }
 }

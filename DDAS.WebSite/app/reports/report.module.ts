@@ -18,6 +18,7 @@ import { InvestigatorReviewCompletedTimeComponent }
   from './investigator-reviewcompletedtime.component';
 import { InvestigatorFindingsComponent } from './investigator-findings.component';
 import { StudySpecificInvestigatorComponent } from './study-specific-investigator.component';
+import { AdminDashboardDrillDownComponent } from './admin-dashboard-drilldown.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { StudySpecificInvestigatorComponent } from './study-specific-investigato
     AssignmentHistoryComponent,
     InvestigatorReviewCompletedTimeComponent,
     InvestigatorFindingsComponent,
-    StudySpecificInvestigatorComponent
+    StudySpecificInvestigatorComponent,
+    AdminDashboardDrillDownComponent
   ],
 
   providers: [

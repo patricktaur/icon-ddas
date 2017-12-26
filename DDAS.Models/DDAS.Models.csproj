@@ -122,6 +122,7 @@
     <Compile Include="Repository\IExceptionLoggerRepository.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
+    <Compile Include="ViewModels\AdminDashbordDrillDownViewModel.cs" />
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
     <Compile Include="ViewModels\AuditListViewModel.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />

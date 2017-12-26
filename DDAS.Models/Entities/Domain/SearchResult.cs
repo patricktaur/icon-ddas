@@ -186,6 +186,25 @@ namespace DDAS.Models.Entities.Domain
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
 
+        public bool IsReviewCompleted {
+            get {
+                return (ReviewCompletedInvestigatorCount == InvestigatorDetails.Count() ? true : false);
+            }
+        }
+
+        public DateTime? ReviewCompletedOn {
+            get
+            {
+                if (IsReviewCompleted)
+                    return InvestigatorDetails.OrderByDescending(x =>
+                    x.ReviewCompletedOn)
+                    .FirstOrDefault()
+                    .ReviewCompletedOn;
+                else
+                    return null;
+            }
+        }
+
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
         public string Status
