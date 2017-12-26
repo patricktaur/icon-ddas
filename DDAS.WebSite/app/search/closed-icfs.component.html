@@ -93,17 +93,12 @@
 					<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
 
 						<td class="text-left">
-							<!--{{item.Name}}
-					<span toggle-show *ngIf="item.SubInvestigators.length > 0"> 
-							<ul class="list-unstyled " style="white-space: nowrap">
-							<li *ngFor="let inv of item.SubInvestigators" >{{inv.Name}}</li>
-						</ul>
-					</span>-->
-							<h5> <a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
-						<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
-						</a>
+							<h5>
+								<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+									{{item.Name}} 
+									<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+								</a>
 							</h5>
-
 							<div class="panel-group" role="tablist" style="border:0">
 								<div class="panel panel-default" style="border:0">
 									<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
@@ -119,7 +114,7 @@
 							{{item.ProjectNumber}} {{item.ProjectNumber2}}
 						</td>
 						<td>
-							{{item.SponsorProtocolNumber}}
+							{{item.SponsorProtocolNumber}} {{item.SponsorProtocolNumber2}}
 						</td>
 						<td class="text-left">
 							{{item.Country}}

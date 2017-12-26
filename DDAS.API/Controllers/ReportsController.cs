@@ -2,6 +2,7 @@
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using DDAS.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -334,38 +335,56 @@ namespace DDAS.API.Controllers
         }
 
         [Route("AssignmentHistory")]
-        [HttpGet]
-        public IHttpActionResult GetAssignmentHistory()
+        [HttpPost]
+        public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
-                _Report.GetAssignmentHistory());
+                _Report.GetAssignmentHistory(ReportFilter));
         }
 
         [Route("InvestigatorReviewCompletedTime")]
-        [HttpGet]
+        [HttpPost]
         public IHttpActionResult
-            GetInvestigatorReviewCompletedTime(string FromDate, string ToDate)
+            GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter)
         {
-            var fromDate = DateTime.ParseExact(FromDate, "M/d/yyyy", null);
-            var toDate = DateTime.ParseExact(ToDate, "M/d/yyyy", null);
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
-                _Report.GetInvestigatorsReviewCompletedTime(fromDate, toDate));
+                _Report.GetInvestigatorsReviewCompletedTime(ReportFilter));
         }
 
         [Route("InvestigatorByFinding")]
-        [HttpGet]
-        public IHttpActionResult GetInvestigatorsByFinding()
+        [HttpPost]
+        public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
-                _Report.GetInvestigatorByFinding());
+                _Report.GetInvestigatorByFinding(ReportFilter));
         }
 
         [Route("StudySpecificInvestigators")]
-        [HttpGet]
-        public IHttpActionResult GetStudySpecificInvestigators(string ProjectNumber)
+        [HttpPost]
+        public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
         {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
             return Ok(
-                _Report.GetStudySpecificInvestigators(ProjectNumber));
+                _Report.GetStudySpecificInvestigators(ReportFilter));
         }
     }
 }

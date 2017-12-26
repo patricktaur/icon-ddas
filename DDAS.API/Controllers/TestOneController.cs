@@ -13,7 +13,7 @@ using DDAS.API.Identity;
 namespace DDAS.API.Controllers
 {
     
-    [RoutePrefix("api/Identity")]
+    [RoutePrefix("api/Test")]
     public class TestOneController : ApiController
     {
         [Route("get")]
@@ -43,6 +43,5 @@ namespace DDAS.API.Controllers
         {
             return Ok("Delete");
         }
-
     }
 }

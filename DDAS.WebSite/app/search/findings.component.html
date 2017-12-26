@@ -199,7 +199,7 @@
 									<!--<div date-picker [(DateValue)]="matchedRecord.DateOfInspection"></div>-->
 								</div>
 								<div *ngIf="matchedRecord.IsMatchedRecord">
-									<label>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy Z'}}</label>
+									<label>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy'}}</label>
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -248,7 +248,7 @@
 
 	<modal #MatchedRecordsModal>
 		<modal-header>
-			<h4>Matching records in site.</h4>
+			<h4>Matching records in site for investigator - <b>{{Investigator.Name}}</b></h4>
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">
@@ -297,7 +297,7 @@
 
 	<modal #FullMatchedRecordsModal>
 		<modal-header>
-			<h4>Full Matching records in site.</h4>
+			<h4>Full Matching records in site for investigator - <b>{{Investigator.Name}}</b></h4>
 
 		</modal-header>
 		<modal-body>
@@ -365,7 +365,7 @@
 
 	<modal #PartialMatchedRecordsModal>
 		<modal-header>
-			<h4>Partially Matching records in site.</h4>
+			<h4>Partially Matching records in site for investigator - <b>{{Investigator.Name}}</b></h4>
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">
@@ -428,7 +428,7 @@
 
 	<modal #SingleMatchedRecordsModal>
 		<modal-header>
-			<h4>Single Match Records in site.</h4>
+			<h4>Single Match Records in site for investigator - <b>{{Investigator.Name}}</b></h4>
 		</modal-header>
 		<modal-body>
 			<div class="table-responsive">

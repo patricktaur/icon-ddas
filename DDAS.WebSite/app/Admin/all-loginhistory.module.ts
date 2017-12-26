@@ -22,6 +22,7 @@ import { CountrySiteEditComponent } from './country-site-edit.component';
 import { SponsorSpecificSiteEditComponent} from './sponsor-protocol-edit.component';
 import { ExceptionLogComponent } from './exception-logger.component';
 import { ExtractionLogComponent } from './extraction-log.component';
+import { DataFileComponent } from './data-file.component';
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 //import { SiteSourceToAddComponent } from '../shared/components/site-source-toadd.component';
 
@@ -47,7 +48,8 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
       CountrySiteEditComponent,
       SponsorSpecificSiteEditComponent,
       ExceptionLogComponent,
-      ExtractionLogComponent
+      ExtractionLogComponent,
+      DataFileComponent
       //SiteSourceToAddComponent
   ],
  

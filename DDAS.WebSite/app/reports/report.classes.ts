@@ -19,6 +19,7 @@ export class InvestigationsReport {
 
 export class ReportByUser {
     UserName: string;
+    UserFullName: string;
     ReportItems: ReportItem[] = [];
 }
 
@@ -50,7 +51,9 @@ export class AssignmentHistoryViewModel{
     AssignedBy: string;
     AssingedOn: Date;
     AssignedTo: string;
-    RemovedOn: Date;
+    PreviouslyAssignedTo: string;
+    InvestigatorCount: number;
+    SearchStartedOn: Date;
 }
 
 export class InvestigatorFindingViewModel{
@@ -60,6 +63,13 @@ export class InvestigatorFindingViewModel{
     Role: string;
     ReviewCompletedBy: string;
     ReviewCompletedOn: Date;
-    SiteName: string;
-    FindingObservation: string;    
+    SiteShortName: string;
+    FindingObservation: string;
+}
+
+export class ReportFilterViewModel{
+    FromDate: Date;
+    ToDate: Date;
+    ProjectNumber: string;
+    AssignedTo: string;
 }

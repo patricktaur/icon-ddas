@@ -14,7 +14,7 @@ namespace DDAS.Models.ViewModels
         public string Role { get; set; }
         public string ReviewCompletedBy { get; set; }
         public DateTime ReviewCompletedOn { get; set; }
-        public string SiteName { get; set; }
+        public string SiteShortName { get; set; }
         public string FindingObservation { get; set; }
     }
 }

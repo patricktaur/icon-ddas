@@ -8,6 +8,7 @@ export class AuditListViewModel{
         AuditStatus: string;
         PrincipalInvestigator: string;
         ProjectNumber: string;
+        ProjectNumber2: string;
 }
 
 export class Audit{

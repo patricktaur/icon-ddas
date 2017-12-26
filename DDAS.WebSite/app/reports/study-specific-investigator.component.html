@@ -14,25 +14,51 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="ProjectNumber">Project Number (1234/1234):</label>
-                    <input type="text" class="form-control" name="projNumber" [(ngModel)]="projectNumber" #projNumber="ngModel" required
+                    <input type="text" class="form-control" name="projNumber" [(ngModel)]="reportFilter.ProjectNumber" #projNumber="ngModel" required
                         pattern="\d{4}/\d{4}">
 
                     <small [hidden]="projNumber.valid || (projNumber.pristine)" class="text-danger">
                         Project Number format 9999/9999 expected.
                     </small>
                 </div>
-                <button type="button" class="btn btn-primary" (click)="getInvestigators()">
-                    Generate Report
-                </button>
             </div>
             <div class="col-md-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 ">
+                <div class="form-group">
+                    <label for="Date">ICSF Created On (from):</label>
+
+                    <my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+
+                </div>
+                <button type="button" class="btn btn-primary" (click)="getInvestigators()">
+                    Generate Report
+                </button>                
+            </div>
+            <div class="col-md-3 ">
+                <div class="form-group">
+                    <label for="Date">ICSF Created On (to):</label>
+                    <my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="form-group">
+                </div>
             </div>
         </div>
 
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th>Investigator Name</th>
+                    <th>Project Number</th>
+                    <th>Sponsor Protocol Number</th>
+                    <th>Role</th>
+                    <th>Investigator Name</th>                    
+                    <th>Institute</th>
+                    <th>Country</th>
+                    <th>Medical License Number</th>
                     <th>Review Completed On</th>
                     <th>Finding Status</th>
                     <th>Assigned To</th>
@@ -40,16 +66,34 @@
 			</thead>
 			<tbody>
 				<tr *ngFor="let item of studySpecificInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+					<td class="text-center">
+						{{item.ProjectNumber}} {{item.ProjectNumber2}}
+                    </td>
+					<td class="text-center">
+						{{item.SponsorProtocolNumber}} {{item.SponsorProtocolNumber2}}
+                    </td>
 					<td class="text-left">
+						{{item.Role}}
+                    </td>
+                    <td class="text-left">
 						{{item.InvestigatorName}}
-					</td>
+                    </td>                                                            
+					<td class="text-left">
+						{{item.Institute}}
+                    </td>
+					<td class="text-center">
+						{{item.Country}}
+                    </td>
+					<td class="text-center">
+						{{item.MedicalLicenseNumber}}
+                    </td>                            
                     <td class="text-center">
                         {{item.ReviewCompletedOn | date: 'dd MMM yyyy'}}
                     </td>
                     <td class="text-center">
                         {{item.FindingStatus}}
                     </td>
-                    <td class="text-center">
+                    <td class="text-left">
                         {{item.AssignedTo}}
                     </td>
 				</tr>

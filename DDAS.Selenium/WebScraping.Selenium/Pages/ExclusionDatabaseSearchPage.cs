@@ -81,7 +81,7 @@ namespace WebScraping.Selenium.Pages
         {
             string DownloadFilePath = 
                 _config.ExclusionDatabaseFolder + 
-                "ExclusionDatabaseList_" +
+                SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
                 ".csv";
 
