@@ -158,6 +158,7 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public bool Active { get; set; } = true;
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
@@ -418,6 +419,7 @@ namespace DDAS.Models.Entities.Domain
         public string Name { get; set; }
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
@@ -724,7 +726,6 @@ namespace DDAS.Models.Entities.Domain
         public string ExtractionErrorMessage { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
-
         public int SingleMatchCount { get; set; }
 
         public int IssuesFound { get; set; }
@@ -1219,6 +1220,7 @@ namespace DDAS.Models.Entities.Domain
     public class ReportByUser
     {
         public string UserName { get; set; }
+        public string UserFullName { get; set; }
         public List<ReportItem> ReportItems { get; set; } 
             = new List<ReportItem>();
     }
@@ -1331,6 +1333,7 @@ namespace DDAS.Models.Entities.Domain
         public string ProjectNumber { get; set; }
         public string ProjectNumber2 { get; set; }
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string DisplayName { get; set; }
         public string InvestigatorID { get; set; }
         public string MemberID { get; set; }
@@ -1408,9 +1411,10 @@ namespace DDAS.Models.Entities.Domain
         public Guid RecId { get; set; }
         public Guid ComplianceFormId { get; set; }
         public DateTime AssignedOn { get; set; }
-        public DateTime? RemovedOn { get; set; }
+        //public DateTime? RemovedOn { get; set; }
         public string AssignedTo { get; set; }
         public string AssignedBy { get; set; }
+        public string PreviouslyAssignedTo { get; set; }
     }
 
     #endregion

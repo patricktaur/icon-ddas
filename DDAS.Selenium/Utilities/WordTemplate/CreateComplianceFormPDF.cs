@@ -163,8 +163,9 @@ namespace Utilities.WordTemplate
             //_document.Add(new Chunk("\n"));
         }
 
-        public void AddFormHeaders(string ProjectNumber, 
-            string SponsorProtocolNumber, string InstituteName, string Address)
+        public void AddFormHeaders(string ProjectNumber, string ProjectNumber2,
+            string SponsorProtocolNumber, string SponsorProtocolNumber2,
+            string InstituteName, string Address)
         {
             _table = new PdfPTable(4);
 
@@ -192,7 +193,7 @@ namespace Utilities.WordTemplate
             }
         }
 
-        public void FillUpTable(string[] CellValues)
+        public void FillUpTable(string[] CellValues, string CellAlignment)
         {
             foreach(string Value in CellValues)
             {

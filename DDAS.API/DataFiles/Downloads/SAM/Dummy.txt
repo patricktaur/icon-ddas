@@ -1,0 +1,5 @@
+﻿Required.
+This file will force VS Publish to create a folder in IIS Server
+Properties:
+Build Action: Content
+Copy to Output folder: Do not copy

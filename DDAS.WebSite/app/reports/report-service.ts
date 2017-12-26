@@ -17,7 +17,8 @@ import {
     InvestigationsReport, 
     AdminDashboardViewModel, 
     AssignmentHistoryViewModel,
-    InvestigatorFindingViewModel
+    InvestigatorFindingViewModel,
+    ReportFilterViewModel
     } 
     from './report.classes';
 
@@ -165,40 +166,49 @@ export class ReportService {
         .catch(this.handleError);
     }
 
-    getAssignmentHistoryList():Observable<AssignmentHistoryViewModel[]>{
-        return this.http.get(this._baseUrl + 'Reports/AssignmentHistory', this._options)
-        .map((res: Response) =>{
-            return res.json();
-        })
-        .catch(this.handleError);        
-    }
-
-    getInvestigatorReviewCompletedTime(fromDate: string, toDate: string):Observable<any[]>{
-        return this.http.get(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime' +
-        '?FromDate=' + fromDate + '&ToDate=' + toDate 
-        , this._options)
+    getAssignmentHistoryList(reportFilter: ReportFilterViewModel):Observable<AssignmentHistoryViewModel[]>{
+        let filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/AssignmentHistory', filter, this._options)
         .map((res: Response) =>{
             return res.json();
         })
         .catch(this.handleError);
     }
 
-    getInvestigatorsByFinding():Observable<InvestigatorFindingViewModel[]>{
-        return this.http.get(this._baseUrl + 'Reports/InvestigatorByFinding', this._options)
+    getInvestigatorReviewCompletedTime(reportFilter: ReportFilterViewModel):Observable<any[]>{
+        let filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/InvestigatorReviewCompletedTime', filter, this._options)
         .map((res: Response) =>{
             return res.json();
         })
         .catch(this.handleError);
     }
 
-    getStudySpecificInvestigators(projectNumber: string):Observable<any[]>{
-        return this.http.get(this._baseUrl + 'Reports/StudySpecificInvestigators?ProjectNumber=' + projectNumber, this._options)
+    getInvestigatorsByFinding(reportFilter: ReportFilterViewModel):Observable<InvestigatorFindingViewModel[]>{
+        var filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/InvestigatorByFinding', filter, this._options)
         .map((res: Response) =>{
             return res.json();
         })
         .catch(this.handleError);
     }
 
+    getStudySpecificInvestigators(reportFilter: ReportFilterViewModel):Observable<any[]>{
+        let filter = JSON.stringify(reportFilter);
+        return this.http.post(this._baseUrl + 'Reports/StudySpecificInvestigators', reportFilter, this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getAllUsers() {
+        return this.http.get(this._baseUrl + 'Account/GetUsers', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

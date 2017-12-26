@@ -16,7 +16,7 @@ import {SiteSourceViewModel} from './appAdmin.classes';
 import {Country} from './appAdmin.classes';
 import {SponsorProtocol} from './appAdmin.classes';
 import {DefaultSite} from './appAdmin.classes';
-
+import { DownloadDataFilesViewModel } from './appAdmin.classes';
 
 @Injectable()
 export class LoginHistoryService {
@@ -57,6 +57,15 @@ export class LoginHistoryService {
             return res.json();
         })
         .catch(this.handleError);
+    }
+
+    getAllDataFiles(siteEnum: number):Observable<DownloadDataFilesViewModel[]>{
+        return this.http.get(this._baseUrl + 'Search/DownloadDataFiles?SiteEnum=' + siteEnum,
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
     }
 
     deleteErrorImage(FileName: string){

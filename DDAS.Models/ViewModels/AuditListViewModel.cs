@@ -17,5 +17,6 @@ namespace DDAS.Models.ViewModels
         public string AuditStatus { get; set; }
         public string PrincipalInvestigator { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
     }
 }

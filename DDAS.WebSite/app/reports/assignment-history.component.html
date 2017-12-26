@@ -1,9 +1,14 @@
 <div class="col-md-12">
 	<div class="well">
+<<<<<<< HEAD
 		<h3 class="no-margin-top">Assignment History</h3>
 		
 		
 		
+=======
+        <h3 class="no-margin-top">Re-Assignment History</h3>
+        <!-- {{diagnostic}} -->
+>>>>>>> Development
 	</div>
 	<div class="alert alert-info" *ngIf="formLoading">
 		<strong>Loading ...</strong>
@@ -14,16 +19,40 @@
 	
 	
 	<div class="well">
+<<<<<<< HEAD
 		<div   file-download [url]="'Reports/AssignmentHistory?mode=csv'"> </div>
+=======
+		<div class="row">
+			<div class="col-md-3">
+				<div class="form-group">
+					<label for="Date">ICSF Re-assigned On (from):</label>
+					<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+				</div>
+				<button type="button" class="btn btn-primary" (click)="getAssignmentHistoryList()">Generate Report</button>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<label for="Date">ICSF Re-assigned On (to):</label>
+					<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+				</div>
+			</div>
+			<div class="col-md-6 ">
+				<div class="form-group">
+				</div>
+			</div>
+		</div>
+
+>>>>>>> Development
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th>Principal Investigator</th>
-                    <th>Project Number</th>
-                    <th>Assigned By</th>
-                    <th>Assigned On</th>
-                    <th>Assigned To</th>
-                    <th>Removed On</th>
+					<th>Project Number</th>
+					<th>Search Started On</th>
+                    <th>Re-assigned On</th>
+                    <th>Re-assigned From</th>
+					<th>Re-assigned To</th>
+					<th>Re-assigned By</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -33,19 +62,22 @@
 					</td>
 					<td class="text-center">
 						{{item.ProjectNumber}} {{item.ProjectNumber2}}
-                    </td>
+					</td>
                     <td class="text-center">
-                        {{item.AssignedBy}}
-                    </td>
+                        {{item.SearchStartedOn | date: 'dd MMM yyyy hh:mm'}}
+					</td>
                     <td class="text-center">
-                        {{item.AssignedOn | date: 'dd MMM yyyy'}}
-                    </td>
+                        {{item.AssignedOn | date: 'dd MMM yyyy hh:mm'}}
+					</td>
+                    <td class="text-center">
+                        {{item.PreviouslyAssignedTo}}
+                    </td>					
                     <td class="text-center">
                         {{item.AssignedTo}}
-                    </td>
-                    <td class="text-center">
-                        {{item.RemovedOn | date: 'dd MMM yyyy'}}
-                    </td>
+					</td>
+					<td class="text-center">
+						{{item.AssignedBy}}
+                    </td>					
 				</tr>
 			</tbody>
 		</table>

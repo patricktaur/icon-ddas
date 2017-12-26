@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Audit, AuditObservation} from '../audit.classes';
+import { Audit, AuditObservation } from '../audit.classes';
 import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
@@ -23,7 +23,7 @@ export class EditAuditComponent implements OnInit {
     public pageNumber: number;
     public observation: string;
     public siteId: number = 0;
-    public isSubmitted: boolean = false;
+    public isSubmitted: boolean;
 
     constructor(
         private route: ActivatedRoute,
@@ -35,6 +35,7 @@ export class EditAuditComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.isSubmitted = false;
         this.Loading = true;
         this.route.params.forEach((params: Params) => {
             this.auditId = params['AuditId'];
@@ -43,71 +44,71 @@ export class EditAuditComponent implements OnInit {
         this.loadAudit();
     }
 
-    loadAudit(){
+    loadAudit() {
         this.auditService.loadAudit(this.auditId)
-        .subscribe((item: Audit) => {
-            this.audit = item;
-            this.isSubmitted = this.audit.IsSubmitted;
-            this.loadComplianceForm();
-        },
-        error => {
+            .subscribe((item: Audit) => {
+                this.audit = item;
+                this.isSubmitted = this.audit.IsSubmitted;
+                this.loadComplianceForm();
+            },
+            error => {
 
-        });
+            });
     }
 
-    loadComplianceForm(){
+    loadComplianceForm() {
         this.auditService.getComplianceForm(this.audit.ComplianceFormId)
-        .subscribe((item: any) => {
-            this.complianceForm = item;
-        },
-        error => {
+            .subscribe((item: any) => {
+                this.complianceForm = item;
+            },
+            error => {
 
-        });
+            });
     }
 
-    get Investigators(){
-        if(this.complianceForm != undefined || this.complianceForm != null)
+    get Investigators() {
+        if (this.complianceForm != undefined || this.complianceForm != null)
             return this.complianceForm.InvestigatorDetails;
         else
             return null;
     }
 
-    get SiteSources(){
-        if(this.complianceForm != undefined || this.complianceForm != null)
+    get SiteSources() {
+        if (this.complianceForm != undefined || this.complianceForm != null)
             return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
         else
             return null;
     }
 
-    get additionalSiteSources(){
-        if(this.complianceForm != undefined || this.complianceForm != null)
+    get additionalSiteSources() {
+        if (this.complianceForm != undefined || this.complianceForm != null)
             return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
         else
             return null;
     }
 
-    get Findings(){
-        if(this.complianceForm != undefined || this.complianceForm != null)
+    get Findings() {
+        if (this.complianceForm != undefined || this.complianceForm != null)
             return this.complianceForm.Findings;
         else
             return null;
     }
 
-    get Observations(){
-        if(this.audit.Observations != null || this.audit.Observations != undefined)
+    get Observations() {
+        if (this.audit.Observations != null || this.audit.Observations != undefined)
             return this.audit.Observations.filter(x => x.Status != null);
         else
             return null;
     }
 
-    clearValues(){
+    clearValues() {
         this.siteId = 0;
         this.observation = null;
     }
 
-    acceptObservation(){
+    acceptObservation() {
         this.audit.Observations.forEach((observation: AuditObservation) => {
-            if(this.siteId == observation.SiteId){
+            if (this.siteId == observation.SiteId) {
                 observation.Comments = this.observation;
                 observation.Status = "Accepted";
             }
@@ -115,14 +116,14 @@ export class EditAuditComponent implements OnInit {
         this.clearValues();
     }
 
-    rejectObservation(){
-        if(this.observation == null || this.observation.length == 0){
+    rejectObservation() {
+        if (this.observation == null || this.observation.length == 0) {
             alert("Observation cannot be empty. Please provide your observations");
             return;
         }
 
         this.audit.Observations.forEach((observation: AuditObservation) => {
-            if(this.siteId == observation.SiteId){
+            if (this.siteId == observation.SiteId) {
                 observation.Comments = this.observation;
                 observation.Status = "Rejected";
             }
@@ -130,29 +131,32 @@ export class EditAuditComponent implements OnInit {
         this.clearValues();
     }
 
-    deleteObservation(deleteObservationById: number){
+    deleteObservation(deleteObservationById: number) {
         var observation = this.audit.Observations.find(x => x.SiteId == deleteObservationById);
         observation.Comments = null;
         observation.Status = null;
     }
 
-    save(){
+    save() {
         this.audit.IsSubmitted = false;
         this.auditService.saveAudit(this.audit)
-        .subscribe((item: any) => {
+            .subscribe((item: any) => {
 
-        },
-        error => {
+            },
+            error => {
 
-        });
+            });
     }
 
-    submit(){
-        var observation = 
-        this.audit.Observations.find(x => x.Status == "accepted" || x.Status == "rejected");
-
-        if(observation == null || observation == undefined)
-        {
+    submit() {
+        var observation =
+            this.audit.Observations.find(x => x.Status != null &&
+                (x.Status.toLowerCase() == "accepted" ||
+                x.Status.toLowerCase() == "rejected"));
+        
+        console.log('observation: ', observation);
+        
+        if (observation == null || observation == undefined) {
             alert("Please provide at least one observation to submit the audit");
             return;
         }
@@ -162,15 +166,15 @@ export class EditAuditComponent implements OnInit {
         this.audit.CompletedOn = new Date();
 
         this.auditService.saveAudit(this.audit)
-        .subscribe((item: any) => {
+            .subscribe((item: any) => {
+                this.isSubmitted = true;
+            },
+            error => {
 
-        },
-        error => {
-
-        });        
+            });
     }
 
-        goBack() {
-            this._location.back();
-    }    
+    goBack() {
+        this._location.back();
+    }
 }

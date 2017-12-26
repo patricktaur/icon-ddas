@@ -181,9 +181,11 @@ namespace Utilities.WordTemplate
             TableRow Row = SearchedByTable.Elements<TableRow>().ElementAt(RowIndex);
             TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
             Paragraph paragraph = Cell.Elements<Paragraph>().First();
-            Run run = paragraph.Elements<Run>().First();
-            Text text = run.Elements<Text>().First();
-            text.Text += " " +Value;
+            paragraph.AppendChild(new Run(
+                new Text(Value)));
+            //Run run = paragraph.Elements<Run>().First();
+            //Text text = run.Elements<Text>().First();
+            //text.Text += " " + Value;
         }
 
         private void AddInvestigatorDetails(Table HeaderTable, string InvestigatorName, 
@@ -432,10 +434,17 @@ namespace Utilities.WordTemplate
             _row.Append(tableCell);
         }
 
-        private void AddTableCell(string Text)
+        private void AddTableCell(string CellAlignment, string Text = "")
         {
             var TableCell = CellWithVerticalAlign();
-            var paragraph = ParagraphWithLeftAlign();
+
+            var paragraph = new Paragraph();
+
+            if (CellAlignment.ToLower() == "center")
+                paragraph = ParagraphWithCenterAlign();
+            else
+                paragraph = ParagraphWithLeftAlign();
+            //var paragraph = ParagraphWithCenterAlign(); //ParagraphWithLeftAlign();
 
             if (Text != null && Text.Length > 2 && Text.Contains("\n"))
             {
@@ -445,7 +454,7 @@ namespace Utilities.WordTemplate
                 for (int Index = 0; Index < Values.Count(); Index++)
                 {
                     var run = new Run();
-                    run.Append(new Text(Values[Index]));
+                    run.Append(new Text(Values[Index].Trim()));
                     run.Append(new Break());
                     paragraph.Append(run);
                 }
@@ -453,7 +462,7 @@ namespace Utilities.WordTemplate
             else
             {
                 paragraph = ParagraphWithCenterAlign();
-                paragraph.Append(new Run(new Text(Text)));
+                paragraph.Append(new Run(new Text(Text.Trim())));
             }
 
             TableCell.Append(paragraph);
@@ -527,18 +536,50 @@ namespace Utilities.WordTemplate
             //document.AddObject(FilePath, Path.GetFileName(FilePath));
         }
 
-        public void AddFormHeaders(string ProjectNumber,
-            string SponsorProtocolNumber, string InstituteName, string Address)
+        public void AddFormHeaders(string ProjectNumber, string ProjectNumber2,
+            string SponsorProtocolNumber, string SponsorProtocolNumber2,
+            string InstituteName, string Address)
         {
-
             var body = _document.MainDocumentPart.Document.Body;
 
             var HeaderTable = body.Descendants<Table>().ElementAt(0);
 
-            UpdateTable(HeaderTable, 0, 1, ProjectNumber);
-            UpdateTable(HeaderTable, 0, 3, SponsorProtocolNumber);
+            AddProjectNumberAndSponsorProtocol(
+                HeaderTable,
+                0, 1, ProjectNumber, ProjectNumber2);
+
+            AddProjectNumberAndSponsorProtocol(
+                HeaderTable,
+                0, 3, SponsorProtocolNumber, SponsorProtocolNumber2);
+            //UpdateTable(HeaderTable, 0, 1, ProjectNumber);
+            //UpdateTable(HeaderTable, 0, 3, SponsorProtocolNumber);
             UpdateTable(HeaderTable, 1, 1, InstituteName);
             UpdateTable(HeaderTable, 1, 3, Address);
+
+
+        }
+
+        private void AddProjectNumberAndSponsorProtocol(Table table,
+            int RowIndex, int CellIndex, string Value1, string Value2)
+        {
+            TableRow Row = table.Elements<TableRow>().ElementAt(RowIndex);
+            TableCell Cell = Row.Elements<TableCell>().ElementAt(CellIndex);
+            Paragraph paragraph = Cell.Elements<Paragraph>().First();
+            //Run run = paragraph.Elements<Run>().First();
+            //Text text = run.Elements<Text>().First();
+            //text.Text = null;
+            if (Value2 != null && Value2.Trim() != "")
+            {
+                paragraph.AppendChild(
+                    new Run(
+                        new Text(Value1),
+                        new Break(),
+                        new Text(Value2)));
+            }
+            else
+                paragraph.AppendChild(
+                    new Run(
+                        new Text(Value1.Trim())));
         }
 
         public void AddTableHeaders(string[] Headers, int Columns, int TableIndex)
@@ -547,13 +588,13 @@ namespace Utilities.WordTemplate
             _table = body.Descendants<Table>().ElementAt(TableIndex);
         }
 
-        public void FillUpTable(string[] CellValues)
+        public void FillUpTable(string[] CellValues, string CellAlignment)
         {
             _row = new TableRow();
             
             foreach (string Value in CellValues)
             {
-                AddTableCell(Value);
+                AddTableCell(CellAlignment, Value);
             }
             _table.Append(_row);
         }

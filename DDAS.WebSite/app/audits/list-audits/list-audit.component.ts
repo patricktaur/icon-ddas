@@ -28,7 +28,7 @@ export class ListAuditsComponent implements OnInit {
     public Users: any[];
     public SelectedComplianceFormId: string;
     public audits: AuditListViewModel[];
-    public pageNumber: number;
+    public pageNumber: number = 1;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -48,8 +48,7 @@ export class ListAuditsComponent implements OnInit {
     }
 
     isAuditorOrIsAuditPending(auditor: string, auditStatus: string){
-        console.log('auditor: ', auditor, ' audit status: ', auditStatus);
-        if(this.authService.userName.toLowerCase() == auditor)
+        if(this.authService.userName.toLowerCase() == auditor.toLowerCase())
             return true;
         else if(auditStatus.toLowerCase() != "pending")
             return true;
@@ -58,7 +57,6 @@ export class ListAuditsComponent implements OnInit {
     }
 
     editAudit(auditId: string){
-        console.log("compliance Form Id:", auditId);
         this.router.navigate(['edit-audit', auditId], { relativeTo: this.route.parent});
     }
 }

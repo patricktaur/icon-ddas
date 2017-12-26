@@ -13,14 +13,16 @@ namespace DDAS.Models.Interfaces
 
         List<AdminDashboardViewModel> GetAdminDashboard();
 
-        List<AssignmentHistoryViewModel> GetAssignmentHistory();
+        List<AssignmentHistoryViewModel> 
+            GetAssignmentHistory(ReportFilterViewModel ReportFilter);
 
         List<InvestigatorReviewCompletedTimeVM>
-            GetInvestigatorsReviewCompletedTime(DateTime FromDate, DateTime ToDate);
+            GetInvestigatorsReviewCompletedTime(ReportFilterViewModel ReportFilter);
 
-        List<InvestigatorFindingViewModel> GetInvestigatorByFinding();
+        List<InvestigatorFindingViewModel> 
+            GetInvestigatorByFinding(ReportFilterViewModel reportFilter);
 
         List<StudySpecificInvestigatorVM> 
-            GetStudySpecificInvestigators(string ProjectNumber);
+            GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter);
     }
 }
