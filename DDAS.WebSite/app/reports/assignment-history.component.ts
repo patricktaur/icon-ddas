@@ -2,13 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ReportService } from './report-service';
-<<<<<<< HEAD
-import { AssignmentHistoryViewModel } from './report.classes';
-import {FileService} from '../shared/utils/file.service'
-=======
 import { AssignmentHistoryViewModel, ReportFilterViewModel } from './report.classes';
 import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-date-picker/interfaces';
->>>>>>> Development
 
 @Component({
     moduleId: module.id,
@@ -36,8 +31,7 @@ export class AssignmentHistoryComponent {
 
     constructor(
         private service: ReportService,
-        private route: ActivatedRoute,
-        private fileService: FileService
+        private route: ActivatedRoute
     ) {
 
     }
@@ -95,13 +89,6 @@ export class AssignmentHistoryComponent {
                 this.formLoading = false;
             });
     }
-<<<<<<< HEAD
-    
-    public Download(){
-        this.fileService.download("Reports/AssignmentHistory1");
-     }
-     
-=======
 
     reAssignmentList(list: AssignmentHistoryViewModel[]){
         list.forEach(record =>{
@@ -112,7 +99,6 @@ export class AssignmentHistoryComponent {
         return list;
     }
 
->>>>>>> Development
     diagnostic(){
         return JSON.stringify(this.assignmentHisotryList);
     }

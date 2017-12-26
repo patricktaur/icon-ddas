@@ -387,13 +387,21 @@ namespace DDAS.API.Controllers
         }
 
         [Route("AssignmentHistory")]
-<<<<<<< HEAD
         [HttpGet]
         public IHttpActionResult GetAssignmentHistory(string mode = "view")
         {
-            //return Ok(
-            //    _Report.GetAssignmentHistory());
-            var list = _Report.GetAssignmentHistory();
+            
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
+            // return Ok(
+            //     _Report.GetAssignmentHistory(ReportFilter));
+
+
+            //var list = _Report.GetAssignmentHistory();
+            var list = _Report.GetAssignmentHistory(ReportFilter));
             switch (mode)
             {
                 case "view":
@@ -405,7 +413,6 @@ namespace DDAS.API.Controllers
                 default:
                     return Ok(list);
             }
-=======
         [HttpPost]
         public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter)
         {
@@ -416,7 +423,6 @@ namespace DDAS.API.Controllers
 
             return Ok(
                 _Report.GetAssignmentHistory(ReportFilter));
->>>>>>> Development
         }
 
         [Route("AssignmentHistory1")]
