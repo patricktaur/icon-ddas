@@ -10,9 +10,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 using System.Web.Http;
 using Utilities;
+using DDAS.API.Helpers;
+using System.Collections.ObjectModel;
 
 namespace DDAS.API.Controllers
 {
@@ -25,9 +28,11 @@ namespace DDAS.API.Controllers
         private IConfig _config;
         private string _RootPath;
         private IReport _Report;
+        private FileDownloadResponse _fileDownloadResponse;
+        private CSVConvertor _csvConvertor;
 
-        public ReportsController(ISearchService SearchSummary, 
-            IUnitOfWork UOW, 
+        public ReportsController(ISearchService SearchSummary,
+            IUnitOfWork UOW,
             IConfig Config,
             IReport Report)
         {
@@ -36,6 +41,8 @@ namespace DDAS.API.Controllers
             _UOW = UOW;
             _config = Config;
             _Report = Report;
+            _fileDownloadResponse = new FileDownloadResponse();
+            _csvConvertor = new CSVConvertor();
         }
 
         [Route("GetNamesFromClosedComplianceForms")]
@@ -87,7 +94,7 @@ namespace DDAS.API.Controllers
                 _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
             {
                 return Ok("Could not find Output file template");
-               // response = Request.CreateResponse(HttpStatusCode.Gone);
+                // response = Request.CreateResponse(HttpStatusCode.Gone);
             }
             else
             {
@@ -132,7 +139,7 @@ namespace DDAS.API.Controllers
                     .ToList();
                 }
 
-                var FilePath = 
+                var FilePath =
                     _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
 
                 //string path = FilePath.Replace(_RootPath, "");
@@ -175,7 +182,7 @@ namespace DDAS.API.Controllers
             if (!File.Exists(
                 _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
             {
-                 response = Request.CreateResponse(HttpStatusCode.Gone);
+                response = Request.CreateResponse(HttpStatusCode.Gone);
             }
             else
             {
@@ -195,13 +202,13 @@ namespace DDAS.API.Controllers
 
                 var allForms = _UOW.ComplianceFormRepository.GetAll();
 
-                if(!IsAdmin)
+                if (!IsAdmin)
                 {
                     allForms = _UOW.ComplianceFormRepository.GetAll().Where(x =>
                     x.AssignedTo == UserName).ToList();
                 }
 
-                var forms = 
+                var forms =
                     allForms.OrderBy(x => x.SearchStartedOn).ToList();
                 //.Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
                 //|| x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
@@ -307,23 +314,68 @@ namespace DDAS.API.Controllers
 
         [Route("InvestigationsCompletedReport")]
         [HttpPost]
-        public IHttpActionResult GetInvestigationCompletedReport(ReportFilters Filters)
+        public IHttpActionResult GetInvestigationCompletedReport(ReportFilters Filters, string mode = "view")
         {
-            //if (Filters.ToDate != null)
-            //{
-            //    Filters.ToDate = Filters.ToDate.Date.AddDays(1);
-            //}
 
-            var Report = _Report.GetInvestigationsReport(Filters);
-            return Ok(Report);
+            //var Report = _Report.GetInvestigationsReport(Filters);
+            //return Ok(Report);
+
+
+            var report = _Report.GetInvestigationsReport(Filters);
+            var list = report.ReportByUsers;
+            switch (mode)
+            {
+                case "view":
+                    return Ok(report);
+                case "csv":
+                    var fileName = "Investigations_Completed.csv";
+                    var newLine = System.Environment.NewLine;
+                    StringBuilder sb = new StringBuilder();
+                    //Header:
+                    var header = " ";
+                    foreach (var fld in list[0].ReportItems)
+                    {
+                    header += ", " + fld.ReportPeriod;
+                    }
+                    sb.AppendLine(header);
+
+                    foreach (var lineItem in list)
+                    {
+                        string content = "";
+                        content += "\"" + lineItem.UserName + "\"";
+                        foreach (var fld in lineItem.ReportItems)
+                        {
+                            content += ", " + fld.Value;
+                        }
+                        sb.AppendLine(content );
+                    }
+
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, sb.ToString(), fileName));
+                default:
+                    return Ok(report);
+            }
         }
 
         [Route("OpenInvestigationsReport")]
         [HttpGet]
-        public IHttpActionResult GetOpenInvestigations()
+        public IHttpActionResult GetOpenInvestigations(string mode = "view")
         {
-            var OpenInvestigations = _Report.GetOpenInvestigations();
-            return Ok(OpenInvestigations);
+            //var OpenInvestigations = _Report.GetOpenInvestigations();
+            //return Ok(OpenInvestigations);
+
+            var list = _Report.GetOpenInvestigations();
+            switch (mode)
+            {
+                case "view":
+                    return Ok(list);
+                case "csv":
+                    //Assigned To	Count	Earliest	Latest
+                    var fileName = "Investigations_Open.csv";
+                    var headers = new List<string> { "Assigned To",    "Count",    "Earliest",  "Latest" };
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, fileName, headers));
+                default:
+                    return Ok(list);
+            }
         }
 
         [Route("AdminDashboard")]
@@ -335,11 +387,47 @@ namespace DDAS.API.Controllers
 
         [Route("AssignmentHistory")]
         [HttpGet]
-        public IHttpActionResult GetAssignmentHistory()
+        public IHttpActionResult GetAssignmentHistory(string mode = "view")
         {
-            return Ok(
-                _Report.GetAssignmentHistory());
+            //return Ok(
+            //    _Report.GetAssignmentHistory());
+            var list = _Report.GetAssignmentHistory();
+            switch (mode)
+            {
+                case "view":
+                    return Ok(list);
+                case "csv":
+                                                
+                    var headers = new List<string> { "Principal Investigator", "Proj No 1", "Proj No 2", "Assigned By", "Assigned On", "Assigned To", "Removed On" };
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "Report.csv", headers));
+                default:
+                    return Ok(list);
+            }
         }
+
+        [Route("AssignmentHistory1")]
+        [HttpGet]
+        public IHttpActionResult GetAssignmentHistory1()
+        {
+            //return Ok(
+            //    _Report.GetAssignmentHistory());
+            var list = _Report.GetAssignmentHistory();
+            var headers = new List<string> { "Principal Investigator",  "Project Number",   "Assigned By",  "Assigned On",  "Assigned To",  "Removed On" };
+
+            var contents = _csvConvertor.ConvertToCSVString(_Report.GetAssignmentHistory(), headers);
+
+            
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(contents);
+            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
+            MemoryStream stream = new MemoryStream(byteArray);
+
+            //var result = _fileDownloadRespone.GetResponse(Request, stream, "abc.csv");
+            
+            return ResponseMessage(_fileDownloadResponse.GetResponse(Request, stream, "abc.csv"));
+
+        }
+
 
         [Route("InvestigatorReviewCompletedTime")]
         [HttpGet]

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ReportService } from './report-service';
 import { AssignmentHistoryViewModel } from './report.classes';
+import {FileService} from '../shared/utils/file.service'
 
 @Component({
     moduleId: module.id,
@@ -18,7 +19,9 @@ export class AssignmentHistoryComponent {
 
     constructor(
         private service: ReportService,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        private fileService: FileService
+    ) {
 
     }
 
@@ -34,6 +37,10 @@ export class AssignmentHistoryComponent {
             });
     }
     
+    public Download(){
+        this.fileService.download("Reports/AssignmentHistory1");
+     }
+     
     diagnostic(){
         return JSON.stringify(this.assignmentHisotryList);
     }
