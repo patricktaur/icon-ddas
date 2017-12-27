@@ -336,7 +336,7 @@ namespace DDAS.API.Controllers
                     var header = " ";
                     foreach (var fld in list[0].ReportItems)
                     {
-                    header += ", " + fld.ReportPeriod;
+                        header += ", " + fld.ReportPeriod;
                     }
                     sb.AppendLine(header);
 
@@ -348,7 +348,7 @@ namespace DDAS.API.Controllers
                         {
                             content += ", " + fld.Value;
                         }
-                        sb.AppendLine(content );
+                        sb.AppendLine(content);
                     }
 
                     return ResponseMessage(_fileDownloadResponse.GetResponse(Request, sb.ToString(), fileName));
@@ -372,7 +372,7 @@ namespace DDAS.API.Controllers
                 case "csv":
                     //Assigned To	Count	Earliest	Latest
                     var fileName = "Investigations_Open.csv";
-                    var headers = new List<string> { "Assigned To",    "Count",    "Earliest",  "Latest" };
+                    var headers = new List<string> { "Assigned To", "Count", "Earliest", "Latest" };
                     return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, fileName, headers));
                 default:
                     return Ok(list);
@@ -381,9 +381,23 @@ namespace DDAS.API.Controllers
 
         [Route("AdminDashboard")]
         [HttpGet]
-        public IHttpActionResult GetAdminDashboard()
+        public IHttpActionResult GetAdminDashboard(string mode = "view")
         {
-            return Ok(_Report.GetAdminDashboard());
+            //return Ok(_Report.GetAdminDashboard());
+
+            var list = _Report.GetAdminDashboard();
+
+            switch (mode)
+            {
+                case "view":
+                    return Ok(list);
+                case "csv":
+                    //User	Opening Balance	Compliance Forms Uploaded	Compliance Forms Completed	Closing Balance
+                    var headers = new List<string> { "User", "Opening Balance", "Compliance Forms Uploaded", "Compliance Forms Completed", "Closing Balance" };
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "AdminDashboard.csv", headers));
+                default:
+                    return Ok(list);
+            }
         }
 
 
@@ -407,54 +421,108 @@ namespace DDAS.API.Controllers
                 case "view":
                     return Ok(list);
                 case "csv":
-
-                    var headers = new List<string> { "Principal Investigator", "Proj No 1", "Proj No 2", "Assigned By", "Assigned On", "Assigned To", "Removed On" };
+                    var headers = new List<string> { "Principal Investigator", "Sub Investigator Count", "Proj No 1", "Proj No 2", "Search Started On", "Re-assigned On", "Re-assigned From", "Assigned By", "Assigned To", };
                     return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "Report.csv", headers));
                 default:
                     return Ok(list);
             }
         }
-        
+
 
 
         [Route("InvestigatorReviewCompletedTime")]
         [HttpPost]
         public IHttpActionResult
-            GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter)
+            GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter, string mode = "view")
         {
             if (ReportFilter.ToDate != null)
             {
                 ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
             }
 
-            return Ok(
-                _Report.GetInvestigatorsReviewCompletedTime(ReportFilter));
+
+            var list = _Report.GetInvestigatorsReviewCompletedTime(ReportFilter);
+
+            switch (mode)
+            {
+                case "view":
+                    return Ok(list);
+                case "csv":
+
+                    // //Investigator	Role	Project Number	Search Started On	Review Completed On	
+                    //Assigned To	Full Matches	Patrial Matches	Single Matches	Issues Status	TimeTaken (in Minutes) to Complete Review
+                    var headers = new List<string> { "Investigator",
+                        "Role", "Project Number-1",
+                        "Project Number-2", "Search Started On",
+                        "Review Completed On",  "Assigned To",
+                        "Full Matches", "Patrial Matches",
+                        "Single Matches",  "Issues Status",
+                        "TimeTaken (in Minutes) to Complete Review"   };
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "InvestigatorReviewCompletedTime.csv", headers));
+                default:
+                    return Ok(list);
+            }
+
         }
 
         [Route("InvestigatorByFinding")]
         [HttpPost]
-        public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter)
+        public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter, string mode = "view")
         {
             if (ReportFilter.ToDate != null)
             {
                 ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
             }
 
-            return Ok(
-                _Report.GetInvestigatorByFinding(ReportFilter));
+            //return Ok(
+            //    _Report.GetInvestigatorByFinding(ReportFilter));
+
+            var list = _Report.GetInvestigatorByFinding(ReportFilter);
+
+            switch (mode)
+            {
+                case "view":
+                    return Ok(list);
+                case "csv":
+
+                    //Project Number	Investigator	Role	Review Completed By	Review Completed On	Site Short Name	Findings
+                    var headers = new List<string> { "Project Number-1", "Project Number-2", "Investigator", "Role", "Review Completed By", "Review Completed On", "Site Short Name", "Findings" };
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "Investigators_By_Findings.csv", headers));
+                default:
+                    return Ok(list);
+            }
         }
 
         [Route("StudySpecificInvestigators")]
         [HttpPost]
-        public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
+        public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter, string mode = "view")
         {
             if (ReportFilter.ToDate != null)
             {
                 ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
             }
 
-            return Ok(
-                _Report.GetStudySpecificInvestigators(ReportFilter));
+            //return Ok(
+            //    _Report.GetStudySpecificInvestigators(ReportFilter));
+
+            var list = _Report.GetStudySpecificInvestigators(ReportFilter);
+
+            switch (mode)
+            {
+                case "view":
+                    return Ok(list);
+                case "csv":
+
+                    var headers = new List<string> { "Project Number-1", "Project Number-2",
+                    "Sponsor Protocol Number-1", "Sponsor Protocol Number-2",
+                    "Investigator Name", "Role",
+                    "Medical License Number", "Institute", "Country",
+                    "Review Completed", "Finding Status", "Assigned To" };
+            
+                    return ResponseMessage(_fileDownloadResponse.GetResponse(Request, list, "Investigators_By_Findings.csv", headers));
+                default:
+                    return Ok(list);
+            }
         }
     }
 }

@@ -74,7 +74,7 @@ namespace DDAS.API
             }
             //End Ref: http://www.nesterovsky-bros ...
 
-            config.Formatters.Add(new csvOutputFormatter());
+            //config.Formatters.Add(new csvOutputFormatter());
 
         }
     }
