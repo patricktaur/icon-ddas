@@ -38,7 +38,7 @@ import { GenerateOutputFileComponent } from './shared/components/generate-output
 
 import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
 import {InstituteFindingsComponent} from './institute-findings.component' 
-
+import {ComplianceFormViewComponent} from './shared/components/compliance-form-view/compliance-form-view.component'
 
 @NgModule({
   imports: [
@@ -69,7 +69,8 @@ import {InstituteFindingsComponent} from './institute-findings.component'
     AllISCFsComponent,
     GenerateOutputFileComponent,
     InstituteFindingsSummaryComponent,
-    InstituteFindingsComponent
+    InstituteFindingsComponent,
+    ComplianceFormViewComponent
   ],
 
   providers: [
@@ -79,7 +80,8 @@ import {InstituteFindingsComponent} from './institute-findings.component'
     StatusCircleLegendVerticalComponent,
     StatusCircleLegHorComponent,
     DownloadComplianceFormComponent,
-    GenerateOutputFileComponent
+    GenerateOutputFileComponent,
+    ComplianceFormViewComponent
   ]
 })
 export class SearchModule { }
