@@ -78,8 +78,9 @@ export class StudySpecificInvestigatorComponent {
         }
 
         this.formLoading = true;
-        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
-        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);        
+        this.ResetReportFilter();
+        //this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        //this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);        
         this.service.getStudySpecificInvestigators(this.reportFilter)
             .subscribe((item: any[]) => {
                 this.studySpecificInvestigators = item;
@@ -88,6 +89,11 @@ export class StudySpecificInvestigatorComponent {
             error => {
                 this.formLoading = false;
             });
+    }
+
+    ResetReportFilter(){
+        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
     }
 
     diagnostic(){

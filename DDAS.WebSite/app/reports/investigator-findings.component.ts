@@ -86,8 +86,7 @@ export class InvestigatorFindingsComponent {
     }
     
     getInvestigatorByFinding() {
-        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
-        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
+        this.ResetReportFilter();
         this.service.getInvestigatorsByFinding(this.reportFilter)
             .subscribe((item: InvestigatorFindingViewModel[]) => {
                 this.investigatorByFinding = item;
@@ -103,6 +102,11 @@ export class InvestigatorFindingsComponent {
         this.generating = false;
     }
 
+    ResetReportFilter(){
+        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
+    }
+    
     get filterRecords() {
         if (this.filterValue == -1)
             return this.investigatorByFinding;

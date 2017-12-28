@@ -1,20 +1,20 @@
 <div class="col-md-12">
-	<div class="well">
+    <div class="well">
         <h3 class="no-margin-top">Investigators By Findings</h3>
         <!-- {{diagnostic}} -->
-	</div>
-	<div class="alert alert-info" *ngIf="formLoading">
-		<strong>Loading ...</strong>
-	</div>	
+    </div>
+    <div class="alert alert-info" *ngIf="formLoading">
+        <strong>Loading ...</strong>
+    </div>
 </div>
 
 <div class="col-md-12">
-	<div class="well">
-        <label for="Filter">Filter:</label>        
-        
+    <div class="well">
+        <label for="Filter">Filter:</label>
+
         <div class="row">
             <div class="col-md-3">
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="AssignedTo">Assigned To:</label>
                     <select class="form-control" name="AssignedTo" [(ngModel)]="reportFilter.AssignedTo">
                         <option value="All" selected="selected">All</option>
@@ -23,10 +23,10 @@
                 </div>
             </div>
             <div class="col-md-3">
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="ProjectNumber">Project Number:</label>
                     <input type="text" class="form-control" name="ProjectNumber" [(ngModel)]="reportFilter.ProjectNumber">
-                </div>            
+                </div>
             </div>
         </div>
 
@@ -36,8 +36,6 @@
                     <label for="Date">ICSF Created On (from):</label>
                     <my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
                 </div>
-                <button type="button" class="btn btn-primary" (click)="getInvestigatorByFinding()">Generate</button>
-                <button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
             </div>
             <div class="col-md-3 ">
                 <div class="form-group">
@@ -63,28 +61,42 @@
                 </div>
             </div>
             <div class="col-md-9">
-            </div>        
+            </div>
         </div>
-
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>Project Number</th>
+        <div class="row">
+            <div class="col-md-12">
+                    <button type="button" class="btn btn-primary pull-left" (click)="getInvestigatorByFinding()">Generate</button>
+                    <div  
+                    style="float: left; margin-left: 10px"
+                    file-download 
+                    [url]="'Reports/InvestigatorByFinding?mode=csv'" 
+                    [filter]="reportFilter"
+                    (ButtonClicked)="ResetReportFilter();"
+                    > 
+                    </div>
+                    <button  style="margin-left: 10px" type="button" class="btn btn-primary pull-left" (click)="SetDefaultFilterValues()">Reset Filters</button>
+                    
+                </div>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Project Number</th>
                     <th>Investigator</th>
                     <th>Role</th>
                     <th>Review Completed By</th>
                     <th>Review Completed On</th>
                     <th>Site Short Name</th>
                     <th>Findings</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let item of filterRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
-					<td class="text-center">
-						{{item.ProjectNumber}} {{item.ProjectNumber2}}
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of filterRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+                    <td class="text-center">
+                        {{item.ProjectNumber}} {{item.ProjectNumber2}}
                     </td>
                     <td class="text-left">
-						{{item.InvestigatorName}}
+                        {{item.InvestigatorName}}
                     </td>
                     <td class="text-center">
                         {{item.Role}}
@@ -101,9 +113,9 @@
                     <td class="text-center">
                         {{item.FindingObservation}}
                     </td>
-				</tr>
-			</tbody>
-		</table>
-		<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
-	</div>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+    </div>
 </div>
