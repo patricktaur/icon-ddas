@@ -22,7 +22,9 @@ public class ComplianceForm
         public DateTime SearchStartedOn { get; set; }
         public string UploadedFileName { get; set; }
         public string GeneratedFileName { get; set; }
-        //Patrick 19Feb2017:
+        
+        //Remove ?
+        //Patrick 19Feb2017:?????
         public int ExtractionQueue { get; set; }
         public int ExtractionQuePosition { get; set; }
         public int ExtractionAttempt { get; set; }
@@ -32,6 +34,8 @@ public class ComplianceForm
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public int ExtractedInvestigatorCount { get; set; }
+        
+        
         public int FullMatchesFoundInvestigatorCount { get; set; }
         public int PartialMatchesFoundInvestigatorCount { get; set; }
         public int SingleMatchFoundInvestigatorCount { get; set; }
@@ -144,6 +148,7 @@ public class ComplianceForm
                 _Status = string.Format("Partial Match{1} Found for {0} Investigator{2}, Review Pending", InvSingleMatchCount, plural, plural1);
                 _StatusEnum = ComplianceFormStatusEnum.SingleMatchFoundReviewPending;
             }
+            //Remove?
             else if (InvExtractionErrorsCount > 0)
             {
                 if (InvExtractionErrorsCount > 1)
@@ -210,7 +215,7 @@ public class ComplianceForm
             }
         }
 
-        //Where Used ?
+        //Where Used ?  remove?
         private string getTimeValue(double ValueInSeconds)
         {
             TimeSpan t = TimeSpan.FromSeconds(ValueInSeconds);

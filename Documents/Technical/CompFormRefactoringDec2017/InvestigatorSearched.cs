@@ -53,7 +53,8 @@ public class InvestigatorSearched
 
         public string MemberId { get; set; }
 
-        //Patrick 27NOvb2016: - to be removed:
+        //Patrick 27NOvb2016: - to be removed:  Remove?
+        //Checked, can be removed, also remove: SitesIncludedInSearch class
         public List<SitesIncludedInSearch> SiteDetails { get; set; }
 
         public bool Deleted { get; set; }
