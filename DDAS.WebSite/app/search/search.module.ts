@@ -16,7 +16,6 @@ import { AllISCFsComponent } from './all-iscfs.component';
 
 import { SearchComponent } from './search.component';
 
-
 import { searchRouting } from './search.routing';
 
 import { SearchDetailComponent } from './search-detail.component';
@@ -40,6 +39,14 @@ import { InstituteFindingsSummaryComponent } from './institute-findings-summary.
 import {InstituteFindingsComponent} from './institute-findings.component' 
 import {ComplianceFormViewComponent} from './shared/components/compliance-form-view/compliance-form-view.component'
 
+import {ComplianceFormGeneralEditComponent} from "../compliance-form/tab-components/general-edit/general-edit.component"
+import {ComplianceFormInvestigatorEditComponent} from "../compliance-form/tab-components/investigators-edit/investigator-edit.component"
+import {ComplianceFormInstituteEditComponent} from "../compliance-form/tab-components/institute-edit/institute-edit.component"
+import {ComplianceFormMandatorySitesEditComponent} from "../compliance-form/tab-components/mandatory-sites/mandatory-sites-edit.component"
+import { ComplianceFormAdditionalSitesEditComponent} from "../compliance-form/tab-components/additional-sites/additional-sites-edit.component"
+import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-components/findings/findings.component"
+import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by"
+import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
 @NgModule({
   imports: [
     CommonModule,
@@ -70,7 +77,15 @@ import {ComplianceFormViewComponent} from './shared/components/compliance-form-v
     GenerateOutputFileComponent,
     InstituteFindingsSummaryComponent,
     InstituteFindingsComponent,
-    ComplianceFormViewComponent
+    ComplianceFormViewComponent,
+    ComplianceFormGeneralEditComponent,
+    ComplianceFormInstituteEditComponent,
+    ComplianceFormInvestigatorEditComponent,
+    ComplianceFormMandatorySitesEditComponent,
+    ComplianceFormAdditionalSitesEditComponent,
+    ComplianceFormFindingsComponent,
+    ComplianceFormSearchedByComponent,
+    ComplianceFormSummaryComponent
   ],
 
   providers: [

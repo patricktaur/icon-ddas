@@ -4,11 +4,11 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
 
 
 @Component({
-    selector: '[comp-form-general-edit]',
+    selector: '[comp-form-summary]',
     moduleId: module.id,
-    templateUrl: 'general-edit.component.html',
+    templateUrl: 'summary.component.html',
 })
-export class ComplianceFormGeneralEditComponent implements OnInit, OnChanges {
+export class ComplianceFormSummaryComponent implements OnInit, OnChanges {
     @Input() CompForm: ComplianceFormA;
 
     constructor(

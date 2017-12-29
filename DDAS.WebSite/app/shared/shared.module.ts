@@ -21,7 +21,7 @@ import {CommonService} from './common.service';
 //import {FileDownloadComponent} from './components/file-download.component';
 import {FileDownloadModule} from './modules/file-download/file-download.module' 
 
-import {ComplianceFormEditComponent} from '../compliance-form/tab-components/general-edit/general-edit.component'
+
 
 
  
@@ -42,8 +42,7 @@ import {ComplianceFormEditComponent} from '../compliance-form/tab-components/gen
   HighlightPipe,
   ToggleShowComponent,
   ConfirmDialogComponent,
-  DateInputComponent,
-  ComplianceFormEditComponent
+  DateInputComponent
   
   
    ],
