@@ -8,21 +8,13 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
     moduleId: module.id,
     templateUrl: 'general-edit.component.html',
 })
-export class ComplianceFormGeneralEditComponent implements OnInit, OnChanges {
+export class ComplianceFormGeneralEditComponent  {
     @Input() CompForm: ComplianceFormA;
-
-    constructor(
-       
-    ) { }
-
-    ngOnInit() {
-        
-    }
-
-
-    ngOnChanges(){
-      
-    }
+    private pageChanged: boolean = false;
+    
+    formValueChanged(){
+        this.pageChanged = true;
+    } 
     
     
 

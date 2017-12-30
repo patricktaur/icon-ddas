@@ -42,6 +42,10 @@ export class ComplianceFormInvestigatorEditComponent implements OnInit, OnChange
      //public SourceSite: DefaultSite = new DefaultSite;
     public SiteSource: SiteSource = new SiteSource;
 
+    
+    
+    
+
     constructor(
         private fb: FormBuilder,
         private route: ActivatedRoute,
@@ -115,6 +119,10 @@ export class ComplianceFormInvestigatorEditComponent implements OnInit, OnChange
         //  this.ComplianceFormIdToDelete = inv.RecId;
         //  this.InvestigatorNameToDelete = inv.PrincipalInvestigator;
     }
+
+    formValueChanged(){
+        this.pageChanged = true;
+    } 
 
     // InitInvestigatorControls() {
     //     return this.fb.group({

@@ -37,13 +37,13 @@ export class FileDownloadComponent implements OnInit {
             this.downLoadFileByPost(this.url, this.filter)
             .subscribe(
                 (response: any) =>  {}),
-                error => console.log("Error downloading the file."),
+                (error: any) => console.log("Error downloading the file."),
                 () => console.info("OK");
         }else{
             this.downLoadFileByGet(this.url)
             .subscribe(
                 (response: any) =>  {}),
-                error => console.log("Error downloading the file."),
+                (error:any) => console.log("Error downloading the file."),
                 () => console.info("OK");
         }
     }

@@ -64,3 +64,114 @@
         </div>
     </div>
 </div>
+
+<modal #AddSiteModal>
+        <modal-header>
+            <h4>Include additional sites to search.</h4>
+        </modal-header>
+        <modal-body>
+    
+            <!--******************-->
+            <div class="row">
+                <div class="col-lg-12">
+    
+                    <div class="well">
+                        <form #frmAddSite="ngForm" novalidate>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="siteSources">Select Site:</label>
+                                        <select class="form-control" [(ngModel)]="SiteSource.RecId" name="siteSources" (change)="onSiteSourceChange($event.target.value)"
+                                            required>
+                                            <option *ngFor="let item of SiteSources" value={{item.RecId}} selected="selected" >
+                                                {{item.SiteName}}
+                                                <!--{{item.SiteUrl}}-->
+                                            </option>
+                                        </select>
+    
+                                        <label for="siteShortName">Site Short Name:</label>
+                                        <input type="text" name="siteShortName" class="form-control" value="SiteSource.SiteShortName" [(ngModel)]="SiteSource.SiteShortName" required>
+    
+                                        <label for="url"> Url:</label>
+                                        <input type="text" name="url" class="form-control" value="SiteSource.SiteUrl" [(ngModel)]="SiteSource.SiteUrl" required>
+    
+                                        <label for="appliesTo">Search Applies To:</label>
+                                        <select class="form-control" [(ngModel)]="SiteSource.SearchAppliesTo" name="appliesTo" (change)="onSearchAppliesToChange($event.target.value)"
+                                            required>
+                                            <option *ngFor="let item of AppliesToItems" value={{item.name}} selected="selected">{{item.name}}</option>
+                                        </select>
+    
+                                    </div>
+                                </div>
+    
+                                <div site-source-toadd></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-primary" [disabled]="!frmAddSite.valid " (click)="AddSelectedSite();AddSiteModal.close()"
+                                        title="Save"><span class="glyphicon glyphicon-ok" > Add</span></button>
+                                    <button type="button" class="btn btn-primary" (click)="AddSiteModal.close()" title="Cancel">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--*****************-->
+    
+    
+    
+            <!--<table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="col-md-2">SelectAll
+                            <input type="checkbox" [(ngModel)]="Selected" (click)="selectionChange()" [checked]="true" />
+                        </th>
+                        <th class="col-md-6">Site</th>
+    
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="active" *ngFor="let item of SitesAvalaibleToInclude">
+                        <td>
+                            <input type="checkbox" [(ngModel)]="item.Selected" />
+                        </td>
+                        <td>
+                            <div class="text-left" *ngIf="item.SiteUrl.length > 0">
+                                <a target="_blank" [href]="sanitize(item.SiteUrl)">
+                                    {{item.SiteName}}
+                                    </a>
+                            </div>
+                            <div class="text-left" *ngIf="item.SiteUrl.length == 0">
+    
+                                {{item.SiteName}}
+                            </div>
+    
+                        </td>
+    
+                    </tr>
+    
+                </tbody>
+            </table>-->
+    
+        </modal-body>
+        <modal-footer>
+            <!--<button type="button" class="btn btn-primary" (click)="AddSelectedSite(); AddSiteModal.close()">Add</button>
+            <button type="button" class="btn btn-primary" (click)="AddSiteModal.close()">Cancel</button>-->
+    
+    
+        </modal-footer>
+    </modal>
+
+    <modal #RemoveSiteConfirmModal>
+            <modal-header>
+                <h4 class="modal-title">Confirm Delete</h4>
+            </modal-header>
+            <modal-body>
+                Site: {{siteToRemove.SiteName}} will be removed.
+            </modal-body>
+            <modal-footer>
+                <button type="button" class="btn btn-primary" (click)="RemoveSite(); RemoveSiteConfirmModal.close()">Confirm Delete</button>
+                <button type="button" class="btn btn-primary" (click)=" RemoveSiteConfirmModal.close()">Cancel</button>
+            </modal-footer>
+        </modal>

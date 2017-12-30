@@ -31,7 +31,7 @@ export class FileService {
 
      }
 
-    public download(url) {
+    public download(url:string) {
         //let saveAs = require('file-saver');
         
  
@@ -70,7 +70,7 @@ export class FileService {
         //this.http.get(this._baseUrl + url, options)
         .subscribe(
         (response: any) =>  this.downloadFile(response)),
-        error => console.log("Error downloading the file."),
+        (error:any) => console.log("Error downloading the file."),
         () => console.info("OK");
     }
 

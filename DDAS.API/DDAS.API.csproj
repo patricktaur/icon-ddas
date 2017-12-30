@@ -279,7 +279,7 @@
     <Content Include="dist\lib\shim.min.js.map" />
     <Content Include="dist\build.js.map" />
     <Content Include="DataFiles\Templates\DDAS_Upload_Template.xlsx" />
-    <Content Include="App_Data\Templates\ComplianceFormTemplate.docx" />
+    <Content Include="App_Start\App_Data\Templates\ComplianceFormTemplate.docx" />
     <None Include="Properties\PublishProfiles\DDAS Custom.pubxml">
       <SubType>Designer</SubType>
     </None>

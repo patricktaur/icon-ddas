@@ -45,7 +45,7 @@ import {ComplianceFormInstituteEditComponent} from "../compliance-form/tab-compo
 import {ComplianceFormMandatorySitesEditComponent} from "../compliance-form/tab-components/mandatory-sites/mandatory-sites-edit.component"
 import { ComplianceFormAdditionalSitesEditComponent} from "../compliance-form/tab-components/additional-sites/additional-sites-edit.component"
 import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-components/findings/findings.component"
-import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by"
+import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by.component"
 import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
 @NgModule({
   imports: [
