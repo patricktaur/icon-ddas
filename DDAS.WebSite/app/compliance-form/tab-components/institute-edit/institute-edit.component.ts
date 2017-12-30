@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
@@ -15,6 +15,7 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
     @Input() CompForm: ComplianceFormA;
     @Input() RootPath: string;
     public InstituteSearchSummary : InstituteFindingsSummaryViewModel[] = [];
+    private pageChanged: boolean = false;
 
     constructor(
         private service: SearchService,
@@ -28,7 +29,7 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
     }
 
 
-    ngOnChanges(){
+    ngOnChanges(changes: SimpleChanges){
         if (this.ComplianceFormId){
             this.LoadInstituteSiteSummary();
         }
@@ -47,7 +48,7 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
                       this.InstituteSearchSummary = item;
                       //this.formLoading = false;
                   },
-                  error => {
+                  (error:any) => {
                       //this.formLoading = false;
                   });
         }
@@ -69,6 +70,10 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
              }
        
          }
+
+         formValueChanged(){
+            this.pageChanged = true;
+        } 
 
          gotoSiteDetails(SiteSourceId: number){
             this.router.navigate(['institute-findings', this.ComplianceFormId,  SiteSourceId, {rootPath:this.RootPath}], 

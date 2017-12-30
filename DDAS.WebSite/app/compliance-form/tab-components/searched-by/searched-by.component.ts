@@ -8,21 +8,11 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
     moduleId: module.id,
     templateUrl: 'searched-by.component.html',
 })
-export class ComplianceFormSearchedByComponent implements OnInit, OnChanges {
+export class ComplianceFormSearchedByComponent  {
     @Input() CompForm: ComplianceFormA;
 
-    constructor(
-       
-    ) { }
-
-    ngOnInit() {
-        
-    }
-
-
-    ngOnChanges(){
-      
-    }
+    
+    
     
     
 

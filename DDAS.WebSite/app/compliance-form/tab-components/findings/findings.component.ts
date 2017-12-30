@@ -8,21 +8,14 @@ import { DomSanitizer } from '@angular/platform-browser';
     moduleId: module.id,
     templateUrl: 'findings.component.html',
 })
-export class ComplianceFormFindingsComponent implements OnInit, OnChanges {
+export class ComplianceFormFindingsComponent  {
     @Input() CompForm: ComplianceFormA;
 
     constructor(
         private sanitizer: DomSanitizer,
     ) { }
 
-    ngOnInit() {
-        
-    }
-
-
-    ngOnChanges(){
-      
-    }
+    
     
     get Findings() {
         if (this.CompForm == undefined) {

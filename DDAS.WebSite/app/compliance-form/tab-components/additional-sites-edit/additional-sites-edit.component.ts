@@ -11,7 +11,7 @@ import { SearchService } from '../../../search/search-service';
     moduleId: module.id,
     templateUrl: 'additional-sites-edit.component.html',
 })
-export class ComplianceFormAdditionalSitesEditComponent implements OnInit, OnChanges {
+export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
     @Input() CompForm: ComplianceFormA;
     public SiteSource: SiteSource = new SiteSource;
     public SiteSources: any[];
@@ -27,9 +27,7 @@ export class ComplianceFormAdditionalSitesEditComponent implements OnInit, OnCha
     }
 
 
-    ngOnChanges(){
-      
-    }
+    
     
     get OptionalSites() {
         return this.CompForm.SiteSources.filter(x => x.Deleted == false && x.IsMandatory == false)

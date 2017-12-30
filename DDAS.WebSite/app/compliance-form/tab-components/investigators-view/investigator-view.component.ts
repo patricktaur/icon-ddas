@@ -10,7 +10,7 @@ import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
     moduleId: module.id,
     templateUrl: 'investigator-view.component.html',
 })
-export class ComplianceFormInvestigatorViewComponent implements OnInit, OnChanges {
+export class ComplianceFormInvestigatorViewComponent  {
     @Input() CompForm: ComplianceFormA;
 
     compFormForm: FormGroup;
@@ -53,14 +53,7 @@ export class ComplianceFormInvestigatorViewComponent implements OnInit, OnChange
         private _location: Location,
     ) { }
 
-    ngOnInit() {
-        
-    }
-
-
-    ngOnChanges(){
-      
-    }
+    
 
     Initialize() {
         

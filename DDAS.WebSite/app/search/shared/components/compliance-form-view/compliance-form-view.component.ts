@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 //import { Router, ActivatedRoute, Params } from '@angular/router';
 //import { Audit, AuditObservation } from '../audit.classes';
 //import { ConfigService } from '../../shared/utils/config.service';
@@ -60,7 +60,7 @@ export class ComplianceFormViewComponent implements OnInit, OnChanges {
     //         });
     // }
 
-    ngOnChanges(){
+    ngOnChanges(changes: SimpleChanges){
         if (this.ComplianceFormId){
             this.loadComplianceForm();
         }

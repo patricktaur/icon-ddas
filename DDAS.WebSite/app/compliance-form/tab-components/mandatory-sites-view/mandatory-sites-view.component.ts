@@ -8,21 +8,14 @@ import { DomSanitizer } from '@angular/platform-browser';
     moduleId: module.id,
     templateUrl: 'mandatory-sites-view.component.html',
 })
-export class ComplianceFormMandatorySitesViewComponent implements OnInit, OnChanges {
+export class ComplianceFormMandatorySitesViewComponent  {
     @Input() CompForm: ComplianceFormA;
 
     constructor(
         private sanitizer: DomSanitizer,
     ) { }
 
-    ngOnInit() {
-        
-    }
-
-
-    ngOnChanges(){
-      
-    }
+    
     
     get MandatorySites() {
         return this.CompForm.SiteSources.filter(x => x.Deleted == false && x.IsMandatory == true)
