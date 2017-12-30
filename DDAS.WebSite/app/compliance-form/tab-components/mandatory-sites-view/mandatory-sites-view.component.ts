@@ -15,8 +15,6 @@ export class ComplianceFormMandatorySitesViewComponent  {
         private sanitizer: DomSanitizer,
     ) { }
 
-    
-    
     get MandatorySites() {
         return this.CompForm.SiteSources.filter(x => x.Deleted == false && x.IsMandatory == true)
     }

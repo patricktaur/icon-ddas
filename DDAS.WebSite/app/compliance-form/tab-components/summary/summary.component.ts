@@ -11,8 +11,4 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
 export class ComplianceFormSummaryComponent  {
     @Input() CompForm: ComplianceFormA;
 
-    
-    
-    
-
 }

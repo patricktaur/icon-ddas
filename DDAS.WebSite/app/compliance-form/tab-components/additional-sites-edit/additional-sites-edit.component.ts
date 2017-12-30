@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel } from '../../../search/search.classes';
-//import { ModalComponent } from '../../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SearchService } from '../../../search/search-service';
 

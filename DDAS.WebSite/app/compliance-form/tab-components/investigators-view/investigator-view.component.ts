@@ -16,7 +16,7 @@ export class ComplianceFormInvestigatorViewComponent  {
     compFormForm: FormGroup;
     public formLoading: boolean;
 
-    //public CompForm: ComplianceFormA = new ComplianceFormA;
+   
     private ComplianceFormId: string;
     public SitesAvailable: SiteSource[] = [];
     public searchInProgress: boolean = false;
@@ -38,8 +38,7 @@ export class ComplianceFormInvestigatorViewComponent  {
     public selectedFinding: Finding = new Finding;
     public fileUploaded: string;
     public SiteSources: any[];
-     //public SourceSite: DefaultSite = new DefaultSite;
-     //public SourceSite: DefaultSite = new DefaultSite;
+   
     public SiteSource: SiteSource = new SiteSource;
 
     
@@ -109,41 +108,12 @@ export class ComplianceFormInvestigatorViewComponent  {
     
     setInvestigatorRemove(inv: InvestigatorSearched) {
         this.InvestigatorToRemove = inv
-        //  this.ComplianceFormIdToDelete = inv.RecId;
-        //  this.InvestigatorNameToDelete = inv.PrincipalInvestigator;
+        
     }
 
     formValueChanged(){
         this.pageChanged = true;
     } 
-
-    // InitInvestigatorControls() {
-    //     return this.fb.group({
-    //         Name: ['', Validators.required],
-    //         CanEdit: ['']
-    //     });
-    // }
-
-    // LoadInvestigatorControls() {
-    //     const control = <FormArray>this.compFormForm.controls['Investigators'];
-
-    //     this.CompForm.InvestigatorDetails.forEach(inv =>
-    //         control.push(this.getInvestigatorControl(inv))
-    //     );
-    // }
-
-    // addInvestigatorControl() {
-    //     const control = <FormArray>this.compFormForm.controls['Investigators'];
-    //     let inv = new InvestigatorSearched;
-    //     control.push(this.getInvestigatorControl(inv))
-    // }
-
-    // getInvestigatorControl(inv: InvestigatorSearched) {
-    //     return this.fb.group({
-    //         Name: [inv.Name, Validators.required],
-    //         CanEdit: [inv.CanEdit]
-    //     });
-    // }
 
     InvestigatorRemove() {
         // item.Deleted = true;

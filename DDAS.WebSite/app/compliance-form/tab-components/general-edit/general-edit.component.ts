@@ -15,7 +15,4 @@ export class ComplianceFormGeneralEditComponent  {
     formValueChanged(){
         this.pageChanged = true;
     } 
-    
-    
-
 }

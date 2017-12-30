@@ -21,7 +21,6 @@ export class ComplianceFormFindingsComponent  {
         if (this.CompForm == undefined) {
             return null;
         }
-        //return this.CompForm.Findings.filter(x => x.Selected == true);
          return this.CompForm.Findings.filter(x => x.Selected == true).sort(
             function(a,b){
                 if (a.DisplayPosition < b.DisplayPosition) return -1;

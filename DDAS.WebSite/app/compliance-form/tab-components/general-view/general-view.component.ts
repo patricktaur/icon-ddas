@@ -15,7 +15,5 @@ export class ComplianceFormGeneralViewComponent  {
     formValueChanged(){
         this.pageChanged = true;
     } 
-    
-    
-
+ 
 }

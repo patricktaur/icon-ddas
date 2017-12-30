@@ -26,7 +26,6 @@ export class ComplianceFormInstituteViewComponent implements OnInit, OnChanges {
         this.LoadInstituteSiteSummary();
     }
 
-
     ngOnChanges(changes: SimpleChanges){
         if (this.ComplianceFormId){
             this.LoadInstituteSiteSummary();
