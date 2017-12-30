@@ -354,8 +354,14 @@ namespace DDAS.API.Controllers
                 }
                 else
                 {
-                    return Ok(compForm);
+                    var Review = compForm.Reviews.FirstOrDefault();
+                    if (Review != null && Review.StartedOn == null)
+                    {
+                        Review.StartedOn = DateTime.Now;
+                        Review.Status = ReviewStatusEnum.ReviewInProgress;
+                    }
                 }
+                return Ok(compForm);
             }
         }
 

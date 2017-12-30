@@ -1,7 +1,15 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { PrincipalInvestigatorDetails, ComplianceFormManage, CompFormFilter } from './search.classes';
-import { Audit, AuditObservation } from '../audits/audit.classes';
+import { 
+    PrincipalInvestigatorDetails, 
+    ComplianceFormManage, 
+    CompFormFilter,
+    ComplianceFormA,
+    Review,
+    ReviewerRoleEnum,
+    ReviewStatusEnum
+    } from './search.classes';
+import { QualityCheck, AuditObservation } from '../qcworkflow/qc.classes';
 import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
@@ -11,9 +19,9 @@ import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'closed-icfs.component.html',
+    templateUrl: 'review-completed-icsf.component.html',
 })
-export class ClosedICFsComponent implements OnInit {
+export class ReviewCompletedICSFComponent implements OnInit {
     private PrincipalInvestigators: PrincipalInvestigatorDetails[];
     private zone: NgZone;
     public basicOptions: Object;
@@ -51,8 +59,9 @@ export class ClosedICFsComponent implements OnInit {
     public Users: any[];
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
-    public audit: Audit;
+    public audit: QualityCheck;
     public pageNumber: number;
+    public compForm: ComplianceFormA = new ComplianceFormA;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -82,7 +91,7 @@ export class ClosedICFsComponent implements OnInit {
             }
         });
         this.ComplianceFormFilter = new CompFormFilter;
-        this.audit = new Audit;
+        this.audit = new QualityCheck;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
         this.LoadUsers();
@@ -176,14 +185,12 @@ export class ClosedICFsComponent implements OnInit {
     }
 
     OpenNew() {
-        this.router.navigate(['complianceform', "", { rootPath: 'closed-icfs', page: this.pageNumber }], { relativeTo: this.route });
+        this.router.navigate(['complianceform', "", { rootPath: 'review-completed-icsf', page: this.pageNumber }], { relativeTo: this.route });
     }
 
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
-
         //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
-        this.router.navigate(['comp-form-edit', DataItem.RecId, { rootPath: 'closed-icfs', page: this.pageNumber }], { relativeTo: this.route });
-
+        this.router.navigate(['comp-form-edit', DataItem.RecId, { rootPath: 'review-completed-icsf', page: this.pageNumber }], { relativeTo: this.route });
 
     }
 
@@ -272,36 +279,57 @@ export class ClosedICFsComponent implements OnInit {
 
     }
 
-    requestAudit(auditor: string, requestorComments:string) {
-        if(auditor == null || auditor.length == 0){
+    requestAudit(qcVerifier: string, requestorComments:string) {
+        if(qcVerifier == null || qcVerifier.length == 0){
             alert('please select an auditor');
             return;
         }        
-        else if(this.authService.userName.toLowerCase() == auditor.toLowerCase()){
+        else if(this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()){
             alert('cannot assign the audit to yourself');
             return;
         }
+        
+        this.service.getComplianceForm(this.SelectedComplianceFormId)
+        .subscribe((item: ComplianceFormA) => {
+            this.compForm = item;
+        },
+        error =>{
 
-        this.audit.ComplianceFormId = this.SelectedComplianceFormId;
-        this.audit.Auditor = auditor;
-        this.audit.RequestorComments = requestorComments;
-        this.audit.RequestedOn = new Date();
-        this.audit.AuditStatus = "Pending";
-        this.audit.RequestedBy = this.authService.userName;
+        });
+        this.getComplianceForm(qcVerifier, requestorComments);
+    }
 
-        var observation = new AuditObservation();
-        observation.SiteId = 0;
-        observation.SiteShortName = "General";
+    getComplianceForm(qcVerifier: string, requestorComments: string) {
+        this.service.getComplianceForm(this.SelectedComplianceFormId)
+        .subscribe((item: ComplianceFormA) => {
+            this.compForm = item;
+            this.postComplianceFormWithQC(qcVerifier, requestorComments);
+        },
+        error =>{
 
-        this.audit.Observations.push(observation);
+        });
+    }
 
-        this.service.requestAudit(this.audit)
+    postComplianceFormWithQC(qcVerifier: string, requestorComments: string){
+        var review = new Review();
+        review.RecId = null;
+        review.AssigendTo = qcVerifier;
+        review.AssignedBy = this.authService.userName;
+        review.AssignedOn = new Date();
+        review.Status = ReviewStatusEnum.QCRequested;
+        review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+        review.Comment = requestorComments;
+        review.StartedOn = null;
+        review.CompletedOn = null;
+        this.compForm.Reviews.push(review);
+        
+        this.service.requestQC(this.compForm)
             .subscribe((item: boolean) => {
 
             },
             error => {
 
-            })
+            });        
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }

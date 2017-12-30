@@ -128,6 +128,13 @@ namespace DDAS.Data.Mongo.Maps
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
                 });
+
+                BsonClassMap.RegisterClassMap<Review>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                    child.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                });
             });
             #endregion
 

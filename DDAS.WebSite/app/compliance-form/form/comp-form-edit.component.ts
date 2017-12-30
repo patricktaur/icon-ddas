@@ -3,12 +3,14 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel } from '../../search/search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
+    ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel, ReviewerRoleEnum, ReviewStatusEnum } 
+    from '../../search/search.classes';
 import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { ConfigService } from '../../shared/utils/config.service';
-
+import { AuthService } from '../../auth/auth.service';
 //import {SiteSourceViewModel} from '../../admin/appAdmin.classes';
 import {DefaultSite, SiteSourceViewModel} from '../../admin/appAdmin.classes';
 //import {XXX} from '../../admin/appAdmin.classes';
@@ -88,6 +90,8 @@ export class CompFormEditComponent implements OnInit {
      //public SourceSite: DefaultSite = new DefaultSite;
      //public SourceSite: DefaultSite = new DefaultSite;
     public SiteSource: SiteSource = new SiteSource;
+    public isQCVerifier: boolean;
+    public reviewStatus: string;
 
     @ViewChild('FindingsAddModal') FindingsAddModal: ModalComponent;
 
@@ -104,7 +108,8 @@ export class CompFormEditComponent implements OnInit {
         private service: SearchService,
         private fb: FormBuilder,
         private sanitizer: DomSanitizer,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private authService: AuthService
     ) { }
 
     ngOnInit() {
@@ -124,6 +129,21 @@ export class CompFormEditComponent implements OnInit {
     }
 
     
+    get status(){
+        console.log('status', this.CompForm.CurrentReviewStatus);
+        switch(this.CompForm.CurrentReviewStatus){
+            case ReviewStatusEnum.SearchCompleted: return "Search Completed";
+            case ReviewStatusEnum.ReviewInProgress: return "Review in progress";
+            case ReviewStatusEnum.ReviewCompleted: return "Review completed";
+            case ReviewStatusEnum.Completed: return "Completed";
+            case ReviewStatusEnum.QCRequested: return "QC Requested";
+            case ReviewStatusEnum.QCInProgress: return "QC in progress";
+            case ReviewStatusEnum.QCFailed: return "QC Failed";
+            case ReviewStatusEnum.QCPassed: return "QC Passed";
+            default: "";
+        }
+    }
+
     //for REactive Validation
     buildForm(): void {
         this.compFormForm = this.fb.group({
@@ -272,10 +292,27 @@ gotoSiteDetails(SiteSourceId: number){
                 this.buildForm();
                 this.setFileUploadFolderPath();
                 this.formLoading = false;
+                this.reviewStatus = this.status;
+                this.isQCVerifier = this.isReviewerOrQCVerifier;
             },
             error => {
                 this.formLoading = false;
             });
+    }
+
+    get isReviewerOrQCVerifier(){
+      if(this.CompForm.Reviews.length > 0){
+          var review = this.CompForm.Reviews.find(x => 
+            x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+            console.log('review -> ', review);
+            console.log('reviews -> ', this.CompForm.Reviews);
+            if(!review)
+                return false;
+            else
+                return true;
+        }
     }
 
     get isFileUploaded(): boolean {
@@ -784,8 +821,6 @@ gotoSiteDetails(SiteSourceId: number){
             var index =  this.CompForm.Findings.indexOf(finding);
             this.CompForm.Findings.splice(index, 1);   
         }
-          
-        
     }
 
     Save() {

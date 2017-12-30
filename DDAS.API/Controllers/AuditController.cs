@@ -9,7 +9,7 @@ using System.Web.Http;
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "user, admin")]
-    [RoutePrefix("api/Audit")]
+    [RoutePrefix("api/QC")]
     public class AuditController : ApiController
     {
         private IAudit _Audit;
@@ -18,33 +18,33 @@ namespace DDAS.API.Controllers
             _Audit = Audit;
         }
 
-        [Route("RequestAudit")]
+        [Route("RequestQC")]
         [HttpPost]
-        public IHttpActionResult RequestAudit(Audit Audit)
+        public IHttpActionResult RequestQC(ComplianceForm Form)
         {
-            return Ok(_Audit.RequestAudit(Audit));
+            return Ok(_Audit.RequestQC(Form));
         }
 
-        [Route("GetAudit")]
+        [Route("GetQC")]
         [HttpGet]
-        public IHttpActionResult GetAudit(string Id)
+        public IHttpActionResult GetAudit(string Id, string AssignedTo)
         {
-            var AuditId = Guid.Parse(Id);
-            return Ok(_Audit.GetAudit(AuditId));
+            var RecId = Guid.Parse(Id);
+            return Ok(_Audit.GetQC(RecId, AssignedTo));
         }
 
-        [Route("ListAudits")]
+        [Route("ListQCs")]
         [HttpGet]
-        public IHttpActionResult ListAudits()
+        public IHttpActionResult ListQCs()
         {
-            return Ok(_Audit.ListAudits());
+            return Ok(_Audit.ListQCs());
         }
 
-        [Route("SaveAudit")]
+        [Route("SaveQC")]
         [HttpPost]
-        public IHttpActionResult SaveAudit(Audit audit)
+        public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
-            return Ok(_Audit.SaveAudit(audit));
+            return Ok(_Audit.SaveQC(Form));
         }
     }
 }

@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
-			<h3 class="no-margin-top">Closed Reviews</h3>
+			<h3 class="no-margin-top">Review Completed ICSF's</h3>
 		</div>
 	</div>
 
@@ -174,13 +174,13 @@
 
 <modal #RequestAuditModal>
 	<modal-header>
-		<h4 class="modal-title">Audit Request: <b> {{SelectedInvestigatorName}} </b> </h4>
+		<h4 class="modal-title">QC Request: <b> {{SelectedInvestigatorName}} </b> </h4>
 	</modal-header>
 	<modal-body>
 		<div class="row">
 			<div class="col-md-6">
 				<div class="form-group">
-					<label for="AssignedTo">Auditor:</label>
+					<label for="AssignedTo">QC Verifier:</label>
 					<select class="form-control" [(ngModel)]="audit.Auditor">
 						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
 					</select>
@@ -194,7 +194,7 @@
 		</div>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="requestAudit(audit.Auditor, audit.RequestorComments); RequestAuditModal.close()">Request Audit</button>
+		<button type="button" class="btn btn-default" (click)="requestAudit(audit.Auditor, audit.RequestorComments); RequestAuditModal.close()">Request QC</button>
 		<button type="button" class="btn btn-default" (click)="RequestAuditModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

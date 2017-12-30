@@ -1,4 +1,4 @@
-﻿using DDAS.Models;
+﻿ using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
@@ -39,12 +39,18 @@ namespace DDAS.Services.Search
         public ComplianceForm GetNewComplianceForm(string UserName)
         {
             ComplianceForm newForm = new ComplianceForm();
-
-            newForm.AssignedTo = UserName;//GetUserFullName(UserName);
-
+            newForm.AssignedTo = UserName;
             newForm.SearchStartedOn = DateTime.Now;
-            AddMandatorySitesToComplianceForm(newForm);
 
+            var review = new Review();
+            review.RecId = Guid.NewGuid();
+            review.AssigendTo = UserName;
+            review.AssignedBy = UserName;
+            review.AssignedOn = DateTime.Now;
+            review.ReviewerRole = ReviewerRoleEnum.Reviewer;
+
+            newForm.Reviews.Add(review);
+            AddMandatorySitesToComplianceForm(newForm);
             return newForm;
         }
 
@@ -256,8 +262,25 @@ namespace DDAS.Services.Search
             //form.AssignedTo = AssignedTo;
             //form.Active = Active;
             //_UOW.ComplianceFormRepository.UpdateCollection(form);
-            AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
+
+            //AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
             _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
+
+            var CompForm = _UOW.ComplianceFormRepository.FindById(RecId);
+
+            var PreviousReview = CompForm.Reviews.Find(x =>
+            x.PreviousReviewId == null);
+
+            if(PreviousReview != null)
+            {
+                var review = new Review();
+                review.AssigendTo = AssignedTo;
+                review.AssignedBy = AssignedBy;
+                review.AssignedOn = DateTime.Now;
+                review.PreviousReviewId = PreviousReview.RecId;
+                CompForm.Reviews.Add(review);
+                _UOW.ComplianceFormRepository.UpdateCollection(CompForm);
+            }
         }
 
         //used by Excel File Upload method.
@@ -530,6 +553,9 @@ namespace DDAS.Services.Search
                     dbForm.Findings.Clear();
                     dbForm.Findings.AddRange(form.Findings);
 
+                    dbForm.Reviews.Clear();
+                    dbForm.Reviews.AddRange(form.Reviews);
+
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
                     RemoveOrphanedSearchStatusRecords(dbForm);
@@ -597,6 +623,16 @@ namespace DDAS.Services.Search
                     {
                         finding.Id = Guid.NewGuid();
                     }
+
+                    //if (finding.Comments == null)
+                    //    break;
+
+                    //foreach (Comment comment in finding.Comments)
+                    //{
+                    //    if (comment != null && comment.FindingComment != null)
+                    //        comment.AddedOn = DateTime.Now;
+                    //}
+                    //comment AddedOn is added at the client side
                 }
 
                 //REvised on 15May2017
@@ -1343,6 +1379,27 @@ namespace DDAS.Services.Search
                 //inv.SitesSearched = ListOfSiteSearchStatus;
                 InvestigatorId += 1;
             }
+            AddOrUpdateReviewStatus(frm); //pradeep 27Dec2017
+        }
+
+        private void AddOrUpdateReviewStatus(ComplianceForm form)
+        {
+            if (form.Reviews.Count > 0)
+            {
+                var tempReview = form.Reviews.First();
+                tempReview.Status = ReviewStatusEnum.SearchCompleted;
+            }
+            else
+            {
+                var review = new Review();
+                review.RecId = Guid.NewGuid();
+                review.AssigendTo = form.AssignedTo;
+                review.AssignedBy = form.AssignedTo;
+                review.AssignedOn = DateTime.Now;
+                review.ReviewerRole = ReviewerRoleEnum.Reviewer;
+                review.Status = ReviewStatusEnum.SearchCompleted;
+                form.Reviews.Add(review);
+            }
         }
 
         public void AddLiveScanFindings(ComplianceForm frm)
@@ -1563,6 +1620,7 @@ namespace DDAS.Services.Search
 
         private void RemoveDeleteMarkedItemsFromFormCollections(ComplianceForm frm)
         {
+            
             frm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
 
             //Remove Delete Site's SiteSearchStatus from each remaining Investigator

@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, Finding, SiteSearchStatus, UpdateFindigs } from './search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
+    Finding, SiteSearchStatus, UpdateFindigs, ReviewerRoleEnum, Comment } from './search.classes';
 import { SearchService } from './search-service';
+import { AuthService } from '../auth/auth.service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
@@ -32,7 +34,6 @@ export class FindingsComponent implements OnInit {
     public pageNumber: number;
     public fullPageNumber: number;
     public partialPageNumber: number;
-
     public filterRecordDetails: string = "";
     public filterPartialRecordDetails: string = "";
     public filterFullRecordDetails: string = "";
@@ -41,6 +42,9 @@ export class FindingsComponent implements OnInit {
 
     public dateOfInspectionToLocaleString: string = "";
     public recordsPerPage: number;
+    public isQCVerifier: boolean;
+    public qcVerifierComment: string;
+
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
     private highlightFilter: string;
@@ -49,7 +53,8 @@ export class FindingsComponent implements OnInit {
         private router: Router,
         private _location: Location,
         private service: SearchService,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private authService: AuthService
     ) { }
 
     ngOnInit() {
@@ -58,13 +63,29 @@ export class FindingsComponent implements OnInit {
             this.ComplianceFormId = params['formId'];
             this.InvestigatorId = +params['investigatorId'];
             //this.SiteEnum = +params['siteEnum']; 
-            this.siteSourceId = +params['siteSourceId']
-            this.hideReviewCompleted = params['hideReviewCompleted']
+            this.siteSourceId = +params['siteSourceId'];
+            this.hideReviewCompleted = params['hideReviewCompleted'];
 
             this.rootPath = params['rootPath'];
             this.LoadOpenComplainceForm();
             this.recordsPerPage = 5;
         });
+    }
+
+    get isReviewerOrQCVerifier(){
+      if(this.CompForm.Reviews.length > 0){
+          var review = this.CompForm.Reviews.find(x => 
+            x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+            x.Status == this.CompForm.CurrentReviewStatus &&
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+            console.log('review -> ', review);
+            console.log('reviews -> ', this.CompForm.Reviews);
+            if(!review)
+                return false;
+            else
+                return true;
+        }
     }
 
     LoadOpenComplainceForm() {
@@ -74,6 +95,7 @@ export class FindingsComponent implements OnInit {
                 this.CompForm = item;
                 //this.IntiliazeRecords();
                 this.loading = false;
+                this.isQCVerifier = this.isReviewerOrQCVerifier;
             },
             error => {
                 this.loading = false;
@@ -356,6 +378,20 @@ export class FindingsComponent implements OnInit {
                 item.Selected = true;
                 item.IsAnIssue = true;
                 item.UISelected = false;
+
+                var review = this.CompForm.Reviews.find(x =>
+                x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                x.Status == this.CompForm.CurrentReviewStatus);
+                
+                console.log(this.CompForm.Reviews);
+                let comment = new Comment();
+                comment.ReviewId = review.RecId;
+                comment.AddedOn = new Date();
+
+                if(item.Comments == null)
+                    item.Comments = new Array<Comment>();
+
+                item.Comments.push(comment);
             }
         }
         this.pageChanged = true;
@@ -380,6 +416,17 @@ export class FindingsComponent implements OnInit {
                 finding.RecordDetails = item.RecordDetails;
                 finding.DateOfInspection = item.DateOfInspection;
                 finding.Links = item.Links;
+                
+                var review = this.CompForm.Reviews.find(x =>
+                x.AssigendTo == this.authService.userName &&
+                x.Status == this.CompForm.CurrentReviewStatus); //to add review id of the verifier/reviewer
+
+                let comment = new Comment();
+                comment.ReviewId = review.RecId;
+                comment.AddedOn = new Date();
+
+                item.Comments.push(comment);
+
                 this.CompForm.Findings.push(finding);
                 this.pageChanged = true;
             }
@@ -472,6 +519,8 @@ export class FindingsComponent implements OnInit {
         updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted;
         updateFindings.Findings = this.Findings;
 
+
+
         this.service.saveFindingsAndObservations(updateFindings)
             .subscribe((item: any) => {
                 this.pageChanged = false;
@@ -532,5 +581,6 @@ export class FindingsComponent implements OnInit {
     sanitize(url: string) {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
+
     get diagnostic() { return JSON.stringify(this.singleMatchRecords); }
 }

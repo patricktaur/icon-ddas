@@ -25,7 +25,7 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 import {LoginHistoryModule} from './admin/all-loginhistory.module';
 import {AppAdminModule} from './app-admin/app-admin.module';
 import { HelpModule } from './help/help.module';
-import { AuditModule } from './audits/audit.module';
+import { QCModule } from './qcworkflow/qc.module';
 import {CommonService} from './shared/common.service';
 
 @NgModule({
@@ -41,7 +41,7 @@ import {CommonService} from './shared/common.service';
     LoginHistoryModule,
     AppAdminModule,
     HelpModule,
-    AuditModule
+    QCModule
   ],
   declarations: [ 
     AppComponent,

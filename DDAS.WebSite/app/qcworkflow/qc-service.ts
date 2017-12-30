@@ -7,10 +7,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
-import { Audit } from './audit.classes';
+import { QualityCheck } from './qc.classes';
 
 @Injectable()
-export class AuditService {
+export class QCService {
     _baseUrl: string = '';
     _controller: string = '';
     _options: RequestOptions;
@@ -26,19 +26,28 @@ export class AuditService {
     }
 
     listAudits() {
-        return this.http.get(this._baseUrl + 'Audit/ListAudits', this._options)
+        return this.http.get(this._baseUrl + 'QC/ListQCs', this._options)
         .map((res: Response) => {
             return res.json();
         })
         .catch(this.handleError);
     }
 
-    loadAudit(AuditId: string){
-        return this.http.get(this._baseUrl + 'Audit/GetAudit?Id=' + AuditId, this._options)
+    loadQC(AuditId: string){
+        return this.http.get(this._baseUrl + 'QC/GetQC?Id=' + AuditId, this._options)
         .map((res: Response) => {
             return res.json();
         })
         .catch(this.handleError);        
+    }
+
+    getQC(formId: string, qcAssignedTo: string){
+        return this.http.get(this._baseUrl + 'QC/GetQC?Id='
+        + formId + '&AssignedTo=' + qcAssignedTo, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
     }
 
     getComplianceForm(formId: string): Observable<any> {
@@ -49,9 +58,9 @@ export class AuditService {
             .catch(this.handleError);
     }
 
-    saveAudit(audit: Audit){
+    saveQC(audit: QualityCheck){
         let body = JSON.stringify(audit);
-        return this.http.post(this._baseUrl + 'Audit/SaveAudit', body, this._options)
+        return this.http.post(this._baseUrl + 'QC/SaveQC', body, this._options)
         .map((res: Response) => {
             return res.json();
         })
