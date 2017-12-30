@@ -9,7 +9,7 @@ import { OpenComplianceFormsComponent } from './open-compliance-search-forms.com
 
 import { DueDiligenceCheckComponent } from './due-diligence-check.component';
 
-import { ClosedICFsComponent } from './closed-icfs.component';
+import { ReviewCompletedICSFComponent } from './review-completed-icsf.component';
 
 import { ManageICFsComponent } from './manage-icfs.component';
 import { AllISCFsComponent } from './all-iscfs.component';
@@ -56,7 +56,7 @@ import {InstituteFindingsComponent} from './institute-findings.component'
 
     OpenComplianceFormsComponent,
     DueDiligenceCheckComponent,
-    ClosedICFsComponent,
+    ReviewCompletedICSFComponent,
     ManageICFsComponent,
     ComplianceFormComponent,
     CompFormEditComponent,

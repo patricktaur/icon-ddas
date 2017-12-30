@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ListAuditsComponent } from './list-audits/list-audit.component';
-import { EditAuditComponent } from './edit-audit/edit-audit.component';
-import { AuditService } from './audit-service';
-import {reportRouting} from './audit.routing';
+import { ListQCComponent } from './list-qc/list-qc.component';
+import { EditQCComponent } from './edit-qc/edit-qc.component';
+import { QCService } from './qc-service';
+import {reportRouting} from './qc.routing';
 
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
@@ -22,12 +22,12 @@ import { SharedModule } from '../shared/shared.module'
     //ModalModule
   ],
   declarations: [
-    ListAuditsComponent,
-    EditAuditComponent
+    ListQCComponent,
+    EditQCComponent
   ],
 
   providers: [
-    AuditService
+    QCService
   ]
 })
-export class AuditModule { }
+export class QCModule { }
