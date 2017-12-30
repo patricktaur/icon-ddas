@@ -1,4 +1,4 @@
-<h4>General Information XXXX:</h4>
+<h4>General Information View:</h4>
 <form #f="ngForm" novalidate>
 
     <div class="row">
@@ -7,23 +7,14 @@
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="ProjectNumber">ICON Project Number (1234/1234):</label>
-                        <input type="text" class="form-control" name="projNumber" [(ngModel)]="CompForm.ProjectNumber" #projNumber="ngModel" required
-                            pattern="\d{4}/\d{4}" (change)="formValueChanged()">
-
-                        <small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
-                            Project Number format 9999/9999 expected.
-                        </small>
+                        {{CompForm.ProjectNumber}}
+                        
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="ProjectNumber2">ICON Project Number (1234/1234):</label>
-                        <input type="text" class="form-control" name="projNumber2" [(ngModel)]="CompForm.ProjectNumber2" #projNumber2="ngModel" required
-                            pattern="\d{4}/\d{4}" (change)="formValueChanged()">
-
-                        <small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
-                            Project Number format 9999/9999 expected.
-                        </small>
+                        {{CompForm.ProjectNumber2}}
                     </div>
                 </div>
             </div>
@@ -31,13 +22,15 @@
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="SponsorProtocolNumber">Sponsor Protocol No:</label>
-                        <input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber" (change)="formValueChanged()">
+                        {{CompForm.SponsorProtocolNumber}}
+                        
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="SponsorProtocolNumber2">Sponsor Protocol No:</label>
-                        <input type="text" class="form-control" name="SponsorProtocolNumber2" [(ngModel)]="CompForm.SponsorProtocolNumber2" (change)="formValueChanged()">
+                        {{CompForm.SponsorProtocolNumber2}}
+                        
                     </div>
                 </div>
             </div>
@@ -45,7 +38,8 @@
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="Country">Country:</label>
-                        <input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country" (change)="formValueChanged()">
+                        {{CompForm.Country}}
+                        
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -56,7 +50,8 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label for="NameToSeaICONrch">Address:</label>
-                <textarea name="Address" class="form-control" id="Address" rows="9" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"
+
+                <textarea name="Address" class="form-control" readonly id="Address" rows="9" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"
                     (change)="formValueChanged()"></textarea>
             </div>
         </div>

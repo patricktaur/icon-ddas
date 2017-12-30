@@ -42,128 +42,128 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let inv of Investigators; let idx=index">
-
-
-                                <td>
-
-                                    <div *ngIf="inv.CanEdit">
-                                        <p>
-                                            <input type="text" name="FirstName" [(ngModel)]="inv.FirstName" class="form-control">
-                                        </p>
-
-                                    </div>
-                                    <div *ngIf="!inv.CanEdit" class="text-left">
-                                        <p>{{inv.FirstName}}</p>
-
-
-                                    </div>
-
-
-                                </td>
-                                <td>
-
-                                    <div *ngIf="inv.CanEdit">
-
-                                        <p>
-                                            <input type="text" name="MiddleName" [(ngModel)]="inv.MiddleName" class="form-control">
-                                        </p>
-
-
-                                    </div>
-                                    <div *ngIf="!inv.CanEdit" class="text-left">
-
-                                        <p>{{inv.MiddleName}}</p>
-
-
-                                    </div>
-
-
-                                </td>
-                                <td>
-
-                                    <div *ngIf="inv.CanEdit">
-
-                                        <p>
-                                            <input type="text" name="LastName" [(ngModel)]="inv.LastName" class="form-control">
-                                        </p>
-
-                                    </div>
-                                    <div *ngIf="!inv.CanEdit" class="text-left">
-
-                                        <p>{{inv.LastName}}</p>
-
-                                    </div>
-
-
-                                </td>
-
-
-
-
-                                <td>
-                                    <input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control input-sm">
-                                    <!--<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>-->
-
-                                </td>
-                                <td>
-                                    <p>
-                                        <input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control input-sm">
-                                    </p>
-                                </td>
-                                <td>
-                                    <input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control input-sm">
-
-                                </td>
-
-                                <td>
-                                    <input type="text" name="memberId" [(ngModel)]="inv.MemberId" class="form-control input-sm">
-
-                                </td>
-
-                                <td>
-                                    {{inv.Role}}
-
-                                </td>
-
-                                <td align="center">
-                                    <div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
-                                    <div *ngIf="inv.ExtractionPendingSiteCount > 0" class="glyphicon glyphicon-search"></div>
-                                </td>
-
-                                <td width="15%">
-
-                                    <div class="btn-group ">
-                                        <button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
-                                            title="Move Up">
-                                            <span class="glyphicon glyphicon-chevron-up"></span>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
-                                            data-placement="top" title="Move Down">
-                                            <span class="glyphicon glyphicon-chevron-down"></span>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-                                            data-toggle="tooltip" data-placement="top" title="Remove the investigator">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
-                                            data-toggle="tooltip" data-placement="top" title="{{inv.Help}}">
-                                            <span class="glyphicon glyphicon-edit"></span>
-                                        </button>
-                                    </div>
-
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <td align="left" colspan="10">
-                                    <!--<small [hidden]="invName.valid || (invName.pristine && !f.submitted)" class="text-danger">
-                        Name is required (minimum 3 characters).
-                 </small>-->
-                                    <button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-
-                                </td>
-                            </tr>
+                                <tr *ngFor="let inv of Investigators; let idx=index">
+                                        
+                                        
+                                                                        <td>
+                                        
+                                                                            <div *ngIf="inv.CanEdit">
+                                                                                <p>
+                                                                                    <input type="text" name="FirstName" [(ngModel)]="inv.FirstName" class="form-control">
+                                                                                </p>
+                                        
+                                                                            </div>
+                                                                            <div *ngIf="!inv.CanEdit" class="text-left">
+                                                                                <p>{{inv.FirstName}}</p>
+                                        
+                                        
+                                                                            </div>
+                                        
+                                        
+                                                                        </td>
+                                                                        <td>
+                                        
+                                                                            <div *ngIf="inv.CanEdit">
+                                        
+                                                                                <p>
+                                                                                    <input type="text" name="MiddleName" [(ngModel)]="inv.MiddleName" class="form-control">
+                                                                                </p>
+                                        
+                                        
+                                                                            </div>
+                                                                            <div *ngIf="!inv.CanEdit" class="text-left">
+                                        
+                                                                                <p>{{inv.MiddleName}}</p>
+                                        
+                                        
+                                                                            </div>
+                                        
+                                        
+                                                                        </td>
+                                                                        <td>
+                                        
+                                                                            <div *ngIf="inv.CanEdit">
+                                        
+                                                                                <p>
+                                                                                    <input type="text" name="LastName" [(ngModel)]="inv.LastName" class="form-control">
+                                                                                </p>
+                                        
+                                                                            </div>
+                                                                            <div *ngIf="!inv.CanEdit" class="text-left">
+                                        
+                                                                                <p>{{inv.LastName}}</p>
+                                        
+                                                                            </div>
+                                        
+                                        
+                                                                        </td>
+                                        
+                                        
+                                        
+                                        
+                                                                        <td>
+                                                                            <input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control input-sm">
+                                                                            <!--<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>-->
+                                        
+                                                                        </td>
+                                                                        <td>
+                                                                            <p>
+                                                                                <input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control input-sm">
+                                                                            </p>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control input-sm">
+                                        
+                                                                        </td>
+                                        
+                                                                        <td>
+                                                                            <input type="text" name="memberId" [(ngModel)]="inv.MemberId" class="form-control input-sm">
+                                        
+                                                                        </td>
+                                        
+                                                                        <td>
+                                                                            {{inv.Role}}
+                                        
+                                                                        </td>
+                                        
+                                                                        <td align="center">
+                                                                            <div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
+                                                                            <div *ngIf="inv.ExtractionPendingSiteCount > 0" class="glyphicon glyphicon-search"></div>
+                                                                        </td>
+                                        
+                                                                        <td width="15%">
+                                        
+                                                                            <div class="btn-group ">
+                                                                                <button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
+                                                                                    title="Move Up">
+                                                                                    <span class="glyphicon glyphicon-chevron-up"></span>
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
+                                                                                    data-placement="top" title="Move Down">
+                                                                                    <span class="glyphicon glyphicon-chevron-down"></span>
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
+                                                                                    data-toggle="tooltip" data-placement="top" title="Remove the investigator">
+                                                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
+                                                                                    data-toggle="tooltip" data-placement="top" title="{{inv.Help}}">
+                                                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                                                </button>
+                                                                            </div>
+                                        
+                                                                        </td>
+                                        
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="left" colspan="10">
+                                                                            <!--<small [hidden]="invName.valid || (invName.pristine && !f.submitted)" class="text-danger">
+                                                                Name is required (minimum 3 characters).
+                                                         </small>-->
+                                                                            <button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
+                                        
+                                                                        </td>
+                                                                    </tr>
                         </tbody>
                     </table>
 
