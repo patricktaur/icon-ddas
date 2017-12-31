@@ -1,8 +1,8 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
-			<h3 class="no-margin-top">Audit by {{audit.Auditor}} {{audit.CompletedOn | date: 'dd MMM yyyy'}} </h3>
-			<label for="auditStatus">Status:</label> {{audit.AuditStatus}}
+			<h3 class="no-margin-top">QC by </h3>
+			<label for="auditStatus">Status:</label>
 		</div>
 	</div>
 	<div class="col-lg-12">
@@ -171,57 +171,38 @@
 		
 		<div class="well">
 			<div class="row">
-				<div class="col-md-6">
+				<button type="button" class="btn btn-primary" (click)="openComplianceForm()">open compliance form</button>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
 					<div class="form-group">
-						<label for="Status" *ngIf="!isSubmitted">Audit Response:</label>
-						<select class="form-control" [(ngModel)]="siteId" *ngIf="!isSubmitted">
-                             <option *ngFor="let item of audit.Observations" [value]="item.SiteId">
-								 {{item.SiteId}} {{item.SiteShortName}}
-								</option>
+						<label for="Status">QC Response:</label>
+						<select class="form-control">
+							<option [value]=-1>Not ready</option>
+							<option [value]=0>Failed</option>
+							<option [value]=1>Passed</option>
                         </select>
 					</div>
-					<label for="Comments" *ngIf="!isSubmitted">Observation:</label>
-					<textarea name="Comments" class="form-control" id="Observation" rows="4" cols="20" placeholder="observations" [(ngModel)]="observation"
-					 *ngIf="!isSubmitted"></textarea>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-9">
 				</div>
 			</div>
-			<button type="button" class="btn btn-primary" (click)="acceptObservation()" *ngIf="!isSubmitted">Accepted</button>
-			<button type="button" class="btn btn-primary" (click)="rejectObservation()" *ngIf="!isSubmitted">Rejected</button>
 
 			<table class="table table-bordered table-hover table-striped">
 				<thead>
 					<tr>
-						<th class="col-md-1 text-left">Site # </th>
-						<th class="col-md-3 text-left">Observations</th>
-						<th class="col-md-2 text-left">Status</th>
-						<th class="col-md-2 text-left">Actions</th>
+						<th class="col-md-1 text-left">Source # </th>
+						<th class="col-md-3 text-left">Investigator</th>
+						<th class="col-md-2 text-left">Observation</th>
+						<th class="col-md-2 text-left">Category</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="active" *ngFor="let item of Observations">
-						<td class="text-left">
-							{{item.SiteId}}
-						</td>
-						<td class="text-center">
-							{{item.Comments}}
-						</td>
-						<td class="text-center">
-							{{item.Status}}
-						</td>
-						<td>
-							<button type="button" class="btn btn-sm btn-primary" (click)="deleteObservation(item.SiteId)" title="delete observation"
-							 *ngIf="!isSubmitted">
-                            	<span class="glyphicon glyphicon-remove"></span>
-                        	</button>
-						</td>
-					</tr>
 				</tbody>
 			</table>
 			<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
-			<button type="button" class="btn btn-primary" (click)="save(false)" *ngIf="!isSubmitted">Save</button>
-			<button type="button" class="btn btn-primary" (click)="submit()" *ngIf="!isSubmitted">Submit</button>
+			<button type="button" class="btn btn-primary">Save</button>
+			<button type="button" class="btn btn-primary">Submit</button>
 			
 			<div clas="row">
 				<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>

@@ -49,8 +49,8 @@
 				<h4>
 					Summary:
 				</h4>
-			
-				
+
+
 				<div class="row ">
 					<div class="col-lg-12  text-center">
 						<table class="table table-bordered table-hover table-striped">
@@ -112,11 +112,11 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.SingleMatchCount != '0' ">
-												
+
 												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open(); resetValues()">
 												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;</a>
 											</p>
-											
+
 											<p *ngIf="SiteSearchStatus.SingleMatchCount == '0' ">
 												{{SiteSearchStatus.SingleMatchCount}}
 											</p>
@@ -142,7 +142,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" *ngIf="!isQCVerifier">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
 			<form role='form'>
 				<div class="form-group col-md-6">
@@ -210,6 +210,12 @@
 							<div class="col-md-12">
 								<label for="IsAnIssue"><h4>Is an Issue:</h4></label>
 								<input type="checkbox" name="IsAnIssue" [(ngModel)]="matchedRecord.IsAnIssue" />
+								<br/>
+								<label for="comment" *ngIf="isQCVerifier"> <h4>QC Verifier's Comment:</h4></label>
+								<textarea *ngIf="isQCVerifier" class="form-control" name="Comment" [(ngModel)]="matchedRecord.Comments[0].FindingComment"
+								 rows="3" cols="30" required placeholder="Comment">
+								</textarea>
+								<!-- matchedRecord.Comments[0].FindingComment -->
 							</div>
 						</div>
 						<br/>
@@ -219,7 +225,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 				<div *ngIf="dividerGeneration(indexVal)">
 					<div style="clear:both;"></div>
@@ -233,7 +238,7 @@
 
 		<button type="button" class="btn btn-primary" (click)="Add()">Add Additional Findings</button>
 		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
-			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
+		 (click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
 		<br/>
 	</p>
 	<p align="center">
@@ -323,7 +328,7 @@
 							<td>
 								<input type="checkbox" [(ngModel)]="finding.UISelected" />
 								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
-								
+
 							</td>
 
 							<td style="align-left">

@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
-			<h3 class="no-margin-top">All Audits</h3>
+			<h3 class="no-margin-top">Quality Checks</h3>
 		</div>
 	</div>
 
@@ -13,16 +13,16 @@
 					<tr>
 						<th class="col-md-3 text-left">Principal Investigator </th>
 						<th class="col-md-2 text-left">ICON Project Number</th>
-						<th class="text-left">Requested By</th>
+						<th class="text-left">Requestor</th>
 						<th class="text-left">Requested On</th>
-						<th class="text-center">Auditor</th>
+						<th class="text-center">QC Verifier</th>
 						<th class="text-center">Status</th>
-						<th class="text-left">Audit Completed On</th>
+						<th class="text-left">QC Completed On</th>
 						<th class="text-left">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let item of audits | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+					<tr *ngFor="let item of filterQCByUserName | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 
 						<td class="text-left">
 							{{item.PrincipalInvestigator}}
@@ -31,24 +31,28 @@
 							{{item.ProjectNumber}} {{item.ProjectNumber2}}
 						</td>
 						<td>
-							{{item.RequestedBy}}
+							{{item.Requestor}}
 						</td>
 						<td class="text-left">
 							{{item.RequestedOn | date: 'dd MMM yyyy'}}
 						</td>
 						<td class="text-left">
-							{{item.Auditor}}
+							{{item.QCVerifier}}
 						</td>
 						<td align="center">
-							{{item.AuditStatus}}
+							{{item.Status}}
 						</td>
 						<td class="text-left">
 							 {{item.CompletedOn | date: 'dd MMM yyyy'}} 
 						</td>
 						<td>
-							<button type="button" class="btn btn-sm btn-primary" (click)="editAudit(item.RecId)" title="Opens" *ngIf="isAuditorOrIsAuditPending(item.Auditor, item.AuditStatus)">
+							<!-- <button type="button" class="btn btn-sm btn-primary" (click)="editQC(item.RecId)" title="Opens" *ngIf="isAuditorOrIsAuditPending(item.QCVerifier, item.Status)">
                             	<span class="glyphicon glyphicon-folder-open"></span>
-                        	</button>
+							</button> -->
+							<button type="button" class="btn btn-sm btn-primary" 
+							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="Opens">
+                            	<span class="glyphicon glyphicon-folder-open"></span>
+                        	</button>							
 						</td>
 					</tr>
 				</tbody>

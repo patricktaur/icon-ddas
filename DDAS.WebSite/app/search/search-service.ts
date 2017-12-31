@@ -20,7 +20,7 @@ import {
     Finding,
     UpdateFindigs,
     UpdateInstituteFindings,
-    Audit
+    QualityCheck
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -440,12 +440,12 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    requestAudit(audit: Audit){
-        let body = JSON.stringify(audit);
+    requestQC(form: ComplianceFormA){
+        let body = JSON.stringify(form);
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
 
-        return this.http.post(this._baseUrl + 'Audit/RequestAudit', body, this._options)
+        return this.http.post(this._baseUrl + 'QC/RequestQC', body, this._options)
             .map((res: Response) => {
                 return res.json();
             })
