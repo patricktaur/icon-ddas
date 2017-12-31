@@ -191,7 +191,10 @@ namespace DDAS.Models.Entities.Domain
             get
             {
                 var Review = Reviews.LastOrDefault();
-                return Review.Status;
+                if (Review != null)
+                    return Review.Status;
+                else
+                    return ReviewStatusEnum.SearchCompleted;
             }
         }
 
