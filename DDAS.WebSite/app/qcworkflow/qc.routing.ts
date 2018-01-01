@@ -13,36 +13,36 @@ import {InstituteFindingsComponent} from './../search/institute-findings.compone
 
 const reportRoutes: Routes = [
   {
-    path: 'list-qc',
-    //redirectTo: '/reports',
-    component: ListQCComponent, canActivate: [AuthGuard],
-    //pathMatch: 'full'
+    path: 'qc'
+    , canActivate: [AuthGuard],
+    children: [
+  
+      { path: '', component: ListQCComponent },
+      { path: 'edit-qc/:complianceFormId/:', component: EditQCComponent },
+
+        {
+        path: 'comp-form-edit/:formId',
+        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'investigator-summary/:formId/:investigatorId',
+        component: InvestigatorSummaryComponent,
+      },
+      {
+         path: 'findings/:formId/:investigatorId/:siteSourceId',
+        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'institute-findings-summary/:formId',
+        component: InstituteFindingsSummaryComponent,
+      },
+      {
+        path: 'institute-findings/:formId/:siteSourceId',
+        component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      
+    ]
   },
-  {
-    path: 'edit-qc/:complianceFormId/:qcAssignedTo',
-    component: EditQCComponent, canActivate: [AuthGuard],
-  },
-  {
-    path: 'comp-form-edit/:formId',
-    component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
-  },
-  {
-    path: 'investigator-summary/:formId/:investigatorId',
-    component: InvestigatorSummaryComponent,
-  },
-  {
-    //path: 'findings/:formId/:investigatorId/:siteEnum',
-    path: 'findings/:formId/:investigatorId/:siteSourceId',
-    component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
-  },
-  {
-    path: 'institute-findings-summary/:formId',
-    component: InstituteFindingsSummaryComponent,
-  },
-  {
-    path: 'institute-findings/:formId/:siteSourceId',
-    component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
-  }
 ];
 
 export const reportRouting: ModuleWithProviders = RouterModule.forChild(reportRoutes);
