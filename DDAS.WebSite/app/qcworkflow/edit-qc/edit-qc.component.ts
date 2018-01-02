@@ -5,7 +5,11 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { QCService } from '../qc-service';
-import { ComplianceFormA, SiteSource, Finding } from '../../search/search.classes';
+import { ComplianceFormA, 
+    SiteSource, 
+    Finding,
+    Comment, 
+    CommentCategoryEnum } from '../../search/search.classes';
 import { Location } from '@angular/common';
 
 @Component({
@@ -19,12 +23,13 @@ export class EditQCComponent implements OnInit {
     public complianceFormId: string;
     public SelectedComplianceFormId: string;
     public audit: QualityCheck = new QualityCheck;
-    public complianceForm: ComplianceFormA;
+    public complianceForm: ComplianceFormA = new ComplianceFormA;
     public pageNumber: number = 1;
     public observation: string;
     public siteId: number = 0;
     public isSubmitted: boolean;
     public qcAssignedTo: string;
+    public commentCategory: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -50,6 +55,7 @@ export class EditQCComponent implements OnInit {
         this.auditService.getQC(this.complianceFormId, this.qcAssignedTo)
             .subscribe((item: any) => {
                 this.complianceForm = item;
+                this.commentCategory = this.commentCategoryString(this.complianceForm.Comments[0].CategoryEnum);
             },
             error => {
 
@@ -82,6 +88,17 @@ export class EditQCComponent implements OnInit {
             return this.complianceForm.Findings.filter(x => x.IsAnIssue);
         else
             return null;
+    }
+
+    commentCategoryString(categoryEnum: number){
+        switch(categoryEnum){
+            case CommentCategoryEnum.Minor: return "Minor";
+            case CommentCategoryEnum.Major: return "Major";
+            case CommentCategoryEnum.Critical: return "Critical";
+            case CommentCategoryEnum.Suggestion: return "Suggestion";
+            case CommentCategoryEnum.Others: return "Others";
+            default: "";
+        }
     }
 
     openComplianceForm(){

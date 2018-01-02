@@ -557,6 +557,8 @@ namespace DDAS.Services.Search
 
                     dbForm.Reviews.Clear();
                     dbForm.Reviews.AddRange(form.Reviews);
+                    dbForm.Comments.Clear();
+                    dbForm.Comments.AddRange(form.Comments);
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);

@@ -940,7 +940,7 @@ gotoSiteDetails(SiteSourceId: number){
    
      }
     
-    get diagnostic() { return JSON.stringify(this.CompForm.SiteSources); }
+    get diagnostic() { return JSON.stringify(this.CompForm); }
 
 
 }

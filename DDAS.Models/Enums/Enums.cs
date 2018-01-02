@@ -90,4 +90,13 @@
         Reviewer,
         QCVerifier
     }
+
+    public enum CommentCategoryEnum
+    {
+        Minor,
+        Major,
+        Critical,
+        Suggestion,
+        Others
+    }
 }

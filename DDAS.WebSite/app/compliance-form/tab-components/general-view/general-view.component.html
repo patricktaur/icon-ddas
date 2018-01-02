@@ -56,4 +56,25 @@
             </div>
         </div>
     </div>
+    <div clas="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                General Observation/Comment:
+                <label for="Category">Category:</label>
+                <select class="form-control" name="AssignedTo" [(ngModel)]="CompForm.Comments[0].CommentCategoryEnum">
+                    <option value="0" selected="selected">Minor</option>
+                    <option value="1">Major</option>
+                    <option value="2">Critical</option>
+                    <option value="3">Suggestions</option>
+                    <option value="4">Others</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" placeholder="Observation" name="Observation" [(ngModel)]="CompForm.Comments[0].FindingComment"
+                    (change)="formValueChanged()"></textarea>
+            </div>
+        </div>
+    </div>
 </form>

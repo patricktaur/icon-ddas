@@ -188,7 +188,19 @@ namespace DDAS.Models.Entities.Domain
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
         public List<Review> Reviews { get; set; }
-        public List<Comment> Comments { get; set; }
+        public List<Comment> Comments
+        {
+            get
+            {
+                if (Comments == null)
+                {
+                    return new List<Comment>();
+                }
+                else
+                    return Comments;
+            }
+            set { Comments = value; }
+        }
         public ReviewStatusEnum CurrentReviewStatus {
             get
             {
@@ -1007,6 +1019,8 @@ namespace DDAS.Models.Entities.Domain
         public Guid ReviewId { get; set; }
         public string FindingComment { get; set; }
         public DateTime AddedOn { get; set; }
+        public DateTime CorrectedOn { get; set; }
+        public CommentCategoryEnum CategoryEnum { get; set; }
     }
 
     public class UpdateFindigs
