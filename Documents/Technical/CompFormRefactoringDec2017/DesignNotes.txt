@@ -1,0 +1,59 @@
+CompForm Search Update Flow
+
+ISearchService _SearchService 
+
+SearchController.PostFormData
+    _SearchService.ScanUpdateComplianceForm(form));
+
+    ScanUpdateComplianceForm
+         AddMissingSearchStatusRecords(frm);
+         AddMatchingRecords(frm);
+         RollUpSummary(frm);
+         SAVE
+
+    AddMissingSearchStatusRecords
+        foreach (InvestigatorSearched inv in frm.InvestigatorDetails)
+        {
+            foreach (SiteSource site in frm.SiteSources.Where(x => x.SearchAppliesTo != SearchAppliesToEnum.Institute))
+            {
+                SiteSearchStatus searchStatus = inv.SitesSearched.Find(x => x.SiteSourceId == site.Id);
+                if (searchStatus == null)
+                    //Add item.
+
+    AddMatchingRecords(frm);
+        foreach (SiteSource siteSource in frm.SiteSources.Where(
+                    x => x.ExtractionMode.ToLower() == "db" 
+                    && x.SearchAppliesTo != SearchAppliesToEnum.Institute))
+        {
+            var MatchedRecords = GetMatchedRecords(
+                siteSource, InvestigatorName,
+                ComponentsInInvestigatorName, out SiteLastUpdatedOn);
+
+    GetMatchedRecords
+        switch (site.SiteEnum)
+            {
+                case SiteEnum.FDADebarPage:
+                    return GetFDADebarPageMatchedRecords(
+                        site.SiteDataId,
+                        NameToSearch,
+                        ComponentsInInvestigatorName,
+                        out SiteLastUpdatedOn);
+
+    GetFDADebarPageMatchedRecords
+    (Guid? SiteDataId,
+            string InvestigatorName,
+            int ComponentsInInvestigatorName,
+            out DateTime? SiteLastUpdatedOn)
+        {
+            var FDASearchResult =
+                _UOW.FDADebarPageRepository.FindById(SiteDataId);
+
+            UpdateMatchStatus(
+                FDASearchResult.DebarredPersons,
+                InvestigatorName);  
+
+            var DebarList = FDASearchResult.DebarredPersons.Where(
+               debarredList => debarredList.MatchCount > 0).ToList();
+
+            return ConvertToMatchedRecords(DebarList);
+        }

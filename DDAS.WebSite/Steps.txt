@@ -156,3 +156,8 @@ The build.js must be placed after the body:
     <ddas-app><div class="loader"></div></ddas-app>
   </body>
   <script src="dist/build.js"></script>
+
+
+npm install file-saver
+npm i @types/file-saver
+npm install --save @types/file-saver

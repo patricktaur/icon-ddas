@@ -128,7 +128,6 @@ export class CompFormEditComponent implements OnInit {
         });
     }
 
-    
     get status(){
         console.log('status', this.CompForm.CurrentReviewStatus);
         switch(this.CompForm.CurrentReviewStatus){
@@ -484,7 +483,6 @@ gotoSiteDetails(SiteSourceId: number){
     move(idx: number, step: number) {
 
         var tmp = this.CompForm.InvestigatorDetails[idx];
-
 
         this.CompForm.InvestigatorDetails[idx] = this.CompForm.InvestigatorDetails[idx - step];
         this.CompForm.InvestigatorDetails[idx - step] = tmp;

@@ -19,6 +19,8 @@ export class HighlightPipe implements PipeTransform {
     //return search ? text.replace(regex, (match) => `<span style=\'background-color: yellow;\'>${match}</span>`) : text;
     return search ? text.replace(regex, (match) => `<b><mark>${match}</mark></b>`) : text;
   }
+
+
 }
 
 /** Usage: 

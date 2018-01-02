@@ -8,7 +8,8 @@ import {reportRouting} from './qc.routing';
 
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
-import { SharedModule } from '../shared/shared.module'
+import { SharedModule } from '../shared/shared.module';
+import {SearchModule} from '../search/search.module';
 //import {ModalModule} from "ng2-modal";
 
 @NgModule({
@@ -18,7 +19,8 @@ import { SharedModule } from '../shared/shared.module'
     reportRouting,
     Ng2Bs3ModalModule,
     
-    SharedModule
+    SharedModule,
+    SearchModule
     //ModalModule
   ],
   declarations: [

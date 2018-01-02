@@ -76,7 +76,6 @@ export class FindingsComponent implements OnInit {
       if(this.CompForm.Reviews.length > 0){
           var review = this.CompForm.Reviews.find(x => 
             x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-            x.Status == this.CompForm.CurrentReviewStatus &&
             x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
 
             console.log('review -> ', review);

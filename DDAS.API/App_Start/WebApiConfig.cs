@@ -1,4 +1,5 @@
 ﻿using DDAS.API.App_Start;
+using DDAS.API.Helpers.Formatters;
 using DDAS.API.Setup;
 using Microsoft.Owin.Security.OAuth;
 using System;
@@ -72,6 +73,9 @@ namespace DDAS.API
                 }
             }
             //End Ref: http://www.nesterovsky-bros ...
+
+            //config.Formatters.Add(new csvOutputFormatter());
+
         }
     }
 }

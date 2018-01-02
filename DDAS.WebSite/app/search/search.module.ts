@@ -16,7 +16,6 @@ import { AllISCFsComponent } from './all-iscfs.component';
 
 import { SearchComponent } from './search.component';
 
-
 import { searchRouting } from './search.routing';
 
 import { SearchDetailComponent } from './search-detail.component';
@@ -38,7 +37,27 @@ import { GenerateOutputFileComponent } from './shared/components/generate-output
 
 import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
 import {InstituteFindingsComponent} from './institute-findings.component' 
+import {ComplianceFormViewComponent} from './shared/components/compliance-form-view/compliance-form-view.component'
 
+import {ComplianceFormGeneralEditComponent} from "../compliance-form/tab-components/general-edit/general-edit.component"
+import {ComplianceFormGeneralViewComponent} from "../compliance-form/tab-components/general-view/general-view.component"
+import {ComplianceFormInvestigatorEditComponent} from "../compliance-form/tab-components/investigators-edit/investigator-edit.component"
+import {ComplianceFormInvestigatorViewComponent} from "../compliance-form/tab-components/investigators-view/investigator-view.component"
+
+import {ComplianceFormInstituteEditComponent} from "../compliance-form/tab-components/institute-edit/institute-edit.component"
+import {ComplianceFormInstituteViewComponent} from "../compliance-form/tab-components/institute-view/institute-view.component"
+
+import {ComplianceFormMandatorySitesEditComponent} from "../compliance-form/tab-components/mandatory-sites-edit/mandatory-sites-edit.component"
+import {ComplianceFormMandatorySitesViewComponent} from "../compliance-form/tab-components/mandatory-sites-view/mandatory-sites-view.component"
+
+import {ComplianceFormAdditionalSitesEditComponent} from "../compliance-form/tab-components/additional-sites-edit/additional-sites-edit.component"
+import {ComplianceFormAdditionalSitesViewComponent}    from "../compliance-form/tab-components/additional-sites-view/additional-sites-view.component"
+
+
+
+import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-components/findings/findings.component"
+import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by.component"
+import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
 
 @NgModule({
   imports: [
@@ -69,7 +88,23 @@ import {InstituteFindingsComponent} from './institute-findings.component'
     AllISCFsComponent,
     GenerateOutputFileComponent,
     InstituteFindingsSummaryComponent,
-    InstituteFindingsComponent
+    InstituteFindingsComponent,
+    ComplianceFormViewComponent,
+    ComplianceFormGeneralEditComponent,
+    ComplianceFormGeneralViewComponent,
+    
+    ComplianceFormInstituteEditComponent,
+    ComplianceFormInstituteViewComponent,
+
+    ComplianceFormInvestigatorEditComponent,
+    ComplianceFormInvestigatorViewComponent,
+    ComplianceFormMandatorySitesEditComponent,
+    ComplianceFormMandatorySitesViewComponent,
+    ComplianceFormAdditionalSitesEditComponent,
+    ComplianceFormAdditionalSitesViewComponent,
+    ComplianceFormFindingsComponent,
+    ComplianceFormSearchedByComponent,
+    ComplianceFormSummaryComponent
   ],
 
   providers: [
@@ -79,7 +114,8 @@ import {InstituteFindingsComponent} from './institute-findings.component'
     StatusCircleLegendVerticalComponent,
     StatusCircleLegHorComponent,
     DownloadComplianceFormComponent,
-    GenerateOutputFileComponent
+    GenerateOutputFileComponent,
+    ComplianceFormViewComponent
   ]
 })
 export class SearchModule { }

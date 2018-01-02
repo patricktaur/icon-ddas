@@ -85,7 +85,9 @@ export class EditQCComponent implements OnInit {
     }
 
     openComplianceForm(){
-        this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
+        //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
+        this.router.navigate(['comp-form-edit', this.complianceForm.RecId, {rootPath:'qc', page:this.pageNumber}], { relativeTo: this.route.parent });
+    
     }
 
     save() {

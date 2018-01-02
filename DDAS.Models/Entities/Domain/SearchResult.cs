@@ -151,6 +151,7 @@ namespace DDAS.Models.Entities.Domain
             SiteSources = new List<SiteSource>();
             Findings = new List<Finding>();
             Reviews = new List<Review>();
+            Comments = new List<Comment>();
         }
 
         public Guid? RecId { get; set; }
@@ -187,11 +188,15 @@ namespace DDAS.Models.Entities.Domain
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
         public List<Review> Reviews { get; set; }
+        public List<Comment> Comments { get; set; }
         public ReviewStatusEnum CurrentReviewStatus {
             get
             {
                 var Review = Reviews.LastOrDefault();
-                return Review.Status;
+                if (Review != null)
+                    return Review.Status;
+                else
+                    return ReviewStatusEnum.SearchCompleted;
             }
         }
 

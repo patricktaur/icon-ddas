@@ -18,6 +18,10 @@ import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination';
 
 import {DateInputComponent} from './components/date-input.component'; 
 import {CommonService} from './common.service';
+//import {FileDownloadComponent} from './components/file-download.component';
+import {FileDownloadModule} from './modules/file-download/file-download.module' 
+
+
 
 
  
@@ -25,7 +29,8 @@ import {CommonService} from './common.service';
 @NgModule({
   imports:     
    [ CommonModule,
-   MyDatePickerModule
+   MyDatePickerModule,
+   FileDownloadModule
     ],
   
   declarations: [ 
@@ -37,7 +42,7 @@ import {CommonService} from './common.service';
   HighlightPipe,
   ToggleShowComponent,
   ConfirmDialogComponent,
-  DateInputComponent,
+  DateInputComponent
   
   
    ],
@@ -55,7 +60,7 @@ import {CommonService} from './common.service';
     Ng2PaginationModule,
     ConfirmDialogComponent,
     DateInputComponent,
-   
+    FileDownloadModule
                    ],
                    
 })
