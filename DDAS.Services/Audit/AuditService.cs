@@ -8,6 +8,7 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models;
 using DDAS.Models.ViewModels;
 using Utilities.EMail;
+using DDAS.Models.Enums;
 
 namespace DDAS.Services.AuditService
 {
@@ -16,30 +17,113 @@ namespace DDAS.Services.AuditService
         private IUnitOfWork _UOW;
         private IEMailService _EMailService;
 
-        private const string Accepted = "Accepted";
-        private const string Rejected = "Rejected";
-
         public AuditService(IUnitOfWork UOW, IEMailService EmailService)
         {
             _UOW = UOW;
             _EMailService = EmailService;
         }
 
-        public bool RequestAudit(Audit Audit)
+        public bool RequestQC(ComplianceForm Form)
         {
-            var ComplianceForm = 
-                _UOW.ComplianceFormRepository.FindById(Audit.ComplianceFormId);
-
-            foreach(SiteSource Site in ComplianceForm.SiteSources)
+            foreach(Review Review in Form.Reviews)
             {
-                var AuditObservation = new AuditObservation();
-                AuditObservation.SiteShortName = Site.SiteShortName;
-                AuditObservation.SiteId = Site.Id;
-                Audit.Observations.Add(AuditObservation);
+                if (Review.RecId == null && 
+                    Review.Status == ReviewStatusEnum.QCRequested &&
+                    Review.PreviousReviewId == null)
+                {
+                    Review.RecId = Guid.NewGuid();
+
+                    var PreviousReview = Form.Reviews.Find(x =>
+                    x.AssigendTo.ToLower() == Review.AssignedBy.ToLower());
+
+                    Review.PreviousReviewId = PreviousReview.RecId;
+                }
+                else if(Review.RecId == null)
+                    Review.RecId = Guid.NewGuid();
             }
-            _UOW.AuditRepository.Add(Audit);
-            SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
+
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            //SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
             return true;
+        }
+
+        public List<QCListViewModel> ListQCs()
+        {
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Forms.Count == 0)
+                return null;
+
+            Forms = Forms.Where(x => 
+                x.IsReviewCompleted == true)
+                .ToList();
+
+            var AllQCs = new List<QCListViewModel>();
+
+            foreach (ComplianceForm Form in Forms)
+            {
+                var Reviews = Form.Reviews.Where(x =>
+                x.Status == ReviewStatusEnum.QCRequested ||
+                x.Status == ReviewStatusEnum.QCInProgress ||
+                x.Status == ReviewStatusEnum.QCFailed ||
+                x.Status == ReviewStatusEnum.QCPassed)
+                .ToList();
+
+                foreach (Review Review in Reviews)
+                {
+                    var QCViewModel = new QCListViewModel();
+                    //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
+                    QCViewModel.RecId = Review.RecId;
+                    QCViewModel.ComplianceFormId = Form.RecId.Value;
+                    QCViewModel.PrincipalInvestigator =
+                        Form.InvestigatorDetails.FirstOrDefault().Name;
+                    QCViewModel.ProjectNumber = Form.ProjectNumber;
+                    QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
+                    QCViewModel.QCVerifier = Review.AssigendTo;
+                    QCViewModel.Status = Review.Status;
+                    QCViewModel.CompletedOn = Review.CompletedOn;
+                    QCViewModel.Requestor = Review.AssignedBy;
+                    QCViewModel.RequestedOn = Review.AssignedOn;
+
+                    AllQCs.Add(QCViewModel);
+                }
+            }
+            return AllQCs;
+        }
+
+        private void SetComplianceFormDetails(QCListViewModel AuditViewModel, Guid ComplianceFormId)
+        {
+            var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            AuditViewModel.PrincipalInvestigator =
+                ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
+
+            AuditViewModel.ProjectNumber = ComplianceForm.ProjectNumber;
+            AuditViewModel.ProjectNumber2 = ComplianceForm.ProjectNumber2;
+        }
+
+        public ComplianceForm GetQC(Guid ComplianceFormId, string AssignedTo)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var Review = Form.Reviews.Find(x =>
+            x.AssigendTo.ToLower() == AssignedTo.ToLower() &&
+            x.AssignedBy.ToLower() == Form.AssignedTo.ToLower() &&
+            x.Status == ReviewStatusEnum.QCRequested);
+
+            if (Review != null && Review.StartedOn == null)
+            {
+                Review.Status = ReviewStatusEnum.QCInProgress;
+                Review.StartedOn = DateTime.Now;
+                Review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            }
+            return Form;
+        }
+
+        public bool SaveQC(ComplianceForm Form)
+        {
+            throw new NotImplementedException();
         }
 
         private void SendAuditRequestedMail(string SendMailTo, string AuditRequestedBy)
@@ -78,63 +162,6 @@ namespace DDAS.Services.AuditService
             MailBody += "DDAS Team";
 
             SendMail(UserEMail, Subject, MailBody);
-        }
-
-        public List<AuditListViewModel> ListAudits()
-        {
-            var Audits = _UOW.AuditRepository.GetAll()
-            .OrderBy(x => x.RequestedOn)
-            .ToList();
-
-            if (Audits.Count == 0)
-                return null;
-
-            var AllAudits = new List<AuditListViewModel>();
-
-            foreach(Audit audit in Audits)
-            {
-                var AuditViewModel = new AuditListViewModel();
-                SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
-                AuditViewModel.RecId = audit.RecId.Value;
-                AuditViewModel.ComplianceFormId = audit.ComplianceFormId;
-                AuditViewModel.Auditor = audit.Auditor;
-                AuditViewModel.AuditStatus = audit.AuditStatus;
-                AuditViewModel.CompletedOn = audit.CompletedOn;
-                AuditViewModel.RequestedBy = audit.RequestedBy;
-                AuditViewModel.RequestedOn = audit.RequestedOn;
-                AuditViewModel.AuditStatus = audit.AuditStatus;
-                AuditViewModel.CompletedOn = audit.CompletedOn;
-
-                AllAudits.Add(AuditViewModel);
-            }
-            return AllAudits;
-        }
-
-        private void SetComplianceFormDetails(AuditListViewModel AuditViewModel, Guid ComplianceFormId)
-        {
-            var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-
-            AuditViewModel.PrincipalInvestigator =
-                ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
-
-            AuditViewModel.ProjectNumber = ComplianceForm.ProjectNumber;
-            AuditViewModel.ProjectNumber2 = ComplianceForm.ProjectNumber2;
-        }
-
-        public Audit GetAudit(Guid RecId)
-        {
-            var audit = _UOW.AuditRepository.FindById(RecId);
-            return audit;
-        }
-
-        public bool SaveAudit(Audit audit)
-        {
-            _UOW.AuditRepository.UpdateAudit(audit);
-
-            if (audit.IsSubmitted)
-                SendAuditCompletedMail(audit.RequestedBy, audit.Auditor);
-
-            return true;
         }
 
         private void SendMail(string To, string Subject, string Body)

@@ -31,9 +31,7 @@
 							<label for="Date">Investigator Review Completed On (from):</label>
 							<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
 						</div>
-						<div class="form-group">
-							<button type="button" class="btn btn-primary" (click)="getInvestigators()">Generate</button>
-						</div>
+						
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
@@ -46,6 +44,13 @@
 				</div>
 			</div>
 		</div>
+		<button type="button" class="btn btn-primary pull-left" (click)="getInvestigators()">Generate</button>
+		<div style="margin-left: 10px" 
+		class="pull-left"  file-download 
+		[url]="'Reports/InvestigatorReviewCompletedTime?mode=csv'" 
+		[filter]="reportFilter"
+		(ButtonClicked)="ResetReportFilter();"> </div>
+		<br>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
