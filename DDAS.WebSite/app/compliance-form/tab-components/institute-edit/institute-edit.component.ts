@@ -21,7 +21,7 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
         private service: SearchService,
         private route: ActivatedRoute,
         private router: Router,
-        private _location: Location,
+        //private _location: Location,
     ) { }
 
     ngOnInit() {

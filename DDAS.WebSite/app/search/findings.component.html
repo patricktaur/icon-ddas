@@ -144,6 +144,8 @@
 	</div>
 	<div class="row" *ngIf="!isQCVerifier">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
+			XXXXXXXXX
+			<div selected-finding [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"></div>
 			<form role='form'>
 				<div class="form-group col-md-6">
 					<div class="well">

@@ -59,6 +59,8 @@ import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-compone
 import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by.component"
 import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
 
+import {SelectedFindingComponent} from "../compliance-form/findings/selected-finding/selected-finding.component"}
+
 @NgModule({
   imports: [
     CommonModule,
@@ -104,7 +106,8 @@ import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/s
     ComplianceFormAdditionalSitesViewComponent,
     ComplianceFormFindingsComponent,
     ComplianceFormSearchedByComponent,
-    ComplianceFormSummaryComponent
+    ComplianceFormSummaryComponent,
+    SelectedFindingComponent
   ],
 
   providers: [
