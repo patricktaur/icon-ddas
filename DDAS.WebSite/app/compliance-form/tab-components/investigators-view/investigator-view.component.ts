@@ -12,6 +12,7 @@ import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
 })
 export class ComplianceFormInvestigatorViewComponent  {
     @Input() CompForm: ComplianceFormA;
+    @Input() ReturnPath: string;
 
     compFormForm: FormGroup;
     public formLoading: boolean;
@@ -169,8 +170,11 @@ export class ComplianceFormInvestigatorViewComponent  {
 
 gotoInvestigatorSummaryResult(inv: InvestigatorSearched) {
     
-            this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, { rootPath: this.rootPath }],
-                { relativeTo: this.route.parent });
+            // this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, { rootPath: this.rootPath }],
+            //     { relativeTo: this.route.parent });
+
+                this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, { rootPath: this.ReturnPath }],
+                { relativeTo: this.route.parent });    
     
         }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
@@ -12,6 +12,8 @@ import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
 })
 export class ComplianceFormInvestigatorEditComponent {
     @Input() CompForm: ComplianceFormA;
+    @Output() pageChanged = new EventEmitter();
+    @Input() ReturnPath: string;
 
     compFormForm: FormGroup;
     public formLoading: boolean;
@@ -23,7 +25,7 @@ export class ComplianceFormInvestigatorEditComponent {
     public Selected: boolean = false;
     public InvestigatorToRemove: InvestigatorSearched = new InvestigatorSearched;
     public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
-    private pageChanged: boolean = false;
+    //private pageChanged: boolean = false;
 
     public InstituteSearchSummary : InstituteFindingsSummaryViewModel[] = [];
 
@@ -103,7 +105,8 @@ export class ComplianceFormInvestigatorEditComponent {
         this.CompForm.InvestigatorDetails.push(inv);
         this.SetInvestigatorRole();
         this.Initialize();
-        this.pageChanged = true;
+        //this.pageChanged = true;
+        this.pageChanged.emit();
     }
     
     
@@ -113,7 +116,8 @@ export class ComplianceFormInvestigatorEditComponent {
     }
 
     formValueChanged(){
-        this.pageChanged = true;
+        //this.pageChanged = true;
+        this.pageChanged.emit();
     } 
 
     
@@ -132,7 +136,8 @@ export class ComplianceFormInvestigatorEditComponent {
 
         this.SetInvestigatorRole();
         this.Initialize();
-        this.pageChanged = true;
+        //this.pageChanged = true;
+        this.pageChanged.emit();
     }
 
     //Better method?
@@ -172,9 +177,12 @@ export class ComplianceFormInvestigatorEditComponent {
 
 gotoInvestigatorSummaryResult(inv: InvestigatorSearched) {
     
-            this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, { rootPath: this.rootPath }],
+            // this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, { rootPath: this.rootPath }],
+            //     { relativeTo: this.route.parent });
+
+                this.router.navigate(['investigator-summary', this.CompForm.RecId, inv.Id, { rootPath: this.ReturnPath }],
                 { relativeTo: this.route.parent });
-    
+                
         }
 
     get diagnostic() { return JSON.stringify(this.CompForm); }    
