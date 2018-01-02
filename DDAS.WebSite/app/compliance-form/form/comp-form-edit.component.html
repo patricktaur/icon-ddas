@@ -2,11 +2,13 @@
 	<div class="col-lg-12">
 		<div class="alert alert-info" *ngIf="formLoading">
 			<strong>Loading ...</strong>
+			
+			
 		</div>
 		<div class="well" *ngIf="!formLoading">
 			<div class="row">
 				<div class="col-lg-12 ">
-
+					
 
 					<div class="row">
 						<div class="col-lg-8 text-left">
@@ -70,6 +72,9 @@
 
 							<div class="tab-content">
 								<div id="general-info-tab" class="tab-pane fade {{defaultTabInActive}}">
+									<!-- <div *ngIf="!isQCVerifier" comp-form-general-edit [CompForm]="CompForm"></div> -->
+									<!-- <div *ngIf="isQCVerifier" comp-form-general-view [CompForm]="CompForm"></div> -->
+									
 									<h4>General Information:</h4>
 									<form #f="ngForm" novalidate>
 
@@ -137,6 +142,10 @@
 
 								</div>
 								<div id="institute-tab" class="tab-pane fade">
+									<!-- <div *ngIf="!isQCVerifier" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath"></div> -->
+									<!-- <div *ngIf="isQCVerifier" comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div> -->
+									
+									
 									<h4>Institute</h4>
 									<form #f="ngForm" novalidate>
 										<div class="form-group">
@@ -180,8 +189,18 @@
 										</div>
 									</form>
 								</div>
-								<!--<div id="investigators-tab" class="tab-pane fade in active">-->
+								
 								<div id="investigators-tab" class="tab-pane fade {{invTabInActive}}">
+									<div comp-form-investigator-edit 
+									[CompForm]="CompForm" 
+									(pageChanged)="formValueChanged()"
+									[ReturnPath]="rootPath"></div>
+									
+									<div comp-form-investigator-view 
+									[CompForm]="CompForm"
+									[ReturnPath]="rootPath"
+									></div>
+									
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -343,6 +362,9 @@
 
 								</div>
 								<div id="mandatory-sites-tab" class="tab-pane fade">
+									<div comp-form-mandatory-sites-edit [CompForm]="CompForm"  ></div>
+									<div comp-form-mandatory-sites-view [CompForm]="CompForm"></div>
+									
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -415,6 +437,9 @@
 
 								</div>
 								<div id="additional-sites-tab" class="tab-pane fade">
+									<!-- <div *ngIf="!isQCVerifier" comp-form-additional-sites-edit [CompForm]="CompForm"></div> -->
+									<!-- <div *ngIf="isQCVerifier" comp-form-additional-sites-view [CompForm]="CompForm"></div>  -->
+									
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -483,6 +508,8 @@
 								</div>
 
 								<div id="findigs-tab" class="tab-pane fade">
+									<div *ngIf="!isQCVerifier" comp-form-findings-edit [CompForm]="CompForm"></div>
+									
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -581,6 +608,8 @@
 									</div>
 								</div>
 								<div id="searched-by-tab" class="tab-pane fade">
+									<div comp-form-searched-by [CompForm]="CompForm"></div>
+									
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -602,6 +631,8 @@
 									</div>
 								</div>
 								<div id="summary" class="tab-pane fade ">
+									<div comp-form-summary [CompForm]="CompForm"></div>
+									
 									<h4>Summary:</h4>
 									<div class="row" *ngIf="isFileUploaded">
 										<b> File Uploaded: </b>
@@ -633,25 +664,7 @@
 										</table>
 									</div>
 
-									<!--<p>Search Started On: {{CompForm.SearchStartedOn | date: 'dd MMM yyyy H:m'}} </p>
-									<p>Extraction Pending for {{CompForm.ExtractionPendingInvestigatorCount}} Investigator(s)</p>
-									<p>Extraction Queue : {{CompForm.ExtractionQueue}} </p>
-									<p>Extraction Queue Position: {{CompForm.ExtractionQuePosition}} </p>
-									<p>Extraction Queue Started At: {{CompForm.ExtractionQueStart | date: 'dd MMM yyyy H:m'}} </p>
-									<p>Estimated Extraction Completion within: {{CompForm.EstimatedExtractionCompletionWithin}} </p>
-
-									<p>Extraction Error for {{CompForm.ExtractionErrorInvestigatorCount}} Investigator(s)</p>
-									<p>Data Extracted for {{CompForm.ExtractedInvestigatorCount}} Investigator(s)</p>
-
-									<p>Extracted On: {{CompForm.ExtractedOn | date: 'dd MMM yyyy H:m'}} </p>
-									<p>Partial Matches Found for {{CompForm.PartialMatchesFoundInvestigatorCount}} Investigator(s) Investigator(s)</p>
-									<p>Full Matches Found for {{CompForm.FullMatchesFoundInvestigatorCount}} Investigator(s)</p>
-									<p>Issues Found for {{CompForm.IssuesFoundInvestigatorCount}} Investigator(s)</p>
-									<p>Review Completed for {{CompForm.ReviewCompletedInvestigatorCount}} Investigator(s)</p>-->
-
-									<!--not ready original file name has to be stored in comp form	-->
-									<!--<p>Data Uploaded by file: {{CompForm.UploadedFileName }} </p>-->
-
+									
 								</div>
 							</div>
 

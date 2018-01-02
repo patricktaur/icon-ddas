@@ -142,8 +142,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="row" *ngIf="!isQCVerifier">
+	<div class="row">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
+			XXXXXXXXX
+			<div selected-finding [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"></div>
 			<form role='form'>
 				<div class="form-group col-md-6">
 					<div class="well">
@@ -180,6 +182,7 @@
 									</div>
 								</div>
 							</div>
+
 						</div>
 
 						<div class="row">
@@ -228,6 +231,7 @@
 				<div *ngIf="dividerGeneration(indexVal)">
 					<div style="clear:both;"></div>
 				</div>
+				
 			</form>
 		</div>
 	</div>

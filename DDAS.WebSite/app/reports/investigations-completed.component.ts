@@ -90,6 +90,19 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
     }
 
     GetInvestigationsCompleted() {
+        this.ResetReportFilter();
+        this.service.getInvestigationsCompletedReport(this.ReportFilter)
+        .subscribe((item: InvestigationsReport) => {
+            this.InvestigationsCompletedReport = item;
+            this.DatesAdjustedTo = this.InvestigationsCompletedReport.DatesAdjustedTo;
+        },
+        error => {
+
+        });
+    }
+
+    ResetReportFilter(){
+        
         if (this.FromDate != null) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
@@ -102,15 +115,8 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
 
         this.ReportFilter.FromDate = this.ComplianceFormFilter.SearchedOnFrom;
         this.ReportFilter.ToDate = this.ComplianceFormFilter.SearchedOnTo;
-        console.log('ReportFilter - ', this.ReportFilter);
-        this.service.getInvestigationsCompletedReport(this.ReportFilter)
-        .subscribe((item: InvestigationsReport) => {
-            this.InvestigationsCompletedReport = item;
-            this.DatesAdjustedTo = this.InvestigationsCompletedReport.DatesAdjustedTo;
-        },
-        error => {
-
-        });
+        
+        
     }
 
     get headers(){

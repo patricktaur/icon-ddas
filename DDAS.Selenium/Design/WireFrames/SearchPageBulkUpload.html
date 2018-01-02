@@ -1,0 +1,245 @@
+﻿<html>
+<head>
+</head>
+<body>
+    <meta name="description" content="Search Page">
+    <title>Search</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="SEarchPage.css" rel="stylesheet" type="text/css">
+    <div class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                <a class="navbar-brand" href="#"><span>Brand</span></a>
+
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active">
+                        <a href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Contacts</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Search History</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <p> Search by:</p>
+                                    <select id="Select1" class="form-control">
+                                        <option>Search Date</option>
+                                        <option>Site</option>
+                                        <option>Name</option>
+                                        <option>Study No</option>
+
+                                    </select>
+                                    <table class="table">
+
+                                        <tbody>
+                                            <tr>
+                                                <td title="Tom Harris">20-June-2016 16:22 (0)</td>
+
+                                            </tr>
+                                            <tr>
+                                                <td title="Venkat, Match verified.">10-May-2016 08:10 (1)</td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>25-Mar-2016 10:22 (0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td title="Shyam, Match declined">15-Mar-2016 10:22 (0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>25-Feb-2016 10:22 (1)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>20-Feb-2016 10:22 (0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td title="10 names searched, 1 match verified">15-Feb-2016 10:22 (1)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>25-Jan-2016 10:22 (0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>18-Jan-2016 10:22 (1)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>15-Jan-2016 10:22 (0)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Search</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-md-4">
+                                        <form role="form">
+                                            <div class="form-group">
+                                                <label class="control-label" for="exampleInputEmail1">Search applies to Study:</label>
+                                                <br>
+                                                <select id="Select1" class="form-control">
+                                                    <option></option>
+                                                    <option>2520/1234</option>
+                                                    <option>2520/1235</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label" for="exampleInputEmail1">Search these sites:</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1">All</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1">FDA Debarment List</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="Clinical Investigator Inspection List (CLIL)(CDER">Clinical Investigator  ...</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="FDA Warning Letters and Responses">FDA Warning Letters ...</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="Notice of Opportunity for Hearing (NOOH) – Proposal to Debar">NOOH – Proposal to Debar</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="Adequate Assurances List for Clinical Investigators">Adequate Assurances ...</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="Clinical Investigators – Disqualification Proceedings (FDA Disqualified/Restricted)">Disqualification Proceedings ...</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="Clinical Investigator Inspection List (CBER)">Inspection List</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="PHS Administrative Actions Listing  ">PHS Administrative Actions</label>
+                                                <br>
+
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="HHS/OIG/ EXCLUSIONS DATABASE SEARCH/ FRAUD">HHS/OIG/ EXCLUSIONS ...</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="HHS/OIG Corporate Integrity Agreements/Watch List">HHS/OIG Corporate Integrity</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="SAM/SYSTEM FOR AWARD MANAGEMENT">SAM/SYSTEM FOR AWARD ...</label>
+                                                <br>
+                                                <input id="Checkbox1" type="checkbox" checked>
+                                                <label class="control-label" for="exampleInputEmail1" title="LIST OF SPECIALLY DESIGNATED NATIONALS">SPECIALLY DESIGNATED ...</label>
+                                                <br>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label" for="exampleInputEmail1">File to upload:</label>
+                                                <input id="File1" type="file" class="form-control" />
+
+                                            </div>
+                                            <button type="submit" class="btn btn-default">Search</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h3>Results</h3>
+                                        <p>Match found for 3 people in 3 sites at 12 March, 2015 14:00 hrs.</p>
+                                        <div class="row">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th><input id="Checkbox1" type="checkbox" /></th>
+                                                        <th>Name</th>
+                                                        <th>Site</th>
+                                                        <th>Verified</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input id="Checkbox1" type="checkbox" /></td>
+                                                        <td>Anand Sharma</td>
+                                                        <td>No match found</td>
+                                                        <td>Verified</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input id="Checkbox1" type="checkbox" /></td>
+                                                        <td>Ravi Kiran</td>
+                                                        <td>FDA Debarment List (1)</td>
+                                                        <td>Verified</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input id="Checkbox1" type="checkbox" /></td>
+                                                        <td>Ravi Kiran</td>
+                                                        <td>Adequate Assurances List (2)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input id="Checkbox1" type="checkbox" /></td>
+                                                        <td>Shyam Ram </td>
+                                                        <td>Adequate Assurances List (1)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input id="Checkbox1" type="checkbox" /></td>
+
+                                                        <td>Ram</td>
+                                                        <td>HHS/OIG Corporate Integrity (3)</td>
+                                                        <td>Declined</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">Mark selected items:</div>
+                                            <div class="col-md-4"><button type="submit" class="btn btn-default">Match Verified</button><br /></div>
+                                            <div class="col-md-4"><button type="submit" class="btn btn-default ">Match Declined</button><br /></div>
+                                        </div>
+                                        <div class="row">
+                                           
+                                            <button type="submit" class="btn btn-default ">Save</button>
+                                        </div>
+                                         </div>
+                                        
+                                        
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="section section-primary">
+            <div class="container">
+                <div class="row">
+                    ICON - Due Diligence Group <small>© Copyright 2016</small>
+
+
+                </div>
+            </div>
+        </footer>
+</body>
+</html>

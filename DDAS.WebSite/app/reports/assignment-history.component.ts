@@ -31,7 +31,8 @@ export class AssignmentHistoryComponent {
 
     constructor(
         private service: ReportService,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute
+    ) {
 
     }
 
@@ -75,9 +76,7 @@ export class AssignmentHistoryComponent {
     }
 
     getAssignmentHistoryList(){
-        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
-        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
-
+        this.ResetReportFilter();
         this.service.getAssignmentHistoryList(this.reportFilter)
             .subscribe((item: AssignmentHistoryViewModel[]) => {
                 this.assignmentHisotryList = this.reAssignmentList(item);
@@ -87,6 +86,11 @@ export class AssignmentHistoryComponent {
             error => {
                 this.formLoading = false;
             });
+    }
+    
+    ResetReportFilter(){
+        this.reportFilter.FromDate = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+        this.reportFilter.ToDate = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
     }
 
     reAssignmentList(list: AssignmentHistoryViewModel[]){

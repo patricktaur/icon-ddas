@@ -27,6 +27,7 @@ import {AppAdminModule} from './app-admin/app-admin.module';
 import { HelpModule } from './help/help.module';
 import { QCModule } from './qcworkflow/qc.module';
 import {CommonService} from './shared/common.service';
+import {FileService} from './shared/utils/file.service'
 
 @NgModule({
   imports:      [ 
@@ -56,7 +57,8 @@ import {CommonService} from './shared/common.service';
     DialogService,
     ConfigService,
     SearchService,
-    CommonService
+    CommonService,
+    FileService
     ],
   bootstrap:    [ AppComponent ]
 })

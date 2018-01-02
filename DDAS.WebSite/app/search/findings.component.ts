@@ -76,7 +76,6 @@ export class FindingsComponent implements OnInit {
       if(this.CompForm.Reviews.length > 0){
           var review = this.CompForm.Reviews.find(x => 
             x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-            x.Status == this.CompForm.CurrentReviewStatus &&
             x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
 
             console.log('review -> ', review);
@@ -480,34 +479,6 @@ export class FindingsComponent implements OnInit {
     }
 
 
-
-
-    // Save() {
-    //         //this.AddNewSearchStatusItem();
-    //         this.service.saveComplianceForm(this.CompForm)
-    //         .subscribe((item: any) => {
-    //             this.pageChanged = false;
-    //             this.CompForm = item;
-    //             this.IntiliazeRecords();
-    //           },
-    //         error => {
-
-    //         });
-    // }
-
-    // SaveAndClose(){
-    //         //this.AddNewSearchStatusItem();
-    //            this.service.saveComplianceForm(this.CompForm)
-    //         .subscribe((item: any) => {
-    //             this.pageChanged = false;
-    //             this.goBack()
-    //             //this._location.back();
-    //              },
-    //         error => {
-
-    //         });
-    //  }
-
     SaveAndClose() {
         //formId : string, siteEnum:number, InvestigatorId:number, ReviewCompleted : boolean,  Findings:Finding[]
         let updateFindings = new UpdateFindigs;
@@ -532,6 +503,7 @@ export class FindingsComponent implements OnInit {
             });
     }
 
+    //remove after testing the component
     Split = (RecordDetails: string) => {
         if (RecordDetails == undefined) {
             return null;
@@ -541,6 +513,7 @@ export class FindingsComponent implements OnInit {
         return middleNames;
     }
 
+    //remove after testing the component
     dividerGeneration(indexVal: number) {
         if ((indexVal + 1) % 2 == 0) {
             return true;

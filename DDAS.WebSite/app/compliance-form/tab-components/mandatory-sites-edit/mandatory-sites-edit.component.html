@@ -1,0 +1,70 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <br>
+                <h4>Mandatory Sites participating in the search XXXXX:</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">#</th>
+                                <th class="col-md-5">Source Name</th>
+                                <th class="col-md-2">Extraction Mode</th>
+                                <th class="col-md-2">Source Date</th>
+
+                                <th class="col-md-1">Applies To</th>
+                                <th class="col-md-1">Issues Identified</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="active" *ngFor="let item of MandatorySites; let idx = index;">
+                                <td>{{item.DisplayPosition}}</td>
+                                <td>
+                                    <!--<div class="text-left">
+
+                                        <a target="_blank" [href]="sanitize(item.SiteUrl)">
+                                             {{item.SiteName}}
+                                        </a>
+                                    </div>-->
+                                    <div class="text-left" *ngIf="isUrl(item.SiteUrl)">
+                                        <a target="_blank" [href]="sanitize(item.SiteUrl)">
+                                             {{item.SiteName}}
+                                            </a>
+                                    </div>
+                                    <div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
+                                        {{item.SiteName}}
+                                    </div>
+
+
+                                </td>
+                                <td>
+                                    {{item.ExtractionMode}}
+                                </td>
+                                <td>
+                                    <!--<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>-->
+                                    <div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'">
+                                        <input type="date" [(ngModel)]="item.SiteSourceUpdatedOn" (change)="formValueChanged()">
+                                        {{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
+                                    </div>
+                                    <div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
+                                </td>
+
+                                <td>
+                                    {{item.SearchAppliesToText}}
+                                </td>
+                                <td>
+                                    {{item.IssuesIdentified | boolToYesNo}}
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
