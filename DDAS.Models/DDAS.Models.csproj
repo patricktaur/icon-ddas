@@ -124,7 +124,7 @@
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
-    <Compile Include="ViewModels\AuditListViewModel.cs" />
+    <Compile Include="ViewModels\QCListViewModel.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
     <Compile Include="ViewModels\DownloadDataFilesViewModel.cs" />

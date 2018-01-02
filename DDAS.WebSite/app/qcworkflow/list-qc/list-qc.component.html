@@ -1,0 +1,63 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well">
+			<h3 class="no-margin-top">Quality Checks</h3>
+		</div>
+	</div>
+
+
+	<div class="col-lg-12">
+		<div class="well">
+			<table class="table table-bordered table-hover table-striped">
+				<thead>
+					<tr>
+						<th class="col-md-3 text-left">Principal Investigator </th>
+						<th class="col-md-2 text-left">ICON Project Number</th>
+						<th class="text-left">Requestor</th>
+						<th class="text-left">Requested On</th>
+						<th class="text-center">QC Verifier</th>
+						<th class="text-center">Status</th>
+						<th class="text-left">QC Completed On</th>
+						<th class="text-left">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of filterQCByUserName | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+
+						<td class="text-left">
+							{{item.PrincipalInvestigator}}
+						</td>
+						<td class="text-center">
+							{{item.ProjectNumber}} {{item.ProjectNumber2}}
+						</td>
+						<td>
+							{{item.Requestor}}
+						</td>
+						<td class="text-left">
+							{{item.RequestedOn | date: 'dd MMM yyyy'}}
+						</td>
+						<td class="text-left">
+							{{item.QCVerifier}}
+						</td>
+						<td align="center">
+							{{status(item.Status)}}
+						</td>
+						<td class="text-left">
+							 {{item.CompletedOn | date: 'dd MMM yyyy'}} 
+						</td>
+						<td>
+							<!-- <button type="button" class="btn btn-sm btn-primary" (click)="editQC(item.RecId)" title="Opens" *ngIf="isAuditorOrIsAuditPending(item.QCVerifier, item.Status)">
+                            	<span class="glyphicon glyphicon-folder-open"></span>
+							</button> -->
+							<button type="button" class="btn btn-sm btn-primary" 
+							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="Opens">
+                            	<span class="glyphicon glyphicon-folder-open"></span>
+                        	</button>							
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+		</div>
+	</div>
+</div>

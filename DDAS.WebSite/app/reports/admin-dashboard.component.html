@@ -10,9 +10,12 @@
 
 <div class="col-md-12">
 	<div class="well">
-		<button type="button" class="btn btn-sm btn-primary pull-right" (click)="loadAdminDashboardList()">
-			<span class="glyphicon glyphicon-refresh" title="refresh"></span>
-		</button>
+			<button type="button" class="btn btn-primary pull-left" (click)="loadAdminDashboardList()">
+					<span class="glyphicon glyphicon-refresh" title="refresh"></span>
+				</button>
+		<div style="margin-left: 10px"   file-download [url]="'Reports/AdminDashboard?mode=csv'" class="pull-left"> </div>
+		<br>
+		
 		<table class="table table-bordered">
 			<thead>
 				<tr>

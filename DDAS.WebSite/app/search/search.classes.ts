@@ -206,6 +206,8 @@ export class ComplianceFormA {
     SearchPending: boolean = true;
 
     InstituteSearchSiteCount: number;
+    Reviews: Review[] = new Array<Review>();
+    CurrentReviewStatus: ReviewStatusEnum;
 }
 
 
@@ -324,9 +326,15 @@ export class Finding {
     Observation: string;
     IsAnIssue: boolean = false;
     Links: Link[] = [];
-
+    Comments: Comment[] = new Array<Comment>();
     UISelected: boolean = false;
     Selected: boolean = false;
+}
+
+export class Comment {
+    ReviewId: string;
+    FindingComment: string;
+    AddedOn: Date;
 }
 
 export class SiteSource {
@@ -408,7 +416,36 @@ export class InstituteFindingsSummaryViewModel {
     IssuesFound: number;
 }
 
-export class Audit {
+export class Review {
+    RecId: string;
+    AssigendTo: string;
+    AssignedOn: Date;
+    AssignedBy: string;
+    Status: ReviewStatusEnum;
+    StartedOn: Date;
+    CompletedOn: Date;
+    ReviewerRole: ReviewerRoleEnum;
+    Comment: string;
+    PreviousReviewId: string;
+}
+
+export enum ReviewStatusEnum {
+    SearchCompleted,
+    ReviewInProgress,
+    ReviewCompleted,
+    Completed,
+    QCRequested,
+    QCInProgress,
+    QCFailed,
+    QCPassed
+}
+
+export enum ReviewerRoleEnum {
+    Reviewer,
+    QCVerifier
+}
+
+export class QualityCheck {
     ComplianceFormId: string;
     RequestedBy: string;
     RequestedOn: Date;

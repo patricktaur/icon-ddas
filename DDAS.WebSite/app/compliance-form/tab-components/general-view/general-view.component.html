@@ -1,0 +1,59 @@
+<h4>General Information View:</h4>
+<form #f="ngForm" novalidate>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="ProjectNumber">ICON Project Number (1234/1234):</label>
+                        {{CompForm.ProjectNumber}}
+                        
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="ProjectNumber2">ICON Project Number (1234/1234):</label>
+                        {{CompForm.ProjectNumber2}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="SponsorProtocolNumber">Sponsor Protocol No:</label>
+                        {{CompForm.SponsorProtocolNumber}}
+                        
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="SponsorProtocolNumber2">Sponsor Protocol No:</label>
+                        {{CompForm.SponsorProtocolNumber2}}
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="Country">Country:</label>
+                        {{CompForm.Country}}
+                        
+                    </div>
+                </div>
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="NameToSeaICONrch">Address:</label>
+
+                <textarea name="Address" class="form-control" readonly id="Address" rows="9" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"
+                    (change)="formValueChanged()"></textarea>
+            </div>
+        </div>
+    </div>
+</form>

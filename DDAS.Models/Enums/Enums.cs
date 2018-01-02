@@ -72,4 +72,22 @@
         Quarter,
         Year
     }
+
+    public enum ReviewStatusEnum
+    {
+        SearchCompleted,
+        ReviewInProgress,
+        ReviewCompleted,
+        Completed,
+        QCRequested,
+        QCInProgress,
+        QCFailed,
+        QCPassed
+    }
+
+    public enum ReviewerRoleEnum
+    {
+        Reviewer,
+        QCVerifier
+    }
 }

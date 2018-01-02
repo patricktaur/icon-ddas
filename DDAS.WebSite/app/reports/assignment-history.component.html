@@ -9,14 +9,16 @@
 </div>
 
 <div class="col-md-12">
+	
+	
 	<div class="well">
+		
 		<div class="row">
 			<div class="col-md-3">
 				<div class="form-group">
 					<label for="Date">ICSF Re-assigned On (from):</label>
 					<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
 				</div>
-				<button type="button" class="btn btn-primary" (click)="getAssignmentHistoryList()">Generate Report</button>
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
@@ -29,7 +31,15 @@
 				</div>
 			</div>
 		</div>
+		<button type="button" class="btn btn-primary pull-left" 
+		(click)="getAssignmentHistoryList()">Generate Report</button>
 
+		<div style="margin-left: 10px" 
+		class="pull-left"  file-download 
+		[url]="'Reports/AssignmentHistory?mode=csv'" 
+		[filter]="reportFilter"
+		(ButtonClicked)="ResetReportFilter();"> </div>
+		<br>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
