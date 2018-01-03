@@ -4,11 +4,11 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
 
 
 @Component({
-    selector: '[selected-finding]',
+    selector: '[selected-finding-edit]',
     moduleId: module.id,
-    templateUrl: 'selected-finding.component.html',
+    templateUrl: 'selected-finding-edit.component.html',
 })
-export class SelectedFindingComponent  {
+export class SelectedFindingEditComponent  {
     @Input() Finding: Finding;
     @Output() Remove = new EventEmitter();
     

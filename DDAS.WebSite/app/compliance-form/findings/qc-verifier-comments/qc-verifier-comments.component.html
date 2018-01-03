@@ -1,0 +1,16 @@
+QC Verifier Comments
+<div selected-finding-view [Finding]="Finding"></div>
+<form role='form'>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div class="well">
+                <label for="comment" *ngIf="isQCVerifier">
+                    <h4>QC Verifier's Comment:</h4>
+                </label>
+                <textarea class="form-control" name="Comment" [(ngModel)]="Finding.Comments[0].FindingComment" rows="3" cols="30" required
+                    placeholder="Comment">
+            </textarea>
+            </div>
+        </div>
+    </div>
+</form>
