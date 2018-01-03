@@ -123,7 +123,8 @@ namespace DDAS.Services.AuditService
 
         public bool SaveQC(ComplianceForm Form)
         {
-            throw new NotImplementedException();
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            return true;
         }
 
         private void SendAuditRequestedMail(string SendMailTo, string AuditRequestedBy)

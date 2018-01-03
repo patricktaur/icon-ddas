@@ -8,6 +8,7 @@ import 'rxjs/add/operator/catch';
 import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
 import { QualityCheck } from './qc.classes';
+import { ComplianceFormA } from '../search/search.classes';
 
 @Injectable()
 export class QCService {
@@ -58,8 +59,8 @@ export class QCService {
             .catch(this.handleError);
     }
 
-    saveQC(audit: QualityCheck){
-        let body = JSON.stringify(audit);
+    saveQC(compForm: ComplianceFormA){
+        let body = JSON.stringify(compForm);
         return this.http.post(this._baseUrl + 'QC/SaveQC', body, this._options)
         .map((res: Response) => {
             return res.json();

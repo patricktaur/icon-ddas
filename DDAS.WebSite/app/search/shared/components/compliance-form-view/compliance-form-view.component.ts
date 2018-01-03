@@ -14,14 +14,15 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../../search/search.
     moduleId: module.id,
     templateUrl: 'compliance-form-view.component.html',
 })
-export class ComplianceFormViewComponent implements OnInit, OnChanges {
-    @Input() ComplianceFormId: string;
+export class ComplianceFormViewComponent implements OnInit {
+    // @Input() ComplianceFormId: string;
+    @Input() complianceForm: ComplianceFormA;
     public Loading: boolean = false;
     private error: any;
     
     public SelectedComplianceFormId: string;
     //public audit: Audit = new Audit;
-    public complianceForm: ComplianceFormA;
+    // public complianceForm: ComplianceFormA;
     public pageNumber: number;
     //public observation: string;
     public siteId: number = 0;
@@ -60,23 +61,23 @@ export class ComplianceFormViewComponent implements OnInit, OnChanges {
     //         });
     // }
 
-    ngOnChanges(changes: SimpleChanges){
-        if (this.ComplianceFormId){
-            this.loadComplianceForm();
-        }
-    }
-    
-    
-    loadComplianceForm() {
-        console.log("Inside loadComplianceForm:" + this.ComplianceFormId);
-        this.searchService.getComplianceForm(this.ComplianceFormId)
-            .subscribe((item: any) => {
-                this.complianceForm = item;
-            },
-            error => {
+    // ngOnChanges(changes: SimpleChanges){
+    //     if (this.ComplianceFormId){
+    //         this.loadComplianceForm();
+    //     }
+    // }
+     
+    // loadComplianceForm() {
+    //     console.log("Inside loadComplianceForm:" + this.ComplianceFormId);
+    //     this.searchService.getComplianceForm(this.ComplianceFormId)
+    //         .subscribe((item: any) => {
+    //             this.complianceForm = item;
+    //             this.Loading = false;
+    //         },
+    //         error => {
 
-            });
-    }
+    //         });
+    // }
 
     get Investigators() {
         if (this.complianceForm != undefined || this.complianceForm != null)
@@ -101,87 +102,8 @@ export class ComplianceFormViewComponent implements OnInit, OnChanges {
 
     get Findings() {
         if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.Findings;
+            return this.complianceForm.Findings.filter(x => x.IsAnIssue);
         else
             return null;
     }
-
-    
-
-    // clearValues() {
-    //     this.siteId = 0;
-    //     this.observation = null;
-    // }
-
-    // acceptObservation() {
-    //     this.audit.Observations.forEach((observation: AuditObservation) => {
-    //         if (this.siteId == observation.SiteId) {
-    //             observation.Comments = this.observation;
-    //             observation.Status = "Accepted";
-    //         }
-    //     });
-    //     this.clearValues();
-    // }
-
-    // rejectObservation() {
-    //     if (this.observation == null || this.observation.length == 0) {
-    //         alert("Observation cannot be empty. Please provide your observations");
-    //         return;
-    //     }
-
-    //     this.audit.Observations.forEach((observation: AuditObservation) => {
-    //         if (this.siteId == observation.SiteId) {
-    //             observation.Comments = this.observation;
-    //             observation.Status = "Rejected";
-    //         }
-    //     });
-    //     this.clearValues();
-    // }
-
-    // deleteObservation(deleteObservationById: number) {
-    //     var observation = this.audit.Observations.find(x => x.SiteId == deleteObservationById);
-    //     observation.Comments = null;
-    //     observation.Status = null;
-    // }
-
-    // save() {
-    //     this.audit.IsSubmitted = false;
-    //     this.auditService.saveAudit(this.audit)
-    //         .subscribe((item: any) => {
-
-    //         },
-    //         error => {
-
-    //         });
-    // }
-
-    // submit() {
-    //     var observation =
-    //         this.audit.Observations.find(x => x.Status != null &&
-    //             (x.Status.toLowerCase() == "accepted" ||
-    //             x.Status.toLowerCase() == "rejected"));
-        
-    //     console.log('observation: ', observation);
-        
-    //     if (observation == null || observation == undefined) {
-    //         alert("Please provide at least one observation to submit the audit");
-    //         return;
-    //     }
-
-    //     this.audit.IsSubmitted = true;
-    //     this.audit.AuditStatus = "Completed";
-    //     this.audit.CompletedOn = new Date();
-
-    //     this.auditService.saveAudit(this.audit)
-    //         .subscribe((item: any) => {
-    //             this.isSubmitted = true;
-    //         },
-    //         error => {
-
-    //         });
-    // }
-
-    // goBack() {
-    //     this._location.back();
-    // }
 }

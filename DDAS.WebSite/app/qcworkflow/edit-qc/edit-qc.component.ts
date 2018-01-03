@@ -9,7 +9,9 @@ import { ComplianceFormA,
     SiteSource, 
     Finding,
     Comment, 
-    CommentCategoryEnum } from '../../search/search.classes';
+    CommentCategoryEnum,
+    ReviewerRoleEnum,
+    ReviewStatusEnum } from '../../search/search.classes';
 import { Location } from '@angular/common';
 
 @Component({
@@ -30,6 +32,7 @@ export class EditQCComponent implements OnInit {
     public isSubmitted: boolean;
     public qcAssignedTo: string;
     public commentCategory: string;
+    public status: number = -1;
 
     constructor(
         private route: ActivatedRoute,
@@ -55,11 +58,21 @@ export class EditQCComponent implements OnInit {
         this.auditService.getQC(this.complianceFormId, this.qcAssignedTo)
             .subscribe((item: any) => {
                 this.complianceForm = item;
-                this.commentCategory = this.commentCategoryString(this.complianceForm.Comments[0].CategoryEnum);
+                this.isSubmitted = this.isQCPassedOrFailed;
             },
             error => {
 
             });
+    }
+
+    get isQCPassedOrFailed(){
+        if(this.complianceForm != null && 
+            (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
+            this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
+            return true;
+        }
+        else
+            return false;
     }
 
     get Investigators() {
@@ -90,28 +103,53 @@ export class EditQCComponent implements OnInit {
             return null;
     }
 
-    commentCategoryString(categoryEnum: number){
-        switch(categoryEnum){
-            case CommentCategoryEnum.Minor: return "Minor";
-            case CommentCategoryEnum.Major: return "Major";
-            case CommentCategoryEnum.Critical: return "Critical";
-            case CommentCategoryEnum.Suggestion: return "Suggestion";
-            case CommentCategoryEnum.Others: return "Others";
-            default: "";
+    get commentCategoryString(){
+        if(this.complianceForm.Comments[0].CategoryEnum != null ||
+        this.complianceForm.Comments[0].CategoryEnum != undefined){
+            switch(this.complianceForm.Comments[0].CategoryEnum){
+                case CommentCategoryEnum.Minor: return "Minor";
+                case CommentCategoryEnum.Major: return "Major";
+                case CommentCategoryEnum.Critical: return "Critical";
+                case CommentCategoryEnum.Suggestion: return "Suggestion";
+                case CommentCategoryEnum.Others: return "Others";
+                default: "";
+            }
         }
+        else
+            return null;
     }
 
     openComplianceForm(){
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
         this.router.navigate(['comp-form-edit', this.complianceForm.RecId, {rootPath:'qc', page:this.pageNumber}], { relativeTo: this.route.parent });
-    
     }
 
     save() {
     }
 
     submit() {
+        alert('You are about to submit QC. You will not be allowed to edit QC. Do you want to proceed ?');
 
+        if(this.status == -1){
+            alert('Please select one of the options: QC passed or failed');
+            return;
+        }
+
+        this.complianceForm.Reviews.forEach(review => {
+            if(review.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase()){
+                review.Status = 
+                this.status == 0 ? ReviewStatusEnum.QCFailed : ReviewStatusEnum.QCPassed;
+                review.CompletedOn = new Date();
+            }
+        });
+
+        this.auditService.saveQC(this.complianceForm)
+        .subscribe((item: any) => {
+            this.isSubmitted = true;
+            alert('QC has been submitted successfully');
+        },
+        error => {
+        });
     }
 
     goBack() {

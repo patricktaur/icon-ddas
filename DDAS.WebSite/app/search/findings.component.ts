@@ -387,6 +387,8 @@ export class FindingsComponent implements OnInit {
                 comment.ReviewId = review.RecId;
                 comment.AddedOn = new Date();
 
+                item.ReviewId = review.RecId;
+                
                 if(item.Comments == null)
                     item.Comments = new Array<Comment>();
 

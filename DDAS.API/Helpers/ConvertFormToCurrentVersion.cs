@@ -15,9 +15,7 @@ namespace DDAS.API.Helpers
             if(CompForm.Comments == null || 
                 CompForm.Comments.Count == 0)
             {
-                CompForm.Comments = new List<Comment>() {
-                    new Comment()
-                };
+                CompForm.Comments = new List<Comment>();
             }
 
             if(CompForm.Reviews == null || 
@@ -43,9 +41,7 @@ namespace DDAS.API.Helpers
                 if(finding.Comments == null ||
                     finding.Comments.Count == 0)
                 {
-                    finding.Comments = new List<Comment>() {
-                        new Comment()
-                    };
+                    finding.Comments = new List<Comment>();
                 }
             }
         }

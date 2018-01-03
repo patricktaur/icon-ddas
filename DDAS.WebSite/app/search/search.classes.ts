@@ -330,6 +330,7 @@ export class Finding {
     Comments: Comment[] = new Array<Comment>();
     UISelected: boolean = false;
     Selected: boolean = false;
+    ReviewId: string;
 }
 
 export class Comment {
