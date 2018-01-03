@@ -150,8 +150,8 @@ namespace DDAS.Models.Entities.Domain
             InvestigatorDetails = new List<InvestigatorSearched>();
             SiteSources = new List<SiteSource>();
             Findings = new List<Finding>();
-            Reviews = new List<Review>();
-            Comments = new List<Comment>();
+            //Reviews = new List<Review>();
+            //Comments = new List<Comment>();
         }
 
         public Guid? RecId { get; set; }
@@ -187,20 +187,9 @@ namespace DDAS.Models.Entities.Domain
         public List<InvestigatorSearched> InvestigatorDetails { get; set; }
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
-        public List<Review> Reviews { get; set; }
-        public List<Comment> Comments
-        {
-            get
-            {
-                if (Comments == null)
-                {
-                    return new List<Comment>();
-                }
-                else
-                    return Comments;
-            }
-            set { Comments = value; }
-        }
+        public List<Review> Reviews { get; set; } = new List<Review>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+
         public ReviewStatusEnum CurrentReviewStatus {
             get
             {
@@ -235,6 +224,7 @@ namespace DDAS.Models.Entities.Domain
                 return _Status;
             }
         }
+
         public ComplianceFormStatusEnum StatusEnum
         {
             get

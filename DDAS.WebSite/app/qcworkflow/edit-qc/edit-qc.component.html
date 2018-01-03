@@ -189,13 +189,14 @@
 				</div>
 			</div>
 
+			<h4>General Observation:</h4>
 			 <table class="table table-bordered table-hover table-striped">
 				<thead>
 					<tr>
 						<th class="col-md-2 text-left">Category</th>
 						<th class="col-md-3 text-left">Observation/Comment</th>
 					</tr>
-					<tr class="active" *ngFor="let item of complianceForm.Comments[0]">
+					<tr class="active" *ngFor="let item of complianceForm.Comments">
 						<td class="text-left">
 							{{commentCategory}}
 						</td>
