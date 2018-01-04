@@ -1,8 +1,8 @@
 
 <form role='form'>
-    <div class="form-group col-md-6">
+    <!-- <div class="form-group col-md-6"> -->
         <div class="well">
-            XXXXXXX
+            View
             <div class="row" *ngIf="Finding.IsMatchedRecord==true">
                 <div class="col-md-12">
                     <div class="row">
@@ -33,22 +33,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <h4>Findings:</h4>
-                    <textarea class="form-control" name="Observation" [(ngModel)]="Finding.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
+                    <textarea class="form-control" name="Observation" [(ngModel)]="Finding.Observation" rows="3" cols="30" readonly></textarea>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
                     <h4>Date of Inspection:</h4>
-
-                    <div *ngIf="!Finding.IsMatchedRecord">
-                        <input type="date" [(ngModel)]="Finding.DateOfInspection" name="dateOfInspection" (change)="formValueChanged()">
-                        <b>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</b>
-                        <!--<div date-picker [(DateValue)]="Finding.DateOfInspection"></div>-->
-                    </div>
-                    <div *ngIf="Finding.IsMatchedRecord">
-                        <label>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</label>
-                    </div>
+                    <label>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</label>
+                    
                 </div>
                 <div class="col-md-6">
                 </div>
@@ -56,8 +49,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <label for="IsAnIssue"><h4>Is an Issue:</h4></label>
-                    <input type="checkbox" name="IsAnIssue" [(ngModel)]="Finding.IsAnIssue" />
-                    <br/>
+                    {{Finding.IsAnIssue | boolToYesNo}}
+                    <!-- <input type="checkbox" name="IsAnIssue" [(ngModel)]="Finding.IsAnIssue" readonly/>
+                    <br/> -->
                     <label for="comment" *ngIf="isQCVerifier"> <h4>QC Verifier's Comment:</h4></label>
                     <textarea *ngIf="isQCVerifier" class="form-control" name="Comment" [(ngModel)]="Finding.Comments[0].FindingComment"
                      rows="3" cols="30" required placeholder="Comment">
@@ -65,14 +59,9 @@
                     <!-- Finding.Comments[0].FindingComment -->
                 </div>
             </div>
-            <br/>
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-default" (click)="RemoveClicked()">Remove</button>
-                </div>
-            </div>
+
         </div>
-    </div>
+    <!-- </div> -->
     <div *ngIf="dividerGeneration(indexVal)">
         <div style="clear:both;"></div>
     </div>

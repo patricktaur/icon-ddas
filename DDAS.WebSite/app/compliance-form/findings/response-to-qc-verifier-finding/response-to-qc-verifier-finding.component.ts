@@ -4,13 +4,12 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
 
 
 @Component({
-    selector: '[selected-finding]',
+    selector: '[response-to-qc-verifier-finding]',
     moduleId: module.id,
-    templateUrl: 'selected-finding.component.html',
+    templateUrl: 'response-to-qc-verifier-finding.component.html',
 })
-export class SelectedFindingComponent  {
+export class ResponseToQCVerifierFindingComponent  {
     @Input() Finding: Finding;
-    @Output() Remove = new EventEmitter();
     
     private pageChanged: boolean = false;
     
@@ -36,7 +35,5 @@ export class SelectedFindingComponent  {
         }
     }
 
-    RemoveClicked(){
-        this.Remove.emit();
-    }
+    
 }
