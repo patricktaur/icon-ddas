@@ -142,13 +142,62 @@
 			</div>
 		</div>
 	</div>
-	<div class="row" *ngIf="!isQCVerifier">
+	<div class="row" >
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
+				<!-- <div class="form-group col-md-6">
+						<div selected-finding-edit [Finding]="matchedRecord" 
+						(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+						</div>
+				</div>	 -->
 			
-			<div selected-finding-edit [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"></div>
-			<!-- <div selected-finding-view [Finding]="matchedRecord" ></div> -->
-			<div qc-verifier-comments [Finding]="matchedRecord"></div>
-			
+				<!-- Not required: -->
+				<!-- <div class="form-group col-md-6"  >
+						<div selected-finding-view 
+						[Finding]="matchedRecord" >
+						</div>
+									
+				</div>	 -->
+				
+				
+				<!-- <div class="form-group col-md-6"  >
+						<div qc-verifier-comments 
+						[Finding]="matchedRecord" >
+						</div>
+									
+				</div>	 -->
+
+				<!-- <div class="form-group col-md-6"  >
+						<div qc-verifier-finding
+						[Finding]="matchedRecord"
+						(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+						</div>
+									
+				</div>	 -->
+
+				
+				<!-- <div class="form-group col-md-6"  >
+						<div response-to-qc-verifier-finding
+						[Finding]="matchedRecord">
+						</div>
+									
+				</div>	 -->
+
+				<div class="form-group col-md-6"  >
+						<div response-to-qc-verifier-comment
+						[Finding]="matchedRecord">
+						</div>
+									
+				</div>	
+
+
+			<!-- <div class="row ">
+				<div class="form-group col-md-6">
+			</div> -->
+			<!-- <div qc-verifier-comments [Finding]="matchedRecord"></div> -->
+			<div *ngIf="dividerGeneration(indexVal)">
+				<div style="clear:both;"></div>
+			</div>
+
 		</div>
 	</div>
 

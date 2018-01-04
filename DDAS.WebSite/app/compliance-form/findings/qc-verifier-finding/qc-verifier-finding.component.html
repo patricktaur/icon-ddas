@@ -1,4 +1,5 @@
-<div finding-view-base [Finding]="Finding" [Title]="'QC Verifier Comments'">
+
+<div finding-edit-base [Finding]="Finding" [Title]="'QC Verifier Finding'">
     <div class="row">
         <div class="col-md-12">
             <label for="comment">
@@ -9,8 +10,9 @@
                     </textarea>
         </div>
     </div>
-
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-default" (click)="RemoveClicked()">Remove</button>
+        </div>
+    </div>
 </div>
-
-
-

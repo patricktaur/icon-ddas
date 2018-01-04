@@ -505,16 +505,16 @@ export class FindingsComponent implements OnInit {
     }
 
     //remove after testing the component
-    Split = (RecordDetails: string) => {
-        if (RecordDetails == undefined) {
-            return null;
-        }
-        var middleNames: string[] = RecordDetails.split("~");
+    // Split = (RecordDetails: string) => {
+    //     if (RecordDetails == undefined) {
+    //         return null;
+    //     }
+    //     var middleNames: string[] = RecordDetails.split("~");
 
-        return middleNames;
-    }
+    //     return middleNames;
+    // }
 
-    //remove after testing the component
+    
     dividerGeneration(indexVal: number) {
         if ((indexVal + 1) % 2 == 0) {
             return true;
@@ -523,6 +523,35 @@ export class FindingsComponent implements OnInit {
             return false;
         }
     }
+
+    IsFirst(indexVal: number) {
+        if ((indexVal + 1) % 1 == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    IsSecond(indexVal: number) {
+        if ((indexVal + 1) % 2 == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    IsThird(indexVal: number) {
+        if ((indexVal + 1) % 3 == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+
 
     canDeactivate(): Promise<boolean> | boolean {
 
@@ -540,6 +569,8 @@ export class FindingsComponent implements OnInit {
         this.canDeactivateValue = true;
     }
 
+    
+    
     goBack() {
 
         this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId, { siteId: this.siteSourceId, rootPath: this.rootPath, hideReviewCompleted: this.hideReviewCompleted }], { relativeTo: this.route.parent });

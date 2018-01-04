@@ -59,9 +59,16 @@ import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-compone
 import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by.component"
 import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
 
+import {FindingEditBaseComponent} from "../compliance-form/findings/finding-base-edit/finding-edit-base.component"
+import {FindingViewBaseComponent} from "../compliance-form/findings/finding-base-view/finding-view-base.component"
+
 import {SelectedFindingEditComponent} from "../compliance-form/findings/selected-finding-edit/selected-finding-edit.component"
 import {SelectedFindingViewComponent} from "../compliance-form/findings/selected-finding-view/selected-finding-view.component"
 import {QCVerifierCommentsComponent} from "../compliance-form/findings/qc-verifier-comments/qc-verifier-comments.component"
+import {QCVerifierFindingComponent} from "../compliance-form/findings/qc-verifier-finding/qc-verifier-finding.component"
+
+import {ResponseToQCVerifierFindingComponent} from "../compliance-form/findings/response-to-qc-verifier-finding/response-to-qc-verifier-finding.component"
+import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/response-to-qc-verifier-comment/response-to-qc-verifier-comment.component"
 
 @NgModule({
   imports: [
@@ -109,9 +116,15 @@ import {QCVerifierCommentsComponent} from "../compliance-form/findings/qc-verifi
     ComplianceFormFindingsComponent,
     ComplianceFormSearchedByComponent,
     ComplianceFormSummaryComponent,
+    
+    FindingEditBaseComponent,
+    FindingViewBaseComponent,
     SelectedFindingEditComponent,
     SelectedFindingViewComponent,
-    QCVerifierCommentsComponent
+    QCVerifierCommentsComponent,
+    QCVerifierFindingComponent,
+    ResponseToQCVerifierFindingComponent,
+    ResponseToQCVerifierCommentComponent
 
   ],
 
