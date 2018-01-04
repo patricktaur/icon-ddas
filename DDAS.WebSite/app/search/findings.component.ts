@@ -568,7 +568,14 @@ export class FindingsComponent implements OnInit {
         this.canDeactivateValue = true;
     }
 
-    
+    Split = (RecordDetails: string) => {
+        if (RecordDetails == undefined) {
+            return null;
+        }
+        var middleNames: string[] = RecordDetails.split("~");
+
+        return middleNames;
+    }
     
     goBack() {
 
