@@ -47,6 +47,20 @@ export class ListQCComponent implements OnInit {
             });
     }
 
+    status(statusEnum: number){
+        switch(statusEnum){
+            case ReviewStatusEnum.SearchCompleted: return "Search Completed";
+            case ReviewStatusEnum.ReviewInProgress: return "Review in progress";
+            case ReviewStatusEnum.ReviewCompleted: return "Review completed";
+            case ReviewStatusEnum.Completed: return "Completed";
+            case ReviewStatusEnum.QCRequested: return "QC Requested";
+            case ReviewStatusEnum.QCInProgress: return "QC in progress";
+            case ReviewStatusEnum.QCFailed: return "QC Failed";
+            case ReviewStatusEnum.QCPassed: return "QC Passed";
+            default: "";
+        }
+    }
+
     get filterQCByUserName() {
         if(this.authService.isAdmin){
             return this.qcList;

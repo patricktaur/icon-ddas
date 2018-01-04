@@ -72,8 +72,8 @@
 
 							<div class="tab-content">
 								<div id="general-info-tab" class="tab-pane fade {{defaultTabInActive}}">
-									<div comp-form-general-edit [CompForm]="CompForm"></div>
-									<div comp-form-general-view [CompForm]="CompForm"></div>
+									<!-- <div *ngIf="!isQCVerifier" comp-form-general-edit [CompForm]="CompForm"></div> -->
+									<!-- <div *ngIf="isQCVerifier" comp-form-general-view [CompForm]="CompForm"></div> -->
 									
 									<h4>General Information:</h4>
 									<form #f="ngForm" novalidate>
@@ -142,8 +142,8 @@
 
 								</div>
 								<div id="institute-tab" class="tab-pane fade">
-									<div comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath"></div>
-									<div comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div>
+									<!-- <div *ngIf="!isQCVerifier" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath"></div> -->
+									<!-- <div *ngIf="isQCVerifier" comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div> -->
 									
 									
 									<h4>Institute</h4>
@@ -437,8 +437,8 @@
 
 								</div>
 								<div id="additional-sites-tab" class="tab-pane fade">
-									<div comp-form-additional-sites-edit [CompForm]="CompForm"></div>
-									<div comp-form-additional-sites-view [CompForm]="CompForm"></div> 
+									<!-- <div *ngIf="!isQCVerifier" comp-form-additional-sites-edit [CompForm]="CompForm"></div> -->
+									<!-- <div *ngIf="isQCVerifier" comp-form-additional-sites-view [CompForm]="CompForm"></div>  -->
 									
 									<div class="row">
 										<div class="col-lg-12">
@@ -508,7 +508,7 @@
 								</div>
 
 								<div id="findigs-tab" class="tab-pane fade">
-									<div comp-form-findings-edit [CompForm]="CompForm"></div>
+									<div *ngIf="!isQCVerifier" comp-form-findings-edit [CompForm]="CompForm"></div>
 									
 									<div class="row">
 										<div class="col-lg-12">

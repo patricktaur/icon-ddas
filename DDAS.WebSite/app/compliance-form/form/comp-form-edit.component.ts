@@ -128,7 +128,6 @@ export class CompFormEditComponent implements OnInit {
         });
     }
 
-    
     get status(){
         console.log('status', this.CompForm.CurrentReviewStatus);
         switch(this.CompForm.CurrentReviewStatus){

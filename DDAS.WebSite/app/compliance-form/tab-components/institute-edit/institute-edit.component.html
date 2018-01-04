@@ -22,9 +22,9 @@
                         <td>{{item.DisplayPosition}}</td>
                         <td align="left">
                             <div class="text-left" *ngIf="isUrl(item.SiteUrl)">
-                                <a target="_blank" [href]="sanitize(item.SiteUrl)">
+                                 <a target="_blank" [href]="sanitize(item.SiteUrl)"> 
                                     {{item.SiteName}}
-                                </a>
+                                 </a>
                             </div>
                             <div class="text-left" *ngIf="!isUrl(item.SiteUrl)">
                                 {{item.SiteName}}

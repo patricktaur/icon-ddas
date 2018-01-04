@@ -59,6 +59,7 @@ import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-compone
 import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by.component"
 import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
 
+<<<<<<< HEAD
 import {FindingEditBaseComponent} from "../compliance-form/findings/finding-base-edit/finding-edit-base.component"
 import {FindingViewBaseComponent} from "../compliance-form/findings/finding-base-view/finding-view-base.component"
 
@@ -69,6 +70,9 @@ import {QCVerifierFindingComponent} from "../compliance-form/findings/qc-verifie
 
 import {ResponseToQCVerifierFindingComponent} from "../compliance-form/findings/response-to-qc-verifier-finding/response-to-qc-verifier-finding.component"
 import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/response-to-qc-verifier-comment/response-to-qc-verifier-comment.component"
+=======
+import {SelectedFindingComponent} from "../compliance-form/findings/selected-finding/selected-finding.component";
+>>>>>>> c5e920463d3ec9dd8cdd074121d9affef2028ed5
 
 @NgModule({
   imports: [
