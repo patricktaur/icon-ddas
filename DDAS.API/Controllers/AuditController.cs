@@ -1,4 +1,5 @@
-﻿using DDAS.Models.Entities.Domain;
+﻿using DDAS.API.Helpers;
+using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,11 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetAudit(string Id, string AssignedTo)
         {
             var RecId = Guid.Parse(Id);
-            return Ok(_Audit.GetQC(RecId, AssignedTo));
+            var CompForm = _Audit.GetQC(RecId, AssignedTo);
+            UpdateFormToCurrentVersion
+                .UpdateComplianceFormToCurrentVersion(CompForm);
+
+            return Ok(CompForm);
         }
 
         [Route("ListQCs")]
@@ -45,6 +50,14 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
             return Ok(_Audit.SaveQC(Form));
+        }
+
+        [Route("ListQCSummary")]
+        [HttpGet]
+        public IHttpActionResult ListQCSummary(string FormId)
+        {
+            var Id = Guid.Parse(FormId);
+            return Ok(_Audit.ListQCSummary(Id));
         }
     }
 }

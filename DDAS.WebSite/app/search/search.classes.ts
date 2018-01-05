@@ -207,6 +207,7 @@ export class ComplianceFormA {
 
     InstituteSearchSiteCount: number;
     Reviews: Review[] = new Array<Review>();
+    Comments: Comment[] = new Array<Comment>();
     CurrentReviewStatus: ReviewStatusEnum;
 }
 
@@ -329,12 +330,15 @@ export class Finding {
     Comments: Comment[] = new Array<Comment>();
     UISelected: boolean = false;
     Selected: boolean = false;
+    ReviewId: string;
 }
 
 export class Comment {
     ReviewId: string;
     FindingComment: string;
     AddedOn: Date;
+    CorrectedOn: Date;
+    CategoryEnum: CommentCategoryEnum;
 }
 
 export class SiteSource {
@@ -443,6 +447,14 @@ export enum ReviewStatusEnum {
 export enum ReviewerRoleEnum {
     Reviewer,
     QCVerifier
+}
+
+export enum CommentCategoryEnum {
+    Minor,
+    Major,
+    Critical,
+    Suggestion,
+    Others
 }
 
 export class QualityCheck {

@@ -7,8 +7,7 @@
                 <h3>{{Title}}</h3>
             </div> -->
         </div>
-        
-
+        <!-- {{diagnostic}} -->
         <div class="row" *ngIf="Finding.IsMatchedRecord==true">
             <div class="col-md-12">
                 <h4>Record Details</h4>
@@ -55,7 +54,7 @@
                 <h4>Date of Inspection:</h4>
 
                 <div *ngIf="!Finding.IsMatchedRecord">
-                    <input type="date" [(ngModel)]="Finding.DateOfInspection" name="dateOfInspection" (change)="formValueChanged()">
+                    <input type="date" [(ngModel)]="Finding.DateOfInspection" name="dateOfInspection">
                     <b>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</b>
                     <!--<div date-picker [(DateValue)]="Finding.DateOfInspection"></div>-->
                 </div>
