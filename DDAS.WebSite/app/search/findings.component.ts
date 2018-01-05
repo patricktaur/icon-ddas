@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
-    Finding, SiteSearchStatus, UpdateFindigs, ReviewerRoleEnum, Comment } from './search.classes';
+import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, 
+    SiteSource, Finding, SiteSearchStatus, UpdateFindigs, 
+    ReviewerRoleEnum, Comment, Review } from './search.classes';
 import { SearchService } from './search-service';
 import { AuthService } from '../auth/auth.service';
 import { Location } from '@angular/common';
@@ -10,9 +11,7 @@ import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'findings.component.html',
-
-
+    templateUrl: 'findings.component.html'
 })
 export class FindingsComponent implements OnInit {
     public CompForm: ComplianceFormA = new ComplianceFormA;
@@ -43,7 +42,7 @@ export class FindingsComponent implements OnInit {
     public dateOfInspectionToLocaleString: string = "";
     public recordsPerPage: number;
     public isQCVerifier: boolean;
-    public qcVerifierComment: string;
+    public qcReview: Review;
 
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
@@ -78,12 +77,12 @@ export class FindingsComponent implements OnInit {
             x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
             x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
 
-            console.log('review -> ', review);
-            console.log('reviews -> ', this.CompForm.Reviews);
             if(!review)
                 return false;
-            else
+            else{
+                // this.qcReview = this.qcVerifierReview;
                 return true;
+            }
         }
     }
 
@@ -238,6 +237,7 @@ export class FindingsComponent implements OnInit {
         //         console.log('local Date format - ', finding.DateOfInspectionLocale);
         //     }
         // });
+        
         return this.Findings.filter(x => x.Selected == true);
     }
 
@@ -348,11 +348,72 @@ export class FindingsComponent implements OnInit {
         else {
             return siteSearched1;
         }
-
     }
 
+    get qcVerifierReview(){
+        if(this.CompForm.Reviews != null ||
+        this.CompForm.Reviews.length > 0){
+            return this.CompForm.Reviews.find(x =>
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier &&
+            x.AssigendTo.toLowerCase() == 
+            this.authService.userName.toLowerCase());
+        }
+    }
 
+    get reviewerReview(){
+        if(this.CompForm.Reviews != null ||
+        this.CompForm.Reviews.length > 0){
+            return this.CompForm.Reviews.find(x =>
+            x.ReviewerRole == ReviewerRoleEnum.Reviewer &&
+            x.AssigendTo.toLowerCase() == 
+            this.authService.userName.toLowerCase());
+        }        
+    }
 
+    isReviewerFinding(selectedFinding: Finding){
+        if(this.reviewerReview != undefined &&
+            selectedFinding.ReviewId == this.reviewerReview.RecId &&
+            selectedFinding.Comments.find(x => x.ReviewId == this.reviewerReview.RecId) != null)
+            return true;
+        else
+            return false;        
+    }
+
+    //check whether selected finding is added by QC verifier
+    isQCVerifierFinding(selectedFinding: Finding){
+        if(this.qcVerifierReview != undefined &&
+            selectedFinding.ReviewId == this.qcVerifierReview.RecId)
+            return true;
+        else
+            return false;
+    }
+
+    isNotQCVerifierFinding(selectedFinding: Finding){
+        console.log('===> ', this.qcVerifierReview);
+        if(this.qcVerifierReview != undefined
+            && selectedFinding.ReviewId != this.qcVerifierReview.RecId)
+            return true;
+        else
+            return false;
+    }
+
+    isNotReviewerFindingAndResponseRequired(selectedFinding: Finding){
+        if(this.reviewerReview != undefined &&
+        selectedFinding.ReviewId != this.reviewerReview.RecId)
+            return true;
+        else
+            return false;
+    }
+
+    isReviewerFindingAndResponseRequired(selectedFinding: Finding){
+        console.log('===> ', this.reviewerReview);
+        if(this.reviewerReview != undefined &&
+        selectedFinding.ReviewId == this.reviewerReview.RecId && 
+        selectedFinding.Comments.find(x => x.FindingComment != null) != null)
+            return true;
+        else
+            return false;
+    }
 
     Add() {
         let finding = new Finding;
@@ -379,20 +440,25 @@ export class FindingsComponent implements OnInit {
                 item.UISelected = false;
 
                 var review = this.CompForm.Reviews.find(x =>
-                x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                x.Status == this.CompForm.CurrentReviewStatus);
-                
-                console.log(this.CompForm.Reviews);
-                let comment = new Comment();
-                comment.ReviewId = review.RecId;
-                comment.AddedOn = new Date();
+                x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase());
+                //x.Status == this.CompForm.CurrentReviewStatus
 
                 item.ReviewId = review.RecId;
-                
-                if(item.Comments == null)
-                    item.Comments = new Array<Comment>();
+                // console.log('review: ', review);
+                // console.log('finding: ', item);
 
-                item.Comments.push(comment);
+                // if(item.Comments == null || item.Comments == undefined || item.Comments.length == 0 ){
+                //     console.log('adding comment collection');
+                //     let comments = new Array<Comment>();
+                //     let comment = new Comment();
+                //     comment.ReviewId = review.RecId;
+                //     comment.AddedOn = new Date();
+                //     comment.CategoryEnum = 0;
+                //     comments.push(comment);
+                //     this.CompForm.Comments = comments;
+                //     item.Comments.push(comment);
+                //     console.log('comment collection has been added. ', item.Comments);
+                // }
             }
         }
         this.pageChanged = true;
@@ -406,7 +472,7 @@ export class FindingsComponent implements OnInit {
                 finding.IsMatchedRecord = true;
                 finding.InvestigatorSearchedId = this.InvestigatorId;
                 finding.InvestigatorName = this.Investigator.Name;
-                finding.SiteSourceId = this.Site.Id  // this.Site.DisplayPosition;
+                finding.SiteSourceId = this.Site.Id;  // this.Site.DisplayPosition;
                 finding.SiteDisplayPosition = this.Site.DisplayPosition;
                 finding.SiteId = this.Site.SiteId;
                 finding.SiteEnum = this.Site.SiteEnum; // this.SiteEnum;
@@ -418,21 +484,20 @@ export class FindingsComponent implements OnInit {
                 finding.DateOfInspection = item.DateOfInspection;
                 finding.Links = item.Links;
                 
-                var review = this.CompForm.Reviews.find(x =>
-                x.AssigendTo == this.authService.userName &&
-                x.Status == this.CompForm.CurrentReviewStatus); //to add review id of the verifier/reviewer
+                // var review = this.CompForm.Reviews.find(x =>
+                // x.AssigendTo == this.authService.userName &&
+                // x.Status == this.CompForm.CurrentReviewStatus); //to add review id of the verifier/reviewer
 
-                let comment = new Comment();
-                comment.ReviewId = review.RecId;
-                comment.AddedOn = new Date();
+                // let comment = new Comment();
+                // comment.ReviewId = review.RecId;
+                // comment.AddedOn = new Date();
 
-                item.Comments.push(comment);
+                // item.Comments.push(comment);
 
                 this.CompForm.Findings.push(finding);
                 this.pageChanged = true;
             }
         }
-
     }
 
     SetFindingToRemove(selectedRecord: Finding) {
@@ -490,6 +555,7 @@ export class FindingsComponent implements OnInit {
         updateFindings.SiteSourceId = this.Site.Id// this.SiteEnum;
         updateFindings.InvestigatorSearchedId = this.InvestigatorId;
         updateFindings.ReviewCompleted = this.SiteSearchStatus.ReviewCompleted;
+        
         updateFindings.Findings = this.Findings;
 
 
@@ -570,7 +636,14 @@ export class FindingsComponent implements OnInit {
         this.canDeactivateValue = true;
     }
 
-    
+    Split = (RecordDetails: string) => {
+        if (RecordDetails == undefined) {
+            return null;
+        }
+        var middleNames: string[] = RecordDetails.split("~");
+
+        return middleNames;
+    }
     
     goBack() {
 
@@ -587,6 +660,5 @@ export class FindingsComponent implements OnInit {
     sanitize(url: string) {
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
-
-    get diagnostic() { return JSON.stringify(this.singleMatchRecords); }
+    get diagnostic() { return JSON.stringify(this.CompForm.Reviews); }
 }

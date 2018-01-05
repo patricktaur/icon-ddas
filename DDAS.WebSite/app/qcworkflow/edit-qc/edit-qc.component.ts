@@ -33,6 +33,8 @@ export class EditQCComponent implements OnInit {
     public qcAssignedTo: string;
     public commentCategory: string;
     public status: number = -1;
+    public qcSummary: any[];
+    public qcVerifierComment: Comment;
 
     constructor(
         private route: ActivatedRoute,
@@ -52,6 +54,7 @@ export class EditQCComponent implements OnInit {
         });
         this.complianceForm = new ComplianceFormA;
         this.loadComplianceForm();
+        this.listQCSummary();
     }
 
     loadComplianceForm() {
@@ -65,6 +68,14 @@ export class EditQCComponent implements OnInit {
             });
     }
 
+    getQCVerifierComment(){
+        var review = this.complianceForm.Reviews.find(x => 
+            x.AssigendTo == this.authService.userName &&
+        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+        
+    }
+
     get isQCPassedOrFailed(){
         if(this.complianceForm != null && 
             (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
@@ -73,6 +84,15 @@ export class EditQCComponent implements OnInit {
         }
         else
             return false;
+    }
+
+    listQCSummary(){
+        this.auditService.listQCSummary(this.complianceFormId)
+            .subscribe((item: any) => {
+                this.qcSummary = item;
+            },
+            error => {
+            });        
     }
 
     get Investigators() {

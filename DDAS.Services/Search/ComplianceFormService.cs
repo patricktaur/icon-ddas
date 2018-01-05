@@ -492,8 +492,6 @@ namespace DDAS.Services.Search
 
         }
          /*
-           
-
 
          */
 
@@ -628,6 +626,11 @@ namespace DDAS.Services.Search
                         finding.Id = Guid.NewGuid();
                     }
 
+                    if(finding.Comments.Count > 0 &&
+                        finding.Comments[0].ReviewId == null)
+                    {
+                        finding.Comments = new List<Comment>();
+                    }
                     //if (finding.Comments == null)
                     //    break;
 

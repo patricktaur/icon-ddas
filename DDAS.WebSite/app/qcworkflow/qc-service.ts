@@ -68,6 +68,14 @@ export class QCService {
         .catch(this.handleError);
     }
 
+    listQCSummary(complianceFormId: string): Observable<any[]>{
+        return this.http.get(this._baseUrl + 'QC/ListQCSummary?FormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

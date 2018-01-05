@@ -25,6 +25,7 @@ namespace DDAS.Services.AuditService
 
         public bool RequestQC(ComplianceForm Form)
         {
+
             foreach(Review Review in Form.Reviews)
             {
                 if (Review.RecId == null && 
@@ -40,6 +41,33 @@ namespace DDAS.Services.AuditService
                 }
                 else if(Review.RecId == null)
                     Review.RecId = Guid.NewGuid();
+            }
+
+            var review = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+            Form.Comments.Add(new Comment()
+            {
+                ReviewId = review.RecId.Value
+            });
+
+            foreach(Finding finding in Form.Findings)
+            {
+                if(finding.Comments.Count == 0)
+                {
+                    var Comment = new Comment();
+                    var Review =
+                        Form.Reviews.Find(x =>
+                        x.ReviewerRole == ReviewerRoleEnum.Reviewer);
+                    Comment.ReviewId = Review.RecId.Value;
+                    finding.Comments.Add(Comment);
+
+                    var Comment1 = new Comment();
+                    var Review1 =
+                        Form.Reviews.Find(x =>
+                        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+                    Comment1.ReviewId = Review1.RecId.Value;
+                    finding.Comments.Add(Comment1);
+                }
             }
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
@@ -125,6 +153,59 @@ namespace DDAS.Services.AuditService
         {
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return true;
+        }
+
+        public List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (Form == null)
+                throw new Exception("No compliance forms found!");
+
+            var QCReview = Form.Reviews.Find(x =>
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+            var QCSummaryList = new List<QCSummaryViewModel>();
+
+            foreach (Finding finding in Form.Findings.Where(x => x.IsAnIssue))
+            {
+                foreach(Comment comment in finding.Comments)
+                {
+                    if(comment.ReviewId == QCReview.RecId)
+                    {
+                        var QCSummary = new QCSummaryViewModel();
+                        QCSummary.Investigator =
+                            finding.InvestigatorName;
+                        QCSummary.SourceName =
+                            Form.SiteSources.Find(x =>
+                            x.Id == finding.SiteSourceId).SiteShortName;
+                        QCSummary.CategoryEnumString = 
+                            GetCategoryEnumString(comment.CategoryEnum);
+
+                        if (finding.ReviewId == QCReview.RecId)
+                            QCSummary.Comment = finding.Observation + " " +
+                                comment.FindingComment;
+                        else
+                            QCSummary.Comment = comment.FindingComment;
+
+                        QCSummaryList.Add(QCSummary);
+                    }
+                }
+            }
+            return QCSummaryList;
+        }
+
+        private string GetCategoryEnumString(CommentCategoryEnum Enum)
+        {
+            switch (Enum)
+            {
+                case CommentCategoryEnum.Minor: return "Minor";
+                case CommentCategoryEnum.Major: return "Major";
+                case CommentCategoryEnum.Critical: return "Critical";
+                case CommentCategoryEnum.Suggestion: return "Suggestion";
+                case CommentCategoryEnum.Others: return "Others";
+                default: throw new Exception("Invalid CommentCategoryEnum");
+            }
         }
 
         private void SendAuditRequestedMail(string SendMailTo, string AuditRequestedBy)

@@ -2,13 +2,12 @@ import { Component, OnInit, OnDestroy, Input, Output, OnChanges, EventEmitter } 
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.classes';
 
-
 @Component({
     selector: '[selected-finding-edit]',
     moduleId: module.id,
     templateUrl: 'selected-finding-edit.component.html',
 })
-export class SelectedFindingEditComponent  {
+export class SelectedFindingEditComponent {
     @Input() Finding: Finding;
     @Output() Remove = new EventEmitter();
     

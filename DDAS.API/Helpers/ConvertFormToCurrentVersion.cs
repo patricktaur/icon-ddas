@@ -12,11 +12,11 @@ namespace DDAS.API.Helpers
         public static void UpdateComplianceFormToCurrentVersion(
             ComplianceForm CompForm)
         {
-            if(CompForm.Comments == null || 
-                CompForm.Comments.Count == 0)
-            {
-                CompForm.Comments = new List<Comment>();
-            }
+            //if(CompForm.Comments == null || 
+            //    CompForm.Comments.Count == 0)
+            //{
+            //    CompForm.Comments = new List<Comment>();
+            //}
 
             if(CompForm.Reviews == null || 
                 CompForm.Reviews.Count == 0)
@@ -36,14 +36,19 @@ namespace DDAS.API.Helpers
                 };
             }
 
-            foreach(Finding finding in CompForm.Findings)
-            {
-                if(finding.Comments == null ||
-                    finding.Comments.Count == 0)
-                {
-                    finding.Comments = new List<Comment>();
-                }
-            }
+            //foreach(Finding finding in CompForm.Findings)
+            //{
+            //    if(finding.Comments == null ||
+            //        finding.Comments.Count == 0)
+            //    {
+            //        finding.Comments = new List<Comment>() {
+            //            new Comment()
+            //            {
+
+            //            }
+            //        };
+            //    }
+            //}
         }
 
         public static List<ComplianceForm> UpdateComplianceFormToCurrentVersion(

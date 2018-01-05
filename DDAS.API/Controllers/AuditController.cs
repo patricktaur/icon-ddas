@@ -51,5 +51,13 @@ namespace DDAS.API.Controllers
         {
             return Ok(_Audit.SaveQC(Form));
         }
+
+        [Route("ListQCSummary")]
+        [HttpGet]
+        public IHttpActionResult ListQCSummary(string FormId)
+        {
+            var Id = Guid.Parse(FormId);
+            return Ok(_Audit.ListQCSummary(Id));
+        }
     }
 }

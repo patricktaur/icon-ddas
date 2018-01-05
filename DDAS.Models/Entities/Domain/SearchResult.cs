@@ -1008,8 +1008,8 @@ namespace DDAS.Models.Entities.Domain
     {
         public Guid ReviewId { get; set; }
         public string FindingComment { get; set; }
-        public DateTime AddedOn { get; set; }
-        public DateTime CorrectedOn { get; set; }
+        public DateTime? AddedOn { get; set; }
+        public DateTime? CorrectedOn { get; set; }
         public CommentCategoryEnum CategoryEnum { get; set; }
     }
 
