@@ -3,8 +3,16 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, 
-    ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel, ReviewerRoleEnum, ReviewStatusEnum } 
+import { ComplianceFormA, 
+    InvestigatorSearched, 
+    SiteSourceToSearch, 
+    SiteSource, 
+    ComplianceFormStatusEnum, 
+    Finding, 
+    InstituteFindingsSummaryViewModel, 
+    ReviewerRoleEnum, 
+    ReviewStatusEnum,
+    Comment } 
     from '../../search/search.classes';
 import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
@@ -278,8 +286,7 @@ gotoSiteDetails(SiteSourceId: number){
             });
     }
 
-    LoadOpenComplainceForm() {
-        
+    LoadOpenComplainceForm() {      
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
@@ -293,10 +300,27 @@ gotoSiteDetails(SiteSourceId: number){
                 this.formLoading = false;
                 this.reviewStatus = this.status;
                 this.isQCVerifier = this.isReviewerOrQCVerifier;
+                this.addCommentCollection();
             },
             error => {
                 this.formLoading = false;
             });
+    }
+
+    addCommentCollection(){
+        if(this.isQCVerifier &&
+            (this.CompForm.Comments == null || 
+            this.CompForm.Comments == undefined || this.CompForm.Comments.length == 0)){
+                let comments = new Array<Comment>();
+                let comment = new Comment;
+                comment.CategoryEnum = 0;
+                comments.push(comment);
+                this.CompForm.Comments = comments;
+                // console.log('added comment: ', this.CompForm.Comments);
+            }
+            // else{
+            //     console.log('comment collection is not added or not required. ', this.CompForm.Comments);
+            // }
     }
 
     get isReviewerOrQCVerifier(){
@@ -940,7 +964,7 @@ gotoSiteDetails(SiteSourceId: number){
    
      }
     
-    get diagnostic() { return JSON.stringify(this.CompForm.SiteSources); }
+    get diagnostic() { return JSON.stringify(this.CompForm); }
 
 
 }

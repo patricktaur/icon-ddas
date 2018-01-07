@@ -233,6 +233,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuditController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
+    <Compile Include="Helpers\ConvertFormToCurrentVersion.cs" />
     <Compile Include="Helpers\CSVConvertor.cs" />
     <Compile Include="Helpers\FileDownloadResponse.cs" />
     <Compile Include="Helpers\Formatters\CSVMediaTypeFormatter.cs" />

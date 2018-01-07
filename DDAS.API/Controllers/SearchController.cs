@@ -354,6 +354,9 @@ namespace DDAS.API.Controllers
                 }
                 else
                 {
+                    UpdateFormToCurrentVersion.
+                        UpdateComplianceFormToCurrentVersion(compForm);
+
                     var Review = compForm.Reviews.FirstOrDefault();
                     if (Review != null && Review.StartedOn == null)
                     {
