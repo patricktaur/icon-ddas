@@ -32,7 +32,7 @@ export class ResponseToQCVerifierCommentComponent implements OnInit {
     }
 
     get getReviewerComment(){
-        this.Finding.Comments[0].CategoryEnum = 5;
+        //this.Finding.Comments[0].CategoryEnum = 5;
         return this.Finding.Comments[0];
     }
 

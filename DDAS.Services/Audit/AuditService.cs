@@ -205,6 +205,9 @@ namespace DDAS.Services.AuditService
                 case CommentCategoryEnum.Critical: return "Critical";
                 case CommentCategoryEnum.Suggestion: return "Suggestion";
                 case CommentCategoryEnum.Others: return "Others";
+                case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+                case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
+                case CommentCategoryEnum.Accepted: return "Accepted";
                 default: throw new Exception("Invalid CommentCategoryEnum");
             }
         }
