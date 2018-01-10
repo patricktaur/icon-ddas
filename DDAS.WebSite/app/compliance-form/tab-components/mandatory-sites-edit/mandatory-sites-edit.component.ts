@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.classes';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -10,7 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ComplianceFormMandatorySitesEditComponent  {
     @Input() CompForm: ComplianceFormA;
-
+    @Output() ValueChanged = new EventEmitter();
     constructor(
         private sanitizer: DomSanitizer,
     ) { }
@@ -34,6 +34,10 @@ export class ComplianceFormMandatorySitesEditComponent  {
         }
   
     }
+
+    formValueChanged(){
+        this.ValueChanged.emit(true) ;
+    } 
 
     sanitize(url: string) {
         return this.sanitizer.bypassSecurityTrustUrl(url);

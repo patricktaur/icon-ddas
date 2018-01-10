@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
@@ -134,6 +134,26 @@ export class CompFormEditComponent implements OnInit {
             this.LoadOpenComplainceForm();
             this.LoadInstituteSiteSummary();
         });
+    }
+
+    get isFormValid(){
+         let isValid: boolean;
+         isValid = /\d{4}\/\d{4}/.test(this.CompForm.ProjectNumber);
+         if (!isValid){
+             return false;
+         }else  {
+            isValid = /\d{4}\/\d{4}/.test(this.CompForm.ProjectNumber2);
+            if (!isValid){
+               return false;
+            }else{
+                //could not find reg exp for length:
+                if (this.CompForm.ProjectNumber.length == 9 && this.CompForm.ProjectNumber2.length == 9){
+                    return true;
+                } else{
+                    return false;
+                }
+            }
+        }
     }
 
     get status(){
@@ -385,8 +405,8 @@ gotoSiteDetails(SiteSourceId: number){
         }
     }
 
-    formValueChanged(){
-        this.pageChanged = true;
+    formValueChanged(val:any){
+        this.pageChanged = val;
     }    
     get PrincipalInvestigatorName() {
         let p = this.CompForm.InvestigatorDetails.find(x => x.Role == "PI");
@@ -964,7 +984,7 @@ gotoSiteDetails(SiteSourceId: number){
    
      }
     
-    get diagnostic() { return JSON.stringify(this.CompForm); }
+    get diagnostic() { return JSON.stringify(this.formValueChanged); }
 
 
 }

@@ -172,7 +172,7 @@ export class ComplianceFormInvestigatorEditComponent {
                 this.CompForm.InvestigatorDetails[idx] = this.CompForm.InvestigatorDetails[idx - step];
                 this.CompForm.InvestigatorDetails[idx - step] = tmp;
                 this.SetInvestigatorRole();
-        
+                this.pageChanged.emit();
             }
 
 gotoInvestigatorSummaryResult(inv: InvestigatorSearched) {
