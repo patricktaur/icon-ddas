@@ -171,7 +171,8 @@ namespace DDAS.Services.AuditService
             {
                 foreach(Comment comment in finding.Comments)
                 {
-                    if(comment.ReviewId == QCReview.RecId)
+                    if(comment.FindingComment != null || 
+                        comment.CategoryEnum == CommentCategoryEnum.Accepted)
                     {
                         var QCSummary = new QCSummaryViewModel();
                         QCSummary.Investigator =

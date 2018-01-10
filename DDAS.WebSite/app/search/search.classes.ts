@@ -457,7 +457,8 @@ export enum CommentCategoryEnum {
     Suggestion,
     Others,
     CorrectionPending,
-    CorrectionCompleted
+    CorrectionCompleted,
+    Accepted
 }
 
 export class QualityCheck {

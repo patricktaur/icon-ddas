@@ -100,6 +100,7 @@
         Suggestion,
         Others,
         CorrectionPending,
-        CorrectionCompleted
+        CorrectionCompleted,
+        Accepted
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2013 rel. 2 sp2 (x64) (http://www.altova.com) by Rebecca Domarasky (ICON CLINICAL RESEARCH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="ddRequest">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="project">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="projectNumber" type="xs:string"/>
+							<xs:element name="sponsorProtocolNumber" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="investigators">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="investigator" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="role">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="SubI"/>
+													<xs:enumeration value="PI"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="nameWithQualification" type="xs:string" minOccurs="0"/>
+										<xs:element name="investigatorId" type="xs:string" minOccurs="0"/>
+										<xs:element name="memberId" type="xs:string" minOccurs="0"/>
+										<xs:element name="firstName" type="xs:string"/>
+										<xs:element name="middleName" type="xs:string" minOccurs="0"/>
+										<xs:element name="lastName" type="xs:string"/>
+										<xs:element name="licenceNumber" type="xs:string" minOccurs="0"/>
+										<xs:element name="institute">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="name" type="xs:string"/>
+													<xs:element name="address1" type="xs:string"/>
+													<xs:element name="address2" type="xs:string" minOccurs="0"/>
+													<xs:element name="city" type="xs:string"/>
+													<xs:element name="stateProvince" type="xs:string" minOccurs="0"/>
+													<xs:element name="zipCode" type="xs:string" minOccurs="0"/>
+													<xs:element name="country" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

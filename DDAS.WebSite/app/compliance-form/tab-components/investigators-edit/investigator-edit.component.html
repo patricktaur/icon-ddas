@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="form-group">
-                <h4>Investigators XXXXX:</h4>
+                <h4>Investigators:</h4>
 
                 <div class="table-responsive">
 
@@ -49,7 +49,7 @@
 
                                     <div *ngIf="inv.CanEdit">
                                         <p>
-                                            <input type="text" name="FirstName" [(ngModel)]="inv.FirstName" class="form-control">
+                                            <input type="text" name="FirstName" [(ngModel)]="inv.FirstName" class="form-control" (change)="formValueChanged()">
                                         </p>
 
                                     </div>
@@ -66,7 +66,7 @@
                                     <div *ngIf="inv.CanEdit">
 
                                         <p>
-                                            <input type="text" name="MiddleName" [(ngModel)]="inv.MiddleName" class="form-control">
+                                            <input type="text" name="MiddleName" [(ngModel)]="inv.MiddleName" (change)="formValueChanged()" class="form-control">
                                         </p>
 
 
@@ -85,7 +85,7 @@
                                     <div *ngIf="inv.CanEdit">
 
                                         <p>
-                                            <input type="text" name="LastName" [(ngModel)]="inv.LastName" class="form-control">
+                                            <input type="text" name="LastName" [(ngModel)]="inv.LastName" (change)="formValueChanged()" class="form-control">
                                         </p>
 
                                     </div>
@@ -102,22 +102,22 @@
 
 
                                 <td>
-                                    <input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control input-sm">
+                                    <input type="text" name="invName" [(ngModel)]="inv.Name" (change)="formValueChanged()" class="form-control input-sm">
                                     <!--<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>-->
 
                                 </td>
                                 <td>
                                     <p>
-                                        <input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control input-sm">
+                                        <input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" (change)="formValueChanged()" class="form-control input-sm">
                                     </p>
                                 </td>
                                 <td>
-                                    <input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control input-sm">
+                                    <input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" (change)="formValueChanged()" class="form-control input-sm">
 
                                 </td>
 
                                 <td>
-                                    <input type="text" name="memberId" [(ngModel)]="inv.MemberId" class="form-control input-sm">
+                                    <input type="text" name="memberId" [(ngModel)]="inv.MemberId" (change)="formValueChanged()" class="form-control input-sm">
 
                                 </td>
 
