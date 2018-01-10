@@ -122,9 +122,12 @@
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
     <Compile Include="ViewModels\ExceptionLoggerViewModel.cs" />
     <Compile Include="ViewModels\ExtractionLogViewModel.cs" />
+    <Compile Include="ViewModels\iSprintResponseModel.cs" />
     <Compile Include="ViewModels\OpenInvestigationsViewModel.cs" />
     <Compile Include="ViewModels\OutputFileViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="ViewModels\RequestPayloadforDDAS.cs" />
+    <Compile Include="ViewModels\RequestPayloadforiSprint.cs" />
     <Compile Include="ViewModels\Search\InstituteFindingsSummaryViewModel.cs" />
     <Compile Include="ViewModels\SponsorViewModel.cs" />
     <Compile Include="ViewModels\UploadsViewModel.cs" />
