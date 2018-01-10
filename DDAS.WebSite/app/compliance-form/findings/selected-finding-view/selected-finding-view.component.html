@@ -1,0 +1,69 @@
+
+<form role='form'>
+    <!-- <div class="form-group col-md-6"> -->
+        <div class="well">
+            View
+            <div class="row" *ngIf="Finding.IsMatchedRecord==true">
+                <div class="col-md-12">
+                    <div class="row">
+                        <h4>Record Details</h4>
+                        <div *ngFor="let SplitItem of Split(Finding.RecordDetails)" align="left">
+                            {{SplitItem}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div *ngIf="Finding.Links.length > 0">
+                            <h4>Document Links:</h4>
+                            <div *ngFor="let link of Finding.Links" align="left">
+                                <a target="_blank" [href]="link.url">
+                                {{link.Title}}
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Findings:</h4>
+                    <textarea class="form-control" name="Observation" [(ngModel)]="Finding.Observation" rows="3" cols="30" readonly></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Date of Inspection:</h4>
+                    <label>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</label>
+                    
+                </div>
+                <div class="col-md-6">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="IsAnIssue"><h4>Is an Issue:</h4></label>
+                    {{Finding.IsAnIssue | boolToYesNo}}
+                    <!-- <input type="checkbox" name="IsAnIssue" [(ngModel)]="Finding.IsAnIssue" readonly/>
+                    <br/> -->
+                    <label for="comment" *ngIf="isQCVerifier"> <h4>QC Verifier's Comment:</h4></label>
+                    <textarea *ngIf="isQCVerifier" class="form-control" name="Comment" [(ngModel)]="Finding.Comments[0].FindingComment"
+                     rows="3" cols="30" required placeholder="Comment">
+                    </textarea>
+                    <!-- Finding.Comments[0].FindingComment -->
+                </div>
+            </div>
+
+        </div>
+    <!-- </div> -->
+    <div *ngIf="dividerGeneration(indexVal)">
+        <div style="clear:both;"></div>
+    </div>
+    
+</form>

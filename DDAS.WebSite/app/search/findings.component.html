@@ -12,14 +12,11 @@
 					<h3 class="align-left no-margin-top">
 						Findings for {{Investigator.Name}} (Role:{{Investigator.Role}})
 					</h3>
-					<!-- 111{{diagnostic}}222 -->
 				</div>
 			</div>
 			<div class="row">
-
 				<div class="col-lg-12">
-
-
+					<!-- {{diagnostic}} -->
 					<h3 class="align-left no-margin-top">
 						<!--<a target="_blank" [href]="Site.SiteUrl">
                              Source: {{Site.DisplayPosition + "." + Site.SiteName}}
@@ -137,102 +134,61 @@
 						</table>
 					</div>
 				</div>
-
-
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
-			XXXXXXXXX
-			<div selected-finding [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"></div>
-			<form role='form'>
-				<div class="form-group col-md-6">
-					<div class="well">
-						<!--style="border:solid black"-->
-						<br/>
-						<!--<div class="row" *ngIf="matchedRecord.IsMatchedRecord==true">
-							<div class="col-md-8">
-								<h4>Record Location (Row Number):</h4>
-								{{matchedRecord.RowNumberInSource}}
-							</div>
-
-						</div>-->
-						<div class="row" *ngIf="matchedRecord.IsMatchedRecord==true">
-							<div class="col-md-12">
-								<div class="row">
-									<h4>Record Details</h4>
-									<div *ngFor="let SplitItem of Split(matchedRecord.RecordDetails)" align="left">
-										{{SplitItem}}
-									</div>
-								</div>
-								<div class="row">
-									<div *ngIf="matchedRecord.Links.length > 0">
-										<h4>Document Links:</h4>
-										<div *ngFor="let link of matchedRecord.Links" align="left">
-											<a target="_blank" [href]="link.url">
-											{{link.Title}}
-                        				</a>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12">
-										<hr>
-									</div>
-								</div>
-							</div>
-
+				 <div *ngIf="isReviewerFinding(matchedRecord)" class="form-group col-md-6">
+						<div selected-finding-edit [Finding]="matchedRecord" 
+						(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 						</div>
-
-						<div class="row">
-							<div class="col-md-12">
-								<h4>Findings:</h4>
-								<textarea class="form-control" name="Observation" [(ngModel)]="matchedRecord.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-md-6">
-								<h4>Date of Inspection:</h4>
-
-								<div *ngIf="!matchedRecord.IsMatchedRecord">
-									<input type="date" [(ngModel)]="matchedRecord.DateOfInspection" name="dateOfInspection" (change)="formValueChanged()">
-									<b>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy'}}</b>
-									<!--<div date-picker [(DateValue)]="matchedRecord.DateOfInspection"></div>-->
-								</div>
-								<div *ngIf="matchedRecord.IsMatchedRecord">
-									<label>{{matchedRecord.DateOfInspection | date: 'dd MMM yyyy'}}</label>
-								</div>
-							</div>
-							<div class="col-md-6">
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<label for="IsAnIssue"><h4>Is an Issue:</h4></label>
-								<input type="checkbox" name="IsAnIssue" [(ngModel)]="matchedRecord.IsAnIssue" />
-								<br/>
-								<label for="comment" *ngIf="isQCVerifier"> <h4>QC Verifier's Comment:</h4></label>
-								<textarea *ngIf="isQCVerifier" class="form-control" name="Comment" [(ngModel)]="matchedRecord.Comments[0].FindingComment"
-								 rows="3" cols="30" required placeholder="Comment">
-								</textarea>
-								<!-- matchedRecord.Comments[0].FindingComment -->
-							</div>
-						</div>
-						<br/>
-						<div class="row">
-							<div class="col-md-12">
-								<button type="button" class="btn btn-default" (click)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">Remove</button>
-							</div>
-						</div>
-					</div>
 				</div>
-				<div *ngIf="dividerGeneration(indexVal)">
-					<div style="clear:both;"></div>
+			
+				<!-- Not required: -->
+				<!-- <div class="form-group col-md-6"  >
+						<div selected-finding-view 
+						[Finding]="matchedRecord" >
+						</div>
+									
+				</div>	 -->
+				
+				 <div *ngIf="isNotQCVerifierFinding(matchedRecord)" class="form-group col-md-6">
+						<div qc-verifier-comments
+						[QCVerifierReview] = "qcVerifierReview"
+						[Finding]="matchedRecord">
+						</div>
+				</div>
+
+				 <div *ngIf="isQCVerifierFinding(matchedRecord)" class="form-group col-md-6">
+						<div qc-verifier-finding
+						[QCVerifierReview] = "qcVerifierReview"
+						[Finding]="matchedRecord"
+						(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+						</div>
 				</div>
 				
-			</form>
+				  <div *ngIf="isNotReviewerFindingAndResponseRequired(matchedRecord)" class="form-group col-md-6">
+						<div response-to-qc-verifier-finding
+						[Finding]="matchedRecord">
+						</div>
+				</div> 
+
+				   <div *ngIf="isReviewerFindingAndResponseRequired(matchedRecord)" class="form-group col-md-6">
+						<div response-to-qc-verifier-comment
+						[Finding]="matchedRecord">
+						</div>
+				</div>  
+
+
+			<!-- <div class="row ">
+				<div class="form-group col-md-6">
+			</div> -->
+			<!-- <div qc-verifier-comments [Finding]="matchedRecord"></div> -->
+			<div *ngIf="dividerGeneration(indexVal)">
+				<div style="clear:both;"></div>
+			</div>
+
 		</div>
 	</div>
 

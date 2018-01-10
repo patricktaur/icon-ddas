@@ -2,14 +2,13 @@
 	<div class="col-lg-12">
 		<div class="alert alert-info" *ngIf="formLoading">
 			<strong>Loading ...</strong>
-			
-			
+
+
 		</div>
 		<div class="well" *ngIf="!formLoading">
 			<div class="row">
 				<div class="col-lg-12 ">
-					
-
+					<!-- {{diagnostic}} -->
 					<div class="row">
 						<div class="col-lg-8 text-left">
 							<h3 class="no-margin-top">Investigator Compliance Search Form</h3>
@@ -17,14 +16,14 @@
 						<div class="col-lg-4 text-right">
 							<div statusCircle [status]="CompForm.StatusEnum" size=24 [title]="CompForm.Status"></div>
 							<div *ngIf="CompForm.ExtractionPendingInvestigatorCount> 0" title="Data Extraction pending , Estimated:{{CompForm.EstimatedExtractionCompletionWithin}}"
-								class="glyphicon glyphicon-search"></div>
+							 class="glyphicon glyphicon-search"></div>
 						</div>
 
 					</div>
 					<div class="row">
 						<div class="col-lg-12 text-left">
 							<h4 class="no-margin-top">{{CompForm.ProjectNumber}} - {{PrincipalInvestigatorName}}</h4>
-							 {{reviewStatus}}
+							{{reviewStatus}}
 						</div>
 
 					</div>
@@ -33,13 +32,9 @@
 
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
-
-						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid || !CompForm.SearchPending ">Search</button>-->
-
-						<!--<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>-->
-						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
-						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
-
+						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
+						<button type="button" class="btn btn-primary"  (click)="Save()">Save</button>
+						
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
 							<strong>Scanning Sources for matching Investigator Names ...</strong>
@@ -60,626 +55,72 @@
 
 								<!--<li class="active"><a data-toggle="tab" href="#investigators-tab">Investigators</a></li>-->
 
-								<li [class.active]="defaultTab"><a data-toggle="tab" href="#general-info-tab">General Info</a></li>
-								<li [class.active]="instituteTab"><a data-toggle="tab" href="#institute-tab">Institute</a></li>
-								<li [class.active]="invTab"><a data-toggle="tab" href="#investigators-tab">Investigators ({{Investigators.length}})</a></li>
-								<li><a data-toggle="tab" href="#mandatory-sites-tab">Mandatory Sites ({{MandatorySites.length}})</a></li>
-								<li><a data-toggle="tab" href="#additional-sites-tab">Additional Sites ({{OptionalSites.length}}) </a></li>
-								<li><a data-toggle="tab" href="#findigs-tab">Findings ({{Findings.length}})</a></li>
-								<li><a data-toggle="tab" href="#searched-by-tab">Searched By</a></li>
-								<li><a data-toggle="tab" href="#summary">Summary</a></li>
+								<li [class.active]="defaultTab">
+									<a data-toggle="tab" href="#general-info-tab">General Info</a>
+								</li>
+								<li [class.active]="instituteTab">
+									<a data-toggle="tab" href="#institute-tab">Institute</a>
+								</li>
+								<li [class.active]="invTab">
+									<a data-toggle="tab" href="#investigators-tab">Investigators ({{Investigators.length}})</a>
+								</li>
+								<li>
+									<a data-toggle="tab" href="#mandatory-sites-tab">Mandatory Sites ({{MandatorySites.length}})</a>
+								</li>
+								<li>
+									<a data-toggle="tab" href="#additional-sites-tab">Additional Sites ({{OptionalSites.length}}) </a>
+								</li>
+								<li>
+									<a data-toggle="tab" href="#findigs-tab">Findings ({{Findings.length}})</a>
+								</li>
+								<li>
+									<a data-toggle="tab" href="#searched-by-tab">Searched By</a>
+								</li>
+								<li>
+									<a data-toggle="tab" href="#summary">Summary</a>
+								</li>
 							</ul>
 
 							<div class="tab-content">
 								<div id="general-info-tab" class="tab-pane fade {{defaultTabInActive}}">
-									<!-- <div *ngIf="!isQCVerifier" comp-form-general-edit [CompForm]="CompForm"></div> -->
-									<!-- <div *ngIf="isQCVerifier" comp-form-general-view [CompForm]="CompForm"></div> -->
-									
-									<h4>General Information:</h4>
-									<form #f="ngForm" novalidate>
-
-										<div class="row">
-											<div class="col-lg-6">
-												<div class="row">
-													<div class="col-lg-6">
-														<div class="form-group">
-															<label for="ProjectNumber">ICON Project Number (1234/1234):</label>
-															<input type="text" class="form-control" name="projNumber" [(ngModel)]="CompForm.ProjectNumber" #projNumber="ngModel" required
-																pattern="\d{4}/\d{4}" (change)="formValueChanged()">
-
-															<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
-																Project Number format 9999/9999 expected.
-															</small>
-														</div>
-													</div>
-													<div class="col-lg-6">
-														<div class="form-group">
-															<label for="ProjectNumber2">ICON Project Number (1234/1234):</label>
-															<input type="text" class="form-control" name="projNumber2" [(ngModel)]="CompForm.ProjectNumber2" #projNumber2="ngModel" required
-																pattern="\d{4}/\d{4}" (change)="formValueChanged()">
-
-															<small [hidden]="projNumber.valid || (projNumber.pristine && !f.submitted)" class="text-danger">
-																Project Number format 9999/9999 expected.
-															</small>
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-lg-6">
-														<div class="form-group">
-															<label for="SponsorProtocolNumber">Sponsor Protocol No:</label>
-															<input type="text" class="form-control" name="SponsorProtocolNumber" [(ngModel)]="CompForm.SponsorProtocolNumber" (change)="formValueChanged()">
-														</div>
-													</div>
-													<div class="col-lg-6">
-														<div class="form-group">
-															<label for="SponsorProtocolNumber2">Sponsor Protocol No:</label>
-															<input type="text" class="form-control" name="SponsorProtocolNumber2" [(ngModel)]="CompForm.SponsorProtocolNumber2" (change)="formValueChanged()">
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-lg-6">
-														<div class="form-group">
-															<label for="Country">Country:</label>
-															<input type="text" class="form-control" name="Country" [(ngModel)]="CompForm.Country" (change)="formValueChanged()">
-														</div>
-													</div>
-													<div class="col-lg-6">
-
-													</div>
-												</div>
-											</div>
-											<div class="col-lg-6">
-												<div class="form-group">
-													<label for="NameToSeaICONrch">Address:</label>
-													<textarea name="Address" class="form-control" id="Address" rows="9" cols="30" placeholder="Address" name="Address" [(ngModel)]="CompForm.Address"
-														(change)="formValueChanged()"></textarea>
-												</div>
-											</div>
-										</div>
-									</form>
-
+									<div *ngIf="!isQCVerifier" comp-form-general-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isQCVerifier" comp-form-general-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="institute-tab" class="tab-pane fade">
-									<!-- <div *ngIf="!isQCVerifier" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath"></div> -->
-									<!-- <div *ngIf="isQCVerifier" comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div> -->
-									
-									
-									<h4>Institute</h4>
-									<form #f="ngForm" novalidate>
-										<div class="form-group">
-											<label for="institute">Institute:</label>
-											<p>
-												<input type="text" class="form-control" name="institute" [(ngModel)]="CompForm.Institute" (change)="formValueChanged()">
-											</p>
-										</div>
-										<div class="row">
-											<table class="table table-bordered table-hover">
-												<thead>
-													<tr>
-														<th class="">#</th>
-														<th class="">Source Name</th>
-														<th class="">Issues Identified</th>
-														<th class="">Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr class="active" *ngFor="let item of InstituteSearchSummary">
-														<td>{{item.DisplayPosition}}</td>
-														<td align="left">
-															<div class="text-left" *ngIf="isUrl(item.SiteUrl)">
-																<a target="_blank" [href]="sanitize(item.SiteUrl)">
-																	{{item.SiteName}}
-																</a>
-															</div>
-															<div class="text-left" *ngIf="!isUrl(item.SiteUrl)">
-																{{item.SiteName}}
-															</div>
-														</td>
-
-														<td class="success">{{item.IssuesFound}}</td>
-
-														<td>
-															<button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.SiteSourceId)">Findings</button>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</form>
+									<div *ngIf="!isQCVerifier" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isQCVerifier" comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div>
 								</div>
-								
 								<div id="investigators-tab" class="tab-pane fade {{invTabInActive}}">
-									<div comp-form-investigator-edit 
-									[CompForm]="CompForm" 
-									(pageChanged)="formValueChanged()"
-									[ReturnPath]="rootPath"></div>
-									
-									<div comp-form-investigator-view 
-									[CompForm]="CompForm"
-									[ReturnPath]="rootPath"
-									></div>
-									
-									<div class="row">
-										<div class="col-lg-12">
-											<div class="form-group">
-												<h4>Investigators :</h4>
-												<div class="table-responsive">
-
-													<table class="table table-bordered table-hover">
-														<thead>
-															<tr>
-																<th class="text-center" colspan="3">Name to search </th>
-
-																<th class="">Name </th>
-																<th class="">Med. Lic No.</th>
-																<th class="">Inv Id.</th>
-																<th class="">Member Id</th>
-
-																<th class="">Role</th>
-
-																<th>Status</th>
-																<!--<th class="col-md-1">Status</th>-->
-
-																<th class="">Actions</th>
-
-															</tr>
-															<tr>
-																<th>First </th>
-																<th> Mid</th>
-																<th>Last</th>
-
-																<th>(for display)</th>
-																<th> </th>
-																<th></th>
-																<th></th>
-
-																<th></th>
-																<!--<th class="col-md-1">Status</th>-->
-
-																<th></th>
-
-															</tr>
-														</thead>
-														<tbody>
-															<tr *ngFor="let inv of Investigators; let idx=index">
-
-
-																<td>
-
-																	<div *ngIf="inv.CanEdit">
-																		<p><input type="text" name="FirstName" [(ngModel)]="inv.FirstName" class="form-control"></p>
-
-																	</div>
-																	<div *ngIf="!inv.CanEdit" class="text-left">
-																		<p>{{inv.FirstName}}</p>
-
-
-																	</div>
-
-
-																</td>
-																<td>
-
-																	<div *ngIf="inv.CanEdit">
-
-																		<p><input type="text" name="MiddleName" [(ngModel)]="inv.MiddleName" class="form-control"></p>
-
-
-																	</div>
-																	<div *ngIf="!inv.CanEdit" class="text-left">
-
-																		<p>{{inv.MiddleName}}</p>
-
-
-																	</div>
-
-
-																</td>
-																<td>
-
-																	<div *ngIf="inv.CanEdit">
-
-																		<p><input type="text" name="LastName" [(ngModel)]="inv.LastName" class="form-control"></p>
-
-																	</div>
-																	<div *ngIf="!inv.CanEdit" class="text-left">
-
-																		<p>{{inv.LastName}}</p>
-
-																	</div>
-
-
-																</td>
-
-
-
-
-																<td>
-																	<input type="text" name="invName" [(ngModel)]="inv.Name" class="form-control input-sm">
-																	<!--<div><input type="text" name="invQual" [(ngModel)]="inv.Qualification" class="form-control"></div>-->
-
-																</td>
-																<td>
-																	<p><input type="text" name="invMedLic" [(ngModel)]="inv.MedicalLiceseNumber" class="form-control input-sm"></p>
-																</td>
-																<td>
-																	<input type="text" name="invId" [(ngModel)]="inv.InvestigatorId" class="form-control input-sm">
-
-																</td>
-
-																<td>
-																	<input type="text" name="memberId" [(ngModel)]="inv.MemberId" class="form-control input-sm">
-
-																</td>
-
-																<td>
-																	{{inv.Role}}
-
-																</td>
-
-																<td align="center">
-																	<div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
-																	<div *ngIf="inv.ExtractionPendingSiteCount > 0" class="glyphicon glyphicon-search"></div>
-																</td>
-
-																<td width="15%">
-
-																	<div class="btn-group ">
-																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx > 0" (click)="move(idx, 1)" data-toggle="tooltip" data-placement="top"
-																			title="Move Up"> <span class="glyphicon glyphicon-chevron-up"></span></button>
-																		<button type="button" class="btn btn-sm btn-primary" *ngIf="idx < Investigators.length - 1" (click)="move(idx, -1)" data-toggle="tooltip"
-																			data-placement="top" title="Move Down"><span class="glyphicon glyphicon-chevron-down"></span></button>
-																		<button type="button" class="btn btn-sm btn-primary" (click)="setInvestigatorRemove(inv);  RemoveInvestigatorConfirmModal.open()"
-																			data-toggle="tooltip" data-placement="top" title="Remove the investigator"><span class="glyphicon glyphicon-remove" ></span></button>
-																		<button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" [disabled]="!inv.Saved"
-																			data-toggle="tooltip" data-placement="top" title="{{inv.Help}}"><span class="glyphicon glyphicon-edit" ></span></button>
-																	</div>
-
-																</td>
-
-															</tr>
-															<tr>
-																<td align="left" colspan="10">
-																	<!--<small [hidden]="invName.valid || (invName.pristine && !f.submitted)" class="text-danger">
-            											Name is required (minimum 3 characters).
- 												</small>-->
-																	<button type="button" class="btn btn-primary" (click)="InvestigatorAdd()">Add an Investigator</button>
-
-																</td>
-															</tr>
-														</tbody>
-													</table>
-
-
-												</div>
-											</div>
-
-
-										</div>
-									</div>
-
+									<div *ngIf="!isQCVerifier" comp-form-investigator-edit [CompForm]="CompForm" (pageChanged)="formValueChanged()" [ReturnPath]="rootPath"></div>
+									<div *ngIf="isQCVerifier" comp-form-investigator-view [CompForm]="CompForm" [ReturnPath]="rootPath"></div>
 								</div>
 								<div id="mandatory-sites-tab" class="tab-pane fade">
-									<div comp-form-mandatory-sites-edit [CompForm]="CompForm"  ></div>
-									<div comp-form-mandatory-sites-view [CompForm]="CompForm"></div>
-									
-									<div class="row">
-										<div class="col-lg-12">
-											<div class="form-group">
-												<br>
-												<h4>Mandatory Sites participating in the search:</h4>
-												<div class="table-responsive">
-													<table class="table table-bordered table-hover">
-														<thead>
-															<tr>
-
-																<th class="col-md-1">#</th>
-																<th class="col-md-5">Source Name</th>
-																<th class="col-md-2">Extraction Mode</th>
-																<th class="col-md-2">Source Date</th>
-
-																<th class="col-md-1">Applies To</th>
-																<th class="col-md-1">Issues Identified</th>
-
-															</tr>
-														</thead>
-														<tbody>
-															<tr class="active" *ngFor="let item of MandatorySites; let idx = index;">
-																<td>{{item.DisplayPosition}}</td>
-																<td>
-																	<!--<div class="text-left">
-
-																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
-                                                							 {{item.SiteName}}
-																		</a>
-																	</div>-->
-																	<div class="text-left" *ngIf="isUrl(item.SiteUrl)">
-																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
-                                                							 {{item.SiteName}}
-                                            								</a>
-																	</div>
-																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
-																		{{item.SiteName}}
-																	</div>
-
-
-																</td>
-																<td>
-																	{{item.ExtractionMode}}
-																</td>
-																<td>
-																	<!--<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>-->
-																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'">
-																		<input type="date" [(ngModel)]="item.SiteSourceUpdatedOn" (change)="formValueChanged()">
-																		{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
-																	</div>
-																	<div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
-																</td>
-
-																<td>
-																	{{item.SearchAppliesToText}}
-																</td>
-																<td>
-																	{{item.IssuesIdentified | boolToYesNo}}
-
-																</td>
-
-															</tr>
-
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>
-
+									<div *ngIf="!isQCVerifier" comp-form-mandatory-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isQCVerifier" comp-form-mandatory-sites-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="additional-sites-tab" class="tab-pane fade">
-									<!-- <div *ngIf="!isQCVerifier" comp-form-additional-sites-edit [CompForm]="CompForm"></div> -->
-									<!-- <div *ngIf="isQCVerifier" comp-form-additional-sites-view [CompForm]="CompForm"></div>  -->
-									
-									<div class="row">
-										<div class="col-lg-12">
-											<div class="form-group">
-												<br>
-												<h4>Additional Sites participating in the search:</h4>
-												<div class="table-responsive">
-													<table class="table table-bordered table-hover">
-														<thead>
-															<tr>
-																<th class="col-md-1">#</th>
-																<th class="col-md-4">Source Name</th>
-																<th class="col-md-2">Extraction Mode</th>
-																<th class="col-md-2">Source Date</th>
-																<th class="col-md-1">Applies To</th>
-																<th class="col-md-1">Issues Identified</th>
-																<th class="col-md-1">Remove</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr class="active" *ngFor="let item of OptionalSites; let idx = index;">
-																<td>{{item.DisplayPosition}}</td>
-																<td>
-																	<!--<div class="text-left" *ngIf="item.SiteUrl.length > 0">-->
-																	<div class="text-left" *ngIf="isUrl(item.SiteUrl)">
-																		<a target="_blank" [href]="sanitize(item.SiteUrl)">
-                                                							 {{item.SiteName}}
-                                            								</a>
-																	</div>
-																	<div class="text-left" *ngIf="!isUrl(item.SiteUrl) ">
-																		{{item.SiteName}}
-																	</div>
-
-																</td>
-																<td>
-																	{{item.ExtractionMode}}
-																</td>
-																<td>
-																	<!--<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'" date-picker [(DateValue)]="item.SiteSourceUpdatedOn"></div>-->
-																	<div *ngIf="item.ExtractionMode.toLowerCase() == 'manual'">
-																		<input type="date" [(ngModel)]="item.SiteSourceUpdatedOn" (change)="formValueChanged()">
-																		{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}
-																	</div>
-																	<div *ngIf="item.ExtractionMode.toLowerCase() != 'manual'">{{item.SiteSourceUpdatedOn | date: 'dd MMM yyyy'}}</div>
-																</td>
-																<td>
-																	{{item.SearchAppliesToText}}
-																</td>
-																<td>
-																	{{item.IssuesIdentified | boolToYesNo}}
-																</td>
-																<td>
-																	<button type="button" class="btn btn-xs btn-primary" (click)="setSiteToRemove(item); RemoveSiteConfirmModal.open();" *ngIf="item.IsMandatory == false">X</button>
-																</td>
-															</tr>
-															<tr>
-																<td colspan="7">
-																	<div class="text-left"><button type="button" class="btn btn-primary" (click)="clearSelectedSite(); AddSiteModal.open()">Add</button>																		</div>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>
+									<div *ngIf="!isQCVerifier" comp-form-additional-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isQCVerifier" comp-form-additional-sites-view [CompForm]="CompForm"></div>
 								</div>
-
 								<div id="findigs-tab" class="tab-pane fade">
 									<div *ngIf="!isQCVerifier" comp-form-findings-edit [CompForm]="CompForm"></div>
-									
-									<div class="row">
-										<div class="col-lg-12">
-											<div class="form-group">
-												<h4>Findings (Issues identified):</h4>
-												<div class="table-responsive">
-													<table class="table table-bordered table-hover">
-														<thead>
-															<tr>
-																<th class="col-md-2">Investigator / Institute</th>
-																<th class="col-md-1">Source #</th>
-																<th class="col-md-2">Date of Inspection / Action</th>
-																<th class="col-md-5">Description of Findings</th>
-																<!--<th class="col-md-2">Action</th>-->
-															</tr>
-														</thead>
-														<tbody>
-															<tr class="active" *ngFor="let item of Findings; ">
-																<td align="left">
-																	<div *ngIf="item.InvestigatorName">
-																		{{item.InvestigatorName}}
-																	</div>
-																	<div *ngIf="!item.InvestigatorName">
-																		{{CompForm.Institute}}
-																	</div>
-
-
-
-																</td>
-																<td>
-																	<!--{{item.SourceNumber}}-->
-																	{{item.SiteDisplayPosition}}
-																</td>
-
-																<td>
-																	{{item.DateOfInspection |date:'dd MMM yyyy' }}
-
-																</td>
-																<td align="left">
-
-																	<!--<div *ngIf="item.RecordDetails"><br> </div>-->
-																	<!--{{item.Observation}}-->
-																	<textarea [(ngModel)]="item.Observation" rows="3" cols="60" readonly style="border: none"></textarea>
-																</td>
-																<!--<td>-->
-
-																<!--<div *ngIf="item.SiteSourceId == null">
-																		<div class="btn-group">
-																			<button type="button" class="btn btn-sm btn-primary" (click)="FindingsEditModal1.open()" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit" ></span></button>
-																			<button type="button" class="btn btn-sm btn-primary" (click)="DeleteFinding(item); " data-toggle="tooltip" data-placement="top"
-																				title="Remove Finding"><span class="glyphicon glyphicon-remove" ></span></button>
-																		</div>
-																	</div>-->
-
-																<!--<modal #FindingsEditModal1>
-																		<modal-header>
-																			<h4 class="modal-title">Edit Finding</h4>
-																		</modal-header>
-																		<modal-body>
-																			<div class="row">
-																				<div class="col-md-12">
-																					<h5>Findings:</h5>
-																					<textarea class="form-control" name="Observation" [(ngModel)]="item.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
-																				</div>
-																			</div>
-
-																			<div class="row">
-																				<div class="col-md-12">
-																					<label><h5>Date of Inspection / Action:</h5></label>
-																					<div date-picker [(DateValue)]="item.DateOfInspection"></div>
-																					{{item.DateOfInspection}}
-																				</div>
-																			</div>
-																		</modal-body>
-																		<modal-footer>
-																			<button type="button" class="btn btn-primary" (click)="FindingsEditModal1.close()">Close</button>
-																		</modal-footer>
-																	</modal>-->
-																<!--</td>-->
-															</tr>
-															<!--<tr>
-																<td colspan="5" align="left">
-																	<button type="button" class="btn btn-primary" (click)="AddFinding()">Add a Finding (Observation) for Institute: {{CompForm.Institute}} </button>
-																</td>
-
-															</tr>-->
-
-
-														</tbody>
-													</table>
-												</div>
-											</div>
-
-
-										</div>
-
-									</div>
 								</div>
 								<div id="searched-by-tab" class="tab-pane fade">
 									<div comp-form-searched-by [CompForm]="CompForm"></div>
-									
-									<div class="row">
-										<div class="col-lg-12">
-											<div class="form-group">
-												<h4>Search Performed By:</h4>
-												<div class="row">
-													<div class="col-lg-6">
-														<label for="NameToSeaICONrch">Searched By:</label>
-														<label class="form-control">{{CompForm.AssignedTo}}</label>
-
-													</div>
-													<div class="col-lg-6">
-														<label for="NameToSeaICONrch">Searched On:</label>
-														<label class="form-control">{{CompForm.SearchStartedOn | date: 'dd MMM yyyy'}}</label>
-
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
 								</div>
 								<div id="summary" class="tab-pane fade ">
 									<div comp-form-summary [CompForm]="CompForm"></div>
-									
-									<h4>Summary:</h4>
-									<div class="row" *ngIf="isFileUploaded">
-										<b> File Uploaded: </b>
-										{{CompForm.UploadedFileName}}
-										<button type="button" class="btn btn-sm btn-primary" (click)="downloadUploadedFile(CompForm.GeneratedFileName)" title="Download File">
-											<span class="glyphicon glyphicon-download-alt" ></span>
-										</button>
-									</div>
-									<div class="row">
-										<b> Search Started On: </b>
-										{{CompForm.SearchStartedOn | date: 'medium'}}
-									</div>
-									<div class="table-responsive">
-										<table class="table table-bordered table-hover">
-											<thead>
-												<tr>
-													<th>Investigator</th>
-													<th>Review Completed On</th>
-												</tr>
-											</thead>
-											<tr class="active" *ngFor="let item of CompForm.InvestigatorDetails">
-												<td class="text-left">
-													{{item.Name}}
-												</td>
-												<td>
-													{{item.ReviewCompletedOn | date:'medium'}}
-												</td>
-											</tr>
-										</table>
-									</div>
-
-									
 								</div>
 							</div>
-
 						</div>
-
 					</div>
 
 					<div class="">
+						
+						
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
-
-
-						<button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button>
-						<!--<button type="button" class="btn btn-primary" (click)="ScanNSave()" [disabled]="!f.valid ">Scan</button>-->
-
-
+						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
+						<button type="button" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
 						<div class="alert alert-info" *ngIf="searchInProgress">
 							<strong>Scanning Sources for matching Investigator Names ...</strong>
 							<p class="help-block">Processing will take a while... </p>
@@ -710,22 +151,23 @@
 								<div class="form-group">
 									<label for="siteSources">Select Site:</label>
 									<select class="form-control" [(ngModel)]="SiteSource.RecId" name="siteSources" (change)="onSiteSourceChange($event.target.value)"
-										required>
-										<option *ngFor="let item of SiteSources" value={{item.RecId}} selected="selected" >
+									 required>
+										<option *ngFor="let item of SiteSources" value={{item.RecId}} selected="selected">
 											{{item.SiteName}}
 											<!--{{item.SiteUrl}}-->
 										</option>
 									</select>
 
 									<label for="siteShortName">Site Short Name:</label>
-									<input type="text" name="siteShortName" class="form-control" value="SiteSource.SiteShortName" [(ngModel)]="SiteSource.SiteShortName" required>
+									<input type="text" name="siteShortName" class="form-control" value="SiteSource.SiteShortName" [(ngModel)]="SiteSource.SiteShortName"
+									 required>
 
 									<label for="url"> Url:</label>
 									<input type="text" name="url" class="form-control" value="SiteSource.SiteUrl" [(ngModel)]="SiteSource.SiteUrl" required>
 
 									<label for="appliesTo">Search Applies To:</label>
 									<select class="form-control" [(ngModel)]="SiteSource.SearchAppliesTo" name="appliesTo" (change)="onSearchAppliesToChange($event.target.value)"
-										required>
+									 required>
 										<option *ngFor="let item of AppliesToItems" value={{item.name}} selected="selected">{{item.name}}</option>
 									</select>
 
@@ -737,7 +179,9 @@
 						<div class="row">
 							<div class="col-lg-12">
 								<button type="button" class="btn btn-primary" [disabled]="!frmAddSite.valid " (click)="AddSelectedSite();AddSiteModal.close()"
-									title="Save"><span class="glyphicon glyphicon-ok" > Add</span></button>
+								 title="Save">
+									<span class="glyphicon glyphicon-ok"> Add</span>
+								</button>
 								<button type="button" class="btn btn-primary" (click)="AddSiteModal.close()" title="Cancel">Cancel</button>
 							</div>
 						</div>
@@ -831,7 +275,9 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				<label><h5>Date of Inspection / Action:</h5></label>
+				<label>
+					<h5>Date of Inspection / Action:</h5>
+				</label>
 				<div date-picker [(DateValue)]="selectedFinding.DateOfInspection"></div>
 			</div>
 		</div>

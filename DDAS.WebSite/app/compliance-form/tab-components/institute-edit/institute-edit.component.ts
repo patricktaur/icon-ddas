@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -15,6 +15,8 @@ import { SearchService } from '../../../search/search-service';
 export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
     @Input() CompForm: ComplianceFormA;
     @Input() RootPath: string;
+    @Output() ValueChanged = new EventEmitter();
+
     public InstituteSearchSummary: InstituteFindingsSummaryViewModel[] = [];
     private pageChanged: boolean = false;
 
@@ -77,6 +79,7 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
 
     formValueChanged() {
         this.pageChanged = true;
+        this.ValueChanged.emit(true) ;
     }
 
     gotoSiteDetails(SiteSourceId: number) {

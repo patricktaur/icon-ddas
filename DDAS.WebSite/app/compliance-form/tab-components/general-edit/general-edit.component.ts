@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormArray, Form } from '@angular/forms';
 import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.classes';
 
 
@@ -10,9 +10,13 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
 })
 export class ComplianceFormGeneralEditComponent  {
     @Input() CompForm: ComplianceFormA;
-    private pageChanged: boolean = false;
-    
+    @Output() ValueChanged = new EventEmitter();
+
     formValueChanged(){
-        this.pageChanged = true;
+        this.ValueChanged.emit(true) ;
     } 
+
+   
+
+   
 }

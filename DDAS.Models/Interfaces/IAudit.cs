@@ -14,5 +14,6 @@ namespace DDAS.Models.Interfaces
         List<QCListViewModel> ListQCs();
         ComplianceForm GetQC(Guid RecId, string AssignedTo);
         bool SaveQC(ComplianceForm Form);
+        List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);
     }
 }

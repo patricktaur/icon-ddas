@@ -492,8 +492,6 @@ namespace DDAS.Services.Search
 
         }
          /*
-           
-
 
          */
 
@@ -557,6 +555,8 @@ namespace DDAS.Services.Search
 
                     dbForm.Reviews.Clear();
                     dbForm.Reviews.AddRange(form.Reviews);
+                    dbForm.Comments.Clear();
+                    dbForm.Comments.AddRange(form.Comments);
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
@@ -626,6 +626,11 @@ namespace DDAS.Services.Search
                         finding.Id = Guid.NewGuid();
                     }
 
+                    if(finding.Comments.Count > 0 &&
+                        finding.Comments[0].ReviewId == null)
+                    {
+                        finding.Comments = new List<Comment>();
+                    }
                     //if (finding.Comments == null)
                     //    break;
 
