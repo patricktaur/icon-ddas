@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel } from '../../../search/search.classes';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -12,6 +12,7 @@ import { SearchService } from '../../../search/search-service';
 })
 export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
     @Input() CompForm: ComplianceFormA;
+    @Output() ValueChanged = new EventEmitter();
     public SiteSource: SiteSource = new SiteSource;
     public SiteSources: any[];
     private pageChanged: boolean = false;
@@ -58,6 +59,7 @@ export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
         this.service.getSiteSources()
         .subscribe((item: any[]) =>{
             this.SiteSources = item;
+            this.ValueChanged.emit(false) ;
         },
         error => {
 
@@ -96,6 +98,11 @@ export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
         }
         return lastNumber;
     }
+    
+    formValueChanged(){
+        this.ValueChanged.emit(true) ;
+    } 
+    
     AddSelectedSite() {
   
       
@@ -126,6 +133,7 @@ export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
         
         this.CompForm.SiteSources.push(siteToAdd);
         this.pageChanged = true;
+        this.ValueChanged.emit(true) ;
         
         // var index = 0;
 
@@ -218,6 +226,7 @@ export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
         this.SetSiteDisplayPosition();
         this.SetSiteDisplayPositionInFindings();
         this.pageChanged = true;
+        this.ValueChanged.emit(true) ;
     }
     
     SetSiteDisplayPositionInFindings() {
@@ -241,4 +250,8 @@ export class ComplianceFormAdditionalSitesEditComponent implements OnInit {
             }
         }
     }
+
+
+
+    get diagnostic() { return JSON.stringify(this.pageChanged); }
 }
