@@ -123,6 +123,7 @@
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
+    <Compile Include="ViewModels\CurrentReviewStatusViewModel.cs" />
     <Compile Include="ViewModels\QCListViewModel.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />

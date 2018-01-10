@@ -74,7 +74,7 @@ export class ListQCComponent implements OnInit {
             return null;
     }
 
-    isAuditorOrIsAuditPending(qcVerifier: string, Status: number) {
+    isQCVerifierOrIsQCCompleted(qcVerifier: string, Status: number) {
         if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
             return true;
         else if (Status == ReviewStatusEnum.QCPassed || Status == ReviewStatusEnum.QCFailed)

@@ -26,6 +26,15 @@ export class ResponseToQCVerifierCommentComponent  {
         return middleNames;
     }
 
+    get getReviewerComment(){
+        this.Finding.Comments[0].CategoryEnum = 5;
+        return this.Finding.Comments[0];
+    }
+
+    get getQCVerifierComment(){
+        return this.Finding.Comments[1];
+    }
+
     dividerGeneration(indexVal: number) {
         if ((indexVal + 1) % 2 == 0) {
             return true;

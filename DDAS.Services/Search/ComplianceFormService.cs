@@ -631,15 +631,16 @@ namespace DDAS.Services.Search
                     {
                         finding.Comments = new List<Comment>();
                     }
-                    //if (finding.Comments == null)
-                    //    break;
 
-                    //foreach (Comment comment in finding.Comments)
-                    //{
-                    //    if (comment != null && comment.FindingComment != null)
-                    //        comment.AddedOn = DateTime.Now;
-                    //}
-                    //comment AddedOn is added at the client side
+                    foreach (Comment comment in finding.Comments)
+                    {
+                        if (comment != null && comment.FindingComment != null)
+                            comment.AddedOn = DateTime.Now;
+                        if(comment != null && comment.CategoryEnum == CommentCategoryEnum.CorrectionCompleted)
+                        {
+                            comment.CorrectedOn = DateTime.Now;
+                        }
+                    }
                 }
 
                 //REvised on 15May2017
@@ -1213,6 +1214,26 @@ namespace DDAS.Services.Search
             form.ExtractionErrorInvestigatorCount = ExtractionErrorInvestigatorCount;
             form.ExtractionPendingInvestigatorCount = ExtractionPendingInvestigatorCount;
 
+            if (!form.IsReviewCompleted)
+            {
+                var Review = form.Reviews.First();
+
+                if (Review == null)
+                    throw new Exception("Review Collection cannot be empty");
+                else
+                    Review.Status = ReviewStatusEnum.ReviewInProgress;
+
+            }
+            else
+            {
+                var Review = form.Reviews.First();
+
+                if (Review == null)
+                    throw new Exception("Review Collection cannot be empty");
+                else
+                    Review.Status = ReviewStatusEnum.ReviewCompleted;
+            }
+
             return form;
         }
 
@@ -1222,8 +1243,6 @@ namespace DDAS.Services.Search
             RollUpSummary(form);
             //_UOW.ComplianceFormRepository.UpdateComplianceForm(formId, form);
             _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-
             return true;
         }
 
@@ -1391,12 +1410,7 @@ namespace DDAS.Services.Search
 
         private void AddOrUpdateReviewStatus(ComplianceForm form)
         {
-            if (form.Reviews.Count > 0)
-            {
-                var tempReview = form.Reviews.First();
-                tempReview.Status = ReviewStatusEnum.SearchCompleted;
-            }
-            else
+            if (form.Reviews.Count == 0)
             {
                 var review = new Review();
                 review.RecId = Guid.NewGuid();
@@ -1406,6 +1420,10 @@ namespace DDAS.Services.Search
                 review.ReviewerRole = ReviewerRoleEnum.Reviewer;
                 review.Status = ReviewStatusEnum.SearchCompleted;
                 form.Reviews.Add(review);
+            }
+            else
+            {
+                //...
             }
         }
 

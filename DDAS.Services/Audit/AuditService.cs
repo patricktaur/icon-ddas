@@ -25,7 +25,6 @@ namespace DDAS.Services.AuditService
 
         public bool RequestQC(ComplianceForm Form)
         {
-
             foreach(Review Review in Form.Reviews)
             {
                 if (Review.RecId == null && 
@@ -50,25 +49,25 @@ namespace DDAS.Services.AuditService
                 ReviewId = review.RecId.Value
             });
 
-            foreach(Finding finding in Form.Findings)
-            {
-                if(finding.Comments.Count == 0)
-                {
-                    var Comment = new Comment();
-                    var Review =
-                        Form.Reviews.Find(x =>
-                        x.ReviewerRole == ReviewerRoleEnum.Reviewer);
-                    Comment.ReviewId = Review.RecId.Value;
-                    finding.Comments.Add(Comment);
+            //foreach(Finding finding in Form.Findings)
+            //{
+            //    if(finding.Comments.Count == 0)
+            //    {
+            //        var Comment = new Comment();
+            //        var Review =
+            //            Form.Reviews.Find(x =>
+            //            x.ReviewerRole == ReviewerRoleEnum.Reviewer);
+            //        Comment.ReviewId = Review.RecId.Value;
+            //        finding.Comments.Add(Comment);
 
-                    var Comment1 = new Comment();
-                    var Review1 =
-                        Form.Reviews.Find(x =>
-                        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-                    Comment1.ReviewId = Review1.RecId.Value;
-                    finding.Comments.Add(Comment1);
-                }
-            }
+            //        var Comment1 = new Comment();
+            //        var Review1 =
+            //            Form.Reviews.Find(x =>
+            //            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+            //        Comment1.ReviewId = Review1.RecId.Value;
+            //        finding.Comments.Add(Comment1);
+            //    }
+            //}
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             //SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
@@ -151,6 +150,7 @@ namespace DDAS.Services.AuditService
 
         public bool SaveQC(ComplianceForm Form)
         {
+            //Save QC is currently equivalent to submitting the QC
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return true;
         }
