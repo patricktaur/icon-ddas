@@ -19,6 +19,7 @@ using Utilities.WordTemplate;
 using System.Linq;
 using DDAS.Models.Enums;
 using DDAS.API.Helpers;
+using DDAS.Models.ViewModels;
 
 namespace DDAS.API.Controllers
 {
@@ -358,10 +359,35 @@ namespace DDAS.API.Controllers
                         UpdateComplianceFormToCurrentVersion(compForm);
 
                     var Review = compForm.Reviews.FirstOrDefault();
-                    if (Review != null && Review.StartedOn == null)
+                    if (Review != null 
+                        && Review.StartedOn == null &&
+                        compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
                     {
                         Review.StartedOn = DateTime.Now;
                         Review.Status = ReviewStatusEnum.ReviewInProgress;
+                        _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    }
+
+                    var QCFailedReview = compForm.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.QCFailed);
+
+                    var QCCorrectionReview = compForm.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.QCCorrectionInProgress);
+
+                    if (QCFailedReview != null &&
+                        QCCorrectionReview == null &&
+                        compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
+                    {
+                        compForm.Reviews.Add(new Review()
+                        {
+                            RecId = Guid.NewGuid(),
+                            AssigendTo = QCFailedReview.AssignedBy,
+                            AssignedBy = QCFailedReview.AssigendTo,
+                            StartedOn = DateTime.Now,
+                            Status = ReviewStatusEnum.QCCorrectionInProgress,
+                            PreviousReviewId = QCFailedReview.RecId
+                        });
+                        _UOW.ComplianceFormRepository.UpdateCollection(compForm);
                     }
                 }
                 return Ok(compForm);
@@ -763,6 +789,56 @@ namespace DDAS.API.Controllers
             //return Ok(SearchSites.GetNewSearchQuery());
             var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
             return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
+        }
+
+        [Route("CurrentReviewStatus")]
+        [HttpGet]
+        public IHttpActionResult GetCurrentReviewStatus(string ComplianceFormId)
+        {
+            var FormId = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(FormId);
+
+            var Review = Form.Reviews.LastOrDefault();
+
+            if (Review == null)
+                throw new Exception("Review collection cannot be empty!");
+
+            var CurrentReviewStatus = new CurrentReviewStatusViewModel();
+
+            if (Review.Status == ReviewStatusEnum.ReviewInProgress)
+            {
+                CurrentReviewStatus.ReviewerRecId = Review.RecId.Value;
+                CurrentReviewStatus.QCVerifierRecId = null;
+                CurrentReviewStatus.CurrentReview = Review;
+            }
+            else if (Review.Status == ReviewStatusEnum.QCInProgress)
+            {
+                CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
+                CurrentReviewStatus.CurrentReview = Review;
+                var ReviewCompleted = Form.Reviews.Find(x => 
+                    x.Status == ReviewStatusEnum.ReviewCompleted);
+                if(ReviewCompleted != null)
+                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                else
+                    CurrentReviewStatus.ReviewerRecId = null;
+            }
+            else if(Review.Status == ReviewStatusEnum.QCCorrectionInProgress)
+            {
+                var QCReview = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.QCFailed);
+                if (QCReview != null)
+                    CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
+                else
+                    CurrentReviewStatus.QCVerifierRecId = null;
+                var ReviewCompleted = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.ReviewCompleted);
+                if (ReviewCompleted != null)
+                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                else
+                    CurrentReviewStatus.ReviewerRecId = null;
+                CurrentReviewStatus.CurrentReview = Review;
+            }
+            return Ok(CurrentReviewStatus);
         }
 
         #region Download Data Files

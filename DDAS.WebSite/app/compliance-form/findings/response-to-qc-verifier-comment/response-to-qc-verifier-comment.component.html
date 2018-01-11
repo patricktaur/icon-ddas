@@ -5,21 +5,23 @@
             <label for="comment">
                 <h4>QC Verifier's Comments:</h4>
             </label>
-            <textarea class="form-control" name="Comment"  rows="3" cols="30" readonly
+            <textarea class="form-control" name="Comment"  rows="3" cols="30" [(ngModel)]="getQCVerifierComment.FindingComment" readonly
                 placeholder="Comment">
                     </textarea>
         </div>
     </div>
     <div class="row">
-            <div class="col-md-12">
-                
+            <div class="col-md-12">                
                 <label for="comment">
                     <h4>Response to QC Verifier's Comments:</h4>
                 </label>
-                <textarea class="form-control" name="Comment"  rows="3" cols="30" required
-                    placeholder="Comment">
-                        </textarea>
-                Confirm drop down:        
+                <div class="col-md-4">
+                    <label>QC Correction Status:</label>
+                    <select class="form-control" name="CommentCategory" [(ngModel)]="getReviewerComment.CategoryEnum">
+                        <option value="5" selected="selected">Pending</option>
+                        <option value="6">Correction Completed</option>
+                    </select>
+                </div>
             </div>
         </div>
 </div>

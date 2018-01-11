@@ -83,23 +83,22 @@
 
 							<div class="tab-content">
 								<div id="general-info-tab" class="tab-pane fade {{defaultTabInActive}}">
-									<div *ngIf="!isQCVerifier" comp-form-general-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
-									<div *ngIf="isQCVerifier" comp-form-general-view [CompForm]="CompForm"></div>
-									<div comp-form-general-view-qc-verifier-comment [CompForm]="CompForm"></div>
-									<div comp-form-general-view-response-to-qc-verifier-comment [CompForm]="CompForm"></div>
-									
+									<div *ngIf="isComponentVisible('generalEdit')" comp-form-general-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isComponentVisible('generalEditQC')" comp-form-general-view-qc-verifier-comment [CompForm]="CompForm"></div>
+									<div *ngIf="isComponentVisible('generalEditResponseToQC')" comp-form-general-view-response-to-qc-verifier-comment [CompForm]="CompForm"></div>
+									<div *ngIf="isComponentVisible('generalView')" comp-form-general-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="institute-tab" class="tab-pane fade">
-									<div *ngIf="!isQCVerifier" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath" (ValueChanged)="formValueChanged($event)"></div>
-									<div *ngIf="isQCVerifier" comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div>
+									<div *ngIf="isComponentVisible('instituteEdit')" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isComponentVisible('instituteView')" comp-form-institute-view [CompForm]="CompForm" [RootPath]="rootPath"></div>
 								</div>
 								<div id="investigators-tab" class="tab-pane fade {{invTabInActive}}">
-									<div *ngIf="!isQCVerifier" comp-form-investigator-edit [CompForm]="CompForm" (pageChanged)="formValueChanged()" [ReturnPath]="rootPath"></div>
-									<div *ngIf="isQCVerifier" comp-form-investigator-view [CompForm]="CompForm" [ReturnPath]="rootPath"></div>
+									<div *ngIf="isComponentVisible('investigatorEdit')" comp-form-investigator-edit [CompForm]="CompForm" (pageChanged)="formValueChanged()" [ReturnPath]="rootPath"></div>
+									<div *ngIf="isComponentVisible('investigatorView')" comp-form-investigator-view [CompForm]="CompForm" [ReturnPath]="rootPath"></div>
 								</div>
 								<div id="mandatory-sites-tab" class="tab-pane fade">
-									<div *ngIf="!isQCVerifier" comp-form-mandatory-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
-									<div *ngIf="isQCVerifier" comp-form-mandatory-sites-view [CompForm]="CompForm"></div>
+									<div *ngIf="isComponentVisible('mandatorySitesEdit')" comp-form-mandatory-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isComponentVisible('mandatorySitesView')" comp-form-mandatory-sites-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="additional-sites-tab" class="tab-pane fade">
 									<div *ngIf="!isQCVerifier" comp-form-additional-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
@@ -119,8 +118,6 @@
 					</div>
 
 					<div class="">
-						
-						
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
 						<button type="button" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
