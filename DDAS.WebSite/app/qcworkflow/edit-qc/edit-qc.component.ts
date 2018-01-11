@@ -71,19 +71,25 @@ export class EditQCComponent implements OnInit {
     getQCVerifierComment(){
         var review = this.complianceForm.Reviews.find(x => 
             x.AssigendTo == this.authService.userName &&
-        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-
-        
+        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);      
     }
 
     get isQCPassedOrFailed(){
-        if(this.complianceForm != null && 
-            (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
-            this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
+        let review = this.complianceForm.Reviews.find(x => 
+            x.Status == ReviewStatusEnum.QCFailed || 
+            x.Status == ReviewStatusEnum.QCPassed);
+
+        if(review != undefined)
             return true;
-        }
         else
             return false;
+        // if(this.complianceForm != null && 
+        //     (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
+        //     this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
+        //     return true;
+        // }
+        // else
+        //     return false;
     }
 
     listQCSummary(){
@@ -123,21 +129,24 @@ export class EditQCComponent implements OnInit {
             return null;
     }
 
-    get commentCategoryString(){
-        if(this.complianceForm.Comments[0].CategoryEnum != null ||
-        this.complianceForm.Comments[0].CategoryEnum != undefined){
-            switch(this.complianceForm.Comments[0].CategoryEnum){
-                case CommentCategoryEnum.Minor: return "Minor";
-                case CommentCategoryEnum.Major: return "Major";
-                case CommentCategoryEnum.Critical: return "Critical";
-                case CommentCategoryEnum.Suggestion: return "Suggestion";
-                case CommentCategoryEnum.Others: return "Others";
-                default: "";
-            }
-        }
-        else
-            return null;
-    }
+    // get commentCategoryString(){
+    //     if(this.complianceForm.Comments[0].CategoryEnum != null ||
+    //     this.complianceForm.Comments[0].CategoryEnum != undefined){
+    //         switch(this.complianceForm.Comments[0].CategoryEnum){
+    //             case CommentCategoryEnum.Minor: return "Minor";
+    //             case CommentCategoryEnum.Major: return "Major";
+    //             case CommentCategoryEnum.Critical: return "Critical";
+    //             case CommentCategoryEnum.Suggestion: return "Suggestion";
+    //             case CommentCategoryEnum.Others: return "Others";
+    //             case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+    //             case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
+    //             case CommentCategoryEnum.Accepted: return "Accepted";
+    //             default: "";
+    //         }
+    //     }
+    //     else
+    //         return null;
+    // }
 
     openComplianceForm(){
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });

@@ -441,7 +441,8 @@ export enum ReviewStatusEnum {
     QCRequested,
     QCInProgress,
     QCFailed,
-    QCPassed
+    QCPassed,
+    QCCorrectionInProgress
 }
 
 export enum ReviewerRoleEnum {
@@ -454,7 +455,10 @@ export enum CommentCategoryEnum {
     Major,
     Critical,
     Suggestion,
-    Others
+    Others,
+    CorrectionPending,
+    CorrectionCompleted,
+    Accepted
 }
 
 export class QualityCheck {
@@ -473,4 +477,10 @@ export class AuditObservation {
     SiteId: number;
     Comments: string;
     Status: string;
+}
+
+export class CurrentReviewStatusViewModel {
+    ReviewerRecId: string;
+    QCVerifierRecId: string;
+    CurrentReview: Review;
 }

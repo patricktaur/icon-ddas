@@ -82,7 +82,8 @@
         QCRequested,
         QCInProgress,
         QCFailed,
-        QCPassed
+        QCPassed,
+        QCCorrectionInProgress
     }
 
     public enum ReviewerRoleEnum
@@ -97,6 +98,9 @@
         Major,
         Critical,
         Suggestion,
-        Others
+        Others,
+        CorrectionPending,
+        CorrectionCompleted,
+        Accepted
     }
 }
