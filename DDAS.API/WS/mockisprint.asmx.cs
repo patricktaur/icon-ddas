@@ -77,11 +77,5 @@ namespace DDAS.API.WS
             //return en;
             return DR;
         }
-
-        [WebMethod]
-        public MyCar TestCar(MyCar mycar)
-        {
-            return mycar;
-        }
     }
 }

@@ -2134,6 +2134,12 @@ namespace DDAS.Services.Search
             
         }
 
+        public ComplianceForm GetComplianceForm(Guid ComplianceFormId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            return form;
+        }
+
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
