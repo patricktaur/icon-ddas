@@ -264,7 +264,7 @@ namespace DDAS.Services.Search
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
             //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
             form.Institute = DR.institute.name;
-            form.Address = DR.institute.address1;
+            form.Address =(DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  "," ");
             form.Country = DR.institute.country;
 
             //AddCountrySpecificSites(form);

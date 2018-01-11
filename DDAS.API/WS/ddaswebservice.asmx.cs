@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Services;
 using WebScraping.Selenium.SearchEngine;
+using static DDAS.Models.ViewModels.DDASResponseModel;
 using static DDAS.Models.ViewModels.RequestPayloadforDDAS;
 
 namespace DDAS.API.WS
@@ -29,7 +30,7 @@ namespace DDAS.API.WS
         }
 
         [WebMethod]
-        public ComplianceForm iSprintToDDAS(ddRequest DR)
+        public ddresponse iSprintToDDAS(ddRequest DR)
         {
             var ConnectionString =
                System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
@@ -42,11 +43,11 @@ namespace DDAS.API.WS
             var _SearchEngine = new SearchEngine(_uow, _config);
             ComplianceFormService c = new ComplianceFormService(_uow,_SearchEngine,_config);
             var obj = c.ImportIsprintData(DR);
-            return obj;
+            return ComplianceFormToResponse(obj);
         }
 
         [WebMethod]
-        public ComplianceForm iSprintToDDASVerify(string Recid)
+        public ddresponse iSprintToDDASVerify(string Recid)
         {
 
             var ConnectionString =
@@ -60,6 +61,55 @@ namespace DDAS.API.WS
             var _SearchEngine = new SearchEngine(_uow, _config);
             ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
             var obj = c.GetComplianceForm(Guid.Parse(Recid));
+            return ComplianceFormToResponse(obj);
+        }
+
+        public ddresponse ComplianceFormToResponse(ComplianceForm form)
+        {
+            var obj = new ddresponse();
+
+            obj.recid = form.RecId.ToString();
+
+            var proj = new Models.ViewModels.DDASResponseModel.ddRequestProject();
+            proj.projectNumber = form.ProjectNumber;
+            proj.sponsorProtocolNumber = form.SponsorProtocolNumber;
+
+            obj.project = proj;
+
+            var institute = new Models.ViewModels.DDASResponseModel.ddRequestInstitute();
+
+            institute.name = form.Institute;
+            institute.address1 = form.Address;
+            institute.address2 = form.Address;
+            institute.city = form.Address;
+            institute.stateProvince = form.Address;
+            institute.zipCode = form.Address;
+            institute.country = form.Country;
+
+            obj.institute = institute;
+            
+            int el = 0;
+            obj.investigators = new Models.ViewModels.DDASResponseModel.ddRequestInvestigator[form.InvestigatorDetails.Count];
+
+            foreach (var ddasinvestigator in form.InvestigatorDetails)
+            {
+                var investigator = new Models.ViewModels.DDASResponseModel.ddRequestInvestigator();
+
+                investigator.firstName = ddasinvestigator.FirstName;
+                investigator.middleName = ddasinvestigator.MiddleName;
+                investigator.lastName = ddasinvestigator.LastName;
+                investigator.investigatorId = ddasinvestigator.InvestigatorId;
+                investigator.licenceNumber = ddasinvestigator.MedicalLiceseNumber;
+                investigator.memberId = ddasinvestigator.MemberId;
+                investigator.nameWithQualification = ddasinvestigator.Name;
+                investigator.role = ddasinvestigator.Role;
+
+                obj.investigators[el] = investigator;
+
+                el += 1;
+            }
+
+
             return obj;
         }
     }

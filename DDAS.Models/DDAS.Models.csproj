@@ -119,6 +119,7 @@
     <Compile Include="Repository\IExceptionLoggerRepository.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
+    <Compile Include="ViewModels\DDASResponseModel.cs" />
     <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
     <Compile Include="ViewModels\ExceptionLoggerViewModel.cs" />
     <Compile Include="ViewModels\ExtractionLogViewModel.cs" />
