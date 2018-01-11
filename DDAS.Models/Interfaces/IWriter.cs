@@ -13,12 +13,13 @@ namespace DDAS.Models.Interfaces
 
         void WriteParagraph(string Text);
 
-        void AddFormHeaders(string ProjectNumber, string SponsorProtocolNumber,
+        void AddFormHeaders(string ProjectNumber, string ProjectNumber2, 
+            string SponsorProtocolNumber, string SponsorProtocolNumber2,
             string InstituteName, string Address);
 
         void AddTableHeaders(string[] Headers, int Columns, int TableIndex);
 
-        void FillUpTable(string[] CellValues);
+        void FillUpTable(string[] CellValues, string CellAlignment);
 
         void AddSearchedBy(string SearchedBy, string Date);
 

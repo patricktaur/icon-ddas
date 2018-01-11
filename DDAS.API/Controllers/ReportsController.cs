@@ -2,6 +2,7 @@
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using DDAS.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -324,6 +325,66 @@ namespace DDAS.API.Controllers
         {
             var OpenInvestigations = _Report.GetOpenInvestigations();
             return Ok(OpenInvestigations);
+        }
+
+        [Route("AdminDashboard")]
+        [HttpGet]
+        public IHttpActionResult GetAdminDashboard()
+        {
+            return Ok(_Report.GetAdminDashboard());
+        }
+
+        [Route("AssignmentHistory")]
+        [HttpPost]
+        public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter)
+        {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
+            return Ok(
+                _Report.GetAssignmentHistory(ReportFilter));
+        }
+
+        [Route("InvestigatorReviewCompletedTime")]
+        [HttpPost]
+        public IHttpActionResult
+            GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter)
+        {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
+            return Ok(
+                _Report.GetInvestigatorsReviewCompletedTime(ReportFilter));
+        }
+
+        [Route("InvestigatorByFinding")]
+        [HttpPost]
+        public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter)
+        {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
+            return Ok(
+                _Report.GetInvestigatorByFinding(ReportFilter));
+        }
+
+        [Route("StudySpecificInvestigators")]
+        [HttpPost]
+        public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
+        {
+            if (ReportFilter.ToDate != null)
+            {
+                ReportFilter.ToDate = ReportFilter.ToDate.Date.AddDays(1);
+            }
+
+            return Ok(
+                _Report.GetStudySpecificInvestigators(ReportFilter));
         }
     }
 }

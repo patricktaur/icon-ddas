@@ -12,9 +12,7 @@
 								<div class="col-md-3 ">
 									<div class="form-group">
 										<label for="Date">ICSF Created On (from):</label>
-
 										<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
-
 									</div>
 								</div>
 								<div class="col-md-3 ">
@@ -29,7 +27,7 @@
 								</div>
 							</div>
 							<!--<div *ngIf="!generating">-->
-								<button type="button" class="btn btn-primary" (click)="GenerateOutputFile()">Generate</button>
+								<button type="button" class="btn btn-primary" (click)="GenerateOutputFile()">Generate Report</button>
 								<!--</div>
 							<div *ngIf="generating">
 								<h4>

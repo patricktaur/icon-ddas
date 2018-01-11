@@ -157,7 +157,7 @@ namespace DDAS.API.Controllers
             htmlBody += "DDAS Team";
 
             EMail.Body = htmlBody;
-            _EMailService.SendMail( EMail);
+            _EMailService.SendMail(EMail);
 
             return Ok(true);
         }

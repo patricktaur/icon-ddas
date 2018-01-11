@@ -8,6 +8,7 @@ using DDAS.Models.Interfaces;
 using DDAS.Services.AppAdminService;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -66,7 +67,7 @@ namespace DDAS.Setup
                     _WriteLog.WriteLog("site Sources InDB:", sitesInDB.Count.ToString());
                     if (sitesInDB.Count > 0)
                     {
-                        _WriteLog.WriteLog("Sites already exist.  Not added");
+                        _WriteLog.WriteLog("Sites already exist. Not added");
                     }
                     else
                     {

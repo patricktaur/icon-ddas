@@ -135,12 +135,12 @@ export class CompFormEditComponent implements OnInit {
             ],
 
             'SponsorProtocolNumber': [this.CompForm.SponsorProtocolNumber],
+            'SponsorProtocolNumber2': [this.CompForm.SponsorProtocolNumber2],
             'Institute': [this.CompForm.Institute],
             'Country': [this.CompForm.Country],
             'Address': [this.CompForm.Address],
 
             'Investigators': this.fb.array([])
-
         });
 
         this.LoadInvestigatorControls();
@@ -849,7 +849,6 @@ gotoSiteDetails(SiteSourceId: number){
     }
     
     goBack() {
-
         if (this.rootPath == null) {
             this._location.back();
         }

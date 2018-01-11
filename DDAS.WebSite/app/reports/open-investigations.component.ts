@@ -8,9 +8,8 @@ import { ReportService } from './report-service';
     templateUrl: 'open-investigations.component.html'
 })
 
-export class OpenInvestigationsReport {
+export class OpenInvestigationsComponent {
     public generating: boolean = false;
-
     public openInvestigations: any[];
     public pageNumber: number;
     public formLoading: boolean;

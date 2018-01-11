@@ -1,0 +1,48 @@
+<div class="col-md-12">
+	<div class="well">
+        <h3 class="no-margin-top">Admin Dashboard</h3>
+        <!-- {{diagnostic}} -->
+	</div>
+	<div class="alert alert-info" *ngIf="formLoading">
+		<strong>Loading ...</strong>
+	</div>	
+</div>
+
+<div class="col-md-12">
+	<div class="well">
+		<button type="button" class="btn btn-sm btn-primary pull-right" (click)="loadAdminDashboardList()">
+			<span class="glyphicon glyphicon-refresh" title="refresh"></span>
+		</button>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>User</th>
+                    <th>Opening Balance</th>
+                    <th>Compliance Forms Uploaded</th>
+                    <th>Compliance Forms Completed</th>
+                    <th>Closing Balance</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let item of adminDashboardList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+					<td class="text-left">
+						{{item.UserName}}
+					</td>
+					<td class="text-center">
+						{{item.OpeningBalance}}
+                    </td>
+                    <td class="text-center">
+                        {{item.InvestigatorUploaded}}
+                    </td>
+                    <td class="text-center">
+                        {{item.InvestigatorReviewCompleted}}
+                    </td>
+                    <td class="text-center">
+                        {{item.ClosingBalance}}
+                    </td>                    
+				</tr>
+			</tbody>
+		</table>
+		<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+	</div>
+</div>

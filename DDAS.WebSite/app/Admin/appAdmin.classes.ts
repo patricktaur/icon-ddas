@@ -38,11 +38,20 @@ export class SponsorProtocol{
 }
 
  export class DefaultSite{
-        RecId : string;
-        Name: string;
-        SiteId : string;
-        OrderNo : number;
-        IsMandatory : boolean;
-        SearchAppliesTo: number;
-        //ExcludeSI : boolean;
-    }
+    RecId : string;
+    Name: string;
+    SiteId : string;
+    OrderNo : number;
+    IsMandatory : boolean;
+    SearchAppliesTo: number;
+    //ExcludeSI : boolean;
+}
+
+export class DownloadDataFilesViewModel{
+        FileName: string;
+        FullPath: string;
+        SiteName: string;
+        DownloadedOn: Date;
+        FileSize: number;
+        FileType: string;
+}
