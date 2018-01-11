@@ -62,21 +62,23 @@ namespace DDAS.Services.Search
         {
             RowData.Role = ExcelRow[0];
             RowData.ProjectNumber = ExcelRow[1];
-            RowData.SponsorProtocolNumber = ExcelRow[2];
-            RowData.DisplayName = ExcelRow[3];
-            RowData.InvestigatorID = ExcelRow[4];
-            RowData.MemberID = ExcelRow[5];
-            RowData.FirstName = ExcelRow[6];
-            RowData.MiddleName = ExcelRow[7];
-            RowData.LastName = ExcelRow[8];
-            RowData.InstituteName = ExcelRow[9];
-            RowData.AddressLine1 = ExcelRow[10];
-            RowData.AddressLine2 = ExcelRow[11];
-            RowData.City = ExcelRow[12];
-            RowData.State = ExcelRow[13];
-            RowData.PostalCode = ExcelRow[14];
-            RowData.Country = ExcelRow[15];
-            RowData.MedicalLicenseNumber = ExcelRow[16];
+            RowData.ProjectNumber2 = ExcelRow[2];
+            RowData.SponsorProtocolNumber = ExcelRow[3];
+            RowData.SponsorProtocolNumber2 = ExcelRow[4];
+            RowData.DisplayName = ExcelRow[5];
+            RowData.InvestigatorID = ExcelRow[6];
+            RowData.MemberID = ExcelRow[7];
+            RowData.FirstName = ExcelRow[8];
+            RowData.MiddleName = ExcelRow[9];
+            RowData.LastName = ExcelRow[10];
+            RowData.InstituteName = ExcelRow[11];
+            RowData.AddressLine1 = ExcelRow[12];
+            RowData.AddressLine2 = ExcelRow[13];
+            RowData.City = ExcelRow[14];
+            RowData.State = ExcelRow[15];
+            RowData.PostalCode = ExcelRow[16];
+            RowData.Country = ExcelRow[17];
+            RowData.MedicalLicenseNumber = ExcelRow[18];
 
             return RowData;
         }
@@ -113,7 +115,7 @@ namespace DDAS.Services.Search
                     break;
                 }
 
-                if (ExcelRow[0] == null || ExcelRow[0] == "")
+                if (ExcelRow[0] == null || ExcelRow[0] == "") //empty file
                     break;
  
                 FillUpExcelInputRowObject(RowData, ExcelRow);
@@ -185,11 +187,12 @@ namespace DDAS.Services.Search
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName = 
                     Path.GetFileName(FilePathWithGUID);
-                form.ProjectNumber = InputRows[Index].ProjectNumber;
-                //form.SponsorProtocolNumber = 
-                //    InputRows[Index].ProjectNumber.Split('/')[0];
+                form.ProjectNumber = InputRows[Index].ProjectNumber.Trim();
+                form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
                 form.SponsorProtocolNumber =
                     InputRows[Index].SponsorProtocolNumber;
+                form.SponsorProtocolNumber2 =
+                    InputRows[Index].SponsorProtocolNumber2;
                 form.Institute = InputRows[Index].InstituteName;
                 form.Address = InputRows[Index].Address;
                 form.Country = InputRows[Index].Country;
@@ -204,7 +207,7 @@ namespace DDAS.Services.Search
                     Investigator.Id = InvId;
                     InvId += 1;
 
-                    Investigator.Name = InputRows[Index].DisplayName;
+                    Investigator.Name = InputRows[Index].DisplayName.Trim();
                     Investigator.FirstName = InputRows[Index].FirstName;
                     Investigator.MiddleName = InputRows[Index].MiddleName;
                     Investigator.LastName = InputRows[Index].LastName;
@@ -224,7 +227,7 @@ namespace DDAS.Services.Search
                         Inv.Id = InvId;
                         InvId += 1;
 
-                        Inv.Name = InputRows[tempIndex].DisplayName;
+                        Inv.Name = InputRows[tempIndex].DisplayName.Trim();
                         Inv.FirstName = InputRows[tempIndex].FirstName;
                         Inv.MiddleName = InputRows[tempIndex].MiddleName;
                         Inv.LastName = InputRows[tempIndex].LastName;
@@ -246,14 +249,14 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        public void UpdateAssignedToData(string AssignedTo, bool Active,
-            Guid? RecId)
+        public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
+            bool Active, Guid? RecId)
         {
             //var form = _UOW.ComplianceFormRepository.FindById(RecId);
             //form.AssignedTo = AssignedTo;
             //form.Active = Active;
             //_UOW.ComplianceFormRepository.UpdateCollection(form);
-
+            AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
             _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
         }
 
@@ -279,6 +282,7 @@ namespace DDAS.Services.Search
                 _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
             else
                 _UOW.ComplianceFormRepository.Add(frm); //Insert
+
             return frm;
         }
 
@@ -392,6 +396,24 @@ namespace DDAS.Services.Search
             return frm;
         }
 
+        private void AddToAssignementHistory(Guid ComplianceFormId, string AssignedBy, string AssignedTo)
+        {
+            var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (ComplianceForm == null)
+                throw new Exception("Compliance form could not be found");
+
+            var AssignmentHistory = new AssignmentHistory();
+            AssignmentHistory.ComplianceFormId = ComplianceFormId;
+            AssignmentHistory.PreviouslyAssignedTo =
+                ComplianceForm.AssignedTo;
+            AssignmentHistory.AssignedBy = AssignedBy;
+            AssignmentHistory.AssignedTo = AssignedTo;
+            AssignmentHistory.AssignedOn = DateTime.Now;
+
+            _UOW.AssignmentHistoryRepository.Add(AssignmentHistory);
+        }
+
         public void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion)
         {
             var form = _UOW.ComplianceFormRepository.FindById(formId);
@@ -475,7 +497,9 @@ namespace DDAS.Services.Search
                 {
                     dbForm.UpdatedOn = DateTime.Now;
                     dbForm.ProjectNumber = form.ProjectNumber;
+                    dbForm.ProjectNumber2 = form.ProjectNumber2;
                     dbForm.SponsorProtocolNumber = form.SponsorProtocolNumber;
+                    dbForm.SponsorProtocolNumber2 = form.SponsorProtocolNumber2;
                     dbForm.Institute = form.Institute;
                     dbForm.Address = form.Address;
                     dbForm.Country = form.Country;
@@ -750,7 +774,12 @@ namespace DDAS.Services.Search
 
             int SrNo = 0;
 
-            var MandatorySites = _UOW.DefaultSiteRepository.GetAll()
+            var Sites = _UOW.DefaultSiteRepository.GetAll();
+
+            if (Sites.Count() == 0)
+                return;
+
+            var MandatorySites = Sites
                 .Where (x => x.IsMandatory == true)
                 .OrderBy(x => x.OrderNo).ToList();
 
@@ -1783,6 +1812,12 @@ namespace DDAS.Services.Search
 
         #region ComplianceFormQueries
 
+        public ComplianceForm GetComplianceForm(Guid ComplianceFormId)
+        {
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            return form;
+        }
+
         public List<PrincipalInvestigator> getAllPrincipalInvestigators()
         {
             var retList = new List<PrincipalInvestigator>();
@@ -1821,6 +1856,8 @@ namespace DDAS.Services.Search
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active=true, bool ReviewCompleted = false)
         {
             var retList = new List<PrincipalInvestigator>();
+
+            //var UserFullName = GetUserFullName(AssignedTo);
 
             retList = getPrincipalInvestigators(AssignedTo, Active);
 
@@ -1869,7 +1906,9 @@ namespace DDAS.Services.Search
             item.Address = compForm.Address;
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;
+            item.ProjectNumber2 = compForm.ProjectNumber2;
             item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
+            item.SponsorProtocolNumber2 = compForm.SponsorProtocolNumber2;
             item.RecId = compForm.RecId;
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
@@ -1928,7 +1967,9 @@ namespace DDAS.Services.Search
                 CompFormFilter.ProjectNumber != "")
             {
                 Filter2 = Filter1.Where(x =>
-                x.ProjectNumber == CompFormFilter.ProjectNumber).ToList();
+                x.ProjectNumber == CompFormFilter.ProjectNumber ||
+                x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+                .ToList();
             }
 
             var Filter3 = Filter2;
@@ -1938,6 +1979,8 @@ namespace DDAS.Services.Search
             {
                 Filter3 = Filter2.Where(x =>
                 x.SponsorProtocolNumber.ToLower() == 
+                CompFormFilter.SponsorProtocolNumber.ToLower() ||
+                x.SponsorProtocolNumber2.ToLower() ==
                 CompFormFilter.SponsorProtocolNumber.ToLower())
                 .ToList();
             }
@@ -2033,7 +2076,9 @@ namespace DDAS.Services.Search
                 CompFormFilter.ProjectNumber != "")
             {
                 Filter2 = Filter1.Where(x =>
-                x.ProjectNumber == CompFormFilter.ProjectNumber).ToList();
+                x.ProjectNumber == CompFormFilter.ProjectNumber ||
+                x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+                .ToList();
             }
 
             var Filter3 = Filter2;
@@ -2043,6 +2088,8 @@ namespace DDAS.Services.Search
             {
                 Filter3 = Filter2.Where(x =>
                 x.SponsorProtocolNumber.ToLower() ==
+                CompFormFilter.SponsorProtocolNumber.ToLower() ||
+                x.SponsorProtocolNumber2.ToLower() ==
                 CompFormFilter.SponsorProtocolNumber.ToLower())
                 .ToList();
             }
@@ -2153,6 +2200,9 @@ namespace DDAS.Services.Search
 
             var ProjectNumber = form.ProjectNumber.Replace('/', '-');
 
+            if (form.ProjectNumber2 != null && form.ProjectNumber2.Trim() != "")
+                ProjectNumber += "-" + form.ProjectNumber2.Replace('/', '-');
+
             var PISearchName = form.InvestigatorDetails.FirstOrDefault().SearchName; 
 
             var GeneratedFileName = 
@@ -2181,8 +2231,11 @@ namespace DDAS.Services.Search
 
             writer.WriteParagraph("INVESTIGATOR COMPLIANCE SEARCH FORM");
 
-            writer.AddFormHeaders(form.ProjectNumber, form.SponsorProtocolNumber,
-                form.Institute, (form.Address + " " + form.Country));
+            writer.AddFormHeaders(
+                form.ProjectNumber, form.ProjectNumber2,
+                form.SponsorProtocolNumber, form.SponsorProtocolNumber2,
+                form.Institute, 
+                (form.Address + " " + form.Country));
 
             //InvestigatorDetailsTable
             writer.WriteParagraph("Investigators:");
@@ -2193,14 +2246,20 @@ namespace DDAS.Services.Search
 
             foreach(InvestigatorSearched Investigator in form.InvestigatorDetails)
             {
+                string MedicalLicenseNumber = null;
+                if (Investigator.MedicalLiceseNumber == null || Investigator.MedicalLiceseNumber.Trim() == "")
+                    MedicalLicenseNumber = "NA";
+                else
+                    MedicalLicenseNumber = Investigator.MedicalLiceseNumber;
+
                 string[] CellValues = new string[]
                 {
                     Investigator.Role,
                     Investigator.Name,
-                    Investigator.MedicalLiceseNumber,
+                    MedicalLicenseNumber,
                     Investigator.SearchName
                 };
-                writer.FillUpTable(CellValues);
+                writer.FillUpTable(CellValues, "center");
             }
             //SaveChanges is required for PDF generation
             writer.SaveChanges();
@@ -2235,7 +2294,7 @@ namespace DDAS.Services.Search
                     Site.IssuesIdentified ? "Yes" : "No"
                 };
 
-                writer.FillUpTable(CellValues);
+                writer.FillUpTable(CellValues, "left");
 
                 RowIndex += 1;
                 ColumnIndex += 1;
@@ -2265,7 +2324,7 @@ namespace DDAS.Services.Search
                         Site.SiteUrl,
                         Site.IssuesIdentified ? "Yes" : "No"
                     };
-                    writer.FillUpTable(CellValues);
+                    writer.FillUpTable(CellValues, "left");
                     RowIndex += 1;
                 }
             }
@@ -2284,7 +2343,7 @@ namespace DDAS.Services.Search
                 {
                     "", "", "", "No Findings"
                 };
-                writer.FillUpTable(CellValues);
+                writer.FillUpTable(CellValues, "center");
             }
             else
             {
@@ -2302,9 +2361,9 @@ namespace DDAS.Services.Search
                         finding.SiteSourceId.ToString(),
                         finding.InvestigatorName == null ? form.Institute : finding.InvestigatorName,
                         DateOfInspection,
-                        finding.Observation
+                        finding.Observation != null ? finding.Observation.Trim() : ""
                         };
-                        writer.FillUpTable(CellValues);
+                        writer.FillUpTable(CellValues, "left");
                     }
                 }
             }
@@ -4037,6 +4096,79 @@ namespace DDAS.Services.Search
 
         #endregion
 
+        #region Download Data Files
+
+        public List<DownloadDataFilesViewModel> GetDataFiles(int SiteEnum)
+        {
+            bool IsFilteredBySiteEnum = false;
+
+            var DownloadDataFilesVMList = new List<DownloadDataFilesViewModel>();
+
+            var DataFolders = new string[] {
+                _config.CIILFolder,
+                _config.FDAWarningLettersFolder,
+                _config.ExclusionDatabaseFolder,
+                _config.SAMFolder,
+                _config.SDNFolder
+            };
+
+            var FileTypes = new string[] {
+                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
+            };
+
+            int Index = 0;
+            foreach (string Folder in DataFolders)
+            {
+                if (IsFilteredBySiteEnum)
+                    break;
+
+                var Files = GetDataFiles(Folder, FileTypes[Index]);
+
+                    Files.ForEach(fileInfo =>
+                    {
+                        if (_UOW.SiteSourceRepository.GetAll().Find(
+                            x => (int)x.SiteEnum == SiteEnum) != null)
+                        {
+                            var VM = new DownloadDataFilesViewModel();
+                            VM.FileName = fileInfo.Name;
+                            var siteEnum = VM.FileName.Split('_')[0];
+
+                            var Site = _UOW.SiteSourceRepository.GetAll().Find(
+                            x => (int)x.SiteEnum == SiteEnum &&
+                            x.SiteEnum.ToString() == siteEnum);
+
+                            if (Site != null)
+                            {
+                                VM.SiteName = Site.SiteName;
+                                VM.FullPath = Folder + VM.FileName;
+                                VM.FileSize = (fileInfo.Length / 1024) //bytes to KB
+                                .ToString();
+                                VM.DownloadedOn = fileInfo.CreationTime;
+                                VM.FileType = fileInfo.Extension;
+                                DownloadDataFilesVMList.Add(VM);
+                                IsFilteredBySiteEnum = true;
+                            }
+                        }
+                    });
+                Index += 1;
+            }
+            return DownloadDataFilesVMList;
+        }
+
+        private List<FileInfo> GetDataFiles(string Folder, string FileType)
+        {
+            var Files = new DirectoryInfo(Folder).GetFiles(FileType);
+
+            var AllFiles = new List<FileInfo>();
+            foreach(FileInfo fileInfo in Files)
+            {
+                AllFiles.Add(fileInfo);
+            }
+            return AllFiles;
+        }
+
+        #endregion
+
         #region Helpers
 
         private string RemoveExtraCharacters(string Value)
@@ -4146,7 +4278,13 @@ namespace DDAS.Services.Search
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
 
-            if(InputRow.DisplayName.Trim().Length == 0)
+            if (InputRow.ProjectNumber2 != null && 
+                InputRow.ProjectNumber2.Trim() != ""
+                && !IsValidProjectNumber(InputRow.ProjectNumber2))
+                ValidationMessages.Add("RowNumber: " + Row +
+                    " - change the project number format to '1234/5678'");
+
+            if (InputRow.DisplayName.Trim().Length == 0)
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - Investigator Name With Qualification (ICSF) is missing");
 

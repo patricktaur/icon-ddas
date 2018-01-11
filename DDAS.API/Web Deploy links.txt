@@ -1,9 +1,4 @@
-opening rate => price
-mailing name => sku
-opening balance => stock_quantity
-
 https://www.troyhunt.com/you-deploying-it-wrong-teamcity_24/
-
 
 https://technet.microsoft.com/en-us/library/dd569089(WS.10).aspx
 

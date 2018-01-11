@@ -19,6 +19,9 @@ namespace DDAS.Models
 
         IExceptionLoggerRepository ExceptionLoggerRepository { get; }
 
+        IAuditRepository AuditRepository { get; }
+        IAssignmentHistoryRepository AssignmentHistoryRepository { get; }
+
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
 

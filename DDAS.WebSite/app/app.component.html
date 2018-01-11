@@ -27,6 +27,8 @@
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/list-audit" routerLinkActive="active">QC Audit</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/data-file" routerLinkActive="active">Downloaded Data Files</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
 
 							<!-- <li class="active" *ngIf="authService.isUser || authService.isAdmin"><a routerLink="/reports" routerLinkActive="active">Reports</a></li> -->
@@ -41,6 +43,11 @@
 											<a routerLink="/output-report" routerLinkActive="active">Output Report</a>
 											<a routerLink="/investigations-completed" routerLinkActive="active">Investigations Completed</a>
 											<a routerLink="/open-investigations" routerLinkActive="active">Open Investigations</a>
+											<a routerLink="/admin-dashboard" routerLinkActive="active">Admin Dashboard</a>
+											<a routerLink="/assignment-history" routerLinkActive="active">Re-Assignment History</a>
+											<a routerLink="/investigator-reviewcompletedtime" routerLinkActive="active">Review Completed Time</a>
+											<a routerLink="/investigator-findings" routerLinkActive="active">Investigators By Findings</a>
+											<a routerLink="/study-specific-investigator" routerLinkActive="active">Study Specific Investigators</a>
 										</li>
 									</ul>
 								</div>

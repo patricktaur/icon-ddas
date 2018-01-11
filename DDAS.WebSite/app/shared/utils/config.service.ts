@@ -23,7 +23,7 @@ export class ConfigService {
        
         
         //for  demo version on Clarity Server:
-        //this._apiURI = 'api/';
+        this._apiURI = 'api/';
         
         
     }
@@ -37,7 +37,7 @@ export class ConfigService {
      }
 
      getVer(){
-         return "T1.0.18"
+         return "T1.0.27"
      }
 }
 

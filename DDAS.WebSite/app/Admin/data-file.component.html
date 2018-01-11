@@ -1,0 +1,81 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<div class="row">
+				<div class="col-lg-12">
+					<h3 class="align-left no-margin-top">
+						Downloaded Data Files
+					</h3>
+				</div>
+			</div>			
+		</div>
+
+		<div class="alert alert-info" *ngIf="formLoading">
+			<strong>Loading ...</strong>
+		</div>
+		<div *ngIf="!formLoading">
+			<div class="well">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label for="Site">Site:</label>
+							<select class="form-control" name="Site" [(ngModel)]="filterBySite">
+								<option value="1" selected="selected">Clinical Investigator Inspection Page(CDER)</option>
+								<option value="2">FDA Warning Letters Page</option>
+								<option value="8">Exclusion Database Search Page</option>
+								<option value="10">System For Award Management Page</option>
+								<option value="11">Specially Designated Nationals Page</option>
+							</select>
+						</div>
+						<button type="button" class="btn btn-sm btn-primary" (click)="loadDataFiles()">
+							Get Data Files
+						</button>
+					</div>
+					<div class="col-md-8">
+					</div>
+				</div>
+				<br/><br/>
+				<div class="row">
+					<div class="col-md-3">
+						<label>Filter By File Name:</label>
+						<input type="text" class="form-control" name="filterDataFilesByText" [(ngModel)]="filterDataFilesByText"/>
+					</div>
+					<div class="col-md-9">
+					</div>				
+				<div class="row">
+					<div class="col-lg-12">
+					</div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Created On</th>
+									<th>File Name</th>
+                                    <th>Size (in KB)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!--<tr *ngFor="let item of ErrorImages | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
+								<tr *ngFor="let item of filteredDataFiles | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+									<td class="text-center">
+										{{item.DownloadedOn | date: 'dd MMM yyyy HH:mm'}}
+									</td>
+									<td class="text-left">
+										<a href="{{ApiHost}}{{item.FullPath}}" target="_blank">{{item.FileName}}</a>
+                                    </td>									 
+									<td class="text-center">
+										{{item.FileSize}}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+					</div>
+					<div class="col-lg-4">
+						
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>

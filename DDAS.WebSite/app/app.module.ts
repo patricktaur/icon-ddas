@@ -25,7 +25,7 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 import {LoginHistoryModule} from './admin/all-loginhistory.module';
 import {AppAdminModule} from './app-admin/app-admin.module';
 import { HelpModule } from './help/help.module';
-
+import { AuditModule } from './audits/audit.module';
 import {CommonService} from './shared/common.service';
 
 @NgModule({
@@ -40,7 +40,8 @@ import {CommonService} from './shared/common.service';
     LoggedInUserModule,
     LoginHistoryModule,
     AppAdminModule,
-    HelpModule
+    HelpModule,
+    AuditModule
   ],
   declarations: [ 
     AppComponent,

@@ -40,7 +40,7 @@ export class FindingsComponent implements OnInit {
     private hideReviewCompleted: boolean;
 
     public dateOfInspectionToLocaleString: string = "";
-
+    public recordsPerPage: number;
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
     private highlightFilter: string;
@@ -63,11 +63,8 @@ export class FindingsComponent implements OnInit {
 
             this.rootPath = params['rootPath'];
             this.LoadOpenComplainceForm();
-
-
-
+            this.recordsPerPage = 5;
         });
-
     }
 
     LoadOpenComplainceForm() {
@@ -525,6 +522,11 @@ export class FindingsComponent implements OnInit {
         this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId, { siteId: this.siteSourceId, rootPath: this.rootPath, hideReviewCompleted: this.hideReviewCompleted }], { relativeTo: this.route.parent });
         //this.router.navigate(['comp-form-edit', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
 
+    }
+
+    resetValues(){
+        this.recordsPerPage = 5;
+        this.filterRecordDetails = "";
     }
 
     sanitize(url: string) {
