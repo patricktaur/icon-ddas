@@ -158,9 +158,11 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public bool Active { get; set; } = true;
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
         public string Institute { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public string UploadedFileName { get; set; }
@@ -417,9 +419,11 @@ namespace DDAS.Models.Entities.Domain
         public string Name { get; set; }
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
         public DateTime SearchStartedOn { get; set; }
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
@@ -722,7 +726,6 @@ namespace DDAS.Models.Entities.Domain
         public string ExtractionErrorMessage { get; set; }
         public int FullMatchCount { get; set; }
         public int PartialMatchCount { get; set; }
-
         public int SingleMatchCount { get; set; }
 
         public int IssuesFound { get; set; }
@@ -951,11 +954,13 @@ namespace DDAS.Models.Entities.Domain
         public List<Link> Links { get; set; } = new List<Link>();//for DB sites only, not used for Manual sites
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();//not yet used by client
 
+        public string AuditComments { get; set; }
+        public string AuditStatus { get; set; }
+
         //New fields: 11Apr2017
         //guid SiteDataId
         //guid SiteRecordId
         //DateTime AddedOn
-
     }
 
     public class UpdateFindigs
@@ -1215,6 +1220,7 @@ namespace DDAS.Models.Entities.Domain
     public class ReportByUser
     {
         public string UserName { get; set; }
+        public string UserFullName { get; set; }
         public List<ReportItem> ReportItems { get; set; } 
             = new List<ReportItem>();
     }
@@ -1325,7 +1331,9 @@ namespace DDAS.Models.Entities.Domain
     {
         public string Role { get; set; }
         public string ProjectNumber { get; set; }
+        public string ProjectNumber2 { get; set; }
         public string SponsorProtocolNumber { get; set; }
+        public string SponsorProtocolNumber2 { get; set; }
         public string DisplayName { get; set; }
         public string InvestigatorID { get; set; }
         public string MemberID { get; set; }
@@ -1368,5 +1376,46 @@ namespace DDAS.Models.Entities.Domain
             }
         }
     }
+    #endregion
+
+    #region Audit
+    
+    public class Audit
+    {
+        public Guid? RecId { get; set; }
+        public Guid ComplianceFormId { get; set; }
+        public string RequestedBy { get; set; }
+        public DateTime RequestedOn { get; set; }
+        public string Auditor { get; set; }
+        public bool IsSubmitted { get; set; }
+        public DateTime? CompletedOn { get; set; }
+        public string AuditorComments { get; set; }
+        public string RequestorComments { get; set; }
+        public string AuditStatus { get; set; }
+        public List<AuditObservation> Observations { get; set; }
+    }
+    
+    public class AuditObservation
+    {
+        public int SiteId { get; set; }
+        public string SiteShortName { get; set; }
+        public string Comments { get; set; }
+        public string Status { get; set; }
+    }
+    #endregion
+
+    #region Assignment History
+
+    public class AssignmentHistory
+    {
+        public Guid RecId { get; set; }
+        public Guid ComplianceFormId { get; set; }
+        public DateTime AssignedOn { get; set; }
+        //public DateTime? RemovedOn { get; set; }
+        public string AssignedTo { get; set; }
+        public string AssignedBy { get; set; }
+        public string PreviouslyAssignedTo { get; set; }
+    }
+
     #endregion
 }

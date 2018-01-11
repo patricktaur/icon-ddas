@@ -335,7 +335,7 @@ namespace DDAS.API.Controllers
 
         #region Patrick
 
-        [Route("GetComplianceFormA")]
+        [Route("GetComplianceForm")]
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
@@ -384,8 +384,9 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAssginedToData(string AssignedTo, bool Active,
             string ComplianceFormId)
         {
+            var AssignedBy = User.Identity.GetUserName();
             var RecId = Guid.Parse(ComplianceFormId);
-            _SearchService.UpdateAssignedToData(AssignedTo, Active, RecId);
+            _SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
             return Ok(true);
         }
 
@@ -754,6 +755,22 @@ namespace DDAS.API.Controllers
             var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
             return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
         }
+
+        #region Download Data Files
+        [Route("DownloadDataFiles")]
+        [HttpGet]
+        public IHttpActionResult GetDownloadedDataFiles(int SiteEnum)
+        {
+            var DataFiles = _SearchService.GetDataFiles(SiteEnum);
+
+            DataFiles.ForEach(DataFile =>
+            {
+                DataFile.FullPath = 
+                DataFile.FullPath.Replace(_RootPath, "");
+            });
+            return Ok(DataFiles);
+        }
+        #endregion
 
         string ListToString(ExcelInput excelInput)
         {

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PrincipalInvestigatorDetails, ComplianceFormManage, CompFormFilter } from './search.classes';
+import { Audit, AuditObservation } from '../audits/audit.classes';
 import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
@@ -47,6 +48,10 @@ export class ClosedICFsComponent implements OnInit {
         selectionTxtFontSize: 14
     };
 
+    public Users: any[];
+    public SelectedInvestigatorName: string;
+    public SelectedComplianceFormId: string;
+    public audit: Audit;
     public pageNumber: number;
     constructor(
         private route: ActivatedRoute,
@@ -77,9 +82,22 @@ export class ClosedICFsComponent implements OnInit {
             }
         });
         this.ComplianceFormFilter = new CompFormFilter;
-
+        this.audit = new Audit;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
+        this.LoadUsers();
+    }
+
+    LoadUsers() {
+        this.service.getAllUsers()
+            .subscribe((item: any[]) => {
+                this.Users = item;
+            });
+    }
+
+    setSelectedRecordDetails(complainceFormId: string) {
+        this.SelectedComplianceFormId = complainceFormId;
+        console.log('comp form id: ', this.SelectedComplianceFormId);
     }
 
     SetDefaultFilterValues() {
@@ -252,6 +270,38 @@ export class ClosedICFsComponent implements OnInit {
         }
         return retColor;
 
+    }
+
+    requestAudit(auditor: string, requestorComments:string) {
+        if(auditor == null || auditor.length == 0){
+            alert('please select an auditor');
+            return;
+        }        
+        else if(this.authService.userName.toLowerCase() == auditor.toLowerCase()){
+            alert('cannot assign the audit to yourself');
+            return;
+        }
+
+        this.audit.ComplianceFormId = this.SelectedComplianceFormId;
+        this.audit.Auditor = auditor;
+        this.audit.RequestorComments = requestorComments;
+        this.audit.RequestedOn = new Date();
+        this.audit.AuditStatus = "Pending";
+        this.audit.RequestedBy = this.authService.userName;
+
+        var observation = new AuditObservation();
+        observation.SiteId = 0;
+        observation.SiteShortName = "General";
+
+        this.audit.Observations.push(observation);
+
+        this.service.requestAudit(this.audit)
+            .subscribe((item: boolean) => {
+
+            },
+            error => {
+
+            })
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }

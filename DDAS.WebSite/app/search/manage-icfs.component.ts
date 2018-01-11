@@ -93,7 +93,6 @@ export class ManageICFsComponent implements OnInit {
     LoadUsers() {
         this.service.getAllUsers()
             .subscribe((item: any[]) => {
-
                 this.Users = item;
             });
     }
@@ -155,7 +154,6 @@ export class ManageICFsComponent implements OnInit {
             });
     }
 
-
     setSelectedRecordDetails(Investigator: PrincipalInvestigatorDetails) {
         this.SelectedComplianceFormId = Investigator.RecId;
         this.SelectedInvestigatorName = Investigator.Name;
@@ -169,15 +167,12 @@ export class ManageICFsComponent implements OnInit {
     }
 
     manageComplianceForm() {
-
         this.service.SaveAssignedTo(this.AssignedTo, this.Active, this.SelectedComplianceFormId)
             .subscribe((item: boolean) => {
-
                 this.LoadPrincipalInvestigators();
             },
             error => {
             });
-
     }
 
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {

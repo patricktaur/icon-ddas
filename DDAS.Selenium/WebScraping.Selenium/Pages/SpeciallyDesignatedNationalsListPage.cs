@@ -86,7 +86,7 @@ namespace WebScraping.Selenium.Pages
         private string DownloadSDNList()
         {
             string fileName = _config.SDNFolder + 
-                "SDNList_" +
+                SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
                 ".txt";
 

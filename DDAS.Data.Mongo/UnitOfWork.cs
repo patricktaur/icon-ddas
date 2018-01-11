@@ -84,6 +84,10 @@ namespace DDAS.Data.Mongo
         private IDefaultSiteRepository _DefaultSiteRepository;
 
         private IExceptionLoggerRepository _ExceptionLoggerRepository;
+
+        private IAuditRepository _AuditRepository;
+        private IAssignmentHistoryRepository _AssignmentHistoryRepository;
+
         #endregion
 
         /*
@@ -428,6 +432,25 @@ namespace DDAS.Data.Mongo
                 return _ExceptionLoggerRepository ??
                     (_ExceptionLoggerRepository = new ExceptionLoggerRepository(_db));
             } 
+        }
+
+        public IAuditRepository AuditRepository
+        {
+            get
+            {
+                return _AuditRepository ??
+                    (_AuditRepository = new AuditRepository(_db));
+            }
+        }
+
+        public IAssignmentHistoryRepository AssignmentHistoryRepository
+        {
+            get
+            {
+                return _AssignmentHistoryRepository ??
+                    (_AssignmentHistoryRepository = 
+                    new AssignmentHistoryRepository(_db));
+            }
         }
         #endregion
 

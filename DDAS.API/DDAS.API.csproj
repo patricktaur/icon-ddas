@@ -183,11 +183,6 @@
     </Content>
 =======-->
     </None>
-    <Content Include="App_Data\Downloads\CIILFolder\Dummy.txt" />
-    <Content Include="App_Data\Downloads\ExclusionDatabase\Dummy.txt" />
-    <Content Include="App_Data\Downloads\FDAWarningLetters\Dummy.txt" />
-    <Content Include="App_Data\Downloads\SAM\Dummy.txt" />
-    <Content Include="App_Data\Downloads\SDN\Dummy.txt" />
     <!-->>>>>>> 7d42b2c3ecdbd571d333973ee99110660aacedf3-->
     <Content Include="assets\bootstrap\css\bootstrap-theme.css" />
     <Content Include="assets\bootstrap\css\bootstrap-theme.min.css" />
@@ -209,6 +204,11 @@
     <Content Include="assets\styles.css" />
     <Content Include="DataFiles\Attachments\Dummy.txt" />
     <Content Include="DataFiles\ComplianceForms\Dummy.txt" />
+    <Content Include="DataFiles\Downloads\CIILFolder\Dummy.txt" />
+    <Content Include="DataFiles\Downloads\ExclusionDatabase\Dummy.txt" />
+    <Content Include="DataFiles\Downloads\FDAWarningLetters\Dummy.txt" />
+    <Content Include="DataFiles\Downloads\SAM\Dummy.txt" />
+    <Content Include="DataFiles\Downloads\SDN\Dummy.txt" />
     <Content Include="DataFiles\ErrorScreenCapture\Dummy.txt" />
     <Content Include="DataFiles\OutputFileFolder\Dummy.txt" />
     <Content Include="DataFiles\Templates\Dummy.txt" />
@@ -235,6 +235,7 @@
     <Compile Include="App_Start\GlobalExceptionHandler.cs" />
     <Compile Include="App_Start\GlobalExceptionLogger.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AuditController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Helpers\IdentifyBrowser.cs" />
     <Compile Include="ManageAppSettings\ManageAppSettings.cs" />

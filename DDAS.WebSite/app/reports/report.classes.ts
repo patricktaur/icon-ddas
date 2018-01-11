@@ -19,6 +19,7 @@ export class InvestigationsReport {
 
 export class ReportByUser {
     UserName: string;
+    UserFullName: string;
     ReportItems: ReportItem[] = [];
 }
 
@@ -33,4 +34,42 @@ export enum ReportPeriodEnum{
     Month,
     Quarter,
     Year
+}
+
+export class AdminDashboardViewModel{
+    UserName: string;
+    OpeningBalance: number;
+    InvestigatorUploaded: number;
+    InvestigatorReviewCompleted: number;
+    ClosingBalance: number;
+}
+
+export class AssignmentHistoryViewModel{
+    PrincipalInvestigator: string;
+    ProjectNumber: string;
+    ProjetNumber2: string;
+    AssignedBy: string;
+    AssingedOn: Date;
+    AssignedTo: string;
+    PreviouslyAssignedTo: string;
+    InvestigatorCount: number;
+    SearchStartedOn: Date;
+}
+
+export class InvestigatorFindingViewModel{
+    ProjectNumber: string;
+    ProjetNumber2: string;
+    InvestigatorName: string;
+    Role: string;
+    ReviewCompletedBy: string;
+    ReviewCompletedOn: Date;
+    SiteShortName: string;
+    FindingObservation: string;
+}
+
+export class ReportFilterViewModel{
+    FromDate: Date;
+    ToDate: Date;
+    ProjectNumber: string;
+    AssignedTo: string;
 }
