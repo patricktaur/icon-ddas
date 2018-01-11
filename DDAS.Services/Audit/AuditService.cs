@@ -184,12 +184,26 @@ namespace DDAS.Services.AuditService
                             GetCategoryEnumString(comment.CategoryEnum);
 
                         if (finding.ReviewId == QCReview.RecId)
+                        {
                             QCSummary.Comment = finding.Observation + " " +
                                 comment.FindingComment;
+                            var ReviewerComment = finding.Comments.Find(x =>
+                            x.ReviewId != QCReview.RecId);
+                            QCSummary.ResponseToQC =
+                                GetCategoryEnumString(ReviewerComment.CategoryEnum);
+                            QCSummaryList.Add(QCSummary);
+                            break;
+                        }
                         else
+                        {
+                            var ReviewerComment = finding.Comments.Find(x =>
+                            x.ReviewId != QCReview.RecId);
+                            QCSummary.ResponseToQC =
+                                GetCategoryEnumString(ReviewerComment.CategoryEnum);
                             QCSummary.Comment = comment.FindingComment;
-
-                        QCSummaryList.Add(QCSummary);
+                            QCSummaryList.Add(QCSummary);
+                            break;
+                        }
                     }
                 }
             }
