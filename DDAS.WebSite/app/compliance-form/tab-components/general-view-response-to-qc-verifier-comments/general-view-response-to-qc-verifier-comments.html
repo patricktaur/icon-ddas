@@ -1,11 +1,12 @@
 <div comp-form-general-view [CompForm]="CompForm"></div>
-<div clas="row">
-    <div class="col-lg-6">
+
+<div class="row">
+    <div class="col-log-6">
         <div class="form-group">
-            Response To QC Verifier's Comments:
+            <b>QC Verifier's Comment:</b>
             <label for="Category">Category:</label>
             <!-- <select class="form-control" name="AssignedTo" [(ngModel)]="CompForm.Comments[0].CategoryEnum"></select> -->
-            <select class="form-control" name="AssignedTo" >
+            <select class="form-control" name="AssignedTo" [(ngModel)]="CompForm.Comments[0].CategoryEnum" readonly>
                 <option value="0" selected="selected">Minor</option>
                 <option value="1">Major</option>
                 <option value="2">Critical</option>
@@ -14,11 +15,33 @@
             </select>
         </div>
     </div>
+    <div class="col-log-6">
+        <div class="form-group">
+            <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" 
+            placeholder="Observation" name="Observation" [(ngModel)]="CompForm.Comments[0].FindingComment" readonly>
+            </textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            Response To QC Verifier's Comments:
+            <label for="Category">Category:</label>
+            <!-- <select class="form-control" name="AssignedTo" [(ngModel)]="CompForm.Comments[0].CategoryEnum"></select> -->
+            <select class="form-control" name="ReviewerComment" [(ngModel)]="CompForm.Comments[1].CategoryEnum">
+                <option value="5" selected="selected">Pending</option>
+                <option value="6">Correction Completed</option>
+                <option value="7">Accepted</option>
+            </select>
+        </div>
+    </div>
     <div class="col-lg-6">
         <div class="form-group">
             <!-- <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" placeholder="Observation" name="Observation" [(ngModel)]="CompForm.Comments[0].FindingComment" -->
-            <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" placeholder="Observation" name="Observation" 
-                (change)="formValueChanged()"></textarea>
+            <textarea name="Observation" class="form-control" id="ReviewerObservation" rows="5" cols="30" placeholder="Observation" name="Observation" 
+                [(ngModel)]="CompForm.Comments[1].FindingComment" (change)="formValueChanged()"></textarea>
         </div>
     </div>
 </div>

@@ -1338,6 +1338,28 @@ namespace DDAS.Services.Search
                     Review.Status = ReviewStatusEnum.ReviewCompleted;
             }
 
+            var IssueFindings = form.Findings.Where(x => x.IsAnIssue);
+            int Count = 0;
+            foreach (Finding finding in IssueFindings)
+            {
+                var comment = finding.Comments.Find(x => 
+                x.CategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                x.CategoryEnum == CommentCategoryEnum.Accepted);
+
+                if (comment != null)
+                    Count += 1;
+            }
+
+            if(IssueFindings.Count() == Count)
+            {
+                var review = form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCCorrectionInProgress);
+
+                if(review != null)
+                {
+                    review.Status = ReviewStatusEnum.Completed;
+                }
+            }
+
             return form;
         }
 

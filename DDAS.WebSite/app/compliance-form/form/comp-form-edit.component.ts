@@ -985,15 +985,16 @@ export class CompFormEditComponent implements OnInit {
                 else
                     return false;
             case "generalEditResponseToQC":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress)
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress &&
+                    this.CompForm.Comments[0].FindingComment != null)
                     return true;
                 else
                     return false;
             case "generalView":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed)    
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed)
                     return true;
                 else
-                    return false;
+                    return false;                                
             case "instituteEdit":
                 if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
                     return true;
@@ -1006,30 +1007,50 @@ export class CompFormEditComponent implements OnInit {
                     return true;
                 else
                     return false;
-            // case "investigatorEdit":
-            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-            //         return true;
-            //     else
-            //         return false;
-            // case "investigatorView":
-            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed ||
-            //         this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-            //         this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
-            //         return true;
-            //     else
-            //         return false;
-            // case "mandatorySitesEdit":
-            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-            //         return true;
-            //     else
-            //         return false;
-            // case "mandatorySitesView":
-            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed ||
-            //         this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-            //         this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
-            //         return true;
-            //     else
-            //         return false;
+            case "investigatorEdit":
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                    return true;
+                else
+                    return false;
+            case "investigatorView":
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
+                    return true;
+                else
+                    return false;
+            case "mandatorySitesEdit":
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                    return true;
+                else
+                    return false;
+            case "mandatorySitesView":
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
+                    return true;
+                else
+                    return false;
+            case "additionalSitesEdit":
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                    return true;
+                else
+                    return false;
+            case "additionalSitesView":
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
+                    return true;
+                else
+                    return false;
+            case "findingsEdit":
+                // if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                    return true;
+                // else
+                //     return false;
+            case "searchedByView": return true;
+            case "summaryView": return true;
+
             default: return true;
         }
     }

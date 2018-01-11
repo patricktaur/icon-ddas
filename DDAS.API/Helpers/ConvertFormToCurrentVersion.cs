@@ -12,13 +12,7 @@ namespace DDAS.API.Helpers
         public static void UpdateComplianceFormToCurrentVersion(
             ComplianceForm CompForm)
         {
-            //if(CompForm.Comments == null || 
-            //    CompForm.Comments.Count == 0)
-            //{
-            //    CompForm.Comments = new List<Comment>();
-            //}
-
-            if(CompForm.Reviews == null || 
+            if (CompForm.Reviews == null || 
                 CompForm.Reviews.Count == 0)
             {
                 CompForm.Reviews = new List<Review>()
@@ -35,6 +29,16 @@ namespace DDAS.API.Helpers
                     }
                 };
             }
+
+            //if (CompForm.Comments == null ||
+            //    CompForm.Comments.Count == 0)
+            //{
+            //    CompForm.Comments = new List<Comment>();
+            //    CompForm.Comments.Add(new Comment()
+            //    {
+            //        ReviewId = CompForm.Reviews.First().RecId
+            //    });
+            //}
 
             //foreach(Finding finding in CompForm.Findings)
             //{

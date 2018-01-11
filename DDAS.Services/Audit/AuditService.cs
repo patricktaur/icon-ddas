@@ -42,11 +42,19 @@ namespace DDAS.Services.AuditService
                     Review.RecId = Guid.NewGuid();
             }
 
-            var review = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+            var QCReview = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
 
             Form.Comments.Add(new Comment()
             {
-                ReviewId = review.RecId.Value
+                ReviewId = QCReview.RecId.Value
+            });
+
+            var ReviewerReview = Form.Reviews.Find(x => 
+                x.ReviewerRole == ReviewerRoleEnum.Reviewer);
+
+            Form.Comments.Add(new Comment()
+            {
+                ReviewId = ReviewerReview.RecId.Value
             });
 
             //foreach(Finding finding in Form.Findings)
