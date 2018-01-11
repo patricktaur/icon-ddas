@@ -746,6 +746,9 @@ namespace DDAS.Services.Search
                 return;
             }
 
+            if (_UOW.CountryRepository.GetAll().Count() == 0)
+                return;
+
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
             country.CountryName.Trim().ToLower() == compForm.Country.Trim().ToLower()); //.ToList();
 
@@ -781,6 +784,9 @@ namespace DDAS.Services.Search
         private void AddSponsorSpecificSites(ComplianceForm compForm)
         {
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
+
+            if (_UOW.SponsorProtocolRepository.GetAll().Count() == 0)
+                return;
 
             var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
                sponsor => sponsor.SponsorProtocolNumber ==
