@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Utilities;
 using Utilities.WordTemplate;
+using static DDAS.Models.ViewModels.RequestPayloadforDDAS;
 
 namespace DDAS.Services.Search
 {
@@ -245,6 +246,101 @@ namespace DDAS.Services.Search
         }
 
         #endregion
+
+        public ComplianceForm ImportIsprintData(ddRequest DR)
+        {
+            //var ComplianceForms = new ComplianceForm();
+
+            //var InputRows = DataFromExcelFile.ExcelInputRows;
+
+            var form = GetNewComplianceForm("isprint");
+
+            //Already assigning the name in GetNewComplianceForm
+            //form.AssignedTo = UserName;
+            //form.UploadedFileName = UploadedFileName;
+            //form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
+            form.ProjectNumber = DR.project.projectNumber;
+            //form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
+            form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
+            //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
+            form.Institute = DR.institute.name;
+            form.Address = DR.institute.address1;
+            form.Country = DR.institute.country;
+
+            //AddCountrySpecificSites(form);
+            //AddSponsorSpecificSites(form);
+
+
+            int InvId = 1;
+            int PrincipleInvestigatorCount = 0;
+
+            foreach (ddRequestInvestigator d in DR.investigators)
+            {
+
+
+                var Investigator = new InvestigatorSearched();
+                Investigator.Id = InvId;
+                InvId += 1;
+
+                //Investigator.Name = InputRows[Index].DisplayName.Trim();
+                Investigator.FirstName = d.firstName.Trim();
+                Investigator.MiddleName = d.middleName.Trim();
+                Investigator.LastName = d.lastName.Trim();
+                Investigator.Role = d.role.ToString().Trim();
+                Investigator.MedicalLiceseNumber = d.licenceNumber;
+                Investigator.MemberId = d.memberId;
+                Investigator.InvestigatorId = d.investigatorId;
+
+                form.InvestigatorDetails.Add(Investigator);
+
+
+                if (d.role.ToString().ToLower() == "pi")
+                {
+                    PrincipleInvestigatorCount += 1;
+                }
+
+
+                //int tempIndex = Index + 1; //to add SI's
+
+                //while (tempIndex < InputRows.Count &&
+                //    d.role.ToString().ToLower() == "sub i")
+                //{
+                //    var Inv = new InvestigatorSearched();
+                //    Inv.Id = InvId;
+                //    InvId += 1;
+
+                //    Inv.Name = InputRows[tempIndex].DisplayName.Trim();
+                //    Inv.FirstName = InputRows[tempIndex].FirstName;
+                //    Inv.MiddleName = InputRows[tempIndex].MiddleName;
+                //    Inv.LastName = InputRows[tempIndex].LastName;
+                //    Inv.Role = InputRows[tempIndex].Role;
+                //    Inv.MedicalLiceseNumber =
+                //        InputRows[tempIndex].MedicalLicenseNumber;
+                //    Inv.MemberId = InputRows[tempIndex].MemberID;
+                //    Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
+
+                //    form.InvestigatorDetails.Add(Inv);
+                //    tempIndex += 1;
+                //}
+                //Index = tempIndex - 1;
+
+                //ComplianceForms.Add(form);
+            }
+
+            if (PrincipleInvestigatorCount == 0)
+            {
+                throw new Exception("Principle Investigator not Found");
+            }
+
+            if (PrincipleInvestigatorCount > 1)
+            {
+                throw new Exception("Principle Investigator cannot be more than one");
+            }
+
+            ScanUpdateComplianceForm(form);
+
+            return form;
+        }
 
         public void UpdateAssignedToData(string AssignedTo, bool Active,
             Guid? RecId)
