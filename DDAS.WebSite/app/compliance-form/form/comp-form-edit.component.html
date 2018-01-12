@@ -33,7 +33,7 @@
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
 						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
-						<button type="button" class="btn btn-primary"  (click)="Save()">Save</button>
+						<button type="button" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
 						
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -84,9 +84,9 @@
 							<div class="tab-content">
 								<div id="general-info-tab" class="tab-pane fade {{defaultTabInActive}}">
 									<div *ngIf="isComponentVisible('generalEdit')" comp-form-general-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
-									<div *ngIf="isComponentVisible('generalEditQC')" comp-form-general-view-qc-verifier-comment [CompForm]="CompForm"></div>
+									<!-- <div *ngIf="isComponentVisible('generalEditQC')" comp-form-general-view-qc-verifier-comment [CompForm]="CompForm"></div>
+									 <div *ngIf="isComponentVisible('generalEditResponseToQC')" comp-form-general-view-response-to-qc-verifier-comment [CompForm]="CompForm"></div> -->
 									<div *ngIf="isComponentVisible('generalView')" comp-form-general-view [CompForm]="CompForm"></div>
-									<!-- <div *ngIf="isComponentVisible('generalEditResponseToQC')" comp-form-general-view-response-to-qc-verifier-comment [CompForm]="CompForm"></div> -->
 								</div>
 								<div id="institute-tab" class="tab-pane fade">
 									<div *ngIf="isComponentVisible('instituteEdit')" comp-form-institute-edit [CompForm]="CompForm" [RootPath]="rootPath" (ValueChanged)="formValueChanged($event)"></div>

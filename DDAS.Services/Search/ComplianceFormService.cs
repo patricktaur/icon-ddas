@@ -1099,7 +1099,6 @@ namespace DDAS.Services.Search
 
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
-
             //int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;

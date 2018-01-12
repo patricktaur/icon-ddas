@@ -158,6 +158,15 @@ namespace DDAS.Services.AuditService
 
         public bool SaveQC(ComplianceForm Form)
         {
+            var QCPassedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCPassed);
+
+            if(QCPassedReview != null)
+            {
+                QCPassedReview.Status = ReviewStatusEnum.Completed;
+                QCPassedReview.CompletedOn = DateTime.Now;
+            }
+            
             //Save QC is currently equivalent to submitting the QC
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return true;

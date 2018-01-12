@@ -374,8 +374,12 @@ namespace DDAS.API.Controllers
                     var QCCorrectionReview = compForm.Reviews.Find(x =>
                         x.Status == ReviewStatusEnum.QCCorrectionInProgress);
 
+                    var CompletedReview = compForm.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.Completed);
+
                     if (QCFailedReview != null &&
                         QCCorrectionReview == null &&
+                        CompletedReview == null &&
                         compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
                     {
                         compForm.Reviews.Add(new Review()
@@ -811,7 +815,8 @@ namespace DDAS.API.Controllers
                 CurrentReviewStatus.QCVerifierRecId = null;
                 CurrentReviewStatus.CurrentReview = Review;
             }
-            else if (Review.Status == ReviewStatusEnum.QCInProgress)
+            else if (Review.Status == ReviewStatusEnum.QCInProgress ||
+                Review.Status == ReviewStatusEnum.QCFailed)
             {
                 CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
                 CurrentReviewStatus.CurrentReview = Review;
@@ -830,6 +835,24 @@ namespace DDAS.API.Controllers
                     CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
                 else
                     CurrentReviewStatus.QCVerifierRecId = null;
+                var ReviewCompleted = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.ReviewCompleted);
+                if (ReviewCompleted != null)
+                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                else
+                    CurrentReviewStatus.ReviewerRecId = null;
+                CurrentReviewStatus.CurrentReview = Review;
+            }
+            else if (Review.Status == ReviewStatusEnum.Completed)
+            {
+                var QCReview = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.QCFailed || 
+                    x.Status == ReviewStatusEnum.QCPassed);
+                if (QCReview != null)
+                    CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
+                else
+                    CurrentReviewStatus.QCVerifierRecId = null;
+
                 var ReviewCompleted = Form.Reviews.Find(x =>
                     x.Status == ReviewStatusEnum.ReviewCompleted);
                 if (ReviewCompleted != null)
