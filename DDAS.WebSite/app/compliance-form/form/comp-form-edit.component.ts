@@ -150,16 +150,20 @@ export class CompFormEditComponent implements OnInit {
         if (!isValid) {
             return false;
         } else {
-            isValid = /\d{4}\/\d{4}/.test(this.CompForm.ProjectNumber2);
-            if (!isValid) {
-                return false;
-            } else {
-                //could not find reg exp for length:
-                if (this.CompForm.ProjectNumber.length == 9 && this.CompForm.ProjectNumber2.length == 9) {
-                    return true;
-                } else {
+            if (this.CompForm.ProjectNumber2){
+                isValid = /\d{4}\/\d{4}/.test(this.CompForm.ProjectNumber2);
+                if (!isValid) {
                     return false;
+                } else {
+                    //could not find reg exp for length:
+                    if (this.CompForm.ProjectNumber.length == 9 && this.CompForm.ProjectNumber2.length == 9) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
+            }else{
+                return true;
             }
         }
     }
