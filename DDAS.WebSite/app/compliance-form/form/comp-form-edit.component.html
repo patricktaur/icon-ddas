@@ -33,7 +33,7 @@
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
 						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
-						<button type="button" class="btn btn-primary"  (click)="Save()">Save</button>
+						<button type="button" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
 						
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -84,8 +84,8 @@
 							<div class="tab-content">
 								<div id="general-info-tab" class="tab-pane fade {{defaultTabInActive}}">
 									<div *ngIf="isComponentVisible('generalEdit')" comp-form-general-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
-									<div *ngIf="isComponentVisible('generalEditQC')" comp-form-general-view-qc-verifier-comment [CompForm]="CompForm"></div>
-									<div *ngIf="isComponentVisible('generalEditResponseToQC')" comp-form-general-view-response-to-qc-verifier-comment [CompForm]="CompForm"></div>
+									<!-- <div *ngIf="isComponentVisible('generalEditQC')" comp-form-general-view-qc-verifier-comment [CompForm]="CompForm"></div>
+									 <div *ngIf="isComponentVisible('generalEditResponseToQC')" comp-form-general-view-response-to-qc-verifier-comment [CompForm]="CompForm"></div> -->
 									<div *ngIf="isComponentVisible('generalView')" comp-form-general-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="institute-tab" class="tab-pane fade">
@@ -101,17 +101,17 @@
 									<div *ngIf="isComponentVisible('mandatorySitesView')" comp-form-mandatory-sites-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="additional-sites-tab" class="tab-pane fade">
-									<div *ngIf="!isQCVerifier" comp-form-additional-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
-									<div *ngIf="isQCVerifier" comp-form-additional-sites-view [CompForm]="CompForm"></div>
+									<div *ngIf="isComponentVisible('additionalSitesEdit')" comp-form-additional-sites-edit [CompForm]="CompForm" (ValueChanged)="formValueChanged($event)"></div>
+									<div *ngIf="isComponentVisible('additionalSitesView')" comp-form-additional-sites-view [CompForm]="CompForm"></div>
 								</div>
 								<div id="findigs-tab" class="tab-pane fade">
-									<div *ngIf="!isQCVerifier" comp-form-findings-edit [CompForm]="CompForm"></div>
+									<div *ngIf="isComponentVisible('findingsEdit')" comp-form-findings-edit [CompForm]="CompForm"></div>
 								</div>
 								<div id="searched-by-tab" class="tab-pane fade">
-									<div comp-form-searched-by [CompForm]="CompForm"></div>
+									<div *ngIf="isComponentVisible('searchedByView')" comp-form-searched-by [CompForm]="CompForm"></div>
 								</div>
-								<div id="summary" class="tab-pane fade ">
-									<div comp-form-summary [CompForm]="CompForm"></div>
+								<div id="summary" class="tab-pane fade">
+									<div *ngIf="isComponentVisible('summaryView')" comp-form-summary [CompForm]="CompForm"></div>
 								</div>
 							</div>
 						</div>

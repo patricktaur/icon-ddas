@@ -52,11 +52,23 @@
                     {{Finding.IsAnIssue | boolToYesNo}}
                     <!-- <input type="checkbox" name="IsAnIssue" [(ngModel)]="Finding.IsAnIssue" readonly/>
                     <br/> -->
-                    <label for="comment" *ngIf="isQCVerifier"> <h4>QC Verifier's Comment:</h4></label>
-                    <textarea *ngIf="isQCVerifier" class="form-control" name="Comment" [(ngModel)]="Finding.Comments[0].FindingComment"
-                     rows="3" cols="30" required placeholder="Comment">
+                    <br/>
+                    <label *ngIf="isQCCommentAdded()"> <h4>QC Response:</h4></label>
+                    <br/>
+                    <label *ngIf="isQCCommentAdded()">Category:</label>{{qcCommentCategory}}
+                    <br/>
+                    <textarea *ngIf="isQCCommentAdded()" class="form-control" name="Comment" [(ngModel)]="qcComment"
+                     rows="3" cols="30" readonly required placeholder="Comment">
                     </textarea>
                     <!-- Finding.Comments[0].FindingComment -->
+                </div>
+                <div class="col-md-4">
+                    <label *ngIf="isQCCommentAdded()">QC Correction Status:</label> {{reviewerCommentCategory}}
+                     <!-- <select *ngIf="isQCCommentAdded()" class="form-control" name="CommentCategory" [(ngModel)]="reviewerCommentCategory" readonly>
+                        <option value="5">Pending</option>
+                        <option value="6">Correction Completed</option>
+                        <option value="7">Accepted</option>
+                    </select>  -->
                 </div>
             </div>
 

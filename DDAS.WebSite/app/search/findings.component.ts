@@ -70,7 +70,7 @@ export class FindingsComponent implements OnInit {
 
             this.rootPath = params['rootPath'];
             this.LoadOpenComplainceForm();
-            this.getCurrentReviewStatus();
+            //this.getCurrentReviewStatus();
             this.recordsPerPage = 5;
         });
     }
@@ -99,6 +99,7 @@ export class FindingsComponent implements OnInit {
                 //this.IntiliazeRecords();
                 this.loading = false;
                 this.isQCVerifier = this.isReviewerOrQCVerifier;
+                this.getCurrentReviewStatus();
             },
             error => {
                 this.loading = false;
@@ -380,12 +381,15 @@ export class FindingsComponent implements OnInit {
         switch (componentName) {
             case "findingEdit":
                 if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress)
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
                     return true;
                 else
                     return false;
             case "qcVerifierComments":
                 if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
                     selectedFinding.ReviewId != this.currentReviewStatus.QCVerifierRecId)
                     return true;
@@ -393,6 +397,7 @@ export class FindingsComponent implements OnInit {
                     return false;
             case "qcVerifierFinding":
                 if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
                     selectedFinding.ReviewId == this.currentReviewStatus.QCVerifierRecId)
                     return true;
@@ -400,6 +405,7 @@ export class FindingsComponent implements OnInit {
                     return false;
             case "responseToQCVerifierComments":
                 if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId == this.currentReviewStatus.ReviewerRecId)
                     return true;
@@ -407,15 +413,19 @@ export class FindingsComponent implements OnInit {
                     return false;
             case "responseToQCVerifierFinding":
                 if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId != this.currentReviewStatus.ReviewerRecId)
                     return true;
                 else
                     return false;
             case "findingView":
+                // return true;
                 if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != 
-                    this.authService.userName.toLowerCase())
+                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
                     return true;
                 else
                     return false;

@@ -4,8 +4,7 @@
         <div class="form-group">
             QC Verifier's Comments:
             <label for="Category">Category:</label>
-            <!-- <select class="form-control" name="AssignedTo" [(ngModel)]="CompForm.Comments[0].CategoryEnum"></select> -->
-            <select class="form-control" name="AssignedTo" >
+             <select class="form-control" name="QCVerifierCommentCategory" [(ngModel)]="CompForm.Comments[0].CategoryEnum">
                 <option value="0" selected="selected">Minor</option>
                 <option value="1">Major</option>
                 <option value="2">Critical</option>
@@ -16,9 +15,12 @@
     </div>
     <div class="col-lg-6">
         <div class="form-group">
-            <!-- <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" placeholder="Observation" name="Observation" [(ngModel)]="CompForm.Comments[0].FindingComment" -->
-            <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" placeholder="Observation" name="Observation" 
-                (change)="formValueChanged()"></textarea>
+             <textarea name="Observation" class="form-control" id="Observation" rows="5" 
+                cols="30" placeholder="Observation" name="QCVerifierObservation" 
+                [(ngModel)]="CompForm.Comments[0].FindingComment" (change)="formValueChanged()">
+             </textarea>
+            <!-- <textarea name="Observation" class="form-control" id="Observation" rows="5" cols="30" placeholder="Observation" name="Observation" 
+                (change)="formValueChanged()"></textarea> -->
         </div>
     </div>
 </div>

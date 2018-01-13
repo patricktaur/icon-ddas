@@ -1099,7 +1099,6 @@ namespace DDAS.Services.Search
 
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
-
             //int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
@@ -1336,6 +1335,28 @@ namespace DDAS.Services.Search
                     throw new Exception("Review Collection cannot be empty");
                 else
                     Review.Status = ReviewStatusEnum.ReviewCompleted;
+            }
+
+            var IssueFindings = form.Findings.Where(x => x.IsAnIssue);
+            int Count = 0;
+            foreach (Finding finding in IssueFindings)
+            {
+                var comment = finding.Comments.Find(x => 
+                x.CategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                x.CategoryEnum == CommentCategoryEnum.Accepted);
+
+                if (comment != null)
+                    Count += 1;
+            }
+
+            if(IssueFindings.Count() == Count)
+            {
+                var review = form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCCorrectionInProgress);
+
+                if(review != null)
+                {
+                    review.Status = ReviewStatusEnum.Completed;
+                }
             }
 
             return form;
