@@ -22,12 +22,8 @@ import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { ConfigService } from '../../shared/utils/config.service';
 import { AuthService } from '../../auth/auth.service';
 //import {SiteSourceViewModel} from '../../admin/appAdmin.classes';
-<<<<<<< HEAD
 import {DefaultSite, SiteSourceViewModel} from '../../admin/appAdmin.classes';
 import { Response } from '@angular/http/src/static_response';
-=======
-import { DefaultSite, SiteSourceViewModel } from '../../admin/appAdmin.classes';
->>>>>>> Development
 //import {XXX} from '../../admin/appAdmin.classes';
 
 
@@ -683,43 +679,8 @@ export class CompFormEditComponent implements OnInit {
 
         this.CompForm.SiteSources.push(siteToAdd);
         this.pageChanged = true;
-<<<<<<< HEAD
         
         
-=======
-
-        // var index = 0;
-
-        // for (index = 0; index < this.SitesAvailable.length; ++index) {
-        //     if (this.SitesAvailable[index].Selected == true) {
-        //         //Check if site is already included
-        //         let enumOfSiteToAdd = this.SitesAvailable[index].SiteEnum;
-        //         let siteIdToAdd = this.SitesAvailable[index].RecId;
-        //         //let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
-        //         let check = this.CompForm.SiteSources.find(x => x.SiteId == siteIdToAdd)
-        //         if (check) { //If found then it was possibly marked as deleted 
-        //             check.Deleted = false;
-        //         }
-        //         else {  //add it to the collection
-        //             let siteToAdd = new SiteSourceToSearch;
-        //             siteToAdd.SiteId = this.SitesAvailable[index].RecId;
-        //             siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
-        //             siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
-        //             siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
-        //             siteToAdd.Id = this.LastSiteSourceId + 1;
-        //             siteToAdd.IsMandatory = false;
-        //             siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;
-        //             this.CompForm.SiteSources.push(siteToAdd);
-        //             this.SitesAvailable[index].Included = true;
-        //         }
-        //         //one or more sites are added.
-        //         this.pageChanged = true;
-        //     }
-        //     this.SitesAvailable[index].Selected = false;
-        // }
-
-
->>>>>>> Development
         this.SetSiteDisplayPosition();
     }
 
@@ -727,27 +688,9 @@ export class CompFormEditComponent implements OnInit {
         this.siteToRemove = site;
     }
 
-<<<<<<< HEAD
 
     RemoveSite(){
         
-=======
-    //     RemoveSite() {
-
-    //         this.siteToRemove.Deleted = true;
-    //         //this.siteToRemove.SiteEnum
-    //         let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
-    //         if (site) {
-    //             site.Included = false;
-    //             this.pageChanged = true;
-    //         }
-    //         this.SetSiteDisplayPosition();
-
-    // }
-
-    RemoveSite() {
-
->>>>>>> Development
         let siteIdToRemove = this.siteToRemove.SiteId;
 
 
@@ -787,13 +730,8 @@ export class CompFormEditComponent implements OnInit {
         this.SetSiteDisplayPositionInFindings();
         this.pageChanged = true;
     }
-<<<<<<< HEAD
    
     
-=======
-
-
->>>>>>> Development
     SetSiteDisplayPosition() {
         let pos: number = 1
         for (let item of this.CompForm.SiteSources) {
@@ -1005,128 +943,11 @@ export class CompFormEditComponent implements OnInit {
             } else {
                 return false;
             }
-<<<<<<< HEAD
          }
    
      }
     
     get diagnostic() { return JSON.stringify(this.rootPath); }
-=======
-        }
-    }
-
-    get currentReviewStatus(){
-        return this.CompForm.CurrentReviewStatus;
-    }
-
-    get isGeneralQCCommentAdded(){
-        // console.log('comp form: ', this.CompForm);
-        // console.log('comments:', this.CompForm.Comments);
-        if(this.CompForm && this.CompForm.Comments.length > 0 &&
-            this.CompForm.Comments[0].FindingComment != undefined){
-            return true;
-        }
-        else
-            return false;
-    }
-
-    isComponentVisible(componentName: string){
-        // return true;
-        // console.log(this.CompForm.CurrentReviewStatus);
-        switch(componentName){
-            case "generalEdit":
-                if((this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress))
-                    return true;
-                else
-                    return false;
-            // case "generalEditQC":
-            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
-            //         return true;
-            //     else
-            //         return false;
-            // case "generalEditResponseToQC":
-            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress &&
-            //         this.isGeneralQCCommentAdded)
-            //         return true;
-            //     else
-            //         return false;
-            case "generalView":
-                if((this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
-                    return true;
-                else
-                    return false;
-            case "instituteEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-                    return true;
-                else
-                    return false;
-            case "instituteView":
-                if((this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
-                    return true;
-                else
-                    return false;
-            case "investigatorEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-                    return true;
-                else
-                    return false;
-            case "investigatorView":
-                if((this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
-                    return true;
-                else
-                    return false;
-            case "mandatorySitesEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-                    return true;
-                else
-                    return false;
-            case "mandatorySitesView":
-                if((this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
-                    return true;
-                else
-                    return false;
-            case "additionalSitesEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-                    return true;
-                else
-                    return false;
-            case "additionalSitesView":
-                return true;
-            case "findingsEdit":
-                // if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
-                    return true;
-                // else
-                //     return false;
-            case "searchedByView": return true;
-            case "summaryView": return true;
-
-            default: return true;
-        }
-    }
-
-    get diagnostic() { return JSON.stringify(this.formValueChanged); }
->>>>>>> Development
 
 
 }
