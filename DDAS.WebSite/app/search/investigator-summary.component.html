@@ -32,10 +32,10 @@
 				Errors: <strong>{{Investigator.ExtractionErrorSiteCount}}</strong> | Extraction Pending: <strong>{{Investigator.ExtractionPendingSiteCount}}</strong>
 			</h4>
 			<h4>
-				Filters:<br> Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites"
-				*ngIf="unHideReviewCompletedSiteCheckBox"/>
+				<div *ngIf="unHideReviewCompletedSiteCheckBox">
+					Filters:<br> Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites"/>
+				</div>
 			</h4>
-
 		</div>
 	</div>
 </div>

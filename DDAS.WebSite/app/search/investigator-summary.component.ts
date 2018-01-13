@@ -79,6 +79,15 @@ export class InvestigatorSummaryComponent {
                 //this.IntiliazeRecords();
                 this.loading = false;
                 
+        if(this.CompForm && 
+            (this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+            this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)){
+                //...
+        }
+        else{
+            this.HideReviewCompletedSites = false;
+        }
+
               },
             error => {
                 this.loading = false;
@@ -181,11 +190,13 @@ get Summary(){
 // }
  
     get unHideReviewCompletedSiteCheckBox(){
-        if(this.CompForm && this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress){
+        // this.HideReviewCompletedSites = true;
+        if(this.CompForm && 
+            (this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+            this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)){
             return true;
         }
         else{
-            this.HideReviewCompletedSites = false;
             return false;
         }
     }

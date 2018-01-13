@@ -17,6 +17,12 @@ export class QCVerifierFindingComponent implements OnInit  {
 
     ngOnInit(){
         this.Finding.Comments[1].ReviewId = this.ReviewerRecId;
+
+        var reviewerComment = this.Finding.Comments.find(x =>
+            x.ReviewId != this.Finding.ReviewId);
+
+            if(reviewerComment != undefined)
+                reviewerComment.CategoryEnum = CommentCategoryEnum.CorrectionPending;        
     }
 
     RemoveClicked(){
