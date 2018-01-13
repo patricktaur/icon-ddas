@@ -40,7 +40,6 @@ export class SelectedFindingViewComponent  {
     }
 
     get getQCVerifierComment(){
-
         var qcComment = this.Finding.Comments.find(x => x.FindingComment != null);
 
         if(qcComment)
