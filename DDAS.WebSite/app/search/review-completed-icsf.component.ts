@@ -61,7 +61,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public SelectedComplianceFormId: string;
     public audit: QualityCheck;
     public pageNumber: number;
-    public compForm: ComplianceFormA = new ComplianceFormA;
+    public compForm: ComplianceFormA;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -165,6 +165,31 @@ export class ReviewCompletedICSFComponent implements OnInit {
         //     error => {
         //     });
     }
+
+    status(reviewStatus: number) {
+        switch (reviewStatus) {
+            case ReviewStatusEnum.SearchCompleted: return "Search Completed";
+            case ReviewStatusEnum.ReviewInProgress: return "Review In Progress";
+            case ReviewStatusEnum.ReviewCompleted: return "Review Completed";
+            case ReviewStatusEnum.Completed: return "Completed";
+            case ReviewStatusEnum.QCRequested: return "QC Requested";
+            case ReviewStatusEnum.QCInProgress: return "QC In Progress";
+            case ReviewStatusEnum.QCFailed: return "QC Failed";
+            case ReviewStatusEnum.QCPassed: return "QC Passed";
+            case ReviewStatusEnum.QCCorrectionInProgress: return "QC Correction In Progress";
+            default: "";
+        }
+    }
+
+    // currentReviewStatus(recId: string){
+    //     var pi = this.PrincipalInvestigators.find(x =>
+    //         x.RecId == recId);
+        
+    //     if(pi != undefined)
+    //         return this.status(pi.CurrentReviewStatus);
+    //     else
+    //         return null;
+    // }
 
     get filteredRecords() {
         return this.PrincipalInvestigators;

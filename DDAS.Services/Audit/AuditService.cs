@@ -202,6 +202,7 @@ namespace DDAS.Services.AuditService
 
                         if (finding.ReviewId == QCReview.RecId)
                         {
+                            QCSummary.Type = "Finding";
                             QCSummary.Comment = finding.Observation + " " +
                                 comment.FindingComment;
                             var ReviewerComment = finding.Comments.Find(x =>
@@ -213,6 +214,7 @@ namespace DDAS.Services.AuditService
                         }
                         else
                         {
+                            QCSummary.Type = "Comment";
                             var ReviewerComment = finding.Comments.Find(x =>
                             x.ReviewId != QCReview.RecId);
                             QCSummary.ResponseToQC =

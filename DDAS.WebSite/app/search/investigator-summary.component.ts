@@ -7,7 +7,7 @@ import { AuthService }      from '../auth/auth.service';
 //import {SiteInfo,SearchSummaryItem,SearchSummary,NameSearch, MatchedRecordsPerSite} from './search.classes';
 
 import {InvestigatorSearched, ComplianceFormA, SiteSource, 
-     SiteSearchStatus } from './search.classes';
+     SiteSearchStatus, ReviewerRoleEnum, ReviewStatusEnum } from './search.classes';
 
 @Component({
   moduleId: module.id,
@@ -180,6 +180,16 @@ get Summary(){
 //     { relativeTo: this.route.parent});
 // }
  
+    get unHideReviewCompletedSiteCheckBox(){
+        if(this.CompForm && this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress){
+            return true;
+        }
+        else{
+            this.HideReviewCompletedSites = false;
+            return false;
+        }
+    }
+
 gotoSiteDetails(siteSourceId: number){
   //console.log("XXXXX");
     this.router.navigate(['findings', this.ComplianceFormId, this.InvestigatorId, siteSourceId, {rootPath:this.rootPath, hideReviewCompleted:this.HideReviewCompletedSites}], 

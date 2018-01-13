@@ -64,7 +64,7 @@ export class SelectedFindingViewComponent  {
 
     get qcCommentCategory(){
         if(this.getQCVerifierComment != null || this.getQCVerifierComment != undefined)
-            return CommentCategoryEnum[this.getQCVerifierComment.CategoryEnum]; //this.getQCVerifierComment.CategoryEnum.toString();
+            return CommentCategoryEnum[this.getQCVerifierComment.CategoryEnum];
         else
             return null;
     }
@@ -78,7 +78,7 @@ export class SelectedFindingViewComponent  {
 
     get reviewerCommentCategory(){
         if(this.getReviewerComment != null || this.getReviewerComment != undefined)
-            return this.getReviewerComment.CategoryEnum.toString();
+            return CommentCategoryEnum[this.getReviewerComment.CategoryEnum];
         else
             return null;
     }

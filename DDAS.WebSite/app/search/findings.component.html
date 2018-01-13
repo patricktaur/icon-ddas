@@ -46,10 +46,8 @@
 				<h4>
 					Summary:
 				</h4>
-
-
-				<div class="row ">
-					<div class="col-lg-12  text-center">
+				<div class="row">
+					<div class="col-lg-12  text-center" *ngIf="showMatchingRecordsAndAddManualFinding">
 						<table class="table table-bordered table-hover table-striped">
 							<thead>
 								<tr>
@@ -81,8 +79,10 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.FullMatchCount > 0">
-												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open();resetValues()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
-												&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;</a>
+												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open();resetValues()" 
+													title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;
+											</a>
 											</p>
 											<p *ngIf="SiteSearchStatus.FullMatchCount == 0">
 												{{SiteSearchStatus.FullMatchCount}}
@@ -95,8 +95,10 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.PartialMatchCount > 0">
-												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open();resetValues()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
-												&nbsp;{{SiteSearchStatus.PartialMatchCount}}&nbsp;</a>
+												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open();resetValues()" 
+													title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												&nbsp;{{SiteSearchStatus.PartialMatchCount}}&nbsp;
+											</a>
 											</p>
 											<p *ngIf="SiteSearchStatus.PartialMatchCount == 0">
 												{{SiteSearchStatus.PartialMatchCount}}
@@ -109,9 +111,9 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.SingleMatchCount != '0' ">
-
 												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open(); resetValues()">
-												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;</a>
+												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;
+											</a>
 											</p>
 
 											<p *ngIf="SiteSearchStatus.SingleMatchCount == '0' ">
@@ -184,14 +186,14 @@
 
 	<p align="center">
 
-		<button type="button" class="btn btn-primary" (click)="Add()">Add Additional Findings</button>
+		<button type="button" class="btn btn-primary" (click)="Add()" *ngIf="showMatchingRecordsAndAddManualFinding">Add Additional Findings</button>
 		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
 		 (click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
 		<br/>
 	</p>
 	<p align="center">
 		<label>Review Completed:</label>
-		<input type="checkbox" name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted">
+		<input type="checkbox" name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" [disabled]="disableOrHideMatchedRecordsAndFindings">
 	</p>
 	<p align="center">
 		<!--<label>Review completed: <input type="checkbox"  name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" ></label>-->

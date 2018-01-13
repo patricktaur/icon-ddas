@@ -169,7 +169,6 @@ export class CompFormEditComponent implements OnInit {
             case ReviewStatusEnum.QCFailed: return "QC Failed";
             case ReviewStatusEnum.QCPassed: return "QC Passed";
             case ReviewStatusEnum.QCCorrectionInProgress: return "QC Correction In Progress";
-            case ReviewStatusEnum.QCPassed: return "QC Passed";
             default: "";
         }
     }
@@ -351,7 +350,7 @@ export class CompFormEditComponent implements OnInit {
                 return false;
             else
                 return true;
-        }        
+        }
     }
 
     get isFileUploaded(): boolean {
@@ -1023,7 +1022,8 @@ export class CompFormEditComponent implements OnInit {
                 else
                     return false;
             case "instituteEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
                     return true;
                 else
                     return false;
@@ -1038,7 +1038,8 @@ export class CompFormEditComponent implements OnInit {
                 else
                     return false;
             case "investigatorEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
                     return true;
                 else
                     return false;
@@ -1053,7 +1054,8 @@ export class CompFormEditComponent implements OnInit {
                 else
                     return false;
             case "mandatorySitesEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
                     return true;
                 else
                     return false;
@@ -1068,7 +1070,8 @@ export class CompFormEditComponent implements OnInit {
                 else
                     return false;
             case "additionalSitesEdit":
-                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
                     return true;
                 else
                     return false;

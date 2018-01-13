@@ -2121,6 +2121,7 @@ namespace DDAS.Services.Search
             item.RecId = compForm.RecId;
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
+            item.CurrentReviewStatus = compForm.CurrentReviewStatus;
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;

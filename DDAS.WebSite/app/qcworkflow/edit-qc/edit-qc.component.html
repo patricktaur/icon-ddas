@@ -41,6 +41,7 @@
 				<tr>
 					<th class="col-md-2 text-left">Investigator/Institute Name</th>
 					<th class="col-md-3 text-left">Source Name</th>
+					<th class="col-md-3 text-left">Comment/Observation Type</th>
 					<th class="col-md-2 text-left">Category</th>
 					<th class="col-md-3 text-left">Observation/Comment</th>
 					<th class="col-md-2 text-left">Response to QC</th>
@@ -55,8 +56,11 @@
 						{{item.SourceName}}
 					</td>
 					<td class="text-left">
-						{{item.CategoryEnumString}}
+						{{item.Type}}
 					</td>
+					<td class="text-left">
+						{{item.CategoryEnumString}}
+					</td>					
 					<td class="text-left">
 						{{item.Comment}}
 					</td>

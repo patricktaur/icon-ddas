@@ -33,7 +33,7 @@
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 
 						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
-						<button type="button" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
+						<button type="button" *ngIf="isLoggedInUserReviewer" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
 						
 
 						<div class="alert alert-info" *ngIf="searchInProgress">
@@ -120,7 +120,7 @@
 					<div class="">
 						<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 						<!-- <button type="button" class="btn btn-primary" [disabled]="!f.valid " (click)="Save()">Save</button> -->
-						<button type="button" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
+						<button type="button" *ngIf="isLoggedInUserReviewer" class="btn btn-primary" [disabled]="!isFormValid" (click)="Save()">Save</button>
 						<div class="alert alert-info" *ngIf="searchInProgress">
 							<strong>Scanning Sources for matching Investigator Names ...</strong>
 							<p class="help-block">Processing will take a while... </p>

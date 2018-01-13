@@ -55,7 +55,7 @@
                     <br/>
                     <label *ngIf="isQCCommentAdded()"> <h4>QC Response:</h4></label>
                     <br/>
-                    <label *ngIf="isQCCommentAdded()">Category:</label>{{qcCommentCategory}}
+                    <label *ngIf="isQCCommentAdded()">Category: {{qcCommentCategory}}</label>
                     <br/>
                     <textarea *ngIf="isQCCommentAdded()" class="form-control" name="Comment" [(ngModel)]="qcComment"
                      rows="3" cols="30" readonly required placeholder="Comment">
@@ -63,7 +63,7 @@
                     <!-- Finding.Comments[0].FindingComment -->
                 </div>
                 <div class="col-md-4">
-                    <label *ngIf="isQCCommentAdded()">QC Correction Status:</label> {{reviewerCommentCategory}}
+                    <label *ngIf="isQCCommentAdded()">QC Correction Status: {{reviewerCommentCategory}}</label>
                      <!-- <select *ngIf="isQCCommentAdded()" class="form-control" name="CommentCategory" [(ngModel)]="reviewerCommentCategory" readonly>
                         <option value="5">Pending</option>
                         <option value="6">Correction Completed</option>

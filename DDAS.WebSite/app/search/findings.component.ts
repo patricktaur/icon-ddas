@@ -422,7 +422,8 @@ export class FindingsComponent implements OnInit {
             case "findingView":
                 // return true;
                 if (this.currentReviewStatus != undefined &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
+                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewCompleted ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
                     this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
                     this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
                     this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
@@ -528,6 +529,17 @@ export class FindingsComponent implements OnInit {
                 this.pageChanged = true;
             }
         }
+    }
+
+    get showMatchingRecordsAndAddManualFinding(){
+        if(this.currentReviewStatus && 
+            (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted ||
+            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
+            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress ||
+            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress))
+            return true;
+        else
+            return false;
     }
 
     SetFindingToRemove(selectedRecord: Finding) {

@@ -471,6 +471,7 @@ namespace DDAS.Models.Entities.Domain
         }
         public List<SubInvestigator> SubInvestigators { get; set; } =
             new List<SubInvestigator>();
+        public ReviewStatusEnum CurrentReviewStatus { get; set; }
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public string EstimatedExtractionCompletionWithin { get; set; }

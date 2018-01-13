@@ -14,5 +14,6 @@ namespace DDAS.Models.ViewModels
         public string CategoryEnumString { get; set; }
         public string Comment { get; set; }
         public string ResponseToQC { get; set; }
+        public string Type { get; set; }
     }
 }

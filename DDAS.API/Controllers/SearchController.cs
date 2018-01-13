@@ -810,13 +810,15 @@ namespace DDAS.API.Controllers
             var CurrentReviewStatus = new CurrentReviewStatusViewModel();
 
             if (Review.Status == ReviewStatusEnum.SearchCompleted ||
-                Review.Status == ReviewStatusEnum.ReviewInProgress)
+                Review.Status == ReviewStatusEnum.ReviewInProgress ||
+                Review.Status == ReviewStatusEnum.ReviewCompleted)
             {
                 CurrentReviewStatus.ReviewerRecId = Review.RecId.Value;
                 CurrentReviewStatus.QCVerifierRecId = null;
                 CurrentReviewStatus.CurrentReview = Review;
             }
-            else if (Review.Status == ReviewStatusEnum.QCInProgress ||
+            else if(Review.Status == ReviewStatusEnum.QCRequested ||
+                Review.Status == ReviewStatusEnum.QCInProgress ||
                 Review.Status == ReviewStatusEnum.QCFailed)
             {
                 CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
