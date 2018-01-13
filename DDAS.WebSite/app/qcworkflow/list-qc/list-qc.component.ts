@@ -74,10 +74,11 @@ export class ListQCComponent implements OnInit {
             return null;
     }
 
-    isQCVerifierOrIsQCCompleted(qcVerifier: string, Status: number) {
+    isActionRequired(qcVerifier: string, requestor: string, Status: number) {
         if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
             return true;
-        else if (Status == ReviewStatusEnum.QCPassed || Status == ReviewStatusEnum.QCFailed)
+        else if ((Status == ReviewStatusEnum.QCPassed || Status == ReviewStatusEnum.QCFailed) &&
+            requestor.toLowerCase() == this.authService.userName.toLowerCase())
             return true;
         else
             return false;

@@ -181,15 +181,17 @@ export class ReviewCompletedICSFComponent implements OnInit {
         }
     }
 
-    // currentReviewStatus(recId: string){
-    //     var pi = this.PrincipalInvestigators.find(x =>
-    //         x.RecId == recId);
-        
-    //     if(pi != undefined)
-    //         return this.status(pi.CurrentReviewStatus);
-    //     else
-    //         return null;
-    // }
+    isQCRequested(currentStatus: number){
+        if(currentStatus == ReviewStatusEnum.QCRequested ||
+            currentStatus == ReviewStatusEnum.QCInProgress ||
+            currentStatus == ReviewStatusEnum.QCFailed ||
+            currentStatus == ReviewStatusEnum.QCPassed ||
+            currentStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+            currentStatus == ReviewStatusEnum.Completed)
+            return false;
+        else if(currentStatus == ReviewStatusEnum.ReviewCompleted)
+            return true;
+    }
 
     get filteredRecords() {
         return this.PrincipalInvestigators;
@@ -350,11 +352,11 @@ export class ReviewCompletedICSFComponent implements OnInit {
         
         this.service.requestQC(this.compForm)
             .subscribe((item: boolean) => {
-
+                this.LoadPrincipalInvestigators();
             },
             error => {
 
-            });        
+            });
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }

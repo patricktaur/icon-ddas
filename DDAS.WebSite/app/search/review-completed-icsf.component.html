@@ -142,7 +142,7 @@
 							<span class="glyphicon glyphicon-download-alt" ></span>
 						</button>-->
 								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open"></span></button>
-								<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open()" title="Request Audit">
+								<button type="button" *ngIf="isQCRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open()" title="Request Audit">
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
 							</div>
@@ -189,12 +189,17 @@
 					<select class="form-control" [(ngModel)]="audit.Auditor">
 						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
 					</select>
-				</div>
+				</div>		
 			</div>
 			<div class="col-md-6">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
 				<label for="AuditRequestorComments">Comments:</label>
-				<textarea name="AuditRequestorComments" class="form-control" id="AuditRequestorComments" rows="9" cols="30" placeholder="comments"
-				 [(ngModel)]="audit.RequestorComments"></textarea>
+				<textarea name="AuditRequestorComments" class="form-control" id="AuditRequestorComments" 
+					rows="5" cols="20" placeholder="comments" [(ngModel)]="audit.RequestorComments">
+				</textarea>
 			</div>
 		</div>
 	</modal-body>
