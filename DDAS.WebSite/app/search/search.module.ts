@@ -73,7 +73,7 @@ import {QCVerifierFindingComponent} from "../compliance-form/findings/qc-verifie
 import {ResponseToQCVerifierFindingComponent} from "../compliance-form/findings/response-to-qc-verifier-finding/response-to-qc-verifier-finding.component"
 import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/response-to-qc-verifier-comment/response-to-qc-verifier-comment.component"
 //import {SelectedFindingComponent} from "../compliance-form/findings/selected-finding/selected-finding.component";
-
+import {CompFormLogicService} from "./shared/services/comp-form-logic.service"
 
 @NgModule({
   imports: [
@@ -137,7 +137,7 @@ import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/
   ],
 
   providers: [
-
+    CompFormLogicService
   ],
   exports: [StatusCircleComponent,
     StatusCircleLegendVerticalComponent,
