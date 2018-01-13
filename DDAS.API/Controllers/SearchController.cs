@@ -359,8 +359,8 @@ namespace DDAS.API.Controllers
                         UpdateComplianceFormToCurrentVersion(compForm);
 
                     var Review = compForm.Reviews.FirstOrDefault();
-                    if (Review != null 
-                        && Review.StartedOn == null &&
+                    if (Review != null &&
+                        Review.Status == ReviewStatusEnum.SearchCompleted &&
                         compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
                     {
                         Review.StartedOn = DateTime.Now;
@@ -809,7 +809,8 @@ namespace DDAS.API.Controllers
 
             var CurrentReviewStatus = new CurrentReviewStatusViewModel();
 
-            if (Review.Status == ReviewStatusEnum.ReviewInProgress)
+            if (Review.Status == ReviewStatusEnum.SearchCompleted ||
+                Review.Status == ReviewStatusEnum.ReviewInProgress)
             {
                 CurrentReviewStatus.ReviewerRecId = Review.RecId.Value;
                 CurrentReviewStatus.QCVerifierRecId = null;

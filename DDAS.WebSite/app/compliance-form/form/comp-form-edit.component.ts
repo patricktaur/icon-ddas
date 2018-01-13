@@ -897,7 +897,6 @@ export class CompFormEditComponent implements OnInit {
                 this.ComplianceFormId = item.RecId;
                 this.searchInProgress = false;
                 this.LoadOpenComplainceForm();
-
             },
             error => {
                 this.searchInProgress = false;
