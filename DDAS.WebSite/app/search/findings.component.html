@@ -139,47 +139,37 @@
 	</div>
 	<div class="row">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
-				 <div *ngIf="isReviewerFinding(matchedRecord)" class="form-group col-md-6">
-						<div selected-finding-edit [Finding]="matchedRecord" 
-						(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
-						</div>
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'findingEdit')" class="form-group col-md-6">
+				<div selected-finding-edit [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 				</div>
-			
-				<!-- Not required: -->
-				<!-- <div class="form-group col-md-6"  >
-						<div selected-finding-view 
-						[Finding]="matchedRecord" >
-						</div>
-									
-				</div>	 -->
-				
-				 <div *ngIf="isNotQCVerifierFinding(matchedRecord)" class="form-group col-md-6">
-						<div qc-verifier-comments
-						[QCVerifierReview] = "qcVerifierReview"
-						[Finding]="matchedRecord">
-						</div>
+			</div>
+
+			<!-- Not required: -->
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'findingView')" class="form-group col-md-6">
+				<div selected-finding-view [Finding]="matchedRecord">
 				</div>
+			</div>
 
-				 <div *ngIf="isQCVerifierFinding(matchedRecord)" class="form-group col-md-6">
-						<div qc-verifier-finding
-						[QCVerifierReview] = "qcVerifierReview"
-						[Finding]="matchedRecord"
-						(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
-						</div>
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierComments')" class="form-group col-md-6">
+				<div qc-verifier-comments [QCVerifierReview]="qcVerifierReview" [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
 				</div>
-				
-				  <div *ngIf="isNotReviewerFindingAndResponseRequired(matchedRecord)" class="form-group col-md-6">
-						<div response-to-qc-verifier-finding
-						[Finding]="matchedRecord">
-						</div>
-				</div> 
+			</div>
 
-				   <div *ngIf="isReviewerFindingAndResponseRequired(matchedRecord)" class="form-group col-md-6">
-						<div response-to-qc-verifier-comment
-						[Finding]="matchedRecord">
-						</div>
-				</div>  
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierFinding')" class="form-group col-md-6">
+				<div qc-verifier-finding [QCVerifierReview]="qcVerifierReview" [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
+				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				</div>
+			</div>
 
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierFinding')" class="form-group col-md-6">
+				<div response-to-qc-verifier-finding [Finding]="matchedRecord">
+				</div>
+			</div>
+
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierComments')" class="form-group col-md-6">
+				<div response-to-qc-verifier-comment [Finding]="matchedRecord">
+				</div>
+			</div>
 
 			<!-- <div class="row ">
 				<div class="form-group col-md-6">

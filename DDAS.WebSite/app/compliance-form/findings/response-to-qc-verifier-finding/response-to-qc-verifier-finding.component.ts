@@ -8,11 +8,16 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
     moduleId: module.id,
     templateUrl: 'response-to-qc-verifier-finding.component.html',
 })
-export class ResponseToQCVerifierFindingComponent  {
+export class ResponseToQCVerifierFindingComponent implements OnInit {
     @Input() Finding: Finding;
     
     private pageChanged: boolean = false;
     
+    ngOnInit(){
+        if(this.Finding.Comments[1].CategoryEnum == 0)
+            this.Finding.Comments[1].CategoryEnum = 5;
+    }
+
     formValueChanged(){
         this.pageChanged = true;
     } 
@@ -24,6 +29,15 @@ export class ResponseToQCVerifierFindingComponent  {
         var middleNames: string[] = RecordDetails.split("~");
 
         return middleNames;
+    }
+
+    get getReviewerComment(){
+        //this.Finding.Comments[1].CategoryEnum = 5;
+        return this.Finding.Comments[1];
+    }
+
+    get getQCVerifierComment(){
+        return this.Finding.Comments[0];
     }
 
     dividerGeneration(indexVal: number) {

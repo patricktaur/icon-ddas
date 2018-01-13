@@ -41,6 +41,9 @@ import {ComplianceFormViewComponent} from './shared/components/compliance-form-v
 
 import {ComplianceFormGeneralEditComponent} from "../compliance-form/tab-components/general-edit/general-edit.component"
 import {ComplianceFormGeneralViewComponent} from "../compliance-form/tab-components/general-view/general-view.component"
+import {ComplianceFormGeneralViewQCVerifierCommentsComponent} from "../compliance-form/tab-components/general-view-qc-verifier-comments/general-view-qc-verifier-comments"
+import {ComplianceFormGeneralViewResponseToQCVerifierCommentsComponent} from "../compliance-form/tab-components/general-view-response-to-qc-verifier-comments/general-view-response-to-qc-verifier-comments"
+
 import {ComplianceFormInvestigatorEditComponent} from "../compliance-form/tab-components/investigators-edit/investigator-edit.component"
 import {ComplianceFormInvestigatorViewComponent} from "../compliance-form/tab-components/investigators-view/investigator-view.component"
 
@@ -103,8 +106,11 @@ import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/
     InstituteFindingsSummaryComponent,
     InstituteFindingsComponent,
     ComplianceFormViewComponent,
+    
     ComplianceFormGeneralEditComponent,
     ComplianceFormGeneralViewComponent,
+    ComplianceFormGeneralViewQCVerifierCommentsComponent,
+    ComplianceFormGeneralViewResponseToQCVerifierCommentsComponent,
     
     ComplianceFormInstituteEditComponent,
     ComplianceFormInstituteViewComponent,

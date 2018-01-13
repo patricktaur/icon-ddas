@@ -5,13 +5,15 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { QCService } from '../qc-service';
-import { ComplianceFormA, 
-    SiteSource, 
+import {
+    ComplianceFormA,
+    SiteSource,
     Finding,
-    Comment, 
+    Comment,
     CommentCategoryEnum,
     ReviewerRoleEnum,
-    ReviewStatusEnum } from '../../search/search.classes';
+    ReviewStatusEnum
+} from '../../search/search.classes';
 import { Location } from '@angular/common';
 
 @Component({
@@ -106,31 +108,42 @@ export class EditQCComponent implements OnInit {
             });
     }
 
-    getQCVerifierComment(){
-        var review = this.complianceForm.Reviews.find(x => 
+    getQCVerifierComment() {
+        var review = this.complianceForm.Reviews.find(x =>
             x.AssigendTo == this.authService.userName &&
-        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-
-        
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
     }
 
-    get isQCPassedOrFailed(){
-        if(this.complianceForm != null && 
-            (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
-            this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
+    get isQCPassedOrFailed() {
+        let review = this.complianceForm.Reviews.find(x =>
+            x.Status == ReviewStatusEnum.QCFailed ||
+            x.Status == ReviewStatusEnum.QCPassed);
+
+        if(review != undefined && review.Status == ReviewStatusEnum.QCFailed)
+            this.status = 0;
+        else if(review != undefined && review.Status == ReviewStatusEnum.QCPassed)
+            this.status = 1;
+
+        if (review != undefined)
             return true;
-        }
         else
             return false;
+        // if(this.complianceForm != null && 
+        //     (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
+        //     this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
+        //     return true;
+        // }
+        // else
+        //     return false;
     }
 
-    listQCSummary(){
+    listQCSummary() {
         this.auditService.listQCSummary(this.complianceFormId)
             .subscribe((item: any) => {
                 this.qcSummary = item;
             },
             error => {
-            });        
+            });
     }
 
     get Investigators() {
@@ -161,26 +174,33 @@ export class EditQCComponent implements OnInit {
             return null;
     }
 
-    get commentCategoryString(){
-        if(this.complianceForm.Comments[0].CategoryEnum != null ||
-        this.complianceForm.Comments[0].CategoryEnum != undefined){
-            switch(this.complianceForm.Comments[0].CategoryEnum){
-                case CommentCategoryEnum.Minor: return "Minor";
-                case CommentCategoryEnum.Major: return "Major";
-                case CommentCategoryEnum.Critical: return "Critical";
-                case CommentCategoryEnum.Suggestion: return "Suggestion";
-                case CommentCategoryEnum.Others: return "Others";
-                default: "";
-            }
-        }
-        else
-            return null;
-    }
+    // get commentCategoryString(){
+    //     if(this.complianceForm.Comments[0].CategoryEnum != null ||
+    //     this.complianceForm.Comments[0].CategoryEnum != undefined){
+    //         switch(this.complianceForm.Comments[0].CategoryEnum){
+    //             case CommentCategoryEnum.Minor: return "Minor";
+    //             case CommentCategoryEnum.Major: return "Major";
+    //             case CommentCategoryEnum.Critical: return "Critical";
+    //             case CommentCategoryEnum.Suggestion: return "Suggestion";
+    //             case CommentCategoryEnum.Others: return "Others";
+    //             case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+    //             case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
+    //             case CommentCategoryEnum.Accepted: return "Accepted";
+    //             default: "";
+    //         }
+    //     }
+    //     else
+    //         return null;
+    // }
 
-    openComplianceForm(){
+    openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
+<<<<<<< HEAD
         //this.qcAssignedTo
         this.router.navigate(['comp-form-edit', this.complianceForm.RecId, {rootPath:'edit-qc', qcAssignedTo:this.qcAssignedTo}], { relativeTo: this.route.parent });
+=======
+        this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: 'qc', page: this.pageNumber }], { relativeTo: this.route.parent });
+>>>>>>> Development
     }
 
     save() {
@@ -189,26 +209,25 @@ export class EditQCComponent implements OnInit {
     submit() {
         alert('You are about to submit QC. You will not be allowed to edit QC. Do you want to proceed ?');
 
-        if(this.status == -1){
+        if (this.status == -1) {
             alert('Please select one of the options: QC passed or failed');
             return;
         }
 
         this.complianceForm.Reviews.forEach(review => {
-            if(review.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase()){
-                review.Status = 
-                this.status == 0 ? ReviewStatusEnum.QCFailed : ReviewStatusEnum.QCPassed;
-                review.CompletedOn = new Date();
+            if (review.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase()) {
+                review.Status =
+                    this.status == 0 ? ReviewStatusEnum.QCFailed : ReviewStatusEnum.QCPassed;
             }
         });
 
         this.auditService.saveQC(this.complianceForm)
-        .subscribe((item: any) => {
-            this.isSubmitted = true;
-            alert('QC has been submitted successfully');
-        },
-        error => {
-        });
+            .subscribe((item: any) => {
+                this.isSubmitted = true;
+                alert('QC has been submitted successfully');
+            },
+            error => {
+            });
     }
 
     goBack() {

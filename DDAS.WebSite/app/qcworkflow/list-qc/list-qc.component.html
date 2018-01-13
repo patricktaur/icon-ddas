@@ -50,6 +50,7 @@
                             	<span class="glyphicon glyphicon-folder-open"></span>
 							</button> -->
 							<button type="button" class="btn btn-sm btn-primary" 
+							*ngIf="isQCVerifierOrIsQCCompleted(item.QCVerifier, item.Status)"
 							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="Opens">
                             	<span class="glyphicon glyphicon-folder-open"></span>
                         	</button>							

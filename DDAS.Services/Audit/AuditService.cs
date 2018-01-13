@@ -25,7 +25,6 @@ namespace DDAS.Services.AuditService
 
         public bool RequestQC(ComplianceForm Form)
         {
-
             foreach(Review Review in Form.Reviews)
             {
                 if (Review.RecId == null && 
@@ -43,32 +42,40 @@ namespace DDAS.Services.AuditService
                     Review.RecId = Guid.NewGuid();
             }
 
-            var review = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+            var QCReview = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
 
             Form.Comments.Add(new Comment()
             {
-                ReviewId = review.RecId.Value
+                ReviewId = QCReview.RecId.Value
             });
 
-            foreach(Finding finding in Form.Findings)
-            {
-                if(finding.Comments.Count == 0)
-                {
-                    var Comment = new Comment();
-                    var Review =
-                        Form.Reviews.Find(x =>
-                        x.ReviewerRole == ReviewerRoleEnum.Reviewer);
-                    Comment.ReviewId = Review.RecId.Value;
-                    finding.Comments.Add(Comment);
+            var ReviewerReview = Form.Reviews.Find(x => 
+                x.ReviewerRole == ReviewerRoleEnum.Reviewer);
 
-                    var Comment1 = new Comment();
-                    var Review1 =
-                        Form.Reviews.Find(x =>
-                        x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-                    Comment1.ReviewId = Review1.RecId.Value;
-                    finding.Comments.Add(Comment1);
-                }
-            }
+            Form.Comments.Add(new Comment()
+            {
+                ReviewId = ReviewerReview.RecId.Value
+            });
+
+            //foreach(Finding finding in Form.Findings)
+            //{
+            //    if(finding.Comments.Count == 0)
+            //    {
+            //        var Comment = new Comment();
+            //        var Review =
+            //            Form.Reviews.Find(x =>
+            //            x.ReviewerRole == ReviewerRoleEnum.Reviewer);
+            //        Comment.ReviewId = Review.RecId.Value;
+            //        finding.Comments.Add(Comment);
+
+            //        var Comment1 = new Comment();
+            //        var Review1 =
+            //            Form.Reviews.Find(x =>
+            //            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+            //        Comment1.ReviewId = Review1.RecId.Value;
+            //        finding.Comments.Add(Comment1);
+            //    }
+            //}
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             //SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
@@ -151,6 +158,16 @@ namespace DDAS.Services.AuditService
 
         public bool SaveQC(ComplianceForm Form)
         {
+            var QCPassedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCPassed);
+
+            if(QCPassedReview != null)
+            {
+                QCPassedReview.Status = ReviewStatusEnum.Completed;
+                QCPassedReview.CompletedOn = DateTime.Now;
+            }
+            
+            //Save QC is currently equivalent to submitting the QC
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return true;
         }
@@ -171,7 +188,8 @@ namespace DDAS.Services.AuditService
             {
                 foreach(Comment comment in finding.Comments)
                 {
-                    if(comment.ReviewId == QCReview.RecId)
+                    if(comment.FindingComment != null || 
+                        comment.CategoryEnum == CommentCategoryEnum.Accepted)
                     {
                         var QCSummary = new QCSummaryViewModel();
                         QCSummary.Investigator =
@@ -183,12 +201,26 @@ namespace DDAS.Services.AuditService
                             GetCategoryEnumString(comment.CategoryEnum);
 
                         if (finding.ReviewId == QCReview.RecId)
+                        {
                             QCSummary.Comment = finding.Observation + " " +
                                 comment.FindingComment;
+                            var ReviewerComment = finding.Comments.Find(x =>
+                            x.ReviewId != QCReview.RecId);
+                            QCSummary.ResponseToQC =
+                                GetCategoryEnumString(ReviewerComment.CategoryEnum);
+                            QCSummaryList.Add(QCSummary);
+                            break;
+                        }
                         else
+                        {
+                            var ReviewerComment = finding.Comments.Find(x =>
+                            x.ReviewId != QCReview.RecId);
+                            QCSummary.ResponseToQC =
+                                GetCategoryEnumString(ReviewerComment.CategoryEnum);
                             QCSummary.Comment = comment.FindingComment;
-
-                        QCSummaryList.Add(QCSummary);
+                            QCSummaryList.Add(QCSummary);
+                            break;
+                        }
                     }
                 }
             }
@@ -204,6 +236,9 @@ namespace DDAS.Services.AuditService
                 case CommentCategoryEnum.Critical: return "Critical";
                 case CommentCategoryEnum.Suggestion: return "Suggestion";
                 case CommentCategoryEnum.Others: return "Others";
+                case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+                case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
+                case CommentCategoryEnum.Accepted: return "Accepted";
                 default: throw new Exception("Invalid CommentCategoryEnum");
             }
         }

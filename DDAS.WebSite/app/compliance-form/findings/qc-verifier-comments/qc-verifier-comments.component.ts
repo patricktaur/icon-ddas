@@ -7,19 +7,26 @@ import { ComplianceFormA, SiteSource, Finding, Review } from '../../../search/se
     moduleId: module.id,
     templateUrl: 'qc-verifier-comments.component.html',
 })
-export class QCVerifierCommentsComponent {
+export class QCVerifierCommentsComponent implements OnInit {
     @Input() Finding: Finding;
     @Input() QCVerifierReview: Review;
+    @Input() QCVerifierRecId: string;
 
     private pageChanged: boolean = false;
     
+    ngOnInit(){
+        this.Finding.Comments[1].ReviewId = this.QCVerifierRecId;
+    }
+
     formValueChanged(){
         this.pageChanged = true;
     }
 
     get getQCVerifierComment(){
-        return this.Finding.Comments.find(x => 
-            x.ReviewId == this.QCVerifierReview.RecId);
+        console.log('comments: ', this.Finding.Comments);
+        return this.Finding.Comments[1];
+        // return this.Finding.Comments.find(x => 
+        //     x.ReviewId == this.QCVerifierReview.RecId);
     }
 
     Split = (RecordDetails: string) => {
