@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { QualityCheck, AuditObservation } from '../qc.classes';
@@ -14,7 +15,7 @@ import {
     ReviewerRoleEnum,
     ReviewStatusEnum
 } from '../../search/search.classes';
-import { Location } from '@angular/common';
+import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service"
 
 @Component({
     moduleId: module.id,
@@ -82,7 +83,8 @@ export class EditQCComponent implements OnInit {
         private configService: ConfigService,
         private _location: Location,
         private authService: AuthService,
-        private auditService: QCService
+        private auditService: QCService,
+        private compFormLogic: CompFormLogicService
     ) { }
 
     ngOnInit() {

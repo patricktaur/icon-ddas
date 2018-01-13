@@ -62,14 +62,15 @@
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
-								<th class="col-md-2 text-left">Investigator/Institute Name</th>
-								<th class="col-md-3 text-left">Source Name</th>
-								<th class="col-md-3 text-left">Category</th>
-								<th class="col-md-3 text-left">Observation/Comment</th>
+								<th >Investigator/Institute Name</th>
+								<th >Source Name</th>
+								<th >Category</th>
+								<th >Observation/Comment</th>
+								<th >Open</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr class="active" *ngFor="let item of qcSummary">
+							<tr class="active" *ngFor="let item of qcSummary; let idx=index">
 								<td class="text-left">
 									{{item.Investigator}}
 								</td>
@@ -81,6 +82,13 @@
 								</td>
 								<td class="text-left">
 									{{item.Comment}}
+								</td>
+								<td>
+									<button type="button" class="btn btn-sm btn-primary" (click)="FindingResponseModal.open()" 
+										data-toggle="tooltip" data-placement="top" title="Open">
+										<span class="glyphicon glyphicon-edit"></span>
+									</button>
+
 								</td>
 							</tr>
 						</tbody>
@@ -110,3 +118,15 @@
 		</div>
 	</div>
 </div>
+
+<modal #FindingResponseModal>
+		<modal-body>
+
+			XXXXXXXXXXXXXXXXX 
+			
+
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
+		</modal-footer>
+	</modal>
