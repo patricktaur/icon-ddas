@@ -144,7 +144,15 @@ import {CompFormLogicService} from "./shared/services/comp-form-logic.service"
     StatusCircleLegHorComponent,
     DownloadComplianceFormComponent,
     GenerateOutputFileComponent,
-    ComplianceFormViewComponent
+    ComplianceFormViewComponent,
+
+    SelectedFindingEditComponent,
+    SelectedFindingViewComponent,
+    QCVerifierCommentsComponent,
+    QCVerifierFindingComponent,
+    ResponseToQCVerifierFindingComponent,
+    ResponseToQCVerifierCommentComponent
+    
   ]
 })
 export class SearchModule { }

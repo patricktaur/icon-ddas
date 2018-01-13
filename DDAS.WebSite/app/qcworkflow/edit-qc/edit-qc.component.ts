@@ -5,6 +5,7 @@ import { QualityCheck, AuditObservation } from '../qc.classes';
 import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
+import { SearchService } from '../../search/search-service';
 import { QCService } from '../qc-service';
 import {
     ComplianceFormA,
@@ -13,7 +14,8 @@ import {
     Comment,
     CommentCategoryEnum,
     ReviewerRoleEnum,
-    ReviewStatusEnum
+    ReviewStatusEnum,
+    CurrentReviewStatusViewModel
 } from '../../search/search.classes';
 import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service"
 
@@ -77,6 +79,9 @@ export class EditQCComponent implements OnInit {
     public qcVerifierComment: Comment;
     public defaultTab: boolean = true;
     public defaultTabInActive: string = " in active";
+    public currentReviewStatus: CurrentReviewStatusViewModel;
+    public findingRecordToEdit: Finding;
+    
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -84,6 +89,7 @@ export class EditQCComponent implements OnInit {
         private _location: Location,
         private authService: AuthService,
         private auditService: QCService,
+        private service: SearchService,
         private compFormLogic: CompFormLogicService
     ) { }
 
@@ -97,6 +103,8 @@ export class EditQCComponent implements OnInit {
         this.complianceForm = new ComplianceFormA;
         this.loadComplianceForm();
         this.listQCSummary();
+
+        //this.compFormLogic.CanDisplayFindingComponent
     }
 
     loadComplianceForm() {
@@ -104,6 +112,19 @@ export class EditQCComponent implements OnInit {
             .subscribe((item: any) => {
                 this.complianceForm = item;
                 this.isSubmitted = this.isQCPassedOrFailed;
+                this. getCurrentReviewStatus();
+            },
+            error => {
+                
+            });
+    }
+
+    getCurrentReviewStatus() {
+        
+        this.service.getCurrentReviewStatus(this.complianceFormId)
+            .subscribe((item: CurrentReviewStatusViewModel) => {
+                this.currentReviewStatus = item;
+                console.log('current review status: ', this.currentReviewStatus);
             },
             error => {
 
@@ -195,6 +216,14 @@ export class EditQCComponent implements OnInit {
     //         return null;
     // }
 
+    selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
+        return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
+    }
+
+    setFindingToEdit(findingToEdit: Finding){
+        this.findingRecordToEdit =  findingToEdit;
+    }
+    
     openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
         //this.qcAssignedTo
@@ -231,4 +260,6 @@ export class EditQCComponent implements OnInit {
     goBack() {
         this._location.back();
     }
+
+    get diagnostic() { return JSON.stringify(this.findingRecordToEdit); }
 }

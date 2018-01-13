@@ -3,6 +3,7 @@
 		<div class="well">
 			<h3 class="no-margin-top">QC by </h3>
 			<label for="auditStatus">Status:</label>
+
 		</div>
 	</div>
 </div>
@@ -41,12 +42,13 @@
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
-								<th class="col-md-2 text-left">Investigator/Institute Name</th>
-								<th class="col-md-3 text-left">Source Name</th>
-								<th class="col-md-3 text-left">Comment/Observation Type</th>
-								<th class="col-md-2 text-left">Category</th>
-								<th class="col-md-3 text-left">Observation/Comment</th>
-								<th class="col-md-2 text-left">Response to QC</th>
+								<th>Investigator/Institute Name</th>
+								<th>Source Name</th>
+								<th>Comment/Observation Type</th>
+								<th>Category</th>
+								<th>Observation/Comment</th>
+								<th>Response to QC</th>
+								<th>Open</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -62,12 +64,19 @@
 								</td>
 								<td class="text-left">
 									{{item.CategoryEnumString}}
-								</td>					
+								</td>
 								<td class="text-left">
 									{{item.Comment}}
 								</td>
 								<td class="text-left">
 									{{item.ResponseToQC}}
+								</td>
+								<td>
+									<button type="button" class="btn btn-sm btn-primary" (click)="setFindingToEdit(item);FindingResponseModal.open()" data-toggle="tooltip"
+									 data-placement="top" title="Open">
+										<span class="glyphicon glyphicon-edit"></span>
+									</button>
+
 								</td>
 							</tr>
 						</tbody>
@@ -93,13 +102,21 @@
 </div>
 
 <modal #FindingResponseModal>
-		<modal-body>
+	<modal-body>
 
-			XXXXXXXXXXXXXXXXX 
-			
+		XXXXXXXXXXXXXXXXX XXXX:{{diagnostic}}
+		<!-- <div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierFinding')" class="form-group col-md-6">
+			<div response-to-qc-verifier-finding [Finding]="findingRecordToEdit">
+			</div>
+		</div>
 
-		</modal-body>
-		<modal-footer>
-			<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
-		</modal-footer>
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierComments')" class="form-group col-md-6">
+			<div response-to-qc-verifier-comment [Finding]="findingRecordToEdit">
+			</div>
+		</div> -->
+
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
+	</modal-footer>
 </modal>
