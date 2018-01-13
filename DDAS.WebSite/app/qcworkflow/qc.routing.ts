@@ -22,7 +22,7 @@ const reportRoutes: Routes = [
      
         {
         path: 'comp-form-edit/:formId',
-        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
+        component: CompFormEditComponent
       },
       {
         path: 'investigator-summary/:formId/:investigatorId',

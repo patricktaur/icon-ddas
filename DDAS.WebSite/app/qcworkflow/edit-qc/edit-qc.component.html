@@ -5,84 +5,108 @@
 			<label for="auditStatus">Status:</label>
 		</div>
 	</div>
-	<div class="col-lg-12">
-		<!-- <compliance-form-view [ComplianceFormId]="audit.ComplianceFormId"></compliance-form-view> -->
-		<div compliance-form-view [complianceForm]="complianceForm"></div>
-	</div>
-	<div class="well">
-		<div class="row">
-			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">open compliance form</button>
-		</div>
-		<br/>
-		<div class="row">
-			<div class="col-md-3">
-				<div class="form-group">
-					<label for="Status">QC Response:</label>
-					<select class="form-control" [(ngModel)]="status">
-						<option value=-1 selected="selected">---select---</option>
-						<option value=0>Failed</option>
-						<option value=1>Passed</option>
-					</select>
+
+
+</div>
+<div class="row">
+	<div class="col-lg-12 ">
+		<div class="well">
+			<ul class="nav nav-tabs">
+
+				<li [class.active]="defaultTab">
+					<a data-toggle="tab" href="#qc-general">QC</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#comp-form">Compliance Form</a>
+				</li>
+
+			</ul>
+
+			<div class="tab-content">
+				<div id="qc-general" class="tab-pane fade {{defaultTabInActive}}">
+					<br>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="Status">QC Response:</label>
+								<select class="form-control" [(ngModel)]="status">
+									<option value=-1 selected="selected">---select---</option>
+									<option value=0>Failed</option>
+									<option value=1>Passed</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-9">
+						</div>
+					</div>
+					<h4>General Observation:</h4>
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr>
+								<th class="col-md-2 text-left">Category</th>
+								<th class="col-md-3 text-left">Observation/Comment</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="active" *ngFor="let item of complianceForm.Comments">
+								<td class="text-left">
+									{{commentCategoryString}}
+								</td>
+								<td class="text-left">
+									{{item.FindingComment}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<h4>Finding Summary:</h4>
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr>
+								<th class="col-md-2 text-left">Investigator/Institute Name</th>
+								<th class="col-md-3 text-left">Source Name</th>
+								<th class="col-md-3 text-left">Category</th>
+								<th class="col-md-3 text-left">Observation/Comment</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="active" *ngFor="let item of qcSummary">
+								<td class="text-left">
+									{{item.Investigator}}
+								</td>
+								<td class="text-left">
+									{{item.SourceName}}
+								</td>
+								<td class="text-left">
+									{{item.CategoryEnumString}}
+								</td>
+								<td class="text-left">
+									{{item.Comment}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
+				<div id="comp-form" class="tab-pane fade">
+					<br>
+					<div compliance-form-view [complianceForm]="complianceForm"></div>
+				</div>
+
 			</div>
-			<div class="col-md-9">
-			</div>
+
 		</div>
+	</div>
+</div>
 
-		<h4>General Observation:</h4>
-		<table class="table table-bordered table-hover table-striped">
-			<thead>
-				<tr>
-					<th class="col-md-2 text-left">Category</th>
-					<th class="col-md-3 text-left">Observation/Comment</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="active" *ngFor="let item of complianceForm.Comments">
-					<td class="text-left">
-						{{commentCategoryString}}
-					</td>
-					<td class="text-left">
-						{{item.FindingComment}}
-					</td>
-				</tr>
-			</tbody>
-		</table>
 
-		 <h4>Finding Summary:</h4>
-		<table class="table table-bordered table-hover table-striped">
-			<thead>
-				<tr>
-					<th class="col-md-2 text-left">Investigator/Institute Name</th>
-					<th class="col-md-3 text-left">Source Name</th>
-					<th class="col-md-3 text-left">Category</th>
-					<th class="col-md-3 text-left">Observation/Comment</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="active" *ngFor="let item of qcSummary">
-					<td class="text-left">
-						{{item.Investigator}}
-					</td>
-					<td class="text-left">
-						{{item.SourceName}}
-					</td>
-					<td class="text-left">
-						{{item.CategoryEnumString}}
-					</td>
-					<td class="text-left">
-						{{item.Comment}}
-					</td>
-				</tr>
-			</tbody>
-		</table> 
 
-		<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
-		<!-- <button type="button" class="btn btn-primary">Save</button> -->
-		<button *ngIf="!isSubmitted" type="button" class="btn btn-primary" (click)="submit()">Submit</button>
 
-		<div clas="row">
+<div class="well">
+	<div class="row">
+		<div class="col-lg-12 ">
+			<button *ngIf="!isSubmitted" type="button" class="btn btn-primary" (click)="submit()">Submit</button>
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">open compliance form</button>
 		</div>
 	</div>
 </div>

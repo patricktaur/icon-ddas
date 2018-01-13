@@ -21,6 +21,7 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { AuthService } from '../../auth/auth.service';
 //import {SiteSourceViewModel} from '../../admin/appAdmin.classes';
 import {DefaultSite, SiteSourceViewModel} from '../../admin/appAdmin.classes';
+import { Response } from '@angular/http/src/static_response';
 //import {XXX} from '../../admin/appAdmin.classes';
 
 
@@ -101,6 +102,8 @@ export class CompFormEditComponent implements OnInit {
     public isQCVerifier: boolean;
     public reviewStatus: string;
 
+    public qcAssignedTo: string;
+
     @ViewChild('FindingsAddModal') FindingsAddModal: ModalComponent;
 
     public myDatePickerOptions = {
@@ -120,6 +123,8 @@ export class CompFormEditComponent implements OnInit {
         private authService: AuthService
     ) { }
 
+    
+   
     ngOnInit() {
         this.formLoading = true;
         this.route.params.forEach((params: Params) => {
@@ -131,6 +136,7 @@ export class CompFormEditComponent implements OnInit {
                 
                this.setInvestigatorTab();
             }
+            this.qcAssignedTo = params['qcAssignedTo'];  //discuss with Pradeep and remove this line.
             this.LoadOpenComplainceForm();
             this.LoadInstituteSiteSummary();
         });
@@ -679,36 +685,6 @@ gotoSiteDetails(SiteSourceId: number){
         this.CompForm.SiteSources.push(siteToAdd);
         this.pageChanged = true;
         
-        // var index = 0;
-
-        // for (index = 0; index < this.SitesAvailable.length; ++index) {
-        //     if (this.SitesAvailable[index].Selected == true) {
-        //         //Check if site is already included
-        //         let enumOfSiteToAdd = this.SitesAvailable[index].SiteEnum;
-        //         let siteIdToAdd = this.SitesAvailable[index].RecId;
-        //         //let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
-        //         let check = this.CompForm.SiteSources.find(x => x.SiteId == siteIdToAdd)
-        //         if (check) { //If found then it was possibly marked as deleted 
-        //             check.Deleted = false;
-        //         }
-        //         else {  //add it to the collection
-        //             let siteToAdd = new SiteSourceToSearch;
-        //             siteToAdd.SiteId = this.SitesAvailable[index].RecId;
-        //             siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
-        //             siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
-        //             siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
-        //             siteToAdd.Id = this.LastSiteSourceId + 1;
-        //             siteToAdd.IsMandatory = false;
-        //             siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;
-        //             this.CompForm.SiteSources.push(siteToAdd);
-        //             this.SitesAvailable[index].Included = true;
-        //         }
-        //         //one or more sites are added.
-        //         this.pageChanged = true;
-        //     }
-        //     this.SitesAvailable[index].Selected = false;
-        // }
-        
         
         this.SetSiteDisplayPosition();
     }
@@ -717,18 +693,6 @@ gotoSiteDetails(SiteSourceId: number){
         this.siteToRemove = site;
     }
 
-//     RemoveSite() {
-        
-//         this.siteToRemove.Deleted = true;
-//         //this.siteToRemove.SiteEnum
-//         let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
-//         if (site) {
-//             site.Included = false;
-//             this.pageChanged = true;
-//         }
-//         this.SetSiteDisplayPosition();
-    
-// }
 
     RemoveSite(){
         
@@ -771,7 +735,7 @@ gotoSiteDetails(SiteSourceId: number){
         this.SetSiteDisplayPositionInFindings();
         this.pageChanged = true;
     }
-    
+   
     
     SetSiteDisplayPosition() {
         let pos: number = 1
@@ -926,11 +890,17 @@ gotoSiteDetails(SiteSourceId: number){
     }
     
     goBack() {
+        //this.complianceFormId = params['complianceFormId'];
+        //this.qcAssignedTo = params['qcAssignedTo'];
         if (this.rootPath == null) {
             this._location.back();
         }
         else {
-            this.router.navigate([this.rootPath, { id: this.ComplianceFormId, page: this.page }]);
+            if (this.rootPath == 'edit-qc') {
+                this.router.navigate([this.rootPath, this.ComplianceFormId, this.qcAssignedTo]);
+            }else{
+                this.router.navigate([this.rootPath, { id: this.ComplianceFormId, page: this.page }]);
+            }
         }
 
     }
@@ -984,7 +954,7 @@ gotoSiteDetails(SiteSourceId: number){
    
      }
     
-    get diagnostic() { return JSON.stringify(this.formValueChanged); }
+    get diagnostic() { return JSON.stringify(this.rootPath); }
 
 
 }
