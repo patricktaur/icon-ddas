@@ -1,0 +1,479 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+
+			<div class="alert alert-info" *ngIf="loading">
+				<strong>Loading ...</strong>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<h3 class="align-left no-margin-top">
+						Findings for {{Investigator.Name}} (Role:{{Investigator.Role}})
+					</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<!-- {{diagnostic}} -->
+					<h3 class="align-left no-margin-top">
+						<!--<a target="_blank" [href]="Site.SiteUrl">
+                             Source: {{Site.DisplayPosition + "." + Site.SiteName}}
+							
+                        </a>-->
+						<div class="text-left" *ngIf="SiteHasUrl == true">
+							<a target="_blank" [href]="sanitize(Site.SiteUrl)">
+								Source: {{Site.DisplayPosition + "." + Site.SiteName}}
+							</a>
+						</div>
+						<div class="text-left" *ngIf="SiteHasUrl == false">
+							Source: {{Site.DisplayPosition + "." + Site.SiteName}}
+						</div>
+
+
+					</h3>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="row ">
+		<div class="col-lg-12 well">
+			<div>
+				<h4>
+					Summary:
+				</h4>
+				<div class="row">
+					<div class="col-lg-12  text-center" *ngIf="showMatchingRecordsAndAddManualFinding">
+						<table class="table table-bordered table-hover table-striped">
+							<thead>
+								<tr>
+									<th>Extracted On</th>
+									<th>Full Match</th>
+									<th>Partial Match</th>
+									<th>Single Match </th>
+									<th>Issues Identified</th>
+									<th>Review Completed</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr align="center">
+									<td>
+										<div *ngIf="!ExtractionModeIsManual">
+											<div *ngIf="!SiteSearchStatus.HasExtractionError">
+												<p>{{SiteSearchStatus.ExtractedOn | date: 'dd MMM yyyy'}} </p>
+											</div>
+											<div *ngIf="SiteSearchStatus.HasExtractionError">
+												<p>Data Extraction Errors </p>
+												<p> {{SiteSearchStatus.ExtractionErrorMessage}}</p>
+											</div>
+										</div>
+										<div *ngIf="ExtractionModeIsManual">
+											Extration Mode: Manual
+										</div>
+									</td>
+									<td>
+										<div *ngIf="!ExtractionModeIsManual">
+											<p *ngIf="SiteSearchStatus.FullMatchCount > 0">
+												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open();resetValues()" 
+													title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;
+											</a>
+											</p>
+											<p *ngIf="SiteSearchStatus.FullMatchCount == 0">
+												{{SiteSearchStatus.FullMatchCount}}
+											</p>
+										</div>
+										<div *ngIf="ExtractionModeIsManual">
+											--
+										</div>
+									</td>
+									<td>
+										<div *ngIf="!ExtractionModeIsManual">
+											<p *ngIf="SiteSearchStatus.PartialMatchCount > 0">
+												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open();resetValues()" 
+													title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												&nbsp;{{SiteSearchStatus.PartialMatchCount}}&nbsp;
+											</a>
+											</p>
+											<p *ngIf="SiteSearchStatus.PartialMatchCount == 0">
+												{{SiteSearchStatus.PartialMatchCount}}
+											</p>
+										</div>
+										<div *ngIf="ExtractionModeIsManual">
+											--
+										</div>
+									</td>
+									<td>
+										<div *ngIf="!ExtractionModeIsManual">
+											<p *ngIf="SiteSearchStatus.SingleMatchCount != '0' ">
+												<a style="text-decoration: underline;" (click)="LoadSingleMatchedRecords(); SingleMatchedRecordsModal.open(); resetValues()">
+												&nbsp;{{SiteSearchStatus.SingleMatchCount}}&nbsp;
+											</a>
+											</p>
+
+											<p *ngIf="SiteSearchStatus.SingleMatchCount == '0' ">
+												{{SiteSearchStatus.SingleMatchCount}}
+											</p>
+
+										</div>
+										<div *ngIf="ExtractionModeIsManual">
+											--
+										</div>
+									</td>
+									<td>
+										{{SiteSearchStatus.IssuesFound}}
+									</td>
+									<td>
+										{{SiteSearchStatus.ReviewCompleted | boolToYesNo}}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'findingEdit')" class="form-group col-md-6">
+				<div selected-finding-edit [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				</div>
+			</div>
+
+			<!-- Not required: -->
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'findingView')" class="form-group col-md-6">
+				<div selected-finding-view [Finding]="matchedRecord">
+				</div>
+			</div>
+
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierComments')" class="form-group col-md-6">
+				<div qc-verifier-comments [QCVerifierReview]="qcVerifierReview" [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
+				</div>
+			</div>
+
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierFinding')" class="form-group col-md-6">
+				<div qc-verifier-finding [QCVerifierReview]="qcVerifierReview" [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
+				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				</div>
+			</div>
+
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierFinding')" class="form-group col-md-6">
+				<div response-to-qc-verifier-finding [Finding]="matchedRecord">
+				</div>
+			</div>
+
+			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierComments')" class="form-group col-md-6">
+				<div response-to-qc-verifier-comment [Finding]="matchedRecord">
+				</div>
+			</div>
+
+			<!-- <div class="row ">
+				<div class="form-group col-md-6">
+			</div> -->
+			<!-- <div qc-verifier-comments [Finding]="matchedRecord"></div> -->
+			<div *ngIf="dividerGeneration(indexVal)">
+				<div style="clear:both;"></div>
+			</div>
+
+		</div>
+	</div>
+
+	<p align="center">
+
+		<button type="button" class="btn btn-primary" (click)="Add()" *ngIf="showMatchingRecordsAndAddManualFinding">Add Additional Findings</button>
+		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
+		 (click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
+		<br/>
+	</p>
+	<p align="center">
+		<label>Review Completed:</label>
+		<input type="checkbox" name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" [disabled]="disableOrHideMatchedRecordsAndFindings">
+	</p>
+	<p align="center">
+		<!--<label>Review completed: <input type="checkbox"  name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" ></label>-->
+		<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+		<!--<button type="button" class="btn btn-primary" (click)="Save()">Save</button>-->
+		<button type="button" class="btn btn-primary" (click)="SaveAndClose()">Save</button>
+		<!--<button type="button" class="btn btn-primary" (click)="TestSaveAndClose()">Test Save and Close</button>-->
+	</p>
+
+	<modal #MatchedRecordsModal>
+		<modal-header>
+			<h4>Matching records in site for investigator - <b>{{Investigator.Name}}</b></h4>
+		</modal-header>
+		<modal-body>
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+							<th class="col-md-2">Select</th>
+							<th class="col-md-8">Record Details</th>
+							<th class="col-md-2">Match Count</th>
+
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr *ngFor="let finding of MatchedSiteRecords">
+							<td>
+								<input type="checkbox" [(ngModel)]="finding.UISelected" />
+								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
+							</td>
+
+							<td style="align-left">
+
+								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
+
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
+									<!--{{SplitItem}}-->
+								</div>
+
+							</td>
+							<td>
+								{{finding.MatchCount}}
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="AddSelectedToFindings(); MatchedRecordsModal.close()">Add to Findings</button>
+			<button type="button" class="btn btn-default" (click)=" MatchedRecordsModal.close()">Cancel</button>
+		</modal-footer>
+
+	</modal>
+
+	<modal #FullMatchedRecordsModal>
+		<modal-header>
+			<h4>Full Matching records in site for investigator - <b>{{Investigator.Name}}</b></h4>
+
+		</modal-header>
+		<modal-body>
+			<div class="table-responsive">
+
+				<label for="filterPartialRecordDetails">Filter:</label>
+
+				<input type="text" class="form-control" name="filterFullRecordDetails" [(ngModel)]="filterFullRecordDetails">
+				<label>Found:{{filteredFullMatchCount}}</label>
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+							<th class="col-md-2">Select</th>
+							<th class="col-md-8">Record Details</th>
+
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr *ngFor="let finding of filteredFullMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: fullPageNumber, id:'full'}">
+							<td>
+								<input type="checkbox" [(ngModel)]="finding.UISelected" />
+								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
+
+							</td>
+
+							<td style="align-left">
+
+								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
+									<!--{{SplitItem}}-->
+								</div>
+
+							</td>
+
+
+						</tr>
+
+					</tbody>
+				</table>
+				<pagination-controls (pageChange)="fullPageNumber = $event" id="full"></pagination-controls>
+				<div class="row">
+					<div class="col-md-4">
+						<label for="RecordsPerPage">Records Per Page:</label>
+					</div>
+					<div class="col-md-2">
+						<select class="form-control" [(ngModel)]="recordsPerPage">
+							<option selected="selected">5</option>
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+					</div>
+					<div class="col-md-6">
+					</div>
+				</div>
+			</div>
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="AddSelectedToFindings(); FullMatchedRecordsModal.close()">Add to Findings</button>
+			<button type="button" class="btn btn-default" (click)=" FullMatchedRecordsModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>
+
+	<modal #PartialMatchedRecordsModal>
+		<modal-header>
+			<h4>Partially Matching records in site for investigator - <b>{{Investigator.Name}}</b></h4>
+		</modal-header>
+		<modal-body>
+			<div class="table-responsive">
+				<label for="filterPartialRecordDetails">Filter:</label>
+
+				<input type="text" class="form-control" name="filterPartialRecordDetails" [(ngModel)]="filterPartialRecordDetails">
+				<label>Found:{{filteredPartialMatchCount}}</label>
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+							<th class="col-md-2">Select</th>
+							<th class="col-md-8">Record Details</th>
+
+						</tr>
+					</thead>
+
+					<tbody>
+						<!-- <tr *ngFor="let finding of PartialMatchRecords | paginate: {itemsPerPage: 5, currentPage: partialPageNumber, id:'partial'}"> -->
+						<tr *ngFor="let finding of filteredPartialMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: partialPageNumber, id:'partial'}">
+							<td>
+								<input type="checkbox" [(ngModel)]="finding.UISelected" />
+								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
+							</td>
+
+							<td style="align-left">
+
+								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
+									<!--{{SplitItem}}-->
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pagination-controls (pageChange)="partialPageNumber = $event" id="partial"></pagination-controls>
+				<div class="row">
+					<div class="col-md-4">
+						<label for="RecordsPerPage">Records Per Page:</label>
+					</div>
+					<div class="col-md-2">
+						<select class="form-control" [(ngModel)]="recordsPerPage">
+							<option selected="selected">5</option>
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+					</div>
+					<div class="col-md-6">
+					</div>
+				</div>
+			</div>
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="AddSelectedToFindings(); PartialMatchedRecordsModal.close()">Add to Findings</button>
+			<button type="button" class="btn btn-default" (click)=" PartialMatchedRecordsModal.close()">Cancel</button>
+		</modal-footer>
+
+	</modal>
+
+	<modal #SingleMatchedRecordsModal>
+		<modal-header>
+			<h4>Single Match Records in site for investigator - <b>{{Investigator.Name}}</b></h4>
+		</modal-header>
+		<modal-body>
+			<div class="table-responsive">
+				<label for="filterRecordDetails">Filter:</label>
+				<input type="text" class="form-control" name="filterRecordDetails" [(ngModel)]="filterRecordDetails">
+				<label>Found:{{filteredSingleMatchCount}}</label>
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+						<tr>
+							<th class="col-md-2">Select</th>
+							<th class="col-md-8">Record Details</th>
+						</tr>
+					</thead>
+					<tbody>
+						<div class="alert alert-info" *ngIf="singleMatchRecordsLoading">
+							<strong>Loading ...</strong>
+						</div>
+
+						<tr *ngFor="let finding of filteredSingleMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: pageNumber, id:'single'}">
+							<td>
+								<input type="checkbox" [(ngModel)]="finding.UISelected" />
+								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
+							</td>
+
+							<td style="align-left">
+
+								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
+									<!--{{SplitItem}}-->
+								</div>
+
+							</td>
+
+
+						</tr>
+
+					</tbody>
+				</table>
+				<pagination-controls (pageChange)="pageNumber = $event" id="single"></pagination-controls>
+				<div class="row">
+					<div class="col-md-4">
+						<label for="RecordsPerPage">Records Per Page:</label>
+					</div>
+					<div class="col-md-2">
+						<select class="form-control" [(ngModel)]="recordsPerPage">
+							<option selected="selected">5</option>
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+					</div>
+					<div class="col-md-6">
+					</div>
+				</div>
+			</div>
+
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="AddSelectedSingleMatchRecords(); SingleMatchedRecordsModal.close()">Add to Findings</button>
+			<button type="button" class="btn btn-default" (click)="SingleMatchedRecordsModal.close()">Cancel</button>
+		</modal-footer>
+
+	</modal>
+
+
+	<modal #IgnoreChangesConfirmModal>
+		<modal-header>
+			<h4 class="modal-title">Changes not saved.</h4>
+		</modal-header>
+		<modal-body>
+			<p class="help-block">Changes </p>
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="setDeactivateValue(); IgnoreChangesConfirmModal.close()">Ignore Changes</button>
+			<button type="button" class="btn btn-default" (click)=" IgnoreChangesConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>
+
+	<modal #RemoveConfirmModal>
+		<modal-header>
+			<h4 class="modal-title">Confirm Removal</h4>
+		</modal-header>
+		<modal-body>
+			Remove Finding ?.<br> {{RecordToDeleteText}}
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close()">Remove</button>
+			<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>

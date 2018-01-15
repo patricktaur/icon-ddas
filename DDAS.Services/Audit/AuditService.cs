@@ -199,7 +199,7 @@ namespace DDAS.Services.AuditService
                             x.Id == finding.SiteSourceId).SiteShortName;
                         QCSummary.CategoryEnumString = 
                             GetCategoryEnumString(comment.CategoryEnum);
-
+                        QCSummary.FindingId = finding.Id; //Patrick 14Jan2017
                         if (finding.ReviewId == QCReview.RecId)
                         {
                             QCSummary.Type = "Finding";
@@ -223,6 +223,7 @@ namespace DDAS.Services.AuditService
                             QCSummaryList.Add(QCSummary);
                             break;
                         }
+                       
                     }
                 }
             }

@@ -61,6 +61,7 @@ import {CompFormLogicService} from "../../search/shared/services/comp-form-logic
     `]
 })
 export class EditQCComponent implements OnInit {
+    @ViewChild('FindingResponseModal') FindingResponseModal: ModalComponent;
     public Loading: boolean = false;
     private error: any;
     public qcId: string;
@@ -124,13 +125,21 @@ export class EditQCComponent implements OnInit {
         this.service.getCurrentReviewStatus(this.complianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
                 this.currentReviewStatus = item;
-                console.log('current review status: ', this.currentReviewStatus);
+                //console.log('current review status: ', this.currentReviewStatus);
             },
             error => {
 
             });
     }
 
+    // get QCVerifiedFindings(){
+    //     return this.complianceForm.Findings.find(
+    //         x => x.Comments[1].CategoryEnum == QCVer
+    //     )
+     
+       
+    // }
+    
     getQCVerifierComment() {
         var review = this.complianceForm.Reviews.find(x =>
             x.AssigendTo == this.authService.userName &&
@@ -197,6 +206,28 @@ export class EditQCComponent implements OnInit {
             return null;
     }
 
+    //Patrick:
+    get QCVerifierReview(){
+        return this.compFormLogic.getQCVerifierReview(this.complianceForm.Reviews);
+    }
+    
+    get QCVerifierReviewId(): string{
+        if (this.complianceForm){
+            return this.compFormLogic.getQCVerifierReviewId(this.complianceForm.Reviews);
+        }else{
+            return null;
+        }
+       
+    }
+
+    get QCVerifiedFindings(){
+        if (this.complianceForm){
+            return this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId);
+        }
+    }    
+
+    
+
     // get commentCategoryString(){
     //     if(this.complianceForm.Comments[0].CategoryEnum != null ||
     //     this.complianceForm.Comments[0].CategoryEnum != undefined){
@@ -216,14 +247,23 @@ export class EditQCComponent implements OnInit {
     //         return null;
     // }
 
+    //Patrick:    
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
-        return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
+       
+        //console.log(this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus));
+        if (selectedFinding){
+            return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
+        }else{
+            return false
+        }
     }
 
-    setFindingToEdit(findingToEdit: Finding){
+    openFindingDialog(qcSummary: any){
+        console.log("FindingId" + qcSummary.FindingId);
+        let findingToEdit = this.complianceForm.Findings.find(x => x.Id = qcSummary.FindingId)
         this.findingRecordToEdit =  findingToEdit;
+        this.FindingResponseModal.open();
     }
-    
     openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
         //this.qcAssignedTo
@@ -258,8 +298,9 @@ export class EditQCComponent implements OnInit {
     }
 
     goBack() {
-        this._location.back();
+        //this._location.back();
+        this.router.navigate(["qc"]);
     }
 
-    get diagnostic() { return JSON.stringify(this.findingRecordToEdit); }
+    get diagnostic() { return JSON.stringify(this.findingRecordToEdit) }
 }

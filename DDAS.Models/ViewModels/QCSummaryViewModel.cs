@@ -15,5 +15,6 @@ namespace DDAS.Models.ViewModels
         public string Comment { get; set; }
         public string ResponseToQC { get; set; }
         public string Type { get; set; }
+        public Guid? FindingId { get; set; } //Patrick 14Jan2018
     }
 }

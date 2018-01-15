@@ -5,15 +5,15 @@ import {
     ComplianceFormA, InvestigatorSearched, SiteSourceToSearch,
     SiteSource, Finding, SiteSearchStatus, UpdateFindigs,
     ReviewerRoleEnum, ReviewStatusEnum, Comment, Review, CurrentReviewStatusViewModel
-} from './search.classes';
-import { SearchService } from './search-service';
-import { AuthService } from '../auth/auth.service';
+} from '../../../search/search.classes';
+import { SearchService } from '../../../search/search-service';
+import { AuthService } from '../../../auth/auth.service';
 import { Location } from '@angular/common';
-import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
+
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'findings.component.html'
+    templateUrl: 'findings-page.component.html'
 })
 export class FindingsComponent implements OnInit {
     public CompForm: ComplianceFormA = new ComplianceFormA;
@@ -47,7 +47,7 @@ export class FindingsComponent implements OnInit {
     public qcReview: Review;
     public currentReviewStatus: CurrentReviewStatusViewModel;
 
-    @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
+   
     private canDeactivateValue: boolean;
     private highlightFilter: string;
     constructor(
@@ -377,61 +377,7 @@ export class FindingsComponent implements OnInit {
     //     }
     // }
 
-    selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
-        switch (componentName) {
-            case "findingEdit":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
-                    return true;
-                else
-                    return false;
-            case "qcVerifierComments":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
-                    selectedFinding.ReviewId != this.currentReviewStatus.QCVerifierRecId)
-                    return true;
-                else
-                    return false;
-            case "qcVerifierFinding":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
-                    selectedFinding.ReviewId == this.currentReviewStatus.QCVerifierRecId)
-                    return true;
-                else
-                    return false;
-            case "responseToQCVerifierComments":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId == this.currentReviewStatus.ReviewerRecId)
-                    return true;
-                else
-                    return false;
-            case "responseToQCVerifierFinding":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId != this.currentReviewStatus.ReviewerRecId)
-                    return true;
-                else
-                    return false;
-            case "findingView":
-                // return true;
-                if (this.currentReviewStatus != undefined &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
-                    return true;
-                else
-                    return false;
-            default: return false;
-        }
-    }
+    
 
     Add() {
         let finding = new Finding;
