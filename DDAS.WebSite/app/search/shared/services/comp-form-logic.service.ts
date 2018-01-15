@@ -3,9 +3,13 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../../../auth/auth.service';
 //import { SearchService } from '../../search-service';
 import {
+<<<<<<< HEAD
     ComplianceFormA, Finding, CurrentReviewStatusViewModel, 
     ReviewStatusEnum, Review, ReviewerRoleEnum, ComplianceForm,
     CommentCategoryEnum
+=======
+    Finding,CurrentReviewStatusViewModel
+>>>>>>> comp-form-tabs-corrections
 } from '../../search.classes';
 import { reverse } from 'dns';
 
@@ -13,6 +17,7 @@ import { reverse } from 'dns';
 export class CompFormLogicService {
     public currentReviewStatus: CurrentReviewStatusViewModel;
     constructor(
+<<<<<<< HEAD
         private authService: AuthService,
         //private service: SearchService,
     ) { }
@@ -26,54 +31,103 @@ export class CompFormLogicService {
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     (reviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
+=======
+        private authService: AuthService, ReviewStatusEnum
+    ) { }
+
+    selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
+        switch (componentName) {
+            case "findingEdit":
+                if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
+>>>>>>> comp-form-tabs-corrections
                     return true;
                 else
                     return false;
             case "qcVerifierComments":
+<<<<<<< HEAD
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
                     selectedFinding.ReviewId != reviewStatus.QCVerifierRecId)
+=======
+                if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
+                    selectedFinding.ReviewId != this.currentReviewStatus.QCVerifierRecId)
+>>>>>>> comp-form-tabs-corrections
                     return true;
                 else
                     return false;
             case "qcVerifierFinding":
+<<<<<<< HEAD
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
                     selectedFinding.ReviewId == reviewStatus.QCVerifierRecId)
+=======
+                if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
+                    selectedFinding.ReviewId == this.currentReviewStatus.QCVerifierRecId)
+>>>>>>> comp-form-tabs-corrections
                     return true;
                 else
                     return false;
             case "responseToQCVerifierComments":
+<<<<<<< HEAD
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId == reviewStatus.ReviewerRecId)
+=======
+                if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
+                    selectedFinding.ReviewId == this.currentReviewStatus.ReviewerRecId)
+>>>>>>> comp-form-tabs-corrections
                     return true;
                 else
                     return false;
             case "responseToQCVerifierFinding":
+<<<<<<< HEAD
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId != reviewStatus.ReviewerRecId)
+=======
+                if (this.currentReviewStatus != undefined &&
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
+                    selectedFinding.ReviewId != this.currentReviewStatus.ReviewerRecId)
+>>>>>>> comp-form-tabs-corrections
                     return true;
                 else
                     return false;
             case "findingView":
                 // return true;
+<<<<<<< HEAD
                 if (reviewStatus != undefined &&
                     (reviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
+=======
+                if (this.currentReviewStatus != undefined &&
+                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
+                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
+                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
+>>>>>>> comp-form-tabs-corrections
                     return true;
                 else
                     return false;
             default: return false;
         }
     }
+<<<<<<< HEAD
 
     //Review
     getQCVerifierReview(reviews: Review[]) : Review{
@@ -165,5 +219,7 @@ export class CompFormLogicService {
             return null;
     }
 
+=======
+>>>>>>> comp-form-tabs-corrections
 
 }
