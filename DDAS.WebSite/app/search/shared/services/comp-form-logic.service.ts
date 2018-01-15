@@ -17,8 +17,6 @@ export class CompFormLogicService {
         //private service: SearchService,
     ) { }
 
-   
-
     CanDisplayFindingComponent(selectedFinding: Finding, componentName: string, reviewStatus: CurrentReviewStatusViewModel) {
         switch (componentName) {
             case "findingEdit":
