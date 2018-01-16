@@ -23,7 +23,8 @@ import { FindingsComponent } from './findings.component'
 
 
 import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
-import {InstituteFindingsComponent} from './institute-findings.component' 
+import {InstituteFindingsComponent} from './institute-findings.component';
+import { CompletedICSFComponent } from './completed-icsf.component';
 
 import { AuthGuard } from '../auth/auth-guard.service';
 
@@ -152,9 +153,11 @@ const searchRoutes: Routes = [
     ]
   }, 
   {
-    path: 'output-excel', component: SearchComponent
-    , canActivate: [AuthGuard]
-  }, 
+    path: 'output-excel', component: SearchComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'completed-icsf', component: CompletedICSFComponent, canActivate: [AuthGuard]
+  }   
 ];
 
 export const searchRouting: ModuleWithProviders = RouterModule.forChild(searchRoutes);

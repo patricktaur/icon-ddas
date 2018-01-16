@@ -1332,20 +1332,21 @@ namespace DDAS.Services.Search
             }
 
             var IssueFindings = form.Findings.Where(x => x.IsAnIssue);
-            int Count = 0;
+            int FindingsCorrectedOrAcceptedCount = 0;
             foreach (Finding finding in IssueFindings)
             {
                 var comment = finding.Comments.Find(x => 
-                x.CategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
-                x.CategoryEnum == CommentCategoryEnum.Accepted);
+                x.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                x.ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
 
                 if (comment != null)
-                    Count += 1;
+                    FindingsCorrectedOrAcceptedCount += 1;
             }
 
-            if(IssueFindings.Count() == Count)
+            if(IssueFindings.Count() == FindingsCorrectedOrAcceptedCount)
             {
-                var review = form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCCorrectionInProgress);
+                var review = form.Reviews.Find(x => 
+                x.Status == ReviewStatusEnum.QCCorrectionInProgress);
 
                 if(review != null)
                 {
