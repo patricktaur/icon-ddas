@@ -222,7 +222,10 @@ export class EditQCComponent implements OnInit {
 
     get QCVerifiedFindings(){
         if (this.complianceForm){
-            return this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId);
+            return this.complianceForm.Findings.filter(x => x.Comments != undefined &&  x.Comments.length > 0 && x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
+            
+            //this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId)
+            //.filter(x => x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
         }
     }
 
@@ -251,9 +254,10 @@ export class EditQCComponent implements OnInit {
     }
 
     getcommentCategory(categoryEnum: CommentCategoryEnum){
-        
         return CommentCategoryEnum[categoryEnum];
- 
+    }
+    getReviewerCategory(categoryEnum: CommentCategoryEnum){
+        return CommentCategoryEnum[categoryEnum];
     }
 
     getSourceName(finding: Finding){

@@ -24,14 +24,7 @@ export class QCVerifierCommentsComponent implements OnInit {
     }
 
     get getQCVerifierComment(){
-<<<<<<< HEAD
-        
-        return this.Finding.Comments[1];
-        // return this.Finding.Comments.find(x => 
-        //     x.ReviewId == this.QCVerifierReview.RecId);
-=======
         return this.Finding.Comments[0];
->>>>>>> Development
     }
 
     Split = (RecordDetails: string) => {

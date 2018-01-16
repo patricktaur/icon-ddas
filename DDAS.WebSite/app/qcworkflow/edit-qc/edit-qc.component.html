@@ -42,7 +42,7 @@
 						</div>
 					</div>
 
-					<h4>Finding Summary:</h4>
+					<!-- <h4>Finding Summary:</h4>
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
@@ -85,10 +85,10 @@
 								</td>
 							</tr>
 						</tbody>
-					</table>
+					</table> -->
 
 
-					<h4>Finding Summary: AA</h4>
+					<h4>Finding Summary: </h4>
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
@@ -108,25 +108,18 @@
 								</td>
 								<td class="text-left">
 									{{getSourceName(item)}}
-									<!-- {{item.SourceName}} -->
 								</td>
 								<td class="text-left">
-									<!-- {{item.Type}} -->
 									{{getType(item)}}
 								</td>
 								<td class="text-left">
-									{{getcommentCategory(item.Comments[1].CategoryEnum)}}
-									<!-- {{item.CategoryEnumString}} -->
-									
-									<!-- {{item.Comments[0].CategoryEnum}} -->
+									{{getcommentCategory(item.Comments[0].CategoryEnum)}}
 								</td>
 								<td class="text-left">
-									<!-- {{item.Comment}} -->
-									{{item.Comments[1].FindingComment}}
+									{{item.Comments[0].FindingComment}}
 								</td>
 								<td class="text-left">
-									<!-- {{item.ResponseToQC}} -->
-									{{item.Comments[1].CategoryEnum}}
+									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
 									
 								</td>
 								<td>
@@ -169,12 +162,12 @@
 		<!-- XXXXXXXXXXXXXXXXX XXXX:{{diagnostic}} -->
 		<br>
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierComments')" >
-			<div qc-verifier-comments [QCVerifierReview]="qcVerifierReview" [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="findingRecordToEdit">
+			<div qc-verifier-comments  [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="findingRecordToEdit">
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierFinding')" >
-				<div qc-verifier-finding [QCVerifierReview]="qcVerifierReview" [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="findingRecordToEdit"
+				<div qc-verifier-finding  [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="findingRecordToEdit"
 				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 				</div>
 			</div>

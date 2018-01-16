@@ -14,8 +14,8 @@ export class ResponseToQCVerifierCommentComponent implements OnInit {
     private pageChanged: boolean = false;
     
     ngOnInit(){
-        if(this.Finding.Comments[0].CategoryEnum == 0)
-            this.Finding.Comments[0].ReviewerCategoryEnum = 5; //CorrectionPgending
+        // if(this.Finding.Comments[0].CategoryEnum == 0)
+        //     this.Finding.Comments[0].ReviewerCategoryEnum = 5; //CorrectionPgending
     }
 
     formValueChanged(){
