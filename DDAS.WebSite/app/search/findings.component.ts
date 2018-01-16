@@ -4,10 +4,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 import {
     ComplianceFormA, InvestigatorSearched, SiteSourceToSearch,
     SiteSource, Finding, SiteSearchStatus, UpdateFindigs,
-    ReviewerRoleEnum, ReviewStatusEnum, Comment, Review, CurrentReviewStatusViewModel
+    ReviewerRoleEnum, ReviewStatusEnum, Comment, Review, 
+    CurrentReviewStatusViewModel, CommentCategoryEnum
 } from './search.classes';
 import { SearchService } from './search-service';
 import { AuthService } from '../auth/auth.service';
+import { CompFormLogicService } from './shared/services/comp-form-logic.service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
@@ -56,7 +58,8 @@ export class FindingsComponent implements OnInit {
         private _location: Location,
         private service: SearchService,
         private sanitizer: DomSanitizer,
-        private authService: AuthService
+        private authService: AuthService,
+        private compFormLogic: CompFormLogicService
     ) { }
 
     ngOnInit() {
@@ -84,7 +87,7 @@ export class FindingsComponent implements OnInit {
             if (!review)
                 return false;
             else {
-                // this.qcReview = this.qcVerifierReview;
+                //this.qcReview = this.qcVerifierReview;
                 return true;
             }
         }
@@ -278,6 +281,7 @@ export class FindingsComponent implements OnInit {
                 //return this.SiteSources.filter(x => x.SiteUrl.indexOf(this.filterSiteURL.trim() ) > 0);
             }
             else {
+                this.filterFullRecordDetails = "";
                 return this.FullMatchRecords;
             }
         }
@@ -368,68 +372,12 @@ export class FindingsComponent implements OnInit {
         }
     }
 
-    // get currentReview() {
-    //     if (this.CompForm) {
-    //         if (this.CompForm.Reviews != null ||
-    //             this.CompForm.Reviews.length > 0) {
-    //             return this.CompForm.Reviews[this.CompForm.Reviews.length - 1];
-    //         }
-    //     }
-    // }
-
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
-        switch (componentName) {
-            case "findingEdit":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
-                    return true;
-                else
-                    return false;
-            case "qcVerifierComments":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
-                    selectedFinding.ReviewId != this.currentReviewStatus.QCVerifierRecId)
-                    return true;
-                else
-                    return false;
-            case "qcVerifierFinding":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
-                    selectedFinding.ReviewId == this.currentReviewStatus.QCVerifierRecId)
-                    return true;
-                else
-                    return false;
-            case "responseToQCVerifierComments":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId == this.currentReviewStatus.ReviewerRecId)
-                    return true;
-                else
-                    return false;
-            case "responseToQCVerifierFinding":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId != this.currentReviewStatus.ReviewerRecId)
-                    return true;
-                else
-                    return false;
-            case "findingView":
-                // return true;
-                if (this.currentReviewStatus != undefined &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
-                    return true;
-                else
-                    return false;
-            default: return false;
+        if (selectedFinding) {
+            return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus);
+        }
+        else {
+            return false;
         }
     }
 
@@ -455,8 +403,7 @@ export class FindingsComponent implements OnInit {
 
     get currentLoggedInUserReview() {
         if (this.CompForm) {
-            return this.CompForm.Reviews.find(x =>
-                x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase());
+            return this.compFormLogic.getCurrentLoggedInUserReview(this.CompForm);
         }
         else
             return null;
@@ -487,17 +434,18 @@ export class FindingsComponent implements OnInit {
                 selectedFinding.Comments == undefined ||
                 selectedFinding.Comments.length == 0) {
                 console.log('adding comment collection');
-                let comments = new Array<Comment>();
+                selectedFinding.Comments = new Array<Comment>();
                 let comment = new Comment();
-                comment.ReviewId = review.RecId;
-                comment.CategoryEnum = 0;
-                comments.push(comment);
-                let emptyComment = new Comment();
-                emptyComment.CategoryEnum = 0;
-                emptyComment.ReviewId = null;
-                comments.push(emptyComment);
+                // comment.ReviewId = review.RecId;
+                comment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                comment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
+                // comments.push(comment);
+                // let emptyComment = new Comment();
+                // emptyComment.CategoryEnum = 0;
+                // emptyComment.ReviewId = null;
+                // comments.push(emptyComment);
                 selectedFinding.Comments.push(comment);
-                selectedFinding.Comments.push(emptyComment);
+                // selectedFinding.Comments.push(emptyComment);
             }
         }
     }
@@ -534,6 +482,7 @@ export class FindingsComponent implements OnInit {
         if(this.currentReviewStatus && 
             (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted ||
             this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
+            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewCompleted ||
             this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress ||
             this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress))
             return true;
@@ -693,6 +642,8 @@ export class FindingsComponent implements OnInit {
     resetValues() {
         this.recordsPerPage = 5;
         this.filterRecordDetails = "";
+        this.filterFullRecordDetails = "";
+        this.filterPartialRecordDetails = "";
     }
 
     sanitize(url: string) {

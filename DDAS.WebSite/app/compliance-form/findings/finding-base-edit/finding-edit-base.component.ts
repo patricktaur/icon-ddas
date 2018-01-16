@@ -15,11 +15,6 @@ export class FindingEditBaseComponent implements OnInit {
     private pageChanged: boolean = false;
     
     ngOnInit(){
-        var reviewerComment = this.Finding.Comments.find(x =>
-            x.ReviewId == this.Finding.ReviewId);
-
-            if(reviewerComment != undefined)
-                reviewerComment.CategoryEnum = CommentCategoryEnum.CorrectionPending;
     }
 
     formValueChanged(){

@@ -9,20 +9,12 @@ import { ComplianceFormA, SiteSource, Finding, Review, CommentCategoryEnum } fro
 })
 export class QCVerifierFindingComponent implements OnInit  {
     @Input() Finding: Finding;
-    @Input() QCVerifierReview: Review;
     @Input() ReviewerRecId: string;
     @Output() Remove = new EventEmitter();
     
     private commentEnum: CommentCategoryEnum;
 
     ngOnInit(){
-        this.Finding.Comments[1].ReviewId = this.ReviewerRecId;
-
-        var reviewerComment = this.Finding.Comments.find(x =>
-            x.ReviewId != this.Finding.ReviewId);
-
-            if(reviewerComment != undefined)
-                reviewerComment.CategoryEnum = CommentCategoryEnum.CorrectionPending;        
     }
 
     RemoveClicked(){
@@ -33,13 +25,6 @@ export class QCVerifierFindingComponent implements OnInit  {
     
     get getQCVerifierComment(){
         return this.Finding.Comments[0];
-        // if(this.QCVerifierReview){
-        //     return this.Finding.Comments.find(x => 
-        //     x.ReviewId == this.QCVerifierReview.RecId);
-        // }
-        // else {
-        //     return CommentCategoryEnum.Minor;
-        // }
     }
 
     formValueChanged(){
@@ -64,5 +49,5 @@ export class QCVerifierFindingComponent implements OnInit  {
         }
     }
 
-    get diagnostic() { return JSON.stringify(this.QCVerifierReview); }
+    get diagnostic() { return JSON.stringify(this.Finding); }
 }

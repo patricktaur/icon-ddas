@@ -17,14 +17,13 @@ export class CompFormLogicService {
         //private service: SearchService,
     ) { }
 
-   
-
     CanDisplayFindingComponent(selectedFinding: Finding, componentName: string, reviewStatus: CurrentReviewStatusViewModel) {
         switch (componentName) {
             case "findingEdit":
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     (reviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
+                    reviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewCompleted || 
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
                     return true;
                 else
@@ -49,10 +48,16 @@ export class CompFormLogicService {
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
+<<<<<<< HEAD
                     selectedFinding.ReviewId == reviewStatus.ReviewerRecId)
                     {
                         return true;
                     }
+=======
+                    selectedFinding.ReviewId == reviewStatus.ReviewerRecId &&
+                    selectedFinding.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
+                    return true;
+>>>>>>> Development
                 else
                     {
                        
@@ -175,5 +180,155 @@ export class CompFormLogicService {
             return null;
     }
 
+    getCurrentLoggedInUserReview(CompForm: ComplianceFormA) {
+        return CompForm.Reviews.find(x =>
+            x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase());
+    }
 
+    getReviewStatus(currentReviewStatus: number) {
+        switch(currentReviewStatus) {
+            case ReviewStatusEnum.SearchCompleted: return "Search Completed";
+            case ReviewStatusEnum.ReviewInProgress: return "Review In Progress";
+            case ReviewStatusEnum.ReviewCompleted: return "Review Completed";
+            case ReviewStatusEnum.Completed: return "Completed";
+            case ReviewStatusEnum.QCRequested: return "QC Requested";
+            case ReviewStatusEnum.QCInProgress: return "QC In Progress";
+            case ReviewStatusEnum.QCFailed: return "QC Failed";
+            case ReviewStatusEnum.QCPassed: return "QC Passed";
+            case ReviewStatusEnum.QCCorrectionInProgress: return "QC Correction In Progress";
+            default: "";
+        }
+    }
+
+    isLoggedInUserReviewerAndCanSaveForm(CompForm: ComplianceFormA){
+        if (CompForm.Reviews.length > 0) {
+            var review = CompForm.Reviews.find(x =>
+                x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+                x.ReviewerRole == ReviewerRoleEnum.Reviewer && 
+                (x.Status == ReviewStatusEnum.SearchCompleted ||
+                 x.Status == ReviewStatusEnum.ReviewInProgress ||
+                 x.Status == ReviewStatusEnum.ReviewCompleted));
+
+            if (!review)
+                return false;
+            else
+                return true;
+        }
+    }
+
+     canDisplayComponent(CompForm: ComplianceFormA, componentName: string){
+        // return true;
+        // console.log(this.CompForm.CurrentReviewStatus);
+        switch(componentName){
+            case "generalEdit":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted) &&
+                    CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase())
+                    return true;
+                else
+                    return false;
+            // case "generalEditQC":
+            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
+            //         return true;
+            //     else
+            //         return false;
+            // case "generalEditResponseToQC":
+            //     if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress &&
+            //         this.isGeneralQCCommentAdded)
+            //         return true;
+            //     else
+            //         return false;
+            case "generalView":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
+                    return true;
+                else
+                    return false;
+            case "instituteEdit":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted) &&
+                    CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase())
+                    return true;
+                else
+                    return false;
+            case "instituteView":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
+                    return true;
+                else
+                    return false;
+            case "investigatorEdit":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted) &&
+                    CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase())                    
+                    return true;
+                else
+                    return false;
+            case "investigatorView":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
+                    return true;
+                else
+                    return false;
+            case "mandatorySitesEdit":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted) &&
+                    CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase())                    
+                    return true;
+                else
+                    return false;
+            case "mandatorySitesView":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
+                    return true;
+                else
+                    return false;
+            case "additionalSitesEdit":
+                if((CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted) &&
+                    CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase())                    
+                    return true;
+                else
+                    return false;
+            case "additionalSitesView":
+                return true;
+            case "findingsEdit":
+                // if(this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)
+                    return true;
+                // else
+                //     return false;
+            case "searchedByView": return true;
+            case "summaryView": return true;
+
+            default: return true;
+        }
+    }
+
+    unHideReviewCompletedSiteCheckBox(CompForm: ComplianceFormA){
+        if(CompForm && 
+            (CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }    
 }

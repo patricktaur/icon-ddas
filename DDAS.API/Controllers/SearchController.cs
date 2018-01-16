@@ -367,32 +367,6 @@ namespace DDAS.API.Controllers
                         Review.Status = ReviewStatusEnum.ReviewInProgress;
                         _UOW.ComplianceFormRepository.UpdateCollection(compForm);
                     }
-
-                    var QCFailedReview = compForm.Reviews.Find(x =>
-                        x.Status == ReviewStatusEnum.QCFailed);
-
-                    var QCCorrectionReview = compForm.Reviews.Find(x =>
-                        x.Status == ReviewStatusEnum.QCCorrectionInProgress);
-
-                    var CompletedReview = compForm.Reviews.Find(x =>
-                        x.Status == ReviewStatusEnum.Completed);
-
-                    if (QCFailedReview != null &&
-                        QCCorrectionReview == null &&
-                        CompletedReview == null &&
-                        compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
-                    {
-                        compForm.Reviews.Add(new Review()
-                        {
-                            RecId = Guid.NewGuid(),
-                            AssigendTo = QCFailedReview.AssignedBy,
-                            AssignedBy = QCFailedReview.AssigendTo,
-                            StartedOn = DateTime.Now,
-                            Status = ReviewStatusEnum.QCCorrectionInProgress,
-                            PreviousReviewId = QCFailedReview.RecId
-                        });
-                        _UOW.ComplianceFormRepository.UpdateCollection(compForm);
-                    }
                 }
                 return Ok(compForm);
             }

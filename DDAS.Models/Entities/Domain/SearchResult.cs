@@ -1012,6 +1012,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? AddedOn { get; set; }
         public DateTime? CorrectedOn { get; set; }
         public CommentCategoryEnum CategoryEnum { get; set; }
+        public CommentCategoryEnum ReviewerCategoryEnum { get; set; }
     }
 
     public class UpdateFindigs

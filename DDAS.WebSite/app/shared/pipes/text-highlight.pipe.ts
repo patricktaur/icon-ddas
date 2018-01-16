@@ -17,7 +17,11 @@ export class HighlightPipe implements PipeTransform {
     var regex = new RegExp(pattern, 'gi');
 
     //return search ? text.replace(regex, (match) => `<span style=\'background-color: yellow;\'>${match}</span>`) : text;
-    return search ? text.replace(regex, (match) => `<b><mark>${match}</mark></b>`) : text;
+    if (text != undefined){
+      return search ? text.replace(regex, (match) => `<b><mark>${match}</mark></b>`) : text;
+    }else{
+      return null;
+    }
   }
 
 

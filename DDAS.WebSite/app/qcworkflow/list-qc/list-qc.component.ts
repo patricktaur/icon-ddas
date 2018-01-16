@@ -6,6 +6,7 @@ import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { IMyDate, IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 import { QCService } from '../qc-service';
+import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service";
 //import { Http, Response, Headers , RequestOptions } from '@angular/http';
 
 @Component({
@@ -34,7 +35,8 @@ export class ListQCComponent implements OnInit {
         private router: Router,
         private configService: ConfigService,
         private authService: AuthService,
-        private auditService: QCService
+        private auditService: QCService,
+        private compFormLogic: CompFormLogicService
     ) { }
 
     ngOnInit() {
@@ -48,17 +50,7 @@ export class ListQCComponent implements OnInit {
     }
 
     status(statusEnum: number){
-        switch(statusEnum){
-            case ReviewStatusEnum.SearchCompleted: return "Search Completed";
-            case ReviewStatusEnum.ReviewInProgress: return "Review in progress";
-            case ReviewStatusEnum.ReviewCompleted: return "Review completed";
-            case ReviewStatusEnum.Completed: return "Completed";
-            case ReviewStatusEnum.QCRequested: return "QC Requested";
-            case ReviewStatusEnum.QCInProgress: return "QC in progress";
-            case ReviewStatusEnum.QCFailed: return "QC Failed";
-            case ReviewStatusEnum.QCPassed: return "QC Passed";
-            default: "";
-        }
+        return this.compFormLogic.getReviewStatus(statusEnum);
     }
 
     get filterQCByUserName() {

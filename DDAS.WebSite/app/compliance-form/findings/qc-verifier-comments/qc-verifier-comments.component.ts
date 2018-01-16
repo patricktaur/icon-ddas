@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { ComplianceFormA, SiteSource, Finding, Review } from '../../../search/search.classes';
+import { ComplianceFormA, SiteSource, Finding, Review, CommentCategoryEnum } from '../../../search/search.classes';
 
 @Component({
     selector: '[qc-verifier-comments]',
@@ -9,13 +9,14 @@ import { ComplianceFormA, SiteSource, Finding, Review } from '../../../search/se
 })
 export class QCVerifierCommentsComponent implements OnInit {
     @Input() Finding: Finding;
-    @Input() QCVerifierReview: Review;
     @Input() QCVerifierRecId: string;
 
     private pageChanged: boolean = false;
     
     ngOnInit(){
-        this.Finding.Comments[1].ReviewId = this.QCVerifierRecId;
+        if(this.QCVerifierRecId){
+            this.Finding.Comments[0].ReviewId = this.QCVerifierRecId;
+        }
     }
 
     formValueChanged(){
@@ -23,10 +24,14 @@ export class QCVerifierCommentsComponent implements OnInit {
     }
 
     get getQCVerifierComment(){
+<<<<<<< HEAD
         
         return this.Finding.Comments[1];
         // return this.Finding.Comments.find(x => 
         //     x.ReviewId == this.QCVerifierReview.RecId);
+=======
+        return this.Finding.Comments[0];
+>>>>>>> Development
     }
 
     Split = (RecordDetails: string) => {

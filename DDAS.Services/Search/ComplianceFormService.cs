@@ -724,17 +724,13 @@ namespace DDAS.Services.Search
                         finding.Id = Guid.NewGuid();
                     }
 
-                    if(finding.Comments.Count > 0 &&
-                        finding.Comments[0].ReviewId == null)
-                    {
-                        finding.Comments = new List<Comment>();
-                    }
-
                     foreach (Comment comment in finding.Comments)
                     {
-                        if (comment != null && comment.FindingComment != null)
+                        if (comment != null && comment.CategoryEnum != CommentCategoryEnum.NotApplicable)
                             comment.AddedOn = DateTime.Now;
-                        if(comment != null && comment.CategoryEnum == CommentCategoryEnum.CorrectionCompleted)
+                        if(comment != null && 
+                            (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                            comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
                             comment.CorrectedOn = DateTime.Now;
                         }
@@ -1320,12 +1316,10 @@ namespace DDAS.Services.Search
             if (!form.IsReviewCompleted)
             {
                 var Review = form.Reviews.First();
-
                 if (Review == null)
                     throw new Exception("Review Collection cannot be empty");
                 else
                     Review.Status = ReviewStatusEnum.ReviewInProgress;
-
             }
             else
             {
@@ -1358,7 +1352,6 @@ namespace DDAS.Services.Search
                     review.Status = ReviewStatusEnum.Completed;
                 }
             }
-
             return form;
         }
 

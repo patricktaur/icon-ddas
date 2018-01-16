@@ -14,8 +14,8 @@ export class ResponseToQCVerifierFindingComponent implements OnInit {
     private pageChanged: boolean = false;
     
     ngOnInit(){
-        // if( this.Finding.Comments[1].CategoryEnum == 0)
-        //     this.Finding.Comments[1].CategoryEnum = 5;
+        if( this.Finding.Comments[0].CategoryEnum == 0)
+            this.Finding.Comments[0].CategoryEnum = 5; //CorrectionPending
     }
 
     formValueChanged(){
@@ -31,51 +31,9 @@ export class ResponseToQCVerifierFindingComponent implements OnInit {
         return middleNames;
     }
 
-    get getReviewerComment(){
-        //this.Finding.Comments[1].CategoryEnum = 5;
-        // if (this.Finding){
-        //     return this.Finding.Comments[1];
-        // }else{
-        //     return null;
-        // }
-        if (this.Finding){
-            if (this.Finding.Comments){
-                return this.Finding.Comments[1].FindingComment;
-            }else{
-                return null;
-            }
-        }else{
-            return null;
-        }
-        
-    }
-
-
     get getQCVerifierComment(){
-        if (this.Finding){
-            if (this.Finding.Comments){
-                return this.Finding.Comments[0];
-            }else{
-                return null;
-            }
-            
-        }else{
-            return null;
-        }
-
+        return this.Finding.Comments[0];
     }
-
-get ReviwerCategoryEnum(){
-    if (this.Finding){
-        if (this.Finding.Comments){
-            return this.Finding.Comments[1].CategoryEnum;
-        }else{
-            return null;
-        }
-    }else{
-        return null;
-    }
-}
 
     dividerGeneration(indexVal: number) {
         if ((indexVal + 1) % 2 == 0) {
