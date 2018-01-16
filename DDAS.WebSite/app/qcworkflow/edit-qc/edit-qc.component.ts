@@ -217,7 +217,6 @@ export class EditQCComponent implements OnInit {
         }else{
             return null;
         }
-       
     }
 
     get QCVerifiedFindings(){
