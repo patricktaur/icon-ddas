@@ -51,7 +51,7 @@ export class FindingsComponent implements OnInit {
 
     @ViewChild('IgnoreChangesConfirmModal') IgnoreChangesConfirmModal: ModalComponent;
     private canDeactivateValue: boolean;
-    private highlightFilter: string;
+    private highlightFilter: string ;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
