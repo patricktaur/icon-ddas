@@ -252,6 +252,8 @@ export class EditQCComponent implements OnInit {
        
         //console.log(this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus));
         if (selectedFinding){
+            //console.log("selected finding:" + JSON.stringify(selectedFinding));
+            //console.log("this.currentReviewStatus:" + JSON.stringify(this.currentReviewStatus));
             return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
         }else{
             return false
@@ -260,9 +262,40 @@ export class EditQCComponent implements OnInit {
 
     openFindingDialog(qcSummary: any){
         console.log("FindingId" + qcSummary.FindingId);
-        let findingToEdit = this.complianceForm.Findings.find(x => x.Id = qcSummary.FindingId)
+        let findingToEdit = this.complianceForm.Findings.find(x => x.Id == qcSummary.FindingId);
         this.findingRecordToEdit =  findingToEdit;
         this.FindingResponseModal.open();
+    }
+    
+    openFindingDialogA(finding: Finding){
+       
+        this.findingRecordToEdit =  finding;
+        this.FindingResponseModal.open();
+    }
+
+    getcommentCategory(categoryEnum: CommentCategoryEnum){
+        
+        return CommentCategoryEnum[categoryEnum];
+ 
+    }
+
+    getSourceName(finding: Finding){
+        if (finding){
+            return this.complianceForm.SiteSources.find( x=> x.Id == finding.SiteSourceId).SiteShortName;
+        }
+        //return "";
+    }
+
+    getType(finding: Finding){
+        if (finding ){
+            if (finding.ReviewId == this.QCVerifierReview.RecId){
+                return "Finding";
+            }else{
+                return "Comment";
+            }
+        }else{
+            return "--";
+        }
     }
     openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
@@ -270,7 +303,16 @@ export class EditQCComponent implements OnInit {
         this.router.navigate(['comp-form-edit', this.complianceForm.RecId, {rootPath:'edit-qc', qcAssignedTo:this.qcAssignedTo}], { relativeTo: this.route.parent });
     }
 
-    save() {
+    Save() {
+
+        //this.service.saveReviewCompletedComplianceForm(this.complianceForm);
+
+        this.service.saveReviewCompletedComplianceForm(this.complianceForm)
+        .subscribe((item: ComplianceFormA) => {
+            console.log("Save Called");
+        },
+        error => {
+        });
     }
 
     submit() {
@@ -303,4 +345,7 @@ export class EditQCComponent implements OnInit {
     }
 
     get diagnostic() { return JSON.stringify(this.findingRecordToEdit) }
+    
+    
+
 }

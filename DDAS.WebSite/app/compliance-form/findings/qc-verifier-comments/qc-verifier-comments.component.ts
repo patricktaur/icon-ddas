@@ -23,7 +23,7 @@ export class QCVerifierCommentsComponent implements OnInit {
     }
 
     get getQCVerifierComment(){
-        console.log('comments: ', this.Finding.Comments);
+        
         return this.Finding.Comments[1];
         // return this.Finding.Comments.find(x => 
         //     x.ReviewId == this.QCVerifierReview.RecId);

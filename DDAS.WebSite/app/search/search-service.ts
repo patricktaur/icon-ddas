@@ -430,6 +430,18 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    //Patrick 16Jan2018:
+    saveReviewCompletedComplianceForm(form: ComplianceFormA) {
+        let body = JSON.stringify(form);
+        console.log("saveReviewCompletedComplianceForm");
+        return this.http.post(this._baseUrl + 'search/SaveReviewCompletedComplianceForm', body, this._options)
+            .map((res: Response) => {
+                console.log("AAAAA");
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     getSingleComponentMatchedRecords(SiteDataId: string, SiteEnum: number, FullName: string) {
         return this.http.get(this._baseUrl + 'search/GetSingleComponentMatchedRecords?SiteDataId=' + SiteDataId
             + '&SiteEnum=' + SiteEnum
@@ -486,7 +498,7 @@ export class SearchService {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();
         var modelStateErrors: string = '';
-
+        console.log("serverError:" +JSON.stringify(serverError));
         if (!serverError.type) {
 
             console.log(serverError);

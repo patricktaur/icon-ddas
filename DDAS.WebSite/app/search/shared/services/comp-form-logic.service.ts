@@ -50,17 +50,27 @@ export class CompFormLogicService {
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId == reviewStatus.ReviewerRecId)
-                    return true;
+                    {
+                        return true;
+                    }
                 else
-                    return false;
+                    {
+                       
+                        return false;
+                    }
             case "responseToQCVerifierFinding":
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId != reviewStatus.ReviewerRecId)
-                    return true;
+                    //selectedFinding.ReviewId == reviewStatus.QCVerifierRecId)
+                    {
+                        return true;
+                    }
                 else
-                    return false;
+                    {
+                        return false;
+                    }
             case "findingView":
                 // return true;
                 if (reviewStatus != undefined &&
