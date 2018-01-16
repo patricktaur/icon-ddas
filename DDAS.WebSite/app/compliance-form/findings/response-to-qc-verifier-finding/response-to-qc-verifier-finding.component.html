@@ -2,30 +2,25 @@
     <div class="row">
         <div class="col-md-12">
              <h4>QC Verifier's comments:</h4>
-            <textarea class="form-control" name="Comment" rows="3" cols="30" [(ngModel)]="getQCVerifierComment" readonly placeholder="Comment">
-        </textarea>
-        <br>
-        
+             <br/>
+             <label>Comment Category: {{getQCVerifierComment.CategoryEnum}}</label>
+             <br/>
+            <textarea class="form-control" name="Comment" rows="3" cols="30" 
+                [(ngModel)]="getQCVerifierComment.FindingComment" readonly placeholder="Comment">
+            </textarea>
+            <br>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             Notes: Finding added by QC Verifier cannot be modified by Reviewer. It will be included in the ICSF.
             <br/>
-
             <h4>Respone to QC Verifier's Finding:</h4>
-
-            
                 <label>QC Correction Status:</label>
-                <!-- <select class="form-control" name="CommentCategory" [(ngModel)]="getReviewerComment.CategoryEnum">
-                    <option value="5" selected="selected">Pending</option>
-                    <option value="7">Accepted</option>
-                </select> -->
-                <select class="form-control" name="CommentCategory" [(ngModel)]="CategoryEnum">
+                <select class="form-control" name="CommentCategory" [(ngModel)]="getQCVerifierComment.ReviewerCategoryEnum">
                     <option value="5" selected="selected">Pending</option>
                     <option value="7">Accepted</option>
                 </select>
-            
         </div>
     </div>
 </div>

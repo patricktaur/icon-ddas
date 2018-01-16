@@ -17,7 +17,7 @@ import {
     ReviewStatusEnum,
     CurrentReviewStatusViewModel
 } from '../../search/search.classes';
-import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service"
+import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service";
 
 @Component({
     moduleId: module.id,
@@ -224,33 +224,10 @@ export class EditQCComponent implements OnInit {
         if (this.complianceForm){
             return this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId);
         }
-    }    
-
-    
-
-    // get commentCategoryString(){
-    //     if(this.complianceForm.Comments[0].CategoryEnum != null ||
-    //     this.complianceForm.Comments[0].CategoryEnum != undefined){
-    //         switch(this.complianceForm.Comments[0].CategoryEnum){
-    //             case CommentCategoryEnum.Minor: return "Minor";
-    //             case CommentCategoryEnum.Major: return "Major";
-    //             case CommentCategoryEnum.Critical: return "Critical";
-    //             case CommentCategoryEnum.Suggestion: return "Suggestion";
-    //             case CommentCategoryEnum.Others: return "Others";
-    //             case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
-    //             case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
-    //             case CommentCategoryEnum.Accepted: return "Accepted";
-    //             default: "";
-    //         }
-    //     }
-    //     else
-    //         return null;
-    // }
+    }
 
     //Patrick:    
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
-       
-        //console.log(this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus));
         if (selectedFinding){
             return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
         }else{
@@ -291,7 +268,6 @@ export class EditQCComponent implements OnInit {
         this.auditService.saveQC(this.complianceForm)
             .subscribe((item: any) => {
                 this.isSubmitted = true;
-                alert('QC has been submitted successfully');
             },
             error => {
             });

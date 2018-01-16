@@ -340,6 +340,7 @@ export class Comment {
     AddedOn: Date;
     CorrectedOn: Date;
     CategoryEnum: CommentCategoryEnum;
+    ReviewerCategoryEnum: CommentCategoryEnum;
 }
 
 export class SiteSource {
@@ -459,7 +460,8 @@ export enum CommentCategoryEnum {
     Others,
     CorrectionPending,
     CorrectionCompleted,
-    Accepted
+    Accepted,
+    NotApplicable
 }
 
 export class QualityCheck {

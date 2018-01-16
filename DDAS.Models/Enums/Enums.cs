@@ -99,9 +99,9 @@
         Critical,
         Suggestion,
         Others,
-
         CorrectionPending,
         CorrectionCompleted,
-        Accepted
+        Accepted,
+        NotApplicable
     }
 }

@@ -153,12 +153,12 @@
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierComments')" class="form-group col-md-6">
-				<div qc-verifier-comments [QCVerifierReview]="qcVerifierReview" [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
+				<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierFinding')" class="form-group col-md-6">
-				<div qc-verifier-finding [QCVerifierReview]="qcVerifierReview" [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
+				<div qc-verifier-finding [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
 				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 				</div>
 			</div>
@@ -184,22 +184,23 @@
 		</div>
 	</div>
 
-	<p align="center">
-
-		<button type="button" class="btn btn-primary" (click)="Add()" *ngIf="showMatchingRecordsAndAddManualFinding">Add Additional Findings</button>
-		<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
-		 (click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
-		<br/>
-	</p>
-	<p align="center">
-		<label>Review Completed:</label>
-		<input type="checkbox" name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" [disabled]="disableOrHideMatchedRecordsAndFindings">
-	</p>
+	<div *ngIf="showMatchingRecordsAndAddManualFinding">
+		<p align="center">
+			<button type="button" class="btn btn-primary" (click)="Add()">Add Additional Findings</button>
+			<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
+			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
+			<br/>
+		</p>
+		<p align="center">
+			<label>Review Completed:</label>
+			<input type="checkbox" name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" [disabled]="disableOrHideMatchedRecordsAndFindings">
+		</p>
+	</div>
 	<p align="center">
 		<!--<label>Review completed: <input type="checkbox"  name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" ></label>-->
 		<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 		<!--<button type="button" class="btn btn-primary" (click)="Save()">Save</button>-->
-		<button type="button" class="btn btn-primary" (click)="SaveAndClose()">Save</button>
+		<button type="button" *ngIf="showMatchingRecordsAndAddManualFinding" class="btn btn-primary" (click)="SaveAndClose()">Save</button>
 		<!--<button type="button" class="btn btn-primary" (click)="TestSaveAndClose()">Test Save and Close</button>-->
 	</p>
 
@@ -230,7 +231,7 @@
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
 
-									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
+									<!-- <span [innerHTML]="SplitItem | highlight: highlightFilter"></span> -->
 									<!--{{SplitItem}}-->
 								</div>
 
@@ -284,8 +285,10 @@
 							<td style="align-left">
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
-									<!--{{SplitItem}}-->
+									 <!-- <span [innerHTML]="SplitItem | highlight: highlightFilter"></span>  
+									ERROR ==> unable to highlight text
+									-->
+									  {{SplitItem}}
 								</div>
 
 							</td>
@@ -350,8 +353,7 @@
 							<td style="align-left">
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
-									<!--{{SplitItem}}-->
+									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span> 
 								</div>
 							</td>
 						</tr>
@@ -413,8 +415,7 @@
 							<td style="align-left">
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
-									<!--{{SplitItem}}-->
+									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span> 
 								</div>
 
 							</td>

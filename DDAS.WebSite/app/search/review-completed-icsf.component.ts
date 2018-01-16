@@ -303,16 +303,15 @@ export class ReviewCompletedICSFComponent implements OnInit {
             default: retColor = "grey";
         }
         return retColor;
-
     }
 
-    requestAudit(qcVerifier: string, requestorComments:string) {
+    requestQC(qcVerifier: string, requestorComments:string) {
         if(qcVerifier == null || qcVerifier.length == 0){
-            alert('please select an auditor');
+            alert('please select a QC Verifier');
             return;
-        }        
+        }
         else if(this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()){
-            alert('cannot assign the audit to yourself');
+            alert('cannot assign the QC to yourself');
             return;
         }
         
@@ -349,7 +348,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.StartedOn = null;
         review.CompletedOn = null;
         this.compForm.Reviews.push(review);
-        
+
         this.service.requestQC(this.compForm)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();

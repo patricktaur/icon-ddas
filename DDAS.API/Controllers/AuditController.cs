@@ -1,6 +1,7 @@
 ﻿using DDAS.API.Helpers;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetAudit(string Id, string AssignedTo)
         {
             var RecId = Guid.Parse(Id);
-            var CompForm = _Audit.GetQC(RecId, AssignedTo);
+            var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
             UpdateFormToCurrentVersion
                 .UpdateComplianceFormToCurrentVersion(CompForm);
 

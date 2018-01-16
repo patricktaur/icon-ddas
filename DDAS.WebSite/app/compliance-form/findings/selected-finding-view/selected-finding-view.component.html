@@ -46,32 +46,27 @@
                 <div class="col-md-6">
                 </div>
             </div>
-            <div class="row">
+            <div class="row" *ngIf="isQCCommentAdded()">
                 <div class="col-md-12">
-                    <label for="IsAnIssue"><h4>Is an Issue:</h4></label>
-                    {{Finding.IsAnIssue | boolToYesNo}}
+                    <!-- <label for="IsAnIssue"><h4>Is an Issue:</h4></label>
+                    {{Finding.IsAnIssue | boolToYesNo}} -->
                     <!-- <input type="checkbox" name="IsAnIssue" [(ngModel)]="Finding.IsAnIssue" readonly/>
                     <br/> -->
                     <br/>
-                    <label *ngIf="isQCCommentAdded()"> <h4>QC Response:</h4></label>
-                    <br/>
-                    <label *ngIf="isQCCommentAdded()">Category: {{qcCommentCategory}}</label>
-                    <br/>
-                    <textarea *ngIf="isQCCommentAdded()" class="form-control" name="Comment" [(ngModel)]="qcComment"
-                     rows="3" cols="30" readonly required placeholder="Comment">
-                    </textarea>
-                    <!-- Finding.Comments[0].FindingComment -->
+                    <div>
+                        <label> <h4>QC Response:</h4></label>
+                        <br/>
+                        <label>Category: {{qcCommentCategory}}</label>
+                        <br/>
+                        <textarea class="form-control" name="Comment" [(ngModel)]="getQCVerifierComment.FindingComment"
+                            rows="3" cols="30" readonly required placeholder="Comment">
+                        </textarea>
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <label *ngIf="isQCCommentAdded()">QC Correction Status: {{reviewerCommentCategory}}</label>
-                     <!-- <select *ngIf="isQCCommentAdded()" class="form-control" name="CommentCategory" [(ngModel)]="reviewerCommentCategory" readonly>
-                        <option value="5">Pending</option>
-                        <option value="6">Correction Completed</option>
-                        <option value="7">Accepted</option>
-                    </select>  -->
+                    <label>QC Correction Status: {{reviewerCommentCategory}}</label>
                 </div>
             </div>
-
         </div>
     <!-- </div> -->
     <div *ngIf="dividerGeneration(indexVal)">

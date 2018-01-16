@@ -51,12 +51,12 @@
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierComments')" class="form-group col-md-6">
-				<div qc-verifier-comments [QCVerifierReview]="qcVerifierReview" [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
+				<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierFinding')" class="form-group col-md-6">
-				<div qc-verifier-finding [QCVerifierReview]="qcVerifierReview" [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
+				<div qc-verifier-finding [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
 				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 				</div>
 			</div>
