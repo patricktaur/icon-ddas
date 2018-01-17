@@ -174,6 +174,7 @@ export class EditQCComponent implements OnInit {
         //     return false;
     }
 
+    //Not used:
     listQCSummary() {
         this.auditService.listQCSummary(this.complianceFormId)
             .subscribe((item: any) => {
@@ -255,7 +256,7 @@ export class EditQCComponent implements OnInit {
             //console.log("this.currentReviewStatus:" + JSON.stringify(this.currentReviewStatus));
             return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
         }else{
-            return false
+            return false;
         }
     }
 
@@ -275,6 +276,7 @@ export class EditQCComponent implements OnInit {
     getcommentCategory(categoryEnum: CommentCategoryEnum){
         return CommentCategoryEnum[categoryEnum];
     }
+    
     getReviewerCategory(categoryEnum: CommentCategoryEnum){
         return CommentCategoryEnum[categoryEnum];
     }

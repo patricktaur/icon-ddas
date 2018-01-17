@@ -95,7 +95,7 @@ export class AssignmentHistoryComponent {
 
     reAssignmentList(list: AssignmentHistoryViewModel[]){
         list.forEach(record =>{
-            if(record.InvestigatorCount != 0){
+            if(record.InvestigatorCount > 1){
                 record.PrincipalInvestigator += " + " + record.InvestigatorCount;
             }
         });

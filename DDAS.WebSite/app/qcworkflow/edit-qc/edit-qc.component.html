@@ -110,7 +110,8 @@
 									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
 								</td>
 								<td>
-									<button type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip"
+										<!-- *ngIf="!isSubmitted" -->
+									<button  type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip"
 									 data-placement="top" title="Open">
 										<span class="glyphicon glyphicon-edit"></span>
 									</button>
@@ -148,10 +149,10 @@
 				</div>
 			</div>
 
-			<button *ngIf="!isSubmitted" type="button" class="btn btn-primary" (click)="submit()">Submit</button>
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>
+			<button type="button" class="btn btn-primary" (click)="submit()">Submit</button>
 		</div>
 	</div>
 </div>
@@ -173,17 +174,21 @@
 			</div>
 		
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierFinding')" >
-			First
+			
 			<div response-to-qc-verifier-finding [Finding]="findingRecordToEdit">
 			</div>
 		</div>
 
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierComments')" >
-			Second
+			
 			<div response-to-qc-verifier-comment [Finding]="findingRecordToEdit">
 			</div>
 		</div>
 
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'findingView')" >
+				<div selected-finding-view [Finding]="findingRecordToEdit">
+				</div>
+			</div>
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>

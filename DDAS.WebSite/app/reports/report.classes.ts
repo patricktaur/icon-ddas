@@ -36,8 +36,16 @@ export enum ReportPeriodEnum{
     Year
 }
 
+export enum AdminDashboardReportType{
+    OpeningBalance,
+    ComplianceFormsUploaded,
+    ComplianceFormsCompleted,
+    ClosingBalance
+}
+
 export class AdminDashboardViewModel{
     UserName: string;
+    UserFullName: string;
     OpeningBalance: number;
     InvestigatorUploaded: number;
     InvestigatorReviewCompleted: number;

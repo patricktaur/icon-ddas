@@ -210,6 +210,19 @@ namespace DDAS.Models.Entities.Domain
             }
         }
 
+        public DateTime? ReviewCompletedOn {
+            get
+            {
+                if (IsReviewCompleted)
+                    return InvestigatorDetails.OrderByDescending(x =>
+                    x.ReviewCompletedOn)
+                    .FirstOrDefault()
+                    .ReviewCompletedOn;
+                else
+                    return null;
+            }
+        }
+
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
 

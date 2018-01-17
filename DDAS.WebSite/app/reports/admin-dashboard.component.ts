@@ -18,6 +18,7 @@ export class AdminDashboardComponent {
 
     constructor(
         private service: ReportService,
+        private router: Router,
         private route: ActivatedRoute) {
 
     }
@@ -36,6 +37,20 @@ export class AdminDashboardComponent {
             error => {
                 this.formLoading = false;
             });
+    }
+
+    loadDrillDownDetails(assignedTo: string, reportType: number, value: number){
+        if(value != 0)
+            this.router.navigate(['admin-dashboard-drilldown', assignedTo, reportType], { relativeTo: this.route.parent});
+        // this.router.navigate(['admin-dashboard-drilldown'], { relativeTo: this.route.parent});
+    }
+
+    isGreaterThanZero(value: number){
+        console.log(value);
+        if(value == 0)    
+            return true;
+        else
+            return false;
     }
 
     diagnostic(){

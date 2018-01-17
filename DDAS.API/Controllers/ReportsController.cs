@@ -1,6 +1,7 @@
 ﻿using DDAS.API.Helpers;
 using DDAS.Models;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Models.ViewModels;
 using Microsoft.AspNet.Identity;
@@ -400,6 +401,14 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("AdminDashboardDrillDown")]
+        [HttpGet]
+        public IHttpActionResult GetAdminDashboardDrillDownDetails(
+            string AssignedTo, 
+            AdminDashboardReportType ReportType)
+        {
+            return Ok(_Report.GetAdminDashboardDrillDownDetails(AssignedTo, ReportType));
+        }
 
         [Route("AssignmentHistory")]
         [HttpPost]
