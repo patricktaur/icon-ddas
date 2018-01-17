@@ -98,7 +98,7 @@ export class FindingsComponent implements OnInit {
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
-                console.log('comp form -> ', this.CompForm);
+                //console.log('comp form -> ', this.CompForm);
                 //this.IntiliazeRecords();
                 this.loading = false;
                 this.isQCVerifier = this.isReviewerOrQCVerifier;
@@ -212,10 +212,16 @@ export class FindingsComponent implements OnInit {
             //remove special characters
             let str = inv1.Name.replace(/[^a-zA-Z ]/g, '');
             //remove words with less than 2 characters
-            this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
+            //this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
 
             return inv1;
         }
+    }
+
+    setHighlighter(){
+        let inv1 = this.Investigator;
+        let str = inv1.Name.replace(/[^a-zA-Z ]/g, '');
+        this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
     }
 
     private comps: string[];
@@ -272,6 +278,9 @@ export class FindingsComponent implements OnInit {
 
 
     get filteredFullMatchRecords() {
+        
+        
+        
         if (this.FullMatchRecords == null) {
             return null;
         }
@@ -640,6 +649,7 @@ export class FindingsComponent implements OnInit {
     }
 
     resetValues() {
+        this.setHighlighter();
         this.recordsPerPage = 5;
         this.filterRecordDetails = "";
         this.filterFullRecordDetails = "";

@@ -355,6 +355,7 @@ namespace DDAS.API.Controllers
                 }
                 else
                 {
+                   
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
 
@@ -365,8 +366,11 @@ namespace DDAS.API.Controllers
                     {
                         Review.StartedOn = DateTime.Now;
                         Review.Status = ReviewStatusEnum.ReviewInProgress;
-                        _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                        //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
                     }
+                    _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+
+                    
                 }
                 return Ok(compForm);
             }
