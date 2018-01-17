@@ -372,6 +372,15 @@ namespace DDAS.API.Controllers
             }
         }
 
+        //Patrick: 16Jan2018
+        //_UOW.ComplianceFormRepository.UpdateCollection(frm);
+        [Route("SaveReviewCompletedComplianceForm")]
+        [HttpPost]
+        public IHttpActionResult SaveReviewCompletedComplianceForm(ComplianceForm form)
+        {
+            return Ok(_UOW.ComplianceFormRepository.UpdateCollection(form));
+        }
+
         [Route("SaveComplianceForm")]
         [HttpPost]
         public IHttpActionResult UpdateComplianceForm(ComplianceForm form)

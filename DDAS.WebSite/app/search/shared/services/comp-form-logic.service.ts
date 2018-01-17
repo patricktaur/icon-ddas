@@ -52,15 +52,23 @@ export class CompFormLogicService {
                     selectedFinding.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
                     return true;
                 else
-                    return false;
+                    {
+                       
+                        return false;
+                    }
             case "responseToQCVerifierFinding":
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
                     selectedFinding.ReviewId != reviewStatus.ReviewerRecId)
-                    return true;
+                    //selectedFinding.ReviewId == reviewStatus.QCVerifierRecId)
+                    {
+                        return true;
+                    }
                 else
-                    return false;
+                    {
+                        return false;
+                    }
             case "findingView":
                 // return true;
                 if (reviewStatus != undefined &&
