@@ -153,7 +153,8 @@ export class EditQCComponent implements OnInit {
     get isQCPassedOrFailed() {
         let review = this.complianceForm.Reviews.find(x =>
             x.Status == ReviewStatusEnum.QCFailed ||
-            x.Status == ReviewStatusEnum.QCPassed);
+            x.Status == ReviewStatusEnum.QCPassed ||
+            x.Status == ReviewStatusEnum.Completed);
 
         if(review != undefined && review.Status == ReviewStatusEnum.QCFailed)
             this.status = 0;
