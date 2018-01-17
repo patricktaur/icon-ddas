@@ -68,7 +68,7 @@ export class EditQCComponent implements OnInit {
     public complianceFormId: string;
     public SelectedComplianceFormId: string;
     public audit: QualityCheck = new QualityCheck;
-    public complianceForm: ComplianceFormA = new ComplianceFormA;
+    public complianceForm: ComplianceFormA; //= new ComplianceFormA;
     public pageNumber: number = 1;
     public observation: string;
     public siteId: number = 0;
@@ -113,7 +113,7 @@ export class EditQCComponent implements OnInit {
             .subscribe((item: any) => {
                 this.complianceForm = item;
                 this.isSubmitted = this.isQCPassedOrFailed;
-                this. getCurrentReviewStatus();
+                this.getCurrentReviewStatus();
             },
             error => {
                 
@@ -121,7 +121,6 @@ export class EditQCComponent implements OnInit {
     }
 
     getCurrentReviewStatus() {
-        
         this.service.getCurrentReviewStatus(this.complianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
                 this.currentReviewStatus = item;
@@ -178,39 +177,48 @@ export class EditQCComponent implements OnInit {
             });
     }
 
-    get Investigators() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.InvestigatorDetails;
-        else
-            return null;
-    }
+    // get Investigators() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.InvestigatorDetails;
+    //     else
+    //         return null;
+    // }
 
-    get SiteSources() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
-        else
-            return null;
-    }
+    // get SiteSources() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
+    //     else
+    //         return null;
+    // }
 
-    get additionalSiteSources() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
-        else
-            return null;
-    }
+    // get additionalSiteSources() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
+    //     else
+    //         return null;
+    // }
 
-    get Findings() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.Findings.filter(x => x.IsAnIssue);
-        else
-            return null;
-    }
+    // get Findings() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.Findings.filter(x => x.IsAnIssue);
+    //     else
+    //         return null;
+    // }
 
     //Patrick:
     get QCVerifierReview(){
-        return this.compFormLogic.getQCVerifierReview(this.complianceForm.Reviews);
+        if(this.complianceForm){
+            return this.compFormLogic.getQCVerifierReview(this.complianceForm.Reviews);
+        }
     }
-    
+
+    get qcRequestorComment(){
+        if(this.QCVerifierReview)
+            return this.QCVerifierReview.Comment;
+        else
+            return null;
+    }
+
     get QCVerifierReviewId(): string{
         if (this.complianceForm){
             return this.compFormLogic.getQCVerifierReviewId(this.complianceForm.Reviews);
@@ -225,6 +233,12 @@ export class EditQCComponent implements OnInit {
             
             //this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId)
             //.filter(x => x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
+        }
+    }
+
+    get reviewStatus(){
+        if(this.complianceForm){
+            return this.compFormLogic.getReviewStatus(this.complianceForm.CurrentReviewStatus);
         }
     }
 

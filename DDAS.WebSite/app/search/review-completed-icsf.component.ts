@@ -358,5 +358,5 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
+    get diagnostic() { return JSON.stringify(this.audit); }
 }

@@ -96,6 +96,18 @@ export class CompFormLogicService {
         }
     }
     
+    getReviewerReview(reviews: Review[]): Review{
+        let retValue:  Review;
+        let reviewerReview = reviews.find(x => 
+            x.ReviewerRole == ReviewerRoleEnum.Reviewer &&
+            x.Status == ReviewStatusEnum.ReviewCompleted);
+        if (reviewerReview){
+            retValue = reviewerReview;
+            return retValue;
+        }else{
+            return retValue;
+        }        
+    }
     
     //Not working:
     getQCVerifierReviewId(reviews: Review[]) : string{
