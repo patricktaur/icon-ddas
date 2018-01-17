@@ -1372,8 +1372,13 @@ namespace DDAS.Services.Search
 
         public bool UpdateQCEditComplianceForm(ComplianceForm Form)
         {
+            var FindingsWithIssues = Form.Findings.Where(x =>
+                x.IsAnIssue && 
+                x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
+                .ToList();
+
             UpdateReviewStatus(Form.Reviews,
-                Form.Findings.Where(x => x.IsAnIssue).ToList(),
+                FindingsWithIssues,
                 Form.IsReviewCompleted);
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
