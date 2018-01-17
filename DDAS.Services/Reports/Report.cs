@@ -352,6 +352,11 @@ namespace DDAS.Services.Reports
             if (Users.Count == 0)
                 throw new Exception("No Users found in the database");
 
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Forms.Count == 0)
+                throw new Exception("No compliance forms found");
+
             var AdminDashboardList = new List<AdminDashboardViewModel>();
 
             foreach (User user in Users)
@@ -360,12 +365,12 @@ namespace DDAS.Services.Reports
                 AdminDashboard.UserName = user.UserName;
                 AdminDashboard.UserFullName = user.UserFullName;
                 AdminDashboard.OpeningBalance =
-                    OpeningBalance(user.UserName);
+                    OpeningBalance(user.UserName, Forms);
                 AdminDashboard.InvestigatorUploaded =
-                    ComplianceFormsUploadedToday(user.UserName);
+                    ComplianceFormsUploadedToday(user.UserName, Forms);
                 AdminDashboard.InvestigatorReviewCompleted =
-                    ComplianceFormsReviewCompletedToday(user.UserName);
-                AdminDashboard.ClosingBalance = ClosingBalance(user.UserName);
+                    ComplianceFormsReviewCompletedToday(user.UserName, Forms);
+                AdminDashboard.ClosingBalance = ClosingBalance(user.UserName, Forms);
                 AdminDashboardList.Add(AdminDashboard);
             }
             return AdminDashboardList;
@@ -375,33 +380,33 @@ namespace DDAS.Services.Reports
             GetAdminDashboardDrillDownDetails(
             string AssignedTo, AdminDashboardReportType ReportType)
         {
-            switch (ReportType)
-            {
-                case AdminDashboardReportType.OpeningBalance:
-                    return OpeningBalanceList(AssignedTo);
-                case AdminDashboardReportType.ComplianceFormsUploaded:
-                    return ComplianceFormsUploadedList(AssignedTo);
-                case AdminDashboardReportType.ComplianceFormsCompleted:
-                    return ComplianceFormsReviewCompletedList(AssignedTo);
-                case AdminDashboardReportType.ClosingBalance:
-                    return ClosingBalanceList(AssignedTo);
-                default:
-                    throw new Exception("invalid enum");
-            }
-        }
-
-        private int OpeningBalance(string UserName)
-        {
-            return OpeningBalanceList(UserName).Count();
-        }
-
-        private List<AdminDashboardDrillDownViewModel> OpeningBalanceList(string UserName)
-        {
             var Forms = _UOW.ComplianceFormRepository.GetAll();
 
             if (Forms.Count == 0)
                 throw new Exception("No compliance forms found");
 
+            switch (ReportType)
+            {
+                case AdminDashboardReportType.OpeningBalance:
+                    return OpeningBalanceList(AssignedTo, Forms);
+                case AdminDashboardReportType.ComplianceFormsUploaded:
+                    return ComplianceFormsUploadedList(AssignedTo, Forms);
+                case AdminDashboardReportType.ComplianceFormsCompleted:
+                    return ComplianceFormsReviewCompletedList(AssignedTo, Forms);
+                case AdminDashboardReportType.ClosingBalance:
+                    return ClosingBalanceList(AssignedTo, Forms);
+                default:
+                    throw new Exception("invalid enum");
+            }
+        }
+
+        private int OpeningBalance(string UserName, List<ComplianceForm> Forms)
+        {
+            return OpeningBalanceList(UserName, Forms).Count();
+        }
+
+        private List<AdminDashboardDrillDownViewModel> OpeningBalanceList(string UserName, List<ComplianceForm> Forms)
+        {
             Forms = Forms.Where(x =>
             x.AssignedTo.ToLower() == UserName.ToLower() &&
             (x.ReviewCompletedOn == null ||
@@ -429,18 +434,13 @@ namespace DDAS.Services.Reports
             return DrillDownList;
         }
 
-        private int ComplianceFormsUploadedToday(string UserName)
+        private int ComplianceFormsUploadedToday(string UserName, List<ComplianceForm> Forms)
         {
-            return ComplianceFormsUploadedList(UserName).Count();
+            return ComplianceFormsUploadedList(UserName, Forms).Count();
         }
 
-        private List<AdminDashboardDrillDownViewModel> ComplianceFormsUploadedList(string UserName)
+        private List<AdminDashboardDrillDownViewModel> ComplianceFormsUploadedList(string UserName, List<ComplianceForm> Forms)
         {
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
-
-            if (Forms.Count == 0)
-                throw new Exception("No compliance forms found");
-
             Forms = Forms.Where(x => 
             x.SearchStartedOn.Date >= DateTime.Now.Date)
             .ToList();
@@ -465,18 +465,13 @@ namespace DDAS.Services.Reports
             return DrillDownList;
         }
 
-        private int ComplianceFormsReviewCompletedToday(string UserName)
+        private int ComplianceFormsReviewCompletedToday(string UserName, List<ComplianceForm> Forms)
         {
-            return ComplianceFormsReviewCompletedList(UserName).Count();
+            return ComplianceFormsReviewCompletedList(UserName, Forms).Count();
         }
 
-        private List<AdminDashboardDrillDownViewModel> ComplianceFormsReviewCompletedList(string UserName)
+        private List<AdminDashboardDrillDownViewModel> ComplianceFormsReviewCompletedList(string UserName, List<ComplianceForm> Forms)
         {
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
-
-            if (Forms.Count == 0)
-                throw new Exception("No compliance forms found");
-
             Forms = Forms.Where(x =>
             x.AssignedTo.ToLower() == UserName.ToLower() &&
             x.ReviewCompletedOn != null &&
@@ -503,18 +498,13 @@ namespace DDAS.Services.Reports
             return DrillDownList;
         }
 
-        private int ClosingBalance(string UserName)
+        private int ClosingBalance(string UserName, List<ComplianceForm> Forms)
         {
-            return ClosingBalanceList(UserName).Count();
+            return ClosingBalanceList(UserName, Forms).Count();
         }
 
-        private List<AdminDashboardDrillDownViewModel> ClosingBalanceList(string UserName)
+        private List<AdminDashboardDrillDownViewModel> ClosingBalanceList(string UserName, List<ComplianceForm> Forms)
         {
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
-
-            if (Forms.Count == 0)
-                throw new Exception("No compliance forms found");
-
             Forms = Forms.Where(x =>
             x.AssignedTo.ToLower() == UserName.ToLower() &&
             x.IsReviewCompleted == false)

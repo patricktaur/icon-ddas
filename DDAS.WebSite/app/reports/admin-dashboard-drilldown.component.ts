@@ -66,6 +66,14 @@ export class AdminDashboardDrillDownComponent {
         return list;
     }
 
+    get assignedToUserFullName(){
+        if(this.drillDownDetails){
+            return this.drillDownDetails[0].UserFullName;
+        }
+        else
+            return null;
+    }
+
     back(){
         this.router.navigate(['/admin-dashboard']);
     }
