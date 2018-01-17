@@ -480,8 +480,7 @@ export class FindingsComponent implements OnInit {
 
     get showMatchingRecordsAndAddManualFinding(){
         if(this.CompForm){
-            return this.compFormLogic.canShowMatchingRecordsAndAddManualFinding(
-                this.CompForm);
+            return this.compFormLogic.canShowMatchingRecordsAndAddManualFinding(this.CompForm);
         }
     }
 
@@ -507,11 +506,9 @@ export class FindingsComponent implements OnInit {
                 return this.recordToDelete.RecordDetails.substr(0, 100) + " ...";
             }
         }
-
     }
 
     RemoveFinding() {
-
         this.pageChanged = true;
         if (this.recordToDelete.IsMatchedRecord) {
             this.recordToDelete.IsAnIssue = false;

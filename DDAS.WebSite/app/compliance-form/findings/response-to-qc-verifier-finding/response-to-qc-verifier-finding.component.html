@@ -18,6 +18,7 @@
             <h4>Respone to QC Verifier's Finding:</h4>
                 <label>QC Correction Status:</label>
                 <select class="form-control" name="CommentCategory" [(ngModel)]="getQCVerifierComment.ReviewerCategoryEnum">
+                    <option value="8" selected="selected">Not Applicable</option>
                     <option value="5" selected="selected">Pending</option>
                     <option value="7">Accepted</option>
                 </select>

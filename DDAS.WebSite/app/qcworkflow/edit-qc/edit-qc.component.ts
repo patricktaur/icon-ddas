@@ -6,6 +6,7 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { SearchService } from '../../search/search-service';
+import { UpdateFindigs } from '../../search/search.classes';
 import { QCService } from '../qc-service';
 import {
     ComplianceFormA,
@@ -101,9 +102,9 @@ export class EditQCComponent implements OnInit {
             this.complianceFormId = params['complianceFormId'];
             this.qcAssignedTo = params['qcAssignedTo'];
         });
-        this.complianceForm = new ComplianceFormA;
+        //this.complianceForm = new ComplianceFormA;
         this.loadComplianceForm();
-        this.listQCSummary();
+        //this.listQCSummary();
 
         //this.compFormLogic.CanDisplayFindingComponent
     }
@@ -135,10 +136,14 @@ export class EditQCComponent implements OnInit {
     //     return this.complianceForm.Findings.find(
     //         x => x.Comments[1].CategoryEnum == QCVer
     //     )
-     
-       
     // }
     
+    get principalInvestigatorName(){
+        if(this.complianceForm){
+            return this.complianceForm.InvestigatorDetails[0].Name;
+        }
+    }
+
     getQCVerifierComment() {
         var review = this.complianceForm.Reviews.find(x =>
             x.AssigendTo == this.authService.userName &&
