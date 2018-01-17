@@ -95,8 +95,9 @@ namespace DDAS.Services.AuditService
                 x.Status == ReviewStatusEnum.QCRequested ||
                 x.Status == ReviewStatusEnum.QCInProgress ||
                 x.Status == ReviewStatusEnum.QCFailed ||
-                //x.Status == ReviewStatusEnum.QCCorrectionInProgress ||
-                x.Status == ReviewStatusEnum.QCPassed)
+                x.Status == ReviewStatusEnum.QCCorrectionInProgress ||
+                x.Status == ReviewStatusEnum.QCPassed ||
+                x.Status == ReviewStatusEnum.Completed)
                 .ToList();
 
                 foreach (Review Review in QCReviews)

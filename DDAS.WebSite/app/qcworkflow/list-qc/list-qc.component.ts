@@ -53,6 +53,10 @@ export class ListQCComponent implements OnInit {
         return this.compFormLogic.getReviewStatus(statusEnum);
     }
 
+    // filterQCReviews(){
+    //     this.qcList = this.qcList.filter(x => x.ComplianceFormId)
+    // }
+
     get filterQCByUserName() {
         if(this.authService.isAdmin){
             return this.qcList;
