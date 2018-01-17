@@ -9,14 +9,10 @@ namespace DDAS.Models.ViewModels
     public class AdminDashboardViewModel
     {
         public string UserName { get; set; }
+        public string UserFullName { get; set; }
         public int OpeningBalance { get; set; }
         public int InvestigatorUploaded { get; set; }
         public int InvestigatorReviewCompleted { get; set; }
-        public int ClosingBalance {
-            get {
-                return (OpeningBalance + InvestigatorUploaded) - 
-                    InvestigatorReviewCompleted;
-            }
-        }
+        public int ClosingBalance { get; set; }
     }
 }

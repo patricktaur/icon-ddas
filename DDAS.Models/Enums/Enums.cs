@@ -104,4 +104,11 @@
         Accepted,
         NotApplicable
     }
+    public enum AdminDashboardReportType
+    {
+        OpeningBalance,
+        ComplianceFormsUploaded,
+        ComplianceFormsCompleted,
+        ClosingBalance
+    }
 }

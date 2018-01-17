@@ -166,6 +166,15 @@ export class ReportService {
         .catch(this.handleError);
     }
 
+    getAdminDashboardDrillDownDetails(assignedTo: string, reportType: number):Observable<any[]>{
+        return this.http.get(this._baseUrl + 'Reports/AdminDashboardDrillDown?AssignedTo=' + assignedTo + 
+        '&ReportType=' + reportType, this._options)
+        .map((res: Response) =>{
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     getAssignmentHistoryList(reportFilter: ReportFilterViewModel):Observable<AssignmentHistoryViewModel[]>{
         let filter = JSON.stringify(reportFilter);
         return this.http.post(this._baseUrl + 'Reports/AssignmentHistory', filter, this._options)

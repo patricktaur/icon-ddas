@@ -29,19 +29,27 @@
 			<tbody>
 				<tr *ngFor="let item of adminDashboardList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 					<td class="text-left">
-						{{item.UserName}}
+						{{item.UserFullName}}
 					</td>
 					<td class="text-center">
-						{{item.OpeningBalance}}
+						<a (click)="loadDrillDownDetails(item.UserName, 0, item.OpeningBalance)">
+							{{item.OpeningBalance}}
+						</a>
                     </td>
                     <td class="text-center">
-                        {{item.InvestigatorUploaded}}
+						<a (click)="loadDrillDownDetails(item.UserName, 1, item.InvestigatorUploaded)">
+							{{item.InvestigatorUploaded}}
+						</a>
                     </td>
                     <td class="text-center">
-                        {{item.InvestigatorReviewCompleted}}
+						<a (click)="loadDrillDownDetails(item.UserName, 2, item.InvestigatorReviewCompleted)">
+							{{item.InvestigatorReviewCompleted}}
+						</a>
                     </td>
                     <td class="text-center">
-                        {{item.ClosingBalance}}
+						<a (click)="loadDrillDownDetails(item.UserName, 3, item.ClosingBalance)">
+							{{item.ClosingBalance}}
+						</a>
                     </td>                    
 				</tr>
 			</tbody>

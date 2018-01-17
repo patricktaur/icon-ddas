@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -24,5 +25,9 @@ namespace DDAS.Models.Interfaces
 
         List<StudySpecificInvestigatorVM> 
             GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter);
+
+        List<AdminDashboardDrillDownViewModel>
+            GetAdminDashboardDrillDownDetails(
+            string AssignedTo, AdminDashboardReportType ReportType);
     }
 }
