@@ -72,4 +72,43 @@
         Quarter,
         Year
     }
+
+    public enum ReviewStatusEnum
+    {
+        SearchCompleted,
+        ReviewInProgress,
+        ReviewCompleted,
+        Completed,
+        QCRequested,
+        QCInProgress,
+        QCFailed,
+        QCPassed,
+        QCCorrectionInProgress
+    }
+
+    public enum ReviewerRoleEnum
+    {
+        Reviewer,
+        QCVerifier
+    }
+
+    public enum CommentCategoryEnum
+    {
+        Minor,
+        Major,
+        Critical,
+        Suggestion,
+        Others,
+        CorrectionPending,
+        CorrectionCompleted,
+        Accepted,
+        NotApplicable
+    }
+    public enum AdminDashboardReportType
+    {
+        OpeningBalance,
+        ComplianceFormsUploaded,
+        ComplianceFormsCompleted,
+        ClosingBalance
+    }
 }

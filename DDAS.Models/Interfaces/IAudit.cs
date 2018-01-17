@@ -10,9 +10,10 @@ namespace DDAS.Models.Interfaces
 {
     public interface IAudit
     {
-        bool RequestAudit(Audit Audit);
-        List<AuditListViewModel> ListAudits();
-        Audit GetAudit(Guid RecId);
-        bool SaveAudit(Audit Audit);
+        bool RequestQC(ComplianceForm Form);
+        List<QCListViewModel> ListQCs();
+        ComplianceForm GetQC(Guid RecId, string AssignedTo, string LoggedInUserName);
+        bool SaveQC(ComplianceForm Form);
+        List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);
     }
 }

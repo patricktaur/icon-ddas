@@ -1,0 +1,41 @@
+<div>
+    <h4>Institute:</h4>
+    <br>
+        <div class="form-group">
+            <label for="institute">Institute: </label> {{CompForm.Institute}}
+            
+        </div>
+        
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="">#</th>
+                        <th class="">Source Name</th>
+                        <th class="">Issues Identified</th>
+                        <th class="">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="active" *ngFor="let item of InstituteSearchSummary">
+                        <td>{{item.DisplayPosition}}</td>
+                        <td align="left">
+                            <div class="text-left" *ngIf="isUrl(item.SiteUrl)">
+                                <a target="_blank" [href]="sanitize(item.SiteUrl)">
+                                    {{item.SiteName}}
+                                </a>
+                            </div>
+                            <div class="text-left" *ngIf="!isUrl(item.SiteUrl)">
+                                {{item.SiteName}}
+                            </div>
+                        </td>
+
+                        <td class="success">{{item.IssuesFound}}</td>
+
+                        <td>
+                            <button type="button" class="btn btn-primary" (click)="gotoSiteDetails(item.SiteSourceId)">Findings</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+   
+</div>

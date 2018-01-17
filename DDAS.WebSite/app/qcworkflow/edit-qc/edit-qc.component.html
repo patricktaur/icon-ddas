@@ -1,0 +1,197 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well">
+			<h3>QC for Principal Investigator - <b>{{principalInvestigatorName}}</b></h3>
+			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
+			<h3 class="no-margin-top">QC by {{qcAssignedTo}}</h3>
+			<label for="auditStatus">Status: {{reviewStatus}}</label>
+			<!-- {{diagnostic}} -->
+			<br>
+			 <label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label> 
+			<!-- QCVerifierReviewId:{{QCVerifierReviewId}} -->
+			<br>
+			<!-- Test: {{Test?.RecId}} -->
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12 ">
+		<div class="well">
+			<ul class="nav nav-tabs">
+
+				<li [class.active]="defaultTab">
+					<a data-toggle="tab" href="#qc-general">QC</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#comp-form">Compliance Form</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div id="qc-general" class="tab-pane fade {{defaultTabInActive}}">
+					<br/>
+					<!-- <h4>Finding Summary:</h4>
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr>
+								<th>Investigator/Institute Name</th>
+								<th>Source Name</th>
+								<th>Comment/Observation Type</th>
+								<th>Category</th>
+								<th>Observation/Comment</th>
+								<th>Response to QC</th>
+								<th>Open</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="active" *ngFor="let item of qcSummary">
+								<td class="text-left">
+									{{item.Investigator}}
+								</td>
+								<td class="text-left">
+									{{item.SourceName}}
+								</td>
+								<td class="text-left">
+									{{item.Type}}
+								</td>
+								<td class="text-left">
+									{{item.CategoryEnumString}}
+								</td>
+								<td class="text-left">
+									{{item.Comment}}
+								</td>
+								<td class="text-left">
+									{{item.ResponseToQC}}
+									*****{{item.FindingId}}
+								</td>
+								<td>
+									<button type="button" class="btn btn-sm btn-primary" (click)="openFindingDialog(item);" data-toggle="tooltip"
+									 data-placement="top" title="Open">
+										<span class="glyphicon glyphicon-edit"></span>
+									</button>
+
+								</td>
+							</tr>
+						</tbody>
+					</table> -->
+
+					<!-- <b>{{reviewerMessage}}</b> -->
+					<h4>QC Summary: </h4>
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr>
+								<th>Investigator/Institute Name</th>
+								<th>Source Name</th>
+								<th>Comment/Observation Type</th>
+								<th>Category</th>
+								<th>Observation/Comment</th>
+								<th>Response to QC</th>
+								<th>Open</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="active" *ngFor="let item of QCVerifiedFindings">
+								<td class="text-left">
+									{{item.InvestigatorName}}
+								</td>
+								<td class="text-left">
+									{{getSourceName(item)}}
+								</td>
+								<td class="text-left">
+									{{getType(item)}}
+								</td>
+								<td class="text-left">
+									{{getcommentCategory(item.Comments[0].CategoryEnum)}}
+								</td>
+								<td class="text-left">
+									{{item.Comments[0].FindingComment}}
+								</td>
+								<td class="text-left">
+									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
+								</td>
+								<td>
+										<!-- *ngIf="!isSubmitted" -->
+									<button  type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip"
+									 data-placement="top" title="Open">
+										<span class="glyphicon glyphicon-edit"></span>
+									</button>
+
+								</td>
+							</tr>
+						</tbody>
+					</table>	
+					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+				</div>
+				<div id="comp-form" class="tab-pane fade">
+					<br/>
+					<div compliance-form-view [complianceForm]="complianceForm"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="well">
+	<div class="row">
+		<div class="col-lg-12">
+			<br/>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="Status">QC Response:</label>
+						<select class="form-control" [(ngModel)]="status" [disabled]="isSubmitted">
+							<option value=-1 selected="selected">---select---</option>
+							<option value=0>Failed</option>
+							<option value=1>Passed</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-9">
+				</div>
+			</div>
+
+			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
+			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>
+			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
+			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">Submit QC Corrections</button>
+		</div>
+	</div>
+</div>
+
+<modal #FindingResponseModal>
+	<modal-body>
+
+		<!-- XXXXXXXXXXXXXXXXX XXXX:{{diagnostic}} -->
+		<br>
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierComments')" >
+			<div qc-verifier-comments  [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="findingRecordToEdit">
+				</div>
+			</div>
+
+			<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierFinding')" >
+				<div qc-verifier-finding  [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="findingRecordToEdit"
+				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				</div>
+			</div>
+		
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierFinding')" >
+			
+			<div response-to-qc-verifier-finding [Finding]="findingRecordToEdit">
+			</div>
+		</div>
+
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierComments')" >
+			
+			<div response-to-qc-verifier-comment [Finding]="findingRecordToEdit">
+			</div>
+		</div>
+
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'findingView')" >
+				<div selected-finding-view [Finding]="findingRecordToEdit">
+				</div>
+			</div>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
+	</modal-footer>
+</modal>

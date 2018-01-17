@@ -9,13 +9,12 @@ import { OpenComplianceFormsComponent } from './open-compliance-search-forms.com
 
 import { DueDiligenceCheckComponent } from './due-diligence-check.component';
 
-import { ClosedICFsComponent } from './closed-icfs.component';
+import { ReviewCompletedICSFComponent } from './review-completed-icsf.component';
 
 import { ManageICFsComponent } from './manage-icfs.component';
 import { AllISCFsComponent } from './all-iscfs.component';
 
 import { SearchComponent } from './search.component';
-
 
 import { searchRouting } from './search.routing';
 
@@ -38,7 +37,44 @@ import { GenerateOutputFileComponent } from './shared/components/generate-output
 
 import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
 import {InstituteFindingsComponent} from './institute-findings.component' 
+import {ComplianceFormViewComponent} from './shared/components/compliance-form-view/compliance-form-view.component'
 
+import {ComplianceFormGeneralEditComponent} from "../compliance-form/tab-components/general-edit/general-edit.component"
+import {ComplianceFormGeneralViewComponent} from "../compliance-form/tab-components/general-view/general-view.component"
+import {ComplianceFormGeneralViewQCVerifierCommentsComponent} from "../compliance-form/tab-components/general-view-qc-verifier-comments/general-view-qc-verifier-comments"
+import {ComplianceFormGeneralViewResponseToQCVerifierCommentsComponent} from "../compliance-form/tab-components/general-view-response-to-qc-verifier-comments/general-view-response-to-qc-verifier-comments"
+
+import {ComplianceFormInvestigatorEditComponent} from "../compliance-form/tab-components/investigators-edit/investigator-edit.component"
+import {ComplianceFormInvestigatorViewComponent} from "../compliance-form/tab-components/investigators-view/investigator-view.component"
+
+import {ComplianceFormInstituteEditComponent} from "../compliance-form/tab-components/institute-edit/institute-edit.component"
+import {ComplianceFormInstituteViewComponent} from "../compliance-form/tab-components/institute-view/institute-view.component"
+
+import {ComplianceFormMandatorySitesEditComponent} from "../compliance-form/tab-components/mandatory-sites-edit/mandatory-sites-edit.component"
+import {ComplianceFormMandatorySitesViewComponent} from "../compliance-form/tab-components/mandatory-sites-view/mandatory-sites-view.component"
+
+import {ComplianceFormAdditionalSitesEditComponent} from "../compliance-form/tab-components/additional-sites-edit/additional-sites-edit.component"
+import {ComplianceFormAdditionalSitesViewComponent}    from "../compliance-form/tab-components/additional-sites-view/additional-sites-view.component"
+
+
+
+import {  ComplianceFormFindingsComponent } from "../compliance-form/tab-components/findings/findings.component"
+import {ComplianceFormSearchedByComponent} from "../compliance-form/tab-components/searched-by/searched-by.component"
+import{ComplianceFormSummaryComponent} from "../compliance-form/tab-components/summary/summary.component"
+
+import {FindingEditBaseComponent} from "../compliance-form/findings/finding-base-edit/finding-edit-base.component"
+import {FindingViewBaseComponent} from "../compliance-form/findings/finding-base-view/finding-view-base.component"
+
+import {SelectedFindingEditComponent} from "../compliance-form/findings/selected-finding-edit/selected-finding-edit.component"
+import {SelectedFindingViewComponent} from "../compliance-form/findings/selected-finding-view/selected-finding-view.component"
+import {QCVerifierCommentsComponent} from "../compliance-form/findings/qc-verifier-comments/qc-verifier-comments.component"
+import {QCVerifierFindingComponent} from "../compliance-form/findings/qc-verifier-finding/qc-verifier-finding.component"
+
+import {ResponseToQCVerifierFindingComponent} from "../compliance-form/findings/response-to-qc-verifier-finding/response-to-qc-verifier-finding.component"
+import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/response-to-qc-verifier-comment/response-to-qc-verifier-comment.component"
+//import {SelectedFindingComponent} from "../compliance-form/findings/selected-finding/selected-finding.component";
+import {CompFormLogicService} from "./shared/services/comp-form-logic.service";
+import { CompletedICSFComponent } from './completed-icsf.component';
 
 @NgModule({
   imports: [
@@ -56,7 +92,7 @@ import {InstituteFindingsComponent} from './institute-findings.component'
 
     OpenComplianceFormsComponent,
     DueDiligenceCheckComponent,
-    ClosedICFsComponent,
+    ReviewCompletedICSFComponent,
     ManageICFsComponent,
     ComplianceFormComponent,
     CompFormEditComponent,
@@ -69,17 +105,54 @@ import {InstituteFindingsComponent} from './institute-findings.component'
     AllISCFsComponent,
     GenerateOutputFileComponent,
     InstituteFindingsSummaryComponent,
-    InstituteFindingsComponent
+    InstituteFindingsComponent,
+    ComplianceFormViewComponent,
+    
+    ComplianceFormGeneralEditComponent,
+    ComplianceFormGeneralViewComponent,
+    ComplianceFormGeneralViewQCVerifierCommentsComponent,
+    ComplianceFormGeneralViewResponseToQCVerifierCommentsComponent,
+    
+    ComplianceFormInstituteEditComponent,
+    ComplianceFormInstituteViewComponent,
+
+    ComplianceFormInvestigatorEditComponent,
+    ComplianceFormInvestigatorViewComponent,
+    ComplianceFormMandatorySitesEditComponent,
+    ComplianceFormMandatorySitesViewComponent,
+    ComplianceFormAdditionalSitesEditComponent,
+    ComplianceFormAdditionalSitesViewComponent,
+    ComplianceFormFindingsComponent,
+    ComplianceFormSearchedByComponent,
+    ComplianceFormSummaryComponent,
+    
+    FindingEditBaseComponent,
+    FindingViewBaseComponent,
+    SelectedFindingEditComponent,
+    SelectedFindingViewComponent,
+    QCVerifierCommentsComponent,
+    QCVerifierFindingComponent,
+    ResponseToQCVerifierFindingComponent,
+    ResponseToQCVerifierCommentComponent,
+    CompletedICSFComponent
   ],
 
   providers: [
-
+    CompFormLogicService
   ],
-  exports: [StatusCircleComponent,
+  exports: [
+    StatusCircleComponent,
     StatusCircleLegendVerticalComponent,
     StatusCircleLegHorComponent,
     DownloadComplianceFormComponent,
-    GenerateOutputFileComponent
+    GenerateOutputFileComponent,
+    ComplianceFormViewComponent,
+    SelectedFindingEditComponent,
+    SelectedFindingViewComponent,
+    QCVerifierCommentsComponent,
+    QCVerifierFindingComponent,
+    ResponseToQCVerifierFindingComponent,
+    ResponseToQCVerifierCommentComponent
   ]
 })
 export class SearchModule { }

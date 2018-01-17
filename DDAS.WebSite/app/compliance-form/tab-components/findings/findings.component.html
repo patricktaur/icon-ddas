@@ -1,0 +1,101 @@
+<div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <h4>Findings (Issues identified):</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2">Investigator / Institute</th>
+                                <th class="col-md-1">Source #</th>
+                                <th class="col-md-2">Date of Inspection / Action</th>
+                                <th class="col-md-5">Description of Findings</th>
+                                <!--<th class="col-md-2">Action</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="active" *ngFor="let item of Findings; ">
+                                <td align="left">
+                                    <div *ngIf="item.InvestigatorName">
+                                        {{item.InvestigatorName}}
+                                    </div>
+                                    <div *ngIf="!item.InvestigatorName">
+                                        {{CompForm.Institute}}
+                                    </div>
+
+
+
+                                </td>
+                                <td>
+                                    <!--{{item.SourceNumber}}-->
+                                    {{item.SiteDisplayPosition}}
+                                </td>
+
+                                <td>
+                                    {{item.DateOfInspection |date:'dd MMM yyyy' }}
+
+                                </td>
+                                <td align="left">
+
+                                    <!--<div *ngIf="item.RecordDetails"><br> </div>-->
+                                    <!--{{item.Observation}}-->
+                                    <textarea [(ngModel)]="item.Observation" rows="3" cols="60" readonly style="border: none"></textarea>
+                                </td>
+                                <!--<td>-->
+
+                                <!--<div *ngIf="item.SiteSourceId == null">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-primary" (click)="FindingsEditModal1.open()" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit" ></span></button>
+                                            <button type="button" class="btn btn-sm btn-primary" (click)="DeleteFinding(item); " data-toggle="tooltip" data-placement="top"
+                                                title="Remove Finding"><span class="glyphicon glyphicon-remove" ></span></button>
+                                        </div>
+                                    </div>-->
+
+                                <!--<modal #FindingsEditModal1>
+                                        <modal-header>
+                                            <h4 class="modal-title">Edit Finding</h4>
+                                        </modal-header>
+                                        <modal-body>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h5>Findings:</h5>
+                                                    <textarea class="form-control" name="Observation" [(ngModel)]="item.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label><h5>Date of Inspection / Action:</h5></label>
+                                                    <div date-picker [(DateValue)]="item.DateOfInspection"></div>
+                                                    {{item.DateOfInspection}}
+                                                </div>
+                                            </div>
+                                        </modal-body>
+                                        <modal-footer>
+                                            <button type="button" class="btn btn-primary" (click)="FindingsEditModal1.close()">Close</button>
+                                        </modal-footer>
+                                    </modal>-->
+                                <!--</td>-->
+                            </tr>
+                            <!--<tr>
+                                <td colspan="5" align="left">
+                                    <button type="button" class="btn btn-primary" (click)="AddFinding()">Add a Finding (Observation) for Institute: {{CompForm.Institute}} </button>
+                                </td>
+
+                            </tr>-->
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>

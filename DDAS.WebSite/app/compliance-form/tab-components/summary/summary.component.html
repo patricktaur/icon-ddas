@@ -1,0 +1,38 @@
+<div>
+    <h4>Summary:</h4>
+    <!-- <div class="row" *ngIf="isFileUploaded"> -->
+    <div class="row" *ngIf="CompForm.UploadedFileName">
+        <div class="col-lg-12">
+            <b> File Uploaded: </b>
+            {{CompForm.UploadedFileName}}
+            <button type="button" class="btn btn-sm btn-primary" (click)="downloadUploadedFile(CompForm.GeneratedFileName)" title="Download File">
+                <span class="glyphicon glyphicon-download-alt"></span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <b> Search Started On: </b>
+            {{CompForm.SearchStartedOn | date: 'medium'}}
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Investigator</th>
+                    <th>Review Completed On</th>
+                </tr>
+            </thead>
+            <tr class="active" *ngFor="let item of CompForm.InvestigatorDetails">
+                <td class="text-left">
+                    {{item.Name}}
+                </td>
+                <td>
+                    {{item.ReviewCompletedOn | date:'medium'}}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>

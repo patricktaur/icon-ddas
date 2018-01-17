@@ -1,0 +1,131 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <h4>Investigators:</h4>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="3">Name to search </th>
+
+                                <th class="">Name </th>
+                                <th class="">Med. Lic No.</th>
+                                <th class="">Inv Id.</th>
+                                <th class="">Member Id</th>
+
+                                <th class="">Role</th>
+
+                                <th>Status</th>
+                                <!--<th class="col-md-1">Status</th>-->
+
+                                <th class="">Actions</th>
+
+                            </tr>
+                            <tr>
+                                <th>First </th>
+                                <th> Mid</th>
+                                <th>Last</th>
+
+                                <th>(for display)</th>
+                                <th> </th>
+                                <th></th>
+                                <th></th>
+
+                                <th></th>
+                                <!--<th class="col-md-1">Status</th>-->
+
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let inv of Investigators; let idx=index">
+
+
+                                <td>
+                                    <p>{{inv.FirstName}}</p>
+
+
+                                </td>
+                                <td>
+                                    <p>{{inv.MiddleName}}</p>
+
+
+
+                                </td>
+                                <td>
+                                    <p>{{inv.LastName}}</p>
+
+                                </td>
+
+
+
+
+                                <td>
+                                    <p>{{inv.LastName}}</p>
+                                </td>
+                                <td>
+                                    <p>{{inv.MedicalLiceseNumber}}</p>
+                                </td>
+                                <td>
+                                    <p>{{inv.InvestigatorId}}</p>
+                                </td>
+
+                                <td>
+                                    <p>{{inv.MemberId}}</p>
+
+                                </td>
+
+                                <td>
+                                    {{inv.Role}}
+
+                                </td>
+
+                                <td align="center">
+                                    <div *ngIf="inv.Saved" statusCircle [status]="inv.StatusEnum" size=24 [title]="inv.Status"></div>
+                                    <div *ngIf="inv.ExtractionPendingSiteCount > 0" class="glyphicon glyphicon-search"></div>
+                                </td>
+
+                                <td width="15%">
+
+                                    <div class="btn-group ">
+
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="gotoInvestigatorSummaryResult(inv)" data-toggle="tooltip" data-placement="top"
+                                            title="Findings ...">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </button>
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<modal #RemoveInvestigatorConfirmModal>
+    <modal-header>
+        <h4 class="modal-title">Delete confirm</h4>
+    </modal-header>
+    <modal-body>
+        Investigator: {{InvestigatorToRemove.Name}} will be removed.
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="btn btn-primary" (click)="InvestigatorRemove(); RemoveInvestigatorConfirmModal.close()">Confirm Delete</button>
+        <button type="button" class="btn btn-primary" (click)=" RemoveInvestigatorConfirmModal.close()">Cancel</button>
+    </modal-footer>
+</modal>

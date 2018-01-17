@@ -1,0 +1,30 @@
+<div finding-view-base [Finding]="Finding" [Title]="'QC Response'">
+
+
+
+    <div class="row" *ngIf="isQCCommentAdded()">
+        <div class="col-md-12">
+            <br/>
+            <div>
+                <label>
+                    <h4>QC Response:</h4>
+                </label>
+                <br/>
+                <label>Category: {{qcCommentCategory}}</label>
+                <br/>
+                <textarea class="form-control" name="Comment" [(ngModel)]="getQCVerifierComment.FindingComment" rows="3" cols="30" readonly
+                    required placeholder="Comment">
+                </textarea>
+                <br>
+                <label>QC Correction Status: {{reviewerCommentCategory}}</label>
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+
+
+<div *ngIf="dividerGeneration(indexVal)">
+    <div style="clear:both;"></div>
+</div>

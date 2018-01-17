@@ -1,5 +1,7 @@
-﻿using DDAS.Models.Entities.Domain;
+﻿using DDAS.API.Helpers;
+using DDAS.Models.Entities.Domain;
 using DDAS.Models.Interfaces;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ using System.Web.Http;
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "user, admin")]
-    [RoutePrefix("api/Audit")]
+    [RoutePrefix("api/QC")]
     public class AuditController : ApiController
     {
         private IAudit _Audit;
@@ -18,33 +20,45 @@ namespace DDAS.API.Controllers
             _Audit = Audit;
         }
 
-        [Route("RequestAudit")]
+        [Route("RequestQC")]
         [HttpPost]
-        public IHttpActionResult RequestAudit(Audit Audit)
+        public IHttpActionResult RequestQC(ComplianceForm Form)
         {
-            return Ok(_Audit.RequestAudit(Audit));
+            return Ok(_Audit.RequestQC(Form));
         }
 
-        [Route("GetAudit")]
+        [Route("GetQC")]
         [HttpGet]
-        public IHttpActionResult GetAudit(string Id)
+        public IHttpActionResult GetAudit(string Id, string AssignedTo)
         {
-            var AuditId = Guid.Parse(Id);
-            return Ok(_Audit.GetAudit(AuditId));
+            var RecId = Guid.Parse(Id);
+            var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
+            UpdateFormToCurrentVersion
+                .UpdateComplianceFormToCurrentVersion(CompForm);
+
+            return Ok(CompForm);
         }
 
-        [Route("ListAudits")]
+        [Route("ListQCs")]
         [HttpGet]
-        public IHttpActionResult ListAudits()
+        public IHttpActionResult ListQCs()
         {
-            return Ok(_Audit.ListAudits());
+            return Ok(_Audit.ListQCs());
         }
 
-        [Route("SaveAudit")]
+        [Route("SaveQC")]
         [HttpPost]
-        public IHttpActionResult SaveAudit(Audit audit)
+        public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
-            return Ok(_Audit.SaveAudit(audit));
+            return Ok(_Audit.SaveQC(Form));
+        }
+
+        [Route("ListQCSummary")]
+        [HttpGet]
+        public IHttpActionResult ListQCSummary(string FormId)
+        {
+            var Id = Guid.Parse(FormId);
+            return Ok(_Audit.ListQCSummary(Id));
         }
     }
 }

@@ -1,16 +1,30 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 
-import { ComplianceFormA, InvestigatorSearched, SiteSourceToSearch, SiteSource, ComplianceFormStatusEnum, Finding, InstituteFindingsSummaryViewModel } from '../../search/search.classes';
+import {
+    ComplianceFormA,
+    InvestigatorSearched,
+    SiteSourceToSearch,
+    SiteSource,
+    ComplianceFormStatusEnum,
+    Finding,
+    InstituteFindingsSummaryViewModel,
+    ReviewerRoleEnum,
+    ReviewStatusEnum,
+    Comment
+}
+    from '../../search/search.classes';
 import { SearchService } from '../../search/search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { ConfigService } from '../../shared/utils/config.service';
-
+import { AuthService } from '../../auth/auth.service';
+import { CompFormLogicService } from '../../search/shared/services/comp-form-logic.service';
 //import {SiteSourceViewModel} from '../../admin/appAdmin.classes';
 import {DefaultSite, SiteSourceViewModel} from '../../admin/appAdmin.classes';
+import { Response } from '@angular/http/src/static_response';
 //import {XXX} from '../../admin/appAdmin.classes';
 
 
@@ -72,7 +86,7 @@ export class CompFormEditComponent implements OnInit {
     public siteToRemove: SiteSourceToSearch = new SiteSourceToSearch;
     private pageChanged: boolean = false;
 
-    public InstituteSearchSummary : InstituteFindingsSummaryViewModel[] = [];
+    public InstituteSearchSummary: InstituteFindingsSummaryViewModel[] = [];
 
     private rootPath: string;
     private page: number;
@@ -81,22 +95,26 @@ export class CompFormEditComponent implements OnInit {
     public invTab: boolean = false;
     public invTabInActive: string;
     public defaultTabInActive: string = " in active";
-    
+
     public selectedFinding: Finding = new Finding;
     public fileUploaded: string;
     public SiteSources: any[];
-     //public SourceSite: DefaultSite = new DefaultSite;
-     //public SourceSite: DefaultSite = new DefaultSite;
+    //public SourceSite: DefaultSite = new DefaultSite;
+    //public SourceSite: DefaultSite = new DefaultSite;
     public SiteSource: SiteSource = new SiteSource;
+    public isQCVerifier: boolean;
+    public reviewStatus: string;
+
+    public qcAssignedTo: string;
 
     @ViewChild('FindingsAddModal') FindingsAddModal: ModalComponent;
 
     public myDatePickerOptions = {
-        
+
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
-     };
-    
+    };
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -104,26 +122,60 @@ export class CompFormEditComponent implements OnInit {
         private service: SearchService,
         private fb: FormBuilder,
         private sanitizer: DomSanitizer,
-        private configService: ConfigService
-    ) { }
-
+        private configService: ConfigService,
+        private authService: AuthService,
+        private compFormLogic: CompFormLogicService
+    ) { }    
+   
     ngOnInit() {
         this.formLoading = true;
         this.route.params.forEach((params: Params) => {
             this.ComplianceFormId = params['formId'];
             this.rootPath = params['rootPath'];
             this.page = +params['page'];
-            this.currentTab =  params['tab'];
-            if (this.currentTab == "invTab"){
-                
-               this.setInvestigatorTab();
+            this.currentTab = params['tab'];
+            if (this.currentTab == "invTab") {
+                this.setInvestigatorTab();
             }
+            this.qcAssignedTo = params['qcAssignedTo'];  //discuss with Pradeep and remove this line.
             this.LoadOpenComplainceForm();
             this.LoadInstituteSiteSummary();
         });
     }
 
-    
+    get isFormValid() {
+        let isValid: boolean;
+        isValid = /\d{4}\/\d{4}/.test(this.CompForm.ProjectNumber);
+        if (!isValid) {
+            return false;
+        } else {
+            if (this.CompForm.ProjectNumber2){
+                isValid = /\d{4}\/\d{4}/.test(this.CompForm.ProjectNumber2);
+                if (!isValid) {
+                    return false;
+                } else {
+                    //could not find reg exp for length:
+                    if (this.CompForm.ProjectNumber.length == 9 && this.CompForm.ProjectNumber2.length == 9) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }else{
+                return true;
+            }
+        }
+    }
+
+    status(){
+        if(this.CompForm){
+            return this.compFormLogic.getReviewStatus(this.CompForm.CurrentReviewStatus);
+        }
+        else{
+            return null;
+        }
+    }
+
     //for REactive Validation
     buildForm(): void {
         this.compFormForm = this.fb.group({
@@ -149,10 +201,10 @@ export class CompFormEditComponent implements OnInit {
         //  this.onValueChanged(); // (re)set validation messages now
     }
 
-//===============Institute tab
-LoadInstituteSiteSummary(){
-      
-      if (this.ComplianceFormId != null && this.ComplianceFormId.length > 0){  //ComplianceFormId is null when the form is created manually
+    //===============Institute tab
+    LoadInstituteSiteSummary() {
+
+        if (this.ComplianceFormId != null && this.ComplianceFormId.length > 0) {  //ComplianceFormId is null when the form is created manually
             //console.log("*:" + this.ComplianceFormId + "*");
             this.formLoading = true;
             this.service.getInstituteFindingsSummary(this.ComplianceFormId)
@@ -163,15 +215,15 @@ LoadInstituteSiteSummary(){
                 error => {
                     this.formLoading = false;
                 });
-      }
-      
-  }
+        }
 
-gotoSiteDetails(SiteSourceId: number){
-    this.router.navigate(['institute-findings', this.ComplianceFormId,  SiteSourceId, {rootPath:this.rootPath}], 
-    { relativeTo: this.route.parent});
-}
-//===============institute tab
+    }
+
+    gotoSiteDetails(SiteSourceId: number) {
+        this.router.navigate(['institute-findings', this.ComplianceFormId, SiteSourceId, { rootPath: this.rootPath }],
+            { relativeTo: this.route.parent });
+    }
+    //===============institute tab
 
     InitInvestigatorControls() {
         return this.fb.group({
@@ -249,7 +301,6 @@ gotoSiteDetails(SiteSourceId: number){
         //this.CompForm = this.compFormForm.value;
         this.service.saveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
-                console.log("Save Successful");
                 let newCompForm: ComplianceFormA = item;
                 this.ComplianceFormId = newCompForm.RecId;
                 this.LoadOpenComplainceForm();
@@ -260,7 +311,6 @@ gotoSiteDetails(SiteSourceId: number){
     }
 
     LoadOpenComplainceForm() {
-        
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
@@ -272,33 +322,57 @@ gotoSiteDetails(SiteSourceId: number){
                 this.buildForm();
                 this.setFileUploadFolderPath();
                 this.formLoading = false;
+                this.reviewStatus = this.status();
+                // this.isQCVerifier = this.isLoggedInUserQCVerifier;
+                // this.addCommentCollection();
             },
             error => {
                 this.formLoading = false;
             });
     }
 
-    get isFileUploaded(): boolean {
-        if(this.CompForm.UploadedFileName == null)
+    // get isLoggedInUserQCVerifier() {
+    //     if (this.CompForm.Reviews.length > 0) {
+    //         var review = this.CompForm.Reviews.find(x =>
+    //             x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+    //             x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+    //         if (!review)
+    //             return false;
+    //         else
+    //             return true;
+    //     }
+    // }
+
+    get isLoggedInUserReviewer(){
+        if (this.CompForm) {
+            return this.compFormLogic.canSaveComplianceForm(this.CompForm);
+        }
+        else
             return false;
-        else if(this.CompForm.UploadedFileName.trim().length == 0)
+    }
+
+    get isFileUploaded(): boolean {
+        if (this.CompForm.UploadedFileName == null)
+            return false;
+        else if (this.CompForm.UploadedFileName.trim().length == 0)
             return false;
         else
             return true;
     }
 
-    setFileUploadFolderPath(){
+    setFileUploadFolderPath() {
         this.service.getUploadsFolderPath()
-        .subscribe((item: any) => {
-            this.fileUploaded = this.configService.getApiHost() + item;
-        })
+            .subscribe((item: any) => {
+                this.fileUploaded = this.configService.getApiHost() + item;
+            })
     }
 
-    downloadUploadedFile(generatedFileName: string){
+    downloadUploadedFile(generatedFileName: string) {
         this.service.getUploadedFile(generatedFileName, this.CompForm.UploadedFileName)
-        .subscribe((item: any) => {
-            this.fileUploaded = this.configService.getApiHost() + item;
-        })
+            .subscribe((item: any) => {
+                this.fileUploaded = this.configService.getApiHost() + item;
+            })
     }
 
     Initialize() {
@@ -325,9 +399,9 @@ gotoSiteDetails(SiteSourceId: number){
         }
     }
 
-    formValueChanged(){
-        this.pageChanged = true;
-    }    
+    formValueChanged(val: any) {
+        this.pageChanged = val;
+    }
     get PrincipalInvestigatorName() {
         let p = this.CompForm.InvestigatorDetails.find(x => x.Role == "PI");
         if (p != null) {
@@ -356,7 +430,7 @@ gotoSiteDetails(SiteSourceId: number){
             });
     }
 
-    get EstimatedExtractionCompletionIn(){
+    get EstimatedExtractionCompletionIn() {
         return "";
     }
     //Investigators:
@@ -366,13 +440,12 @@ gotoSiteDetails(SiteSourceId: number){
         return this.CompForm.InvestigatorDetails.filter(x => x.Deleted == false);
     }
 
-    setInvestigatorTab()
-    {
-           
-            this.defaultTab = false;
-            this.defaultTabInActive = "";
-            this.invTabInActive = " in active"
-            this.invTab = true;
+    setInvestigatorTab() {
+
+        this.defaultTab = false;
+        this.defaultTabInActive = "";
+        this.invTabInActive = " in active"
+        this.invTab = true;
     }
 
     InvestigatorAdd() {
@@ -448,7 +521,6 @@ gotoSiteDetails(SiteSourceId: number){
 
         var tmp = this.CompForm.InvestigatorDetails[idx];
 
-
         this.CompForm.InvestigatorDetails[idx] = this.CompForm.InvestigatorDetails[idx - step];
         this.CompForm.InvestigatorDetails[idx - step] = tmp;
         this.SetInvestigatorRole();
@@ -476,14 +548,14 @@ gotoSiteDetails(SiteSourceId: number){
     //         });
     // }
 
-    loadSiteSources(){
+    loadSiteSources() {
         this.service.getSiteSources()
-        .subscribe((item: any[]) =>{
-            this.SiteSources = item;
-        },
-        error => {
+            .subscribe((item: any[]) => {
+                this.SiteSources = item;
+            },
+            error => {
 
-        });
+            });
     }
 
     LoadMockSitesAvailable() {
@@ -530,48 +602,48 @@ gotoSiteDetails(SiteSourceId: number){
         return this.CompForm.SiteSources.filter(x => x.Deleted == false)
     }
 
-   get MandatorySites() {
+    get MandatorySites() {
         return this.CompForm.SiteSources.filter(x => x.Deleted == false && x.IsMandatory == true)
     }
 
     get OptionalSites() {
         return this.CompForm.SiteSources.filter(x => x.Deleted == false && x.IsMandatory == false)
     }
-    
+
     get SitesAvalaibleToInclude() {
         return this.SitesAvailable.filter(x => x.Included == false);
     }
 
-    get AppliesToItems(){       
+    get AppliesToItems() {
         var items: { id: number, name: string }[] = [
-        { "id": 0, "name": "PIs and SIs" },
-        { "id": 1, "name": "PIs" },
-        { "id": 2, "name": "Institute" }];
+            { "id": 0, "name": "PIs and SIs" },
+            { "id": 1, "name": "PIs" },
+            { "id": 2, "name": "Institute" }];
         return items;
     }
 
-     onSiteSourceChange(value:any){
-      var site = this.SiteSources.find(x => x.RecId == value);
-      
-      this.SiteSource.RecId = site.RecId;
-      this.SiteSource.SiteName = site.SiteName;
-      this.SiteSource.SiteShortName = site.SiteShortName;
-      this.SiteSource.SiteUrl = site.SiteUrl;
-      this.SiteSource.ExtractionMode = site.ExtractionMode;
-   }
-    
-   onSearchAppliesToChange(value:any){
+    onSiteSourceChange(value: any) {
+        var site = this.SiteSources.find(x => x.RecId == value);
+
+        this.SiteSource.RecId = site.RecId;
+        this.SiteSource.SiteName = site.SiteName;
+        this.SiteSource.SiteShortName = site.SiteShortName;
+        this.SiteSource.SiteUrl = site.SiteUrl;
+        this.SiteSource.ExtractionMode = site.ExtractionMode;
+    }
+
+    onSearchAppliesToChange(value: any) {
         this.SiteSource.SearchAppliesToText = value;
         console.log(value);
     }
-   
-    clearSelectedSite(){
-        
+
+    clearSelectedSite() {
+
         this.SiteSource = new SiteSource;
     }
     AddSelectedSite() {
-  
-      
+
+
         let siteToAdd = new SiteSourceToSearch;
         siteToAdd.SiteId = this.SiteSource.RecId;
         siteToAdd.SiteName = this.SiteSource.SiteName;
@@ -586,49 +658,19 @@ gotoSiteDetails(SiteSourceId: number){
         console.log("SearchAppliesTo : " + this.SiteSource.SearchAppliesTo);
 
         let extractionMode: string = "Manual";
-        if (this.SiteSource.ExtractionMode != null){
+        if (this.SiteSource.ExtractionMode != null) {
             extractionMode = this.SiteSource.ExtractionMode;
         }
- 
+
         if (this.SiteSource.SearchAppliesTo == 2)  //Applies to Institute
         {
             extractionMode = "Manual"
         }
-        siteToAdd.ExtractionMode = extractionMode; 
+        siteToAdd.ExtractionMode = extractionMode;
 
-        
+
         this.CompForm.SiteSources.push(siteToAdd);
         this.pageChanged = true;
-        
-        // var index = 0;
-
-        // for (index = 0; index < this.SitesAvailable.length; ++index) {
-        //     if (this.SitesAvailable[index].Selected == true) {
-        //         //Check if site is already included
-        //         let enumOfSiteToAdd = this.SitesAvailable[index].SiteEnum;
-        //         let siteIdToAdd = this.SitesAvailable[index].RecId;
-        //         //let check = this.CompForm.SiteSources.find(x => x.SiteEnum == enumOfSiteToAdd)
-        //         let check = this.CompForm.SiteSources.find(x => x.SiteId == siteIdToAdd)
-        //         if (check) { //If found then it was possibly marked as deleted 
-        //             check.Deleted = false;
-        //         }
-        //         else {  //add it to the collection
-        //             let siteToAdd = new SiteSourceToSearch;
-        //             siteToAdd.SiteId = this.SitesAvailable[index].RecId;
-        //             siteToAdd.SiteName = this.SitesAvailable[index].SiteName;
-        //             siteToAdd.SiteEnum = this.SitesAvailable[index].SiteEnum;
-        //             siteToAdd.SiteUrl = this.SitesAvailable[index].SiteUrl;
-        //             siteToAdd.Id = this.LastSiteSourceId + 1;
-        //             siteToAdd.IsMandatory = false;
-        //             siteToAdd.ExtractionMode = this.SitesAvailable[index].ExtractionMode;
-        //             this.CompForm.SiteSources.push(siteToAdd);
-        //             this.SitesAvailable[index].Included = true;
-        //         }
-        //         //one or more sites are added.
-        //         this.pageChanged = true;
-        //     }
-        //     this.SitesAvailable[index].Selected = false;
-        // }
         
         
         this.SetSiteDisplayPosition();
@@ -638,49 +680,37 @@ gotoSiteDetails(SiteSourceId: number){
         this.siteToRemove = site;
     }
 
-//     RemoveSite() {
-        
-//         this.siteToRemove.Deleted = true;
-//         //this.siteToRemove.SiteEnum
-//         let site = this.SitesAvailable.find(x => x.SiteEnum == this.siteToRemove.SiteEnum);
-//         if (site) {
-//             site.Included = false;
-//             this.pageChanged = true;
-//         }
-//         this.SetSiteDisplayPosition();
-    
-// }
 
     RemoveSite(){
         
         let siteIdToRemove = this.siteToRemove.SiteId;
-       
-       
-         
-       //Remove Findings:
-        var i:number;
+
+
+
+        //Remove Findings:
+        var i: number;
         for (i = this.CompForm.Findings.length - 1; i >= 0; i -= 1) {
-            if (this.CompForm.Findings[i].SiteSourceId == this.siteToRemove.Id ) {
-                 console.log("Finding removed: " + this.CompForm.Findings[i].SiteId  );
+            if (this.CompForm.Findings[i].SiteSourceId == this.siteToRemove.Id) {
+                console.log("Finding removed: " + this.CompForm.Findings[i].SiteId);
                 this.CompForm.Findings.splice(i, 1);
             }
         }
-        
+
         //remove siteSearchStatus for all Investigators.
-        var inv:number;
+        var inv: number;
         for (inv = this.CompForm.InvestigatorDetails.length - 1; inv >= 0; inv -= 1) {
             var s: number;
             for (s = this.CompForm.InvestigatorDetails[inv].SitesSearched.length - 1; s >= 0; s -= 1) {
-                if (this.CompForm.InvestigatorDetails[inv].SitesSearched[s].SiteSourceId == this.siteToRemove.Id ) {
-                   var invName = this.CompForm.InvestigatorDetails[inv].SearchName;
-                   console.log( "siteSearchStatus removed: inv: " + invName + "-" + this.CompForm.InvestigatorDetails[inv].SitesSearched[s].DisplayPosition);
-                   
+                if (this.CompForm.InvestigatorDetails[inv].SitesSearched[s].SiteSourceId == this.siteToRemove.Id) {
+                    var invName = this.CompForm.InvestigatorDetails[inv].SearchName;
+                    // console.log("siteSearchStatus removed: inv: " + invName + "-" + this.CompForm.InvestigatorDetails[inv].SitesSearched[s].DisplayPosition);
+
                     this.CompForm.InvestigatorDetails[inv].SitesSearched.splice(s, 1);
                 }
-            
+
             }
-            
-           
+
+
         }
 
         var index = this.CompForm.SiteSources.indexOf(this.siteToRemove, 0);
@@ -692,7 +722,7 @@ gotoSiteDetails(SiteSourceId: number){
         this.SetSiteDisplayPositionInFindings();
         this.pageChanged = true;
     }
-    
+   
     
     SetSiteDisplayPosition() {
         let pos: number = 1
@@ -708,7 +738,7 @@ gotoSiteDetails(SiteSourceId: number){
         }
     }
 
-   SetSiteDisplayPositionInFindings() {
+    SetSiteDisplayPositionInFindings() {
         for (let finding of this.CompForm.Findings) {
             let pos: number = 0
             pos = this.CompForm.SiteSources.find(x => x.Id == finding.SiteSourceId).DisplayPosition;
@@ -727,17 +757,17 @@ gotoSiteDetails(SiteSourceId: number){
         return lastNumber;
     }
 
-    siteIsManual(value: string ){
-       if (value == null){
-           value = "";
-       }    
-    //    if (ExtractionMode.toLowerCase() == "manual"){
-    //         retValue =  true;
-    //   }
-        if (value == "Manual"){
+    siteIsManual(value: string) {
+        if (value == null) {
+            value = "";
+        }
+        //    if (ExtractionMode.toLowerCase() == "manual"){
+        //         retValue =  true;
+        //   }
+        if (value == "Manual") {
             return true;
         }
-        else{
+        else {
             return false;
         }
     }
@@ -747,18 +777,18 @@ gotoSiteDetails(SiteSourceId: number){
             return null;
         }
         //return this.CompForm.Findings.filter(x => x.Selected == true);
-         return this.CompForm.Findings.filter(x => x.Selected == true).sort(
-            function(a,b){
+        return this.CompForm.Findings.filter(x => x.Selected == true).sort(
+            function (a, b) {
                 if (a.DisplayPosition < b.DisplayPosition) return -1;
                 else if (a.DisplayPosition > b.DisplayPosition) return 1;
                 else return 0;
             }
-         );
+        );
     }
 
-    AddFinding(){
-        
-       let finding = new Finding;
+    AddFinding() {
+
+        let finding = new Finding;
         finding.IsMatchedRecord = false;
         //finding.UISelected = true;
         finding.IsAnIssue = true;
@@ -767,35 +797,33 @@ gotoSiteDetails(SiteSourceId: number){
         finding.SiteEnum = null;
         //finding.SourceNumber = 
         //finding.InvestigatorName =
-        finding.DateOfInspection = new Date(Date.now()) ;
+        finding.DateOfInspection = new Date(Date.now());
         finding.Selected = true;
         this.CompForm.Findings.push(finding);
         this.EditFinding(finding);
-        
+
     }
 
-    EditFinding(finding: Finding){
+    EditFinding(finding: Finding) {
         this.selectedFinding = finding;
         this.FindingsAddModal.open();
     }
 
-    DeleteFinding(finding: Finding){
-        if (window.confirm("Remove ?") == true){
-            var index =  this.CompForm.Findings.indexOf(finding);
-            this.CompForm.Findings.splice(index, 1);   
+    DeleteFinding(finding: Finding) {
+        if (window.confirm("Remove ?") == true) {
+            var index = this.CompForm.Findings.indexOf(finding);
+            this.CompForm.Findings.splice(index, 1);
         }
-          
-        
     }
 
     Save() {
 
         //this.service.saveComplianceForm(this.CompForm)
-         if (this.BlankInvestigatorNamesFound() ){
+        if (this.BlankInvestigatorNamesFound()) {
             window.alert("The Name field is blank in one or more Investigator records.");
         }
-        else{
-             this.searchInProgress = true;
+        else {
+            this.searchInProgress = true;
             this.service.saveCompFormGeneralNInvestigatorsNOptionalSites(this.CompForm)
                 .subscribe((item: ComplianceFormA) => {
                     this.ComplianceFormId = item.RecId;
@@ -803,30 +831,28 @@ gotoSiteDetails(SiteSourceId: number){
                     this.LoadOpenComplainceForm();
                 },
                 error => {
-            });
+                });
         }
-     }
+    }
 
-    BlankInvestigatorNamesFound(){
-         let retValue: boolean = false;
-         this.CompForm.InvestigatorDetails.forEach(inv =>
-            {if (inv.Name == null || inv.Name.length == 0)
-                {
-                    retValue = true;
-                }
-             }
-         );   
+    BlankInvestigatorNamesFound() {
+        let retValue: boolean = false;
+        this.CompForm.InvestigatorDetails.forEach(inv => {
+            if (inv.Name == null || inv.Name.length == 0) {
+                retValue = true;
+            }
+        }
+        );
         return retValue;
     }
-    
+
     ScanNSave() {
         this.searchInProgress = true;
         this.service.scanSaveComplianceForm(this.CompForm)
             .subscribe((item: any) => {
-                 this.ComplianceFormId = item.RecId;
+                this.ComplianceFormId = item.RecId;
                 this.searchInProgress = false;
                 this.LoadOpenComplainceForm();
-
             },
             error => {
                 this.searchInProgress = false;
@@ -843,17 +869,23 @@ gotoSiteDetails(SiteSourceId: number){
 
     }
 
-    gotoInstituteSummaryFindings(){
-         this.router.navigate(['institute-findings-summary', this.CompForm.RecId,  { rootPath: this.rootPath }],
+    gotoInstituteSummaryFindings() {
+        this.router.navigate(['institute-findings-summary', this.CompForm.RecId, { rootPath: this.rootPath }],
             { relativeTo: this.route.parent });
     }
-    
+
     goBack() {
+        //this.complianceFormId = params['complianceFormId'];
+        //this.qcAssignedTo = params['qcAssignedTo'];
         if (this.rootPath == null) {
             this._location.back();
         }
         else {
-            this.router.navigate([this.rootPath, { id: this.ComplianceFormId, page: this.page }]);
+            if (this.rootPath == 'edit-qc') {
+                this.router.navigate([this.rootPath, this.ComplianceFormId, this.qcAssignedTo],  { relativeTo: this.route.parent });
+            }else{
+                this.router.navigate([this.rootPath, { id: this.ComplianceFormId, page: this.page }]);
+            }
         }
 
     }
@@ -883,31 +915,40 @@ gotoSiteDetails(SiteSourceId: number){
         return this.sanitizer.bypassSecurityTrustUrl(url);
     }
 
-    
-    dateChanged($event:any, dateValue: Date){
+
+    dateChanged($event: any, dateValue: Date) {
         dateValue = $event.value;
         window.alert(JSON.stringify(dateValue));
-        
+
         window.alert(JSON.stringify(dateValue));
     }
-  
-     private Todate = new Date(); 
 
-     isUrl(url: string){
-         if (url == null){
-             return false;
-         }
-         else{
-            if (url.toLowerCase().startsWith("http")){
+    private Todate = new Date();
+
+    isUrl(url: string) {
+        if (url == null) {
+            return false;
+        }
+        else {
+            if (url.toLowerCase().startsWith("http")) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
          }
    
      }
     
-    get diagnostic() { return JSON.stringify(this.CompForm.SiteSources); }
+     isComponentVisible(componentName: string){
+        if(this.CompForm){
+            return this.compFormLogic.canDisplayComponent(this.CompForm, componentName);
+        }
+        else{
+            return false;
+        }
+     }
+
+    get diagnostic() { return JSON.stringify(this.rootPath); }
 
 
 }
