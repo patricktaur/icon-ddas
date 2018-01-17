@@ -174,6 +174,7 @@ export class EditQCComponent implements OnInit {
         //     return false;
     }
 
+    //Not used:
     listQCSummary() {
         this.auditService.listQCSummary(this.complianceFormId)
             .subscribe((item: any) => {
