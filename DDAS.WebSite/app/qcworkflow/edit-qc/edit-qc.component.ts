@@ -153,7 +153,8 @@ export class EditQCComponent implements OnInit {
     get isQCPassedOrFailed() {
         let review = this.complianceForm.Reviews.find(x =>
             x.Status == ReviewStatusEnum.QCFailed ||
-            x.Status == ReviewStatusEnum.QCPassed);
+            x.Status == ReviewStatusEnum.QCPassed ||
+            x.Status == ReviewStatusEnum.Completed);
 
         if(review != undefined && review.Status == ReviewStatusEnum.QCFailed)
             this.status = 0;
@@ -254,7 +255,7 @@ export class EditQCComponent implements OnInit {
             //console.log("this.currentReviewStatus:" + JSON.stringify(this.currentReviewStatus));
             return this.compFormLogic.CanDisplayFindingComponent(selectedFinding, componentName, this.currentReviewStatus)
         }else{
-            return false
+            return false;
         }
     }
 
@@ -274,6 +275,7 @@ export class EditQCComponent implements OnInit {
     getcommentCategory(categoryEnum: CommentCategoryEnum){
         return CommentCategoryEnum[categoryEnum];
     }
+    
     getReviewerCategory(categoryEnum: CommentCategoryEnum){
         return CommentCategoryEnum[categoryEnum];
     }
