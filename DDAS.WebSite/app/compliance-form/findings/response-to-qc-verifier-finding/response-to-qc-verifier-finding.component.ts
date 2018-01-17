@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.classes';
+import { ComplianceFormA, SiteSource, Finding, CommentCategoryEnum } from '../../../search/search.classes';
 import {CompFormLogicService} from "../../../search/shared/services/comp-form-logic.service"
 
 @Component({
@@ -14,8 +14,8 @@ export class ResponseToQCVerifierFindingComponent implements OnInit {
     private pageChanged: boolean = false;
     
     ngOnInit(){
-        if( this.Finding.Comments[0].CategoryEnum == 0)
-            this.Finding.Comments[0].CategoryEnum = 5; //CorrectionPending
+        // if( this.Finding.Comments[0].CategoryEnum == 0)
+        //     this.Finding.Comments[0].CategoryEnum = 5; //CorrectionPending
     }
 
     formValueChanged(){
@@ -33,6 +33,10 @@ export class ResponseToQCVerifierFindingComponent implements OnInit {
 
     get getQCVerifierComment(){
         return this.Finding.Comments[0];
+    }
+
+    get qcVerifierCommentCategoryEnum(){
+        return CommentCategoryEnum[this.Finding.Comments[0].CategoryEnum];
     }
 
     dividerGeneration(indexVal: number) {

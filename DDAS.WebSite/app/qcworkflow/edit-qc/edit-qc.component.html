@@ -1,10 +1,18 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
+<<<<<<< HEAD
 			<h3 class="no-margin-top">QC by </h3>
 			<label for="auditStatus">Status:</label>
+=======
+			<h3>QC for Principal Investigator - <b>{{principalInvestigatorName}}</b></h3>
+			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
+			<h3 class="no-margin-top">QC by {{qcAssignedTo}}</h3>
+			<label for="auditStatus">Status: {{reviewStatus}}</label>
+>>>>>>> 770b39884af02e24af1726296d7a002ff976e824
 			<!-- {{diagnostic}} -->
 			<br>
+			 <label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label> 
 			<!-- QCVerifierReviewId:{{QCVerifierReviewId}} -->
 			<br>
 			<!-- Test: {{Test?.RecId}} -->
@@ -27,21 +35,6 @@
 			<div class="tab-content">
 				<div id="qc-general" class="tab-pane fade {{defaultTabInActive}}">
 					<br/>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="Status">QC Response:</label>
-								<select class="form-control" [(ngModel)]="status">
-									<option value=-1 selected="selected">---select---</option>
-									<option value=0>Failed</option>
-									<option value=1>Passed</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-9">
-						</div>
-					</div>
-
 					<!-- <h4>Finding Summary:</h4>
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
@@ -120,10 +113,9 @@
 								</td>
 								<td class="text-left">
 									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
-									
 								</td>
 								<td>
-									<button type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip"
+									<button *ngIf="!isSubmitted" type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip"
 									 data-placement="top" title="Open">
 										<span class="glyphicon glyphicon-edit"></span>
 									</button>
@@ -131,10 +123,7 @@
 								</td>
 							</tr>
 						</tbody>
-					</table>
-
-					
-
+					</table>	
 					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
 				<div id="comp-form" class="tab-pane fade">
@@ -147,8 +136,24 @@
 </div>
 <div class="well">
 	<div class="row">
-		<div class="col-lg-12 ">
-			<button *ngIf="!isSubmitted" type="button" class="btn btn-primary" (click)="submit()">Submit</button>
+		<div class="col-lg-12">
+			<br/>
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="Status">QC Response:</label>
+						<select class="form-control" [(ngModel)]="status" [disabled]="isSubmitted">
+							<option value=-1 selected="selected">---select---</option>
+							<option value=0>Failed</option>
+							<option value=1>Passed</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-9">
+				</div>
+			</div>
+
+			<button type="button" class="btn btn-primary" (click)="submit()">Submit</button>
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>

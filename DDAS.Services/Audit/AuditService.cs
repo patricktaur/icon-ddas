@@ -91,14 +91,15 @@ namespace DDAS.Services.AuditService
 
             foreach (ComplianceForm Form in Forms)
             {
-                var Reviews = Form.Reviews.Where(x =>
+                var QCReviews = Form.Reviews.Where(x =>
                 x.Status == ReviewStatusEnum.QCRequested ||
                 x.Status == ReviewStatusEnum.QCInProgress ||
                 x.Status == ReviewStatusEnum.QCFailed ||
+                //x.Status == ReviewStatusEnum.QCCorrectionInProgress ||
                 x.Status == ReviewStatusEnum.QCPassed)
                 .ToList();
 
-                foreach (Review Review in Reviews)
+                foreach (Review Review in QCReviews)
                 {
                     var QCViewModel = new QCListViewModel();
                     //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);

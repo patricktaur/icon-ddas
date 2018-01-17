@@ -346,8 +346,10 @@ export class CompFormEditComponent implements OnInit {
 
     get isLoggedInUserReviewer(){
         if (this.CompForm) {
-            return this.compFormLogic.isLoggedInUserReviewerAndCanSaveForm(this.CompForm);
+            return this.compFormLogic.canSaveComplianceForm(this.CompForm);
         }
+        else
+            return false;
     }
 
     get isFileUploaded(): boolean {

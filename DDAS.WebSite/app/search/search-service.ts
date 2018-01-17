@@ -434,7 +434,7 @@ export class SearchService {
     saveReviewCompletedComplianceForm(form: ComplianceFormA) {
         let body = JSON.stringify(form);
         console.log("saveReviewCompletedComplianceForm");
-        return this.http.post(this._baseUrl + 'search/SaveReviewCompletedComplianceForm', body, this._options)
+        return this.http.post(this._baseUrl + 'search/UpdateQCEditComplianceForm', body, this._options)
             .map((res: Response) => {
                 console.log("AAAAA");
                 return res.json();

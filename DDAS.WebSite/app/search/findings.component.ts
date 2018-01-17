@@ -488,13 +488,15 @@ export class FindingsComponent implements OnInit {
     }
 
     get showMatchingRecordsAndAddManualFinding(){
-        if(this.currentReviewStatus && 
-            (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted ||
-            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
-            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewCompleted ||
-            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress ||
-            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress))
-            return true;
+        if(this.CompForm){
+            return this.compFormLogic.canShowMatchingRecordsAndAddManualFinding(this.CompForm);
+        }
+    }
+
+    get saveFinding(){
+        if(this.CompForm){
+            return this.compFormLogic.canSaveFinding(this.CompForm);
+        }
         else
             return false;
     }
@@ -513,11 +515,9 @@ export class FindingsComponent implements OnInit {
                 return this.recordToDelete.RecordDetails.substr(0, 100) + " ...";
             }
         }
-
     }
 
     RemoveFinding() {
-
         this.pageChanged = true;
         if (this.recordToDelete.IsMatchedRecord) {
             this.recordToDelete.IsAnIssue = false;

@@ -352,67 +352,182 @@ namespace DDAS.Services.Reports
             if (Users.Count == 0)
                 throw new Exception("No Users found in the database");
 
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Forms.Count == 0)
+                throw new Exception("No compliance forms found");
+
             var AdminDashboardList = new List<AdminDashboardViewModel>();
 
             foreach (User user in Users)
             {
                 var AdminDashboard = new AdminDashboardViewModel();
-                AdminDashboard.UserName = user.UserFullName;
+                AdminDashboard.UserName = user.UserName;
+                AdminDashboard.UserFullName = user.UserFullName;
                 AdminDashboard.OpeningBalance =
-                    ClosingBalanceOnPreviousDay(user.UserName);
+                    OpeningBalance(user.UserName, Forms);
                 AdminDashboard.InvestigatorUploaded =
-                    InvestigatorsUploadedToday(user.UserName);
+                    ComplianceFormsUploadedToday(user.UserName, Forms);
                 AdminDashboard.InvestigatorReviewCompleted =
-                    InvestigatorReviewCompletedToday(user.UserName);
-
+                    ComplianceFormsReviewCompletedToday(user.UserName, Forms);
+                AdminDashboard.ClosingBalance = ClosingBalance(user.UserName, Forms);
                 AdminDashboardList.Add(AdminDashboard);
             }
             return AdminDashboardList;
         }
 
-        private int ClosingBalanceOnPreviousDay(string UserName)
+        public List<AdminDashboardDrillDownViewModel> 
+            GetAdminDashboardDrillDownDetails(
+            string AssignedTo, AdminDashboardReportType ReportType)
         {
-            var forms = _UOW.ComplianceFormRepository.GetAll();
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (forms.Count == 0)
-                return 0;
+            if (Forms.Count == 0)
+                throw new Exception("No compliance forms found");
 
-            var ClosingBalance = forms
-                .Where(x => x.AssignedTo.ToLower() == UserName.ToLower())
-                .SelectMany(Inv => Inv.InvestigatorDetails)
-                .Where(s => s.AddedOn <= DateTime.Now.Date &&
-                s.ReviewCompletedOn == null)
-                .Count();
-
-            return ClosingBalance;
+            switch (ReportType)
+            {
+                case AdminDashboardReportType.OpeningBalance:
+                    return OpeningBalanceList(AssignedTo, Forms);
+                case AdminDashboardReportType.ComplianceFormsUploaded:
+                    return ComplianceFormsUploadedList(AssignedTo, Forms);
+                case AdminDashboardReportType.ComplianceFormsCompleted:
+                    return ComplianceFormsReviewCompletedList(AssignedTo, Forms);
+                case AdminDashboardReportType.ClosingBalance:
+                    return ClosingBalanceList(AssignedTo, Forms);
+                default:
+                    throw new Exception("invalid enum");
+            }
         }
 
-        private int InvestigatorsUploadedToday(string UserName)
+        private int OpeningBalance(string UserName, List<ComplianceForm> Forms)
         {
-            var forms = _UOW.ComplianceFormRepository.GetAll();
-
-            if (forms.Count == 0)
-                return 0;
-
-            return forms
-                .Where(x => x.AssignedTo.ToLower() == UserName.ToLower())
-                .SelectMany(Inv => Inv.InvestigatorDetails)
-                .Where(s => s.AddedOn >= DateTime.Now.Date)
-                .Count();
+            return OpeningBalanceList(UserName, Forms).Count();
         }
 
-        private int InvestigatorReviewCompletedToday(string UserName)
+        private List<AdminDashboardDrillDownViewModel> OpeningBalanceList(string UserName, List<ComplianceForm> Forms)
         {
-            var forms = _UOW.ComplianceFormRepository.GetAll();
+            Forms = Forms.Where(x =>
+            x.AssignedTo.ToLower() == UserName.ToLower() &&
+            (x.ReviewCompletedOn == null ||
+            x.ReviewCompletedOn.Value.Date >= DateTime.Now.Date) &&
+            x.SearchStartedOn.Date < DateTime.Now.Date)
+            .ToList();
 
-            if (forms.Count == 0)
-                return 0;
+            var DrillDownList = new List<AdminDashboardDrillDownViewModel>();
 
-            return forms
-                .Where(x => x.AssignedTo.ToLower() == UserName.ToLower())
-                .SelectMany(Inv => Inv.InvestigatorDetails)
-                .Where(s => s.ReviewCompletedOn >= DateTime.Now.Date)
-                .Count();
+            foreach (ComplianceForm Form in Forms)
+            {
+                var DrillDownRecord = new AdminDashboardDrillDownViewModel();
+                DrillDownRecord.UserFullName = GetUserFullName(UserName);
+                DrillDownRecord.PrincipalInvestigator = 
+                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                DrillDownRecord.InvestigatorCount = Form.InvestigatorDetails.Count();
+                DrillDownRecord.ProjectNumber = Form.ProjectNumber;
+                DrillDownRecord.ProjectNumber2 = Form.ProjectNumber2;
+                DrillDownRecord.SponsorProtocolNumber = Form.SponsorProtocolNumber;
+                DrillDownRecord.SponsorProtocolNumber2 = Form.SponsorProtocolNumber2;
+                DrillDownRecord.ComplianceFormStatus = Form.Status;
+
+                DrillDownList.Add(DrillDownRecord);
+            }
+            return DrillDownList;
+        }
+
+        private int ComplianceFormsUploadedToday(string UserName, List<ComplianceForm> Forms)
+        {
+            return ComplianceFormsUploadedList(UserName, Forms).Count();
+        }
+
+        private List<AdminDashboardDrillDownViewModel> ComplianceFormsUploadedList(string UserName, List<ComplianceForm> Forms)
+        {
+            Forms = Forms.Where(x => 
+            x.SearchStartedOn.Date >= DateTime.Now.Date)
+            .ToList();
+
+            var DrillDownList = new List<AdminDashboardDrillDownViewModel>();
+
+            foreach (ComplianceForm Form in Forms)
+            {
+                var DrillDownRecord = new AdminDashboardDrillDownViewModel();
+                DrillDownRecord.UserFullName = GetUserFullName(UserName);
+                DrillDownRecord.PrincipalInvestigator =
+                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                DrillDownRecord.InvestigatorCount = Form.InvestigatorDetails.Count();
+                DrillDownRecord.ProjectNumber = Form.ProjectNumber;
+                DrillDownRecord.ProjectNumber2 = Form.ProjectNumber2;
+                DrillDownRecord.SponsorProtocolNumber = Form.SponsorProtocolNumber;
+                DrillDownRecord.SponsorProtocolNumber2 = Form.SponsorProtocolNumber2;
+                DrillDownRecord.ComplianceFormStatus = Form.Status;
+
+                DrillDownList.Add(DrillDownRecord);
+            }
+            return DrillDownList;
+        }
+
+        private int ComplianceFormsReviewCompletedToday(string UserName, List<ComplianceForm> Forms)
+        {
+            return ComplianceFormsReviewCompletedList(UserName, Forms).Count();
+        }
+
+        private List<AdminDashboardDrillDownViewModel> ComplianceFormsReviewCompletedList(string UserName, List<ComplianceForm> Forms)
+        {
+            Forms = Forms.Where(x =>
+            x.AssignedTo.ToLower() == UserName.ToLower() &&
+            x.ReviewCompletedOn != null &&
+            x.ReviewCompletedOn.Value.Date >= DateTime.Now.Date)
+            .ToList();
+
+            var DrillDownList = new List<AdminDashboardDrillDownViewModel>();
+
+            foreach (ComplianceForm Form in Forms)
+            {
+                var DrillDownRecord = new AdminDashboardDrillDownViewModel();
+                DrillDownRecord.UserFullName = GetUserFullName(UserName);
+                DrillDownRecord.PrincipalInvestigator =
+                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                DrillDownRecord.InvestigatorCount = Form.InvestigatorDetails.Count();
+                DrillDownRecord.ProjectNumber = Form.ProjectNumber;
+                DrillDownRecord.ProjectNumber2 = Form.ProjectNumber2;
+                DrillDownRecord.SponsorProtocolNumber = Form.SponsorProtocolNumber;
+                DrillDownRecord.SponsorProtocolNumber2 = Form.SponsorProtocolNumber2;
+                DrillDownRecord.ComplianceFormStatus = Form.Status;
+
+                DrillDownList.Add(DrillDownRecord);
+            }
+            return DrillDownList;
+        }
+
+        private int ClosingBalance(string UserName, List<ComplianceForm> Forms)
+        {
+            return ClosingBalanceList(UserName, Forms).Count();
+        }
+
+        private List<AdminDashboardDrillDownViewModel> ClosingBalanceList(string UserName, List<ComplianceForm> Forms)
+        {
+            Forms = Forms.Where(x =>
+            x.AssignedTo.ToLower() == UserName.ToLower() &&
+            x.IsReviewCompleted == false)
+            .ToList();
+
+            var DrillDownList = new List<AdminDashboardDrillDownViewModel>();
+
+            foreach (ComplianceForm Form in Forms)
+            {
+                var DrillDownRecord = new AdminDashboardDrillDownViewModel();
+                DrillDownRecord.UserFullName = GetUserFullName(UserName);
+                DrillDownRecord.PrincipalInvestigator =
+                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                DrillDownRecord.InvestigatorCount = Form.InvestigatorDetails.Count();
+                DrillDownRecord.ProjectNumber = Form.ProjectNumber;
+                DrillDownRecord.ProjectNumber2 = Form.ProjectNumber2;
+                DrillDownRecord.SponsorProtocolNumber = Form.SponsorProtocolNumber;
+                DrillDownRecord.SponsorProtocolNumber2 = Form.SponsorProtocolNumber2;
+                DrillDownRecord.ComplianceFormStatus = Form.Status;
+
+                DrillDownList.Add(DrillDownRecord);
+            }
+            return DrillDownList;
         }
         #endregion
 
@@ -522,7 +637,7 @@ namespace DDAS.Services.Reports
                 VM.SearchStartedOn = Investigator.SearchStartedOn;
                 VM.ReviewCompletedOn = Investigator.ReviewCompletedOn;
 
-                VM.AssignedTo = 
+                VM.AssignedTo =
                     GetUserFullName(Investigator.AssignedTo);
                 VM.FullMatchCount = Investigator.FullMatchCount;
                 VM.PartialMatchCount = Investigator.PartialMatchCount;
@@ -551,7 +666,7 @@ namespace DDAS.Services.Reports
                 ComplianceForms.Where(form => form.ProjectNumber ==
                 ReportFilter.ProjectNumber ||
                 form.ProjectNumber2 == ReportFilter.ProjectNumber)
-                .SelectMany(form => 
+                .SelectMany(form =>
                 form.InvestigatorDetails, (form, Investigator) =>
                 new { form, Investigator })
                 .Where(s => s.Investigator.ReviewCompletedOn != null &&
@@ -592,7 +707,7 @@ namespace DDAS.Services.Reports
                 VM.FindingStatus = StudySpecificInvestigators[Index].FindingStatus == 0
                     ? "No Issues Identified" : "Issues Identified";
 
-                VM.AssignedTo = 
+                VM.AssignedTo =
                     GetUserFullName(StudySpecificInvestigators[Index].AssigendTo);
 
                 VM.Role = StudySpecificInvestigators[Index].Role;
@@ -625,7 +740,7 @@ namespace DDAS.Services.Reports
                 .SelectMany(Form => Form.InvestigatorDetails,
                 (Form, Investigator) =>
                 new { Form, Investigator })
-                .Where(s => 
+                .Where(s =>
                 s.Investigator.ReviewCompletedOn != null &&
                 s.Investigator.ReviewCompletedOn >= ReportFilter.FromDate.Date &&
                 s.Investigator.ReviewCompletedOn <= ReportFilter.ToDate.Date)
@@ -642,18 +757,18 @@ namespace DDAS.Services.Reports
 
                     Findings = s.Form.Findings
                         .Where(finding => finding.InvestigatorSearchedId ==
-                        s.Investigator.Id && 
-                        finding.InvestigatorName.ToLower() == 
+                        s.Investigator.Id &&
+                        finding.InvestigatorName.ToLower() ==
                         s.Investigator.Name.ToLower()).ToList(),
                 })
                 .ToList();
 
-            var InvestigatorFindingVMList = 
+            var InvestigatorFindingVMList =
                 new List<InvestigatorFindingViewModel>();
 
             var Limit = ReviewCompletedInvestigators.Count();
 
-            for(int Index = 0; Index < Limit; Index++)
+            for (int Index = 0; Index < Limit; Index++)
             {
                 var VM = new InvestigatorFindingViewModel();
 
@@ -662,15 +777,15 @@ namespace DDAS.Services.Reports
                 VM.InvestigatorName = ReviewCompletedInvestigators[Index].InvestigatorName;
                 VM.Role = ReviewCompletedInvestigators[Index].Role;
 
-                VM.ReviewCompletedBy = 
+                VM.ReviewCompletedBy =
                     GetUserFullName(ReviewCompletedInvestigators[Index].AssignedTo);
 
                 VM.ReviewCompletedOn = ReviewCompletedInvestigators[Index].ReviewCompletedOn;
 
                 var Findings = ReviewCompletedInvestigators[Index].Findings;
 
-                if(Findings.Count() > 0 &&
-                    Findings.Where(x => x.IsAnIssue ==true).Count() > 0)
+                if (Findings.Count() > 0 &&
+                    Findings.Where(x => x.IsAnIssue == true).Count() > 0)
                 {
                     Findings
                         .Where(x => x.IsAnIssue == true)
@@ -679,7 +794,7 @@ namespace DDAS.Services.Reports
                     {
                         var tempVM = VM;
                         if (finding.SiteEnum != null)
-                            tempVM.SiteShortName = 
+                            tempVM.SiteShortName =
                             _UOW.SiteSourceRepository.GetAll()
                             .Find(x => x.SiteEnum == finding.SiteEnum).SiteShortName;
                         else
@@ -694,7 +809,7 @@ namespace DDAS.Services.Reports
 
             var filter1 = InvestigatorFindingVMList;
 
-            if(ReportFilter.ProjectNumber != null &&
+            if (ReportFilter.ProjectNumber != null &&
                 ReportFilter.ProjectNumber != "")
             {
                 filter1 = InvestigatorFindingVMList.Where(x =>
@@ -715,7 +830,7 @@ namespace DDAS.Services.Reports
             var User = _UOW.UserRepository.GetAll()
                 .Find(x => x.UserName.ToLower() == AssignedTo.ToLower());
 
-            return 
+            return
                 User != null ? User.UserFullName : null;
         }
     }

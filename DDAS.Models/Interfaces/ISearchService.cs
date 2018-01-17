@@ -75,5 +75,6 @@ namespace DDAS.Models.Interfaces
             IGenerateOutputFile GenerateOutputFile,
             List<ComplianceForm> forms);
 
+        bool UpdateQCEditComplianceForm(ComplianceForm Form);
     }
 }
