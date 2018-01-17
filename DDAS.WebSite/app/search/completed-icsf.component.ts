@@ -5,26 +5,19 @@ import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
+import { ReviewStatusEnum } from './search.classes';
 import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'all-iscfs.component.html',
+    templateUrl: 'completed-icsf.component.html',
 })
-export class AllISCFsComponent implements OnInit {
+export class CompletedICSFComponent implements OnInit {
 
     public PrincipalInvestigators: PrincipalInvestigatorDetails[];
-
-    public Active: boolean;
-    public AssignedTo: string;
-    public SelectedInvestigatorName: string;
-    public SelectedComplianceFormId: string;
-
-    public filterStatus: number = -1;
-    public filterInvestigatorName: string = "";
-    public ComplianceFormFilter: CompFormFilter;
     public Users: any[];
-
+    public ComplianceFormFilter: CompFormFilter;    
+    
     public myDatePickerOptions = {
 
         dateFormat: 'dd mmm yyyy',
@@ -34,21 +27,22 @@ export class AllISCFsComponent implements OnInit {
     public ToSelDate: string;//default calendar start dates
     public FromDate: IMyDateModel;// Object = { date: { year: 2018, month: 10, day: 9 } };
     public ToDate: IMyDateModel;  // Object = { date: { year: 2018, month: 10, day: 9 } };
+    
+    public formLoading: boolean;    
 
-    public p: number;
-    public formLoading: boolean;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
-        private authService: AuthService) { }
+        private authService: AuthService) {
+    }
 
     ngOnInit() {
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
-        this.LoadUsers();
+        this.LoadUsers();        
     }
 
     LoadUsers() {
@@ -94,7 +88,6 @@ export class AllISCFsComponent implements OnInit {
     }
 
     LoadPrincipalInvestigators() {
-
         if (this.FromDate != null) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
@@ -107,23 +100,19 @@ export class AllISCFsComponent implements OnInit {
 
         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
-
                 this.PrincipalInvestigators = item;
             });
     }
 
-    setSelectedRecordDetails(Investigator: PrincipalInvestigatorDetails) {
-        this.SelectedComplianceFormId = Investigator.RecId;
-        this.SelectedInvestigatorName = Investigator.Name;
-    }
-
-    private Todate = new Date();
-    private testDate: Date;
-    dateChanged(event: Date) {
-        this.testDate = event;
+    get filteredPrincipalInvestigators(){
+        if(this.PrincipalInvestigators){
+            return this.PrincipalInvestigators.filter(x => 
+                x.CurrentReviewStatus == ReviewStatusEnum.Completed);
+        }
+        else
+            return null;
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
-
 
 }

@@ -5,10 +5,10 @@
                 <h4>QC Verifier's Comments:</h4>
             </label>
             <br/>
-            <label>Comment Category: {{getQCVerifierComment.CategoryEnum}} </label>
+            <label>Comment Category: {{qcVerifierCommentCategoryEnum}} </label>
             <textarea class="form-control" name="Comment"  rows="3" cols="30" [(ngModel)]="getQCVerifierComment.FindingComment" readonly
                 placeholder="Comment">
-                    </textarea>
+            </textarea>
         </div>
     </div>
     <div class="row">
@@ -19,7 +19,8 @@
                 <div class="col-md-4">
                     <label>QC Correction Status:</label>
                     <select class="form-control" name="CommentCategory" [(ngModel)]="getQCVerifierComment.ReviewerCategoryEnum">
-                        <option value="5" selected="selected">Correction Pending</option>
+                        <option value="8" selected="selected">Not Applicable</option>
+                        <option value="5">Correction Pending</option>
                         <option value="6">Correction Completed</option>
                     </select>
                 </div>

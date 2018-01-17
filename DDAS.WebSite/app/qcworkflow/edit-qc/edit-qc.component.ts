@@ -6,6 +6,7 @@ import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { SearchService } from '../../search/search-service';
+import { UpdateFindigs } from '../../search/search.classes';
 import { QCService } from '../qc-service';
 import {
     ComplianceFormA,
@@ -68,7 +69,7 @@ export class EditQCComponent implements OnInit {
     public complianceFormId: string;
     public SelectedComplianceFormId: string;
     public audit: QualityCheck = new QualityCheck;
-    public complianceForm: ComplianceFormA = new ComplianceFormA;
+    public complianceForm: ComplianceFormA; //= new ComplianceFormA;
     public pageNumber: number = 1;
     public observation: string;
     public siteId: number = 0;
@@ -101,9 +102,9 @@ export class EditQCComponent implements OnInit {
             this.complianceFormId = params['complianceFormId'];
             this.qcAssignedTo = params['qcAssignedTo'];
         });
-        this.complianceForm = new ComplianceFormA;
+        //this.complianceForm = new ComplianceFormA;
         this.loadComplianceForm();
-        this.listQCSummary();
+        //this.listQCSummary();
 
         //this.compFormLogic.CanDisplayFindingComponent
     }
@@ -113,7 +114,7 @@ export class EditQCComponent implements OnInit {
             .subscribe((item: any) => {
                 this.complianceForm = item;
                 this.isSubmitted = this.isQCPassedOrFailed;
-                this. getCurrentReviewStatus();
+                this.getCurrentReviewStatus();
             },
             error => {
                 
@@ -121,7 +122,6 @@ export class EditQCComponent implements OnInit {
     }
 
     getCurrentReviewStatus() {
-        
         this.service.getCurrentReviewStatus(this.complianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
                 this.currentReviewStatus = item;
@@ -136,10 +136,14 @@ export class EditQCComponent implements OnInit {
     //     return this.complianceForm.Findings.find(
     //         x => x.Comments[1].CategoryEnum == QCVer
     //     )
-     
-       
     // }
     
+    get principalInvestigatorName(){
+        if(this.complianceForm){
+            return this.complianceForm.InvestigatorDetails[0].Name;
+        }
+    }
+
     getQCVerifierComment() {
         var review = this.complianceForm.Reviews.find(x =>
             x.AssigendTo == this.authService.userName &&
@@ -178,39 +182,48 @@ export class EditQCComponent implements OnInit {
             });
     }
 
-    get Investigators() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.InvestigatorDetails;
-        else
-            return null;
-    }
+    // get Investigators() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.InvestigatorDetails;
+    //     else
+    //         return null;
+    // }
 
-    get SiteSources() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
-        else
-            return null;
-    }
+    // get SiteSources() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
+    //     else
+    //         return null;
+    // }
 
-    get additionalSiteSources() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
-        else
-            return null;
-    }
+    // get additionalSiteSources() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
+    //     else
+    //         return null;
+    // }
 
-    get Findings() {
-        if (this.complianceForm != undefined || this.complianceForm != null)
-            return this.complianceForm.Findings.filter(x => x.IsAnIssue);
-        else
-            return null;
-    }
+    // get Findings() {
+    //     if (this.complianceForm != undefined || this.complianceForm != null)
+    //         return this.complianceForm.Findings.filter(x => x.IsAnIssue);
+    //     else
+    //         return null;
+    // }
 
     //Patrick:
     get QCVerifierReview(){
-        return this.compFormLogic.getQCVerifierReview(this.complianceForm.Reviews);
+        if(this.complianceForm){
+            return this.compFormLogic.getQCVerifierReview(this.complianceForm.Reviews);
+        }
     }
-    
+
+    get qcRequestorComment(){
+        if(this.QCVerifierReview)
+            return this.QCVerifierReview.Comment;
+        else
+            return null;
+    }
+
     get QCVerifierReviewId(): string{
         if (this.complianceForm){
             return this.compFormLogic.getQCVerifierReviewId(this.complianceForm.Reviews);
@@ -225,6 +238,12 @@ export class EditQCComponent implements OnInit {
             
             //this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId)
             //.filter(x => x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
+        }
+    }
+
+    get reviewStatus(){
+        if(this.complianceForm){
+            return this.compFormLogic.getReviewStatus(this.complianceForm.CurrentReviewStatus);
         }
     }
 

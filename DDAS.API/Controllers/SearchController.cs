@@ -378,11 +378,11 @@ namespace DDAS.API.Controllers
 
         //Patrick: 16Jan2018
         //_UOW.ComplianceFormRepository.UpdateCollection(frm);
-        [Route("SaveReviewCompletedComplianceForm")]
+        [Route("UpdateQCEditComplianceForm")]
         [HttpPost]
-        public IHttpActionResult SaveReviewCompletedComplianceForm(ComplianceForm form)
+        public IHttpActionResult UpdateQCEditComplianceForm(ComplianceForm form)
         {
-            return Ok(_UOW.ComplianceFormRepository.UpdateCollection(form));
+            return Ok(_SearchService.UpdateQCEditComplianceForm(form));
         }
 
         [Route("SaveComplianceForm")]

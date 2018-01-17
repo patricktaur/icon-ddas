@@ -7,13 +7,13 @@ import {
     ComplianceFormA, InvestigatorSearched, SiteSourceToSearch,
     SiteSource, Finding, SiteSearchStatus, UpdateFindigs,
     ReviewerRoleEnum, ReviewStatusEnum, Comment, Review, CurrentReviewStatusViewModel,
-    UpdateInstituteFindings
+    UpdateInstituteFindings, CommentCategoryEnum
 } from './search.classes';
 
 import { SearchService } from './search-service';
 import { Location } from '@angular/common';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
-
+import { CompFormLogicService } from './shared/services/comp-form-logic.service';
 
 
 @Component({
@@ -53,7 +53,8 @@ export class InstituteFindingsComponent implements OnInit {
         private _location: Location,
         private service: SearchService,
         private sanitizer: DomSanitizer,
-        private authService: AuthService
+        private authService: AuthService,
+        private compFormLogic: CompFormLogicService
     ) { }
 
     ngOnInit() {
@@ -171,58 +172,12 @@ export class InstituteFindingsComponent implements OnInit {
     }
 
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
-        switch (componentName) {
-            case "findingEdit":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.ReviewInProgress ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.SearchCompleted))
-                    return true;
-                else
-                    return false;
-            case "qcVerifierComments":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
-                    selectedFinding.ReviewId != this.currentReviewStatus.QCVerifierRecId)
-                    return true;
-                else
-                    return false;
-            case "qcVerifierFinding":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCInProgress &&
-                    selectedFinding.ReviewId == this.currentReviewStatus.QCVerifierRecId)
-                    return true;
-                else
-                    return false;
-            case "responseToQCVerifierComments":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId == this.currentReviewStatus.ReviewerRecId)
-                    return true;
-                else
-                    return false;
-            case "responseToQCVerifierFinding":
-                if (this.currentReviewStatus != undefined &&
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId != this.currentReviewStatus.ReviewerRecId)
-                    return true;
-                else
-                    return false;
-            case "findingView":
-                // return true;
-                if (this.currentReviewStatus != undefined &&
-                    (this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.Completed ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCFailed ||
-                    this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCRequested ||
-                    this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() != this.authService.userName.toLowerCase()))
-                    return true;
-                else
-                    return false;
-            default: return false;
+        if (selectedFinding) {
+            return this.compFormLogic.CanDisplayFindingComponent(
+                selectedFinding, componentName, this.currentReviewStatus);
+        }
+        else {
+            return false;
         }
     }
 
@@ -256,21 +211,36 @@ export class InstituteFindingsComponent implements OnInit {
                 selectedFinding.Comments == undefined ||
                 selectedFinding.Comments.length == 0) {
                 console.log('adding comment collection');
-                let comments = new Array<Comment>();
+                selectedFinding.Comments = new Array<Comment>();
                 let comment = new Comment();
-                comment.ReviewId = review.RecId;
-                comment.CategoryEnum = 0;
-                comments.push(comment);
-                let emptyComment = new Comment();
-                emptyComment.CategoryEnum = 0;
-                emptyComment.ReviewId = null;
-                comments.push(emptyComment);
+                // comment.ReviewId = review.RecId;
+                comment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                comment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
+                // comments.push(comment);
+                // let emptyComment = new Comment();
+                // emptyComment.CategoryEnum = 0;
+                // emptyComment.ReviewId = null;
+                // comments.push(emptyComment);
                 selectedFinding.Comments.push(comment);
-                selectedFinding.Comments.push(emptyComment);
+                // selectedFinding.Comments.push(emptyComment);
             }
         }
     }
-    
+
+    get showMatchingRecordsAndAddManualFinding(){
+        if(this.CompForm){
+            return this.compFormLogic.canShowMatchingRecordsAndAddManualFinding(this.CompForm);
+        }
+    }
+
+    get saveFinding(){
+        if(this.CompForm){
+            return this.compFormLogic.canSaveFinding(this.CompForm);
+        }
+        else
+            return false;
+    }
+
     SetFindingToRemove(selectedRecord: Finding) {
         this.recordToDelete = selectedRecord;
     }

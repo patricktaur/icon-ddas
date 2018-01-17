@@ -1,0 +1,161 @@
+<div class="row">
+	<!--<div class="col-md-12">-->
+	<div class="col-lg-12">
+		<div class="well">
+
+			<h3 class="no-margin-top">Completed ICSFs</h3>
+		</div>
+	</div>
+
+	<div class="alert alert-info" *ngIf="formLoading">
+		<strong>Loading ...</strong>
+	</div>
+
+	<div *ngIf="!formLoading">
+		<div class="col-lg-12">
+			<div class="well">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="row">
+							<div class="col-md-6 ">
+								<h4>Filters:</h4>
+
+							</div>
+							 <!-- {{diagnostic}}  -->
+						</div>
+						<!-- <div class="row">
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="PrincipalInvestigator">Principal Investigator:</label>
+									<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
+								</div>
+								<div class="form-group">
+									<label for="Status">Status:</label>
+									<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
+										<option value="-1" selected="selected">All</option>
+										<option value="0">Data Not Extracted</option>
+										<option value="1">Review Completed, Issues Identified</option>
+										<option value="2">Review Completed, No Issues Identified</option>  
+										<option value="3">Full Match Found, Review Pending</option>
+										<option value="4">Partial Match Found, Review Pending</option>
+										<option value="5">No Matches Found, Review Pending</option>              
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="ProjectNumber">Project Number:</label>
+									<input type="text" class="form-control" name="ProjectNumber" [(ngModel)]="ComplianceFormFilter.ProjectNumber">
+								</div>
+								<div class="form-group">
+									<label for="AssignedTo">Assigned To:</label>
+									<select class="form-control" name="AssignedTo" [(ngModel)]="ComplianceFormFilter.AssignedTo">
+										<option value="-1" selected="selected">All</option>
+										<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
+									</select>
+								</div>
+							</div>
+						</div> -->
+						<div class="row">
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Searched On (from):</label>
+
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
+
+								</div>
+							</div>
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Searched On (to):</label>
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate"></my-date-picker>
+								</div>
+							</div>
+						</div>
+						<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
+						<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
+					</div>
+					<!-- <div class="col-md-4">
+						<div statusCircle-Legend-Vertical></div>
+						<div statusCircle-Legend-Horizontal1></div>
+					</div> -->
+				</div>
+
+				<!--</div>-->
+				<!--</div>-->
+				<!--</div>-->
+				<!--</div>-->
+
+				<!--<div class="col-lg-12">-->
+				<!--<div class="well">-->
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th class="">Principal Investigator </th>
+							<th class="text-left">ICON Project Number</th>
+							<th class="text-left">Active</th>
+							<th class="text-center">Searched on</th>
+							<th class="text-center">Assigned to</th>
+							<!-- <th class="text-left">Status</th> -->
+							<th class="text-center">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of filteredPrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: p}; let idx=index" class="active">
+
+							<td class="text-left">
+								<!-- {{item.Name}} -->
+								<h5>
+									<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+										{{item.Name}} 
+										<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+									</a>
+								</h5>
+								<div class="panel-group" role="tablist" style="border:0">
+									<div class="panel panel-default" style="border:0">
+										<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
+										aria-expanded="false" style="border:0">
+											<ul class="list-group" style="border:0">
+												<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</td>
+							<td class="text-center">
+								{{item.ProjectNumber}} {{item.ProjectNumber2}}
+							</td>
+							<td>
+								{{item.Active | boolToYesNo}}
+							</td>
+
+							<td class="text-left">
+								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+							</td>
+							<td class="text-left">
+								{{item.AssignedTo}}
+							</td>
+							<!-- <td class="text-center">
+								<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
+							</td> -->
+							<td class="text-center">
+								<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
+								 [attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
+								<span class="glyphicon glyphicon-download-alt"></span>
+							</button>
+
+								<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
+							<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pagination-controls (pageChange)="p = $event"></pagination-controls>
+				<!--</div>-->
+				<!--</div>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+<div #DownloadComplianceFormModal download-compliance-form></div>

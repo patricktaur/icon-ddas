@@ -1313,46 +1313,71 @@ namespace DDAS.Services.Search
             form.ExtractionErrorInvestigatorCount = ExtractionErrorInvestigatorCount;
             form.ExtractionPendingInvestigatorCount = ExtractionPendingInvestigatorCount;
 
-            if (!form.IsReviewCompleted)
+            UpdateReviewStatus(form.Reviews, 
+                form.Findings.Where(x => x.IsAnIssue).ToList(), 
+                form.IsReviewCompleted);
+
+            return form;
+        }
+
+        private void UpdateReviewStatus(List<Review> Reviews, 
+            List<Finding> FindingsWithIssues, bool IsReviewCompleted)
+        {
+            var FindingsCorrectedOrAcceptedCount = 0;
+            foreach (Finding finding in FindingsWithIssues)
             {
-                var Review = form.Reviews.First();
+                var comment = finding.Comments.Find(x =>
+                x.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                x.ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
+
+                if (comment != null)
+                    FindingsCorrectedOrAcceptedCount += 1;
+            }
+
+            if (FindingsWithIssues.Count == FindingsCorrectedOrAcceptedCount)
+            {
+                var review = Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCCorrectionInProgress);
+
+                if (review != null)
+                {
+                    review.Status = ReviewStatusEnum.Completed;
+                }
+            }
+
+            var Review = Reviews.First();
+            if (!IsReviewCompleted)
+            {
                 if (Review == null)
                     throw new Exception("Review Collection cannot be empty");
+                else if (Review.Status == ReviewStatusEnum.ReviewInProgress)
+                {
+                    //do nothing. status is already ReviewInProgress
+                }
                 else
                     Review.Status = ReviewStatusEnum.ReviewInProgress;
             }
             else
             {
-                var Review = form.Reviews.First();
-
                 if (Review == null)
                     throw new Exception("Review Collection cannot be empty");
+                else if (Review.Status == ReviewStatusEnum.ReviewCompleted)
+                {
+                    //do nothing. status is already ReviewInProgress
+                }
                 else
                     Review.Status = ReviewStatusEnum.ReviewCompleted;
             }
+        }
 
-            var IssueFindings = form.Findings.Where(x => x.IsAnIssue);
-            int Count = 0;
-            foreach (Finding finding in IssueFindings)
-            {
-                var comment = finding.Comments.Find(x => 
-                x.CategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
-                x.CategoryEnum == CommentCategoryEnum.Accepted);
+        public bool UpdateQCEditComplianceForm(ComplianceForm Form)
+        {
+            UpdateReviewStatus(Form.Reviews,
+                Form.Findings.Where(x => x.IsAnIssue).ToList(),
+                Form.IsReviewCompleted);
 
-                if (comment != null)
-                    Count += 1;
-            }
-
-            if(IssueFindings.Count() == Count)
-            {
-                var review = form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCCorrectionInProgress);
-
-                if(review != null)
-                {
-                    review.Status = ReviewStatusEnum.Completed;
-                }
-            }
-            return form;
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            return true;
         }
 
         public bool UpdateRollUpSummary(Guid formId)  
