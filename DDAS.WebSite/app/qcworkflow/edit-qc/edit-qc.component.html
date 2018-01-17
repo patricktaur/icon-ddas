@@ -3,7 +3,7 @@
 		<div class="well">
 			<h3 class="no-margin-top">QC by </h3>
 			<label for="auditStatus">Status:</label>
-			{{diagnostic}}
+			<!-- {{diagnostic}} -->
 			<br>
 			<!-- QCVerifierReviewId:{{QCVerifierReviewId}} -->
 			<br>
@@ -184,6 +184,10 @@
 			</div>
 		</div>
 
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'findingView')" >
+				<div selected-finding-view [Finding]="findingRecordToEdit">
+				</div>
+			</div>
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>

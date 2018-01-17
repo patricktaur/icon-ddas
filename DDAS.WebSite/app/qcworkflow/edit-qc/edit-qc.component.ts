@@ -103,7 +103,7 @@ export class EditQCComponent implements OnInit {
         });
         this.complianceForm = new ComplianceFormA;
         this.loadComplianceForm();
-        this.listQCSummary();
+        //this.listQCSummary();
 
         //this.compFormLogic.CanDisplayFindingComponent
     }
@@ -169,6 +169,7 @@ export class EditQCComponent implements OnInit {
         //     return false;
     }
 
+    //Not used:
     listQCSummary() {
         this.auditService.listQCSummary(this.complianceFormId)
             .subscribe((item: any) => {

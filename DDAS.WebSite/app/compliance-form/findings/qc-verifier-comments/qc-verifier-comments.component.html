@@ -6,7 +6,11 @@
                 <h4>QC Verifier's Comment:</h4>
             </label>
             <br/>
-            <div class="col-md-4">
+  
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
                 <label for="Category">Category:</label>
                 <select class="form-control" name="AssignedTo" [(ngModel)]="getQCVerifierComment.CategoryEnum">
                     <option value="8" selected="selected">Not Applicable</option>
@@ -16,10 +20,12 @@
                     <option value="3">Suggestions</option>
                     <option value="4">Others</option>
                 </select>
-            </div>
-            <textarea class="form-control" name="Comment"  rows="3" cols="30" required
-                placeholder="Comment" [(ngModel)]="getQCVerifierComment.FindingComment">
-            </textarea>
         </div>
     </div>
+    <div class="row">
+            <div class="col-md-12">
+                    <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" [(ngModel)]="getQCVerifierComment.FindingComment">
+                        </textarea>
+            </div>
+        </div>
 </div>
