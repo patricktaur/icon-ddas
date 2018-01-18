@@ -140,7 +140,9 @@ namespace DDAS.Services.AuditService
             x.AssignedBy.ToLower() == Form.AssignedTo.ToLower() &&
             x.Status == ReviewStatusEnum.QCRequested);
 
-            if (Review != null && Review.StartedOn == null)
+            if (Review != null && 
+                Review.StartedOn == null &&
+                Review.AssigendTo.ToLower() == LoggedInUserName.ToLower())
             {
                 Review.Status = ReviewStatusEnum.QCInProgress;
                 Review.StartedOn = DateTime.Now;

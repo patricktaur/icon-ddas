@@ -236,10 +236,16 @@ namespace DDAS.Models.Entities.Domain
             get
             {
                 if (IsReviewCompleted)
-                    return InvestigatorDetails.OrderByDescending(x =>
-                    x.ReviewCompletedOn)
-                    .FirstOrDefault()
-                    .ReviewCompletedOn;
+                {
+
+                    if (InvestigatorDetails.Count() > 0)
+                        return InvestigatorDetails.OrderByDescending(x => 
+                        x.ReviewCompletedOn)
+                        .First()
+                        .ReviewCompletedOn;
+                    else
+                        return null;
+                }
                 else
                     return null;
             }
