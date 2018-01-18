@@ -190,16 +190,14 @@ export class CompFormLogicService {
     }
 
     isLoggedInUserQCVerifier(compForm: ComplianceFormA) {
-        if (compForm.Reviews.length > 0) {
-            var review = compForm.Reviews.find(x =>
-                x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-                x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-
-            if (review)
-                return true;
-            else
-                return false;
-        }
+        var review = compForm.Reviews.find(x =>
+            x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+            
+        if (review)
+            return true;
+        else
+            return false;
     }
 
     getReviewStatus(currentReviewStatus: number) {
@@ -416,11 +414,20 @@ export class CompFormLogicService {
         if(compForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
             (compForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
             compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
-            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
-            compForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress))
+            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted))
             return true;
         else if(this.isLoggedInUserQCVerifier(compForm) &&
             compForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
+            return true;
+        else
+            return false;
+    }
+
+    showReviewCompletedCheckBox(compForm: ComplianceFormA){
+        if(compForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
+            (compForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted))
             return true;
         else
             return false;

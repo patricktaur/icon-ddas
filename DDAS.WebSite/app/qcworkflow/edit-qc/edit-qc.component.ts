@@ -165,13 +165,6 @@ export class EditQCComponent implements OnInit {
             return true;
         else
             return false;
-        // if(this.complianceForm != null && 
-        //     (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
-        //     this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
-        //     return true;
-        // }
-        // else
-        //     return false;
     }
 
     //Not used:
@@ -183,34 +176,6 @@ export class EditQCComponent implements OnInit {
             error => {
             });
     }
-
-    // get Investigators() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.InvestigatorDetails;
-    //     else
-    //         return null;
-    // }
-
-    // get SiteSources() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
-    //     else
-    //         return null;
-    // }
-
-    // get additionalSiteSources() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
-    //     else
-    //         return null;
-    // }
-
-    // get Findings() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.Findings.filter(x => x.IsAnIssue);
-    //     else
-    //         return null;
-    // }
 
     //Patrick:
     get QCVerifierReview(){
@@ -358,14 +323,13 @@ export class EditQCComponent implements OnInit {
 
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)
         .subscribe((item: ComplianceFormA) => {
-            console.log("Save Called");
         },
         error => {
         });
     }
 
     get canSubmitQC(){
-        if(this.complianceForm && this.compFormLogic.isLoggedInUserQCVerifier && 
+        if(this.complianceForm && this.compFormLogic.isLoggedInUserQCVerifier(this.complianceForm) && 
             this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
             return true;
         else
