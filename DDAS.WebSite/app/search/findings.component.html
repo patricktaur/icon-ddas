@@ -191,6 +191,8 @@
 			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
 			<br/>
 		</p>
+	</div>
+	<div *ngIf="isReviewCompletedCheckBoxVisible">
 		<p align="center">
 			<label>Review Completed:</label>
 			<input type="checkbox" name="ReviewCompleted" [(ngModel)]="SiteSearchStatus.ReviewCompleted" [disabled]="disableOrHideMatchedRecordsAndFindings">
