@@ -190,6 +190,28 @@ namespace DDAS.Models.Entities.Domain
         public List<Review> Reviews { get; set; } = new List<Review>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
 
+        public string Reviewer {
+            get {
+                var Review = Reviews.FirstOrDefault();
+                if (Review != null)
+                    return Review.AssigendTo;
+                else
+                    return null;
+            }
+        }
+
+        public string QCVerifier
+        {
+            get
+            {
+                var Review = Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+                if (Review != null)
+                    return Review.AssigendTo;
+                else
+                    return null;
+            }
+        }
+
         public ReviewStatusEnum CurrentReviewStatus {
             get
             {
@@ -214,10 +236,16 @@ namespace DDAS.Models.Entities.Domain
             get
             {
                 if (IsReviewCompleted)
-                    return InvestigatorDetails.OrderByDescending(x =>
-                    x.ReviewCompletedOn)
-                    .FirstOrDefault()
-                    .ReviewCompletedOn;
+                {
+
+                    if (InvestigatorDetails.Count() > 0)
+                        return InvestigatorDetails.OrderByDescending(x => 
+                        x.ReviewCompletedOn)
+                        .First()
+                        .ReviewCompletedOn;
+                    else
+                        return null;
+                }
                 else
                     return null;
             }

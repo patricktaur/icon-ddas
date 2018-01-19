@@ -53,6 +53,10 @@ export class ListQCComponent implements OnInit {
         return this.compFormLogic.getReviewStatus(statusEnum);
     }
 
+    // filterQCReviews(){
+    //     this.qcList = this.qcList.filter(x => x.ComplianceFormId)
+    // }
+
     get filterQCByUserName() {
         if(this.authService.isAdmin){
             return this.qcList;
@@ -67,13 +71,14 @@ export class ListQCComponent implements OnInit {
     }
 
     isActionRequired(qcVerifier: string, requestor: string, Status: number) {
-        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
-            return true;
-        else if ((Status == ReviewStatusEnum.QCPassed || Status == ReviewStatusEnum.QCFailed) &&
-            requestor.toLowerCase() == this.authService.userName.toLowerCase())
-            return true;
-        else
-            return false;
+        // if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
+        //     return true;
+        // else if ((Status == ReviewStatusEnum.QCPassed || Status == ReviewStatusEnum.QCFailed) &&
+        //     requestor.toLowerCase() == this.authService.userName.toLowerCase())
+        //     return true;
+        // else
+        //     return false;
+        return true;
     }
 
     editQC(complianceFormId: string, assignedTo: string) {

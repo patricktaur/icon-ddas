@@ -113,7 +113,6 @@ export class FindingsComponent implements OnInit {
         this.service.getCurrentReviewStatus(this.ComplianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
                 this.currentReviewStatus = item;
-                console.log('current review status: ', this.currentReviewStatus);
             },
             error => {
 
@@ -143,7 +142,6 @@ export class FindingsComponent implements OnInit {
         )
             .subscribe((item: any) => {
                 this.singleMatchRecords = item;
-                console.log('items - ', item);
                 this.singleMatchRecordsLoading = false;
             },
             error => {
@@ -442,7 +440,6 @@ export class FindingsComponent implements OnInit {
             if (selectedFinding.Comments == null ||
                 selectedFinding.Comments == undefined ||
                 selectedFinding.Comments.length == 0) {
-                console.log('adding comment collection');
                 selectedFinding.Comments = new Array<Comment>();
                 let comment = new Comment();
                 // comment.ReviewId = review.RecId;
@@ -496,6 +493,14 @@ export class FindingsComponent implements OnInit {
     get saveFinding(){
         if(this.CompForm){
             return this.compFormLogic.canSaveFinding(this.CompForm);
+        }
+        else
+            return false;
+    }
+
+    get isReviewCompletedCheckBoxVisible(){
+        if(this.CompForm){
+            return this.compFormLogic.showReviewCompletedCheckBox(this.CompForm);
         }
         else
             return false;

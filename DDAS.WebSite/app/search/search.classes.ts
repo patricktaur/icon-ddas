@@ -210,8 +210,9 @@ export class ComplianceFormA {
     Reviews: Review[] = new Array<Review>();
     Comments: Comment[] = new Array<Comment>();
     CurrentReviewStatus: ReviewStatusEnum;
+    Reviewer: string;
+    QCVerifier: string;
 }
-
 
 export class InvestigatorSearched {
     Id: number = 0;

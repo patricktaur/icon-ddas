@@ -60,18 +60,19 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
     public audit: QualityCheck;
-    public pageNumber: number;
+    public pageNumber: number = 1;
     public compForm: ComplianceFormA;
+    public selectedQCVerifier: string;
+    public requestorComment: string;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
-        private authService: AuthService
-    ) { }
+        private authService: AuthService) { }
 
     ngOnInit() {
-
         this.uploadUrl = this.configService.getApiURI() + "search/Upload";
         this.downloadUrl = this.configService.getApiHost() + "Downloads";
 
@@ -106,7 +107,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
 
     setSelectedRecordDetails(complainceFormId: string) {
         this.SelectedComplianceFormId = complainceFormId;
-        console.log('comp form id: ', this.SelectedComplianceFormId);
     }
 
     SetDefaultFilterValues() {
@@ -233,11 +233,10 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.service.generateComplianceForm(formid)
             .subscribe((item: any) => {
                 this.downloadUrl = this.configService.getApiHost() + item;
-                console.log("item:" + item);
-                console.log("this.downloadUrl:" + this.downloadUrl);
             },
             error => {
-                this.ComplianceFormGenerationError = "Error: Compliance Form could not be generated."
+                this.ComplianceFormGenerationError = 
+                "Error: Compliance Form could not be generated."
             });
     }
 
@@ -356,6 +355,11 @@ export class ReviewCompletedICSFComponent implements OnInit {
             error => {
 
             });
+    }
+
+    resetValues(){
+        this.selectedQCVerifier = "";
+        this.requestorComment = "";
     }
 
     get diagnostic() { return JSON.stringify(this.audit); }

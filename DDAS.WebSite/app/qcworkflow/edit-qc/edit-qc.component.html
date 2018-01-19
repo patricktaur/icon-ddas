@@ -76,8 +76,8 @@
 						</tbody>
 					</table> -->
 
-
-					<h4>Finding Summary: </h4>
+					<!-- <b>{{reviewerMessage}}</b> -->
+					<h4>QC Summary: </h4>
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
@@ -139,7 +139,7 @@
 				<div class="col-md-3">
 					<div class="form-group">
 						<label for="Status">QC Response:</label>
-						<select class="form-control" [(ngModel)]="status" [disabled]="isSubmitted">
+						<select class="form-control" [(ngModel)]="status" [disabled]="!canSubmitQC">
 							<option value=-1 selected="selected">---select---</option>
 							<option value=0>Failed</option>
 							<option value=1>Passed</option>
@@ -153,7 +153,8 @@
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>
-			<button type="button" class="btn btn-primary" (click)="submit()">Submit</button>
+			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
+			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">Submit QC Corrections</button>
 		</div>
 	</div>
 </div>
