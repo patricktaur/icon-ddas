@@ -354,33 +354,33 @@ namespace DDAS.Services.Search
             return form;
         }
 
-
         public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
             bool Active, Guid? RecId)
         {
-            //var form = _UOW.ComplianceFormRepository.FindById(RecId);
-            //form.AssignedTo = AssignedTo;
-            //form.Active = Active;
-            //_UOW.ComplianceFormRepository.UpdateCollection(form);
+            var form = _UOW.ComplianceFormRepository.FindById(RecId);
+            form.AssignedTo = AssignedTo;
+            form.Active = Active;
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
 
-            //AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
-            _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
+            AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
 
-            var CompForm = _UOW.ComplianceFormRepository.FindById(RecId);
+            //_UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
 
-            var PreviousReview = CompForm.Reviews.Find(x =>
-            x.PreviousReviewId == null);
+            //var CompForm = _UOW.ComplianceFormRepository.FindById(RecId);
 
-            if(PreviousReview != null)
-            {
-                var review = new Review();
-                review.AssigendTo = AssignedTo;
-                review.AssignedBy = AssignedBy;
-                review.AssignedOn = DateTime.Now;
-                review.PreviousReviewId = PreviousReview.RecId;
-                CompForm.Reviews.Add(review);
-                _UOW.ComplianceFormRepository.UpdateCollection(CompForm);
-            }
+            //var PreviousReview = CompForm.Reviews.Find(x =>
+            //x.PreviousReviewId == null);
+
+            //if(PreviousReview != null)
+            //{
+            //    var review = new Review();
+            //    review.AssigendTo = AssignedTo;
+            //    review.AssignedBy = AssignedBy;
+            //    review.AssignedOn = DateTime.Now;
+            //    review.PreviousReviewId = PreviousReview.RecId;
+            //    CompForm.Reviews.Add(review);
+            //    _UOW.ComplianceFormRepository.UpdateCollection(CompForm);
+            //}
         }
 
         //used by Excel File Upload method.
@@ -1313,76 +1313,35 @@ namespace DDAS.Services.Search
             form.ExtractionErrorInvestigatorCount = ExtractionErrorInvestigatorCount;
             form.ExtractionPendingInvestigatorCount = ExtractionPendingInvestigatorCount;
 
-            UpdateReviewStatus(form.Reviews, 
-                form.Findings.Where(x => x.IsAnIssue).ToList(), 
+            if (form.Reviews.FirstOrDefault() == null)
+                throw new Exception("Review cannot be empty");
+
+            UpdateReviewStatus(form.Reviews.First(),
                 form.IsReviewCompleted);
 
             return form;
         }
 
-        private void UpdateReviewStatus(List<Review> Reviews, 
-            List<Finding> FindingsWithIssues, bool IsReviewCompleted)
+        private void UpdateReviewStatus(Review review, bool IsReviewCompleted)
         {
-            var FindingsCorrectedOrAcceptedCount = 0;
-            foreach (Finding finding in FindingsWithIssues)
-            {
-                var comment = finding.Comments.Find(x =>
-                x.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
-                x.ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
-
-                if (comment != null)
-                    FindingsCorrectedOrAcceptedCount += 1;
-            }
-
-            if (FindingsWithIssues.Count == FindingsCorrectedOrAcceptedCount)
-            {
-                var review = Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCCorrectionInProgress);
-
-                if (review != null)
-                {
-                    review.Status = ReviewStatusEnum.Completed;
-                }
-            }
-
-            var Review = Reviews.First();
             if (!IsReviewCompleted)
             {
-                if (Review == null)
-                    throw new Exception("Review Collection cannot be empty");
-                else if (Review.Status == ReviewStatusEnum.ReviewInProgress)
+                if (review.Status == ReviewStatusEnum.ReviewInProgress)
                 {
                     //do nothing. status is already ReviewInProgress
                 }
                 else
-                    Review.Status = ReviewStatusEnum.ReviewInProgress;
+                    review.Status = ReviewStatusEnum.ReviewInProgress;
             }
             else
             {
-                if (Review == null)
-                    throw new Exception("Review Collection cannot be empty");
-                else if (Review.Status == ReviewStatusEnum.ReviewCompleted)
+                if (review.Status == ReviewStatusEnum.ReviewCompleted)
                 {
                     //do nothing. status is already ReviewInProgress
                 }
                 else
-                    Review.Status = ReviewStatusEnum.ReviewCompleted;
+                    review.Status = ReviewStatusEnum.ReviewCompleted;
             }
-        }
-
-        public bool UpdateQCEditComplianceForm(ComplianceForm Form)
-        {
-            var FindingsWithIssues = Form.Findings.Where(x =>
-                x.IsAnIssue && 
-                x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
-                .ToList();
-
-            UpdateReviewStatus(Form.Reviews,
-                FindingsWithIssues,
-                Form.IsReviewCompleted);
-
-            _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            return true;
         }
 
         public bool UpdateRollUpSummary(Guid formId)  

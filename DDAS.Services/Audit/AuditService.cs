@@ -91,32 +91,31 @@ namespace DDAS.Services.AuditService
 
             foreach (ComplianceForm Form in Forms)
             {
-                var QCReviews = Form.Reviews.Where(x =>
-                x.Status == ReviewStatusEnum.QCRequested ||
-                x.Status == ReviewStatusEnum.QCInProgress ||
-                x.Status == ReviewStatusEnum.QCFailed ||
-                //x.Status == ReviewStatusEnum.QCCorrectionInProgress ||
-                x.Status == ReviewStatusEnum.QCPassed)
-                .ToList();
+                var QCReview = Form.Reviews.LastOrDefault();
 
-                foreach (Review Review in QCReviews)
-                {
-                    var QCViewModel = new QCListViewModel();
-                    //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
-                    QCViewModel.RecId = Review.RecId;
-                    QCViewModel.ComplianceFormId = Form.RecId.Value;
-                    QCViewModel.PrincipalInvestigator =
-                        Form.InvestigatorDetails.FirstOrDefault().Name;
-                    QCViewModel.ProjectNumber = Form.ProjectNumber;
-                    QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
-                    QCViewModel.QCVerifier = Review.AssigendTo;
-                    QCViewModel.Status = Review.Status;
-                    QCViewModel.CompletedOn = Review.CompletedOn;
-                    QCViewModel.Requestor = Review.AssignedBy;
-                    QCViewModel.RequestedOn = Review.AssignedOn;
+                if (QCReview == null)
+                    continue;
+                else if (QCReview.Status == ReviewStatusEnum.SearchCompleted ||
+                    QCReview.Status == ReviewStatusEnum.ReviewInProgress ||
+                    QCReview.Status == ReviewStatusEnum.ReviewCompleted ||
+                    QCReview.Status == ReviewStatusEnum.Completed)
+                    continue;
 
-                    AllQCs.Add(QCViewModel);
-                }
+                var QCViewModel = new QCListViewModel();
+                //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
+                QCViewModel.RecId = QCReview.RecId;
+                QCViewModel.ComplianceFormId = Form.RecId.Value;
+                QCViewModel.PrincipalInvestigator =
+                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                QCViewModel.ProjectNumber = Form.ProjectNumber;
+                QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
+                QCViewModel.QCVerifier = Form.QCVerifier;
+                QCViewModel.Status = QCReview.Status;
+                QCViewModel.CompletedOn = QCReview.CompletedOn;
+                QCViewModel.Requestor = Form.Reviewer;
+                QCViewModel.RequestedOn = QCReview.AssignedOn;
+
+                AllQCs.Add(QCViewModel);
             }
             return AllQCs;
         }
@@ -141,7 +140,9 @@ namespace DDAS.Services.AuditService
             x.AssignedBy.ToLower() == Form.AssignedTo.ToLower() &&
             x.Status == ReviewStatusEnum.QCRequested);
 
-            if (Review != null && Review.StartedOn == null)
+            if (Review != null && 
+                Review.StartedOn == null &&
+                Review.AssigendTo.ToLower() == LoggedInUserName.ToLower())
             {
                 Review.Status = ReviewStatusEnum.QCInProgress;
                 Review.StartedOn = DateTime.Now;
@@ -181,18 +182,53 @@ namespace DDAS.Services.AuditService
 
         public bool SaveQC(ComplianceForm Form)
         {
-            var QCPassedReview = Form.Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCPassed);
+            var CurrentQCReview = Form.Reviews.LastOrDefault();
 
-            if(QCPassedReview != null)
+            if (CurrentQCReview == null)
+                throw new Exception("Review cannot be empty");
+
+            if(CurrentQCReview.Status == ReviewStatusEnum.QCCorrectionInProgress)
             {
-                QCPassedReview.Status = ReviewStatusEnum.Completed;
-                QCPassedReview.CompletedOn = DateTime.Now;
+                UpdateReviewStatus(CurrentQCReview,
+                    Form.Findings.Where(x => x.IsAnIssue).ToList());
+
+                //CurrentQCReview.Status = ReviewStatusEnum.Completed;
+            }
+            else if(CurrentQCReview.Status == ReviewStatusEnum.QCPassed)
+            {
+                CurrentQCReview.Status = ReviewStatusEnum.Completed;
+                CurrentQCReview.CompletedOn = DateTime.Now;
             }
             
             //Save QC is currently equivalent to submitting the QC
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return true;
+        }
+
+        private void UpdateReviewStatus(Review Review,
+            List<Finding> FindingsWithIssues)
+        {
+            FindingsWithIssues = FindingsWithIssues.Where(x =>
+            x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
+            .ToList();
+
+            var FindingsCorrectedOrAcceptedCount = 0;
+
+            foreach (Finding finding in FindingsWithIssues)
+            {
+                var comment = finding.Comments.Find(x =>
+                x.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                x.ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
+
+                if (comment != null)
+                    FindingsCorrectedOrAcceptedCount += 1;
+            }
+
+            if (FindingsWithIssues.Count == FindingsCorrectedOrAcceptedCount)
+            {
+                Review.Status = ReviewStatusEnum.Completed;
+                Review.CompletedOn = DateTime.Now;
+            }
         }
 
         public List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId)

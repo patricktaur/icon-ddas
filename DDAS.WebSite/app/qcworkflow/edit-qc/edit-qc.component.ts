@@ -137,7 +137,7 @@ export class EditQCComponent implements OnInit {
     //         x => x.Comments[1].CategoryEnum == QCVer
     //     )
     // }
-    
+
     get principalInvestigatorName(){
         if(this.complianceForm){
             return this.complianceForm.InvestigatorDetails[0].Name;
@@ -165,13 +165,6 @@ export class EditQCComponent implements OnInit {
             return true;
         else
             return false;
-        // if(this.complianceForm != null && 
-        //     (this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed) ||
-        //     this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed){
-        //     return true;
-        // }
-        // else
-        //     return false;
     }
 
     //Not used:
@@ -183,34 +176,6 @@ export class EditQCComponent implements OnInit {
             error => {
             });
     }
-
-    // get Investigators() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.InvestigatorDetails;
-    //     else
-    //         return null;
-    // }
-
-    // get SiteSources() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == true);
-    //     else
-    //         return null;
-    // }
-
-    // get additionalSiteSources() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.SiteSources.filter(x => x.IsMandatory == false);
-    //     else
-    //         return null;
-    // }
-
-    // get Findings() {
-    //     if (this.complianceForm != undefined || this.complianceForm != null)
-    //         return this.complianceForm.Findings.filter(x => x.IsAnIssue);
-    //     else
-    //         return null;
-    // }
 
     //Patrick:
     get QCVerifierReview(){
@@ -236,12 +201,57 @@ export class EditQCComponent implements OnInit {
 
     get QCVerifiedFindings(){
         if (this.complianceForm){
-            return this.complianceForm.Findings.filter(x => x.Comments != undefined &&  x.Comments.length > 0 && x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
+            return this.complianceForm.Findings.filter(x => x.Comments != undefined && 
+                x.Comments.length > 0 && 
+                x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
             
             //this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId)
             //.filter(x => x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
         }
     }
+
+    get reviewerSubmitQC(){
+        if(this.complianceForm && 
+            this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress &&
+            this.currentReviewStatus && 
+            this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
+            this.authService.userName.toLowerCase()){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    get CanSubmitCorrectionsCompleted(){
+        
+        if(this.QCVerifiedFindings) {
+
+            let count = this.QCVerifiedFindings.filter(
+                x => x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.NotApplicable
+                || x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.CorrectionPending
+                 
+            ).length;
+            if (count > 0){
+                return true
+            }else{
+                return false;
+            }
+
+        }else{
+            return false;
+        }        
+    }
+
+
+    get canReviewerSubmitQC(){
+        if (this.complianceForm){
+            return this.complianceForm.Findings.filter(x => x.Comments != undefined && 
+                x.Comments.length > 0 && 
+                x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                x.Comments[0].ReviewerCategoryEnum != CommentCategoryEnum.NotApplicable);
+        }
+    }
+
 
     get reviewStatus(){
         if(this.complianceForm){
@@ -302,7 +312,9 @@ export class EditQCComponent implements OnInit {
     openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
         //this.qcAssignedTo
-        this.router.navigate(['comp-form-edit', this.complianceForm.RecId, {rootPath:'edit-qc', qcAssignedTo:this.qcAssignedTo}], { relativeTo: this.route.parent });
+        this.router.navigate(['comp-form-edit', this.complianceForm.RecId, 
+        {rootPath:'edit-qc', qcAssignedTo:this.qcAssignedTo}], 
+        { relativeTo: this.route.parent });
     }
 
     Save() {
@@ -311,30 +323,66 @@ export class EditQCComponent implements OnInit {
 
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)
         .subscribe((item: ComplianceFormA) => {
-            console.log("Save Called");
         },
         error => {
         });
     }
 
+    get canSubmitQC(){
+        if(this.complianceForm && this.compFormLogic.isLoggedInUserQCVerifier(this.complianceForm) && 
+            this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
+            return true;
+        else
+            return false;
+    }
+
+    get isVerifierFindingNA(){
+        return this.QCVerifiedFindings.forEach(finding =>{
+            if(finding.Comments[0].CategoryEnum == CommentCategoryEnum.NotApplicable)
+                return finding;
+            });
+    }
+
+
+
     submit() {
         alert('You are about to submit QC. You will not be allowed to edit QC. Do you want to proceed ?');
 
-        if (this.status == -1) {
-            alert('Please select one of the options: QC passed or failed');
-            return;
-        }
-
-        this.complianceForm.Reviews.forEach(review => {
-            if (review.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase()) {
-                review.Status =
-                    this.status == 0 ? ReviewStatusEnum.QCFailed : ReviewStatusEnum.QCPassed;
+        if(this.compFormLogic.isLoggedInUserQCVerifier){
+            if (this.status == -1) {
+                alert('Please select one of the options: QC passed or failed');
+                return;
             }
-        });
+            else if(this.isVerifierFindingNA) {
+                alert("finding added by verifier cannot be 'Not Applicable'" +
+                "Request you to update the finding - " +
+                this.isVerifierFindingNA);
+                return;
+            }
+            this.complianceForm.Reviews.forEach(review => {
+                if (review.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase()) {
+                    review.Status =
+                        this.status == 0 ? ReviewStatusEnum.QCFailed : ReviewStatusEnum.QCPassed;
+                }
+            });
+        }
 
         this.auditService.saveQC(this.complianceForm)
             .subscribe((item: any) => {
                 this.isSubmitted = true;
+                this.goBack();
+            },
+            error => {
+            });
+    }
+
+    submitQCByReviewer(){
+        alert('You are about to submit QC. You will not be allowed to edit QC. Do you want to proceed ?');
+
+        this.auditService.saveQC(this.complianceForm)
+            .subscribe((item: any) => {
+                this.isSubmitted = true;
+                this.goBack();
             },
             error => {
             });
