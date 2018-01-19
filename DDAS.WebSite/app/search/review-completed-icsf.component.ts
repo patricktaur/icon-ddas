@@ -181,18 +181,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
         }
     }
 
-    isQCRequested(currentStatus: number){
-        if(currentStatus == ReviewStatusEnum.QCRequested ||
-            currentStatus == ReviewStatusEnum.QCInProgress ||
-            currentStatus == ReviewStatusEnum.QCFailed ||
-            currentStatus == ReviewStatusEnum.QCPassed ||
-            currentStatus == ReviewStatusEnum.QCCorrectionInProgress ||
-            currentStatus == ReviewStatusEnum.Completed)
-            return false;
-        else if(currentStatus == ReviewStatusEnum.ReviewCompleted)
-            return true;
-    }
-
     get filteredRecords() {
         return this.PrincipalInvestigators;
     }
@@ -304,6 +292,25 @@ export class ReviewCompletedICSFComponent implements OnInit {
         return retColor;
     }
 
+    isQCNotRequested(currentStatus: number){
+        if(currentStatus == ReviewStatusEnum.ReviewCompleted)
+            return true;
+        // else if(currentStatus == ReviewStatusEnum.QCRequested ||
+        //     currentStatus == ReviewStatusEnum.QCInProgress ||
+        //     currentStatus == ReviewStatusEnum.QCFailed ||
+        //     currentStatus == ReviewStatusEnum.QCPassed ||
+        //     currentStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+        //     currentStatus == ReviewStatusEnum.Completed)
+        //     return false;
+        else
+            return false;
+    }
+
+    canUndoQCRequest(currentStatus: number){
+        if(currentStatus == ReviewStatusEnum.QCRequested)
+            return true;
+    }
+
     requestQC(qcVerifier: string, requestorComments:string) {
         if(qcVerifier == null || qcVerifier.length == 0){
             alert('please select a QC Verifier');
@@ -355,6 +362,15 @@ export class ReviewCompletedICSFComponent implements OnInit {
             error => {
 
             });
+    }
+
+    undoQCRequest(complianceFormId: string){
+        this.service.undoQCRequest(complianceFormId)
+        .subscribe((item: boolean) =>{
+            this.LoadPrincipalInvestigators();
+        },
+        error => {
+        });
     }
 
     resetValues(){

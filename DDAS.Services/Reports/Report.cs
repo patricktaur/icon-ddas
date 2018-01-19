@@ -554,6 +554,9 @@ namespace DDAS.Services.Reports
                 var ComplianceForm = _UOW.ComplianceFormRepository
                     .FindById(assignmentHistory.ComplianceFormId);
 
+                if (ComplianceForm == null)
+                    continue;
+
                 assignmentHistoryViewModel.PrincipalInvestigator =
                     ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
                 assignmentHistoryViewModel.ProjectNumber =

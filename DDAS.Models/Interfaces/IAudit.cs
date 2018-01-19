@@ -15,5 +15,8 @@ namespace DDAS.Models.Interfaces
         ComplianceForm GetQC(Guid RecId, string AssignedTo, string LoggedInUserName);
         bool SaveQC(ComplianceForm Form);
         List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);
+        bool UndoQCRequest(Guid ComplianceFormId);
+        //bool UndoQCSubmit(Guid ComplianceFormId);
+        //bool Undo(string ComplianceFormId);
     }
 }

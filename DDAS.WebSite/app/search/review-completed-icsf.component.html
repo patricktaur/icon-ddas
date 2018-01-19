@@ -132,21 +132,26 @@
 						</td>
 						<td>
 							<div class="btn-group">
-								<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
-							<span class="glyphicon glyphicon-download-alt" ></span>
-						</button>-->
+										<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
+									<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>-->
 								<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
-							<span class="glyphicon glyphicon-download-alt" ></span>
-						</button>
-								<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
-							<span class="glyphicon glyphicon-download-alt" ></span>
-						</button>-->
+									<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>
+										<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
+									<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>-->
 								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open"></span></button>
-								<button type="button" *ngIf="isQCRequested(item.CurrentReviewStatus)" 
+								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" 
 									class="btn btn-sm btn-primary" 
 									(click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open(); resetValues()" 
 									title="Request QC">
 									<span class="glyphicon glyphicon-retweet"></span>
+								</button>
+								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" 
+									class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)" title="Undo QC Request">
+									<!-- <i clas="fa fa-undo"></i> -->
+									<span class="">Undo QC Request</span>
 								</button>
 							</div>
 						</td>

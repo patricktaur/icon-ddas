@@ -1,12 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { PrincipalInvestigatorDetails, CompFormFilter, CalenderDate } from './search.classes';
+import {
+    PrincipalInvestigatorDetails, CompFormFilter,
+    CalenderDate, ReviewStatusEnum,
+    UndoEnum, CurrentReviewStatusViewModel, ReviewerRoleEnum
+} from './search.classes';
 import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
-import { ReviewStatusEnum } from './search.classes';
 import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import { CompFormLogicService } from './shared/services/comp-form-logic.service';
 
 @Component({
     moduleId: module.id,
@@ -16,8 +20,8 @@ export class CompletedICSFComponent implements OnInit {
 
     public PrincipalInvestigators: PrincipalInvestigatorDetails[];
     public Users: any[];
-    public ComplianceFormFilter: CompFormFilter;    
-    
+    public ComplianceFormFilter: CompFormFilter;
+
     public myDatePickerOptions = {
 
         dateFormat: 'dd mmm yyyy',
@@ -27,22 +31,24 @@ export class CompletedICSFComponent implements OnInit {
     public ToSelDate: string;//default calendar start dates
     public FromDate: IMyDateModel;// Object = { date: { year: 2018, month: 10, day: 9 } };
     public ToDate: IMyDateModel;  // Object = { date: { year: 2018, month: 10, day: 9 } };
-    
-    public formLoading: boolean;    
+
+    public formLoading: boolean;
+    public currentReviewStatus: CurrentReviewStatusViewModel;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
-        private authService: AuthService) {
+        private authService: AuthService,
+        private compFormLogic: CompFormLogicService) {
     }
 
     ngOnInit() {
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
-        this.LoadUsers();        
+        this.LoadUsers();
     }
 
     LoadUsers() {
@@ -104,14 +110,56 @@ export class CompletedICSFComponent implements OnInit {
             });
     }
 
-    get filteredPrincipalInvestigators(){
-        if(this.PrincipalInvestigators){
-            return this.PrincipalInvestigators.filter(x => 
+    // getCurrentReviewStatus(complianceFormId: string) {
+    //     this.service.getCurrentReviewStatus(complianceFormId)
+    //         .subscribe((item: CurrentReviewStatusViewModel) => {
+    //             this.currentReviewStatus = item;
+    //         },
+    //         error => {
+
+    //         });
+    // }
+
+    get filteredPrincipalInvestigators() {
+        if (this.PrincipalInvestigators) {
+            return this.PrincipalInvestigators.filter(x =>
                 x.CurrentReviewStatus == ReviewStatusEnum.Completed);
         }
         else
             return null;
     }
+
+    // undo(complianceFormId: string) {
+    //     this.getCurrentReviewStatus(complianceFormId);
+    //     let undoEnum = 0;
+    //     if (this.currentReviewStatus &&
+    //         this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
+    //         this.authService.userName.toLowerCase() &&
+    //         this.currentReviewStatus.CurrentReview.ReviewerRole ==
+    //         ReviewerRoleEnum.QCVerifier) {
+    //         undoEnum = UndoEnum.UndoQCSubmit;
+    //     }
+    //     else if (this.currentReviewStatus &&
+    //         this.currentReviewStatus.QCVerifierRecId != null &&
+    //         this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
+    //         this.authService.userName.toLowerCase() &&
+    //         this.currentReviewStatus.CurrentReview.ReviewerRole ==
+    //         ReviewerRoleEnum.Reviewer) {
+    //         undoEnum = UndoEnum.UndoQCResponse;
+    //     }
+
+    //     if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
+    //         this.service.undo(complianceFormId, undoEnum)
+    //         .subscribe((item: boolean) => {
+    //             this.LoadPrincipalInvestigators();
+    //         },
+    //         error => {
+
+    //         });
+    //     }
+    //     else
+    //         alert('undo request not sent');
+    // }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 
