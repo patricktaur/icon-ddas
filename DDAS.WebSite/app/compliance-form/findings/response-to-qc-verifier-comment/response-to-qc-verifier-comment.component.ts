@@ -9,6 +9,7 @@ import { ComplianceFormA, SiteSource, Finding, CommentCategoryEnum } from '../..
 })
 export class ResponseToQCVerifierCommentComponent implements OnInit {
     @Input() Finding: Finding;
+    @Output() ValueChanged = new EventEmitter();
     
     private pageChanged: boolean = false;
     
@@ -19,6 +20,7 @@ export class ResponseToQCVerifierCommentComponent implements OnInit {
 
     formValueChanged(){
         this.pageChanged = true;
+        this.ValueChanged.emit() ;
     } 
 
     Split = (RecordDetails: string) => {

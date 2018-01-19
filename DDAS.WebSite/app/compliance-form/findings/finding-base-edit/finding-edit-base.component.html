@@ -2,7 +2,7 @@
     <!-- <div class="form-group col-md-6"> -->
     <div class="well">
         <h3>{{Title}}</h3>
-
+        XXXXXX:{{pageChanged}}
         <!-- {{diagnostic}} -->
         <div *ngIf="Finding.IsMatchedRecord==true">
             <div class="row">
@@ -30,7 +30,10 @@
         <div class="row">
             <div class="col-md-12">
                 <h4>Findings:</h4>
-                <textarea class="form-control" name="Observation" [(ngModel)]="Finding.Observation" rows="3" cols="30" required placeholder="Observations"></textarea>
+                <textarea class="form-control" name="Observation" 
+                [(ngModel)]="Finding.Observation" 
+                (change)="formValueChanged()"
+                rows="3" cols="30" required placeholder="Observations"></textarea>
             </div>
         </div>
 
@@ -39,7 +42,10 @@
                 <h4>Date of Inspection:</h4>
 
                 <div *ngIf="!Finding.IsMatchedRecord">
-                    <input type="date" [(ngModel)]="Finding.DateOfInspection" name="dateOfInspection">
+                    <input type="date" 
+                    [(ngModel)]="Finding.DateOfInspection" 
+                    (change)="formValueChanged()"
+                    name="dateOfInspection">
                     <b>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</b>
                     <!--<div date-picker [(DateValue)]="Finding.DateOfInspection"></div>-->
                 </div>

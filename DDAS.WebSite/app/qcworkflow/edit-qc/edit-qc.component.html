@@ -10,6 +10,7 @@
 			 <label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label> 
 			<!-- QCVerifierReviewId:{{QCVerifierReviewId}} -->
 			<br>
+			*****{{pageChanged}}
 			<!-- Test: {{Test?.RecId}} -->
 		</div>
 	</div>
@@ -163,30 +164,42 @@
 		<!-- XXXXXXXXXXXXXXXXX XXXX:{{diagnostic}} -->
 		<br>
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierComments')" >
-			<div qc-verifier-comments  [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="findingRecordToEdit">
-				</div>
+			<div qc-verifier-comments  
+				[QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" 
+				[Finding]="findingRecordToEdit"
+				(ValueChanged)="formValueChanged($event)"	>
+				
+			</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierFinding')" >
-				<div qc-verifier-finding  [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="findingRecordToEdit"
-				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				<div qc-verifier-finding  
+					[ReviewerRecId]="currentReviewStatus.ReviewerRecId"
+				 	[Finding]="findingRecordToEdit"
+					 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"
+					 (ValueChanged)="formValueChanged($event)"	>
 				</div>
 			</div>
 		
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierFinding')" >
 			
-			<div response-to-qc-verifier-finding [Finding]="findingRecordToEdit">
+			<div response-to-qc-verifier-finding 
+				[Finding]="findingRecordToEdit"
+				(ValueChanged)="formValueChanged($event)"	>
 			</div>
 		</div>
 
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierComments')" >
 			
-			<div response-to-qc-verifier-comment [Finding]="findingRecordToEdit">
+			<div response-to-qc-verifier-comment 
+				[Finding]="findingRecordToEdit"
+				(ValueChanged)="formValueChanged()"	>
 			</div>
 		</div>
 
 		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'findingView')" >
-				<div selected-finding-view [Finding]="findingRecordToEdit">
+				<div selected-finding-view
+				 		[Finding]="findingRecordToEdit">
 				</div>
 			</div>
 	</modal-body>

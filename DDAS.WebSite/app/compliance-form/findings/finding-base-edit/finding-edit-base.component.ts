@@ -11,6 +11,7 @@ export class FindingEditBaseComponent implements OnInit {
     @Input() Finding: Finding;
     @Output() Remove = new EventEmitter();
     @Input() Title: string;
+    @Output() ValueChanged = new EventEmitter();
     
     private pageChanged: boolean = false;
     
@@ -19,6 +20,7 @@ export class FindingEditBaseComponent implements OnInit {
 
     formValueChanged(){
         this.pageChanged = true;
+        this.ValueChanged.emit() ;
     } 
 
     Split = (RecordDetails: string) => {

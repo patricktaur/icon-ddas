@@ -83,6 +83,7 @@ export class EditQCComponent implements OnInit {
     public defaultTabInActive: string = " in active";
     public currentReviewStatus: CurrentReviewStatusViewModel;
     public findingRecordToEdit: Finding;
+    private pageChanged: boolean = false;
     
     constructor(
         private route: ActivatedRoute,
@@ -261,7 +262,6 @@ export class EditQCComponent implements OnInit {
     }
 
     openFindingDialog(qcSummary: any){
-        console.log("FindingId" + qcSummary.FindingId);
         let findingToEdit = this.complianceForm.Findings.find(x => x.Id == qcSummary.FindingId);
         this.findingRecordToEdit =  findingToEdit;
         this.FindingResponseModal.open();
@@ -311,7 +311,8 @@ export class EditQCComponent implements OnInit {
 
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)
         .subscribe((item: ComplianceFormA) => {
-            console.log("Save Called");
+            this.pageChanged == false
+            
         },
         error => {
         });
@@ -339,6 +340,22 @@ export class EditQCComponent implements OnInit {
             error => {
             });
     }
+
+    formValueChanged() {
+        this.pageChanged = true;
+    }
+
+    canDeactivate(): Promise<boolean> | boolean {
+        
+                if (this.pageChanged == false) {
+                    return true;
+                }
+                // Otherwise ask the user with the dialog service and return its
+                // promise which resolves to true or false when the user decides
+                //this.IgnoreChangesConfirmModal.open();
+                //return this.canDeactivateValue;
+                return window.confirm("Changes not saved. Ignore changes?");//this.dialogService.confirm('Discard changes?');
+            }
 
     goBack() {
         //this._location.back();

@@ -1,7 +1,8 @@
-<div finding-view-base [Finding]="Finding" [Title]="'Added by QC Verifier'">
+<div finding-view-base [Finding]="Finding" [Title]="'Added by QC Verifier'" (ValueChanged)="formValueChanged()">
     <div class="row">
         <div class="col-md-12">
              <h4>QC Verifier's comments:</h4>
+             *****{{pageChanged}}
              <br/>
              <label>Comment Category: {{qcVerifierCommentCategoryEnum}}</label>
              <br/>
@@ -17,7 +18,9 @@
             <br/>
             <h4>Respone to QC Verifier's Finding:</h4>
                 <label>QC Correction Status:</label>
-                <select class="form-control" name="CommentCategory" [(ngModel)]="getQCVerifierComment.ReviewerCategoryEnum">
+                <select class="form-control" name="CommentCategory" 
+                [(ngModel)]="getQCVerifierComment.ReviewerCategoryEnum"
+                (change)="formValueChanged()">
                     <option value="8" selected="selected">Not Applicable</option>
                     <option value="5" selected="selected">Pending</option>
                     <option value="7">Accepted</option>
