@@ -14,16 +14,8 @@ namespace DDAS.Models.ViewModels
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://schemas.xmlsoap.org/soap/envelope/", IsNullable = false)]
         public partial class Envelope
         {
-
-            private object headerField;
-
-            private EnvelopeBody bodyField;
-
             /// <remarks/>
-            public object Header
-            {
-                get; set;
-            }
+            public object Header { get; set; }
 
             /// <remarks/>
             public EnvelopeBody Body { get; set; }
@@ -34,16 +26,10 @@ namespace DDAS.Models.ViewModels
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://schemas.xmlsoap.org/soap/envelope/")]
         public partial class EnvelopeBody
         {
-
-            private DueDiligenceiSprintRequest dueDiligenceiSprintRequestField;
-
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://www.iconplc.com/InitiateDDASiSprintFindings/xsd/v3/initiateDDASiSprintFind" +
                 "ingsMsg")]
-            public DueDiligenceiSprintRequest DueDiligenceiSprintRequest
-            {
-                get; set;
-            }
+            public DueDiligenceiSprintRequest DueDiligenceiSprintRequest { get; set; }
         }
 
         /// <remarks/>
@@ -53,22 +39,11 @@ namespace DDAS.Models.ViewModels
             "ingsMsg", IsNullable = false)]
         public partial class DueDiligenceiSprintRequest
         {
-
-            private DueDiligenceiSprintRequestHeader headerField;
-
-            private DueDiligenceiSprintRequestDDResults dDResultsField;
+            /// <remarks/>
+            public DueDiligenceiSprintRequestHeader header { get; set; }
 
             /// <remarks/>
-            public DueDiligenceiSprintRequestHeader header
-            {
-                get;set;
-            }
-
-            /// <remarks/>
-            public DueDiligenceiSprintRequestDDResults DDResults
-            {
-                get; set;
-            }
+            public DueDiligenceiSprintRequestDDResults DDResults { get; set; }
         }
 
         /// <remarks/>
@@ -76,30 +51,14 @@ namespace DDAS.Models.ViewModels
             "ingsMsg")]
         public partial class DueDiligenceiSprintRequestHeader
         {
-
-            private string senderField;
-
-            private System.DateTime timestampField;
-
-            private string message_idField;
+            /// <remarks/>
+            public string sender { get; set; }
 
             /// <remarks/>
-            public string sender
-            {
-                get; set;
-            }
+            public System.DateTime timestamp { get; set; }
 
             /// <remarks/>
-            public System.DateTime timestamp
-            {
-                get; set;
-            }
-
-            /// <remarks/>
-            public string message_id
-            {
-                get; set;
-            }
+            public string message_id { get; set; }
         }
 
         /// <remarks/>
@@ -108,32 +67,17 @@ namespace DDAS.Models.ViewModels
         public partial class DueDiligenceiSprintRequestDDResults
         {
 
-            private project projectField;
-
-            private institutuions institutuionsField;
-
-            private investigatorResults investigatorResultsField;
+            /// <remarks/>
+            [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://edh.esb.iconplc.com")]
+            public project project { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://edh.esb.iconplc.com")]
-            public project project
-            {
-                get; set;
-            }
+            public institutuions institutuions { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://edh.esb.iconplc.com")]
-            public institutuions institutuions
-            {
-                get; set;
-            }
-
-            /// <remarks/>
-            [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://edh.esb.iconplc.com")]
-            public investigatorResults investigatorResults
-            {
-                get; set;
-            }
+            public investigatorResults investigatorResults { get; set; }
         }
 
         /// <remarks/>
@@ -141,22 +85,11 @@ namespace DDAS.Models.ViewModels
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://edh.esb.iconplc.com", IsNullable = false)]
         public partial class project
         {
-
-            private ushort projectNumberField;
-
-            private byte sponsorProtocolNumberField;
+            /// <remarks/>
+            public string projectNumber { get; set; }
 
             /// <remarks/>
-            public ushort projectNumber
-            {
-                get; set;
-            }
-
-            /// <remarks/>
-            public byte sponsorProtocolNumber
-            {
-                get; set;
-            }
+            public string sponsorProtocolNumber { get; set; }
         }
 
         /// <remarks/>
@@ -164,136 +97,66 @@ namespace DDAS.Models.ViewModels
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://edh.esb.iconplc.com", IsNullable = false)]
         public partial class institutuions
         {
-
-            private institutuionsChecksCompleted checksCompletedField;
-
-            private bool instituteComplianceIssueField;
-
-            private institutuionsDdFindings ddFindingsField;
+            /// <remarks/>
+            public institutuionsChecksCompleted checksCompleted { get; set; }
 
             /// <remarks/>
-            public institutuionsChecksCompleted checksCompleted
-            {
-                get; set;
-            }
+            public bool instituteComplianceIssue { get; set; }
 
             /// <remarks/>
-            public bool instituteComplianceIssue
-            {
-                get; set;
-            }
-
-            /// <remarks/>
-            public institutuionsDdFindings ddFindings
-            {
-                get; set;
-            }
+            public institutuionsDdFindings ddFindings { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class institutuionsChecksCompleted
         {
-
-            private institutuionsChecksCompletedCheck checkField;
-
             /// <remarks/>
-            public institutuionsChecksCompletedCheck check
-            {
-                get; set;
-            }
+            public institutuionsChecksCompletedCheck check { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class institutuionsChecksCompletedCheck
         {
-
-            private string nameField;
-
-            private System.DateTime dateField;
-
             /// <remarks/>
-            public string name
-            {
-                get; set;
-            }
+            public string name { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date
-            {
-                get; set;
-            }
+            public System.DateTime date { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class institutuionsDdFindings
         {
-
-            private institutuionsDdFindingsFinding findingField;
-
             /// <remarks/>
-            public institutuionsDdFindingsFinding finding
-            {
-                get; set;
-            }
+            public institutuionsDdFindingsFinding finding { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class institutuionsDdFindingsFinding
         {
-
-            private System.DateTime dateField;
-
-            private string typeField;
-
-            private string regulatoryCodeField;
-
-            private string regulatoryDeficiencyField;
-
-            private string worldCheckFindingField;
-
-            private string commentField;
-
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date
-            {
-                get; set;
-            }
+            public System.DateTime date { get; set; }
 
             /// <remarks/>
-            public string type
-            {
-                get; set;
-            }
+            public string type { get; set; }
 
             /// <remarks/>
-            public string regulatoryCode
-            {
-                get; set;
-            }
+            public string regulatoryCode { get; set; }
 
             /// <remarks/>
-            public string regulatoryDeficiency
-            {
-                get; set;
-            }
+            public string regulatoryDeficiency { get; set; }
 
             /// <remarks/>
-            public string worldCheckFinding
-            {
-                get; set;
-            }
+            public string worldCheckFinding { get; set; }
 
             /// <remarks/>
-            public string comment
-            {
-                get; set;
-            }
+            public string comment { get; set; }
         }
 
         /// <remarks/>
@@ -301,216 +164,100 @@ namespace DDAS.Models.ViewModels
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://edh.esb.iconplc.com", IsNullable = false)]
         public partial class investigatorResults
         {
-
-            private investigatorResultsInvestigatorResult investigatorResultField;
-
             /// <remarks/>
-            public investigatorResultsInvestigatorResult investigatorResult
-            {
-                get; set;
-            }
+            public investigatorResultsInvestigatorResult[] investigatorResult { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class investigatorResultsInvestigatorResult
         {
-
-            private uint investigatorIdField;
-
-            private uint memberIdField;
-
-            private string firstNameField;
-
-            private string middleNameField;
-
-            private string lastNameField;
-
-            private string ddStatusField;
-
-            private System.DateTime ddCompletedDateField;
-
-            private investigatorResultsInvestigatorResultChecksCompleted checksCompletedField;
-
-            private System.DateTime dmc9002CheckDateField;
-
-            private string dmc9002ExclusionField;
-
-            private investigatorResultsInvestigatorResultDdFindings ddFindingsField;
+            /// <remarks/>
+            public uint investigatorId { get; set; }
 
             /// <remarks/>
-            public uint investigatorId
-            {
-                get; set;
-            }
+            public uint memberId { get; set; }
 
             /// <remarks/>
-            public uint memberId
-            {
-                get; set;
-            }
+            public string firstName { get; set; }
 
             /// <remarks/>
-            public string firstName
-            {
-                get; set;
-            }
+            public string middleName { get; set; }
 
             /// <remarks/>
-            public string middleName
-            {
-                get; set;
-            }
+            public string lastName { get; set; }
 
             /// <remarks/>
-            public string lastName
-            {
-                get; set;
-            }
-
-            /// <remarks/>
-            public string ddStatus
-            {
-                get; set;
-            }
+            public string ddStatus { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime ddCompletedDate
-            {
-                get; set;
-            }
+            public System.DateTime ddCompletedDate { get; set; }
 
             /// <remarks/>
-            public investigatorResultsInvestigatorResultChecksCompleted checksCompleted
-            {
-                get; set;
-            }
+            public investigatorResultsInvestigatorResultChecksCompleted checksCompleted { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime dmc9002CheckDate
-            {
-                get; set;
-            }
+            public System.DateTime dmc9002CheckDate {get; set;}
 
             /// <remarks/>
-            public string dmc9002Exclusion
-            {
-                get; set;
-            }
+            public string dmc9002Exclusion { get; set; }
 
             /// <remarks/>
-            public investigatorResultsInvestigatorResultDdFindings ddFindings
-            {
-                get; set;
-            }
+            public investigatorResultsInvestigatorResultDdFindings ddFindings { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class investigatorResultsInvestigatorResultChecksCompleted
         {
-
-            private investigatorResultsInvestigatorResultChecksCompletedCheck checkField;
-
             /// <remarks/>
-            public investigatorResultsInvestigatorResultChecksCompletedCheck check
-            {
-                get; set;
-            }
+            public investigatorResultsInvestigatorResultChecksCompletedCheck check { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class investigatorResultsInvestigatorResultChecksCompletedCheck
         {
-
-            private string nameField;
-
-            private System.DateTime dateField;
-
             /// <remarks/>
-            public string name
-            {
-                get; set;
-            }
+            public string name { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date
-            {
-                get; set;
-            }
+            public System.DateTime date { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class investigatorResultsInvestigatorResultDdFindings
         {
-
-            private investigatorResultsInvestigatorResultDdFindingsFinding findingField;
-
             /// <remarks/>
-            public investigatorResultsInvestigatorResultDdFindingsFinding finding
-            {
-                get; set;
-            }
+            public investigatorResultsInvestigatorResultDdFindingsFinding finding { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         public partial class investigatorResultsInvestigatorResultDdFindingsFinding
         {
-
-            private System.DateTime dateField;
-
-            private string typeField;
-
-            private string regulatoryCodeField;
-
-            private string regulatoryDeficiencyField;
-
-            private string worldCheckFindingField;
-
-            private string commentField;
-
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date
-            {
-                get; set;
-            }
+            public System.DateTime date { get; set; }
 
             /// <remarks/>
-            public string type
-            {
-                get; set;
-            }
+            public string type { get; set; }
 
             /// <remarks/>
-            public string regulatoryCode
-            {
-                get; set;
-            }
+            public string regulatoryCode { get; set; }
 
             /// <remarks/>
-            public string regulatoryDeficiency
-            {
-                get; set;
-            }
+            public string regulatoryDeficiency { get; set; }
 
             /// <remarks/>
-            public string worldCheckFinding
-            {
-                get; set;
-            }
+            public string worldCheckFinding { get; set; }
 
             /// <remarks/>
-            public string comment
-            {
-                get; set;
-            }
+            public string comment { get; set; }
         }
     }
 }

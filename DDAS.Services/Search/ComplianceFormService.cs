@@ -276,7 +276,7 @@ namespace DDAS.Services.Search
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
             //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
             form.Institute = DR.institute.name;
-            form.Address = DR.institute.address1;
+            form.Address =(DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  "," ");
             form.Country = DR.institute.country;
 
             //AddCountrySpecificSites(form);
@@ -294,7 +294,7 @@ namespace DDAS.Services.Search
                 Investigator.Id = InvId;
                 InvId += 1;
 
-                //Investigator.Name = InputRows[Index].DisplayName.Trim();
+                Investigator.Name = d.nameWithQualification.Trim();
                 Investigator.FirstName = d.firstName.Trim();
                 Investigator.MiddleName = d.middleName.Trim();
                 Investigator.LastName = d.lastName.Trim();
@@ -341,21 +341,22 @@ namespace DDAS.Services.Search
 
             if (PrincipleInvestigatorCount == 0)
             {
-                throw new Exception("Principle Investigator not Found");
+                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.");
             }
 
             if (PrincipleInvestigatorCount > 1)
             {
-                throw new Exception("Principle Investigator cannot be more than one");
+                throw new Exception("Principle Investigator cannot be more than one.");
             }
 
             ScanUpdateComplianceForm(form);
-            
+
             return form;
         }
 
         public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
             bool Active, Guid? RecId)
+
         {
             var form = _UOW.ComplianceFormRepository.FindById(RecId);
             form.AssignedTo = AssignedTo;
