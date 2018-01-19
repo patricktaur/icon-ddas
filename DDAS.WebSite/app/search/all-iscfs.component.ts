@@ -5,7 +5,6 @@ import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
-
 import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
 
 @Component({
@@ -43,14 +42,9 @@ export class AllISCFsComponent implements OnInit {
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
-        private authService: AuthService
-    ) {
-
-    }
-
+        private authService: AuthService) { }
 
     ngOnInit() {
-
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
@@ -122,7 +116,6 @@ export class AllISCFsComponent implements OnInit {
         this.SelectedComplianceFormId = Investigator.RecId;
         this.SelectedInvestigatorName = Investigator.Name;
     }
-
 
     private Todate = new Date();
     private testDate: Date;

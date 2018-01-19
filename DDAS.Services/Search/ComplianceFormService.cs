@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Utilities;
 using Utilities.WordTemplate;
+using static DDAS.Models.ViewModels.RequestPayloadforDDAS;
 
 namespace DDAS.Services.Search
 {
@@ -39,12 +40,18 @@ namespace DDAS.Services.Search
         public ComplianceForm GetNewComplianceForm(string UserName)
         {
             ComplianceForm newForm = new ComplianceForm();
-
-            newForm.AssignedTo = UserName;//GetUserFullName(UserName);
-
+            newForm.AssignedTo = UserName;
             newForm.SearchStartedOn = DateTime.Now;
-            AddMandatorySitesToComplianceForm(newForm);
 
+            var review = new Review();
+            review.RecId = Guid.NewGuid();
+            review.AssigendTo = UserName;
+            review.AssignedBy = UserName;
+            review.AssignedOn = DateTime.Now;
+            review.ReviewerRole = ReviewerRoleEnum.Reviewer;
+
+            newForm.Reviews.Add(review);
+            AddMandatorySitesToComplianceForm(newForm);
             return newForm;
         }
 
@@ -102,8 +109,10 @@ namespace DDAS.Services.Search
                 //reading headers and first row
                 var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
 
+                if (_UOW.DefaultSiteRepository.GetAll().Count() == 0)
+                    ExcelRow.Add("cannot find default sites. Add default sites before uploading");
                 //if headers are missing
-                if(ExcelRow.Where(x => x.Contains("cannot find column")).Count() > 0)
+                if(ExcelRow.Where(x => x.Contains("cannot find")).Count() > 0)
                 {
                     ExcelRow.ForEach(row =>
                     {
@@ -249,15 +258,129 @@ namespace DDAS.Services.Search
 
         #endregion
 
+
+        public ComplianceForm ImportIsprintData(ddRequest DR)
+        {
+            //var ComplianceForms = new ComplianceForm();
+
+            //var InputRows = DataFromExcelFile.ExcelInputRows;
+
+            var form = GetNewComplianceForm("isprint");
+
+            //Already assigning the name in GetNewComplianceForm
+            //form.AssignedTo = UserName;
+            //form.UploadedFileName = UploadedFileName;
+            //form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
+            form.ProjectNumber = DR.project.projectNumber;
+            //form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
+            form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
+            //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
+            form.Institute = DR.institute.name;
+            form.Address = DR.institute.address1;
+            form.Country = DR.institute.country;
+
+            //AddCountrySpecificSites(form);
+            //AddSponsorSpecificSites(form);
+
+
+            int InvId = 1;
+            int PrincipleInvestigatorCount = 0;
+
+            foreach (ddRequestInvestigator d in DR.investigators)
+            {
+
+
+                var Investigator = new InvestigatorSearched();
+                Investigator.Id = InvId;
+                InvId += 1;
+
+                //Investigator.Name = InputRows[Index].DisplayName.Trim();
+                Investigator.FirstName = d.firstName.Trim();
+                Investigator.MiddleName = d.middleName.Trim();
+                Investigator.LastName = d.lastName.Trim();
+                Investigator.Role = d.role.ToString().Trim();
+                Investigator.MedicalLiceseNumber = d.licenceNumber;
+                Investigator.MemberId = d.memberId;
+                Investigator.InvestigatorId = d.investigatorId;
+
+                form.InvestigatorDetails.Add(Investigator);
+
+
+                if (d.role.ToString().ToLower() == "pi")
+                {
+                    PrincipleInvestigatorCount += 1;
+                }
+
+
+                //int tempIndex = Index + 1; //to add SI's
+
+                //while (tempIndex < InputRows.Count &&
+                //    d.role.ToString().ToLower() == "sub i")
+                //{
+                //    var Inv = new InvestigatorSearched();
+                //    Inv.Id = InvId;
+                //    InvId += 1;
+
+                //    Inv.Name = InputRows[tempIndex].DisplayName.Trim();
+                //    Inv.FirstName = InputRows[tempIndex].FirstName;
+                //    Inv.MiddleName = InputRows[tempIndex].MiddleName;
+                //    Inv.LastName = InputRows[tempIndex].LastName;
+                //    Inv.Role = InputRows[tempIndex].Role;
+                //    Inv.MedicalLiceseNumber =
+                //        InputRows[tempIndex].MedicalLicenseNumber;
+                //    Inv.MemberId = InputRows[tempIndex].MemberID;
+                //    Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
+
+                //    form.InvestigatorDetails.Add(Inv);
+                //    tempIndex += 1;
+                //}
+                //Index = tempIndex - 1;
+
+                //ComplianceForms.Add(form);
+            }
+
+            if (PrincipleInvestigatorCount == 0)
+            {
+                throw new Exception("Principle Investigator not Found");
+            }
+
+            if (PrincipleInvestigatorCount > 1)
+            {
+                throw new Exception("Principle Investigator cannot be more than one");
+            }
+
+            ScanUpdateComplianceForm(form);
+            
+            return form;
+        }
+
         public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
             bool Active, Guid? RecId)
         {
-            //var form = _UOW.ComplianceFormRepository.FindById(RecId);
-            //form.AssignedTo = AssignedTo;
-            //form.Active = Active;
-            //_UOW.ComplianceFormRepository.UpdateCollection(form);
+            var form = _UOW.ComplianceFormRepository.FindById(RecId);
+            form.AssignedTo = AssignedTo;
+            form.Active = Active;
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+
             AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
-            _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
+
+            //_UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
+
+            //var CompForm = _UOW.ComplianceFormRepository.FindById(RecId);
+
+            //var PreviousReview = CompForm.Reviews.Find(x =>
+            //x.PreviousReviewId == null);
+
+            //if(PreviousReview != null)
+            //{
+            //    var review = new Review();
+            //    review.AssigendTo = AssignedTo;
+            //    review.AssignedBy = AssignedBy;
+            //    review.AssignedOn = DateTime.Now;
+            //    review.PreviousReviewId = PreviousReview.RecId;
+            //    CompForm.Reviews.Add(review);
+            //    _UOW.ComplianceFormRepository.UpdateCollection(CompForm);
+            //}
         }
 
         //used by Excel File Upload method.
@@ -466,8 +589,6 @@ namespace DDAS.Services.Search
 
         }
          /*
-           
-
 
          */
 
@@ -528,6 +649,11 @@ namespace DDAS.Services.Search
 
                     dbForm.Findings.Clear();
                     dbForm.Findings.AddRange(form.Findings);
+
+                    dbForm.Reviews.Clear();
+                    dbForm.Reviews.AddRange(form.Reviews);
+                    dbForm.Comments.Clear();
+                    dbForm.Comments.AddRange(form.Comments);
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
@@ -595,6 +721,18 @@ namespace DDAS.Services.Search
                     if (finding.Id == null)
                     {
                         finding.Id = Guid.NewGuid();
+                    }
+
+                    foreach (Comment comment in finding.Comments)
+                    {
+                        if (comment != null && comment.CategoryEnum != CommentCategoryEnum.NotApplicable)
+                            comment.AddedOn = DateTime.Now;
+                        if(comment != null && 
+                            (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                            comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
+                        {
+                            comment.CorrectedOn = DateTime.Now;
+                        }
                     }
                 }
 
@@ -701,6 +839,9 @@ namespace DDAS.Services.Search
                 return;
             }
 
+            if (_UOW.CountryRepository.GetAll().Count() == 0)
+                return;
+
             var Countries = _UOW.CountryRepository.GetAll().Where(country =>
             country.CountryName.Trim().ToLower() == compForm.Country.Trim().ToLower()); //.ToList();
 
@@ -736,6 +877,9 @@ namespace DDAS.Services.Search
         private void AddSponsorSpecificSites(ComplianceForm compForm)
         {
             var lastDisplayPosition = compForm.SiteSources.Max(x => x.DisplayPosition);
+
+            if (_UOW.SponsorProtocolRepository.GetAll().Count() == 0)
+                return;
 
             var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll().Where(
                sponsor => sponsor.SponsorProtocolNumber ==
@@ -950,7 +1094,6 @@ namespace DDAS.Services.Search
 
         public ComplianceForm RollUpSummary(ComplianceForm form)  //previously UpdateFindings
         {
-
             //int SiteCount = form.SiteSources.Count;
             int FullMatchesFoundInvestigatorCount = 0;
             int PartialMatchesFoundInvestigatorCount = 0;
@@ -1169,7 +1312,35 @@ namespace DDAS.Services.Search
             form.ExtractionErrorInvestigatorCount = ExtractionErrorInvestigatorCount;
             form.ExtractionPendingInvestigatorCount = ExtractionPendingInvestigatorCount;
 
+            if (form.Reviews.FirstOrDefault() == null)
+                throw new Exception("Review cannot be empty");
+
+            UpdateReviewStatus(form.Reviews.First(),
+                form.IsReviewCompleted);
+
             return form;
+        }
+
+        private void UpdateReviewStatus(Review review, bool IsReviewCompleted)
+        {
+            if (!IsReviewCompleted)
+            {
+                if (review.Status == ReviewStatusEnum.ReviewInProgress)
+                {
+                    //do nothing. status is already ReviewInProgress
+                }
+                else
+                    review.Status = ReviewStatusEnum.ReviewInProgress;
+            }
+            else
+            {
+                if (review.Status == ReviewStatusEnum.ReviewCompleted)
+                {
+                    //do nothing. status is already ReviewInProgress
+                }
+                else
+                    review.Status = ReviewStatusEnum.ReviewCompleted;
+            }
         }
 
         public bool UpdateRollUpSummary(Guid formId)  
@@ -1178,8 +1349,6 @@ namespace DDAS.Services.Search
             RollUpSummary(form);
             //_UOW.ComplianceFormRepository.UpdateComplianceForm(formId, form);
             _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-
             return true;
         }
 
@@ -1341,6 +1510,26 @@ namespace DDAS.Services.Search
                 inv.HasExtractionError = HasExtractionError;
                 //inv.SitesSearched = ListOfSiteSearchStatus;
                 InvestigatorId += 1;
+            }
+            AddOrUpdateReviewStatus(frm); //pradeep 27Dec2017
+        }
+
+        private void AddOrUpdateReviewStatus(ComplianceForm form)
+        {
+            if (form.Reviews.Count == 0)
+            {
+                var review = new Review();
+                review.RecId = Guid.NewGuid();
+                review.AssigendTo = form.AssignedTo;
+                review.AssignedBy = form.AssignedTo;
+                review.AssignedOn = DateTime.Now;
+                review.ReviewerRole = ReviewerRoleEnum.Reviewer;
+                review.Status = ReviewStatusEnum.SearchCompleted;
+                form.Reviews.Add(review);
+            }
+            else
+            {
+                //...
             }
         }
 
@@ -1562,6 +1751,7 @@ namespace DDAS.Services.Search
 
         private void RemoveDeleteMarkedItemsFromFormCollections(ComplianceForm frm)
         {
+            
             frm.InvestigatorDetails.RemoveAll(x => x.Deleted == true);
 
             //Remove Delete Site's SiteSearchStatus from each remaining Investigator
@@ -1912,6 +2102,7 @@ namespace DDAS.Services.Search
             item.RecId = compForm.RecId;
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
+            item.CurrentReviewStatus = compForm.CurrentReviewStatus;
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
@@ -4277,7 +4468,6 @@ namespace DDAS.Services.Search
             if(!IsValidProjectNumber(InputRow.ProjectNumber))
                 ValidationMessages.Add("RowNumber: " + Row +
                     " - change the project number format to '1234/5678'");
-
             if (InputRow.ProjectNumber2 != null && 
                 InputRow.ProjectNumber2.Trim() != ""
                 && !IsValidProjectNumber(InputRow.ProjectNumber2))

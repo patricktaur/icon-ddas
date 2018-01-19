@@ -10,9 +10,12 @@
 
 <div class="col-md-12">
 	<div class="well">
-		<button type="button" class="btn btn-sm btn-primary pull-right" (click)="loadAdminDashboardList()">
-			<span class="glyphicon glyphicon-refresh" title="refresh"></span>
-		</button>
+			<button type="button" class="btn btn-primary pull-left" (click)="loadAdminDashboardList()">
+					<span class="glyphicon glyphicon-refresh" title="refresh"></span>
+				</button>
+		<div style="margin-left: 10px"   file-download [url]="'Reports/AdminDashboard?mode=csv'" class="pull-left"> </div>
+		<br>
+		
 		<table class="table table-bordered">
 			<thead>
 				<tr>
@@ -26,19 +29,27 @@
 			<tbody>
 				<tr *ngFor="let item of adminDashboardList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 					<td class="text-left">
-						{{item.UserName}}
+						{{item.UserFullName}}
 					</td>
 					<td class="text-center">
-						{{item.OpeningBalance}}
+						<a (click)="loadDrillDownDetails(item.UserName, 0, item.OpeningBalance)">
+							{{item.OpeningBalance}}
+						</a>
                     </td>
                     <td class="text-center">
-                        {{item.InvestigatorUploaded}}
+						<a (click)="loadDrillDownDetails(item.UserName, 1, item.InvestigatorUploaded)">
+							{{item.InvestigatorUploaded}}
+						</a>
                     </td>
                     <td class="text-center">
-                        {{item.InvestigatorReviewCompleted}}
+						<a (click)="loadDrillDownDetails(item.UserName, 2, item.InvestigatorReviewCompleted)">
+							{{item.InvestigatorReviewCompleted}}
+						</a>
                     </td>
                     <td class="text-center">
-                        {{item.ClosingBalance}}
+						<a (click)="loadDrillDownDetails(item.UserName, 3, item.ClosingBalance)">
+							{{item.ClosingBalance}}
+						</a>
                     </td>                    
 				</tr>
 			</tbody>

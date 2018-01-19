@@ -7,7 +7,7 @@ import { SearchInputComponent } from './search-input.component';
 import { OpenComplianceFormsComponent } from './open-compliance-search-forms.component';
 
 import { DueDiligenceCheckComponent } from './due-diligence-check.component';
-import { ClosedICFsComponent } from './closed-icfs.component';
+import { ReviewCompletedICSFComponent } from './review-completed-icsf.component';
 import { ManageICFsComponent } from './manage-icfs.component';
 import { AllISCFsComponent } from './all-iscfs.component';
 
@@ -23,7 +23,8 @@ import { FindingsComponent } from './findings.component'
 
 
 import { InstituteFindingsSummaryComponent } from './institute-findings-summary.component'
-import {InstituteFindingsComponent} from './institute-findings.component' 
+import {InstituteFindingsComponent} from './institute-findings.component';
+import { CompletedICSFComponent } from './completed-icsf.component';
 
 import { AuthGuard } from '../auth/auth-guard.service';
 
@@ -69,12 +70,9 @@ const searchRoutes: Routes = [
     ]
   },
   {
-    path: 'closed-icfs1', component: ClosedICFsComponent
-    , canActivate: [AuthGuard],
-
+    path: 'review-completed-icsf', component: ReviewCompletedICSFComponent
+    , canActivate: [AuthGuard]
   },
-  
-  
   {
     path: 'manage-compliance-forms', component: SearchComponent
     , canActivate: [AuthGuard],
@@ -116,11 +114,11 @@ const searchRoutes: Routes = [
 },
     
  {
-    path: 'closed-icfs', component: SearchComponent
+    path: 'review-completed-icsf', component: SearchComponent
     , canActivate: [AuthGuard],
     children: [
 
-      { path: '', component: ClosedICFsComponent },
+      { path: '', component: ReviewCompletedICSFComponent },
 
       {
         path: 'complianceform/:formId',
@@ -155,9 +153,11 @@ const searchRoutes: Routes = [
     ]
   }, 
   {
-    path: 'output-excel', component: SearchComponent
-    , canActivate: [AuthGuard]
-  }, 
+    path: 'output-excel', component: SearchComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'completed-icsf', component: CompletedICSFComponent, canActivate: [AuthGuard]
+  }   
 ];
 
 export const searchRouting: ModuleWithProviders = RouterModule.forChild(searchRoutes);

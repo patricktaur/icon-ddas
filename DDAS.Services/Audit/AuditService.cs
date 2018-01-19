@@ -8,6 +8,7 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Models;
 using DDAS.Models.ViewModels;
 using Utilities.EMail;
+using DDAS.Models.Enums;
 
 namespace DDAS.Services.AuditService
 {
@@ -16,30 +17,343 @@ namespace DDAS.Services.AuditService
         private IUnitOfWork _UOW;
         private IEMailService _EMailService;
 
-        private const string Accepted = "Accepted";
-        private const string Rejected = "Rejected";
-
         public AuditService(IUnitOfWork UOW, IEMailService EmailService)
         {
             _UOW = UOW;
             _EMailService = EmailService;
         }
 
-        public bool RequestAudit(Audit Audit)
+        public bool RequestQC(ComplianceForm Form)
         {
-            var ComplianceForm = 
-                _UOW.ComplianceFormRepository.FindById(Audit.ComplianceFormId);
-
-            foreach(SiteSource Site in ComplianceForm.SiteSources)
+            foreach (Review Review in Form.Reviews)
             {
-                var AuditObservation = new AuditObservation();
-                AuditObservation.SiteShortName = Site.SiteShortName;
-                AuditObservation.SiteId = Site.Id;
-                Audit.Observations.Add(AuditObservation);
+                if (Review.RecId == null &&
+                    Review.Status == ReviewStatusEnum.QCRequested &&
+                    Review.PreviousReviewId == null)
+                {
+                    Review.RecId = Guid.NewGuid();
+
+                    var PreviousReview = Form.Reviews.Find(x =>
+                    x.AssigendTo.ToLower() == Review.AssignedBy.ToLower());
+
+                    Review.PreviousReviewId = PreviousReview.RecId;
+                }
+                else if (Review.RecId == null)
+                    Review.RecId = Guid.NewGuid();
             }
-            _UOW.AuditRepository.Add(Audit);
-            SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
+
+            //var QCReview = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+            //Form.Comments.Add(new Comment()
+            //{
+            //    ReviewId = QCReview.RecId.Value,
+            //    ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable,
+            //    CategoryEnum = CommentCategoryEnum.Minor
+            //});
+
+            //foreach(Finding finding in Form.Findings)
+            //{
+            //    if(finding.Comments.Count == 0)
+            //    {
+            //        var Comment = new Comment();
+            //        var Review =
+            //            Form.Reviews.Find(x =>
+            //            x.ReviewerRole == ReviewerRoleEnum.Reviewer);
+            //        Comment.ReviewId = Review.RecId.Value;
+            //        finding.Comments.Add(Comment);
+
+            //        var Comment1 = new Comment();
+            //        var Review1 =
+            //            Form.Reviews.Find(x =>
+            //            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+            //        Comment1.ReviewId = Review1.RecId.Value;
+            //        finding.Comments.Add(Comment1);
+            //    }
+            //}
+
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            //SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
             return true;
+        }
+
+        public List<QCListViewModel> ListQCs()
+        {
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Forms.Count == 0)
+                return null;
+
+            Forms = Forms.Where(x =>
+                x.IsReviewCompleted == true)
+                .ToList();
+
+            var AllQCs = new List<QCListViewModel>();
+
+            foreach (ComplianceForm Form in Forms)
+            {
+                var QCReview = Form.Reviews.LastOrDefault();
+
+                if (QCReview == null)
+                    continue;
+                else if (QCReview.Status == ReviewStatusEnum.SearchCompleted ||
+                    QCReview.Status == ReviewStatusEnum.ReviewInProgress ||
+                    QCReview.Status == ReviewStatusEnum.ReviewCompleted ||
+                    QCReview.Status == ReviewStatusEnum.Completed)
+                    continue;
+
+                var QCViewModel = new QCListViewModel();
+                //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
+                QCViewModel.RecId = QCReview.RecId;
+                QCViewModel.ComplianceFormId = Form.RecId.Value;
+                QCViewModel.PrincipalInvestigator =
+                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                QCViewModel.ProjectNumber = Form.ProjectNumber;
+                QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
+                QCViewModel.QCVerifier = Form.QCVerifier;
+                QCViewModel.Status = QCReview.Status;
+                QCViewModel.CompletedOn = QCReview.CompletedOn;
+                QCViewModel.Requestor = Form.Reviewer;
+                QCViewModel.RequestedOn = QCReview.AssignedOn;
+
+                AllQCs.Add(QCViewModel);
+            }
+            return AllQCs;
+        }
+
+        private void SetComplianceFormDetails(QCListViewModel AuditViewModel, Guid ComplianceFormId)
+        {
+            var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            AuditViewModel.PrincipalInvestigator =
+                ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
+
+            AuditViewModel.ProjectNumber = ComplianceForm.ProjectNumber;
+            AuditViewModel.ProjectNumber2 = ComplianceForm.ProjectNumber2;
+        }
+
+        public ComplianceForm GetQC(Guid ComplianceFormId, string QCAssignedTo, string LoggedInUserName)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var Review = Form.Reviews.Find(x =>
+            x.AssigendTo.ToLower() == QCAssignedTo.ToLower() &&
+            x.AssignedBy.ToLower() == Form.AssignedTo.ToLower() &&
+            x.Status == ReviewStatusEnum.QCRequested);
+
+            if (Review != null &&
+                Review.StartedOn == null &&
+                Review.AssigendTo.ToLower() == LoggedInUserName.ToLower())
+            {
+                Review.Status = ReviewStatusEnum.QCInProgress;
+                Review.StartedOn = DateTime.Now;
+                Review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            }
+
+            var QCFailedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCFailed);
+
+            var QCCorrectionReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCCorrectionInProgress);
+
+            var CompletedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (QCFailedReview != null &&
+                QCCorrectionReview == null &&
+                CompletedReview == null &&
+                Form.AssignedTo.ToLower() == LoggedInUserName)
+            {
+                Form.Reviews.Add(new Review()
+                {
+                    RecId = Guid.NewGuid(),
+                    AssigendTo = QCFailedReview.AssignedBy,
+                    AssignedBy = QCFailedReview.AssigendTo,
+                    StartedOn = DateTime.Now,
+                    Status = ReviewStatusEnum.QCCorrectionInProgress,
+                    PreviousReviewId = QCFailedReview.RecId
+                });
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            }
+            return Form;
+        }
+
+        public bool SaveQC(ComplianceForm Form)
+        {
+            var CurrentQCReview = Form.Reviews.LastOrDefault();
+
+            if (CurrentQCReview == null)
+                throw new Exception("Review cannot be empty");
+
+            if (CurrentQCReview.Status == ReviewStatusEnum.QCCorrectionInProgress)
+            {
+                UpdateReviewStatus(CurrentQCReview,
+                    Form.Findings.Where(x => x.IsAnIssue).ToList());
+
+                //CurrentQCReview.Status = ReviewStatusEnum.Completed;
+            }
+            else if (CurrentQCReview.Status == ReviewStatusEnum.QCPassed)
+            {
+                CurrentQCReview.Status = ReviewStatusEnum.Completed;
+                CurrentQCReview.CompletedOn = DateTime.Now;
+            }
+
+            //Save QC is currently equivalent to submitting the QC
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            return true;
+        }
+
+        private void UpdateReviewStatus(Review Review,
+            List<Finding> FindingsWithIssues)
+        {
+            FindingsWithIssues = FindingsWithIssues.Where(x =>
+            x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
+            .ToList();
+
+            var FindingsCorrectedOrAcceptedCount = 0;
+
+            foreach (Finding finding in FindingsWithIssues)
+            {
+                var comment = finding.Comments.Find(x =>
+                x.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                x.ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
+
+                if (comment != null)
+                    FindingsCorrectedOrAcceptedCount += 1;
+            }
+
+            if (FindingsWithIssues.Count == FindingsCorrectedOrAcceptedCount)
+            {
+                Review.Status = ReviewStatusEnum.Completed;
+                Review.CompletedOn = DateTime.Now;
+            }
+        }
+
+        public List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (Form == null)
+                throw new Exception("No compliance forms found!");
+
+            var QCReview = Form.Reviews.Find(x =>
+            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+
+            var QCSummaryList = new List<QCSummaryViewModel>();
+
+            foreach (Finding finding in Form.Findings.Where(x => x.IsAnIssue))
+            {
+                var comment = finding.Comments[0];
+
+                //if(comment.CategoryEnum == CommentCategoryEnum.Accepted)
+                //{
+                var QCSummary = new QCSummaryViewModel();
+                QCSummary.Investigator =
+                    finding.InvestigatorName;
+                QCSummary.SourceName =
+                    Form.SiteSources.Find(x =>
+                    x.Id == finding.SiteSourceId).SiteShortName;
+                QCSummary.CategoryEnumString =
+                    GetCategoryEnumString(comment.CategoryEnum);
+                QCSummary.FindingId = finding.Id; //Patrick 14Jan2017
+                if (finding.ReviewId == QCReview.RecId)
+                {
+                    QCSummary.Type = "Finding";
+                    QCSummary.Comment = finding.Observation + " " +
+                        comment.FindingComment;
+                    QCSummary.ResponseToQC =
+                        GetCategoryEnumString(comment.ReviewerCategoryEnum);
+                    QCSummaryList.Add(QCSummary);
+                }
+                else
+                {
+                    QCSummary.Type = "Comment";
+                    QCSummary.Comment = comment.FindingComment;
+                    QCSummary.ResponseToQC =
+                        GetCategoryEnumString(comment.ReviewerCategoryEnum);
+                    QCSummaryList.Add(QCSummary);
+                }
+                //}
+            }
+            return QCSummaryList;
+        }
+
+        public bool UndoQCRequest(Guid ComplianceFormId)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (Form == null)
+                throw new Exception("Could not find compliance form");
+
+            var QCRequestedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCRequested);
+
+            if (QCRequestedReview != null)
+            {
+                Form.Reviews.Remove(QCRequestedReview);
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private bool UndoQCSubmit(Guid ComplianceFormId)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (Form == null)
+                throw new Exception("Could not find compliance form");
+
+            var QCFailedOrPassedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCFailed ||
+                x.Status == ReviewStatusEnum.QCPassed ||
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (QCFailedOrPassedReview != null)
+            {
+                QCFailedOrPassedReview.Status = ReviewStatusEnum.QCInProgress;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        //public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum)
+        //{
+        //    switch (undoEnum)
+        //    {
+        //        case UndoEnum.UndoQCRequest:
+        //            return UndoQCRequest(ComplianceFormId);
+        //        case UndoEnum.UndoQCSubmit:
+        //            return UndoQCSubmit(ComplianceFormId);
+        //        case UndoEnum.UndoQCResponse:
+        //            return false;
+        //        default: throw new Exception("invalid UndoEnum");
+        //    }
+        //}
+        
+        private bool UndoQCResponse()
+        {
+            return true;
+        }
+
+        private string GetCategoryEnumString(CommentCategoryEnum Enum)
+        {
+            switch (Enum)
+            {
+                case CommentCategoryEnum.Minor: return "Minor";
+                case CommentCategoryEnum.Major: return "Major";
+                case CommentCategoryEnum.Critical: return "Critical";
+                case CommentCategoryEnum.Suggestion: return "Suggestion";
+                case CommentCategoryEnum.Others: return "Others";
+                case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+                case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
+                case CommentCategoryEnum.Accepted: return "Accepted";
+                case CommentCategoryEnum.NotApplicable: return "Not Applicable";
+                default: throw new Exception("Invalid CommentCategoryEnum");
+            }
         }
 
         private void SendAuditRequestedMail(string SendMailTo, string AuditRequestedBy)
@@ -78,63 +392,6 @@ namespace DDAS.Services.AuditService
             MailBody += "DDAS Team";
 
             SendMail(UserEMail, Subject, MailBody);
-        }
-
-        public List<AuditListViewModel> ListAudits()
-        {
-            var Audits = _UOW.AuditRepository.GetAll()
-            .OrderBy(x => x.RequestedOn)
-            .ToList();
-
-            if (Audits.Count == 0)
-                return null;
-
-            var AllAudits = new List<AuditListViewModel>();
-
-            foreach(Audit audit in Audits)
-            {
-                var AuditViewModel = new AuditListViewModel();
-                SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
-                AuditViewModel.RecId = audit.RecId.Value;
-                AuditViewModel.ComplianceFormId = audit.ComplianceFormId;
-                AuditViewModel.Auditor = audit.Auditor;
-                AuditViewModel.AuditStatus = audit.AuditStatus;
-                AuditViewModel.CompletedOn = audit.CompletedOn;
-                AuditViewModel.RequestedBy = audit.RequestedBy;
-                AuditViewModel.RequestedOn = audit.RequestedOn;
-                AuditViewModel.AuditStatus = audit.AuditStatus;
-                AuditViewModel.CompletedOn = audit.CompletedOn;
-
-                AllAudits.Add(AuditViewModel);
-            }
-            return AllAudits;
-        }
-
-        private void SetComplianceFormDetails(AuditListViewModel AuditViewModel, Guid ComplianceFormId)
-        {
-            var ComplianceForm = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-
-            AuditViewModel.PrincipalInvestigator =
-                ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
-
-            AuditViewModel.ProjectNumber = ComplianceForm.ProjectNumber;
-            AuditViewModel.ProjectNumber2 = ComplianceForm.ProjectNumber2;
-        }
-
-        public Audit GetAudit(Guid RecId)
-        {
-            var audit = _UOW.AuditRepository.FindById(RecId);
-            return audit;
-        }
-
-        public bool SaveAudit(Audit audit)
-        {
-            _UOW.AuditRepository.UpdateAudit(audit);
-
-            if (audit.IsSubmitted)
-                SendAuditCompletedMail(audit.RequestedBy, audit.Auditor);
-
-            return true;
         }
 
         private void SendMail(string To, string Subject, string Body)

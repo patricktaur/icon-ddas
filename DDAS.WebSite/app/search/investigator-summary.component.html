@@ -28,16 +28,15 @@
 		<div class="well">
 			<h4>
 				Summary:<br> Reviews Pending: <strong>{{ReviewPendingCount}}</strong> | Sites with full Match: <strong>{{Investigator.Sites_FullMatchCount}}</strong>|
-				Partial Matches: <strong>{{Investigator.Sites_PartialMatchCount}}</strong> <br> Issues Identified: <strong>{{Investigator.TotalIssuesFound}}</strong>|Extraction
-				Errors: <strong>{{Investigator.ExtractionErrorSiteCount}}</strong> | Extraction Pending: <strong>{{Investigator.ExtractionPendingSiteCount}}</strong>
-
+				Partial Matches: <strong>{{Investigator.Sites_PartialMatchCount}}</strong> | Issues Identified: <strong>{{Investigator.TotalIssuesFound}}</strong>|
+				<!-- Extraction Errors: <strong>{{Investigator.ExtractionErrorSiteCount}}</strong> | -->
+				 <!-- Extraction Pending: <strong>{{Investigator.ExtractionPendingSiteCount}}</strong> -->
 			</h4>
 			<h4>
-				Filters:<br> Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites"
-				/>
-
+				<div *ngIf="unHideReviewCompletedSiteCheckBox">
+					Filters:<br> Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites"/>
+				</div>
 			</h4>
-
 		</div>
 	</div>
 </div>

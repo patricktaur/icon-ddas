@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@angular/http';
 //Grab everything with import 'rxjs/Rx';
@@ -19,7 +20,9 @@ import {
     Finding,
     UpdateFindigs,
     UpdateInstituteFindings,
-    Audit
+    QualityCheck,
+    CurrentReviewStatusViewModel,
+    UndoEnum
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -48,13 +51,11 @@ export class SearchService {
     }
 
     getStudyNumbers(): Observable<StudyNumbers[]> {
-
         return this.http.get(this._baseUrl + 'StudyNumbers')
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
-
     }
 
     CloseComplianceForm(RecId: string) {
@@ -74,10 +75,6 @@ export class SearchService {
     }
 
     deleteComplianceForm(CompFormId: string) {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
         return this.http.get(this._baseUrl + 'search/DeleteComplianceForm?ComplianceFormId=' + CompFormId, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -85,17 +82,7 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    //Patrick 27Nov2016:--------------------
-
     getPrincipalInvestigators() {
-
-        // let headers = new Headers();
-        // headers.append('Content-Type', 'application/json');
-        // headers.append("Authorization","Bearer " + this.authService.token);
-        // let options = new RequestOptions({headers: headers});
-
-
-
         return this.http.get(this._baseUrl + 'search/GetPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -106,17 +93,14 @@ export class SearchService {
     //Pradeep 5Jan2017
     getPrincipalInvestigatorsByFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]> {
         let Filter1 = JSON.stringify(Filters);
-
         return this.http.post(this._baseUrl + 'search/ComplianceFormFilters', Filter1, this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
-
     }
 
     getAllUsers() {
-
         return this.http.get(this._baseUrl + 'Account/GetUsers', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -142,7 +126,6 @@ export class SearchService {
     }
 
     getMyReviewCompletedPrincipalInvestigators() {
-
         return this.http.get(this._baseUrl + 'search/GetMyReviewCompletedPrincipalInvestigators', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -151,7 +134,6 @@ export class SearchService {
     }
 
     getComplianceForm(formId: string): Observable<ComplianceFormA> {
-
         return this.http.get(this._baseUrl + 'search/GetComplianceForm?formId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -221,9 +203,6 @@ export class SearchService {
 
     saveComplianceForm(form: ComplianceFormA): Observable<ComplianceFormA> {
         let body = JSON.stringify(form);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
         return this.http.post(this._baseUrl + 'search/SaveComplianceForm', body, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -234,9 +213,6 @@ export class SearchService {
 
     scanSaveComplianceForm(form: ComplianceFormA): Observable<ComplianceFormA> {
         let body = JSON.stringify(form);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
         return this.http.post(this._baseUrl + 'search/ScanSaveComplianceForm', body, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -245,11 +221,8 @@ export class SearchService {
     }
 
     getInvestigatorSiteSummary(formId: string, investigatorId: number) {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
-        return this.http.get(this._baseUrl + 'search/GetInvestigatorSiteSummary?formId=' + formId + "&investigatorId=" + investigatorId, this._options)
+        return this.http.get(this._baseUrl + 'search/GetInvestigatorSiteSummary?formId=' + formId + 
+        "&investigatorId=" + investigatorId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -257,10 +230,6 @@ export class SearchService {
     }
 
     getInstituteFindingsSummary(formId: string) {
-
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
         return this.http.get(this._baseUrl + 'search/getInstituteFindingsSummary?formId=' + formId, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -269,17 +238,6 @@ export class SearchService {
     }
 
     generateComplianceForm(formId: string) {
-        // let headers = new Headers();
-        // headers.append('Content-Type', 'application/json');
-
-        // return this.http.get(this._baseUrl + 'search/GenerateComplianceForm?ComplianceFormId=' + formId, this._options)
-        //     .map((res: Response) => {
-        //         return res.json();
-        //     })
-        //     .catch(
-        //     this.handleError
-        //     );
-
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
@@ -378,9 +336,6 @@ export class SearchService {
     }
 
     generateOutputFile() {
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-
         return this.http.get(this._baseUrl + 'search/GenerateOutputFile', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -431,7 +386,6 @@ export class SearchService {
     }
 
     getSiteSources(): Observable<SiteSource[]> {
-
         return this.http.get(this._baseUrl + 'search/GetSiteSources', this._options)
             .map((res: Response) => {
                 return res.json();
@@ -439,12 +393,27 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    requestAudit(audit: Audit){
-        let body = JSON.stringify(audit);
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+    requestQC(form: ComplianceFormA){
+        let body = JSON.stringify(form);
 
-        return this.http.post(this._baseUrl + 'Audit/RequestAudit', body, this._options)
+        return this.http.post(this._baseUrl + 'QC/RequestQC', body, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    undoQCRequest(complianceFormId: string){
+        return this.http.get(this._baseUrl + 'QC/UndoQCRequest?ComplianceFormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    undo(complianceFormId: string, undoEnum: UndoEnum){
+        return this.http.get(this._baseUrl + 'QC/Undo?ComplianceFormId=' + complianceFormId
+        + '&undoEnum=' + undoEnum, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -452,25 +421,16 @@ export class SearchService {
     }
 
     saveCompFormGeneralNInvestigatorsNOptionalSites(form: ComplianceFormA) {
-
         let body = JSON.stringify(form);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
         return this.http.post(this._baseUrl + 'search/UpdateCompFormGeneralNInvestigators', body, this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
-
     }
 
     saveFindingsAndObservations(updateFindings: UpdateFindigs) {
-
         let body = JSON.stringify(updateFindings);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
         return this.http.post(this._baseUrl + 'search/UpdateFindings', body, this._options)
             .map((res: Response) => {
                 return res.json();
@@ -480,13 +440,20 @@ export class SearchService {
 
     //UpdateInstituteFindings(string FormId, int SiteDisplayPosition, List<Finding> Findings)
     updateInstituteFindings(findingsModel: UpdateInstituteFindings) {
-
         let body = JSON.stringify(findingsModel);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
         return this.http.post(this._baseUrl + 'search/UpdateInstituteFindings', body, this._options)
             .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    //Patrick 16Jan2018:
+    saveReviewCompletedComplianceForm(form: ComplianceFormA) {
+        let body = JSON.stringify(form);
+        return this.http.post(this._baseUrl + 'search/UpdateQCEditComplianceForm', body, this._options)
+            .map((res: Response) => {
+                console.log("AAAAA");
                 return res.json();
             })
             .catch(this.handleError);
@@ -536,16 +503,19 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    // .map(res => new Blob([res.arrayBuffer()], {
-    //     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    // }))
-    // .catch(this.handleError);
+    getCurrentReviewStatus(complianceFormId: string):Observable<CurrentReviewStatusViewModel>{
+        return this.http.get(this._baseUrl + 'search/CurrentReviewStatus?ComplianceFormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
 
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();
         var modelStateErrors: string = '';
-
+        console.log("serverError:" +JSON.stringify(serverError));
         if (!serverError.type) {
 
             console.log(serverError);

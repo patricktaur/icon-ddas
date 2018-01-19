@@ -150,6 +150,8 @@ namespace DDAS.Models.Entities.Domain
             InvestigatorDetails = new List<InvestigatorSearched>();
             SiteSources = new List<SiteSource>();
             Findings = new List<Finding>();
+            //Reviews = new List<Review>();
+            //Comments = new List<Comment>();
         }
 
         public Guid? RecId { get; set; }
@@ -185,9 +187,73 @@ namespace DDAS.Models.Entities.Domain
         public List<InvestigatorSearched> InvestigatorDetails { get; set; }
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
+        public List<Review> Reviews { get; set; } = new List<Review>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+
+        public string Reviewer {
+            get {
+                var Review = Reviews.FirstOrDefault();
+                if (Review != null)
+                    return Review.AssigendTo;
+                else
+                    return null;
+            }
+        }
+
+        public string QCVerifier
+        {
+            get
+            {
+                var Review = Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
+                if (Review != null)
+                    return Review.AssigendTo;
+                else
+                    return null;
+            }
+        }
+
+        public ReviewStatusEnum CurrentReviewStatus {
+            get
+            {
+                var Review = Reviews.LastOrDefault();
+                if (Review != null)
+                    return Review.Status;
+                else
+                    return ReviewStatusEnum.SearchCompleted;
+            }
+        }
+
+        public bool IsReviewCompleted {
+            get {
+                return 
+                    (ReviewCompletedInvestigatorCount == 
+                    InvestigatorDetails.Count() ?
+                    true : false);
+            }
+        }
+
+        public DateTime? ReviewCompletedOn {
+            get
+            {
+                if (IsReviewCompleted)
+                {
+
+                    if (InvestigatorDetails.Count() > 0)
+                        return InvestigatorDetails.OrderByDescending(x => 
+                        x.ReviewCompletedOn)
+                        .First()
+                        .ReviewCompletedOn;
+                    else
+                        return null;
+                }
+                else
+                    return null;
+            }
+        }
 
         private string _Status;
         private ComplianceFormStatusEnum _StatusEnum;
+
         public string Status
         {
             get
@@ -199,6 +265,7 @@ namespace DDAS.Models.Entities.Domain
                 return _Status;
             }
         }
+
         public ComplianceFormStatusEnum StatusEnum
         {
             get
@@ -210,6 +277,7 @@ namespace DDAS.Models.Entities.Domain
                 return _StatusEnum;
             }
         }
+
         private void setStatusNStatusEnum()
         {
             string plural = "";
@@ -312,6 +380,7 @@ namespace DDAS.Models.Entities.Domain
                 _StatusEnum = ComplianceFormStatusEnum.NoMatchFoundReviewPending;
             }
         }
+
         public string EstimatedExtractionCompletionWithin
         {
             get
@@ -443,6 +512,7 @@ namespace DDAS.Models.Entities.Domain
         }
         public List<SubInvestigator> SubInvestigators { get; set; } =
             new List<SubInvestigator>();
+        public ReviewStatusEnum CurrentReviewStatus { get; set; }
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public string EstimatedExtractionCompletionWithin { get; set; }
@@ -877,6 +947,20 @@ namespace DDAS.Models.Entities.Domain
         public string HiddenStatus { get; set; }
     }
 
+    //pradeep 27Dec2017
+    public class Review
+    {
+        public Guid? RecId { get; set; }
+        public Guid? PreviousReviewId { get; set; }
+        public string AssigendTo { get; set; }
+        public DateTime AssignedOn { get; set; }
+        public string AssignedBy { get; set; }
+        public ReviewStatusEnum Status { get; set; }
+        public DateTime? StartedOn { get; set; }
+        public DateTime? CompletedOn { get; set; }
+        public ReviewerRoleEnum ReviewerRole { get; set; }
+        public string Comment { get; set; }
+    }
     #endregion
 
     #region ByPatrick
@@ -954,13 +1038,22 @@ namespace DDAS.Models.Entities.Domain
         public List<Link> Links { get; set; } = new List<Link>();//for DB sites only, not used for Manual sites
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();//not yet used by client
 
-        public string AuditComments { get; set; }
-        public string AuditStatus { get; set; }
-
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public Guid ReviewId { get; set; }
         //New fields: 11Apr2017
         //guid SiteDataId
         //guid SiteRecordId
         //DateTime AddedOn
+    }
+
+    public class Comment
+    {
+        public Guid? ReviewId { get; set; }
+        public string FindingComment { get; set; }
+        public DateTime? AddedOn { get; set; }
+        public DateTime? CorrectedOn { get; set; }
+        public CommentCategoryEnum CategoryEnum { get; set; }
+        public CommentCategoryEnum ReviewerCategoryEnum { get; set; }
     }
 
     public class UpdateFindigs

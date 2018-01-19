@@ -1,0 +1,218 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="well">
+			<h3 class="no-margin-top">Review Completed ICSF's</h3>
+		</div>
+	</div>
+
+	<div class="col-md-12">
+		<div class="well">
+			<!-- <div class="table-responsive"> -->
+			<div statusCircle-Legend-Horizontal></div>
+			<!-- </div> -->
+			<div class="row">
+				<div class="col-md-8 ">
+					<div class="row">
+						<div class="col-md-6 ">
+							<h4>Filters:</h4>
+							 <!-- {{diagnostic}}  -->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 ">
+							<!--<div class="form-group">
+								<label for="PrincipalInvestigator">Principal Investigator:</label>
+								<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
+							</div>-->
+							<div class="form-group">
+								<label for="PrincipalInvestigator">Principal Investigator:</label>
+								<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
+							</div>
+							<!--<div class="form-group">
+								<label for="SearchedOnFrom">Searched on From:</label>
+								<input type="text" class="form-control" name="SearchedOnFrom" [(ngModel)]="ComplianceFormFilter.SearchedOnFrom">
+							</div>							-->
+							<div class="form-group">
+								<label for="Status">Status:</label>
+								<select class="form-control" ng-disabled="disableSelect" [(ngModel)]="ComplianceFormFilter.Status">
+									<option value="-1" disabled>All</option>
+  									<option value="1" selected="selected">Review Completed, Issues Identified</option>
+									<option value="2">Review Completed, No Issues Identified</option>  
+							  		<!-- <option value="5">No Matched Found, Review Completed</option>         -->
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="ProjectNumber">Project Number:</label>
+								<input type="text" class="form-control" name="ProjectNumber" [(ngModel)]="ComplianceFormFilter.ProjectNumber">
+							</div>
+							<!--<div class="form-group">
+								<label for="SearchedOnTo">Searched on To:</label>
+								<input type="text" class="form-control" name="SearchedOnTo" [(ngModel)]="ComplianceFormFilter.SearchedOnTo">
+							</div>-->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 ">
+							<div class="form-group">
+								<label for="Date">Searched On (from):</label>
+
+								<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
+
+							</div>
+						</div>
+						<div class="col-md-6 ">
+							<div class="form-group">
+								<label for="Date">Searched On (to):</label>
+								<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate"></my-date-picker>
+							</div>
+						</div>
+					</div>
+					<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
+					<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
+				</div>
+				<div class="col-md-4 ">
+
+				</div>
+			</div>
+			<table class="table table-bordered table-hover table-striped">
+				<thead>
+					<tr>
+						<th class="col-md-3 text-left">Principal Investigator </th>
+						<th class="col-md-2 text-left">ICON Project Number</th>
+						<th class="text-left">Sponsor Protocol Number</th>
+						<th class="text-left">Country</th>
+						<th class="text-center">Searched on</th>
+						<th class="text-left">Status</th>
+						<th class="text-center">Actions</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
+
+						<td class="text-left">
+							<h5>
+								<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+									{{item.Name}} 
+									<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+								</a>
+							</h5>
+							<div class="panel-group" role="tablist" style="border:0">
+								<div class="panel panel-default" style="border:0">
+									<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
+									 aria-expanded="false" style="border:0">
+										<ul class="list-group" style="border:0">
+											<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td class="text-center">
+							{{item.ProjectNumber}} {{item.ProjectNumber2}}
+						</td>
+						<td>
+							{{item.SponsorProtocolNumber}} {{item.SponsorProtocolNumber2}}
+						</td>
+						<td class="text-left">
+							{{item.Country}}
+
+						</td>
+						<td class="text-left">
+							{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+
+						</td>
+						<!-- <td align="center">
+							<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
+						</td> -->
+						<td class="text-left" >
+							{{status(item.CurrentReviewStatus)}}
+						</td>
+						<td>
+							<div class="btn-group">
+										<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
+									<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>-->
+								<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
+									<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>
+										<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
+									<span class="glyphicon glyphicon-download-alt" ></span>
+								</button>-->
+								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open"></span></button>
+								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" 
+									class="btn btn-sm btn-primary" 
+									(click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open(); resetValues()" 
+									title="Request QC">
+									<span class="glyphicon glyphicon-retweet"></span>
+								</button>
+								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" 
+									class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)" title="Undo QC Request">
+									<!-- <i clas="fa fa-undo"></i> -->
+									<span class="">Undo QC Request</span>
+								</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+		</div>
+	</div>
+</div>
+
+
+
+<div #DownloadComplianceFormModal download-compliance-form></div>
+
+<div #GenerateOutputFileModal generate-output-file></div>
+
+<modal #ConfirmOpenForEditModal>
+	<modal-header [show-close]="true">
+		<h4 class="modal-title">Open ICF for Edit: {{makeActivePrincipalInvestigatorName}}</h4>
+	</modal-header>
+	<modal-body>
+		<p>Make the Compliance Form Editable.</p>
+		<p>The Form will be listed in the Due Diligence Check page</p>
+		<p></p>
+
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="makeCompFormActiveValue(); ConfirmOpenForEditModal.close()">Confirm</button>
+		<button type="button" class="btn btn-default" (click)=" ConfirmOpenForEditModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #RequestAuditModal>
+	<modal-header>
+		<h4 class="modal-title">QC Request: <b> {{SelectedInvestigatorName}} </b> </h4>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="AssignedTo">QC Verifier:</label>
+					<select class="form-control" [(ngModel)]="selectedQCVerifier">
+						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
+					</select>
+				</div>		
+			</div>
+			<div class="col-md-6">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<label for="RequestorComment">Comments:</label>
+				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" 
+					rows="5" cols="20" placeholder="comments" [(ngModel)]="requestorComment">
+				</textarea>
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button>
+		<button type="button" class="btn btn-default" (click)="RequestAuditModal.close()">Cancel</button>
+	</modal-footer>
+</modal>

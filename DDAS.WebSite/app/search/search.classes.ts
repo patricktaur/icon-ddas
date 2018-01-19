@@ -161,6 +161,7 @@ export class PrincipalInvestigatorDetails {
     ExtractionErrorInvestigatorCount: number;
     EstimatedExtractionCompletionWithin: string;
     SubInvestigators: SubInvestigator[] = [];
+    CurrentReviewStatus: ReviewStatusEnum;
 }
 
 export class SubInvestigator {
@@ -206,8 +207,12 @@ export class ComplianceFormA {
     SearchPending: boolean = true;
 
     InstituteSearchSiteCount: number;
+    Reviews: Review[] = new Array<Review>();
+    Comments: Comment[] = new Array<Comment>();
+    CurrentReviewStatus: ReviewStatusEnum;
+    Reviewer: string;
+    QCVerifier: string;
 }
-
 
 export class InvestigatorSearched {
     Id: number = 0;
@@ -324,9 +329,19 @@ export class Finding {
     Observation: string;
     IsAnIssue: boolean = false;
     Links: Link[] = [];
-
+    Comments: Comment[] = new Array<Comment>();
     UISelected: boolean = false;
     Selected: boolean = false;
+    ReviewId: string;
+}
+
+export class Comment {
+    ReviewId: string;
+    FindingComment: string;
+    AddedOn: Date;
+    CorrectedOn: Date;
+    CategoryEnum: CommentCategoryEnum;
+    ReviewerCategoryEnum: CommentCategoryEnum;
 }
 
 export class SiteSource {
@@ -408,7 +423,56 @@ export class InstituteFindingsSummaryViewModel {
     IssuesFound: number;
 }
 
-export class Audit {
+export class Review {
+    RecId: string;
+    AssigendTo: string;
+    AssignedOn: Date;
+    AssignedBy: string;
+    Status: ReviewStatusEnum;
+    StartedOn: Date;
+    CompletedOn: Date;
+    ReviewerRole: ReviewerRoleEnum;
+    Comment: string;
+    PreviousReviewId: string;
+}
+
+export enum ReviewStatusEnum {
+    SearchCompleted,
+    ReviewInProgress,
+    ReviewCompleted,
+    Completed,
+    QCRequested,
+    QCInProgress,
+    QCFailed,
+    QCPassed,
+    QCCorrectionInProgress
+}
+
+export enum ReviewerRoleEnum {
+    Reviewer,
+    QCVerifier
+}
+
+export enum CommentCategoryEnum {
+    Minor,
+    Major,
+    Critical,
+    Suggestion,
+    Others,
+    CorrectionPending,
+    CorrectionCompleted,
+    Accepted,
+    NotApplicable
+}
+
+export enum UndoEnum {
+    UndoQCRequest,
+    UndoQCSubmit,
+    UndoQCResponse,
+    UndoCompleted
+}
+
+export class QualityCheck {
     ComplianceFormId: string;
     RequestedBy: string;
     RequestedOn: Date;
@@ -424,4 +488,10 @@ export class AuditObservation {
     SiteId: number;
     Comments: string;
     Status: string;
+}
+
+export class CurrentReviewStatusViewModel {
+    ReviewerRecId: string;
+    QCVerifierRecId: string;
+    CurrentReview: Review;
 }

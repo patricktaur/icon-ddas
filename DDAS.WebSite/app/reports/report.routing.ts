@@ -11,6 +11,7 @@ import { InvestigatorReviewCompletedTimeComponent }
   from './investigator-reviewcompletedtime.component';
 import { InvestigatorFindingsComponent } from './investigator-findings.component';
 import { StudySpecificInvestigatorComponent } from './study-specific-investigator.component';
+import { AdminDashboardDrillDownComponent } from './admin-dashboard-drilldown.component';
 
 const reportRoutes: Routes = [
  {
@@ -54,6 +55,11 @@ const reportRoutes: Routes = [
   {
     path: 'study-specific-investigator',
     component: StudySpecificInvestigatorComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dashboard-drilldown/:assignedTo/:reportType',
+    component: AdminDashboardDrillDownComponent,
+    canActivate: [AuthGuard]
   }
 ];
 
