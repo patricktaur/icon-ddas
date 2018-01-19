@@ -10,11 +10,13 @@ import { ComplianceFormA, SiteSource, Finding } from '../../../search/search.cla
 export class SelectedFindingEditComponent {
     @Input() Finding: Finding;
     @Output() Remove = new EventEmitter();
+    @Output() ValueChanged = new EventEmitter();
     
     private pageChanged: boolean = false;
     
     formValueChanged(){
         this.pageChanged = true;
+        this.ValueChanged.emit(true) ;
     } 
 
     Split = (RecordDetails: string) => {

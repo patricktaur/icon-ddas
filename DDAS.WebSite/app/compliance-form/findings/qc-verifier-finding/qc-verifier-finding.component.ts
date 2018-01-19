@@ -11,6 +11,7 @@ export class QCVerifierFindingComponent implements OnInit  {
     @Input() Finding: Finding;
     @Input() ReviewerRecId: string;
     @Output() Remove = new EventEmitter();
+    @Output() ValueChanged = new EventEmitter();
     
     private commentEnum: CommentCategoryEnum;
 
@@ -29,6 +30,7 @@ export class QCVerifierFindingComponent implements OnInit  {
 
     formValueChanged(){
         this.pageChanged = true;
+        this.ValueChanged.emit() ;
     } 
 
     Split = (RecordDetails: string) => {

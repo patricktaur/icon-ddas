@@ -1,15 +1,18 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
-			<h3>QC for Principal Investigator - <b>{{principalInvestigatorName}}</b></h3>
+			<h3>QC for Principal Investigator -
+				<b>{{principalInvestigatorName}}</b>
+			</h3>
 			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
 			<h3 class="no-margin-top">QC by {{qcAssignedTo}}</h3>
 			<label for="auditStatus">Status: {{reviewStatus}}</label>
 			<!-- {{diagnostic}} -->
 			<br>
-			 <label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label> 
+			<label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label>
 			<!-- QCVerifierReviewId:{{QCVerifierReviewId}} -->
 			<br>
+
 			<!-- Test: {{Test?.RecId}} -->
 		</div>
 	</div>
@@ -110,16 +113,16 @@
 									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
 								</td>
 								<td>
-										<!-- *ngIf="!isSubmitted" -->
-									<button  type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip"
-									 data-placement="top" title="Open">
+									<!-- *ngIf="!isSubmitted" -->
+									<button type="button" class="btn btn-sm btn-primary" (click)="openFindingDialogA(item);" data-toggle="tooltip" data-placement="top"
+									 title="Open">
 										<span class="glyphicon glyphicon-edit"></span>
 									</button>
 
 								</td>
 							</tr>
 						</tbody>
-					</table>	
+					</table>
 					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
 				<div id="comp-form" class="tab-pane fade">
@@ -164,35 +167,53 @@
 
 		<!-- XXXXXXXXXXXXXXXXX XXXX:{{diagnostic}} -->
 		<br>
-		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierComments')" >
-			<div qc-verifier-comments  [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="findingRecordToEdit">
-				</div>
-			</div>
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierComments')">
+			<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="findingRecordToEdit" (ValueChanged)="formValueChanged($event)">
 
-			<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierFinding')" >
-				<div qc-verifier-finding  [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="findingRecordToEdit"
-				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
-				</div>
-			</div>
-		
-		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierFinding')" >
-			
-			<div response-to-qc-verifier-finding [Finding]="findingRecordToEdit">
 			</div>
 		</div>
 
-		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierComments')" >
-			
-			<div response-to-qc-verifier-comment [Finding]="findingRecordToEdit">
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'qcVerifierFinding')">
+			<div qc-verifier-finding 
+			[ReviewerRecId]="currentReviewStatus.ReviewerRecId" 
+			[Finding]="findingRecordToEdit" 
+			(Remove)="SetFindingToRemove(findingRecordToEdit); RemoveConfirmModal.open()"
+			 (ValueChanged)="formValueChanged($event)">
 			</div>
 		</div>
 
-		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'findingView')" >
-				<div selected-finding-view [Finding]="findingRecordToEdit">
-				</div>
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierFinding')">
+
+			<div response-to-qc-verifier-finding [Finding]="findingRecordToEdit" (ValueChanged)="formValueChanged($event)">
 			</div>
+		</div>
+
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'responseToQCVerifierComments')">
+
+			<div response-to-qc-verifier-comment [Finding]="findingRecordToEdit" (ValueChanged)="formValueChanged()">
+			</div>
+		</div>
+
+		<div *ngIf="selectFindingComponentToDisplay(findingRecordToEdit, 'findingView')">
+			<div selected-finding-view [Finding]="findingRecordToEdit">
+			</div>
+		</div>
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
+	</modal-footer>
+</modal>
+
+<modal #RemoveConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Removal</h4>
+	</modal-header>
+	<modal-body>
+		Remove Finding ?.
+		<br> {{RecordToDeleteText}}
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close(); FindingResponseModal.close()">Remove</button>
+		<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

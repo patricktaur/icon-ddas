@@ -10,6 +10,7 @@ import { ComplianceFormA, SiteSource, Finding, Review, CommentCategoryEnum } fro
 export class QCVerifierCommentsComponent implements OnInit {
     @Input() Finding: Finding;
     @Input() QCVerifierRecId: string;
+    @Output() ValueChanged = new EventEmitter();
 
     private pageChanged: boolean = false;
     
@@ -18,11 +19,12 @@ export class QCVerifierCommentsComponent implements OnInit {
             this.Finding.Comments[0].ReviewId = this.QCVerifierRecId;
         }
     }
-
     formValueChanged(){
         this.pageChanged = true;
-    }
+        this.ValueChanged.emit() ;
+    } 
 
+    
     get getQCVerifierComment(){
         return this.Finding.Comments[0];
     }
