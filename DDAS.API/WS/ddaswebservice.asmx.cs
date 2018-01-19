@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
+using System.Web.Services.Protocols;
+using System.Xml;
 using WebScraping.Selenium.SearchEngine;
 using static DDAS.Models.ViewModels.DDASResponseModel;
 using static DDAS.Models.ViewModels.RequestPayloadforDDAS;
@@ -27,41 +29,59 @@ namespace DDAS.API.WS
         public string HelloWorld()
         {
             return "Hello World";
+            
         }
 
         [WebMethod]
         public ddresponse iSprintToDDAS(ddRequest DR)
         {
-            var ConnectionString =
-               System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            try
+            {
+                var ConnectionString =
+                             System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
-            var DBName =
-                System.Configuration.ConfigurationManager.AppSettings["DBName"];
+                var DBName =
+                    System.Configuration.ConfigurationManager.AppSettings["DBName"];
 
-            var _uow = new UnitOfWork(ConnectionString, DBName);
-            var _config = new Config();
-            var _SearchEngine = new SearchEngine(_uow, _config);
-            ComplianceFormService c = new ComplianceFormService(_uow,_SearchEngine,_config);
-            var obj = c.ImportIsprintData(DR);
-            return ComplianceFormToResponse(obj);
+                var _uow = new UnitOfWork(ConnectionString, DBName);
+                var _config = new Config();
+                var _SearchEngine = new SearchEngine(_uow, _config);
+                ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
+                var obj = c.ImportIsprintData(DR);
+                return ComplianceFormToResponse(obj);
+            }
+            catch (Exception ex)
+            {
+                SoapException retEx = new SoapException(ex.Message, SoapException.ServerFaultCode, "", ex.InnerException);
+                throw retEx;
+            }
+
         }
 
         [WebMethod]
         public ddresponse iSprintToDDASVerify(string Recid)
         {
+            try
+            {
+                var ConnectionString =
+            System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
-            var ConnectionString =
-              System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                var DBName =
+                    System.Configuration.ConfigurationManager.AppSettings["DBName"];
 
-            var DBName =
-                System.Configuration.ConfigurationManager.AppSettings["DBName"];
+                var _uow = new UnitOfWork(ConnectionString, DBName);
+                var _config = new Config();
+                var _SearchEngine = new SearchEngine(_uow, _config);
+                ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
+                var obj = c.GetComplianceForm(Guid.Parse(Recid));
+                return ComplianceFormToResponse(obj);
+            }
+            catch (Exception ex)
+            {
+                SoapException retEx = new SoapException(ex.Message, SoapException.ServerFaultCode, "", ex.InnerException);
+                throw retEx;
+            }
 
-            var _uow = new UnitOfWork(ConnectionString, DBName);
-            var _config = new Config();
-            var _SearchEngine = new SearchEngine(_uow, _config);
-            ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
-            var obj = c.GetComplianceForm(Guid.Parse(Recid));
-            return ComplianceFormToResponse(obj);
         }
 
         public ddresponse ComplianceFormToResponse(ComplianceForm form)
@@ -79,15 +99,11 @@ namespace DDAS.API.WS
             var institute = new Models.ViewModels.DDASResponseModel.ddRequestInstitute();
 
             institute.name = form.Institute;
-            institute.address1 = form.Address;
-            institute.address2 = form.Address;
-            institute.city = form.Address;
-            institute.stateProvince = form.Address;
-            institute.zipCode = form.Address;
+            institute.address = form.Address;
             institute.country = form.Country;
 
             obj.institute = institute;
-            
+
             int el = 0;
             obj.investigators = new Models.ViewModels.DDASResponseModel.ddRequestInvestigator[form.InvestigatorDetails.Count];
 

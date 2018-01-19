@@ -71,6 +71,7 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\ExceptionLogger.cs" />
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
+    <Compile Include="Entities\LogWSDDAS.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Interfaces\IAppAdminService.cs" />
     <Compile Include="Interfaces\IAudit.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Entities\Log.cs" />
     <Compile Include="Repository\IExceptionLoggerRepository.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
+    <Compile Include="Repository\ILogWSDDASRepository.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
     <Compile Include="ViewModels\AuditListViewModel.cs" />

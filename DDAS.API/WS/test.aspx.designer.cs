@@ -31,6 +31,24 @@ namespace DDAS.API.WS {
         protected global::System.Web.UI.WebControls.TextBox txtBody;
         
         /// <summary>
+        /// txtMode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMode;
+        
+        /// <summary>
+        /// txtRecid control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRecid;
+        
+        /// <summary>
         /// btnTest control.
         /// </summary>
         /// <remarks>

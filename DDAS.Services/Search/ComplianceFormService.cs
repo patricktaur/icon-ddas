@@ -286,7 +286,7 @@ namespace DDAS.Services.Search
                 Investigator.Id = InvId;
                 InvId += 1;
 
-                //Investigator.Name = InputRows[Index].DisplayName.Trim();
+                Investigator.Name = d.nameWithQualification.Trim();
                 Investigator.FirstName = d.firstName.Trim();
                 Investigator.MiddleName = d.middleName.Trim();
                 Investigator.LastName = d.lastName.Trim();
@@ -333,12 +333,12 @@ namespace DDAS.Services.Search
 
             if (PrincipleInvestigatorCount == 0)
             {
-                throw new Exception("Principle Investigator not Found");
+                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.");
             }
 
             if (PrincipleInvestigatorCount > 1)
             {
-                throw new Exception("Principle Investigator cannot be more than one");
+                throw new Exception("Principle Investigator cannot be more than one.");
             }
 
             ScanUpdateComplianceForm(form);
