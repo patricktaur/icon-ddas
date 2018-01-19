@@ -21,7 +21,8 @@ import {
     UpdateFindigs,
     UpdateInstituteFindings,
     QualityCheck,
-    CurrentReviewStatusViewModel
+    CurrentReviewStatusViewModel,
+    UndoEnum
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -402,6 +403,23 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    undoQCRequest(complianceFormId: string){
+        return this.http.get(this._baseUrl + 'QC/UndoQCRequest?ComplianceFormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    undo(complianceFormId: string, undoEnum: UndoEnum){
+        return this.http.get(this._baseUrl + 'QC/Undo?ComplianceFormId=' + complianceFormId
+        + '&undoEnum=' + undoEnum, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     saveCompFormGeneralNInvestigatorsNOptionalSites(form: ComplianceFormA) {
         let body = JSON.stringify(form);
         return this.http.post(this._baseUrl + 'search/UpdateCompFormGeneralNInvestigators', body, this._options)
@@ -433,7 +451,6 @@ export class SearchService {
     //Patrick 16Jan2018:
     saveReviewCompletedComplianceForm(form: ComplianceFormA) {
         let body = JSON.stringify(form);
-        console.log("saveReviewCompletedComplianceForm");
         return this.http.post(this._baseUrl + 'search/UpdateQCEditComplianceForm', body, this._options)
             .map((res: Response) => {
                 console.log("AAAAA");

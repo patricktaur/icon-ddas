@@ -26,7 +26,7 @@ export class QCService {
         this._options = new RequestOptions({ headers: headers });
     }
 
-    listAudits() {
+    listQCs() {
         return this.http.get(this._baseUrl + 'QC/ListQCs', this._options)
         .map((res: Response) => {
             return res.json();

@@ -336,6 +336,22 @@ export class EditQCComponent implements OnInit {
             return false;
     }
 
+    // get canUndoQCSubmit(){
+    //     if(this.complianceForm){
+    //         return this.compFormLogic.canUndoQCSubmit(this.complianceForm);
+    //     }
+    //     else
+    //         return false;
+    // }
+
+    get disableQCResponse(){
+        if(this.complianceForm){
+            return this.compFormLogic.canDisableQCResponse(this.complianceForm);
+        }
+        else
+            return true; //disable the QC response dropdown
+    }
+
     get isVerifierFindingNA(){
         return this.QCVerifiedFindings.forEach(finding =>{
             if(finding.Comments[0].CategoryEnum == CommentCategoryEnum.NotApplicable)

@@ -111,4 +111,12 @@
         ComplianceFormsCompleted,
         ClosingBalance
     }
+
+    public enum UndoEnum
+    {
+        UndoQCRequest,
+        UndoQCSubmit,
+        UndoQCResponse,
+        UndoCompleted
+    }
 }

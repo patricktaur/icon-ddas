@@ -432,4 +432,26 @@ export class CompFormLogicService {
         else
             return false;
     }
+
+    canUndoQCSubmit(complianceForm: ComplianceFormA){
+        if(this.isLoggedInUserQCVerifier(complianceForm) && 
+            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed || 
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed)){
+                return true;
+        }
+        else
+            return false;
+    }
+
+    canDisableQCResponse(complianceForm: ComplianceFormA){
+        if(!this.isLoggedInUserQCVerifier(complianceForm)) 
+            return true;
+        else if(this.isLoggedInUserQCVerifier(complianceForm) &&
+            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCFailed ||
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCPassed))
+            return false;
+        else
+            return true;
+    }
 }
