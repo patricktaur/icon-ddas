@@ -40,7 +40,7 @@ export class ListQCComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.auditService.listAudits()
+        this.auditService.listQCs()
             .subscribe((item: QCListViewModel[]) => {
                 this.qcList = item;
             },

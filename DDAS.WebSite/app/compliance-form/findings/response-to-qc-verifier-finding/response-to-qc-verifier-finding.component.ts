@@ -10,6 +10,7 @@ import {CompFormLogicService} from "../../../search/shared/services/comp-form-lo
 })
 export class ResponseToQCVerifierFindingComponent implements OnInit {
     @Input() Finding: Finding;
+    @Output() ValueChanged = new EventEmitter();
     
     private pageChanged: boolean = false;
     
@@ -20,6 +21,7 @@ export class ResponseToQCVerifierFindingComponent implements OnInit {
 
     formValueChanged(){
         this.pageChanged = true;
+        this.ValueChanged.emit() ;
     } 
 
     Split = (RecordDetails: string) => {

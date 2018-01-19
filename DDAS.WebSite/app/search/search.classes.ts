@@ -465,6 +465,13 @@ export enum CommentCategoryEnum {
     NotApplicable
 }
 
+export enum UndoEnum {
+    UndoQCRequest,
+    UndoQCSubmit,
+    UndoQCResponse,
+    UndoCompleted
+}
+
 export class QualityCheck {
     ComplianceFormId: string;
     RequestedBy: string;

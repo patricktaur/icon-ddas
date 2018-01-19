@@ -1,5 +1,6 @@
 ﻿using DDAS.API.Helpers;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using Microsoft.AspNet.Identity;
 using System;
@@ -60,5 +61,20 @@ namespace DDAS.API.Controllers
             var Id = Guid.Parse(FormId);
             return Ok(_Audit.ListQCSummary(Id));
         }
+
+        [Route("UndoQCRequest")]
+        [HttpGet]
+        public IHttpActionResult UndoQCRequest(string ComplianceFormId)
+        {
+            var Id = Guid.Parse(ComplianceFormId);
+            return Ok(_Audit.UndoQCRequest(Id));
+        }
+
+        //[Route("Undo")]
+        //[HttpGet]
+        //public IHttpActionResult Undo(string ComplianceFormId, UndoEnum undoEnum)
+        //{
+        //    return Ok();
+        //}
     }
 }
