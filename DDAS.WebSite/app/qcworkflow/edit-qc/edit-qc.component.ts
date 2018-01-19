@@ -84,6 +84,7 @@ export class EditQCComponent implements OnInit {
     public currentReviewStatus: CurrentReviewStatusViewModel;
     public findingRecordToEdit: Finding;
     private pageChanged: boolean = false;
+    private recordToDelete: Finding = new Finding;
     
     constructor(
         private route: ActivatedRoute,
@@ -323,11 +324,8 @@ export class EditQCComponent implements OnInit {
 
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)
         .subscribe((item: ComplianceFormA) => {
-<<<<<<< HEAD
-            this.pageChanged == false
+            this.pageChanged = false;
             
-=======
->>>>>>> Development
         },
         error => {
         });
@@ -407,8 +405,43 @@ export class EditQCComponent implements OnInit {
                 //this.IgnoreChangesConfirmModal.open();
                 //return this.canDeactivateValue;
                 return window.confirm("Changes not saved. Ignore changes?");//this.dialogService.confirm('Discard changes?');
+    }
+
+    SetFindingToRemove(selectedRecord: Finding) {
+        this.recordToDelete = selectedRecord;
+    }
+
+    get RecordToDeleteText() {
+        if (this.recordToDelete == null) {
+            return "";
+        } else {
+            if (this.recordToDelete.RecordDetails == null) {
+                return "";
+            } else {
+                return this.recordToDelete.RecordDetails.substr(0, 100) + " ...";
+            }
+        }
+    }
+
+    RemoveFinding() {
+        this.pageChanged = true;
+        if (this.recordToDelete.IsMatchedRecord) {
+            this.recordToDelete.IsAnIssue = false;
+            this.recordToDelete.Observation = "";
+            this.recordToDelete.Selected = false;
+        }
+        else {
+            var index = this.complianceForm.Findings.indexOf(this.recordToDelete, 0);
+            if (index > -1) {
+                this.complianceForm.Findings.splice(index, 1);
             }
 
+        }
+
+    }
+
+
+            
     goBack() {
         //this._location.back();
         this.router.navigate(["qc"]);
