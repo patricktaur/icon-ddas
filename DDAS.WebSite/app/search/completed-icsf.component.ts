@@ -110,16 +110,6 @@ export class CompletedICSFComponent implements OnInit {
             });
     }
 
-    // getCurrentReviewStatus(complianceFormId: string) {
-    //     this.service.getCurrentReviewStatus(complianceFormId)
-    //         .subscribe((item: CurrentReviewStatusViewModel) => {
-    //             this.currentReviewStatus = item;
-    //         },
-    //         error => {
-
-    //         });
-    // }
-
     get filteredPrincipalInvestigators() {
         if (this.PrincipalInvestigators) {
             return this.PrincipalInvestigators.filter(x =>
@@ -129,37 +119,37 @@ export class CompletedICSFComponent implements OnInit {
             return null;
     }
 
-    // undo(complianceFormId: string) {
-    //     this.getCurrentReviewStatus(complianceFormId);
-    //     let undoEnum = 0;
-    //     if (this.currentReviewStatus &&
-    //         this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
-    //         this.authService.userName.toLowerCase() &&
-    //         this.currentReviewStatus.CurrentReview.ReviewerRole ==
-    //         ReviewerRoleEnum.QCVerifier) {
-    //         undoEnum = UndoEnum.UndoQCSubmit;
-    //     }
-    //     else if (this.currentReviewStatus &&
-    //         this.currentReviewStatus.QCVerifierRecId != null &&
-    //         this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
-    //         this.authService.userName.toLowerCase() &&
-    //         this.currentReviewStatus.CurrentReview.ReviewerRole ==
-    //         ReviewerRoleEnum.Reviewer) {
-    //         undoEnum = UndoEnum.UndoQCResponse;
-    //     }
+    canUndoQC(item: PrincipalInvestigatorDetails){
+        if(item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
+            item.UndoQCSubmit)
+            return true;
+        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
+            item.UndoQCResponse)
+            return true;
+        else
+            return false;
+    }
 
-    //     if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
-    //         this.service.undo(complianceFormId, undoEnum)
-    //         .subscribe((item: boolean) => {
-    //             this.LoadPrincipalInvestigators();
-    //         },
-    //         error => {
+    undoQC(undoQCSubmit: boolean, undoQCResponse: boolean, complianceFormId: string) {
+        let undoEnum = 0;
 
-    //         });
-    //     }
-    //     else
-    //         alert('undo request not sent');
-    // }
+        if(undoQCSubmit)
+            undoEnum = UndoEnum.UndoQCSubmit;
+        else if(undoQCResponse)
+            undoEnum = UndoEnum.UndoQCResponse;
+
+        if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
+            this.service.undo(complianceFormId, undoEnum)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+
+            });
+        }
+        else
+            alert('undo request not sent');
+    }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 

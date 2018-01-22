@@ -497,6 +497,12 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
         public string AssignedTo { get; set; }
+        public string Reviewer { get; set; }
+        public string QCVerifier { get; set; }
+        public bool UndoQCRequest { get; set; }
+        public bool UndoQCSubmit { get; set; }
+        public bool UndoQCResponse { get; set; }
+        public bool UndoCompleted { get; set; }
         public bool ReviewCompleted {
             get {
                 if (StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified 

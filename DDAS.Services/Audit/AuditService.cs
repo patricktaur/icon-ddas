@@ -167,6 +167,7 @@ namespace DDAS.Services.AuditService
                 Form.Reviews.Add(new Review()
                 {
                     RecId = Guid.NewGuid(),
+                    AssignedOn = QCFailedReview.CompletedOn.Value,
                     AssigendTo = QCFailedReview.AssignedBy,
                     AssignedBy = QCFailedReview.AssigendTo,
                     StartedOn = DateTime.Now,
@@ -195,6 +196,10 @@ namespace DDAS.Services.AuditService
             else if (CurrentQCReview.Status == ReviewStatusEnum.QCPassed)
             {
                 CurrentQCReview.Status = ReviewStatusEnum.Completed;
+                CurrentQCReview.CompletedOn = DateTime.Now;
+            }
+            else if(CurrentQCReview.Status == ReviewStatusEnum.QCFailed)
+            {
                 CurrentQCReview.CompletedOn = DateTime.Now;
             }
 
@@ -278,7 +283,21 @@ namespace DDAS.Services.AuditService
             return QCSummaryList;
         }
 
-        public bool UndoQCRequest(Guid ComplianceFormId)
+        public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum)
+        {
+            switch (undoEnum)
+            {
+                case UndoEnum.UndoQCRequest:
+                    return UndoQCRequest(ComplianceFormId);
+                case UndoEnum.UndoQCSubmit:
+                    return UndoQCSubmit(ComplianceFormId);
+                case UndoEnum.UndoQCResponse:
+                    return UndoQCResponse(ComplianceFormId);
+                default: throw new Exception("invalid UndoEnum");
+            }
+        }
+
+        private bool UndoQCRequest(Guid ComplianceFormId)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -313,6 +332,7 @@ namespace DDAS.Services.AuditService
             if (QCFailedOrPassedReview != null)
             {
                 QCFailedOrPassedReview.Status = ReviewStatusEnum.QCInProgress;
+                QCFailedOrPassedReview.CompletedOn = null;
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
                 return true;
             }
@@ -320,23 +340,28 @@ namespace DDAS.Services.AuditService
                 return false;
         }
 
-        //public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum)
-        //{
-        //    switch (undoEnum)
-        //    {
-        //        case UndoEnum.UndoQCRequest:
-        //            return UndoQCRequest(ComplianceFormId);
-        //        case UndoEnum.UndoQCSubmit:
-        //            return UndoQCSubmit(ComplianceFormId);
-        //        case UndoEnum.UndoQCResponse:
-        //            return false;
-        //        default: throw new Exception("invalid UndoEnum");
-        //    }
-        //}
-        
-        private bool UndoQCResponse()
+        private bool UndoQCResponse(Guid ComplianceFormId)
         {
-            return true;
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            if (Form == null)
+                throw new Exception("Could not find compliance form");
+
+            var QCFailedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCFailed);
+
+            var CompletedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (QCFailedReview != null && CompletedReview != null)
+            {
+                CompletedReview.Status = ReviewStatusEnum.QCCorrectionInProgress;
+                CompletedReview.CompletedOn = null;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return true;
+            }
+            else
+                return false;
         }
 
         private string GetCategoryEnumString(CommentCategoryEnum Enum)

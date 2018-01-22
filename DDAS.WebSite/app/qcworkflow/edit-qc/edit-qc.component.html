@@ -151,10 +151,13 @@
 
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
-			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>
+			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
-			<!-- <button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="undoQCSubmit()">Submit QC</button> -->
-			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">Submit QC Corrections</button>
+			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="undoQCSubmit()">Undo QC Submit</button>
+			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 
+				(click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">
+				Submit QC Corrections
+			</button>
 		</div>
 	</div>
 </div>

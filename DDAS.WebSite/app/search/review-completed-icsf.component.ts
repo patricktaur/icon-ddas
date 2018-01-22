@@ -7,7 +7,8 @@ import {
     ComplianceFormA,
     Review,
     ReviewerRoleEnum,
-    ReviewStatusEnum
+    ReviewStatusEnum, 
+    UndoEnum
     } from './search.classes';
 import { QualityCheck, AuditObservation } from '../qcworkflow/qc.classes';
 import { SearchService } from './search-service';
@@ -365,7 +366,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     undoQCRequest(complianceFormId: string){
-        this.service.undoQCRequest(complianceFormId)
+        this.service.undo(complianceFormId, UndoEnum.UndoQCRequest)
         .subscribe((item: boolean) =>{
             this.LoadPrincipalInvestigators();
         },

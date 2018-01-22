@@ -726,9 +726,12 @@ namespace DDAS.Services.Search
 
                     foreach (Comment comment in finding.Comments)
                     {
-                        if (comment != null && comment.CategoryEnum != CommentCategoryEnum.NotApplicable)
+                        if (comment != null && 
+                            comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                            comment.AddedOn == null)
                             comment.AddedOn = DateTime.Now;
                         if(comment != null && 
+                            comment.CorrectedOn == null &&
                             (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
                             comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
@@ -827,6 +830,36 @@ namespace DDAS.Services.Search
 
         }
 
+        public bool UpdateQC(ComplianceForm Form)
+        {
+            foreach (Finding finding in Form.Findings)
+            {
+                if (finding.Id == null)
+                {
+                    finding.Id = Guid.NewGuid();
+                }
+
+                foreach (Comment comment in finding.Comments)
+                {
+                    if (comment != null &&
+                        comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                        comment.AddedOn == null)
+                        comment.AddedOn = DateTime.Now;
+                    if (comment != null &&
+                        comment.CorrectedOn == null &&
+                        (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                        comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
+                    {
+                        comment.CorrectedOn = DateTime.Now;
+                    }
+                }
+            }
+
+            RollUpSummary(Form);
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+            return true;
+        }
         #endregion
 
         private void AddCountrySpecificSites(ComplianceForm compForm)
@@ -2104,6 +2137,8 @@ namespace DDAS.Services.Search
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
             item.CurrentReviewStatus = compForm.CurrentReviewStatus;
+            item.Reviewer = compForm.Reviewer;
+            item.QCVerifier = compForm.QCVerifier;
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
@@ -2126,7 +2161,24 @@ namespace DDAS.Services.Search
                     item.SubInvestigators.Add(SubInv);
                 }
             }
+            CanUndoQC(item, compForm);
             return item;
+        }
+
+        private void CanUndoQC(PrincipalInvestigator Investigator, ComplianceForm Form)
+        {
+            var QCReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCFailed);
+
+            var CompletedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (QCReview == null && 
+                CompletedReview != null && 
+                Form.QCVerifier != null) //For QCVerifier
+                Investigator.UndoQCSubmit = true;
+            else if(QCReview != null && CompletedReview != null) //For Reviewer
+                Investigator.UndoQCResponse = true;
         }
 
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(

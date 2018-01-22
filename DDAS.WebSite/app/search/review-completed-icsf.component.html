@@ -135,7 +135,7 @@
 										<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
-								<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
+								<button type="button" *ngIf="canUndoQC" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>
 										<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">

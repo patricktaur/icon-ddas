@@ -143,8 +143,11 @@
 								 [attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
 								<span class="glyphicon glyphicon-download-alt"></span>
 							</button>
-							<!-- <button type="button" class="btn btn-primary" (click)="undo(item.RecId)">Undo</button> -->
-								
+							<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
+								(click)="undoQC(item.UndoQCSubmit, item.UndoQCResponse, item.RecId)" title="undo">
+								Undo
+							</button>
+
 							<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
 							<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
 							</td>
