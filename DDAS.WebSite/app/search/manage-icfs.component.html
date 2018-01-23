@@ -44,6 +44,7 @@
 							<label for="AssignedTo">Assigned To:</label>
 							<select class="form-control" name="AssignedTo" [(ngModel)]="ComplianceFormFilter.AssignedTo">
 								<option value="-1" selected="selected">All</option>
+								<option value="" selected="selected">None</option>
 								<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
 							</select>
 						</div>
@@ -133,7 +134,8 @@
 								</button>
 								
 							<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open"> <span class="glyphicon glyphicon-folder-open"></span> </button>
-							<button type="button" class="btn btn-sm btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-retweet"></span> </button>
+							<button type="button" class="btn btn-sm btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Reassign"> <span class="glyphicon glyphicon-retweet"></span> </button>
+							<button type="button" class="btn btn-sm btn-primary" (click)="setComplianceFormToClear(item); ClearAssignedToModal.open()" title="Clear 'Assigned To'"> <span class="glyphicon glyphicon-repeat"></span> </button>
 							<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()"
 								title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>
 						</div>
@@ -177,7 +179,7 @@
 
 <modal #ManageICFModal>
 	<modal-header>
-		<h4 class="modal-title">Manage: <b> {{SelectedInvestigatorName}} </b> </h4>
+		<h4 class="modal-title">Assign ICSF: <b> {{SelectedInvestigatorName}} </b> </h4>
 	</modal-header>
 	<modal-body>
 		<div class="row">
@@ -202,5 +204,22 @@
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="manageComplianceForm(); ManageICFModal.close()">Save</button>
 		<button type="button" class="btn btn-default" (click)="ManageICFModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #ClearAssignedToModal>
+	<modal-header>
+		<h4 class="modal-title">Clear 'Assigned To': <b> {{SelectedInvestigatorName}} </b> </h4>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-md-12">
+				The 'Assigned To' will be removed.
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="ClearAssignedTo(); ClearAssignedToModal.close()">Save</button>
+		<button type="button" class="btn btn-default" (click)="ClearAssignedToModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

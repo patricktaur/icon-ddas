@@ -354,34 +354,38 @@ namespace DDAS.Services.Search
             return form;
         }
 
-        public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
-            bool Active, Guid? RecId)
+        //public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
+        //    bool Active, Guid? RecId)
+        //{
+        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
+        //    form.AssignedTo = AssignedTo;
+        //    form.Active = Active;
+        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
 
+        //    AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
+            
+        //}
+
+        //public void ClearAssignedTo(Guid? RecId, string AssignedBy)
+        //{
+        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
+        //    form.AssignedTo = "";
+        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+        //    AddToAssignementHistory(RecId.Value, AssignedBy, "");
+
+        //}
+
+
+        public void UpdateAssignedTo(Guid? RecId, string AssignedBy, string AssignedFrom, string AssignedTo)
         {
-            var form = _UOW.ComplianceFormRepository.FindById(RecId);
-            form.AssignedTo = AssignedTo;
-            form.Active = Active;
-            _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-            AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
-
-            //_UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
-
-            //var CompForm = _UOW.ComplianceFormRepository.FindById(RecId);
-
-            //var PreviousReview = CompForm.Reviews.Find(x =>
-            //x.PreviousReviewId == null);
-
-            //if(PreviousReview != null)
-            //{
-            //    var review = new Review();
-            //    review.AssigendTo = AssignedTo;
-            //    review.AssignedBy = AssignedBy;
-            //    review.AssignedOn = DateTime.Now;
-            //    review.PreviousReviewId = PreviousReview.RecId;
-            //    CompForm.Reviews.Add(review);
-            //    _UOW.ComplianceFormRepository.UpdateCollection(CompForm);
-            //}
+            
+            var retValue = _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedBy, AssignedFrom, AssignedTo);
+            //Move to single update:
+            if (retValue == true)
+            {
+                AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
+            }
         }
 
         //used by Excel File Upload method.
@@ -726,9 +730,12 @@ namespace DDAS.Services.Search
 
                     foreach (Comment comment in finding.Comments)
                     {
-                        if (comment != null && comment.CategoryEnum != CommentCategoryEnum.NotApplicable)
+                        if (comment != null && 
+                            comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                            comment.AddedOn == null)
                             comment.AddedOn = DateTime.Now;
                         if(comment != null && 
+                            comment.CorrectedOn == null &&
                             (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
                             comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
@@ -827,6 +834,36 @@ namespace DDAS.Services.Search
 
         }
 
+        public bool UpdateQC(ComplianceForm Form)
+        {
+            foreach (Finding finding in Form.Findings)
+            {
+                if (finding.Id == null)
+                {
+                    finding.Id = Guid.NewGuid();
+                }
+
+                foreach (Comment comment in finding.Comments)
+                {
+                    if (comment != null &&
+                        comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                        comment.AddedOn == null)
+                        comment.AddedOn = DateTime.Now;
+                    if (comment != null &&
+                        comment.CorrectedOn == null &&
+                        (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                        comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
+                    {
+                        comment.CorrectedOn = DateTime.Now;
+                    }
+                }
+            }
+
+            RollUpSummary(Form);
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+            return true;
+        }
         #endregion
 
         private void AddCountrySpecificSites(ComplianceForm compForm)
@@ -2104,6 +2141,8 @@ namespace DDAS.Services.Search
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
             item.CurrentReviewStatus = compForm.CurrentReviewStatus;
+            item.Reviewer = compForm.Reviewer;
+            item.QCVerifier = compForm.QCVerifier;
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
@@ -2126,7 +2165,24 @@ namespace DDAS.Services.Search
                     item.SubInvestigators.Add(SubInv);
                 }
             }
+            CanUndoQC(item, compForm);
             return item;
+        }
+
+        private void CanUndoQC(PrincipalInvestigator Investigator, ComplianceForm Form)
+        {
+            var QCReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCFailed);
+
+            var CompletedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (QCReview == null && 
+                CompletedReview != null && 
+                Form.QCVerifier != null) //For QCVerifier
+                Investigator.UndoQCSubmit = true;
+            else if(QCReview != null && CompletedReview != null) //For Reviewer
+                Investigator.UndoQCResponse = true;
         }
 
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
@@ -2221,7 +2277,7 @@ namespace DDAS.Services.Search
             var Filter8 = Filter7;
 
             if(CompFormFilter.AssignedTo != null &&
-                CompFormFilter.AssignedTo != "" &&
+                //CompFormFilter.AssignedTo != "" &&
                 CompFormFilter.AssignedTo != "-1")
             {
                 Filter8 = Filter7.Where(x =>

@@ -79,13 +79,13 @@
 			<table class="table table-bordered table-hover table-striped">
 				<thead>
 					<tr>
-						<th class="col-md-3 text-left">Principal Investigator </th>
-						<th class="col-md-2 text-left">ICON Project Number</th>
+						<th class=" text-left">Principal Investigator </th>
+						<th class="text-left">ICON Project Number</th>
 						<th class="text-left">Sponsor Protocol Number</th>
 						<th class="text-left">Country</th>
 						<th class="text-center">Searched on</th>
 						<th class="text-left">Status</th>
-						<th class="text-center">Actions</th>
+						<th class="col-sm-2 text-center">Actions</th>
 					</tr>
 				</thead>
 
@@ -131,17 +131,18 @@
 							{{status(item.CurrentReviewStatus)}}
 						</td>
 						<td>
+							
 							<div class="btn-group">
 										<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
-								<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
+								<button type="button" *ngIf="canUndoQC" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>
 										<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
-								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open"></span></button>
+								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open ICSF"><span class="glyphicon glyphicon-folder-open"></span></button>
 								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" 
 									class="btn btn-sm btn-primary" 
 									(click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open(); resetValues()" 
@@ -149,9 +150,9 @@
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
 								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" 
-									class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)" title="Undo QC Request">
+									class="btn btn-sm btn-primary" (click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()" title="Undo QC Request">
 									<!-- <i clas="fa fa-undo"></i> -->
-									<span class="">Undo QC Request</span>
+									<span class="glyphicon glyphicon-repeat"></span>
 								</button>
 							</div>
 						</td>
@@ -214,5 +215,18 @@
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button>
 		<button type="button" class="btn btn-default" (click)="RequestAuditModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #ConfirmUndoModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Undo</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Undo this action?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="undoQCRequest(); ConfirmUndoModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

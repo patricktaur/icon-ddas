@@ -24,7 +24,9 @@ namespace DDAS.Models.Interfaces
 
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
         bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form);
-        void UpdateAssignedToData(string AssignedTo, string AssignedBy, bool Active, Guid? RecId);
+        //void UpdateAssignedToData(string AssignedTo, string AssignedBy, bool Active, Guid? RecId);
+        void UpdateAssignedTo(Guid? RecId, string  AssignedBy, string AssignedFrom, string AssignedTo);
+     
 
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 
@@ -74,5 +76,7 @@ namespace DDAS.Models.Interfaces
         MemoryStream GenerateOutputFile(
             IGenerateOutputFile GenerateOutputFile,
             List<ComplianceForm> forms);
+
+        bool UpdateQC(ComplianceForm Form);
     }
 }

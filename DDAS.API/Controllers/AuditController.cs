@@ -62,19 +62,21 @@ namespace DDAS.API.Controllers
             return Ok(_Audit.ListQCSummary(Id));
         }
 
-        [Route("UndoQCRequest")]
+        //[Route("UndoQCRequest")]
+        //[HttpGet]
+        //public IHttpActionResult UndoQCRequest(string ComplianceFormId)
+        //{
+        //    var Id = Guid.Parse(ComplianceFormId);
+        //    return Ok(_Audit.UndoQCRequest(Id));
+        //}
+
+        [Route("Undo")]
         [HttpGet]
-        public IHttpActionResult UndoQCRequest(string ComplianceFormId)
+        public IHttpActionResult Undo(string ComplianceFormId, UndoEnum undoEnum)
         {
             var Id = Guid.Parse(ComplianceFormId);
-            return Ok(_Audit.UndoQCRequest(Id));
+            var Result = _Audit.Undo(Id, undoEnum);
+            return Ok(Result);
         }
-
-        //[Route("Undo")]
-        //[HttpGet]
-        //public IHttpActionResult Undo(string ComplianceFormId, UndoEnum undoEnum)
-        //{
-        //    return Ok();
-        //}
     }
 }

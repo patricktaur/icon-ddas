@@ -19,8 +19,9 @@ export class ManageICFsComponent implements OnInit {
     //public InvestigatorNameToDelete: string;
     //public ComplianceFormIdToManage: string;
 
-    public Active: boolean;
+    //public Active: boolean;
     public AssignedTo: string;
+    public AssignedFrom: string
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
     public LoggedInUserIsAppAdmin: boolean;
@@ -162,12 +163,25 @@ export class ManageICFsComponent implements OnInit {
     setComplianceFormToManage(Investigator: PrincipalInvestigatorDetails) {
 
         this.setSelectedRecordDetails(Investigator);
-        this.AssignedTo = Investigator.AssignedTo;
-        this.Active = Investigator.Active;
+        
+        //this.AssignedTo Bound to drop down user list:
+        this.AssignedFrom = Investigator.AssignedTo + "";
     }
 
+    
+    setComplianceFormToClear(Investigator: PrincipalInvestigatorDetails) {
+        
+                this.setSelectedRecordDetails(Investigator);
+                //this.AssignedTo Bound to drop down user list:
+                // 
+                //From existing Value, for concurrency check on server:
+                this.AssignedFrom = Investigator.AssignedTo + "";
+
+    }
+
+
     manageComplianceForm() {
-        this.service.SaveAssignedTo(this.AssignedTo, this.Active, this.SelectedComplianceFormId)
+        this.service.SaveAssignedTo(this.AssignedTo, this.AssignedFrom, this.SelectedComplianceFormId)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },
@@ -175,6 +189,15 @@ export class ManageICFsComponent implements OnInit {
             });
     }
 
+    ClearAssignedTo() {
+        this.service.ClearAssignedTo( this.SelectedComplianceFormId, this.AssignedFrom)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+            });
+    }
+    
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
 
