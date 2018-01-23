@@ -376,7 +376,6 @@ namespace DDAS.Services.Search
 
         //}
 
-
         public void UpdateAssignedTo(Guid? RecId, string AssignedBy, string AssignedFrom, string AssignedTo)
         {
             
@@ -2129,6 +2128,28 @@ namespace DDAS.Services.Search
             return retList;
         }
 
+        public List<PrincipalInvestigator> GetUnAssignedComplianceForms()
+        {
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Forms.Count == 0)
+                return null;
+
+            Forms = Forms.Where(x => 
+                x.AssignedTo == null || 
+                x.AssignedTo.Length == 0)
+                .ToList();
+
+            var PIList = new List<PrincipalInvestigator>();
+
+            foreach(ComplianceForm Form in Forms)
+            {
+                var PI = getPrincipalInvestigators(Form);
+                PIList.Add(PI);
+            }
+            return PIList;
+        }
+
         private PrincipalInvestigator getPrincipalInvestigators(ComplianceForm compForm)
         {
             var item = new PrincipalInvestigator();
@@ -2194,12 +2215,12 @@ namespace DDAS.Services.Search
                 throw new Exception("Invalid CompFormFilter");
             }
 
-            var Filter = _UOW.ComplianceFormRepository.GetAll();
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (Filter.Count == 0)
+            if (Forms.Count == 0)
                 return null;
 
-            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
+            var Filter1 = Forms.OrderByDescending(x => x.SearchStartedOn).ToList();
 
             if (CompFormFilter.InvestigatorName != null && 
                 CompFormFilter.InvestigatorName != "")

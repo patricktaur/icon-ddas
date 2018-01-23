@@ -334,6 +334,13 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("UnAssignedComplianceForms")]
+        [HttpGet]
+        public IHttpActionResult GetUnAssignedComplianceForms()
+        {
+            return Ok(_SearchService.GetUnAssignedComplianceForms());
+        }
+
         #region Patrick
 
         [Route("GetComplianceForm")]
@@ -429,8 +436,6 @@ namespace DDAS.API.Controllers
             catch (Exception)
             {
                 return Content(HttpStatusCode.BadRequest, "Error");
-                
-
             }
             
 
