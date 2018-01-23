@@ -174,6 +174,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="WS\ddaswebservice.asmx" />
+    <Content Include="WS\isprinttodd.asmx" />
+    <Content Include="WS\isprinttoddverify.asmx" />
     <Content Include="WS\mockisprint.asmx" />
     <Content Include="WS\test.aspx" />
     <None Include="..\packages\PhantomJS.2.1.1\tools\phantomjs\phantomjs.exe">
@@ -270,6 +272,14 @@
     <Compile Include="Startup.cs" />
     <Compile Include="WS\ddaswebservice.asmx.cs">
       <DependentUpon>ddaswebservice.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WS\isprinttodd.asmx.cs">
+      <DependentUpon>isprinttodd.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WS\isprinttoddverify.asmx.cs">
+      <DependentUpon>isprinttoddverify.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WS\mockisprint.asmx.cs">

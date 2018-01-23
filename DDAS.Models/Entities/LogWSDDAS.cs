@@ -9,13 +9,20 @@ namespace DDAS.Models.Entities
     public class LogWSDDAS
     {
         public Guid? RecId { get; set; }
-        //public Guid Id { get; set; }
-        public string SiteEnumString { get; set; }
-        public string Step { get; set; }
-        public string Status { get; set; }
-        public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string Caption { get; set; }
-        public string Message { get; set; }
+
+        public string RequestPayload { get; set; }
+        public string Response { get; set; }
+        public string Status { get; set; }
+
+        public string LocalIPAddress { get; set; }
+        public string HostIPAddress { get; set; }
+        public string PortNumber { get; set; }
+        public string ServerProtocol { get; set; }
+        public string ServerSoftware { get; set; }
+        public string HttpHost { get; set; }
+        public string ServerName { get; set; }
+        public string GatewayInterface { get; set; }
+        public string Https { get; set; }
     }
 }
