@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,8 @@ namespace DDAS.Models.Interfaces
         ComplianceForm GetQC(Guid RecId, string AssignedTo, string LoggedInUserName);
         bool SaveQC(ComplianceForm Form);
         List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);
-        bool UndoQCRequest(Guid ComplianceFormId);
+        //bool UndoQCRequest(Guid ComplianceFormId);
         //bool UndoQCSubmit(Guid ComplianceFormId);
-        //bool Undo(string ComplianceFormId);
+        bool Undo(Guid ComplianceFormId, UndoEnum Enum);
     }
 }

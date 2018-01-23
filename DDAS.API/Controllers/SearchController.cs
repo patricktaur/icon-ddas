@@ -382,7 +382,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateQCEditComplianceForm(ComplianceForm form)
         {
-            return Ok(_UOW.ComplianceFormRepository.UpdateCollection(form));
+            return Ok(_SearchService.UpdateQC(form));
         }
 
         [Route("SaveComplianceForm")]
