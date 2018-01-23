@@ -321,15 +321,9 @@ export class EditQCComponent implements OnInit {
     }
 
     Save() {
-        this.service.saveReviewCompletedComplianceForm(this.complianceForm)
-<<<<<<< HEAD
-        .subscribe((item: ComplianceFormA) => {
-            this.pageChanged = false;
-            
-=======
+        this.service.saveReviewCompletedComplianceForm(this.complianceForm)            
         .subscribe((item: boolean) => {
             this.goBack();
->>>>>>> QCWorkFlow
         },
         error => {
         });
@@ -419,7 +413,6 @@ export class EditQCComponent implements OnInit {
             });
     }
 
-<<<<<<< HEAD
     formValueChanged() {
         this.pageChanged = true;
     }
@@ -468,10 +461,7 @@ export class EditQCComponent implements OnInit {
         }
 
     }
-
-
-            
-=======
+           
     canDisableQCSave(){
         if(this.currentReviewStatus &&
             this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase()
@@ -481,7 +471,6 @@ export class EditQCComponent implements OnInit {
             return false;
     }
 
->>>>>>> QCWorkFlow
     goBack() {
         //this._location.back();
         this.router.navigate(["qc"]);
