@@ -34,7 +34,11 @@ export class CompletedICSFComponent implements OnInit {
 
     public formLoading: boolean;
     public currentReviewStatus: CurrentReviewStatusViewModel;
-
+    public undoQCSubmit: boolean;
+    public undoQCResponse: boolean;
+    public recId: string;
+    public pageNumber: number = 1;
+    
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -110,7 +114,7 @@ export class CompletedICSFComponent implements OnInit {
             });
     }
 
-    get filteredPrincipalInvestigators() {
+    get filteredRecords() {
         if (this.PrincipalInvestigators) {
             return this.PrincipalInvestigators.filter(x =>
                 x.CurrentReviewStatus == ReviewStatusEnum.Completed);
@@ -130,16 +134,22 @@ export class CompletedICSFComponent implements OnInit {
             return false;
     }
 
-    undoQC(undoQCSubmit: boolean, undoQCResponse: boolean, complianceFormId: string) {
+    setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, RecId: string){
+        this.undoQCSubmit = UndoQCSubmit;
+        this.undoQCResponse = UndoQCResponse;
+        this.recId = RecId;
+    }
+
+    undoQC() {
         let undoEnum = 0;
 
-        if(undoQCSubmit)
+        if(this.undoQCSubmit)
             undoEnum = UndoEnum.UndoQCSubmit;
-        else if(undoQCResponse)
+        else if(this.undoQCResponse)
             undoEnum = UndoEnum.UndoQCResponse;
 
         if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
-            this.service.undo(complianceFormId, undoEnum)
+            this.service.undo(this.recId, undoEnum)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },

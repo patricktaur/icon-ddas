@@ -310,6 +310,7 @@ export class EditQCComponent implements OnInit {
             return "--";
         }
     }
+
     openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
         //this.qcAssignedTo

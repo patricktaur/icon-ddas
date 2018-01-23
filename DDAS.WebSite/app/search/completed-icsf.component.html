@@ -101,7 +101,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr *ngFor="let item of filteredPrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: p}; let idx=index" class="active">
+						<tr *ngFor="let item of filteredRecords | paginate: { itemsPerPage: 10, currentPage: p}; let idx=index" class="active">
 
 							<td class="text-left">
 								<!-- {{item.Name}} -->
@@ -144,7 +144,7 @@
 								<span class="glyphicon glyphicon-download-alt"></span>
 							</button>
 							<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
-								(click)="undoQC(item.UndoQCSubmit, item.UndoQCResponse, item.RecId)" title="undo">
+								(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.RecId); UndoConfirmModal.open()" title="undo">
 								Undo
 							</button>
 
@@ -163,3 +163,19 @@
 </div>
 
 <div #DownloadComplianceFormModal download-compliance-form></div>
+
+<modal #UndoConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Undo</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Undo this action?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" 
+			(click)="undoQC(); UndoConfirmModal.close()">
+			Confirm Undo
+		</button>
+		<button type="button" class="btn btn-primary" (click)="UndoConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>

@@ -40,6 +40,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
 
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
+    public complianceFormId: string;
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
@@ -365,8 +366,12 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    undoQCRequest(complianceFormId: string){
-        this.service.undo(complianceFormId, UndoEnum.UndoQCRequest)
+    setSelectedRecordToUndo(complianceFormId: string){
+        this.complianceFormId = complianceFormId;
+    }
+
+    undoQCRequest(){
+        this.service.undo(this.complianceFormId, UndoEnum.UndoQCRequest)
         .subscribe((item: boolean) =>{
             this.LoadPrincipalInvestigators();
         },

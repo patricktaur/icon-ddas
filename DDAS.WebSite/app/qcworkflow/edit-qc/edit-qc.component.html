@@ -153,7 +153,7 @@
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
-			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="undoQCSubmit()">Undo QC Submit</button>
+			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
 			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 
 				(click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">
 				Submit QC Corrections
@@ -197,5 +197,18 @@
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
+	</modal-footer>
+</modal>
+
+<modal #ConfirmUndoModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Undo</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Undo this action?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="undoQCSubmit(); ConfirmUndoModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

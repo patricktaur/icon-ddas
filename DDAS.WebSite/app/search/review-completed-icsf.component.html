@@ -149,7 +149,7 @@
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
 								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" 
-									class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)" title="Undo QC Request">
+									class="btn btn-sm btn-primary" (click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()" title="Undo QC Request">
 									<!-- <i clas="fa fa-undo"></i> -->
 									<span class="">Undo QC Request</span>
 								</button>
@@ -214,5 +214,18 @@
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button>
 		<button type="button" class="btn btn-default" (click)="RequestAuditModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #ConfirmUndoModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Undo</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Undo this action?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="undoQCRequest(); ConfirmUndoModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
