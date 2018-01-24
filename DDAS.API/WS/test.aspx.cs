@@ -419,6 +419,10 @@ namespace DDAS.API.WS
             {
                 test2();
             }
+            else if (Convert.ToInt32(txtMode.Text) == 3)
+            {
+                test3();
+            }
             else
             {
                 test1();
