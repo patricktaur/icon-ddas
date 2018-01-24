@@ -23,7 +23,7 @@ export class ConfigService {
        
         
         //for  demo version on Clarity Server:
-        this._apiURI = 'api/';
+        //this._apiURI = 'api/';
         
         
     }
