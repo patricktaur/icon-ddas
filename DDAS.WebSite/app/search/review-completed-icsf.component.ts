@@ -257,14 +257,14 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    downloadComplianceFormPDF(formId: string) {
-        this.service.generateComplianceFormPDF(formId)
-            .subscribe((item: any) => {
+    // downloadComplianceFormPDF(formId: string) {
+    //     this.service.generateComplianceFormPDF(formId)
+    //         .subscribe((item: any) => {
 
-            },
-            error => {
-            });
-    }
+    //         },
+    //         error => {
+    //         });
+    // }
 
     getBackgroundColor(color: number) {
         let retColor: string;

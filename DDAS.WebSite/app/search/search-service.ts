@@ -141,6 +141,14 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    getUnAssignedComplianceForms(): Observable<PrincipalInvestigatorDetails[]> {
+        return this.http.get(this._baseUrl + 'search/UnAssignedComplianceForms', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
     getUploadsFolderPath() {
         return this.http.get(this._baseUrl + 'search/GetUploadsFolderPath', this._options)
             .map((res: Response) => {

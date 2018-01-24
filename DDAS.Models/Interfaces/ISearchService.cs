@@ -40,6 +40,8 @@ namespace DDAS.Models.Interfaces
         List<PrincipalInvestigator> GetClosedComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter, string AssignedTo);
 
+        List<PrincipalInvestigator> GetUnAssignedComplianceForms();
+
         InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
 
         List<InstituteFindingsSummaryViewModel> getInstituteFindingsSummary(Guid CompFormId);

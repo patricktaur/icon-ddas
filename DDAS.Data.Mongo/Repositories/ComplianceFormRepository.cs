@@ -100,9 +100,7 @@ namespace DDAS.Data.Mongo.Repositories
         //Has Concurrency check:
         //Pending: Update Assignment History:
         public bool UpdateAssignedTo(Guid id, string AssignedBy, string AssignedFrom, string AssignedTo)
-        {
-            
-            
+        {            
             //AssignedFrom = current AssignedTo. -- for Concurrency check. If compForm.AssignedTo <> AssignedFrom then throw exception.
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var compForm = collection.Find(x => x.RecId == id).FirstOrDefault();
@@ -113,12 +111,9 @@ namespace DDAS.Data.Mongo.Repositories
                     throw new Exception(String.Format("Comp Form has been modified by: {0} on {1}", compForm.UpdatedBy, compForm.UpdatedOn) );
                 }
                  
-                
                 var Reviews = compForm.Reviews;
                 var CurrentReview = Reviews.FirstOrDefault();
                 
-                
-
                 //CurrentReview.AssigendTo
                 if (CurrentReview != null)
                 {
@@ -152,14 +147,11 @@ namespace DDAS.Data.Mongo.Repositories
                 {
                     throw new Exception("No Review Record Found on Comp Form id = " + id );
                 }
-                
-
             }
             else
             {
                 throw new Exception("Comp Form with id = " + id + " Not Found");
             }
-
         }
 
         //Not used??
