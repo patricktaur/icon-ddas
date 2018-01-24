@@ -216,5 +216,15 @@ namespace DDAS.API.Controllers
         }
 
         #endregion
+
+        #region iSprint to DDAS Log
+        
+        [Route("iSprintToDDASLog")]
+        [HttpGet]
+        public IHttpActionResult GetiSprintToDDASLog()
+        {
+            return Ok(_AppAdminService.GetiSprintToDDASLog());
+        }
+        #endregion
     }
 }

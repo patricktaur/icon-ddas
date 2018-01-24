@@ -25,6 +25,7 @@ import { ExtractionLogComponent } from './extraction-log.component';
 import { DataFileComponent } from './data-file.component';
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 //import { SiteSourceToAddComponent } from '../shared/components/site-source-toadd.component';
+import { ISprintToDDASLogComponent } from './isprint-to-ddas-log.component';
 
 @NgModule({ 
   imports: [
@@ -49,7 +50,8 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
       SponsorSpecificSiteEditComponent,
       ExceptionLogComponent,
       ExtractionLogComponent,
-      DataFileComponent
+      DataFileComponent,
+      ISprintToDDASLogComponent
       //SiteSourceToAddComponent
   ],
  
