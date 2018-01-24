@@ -966,6 +966,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? CompletedOn { get; set; }
         public ReviewerRoleEnum ReviewerRole { get; set; }
         public string Comment { get; set; }
+        public string ReviewCategory { get; set; }
     }
     #endregion
 

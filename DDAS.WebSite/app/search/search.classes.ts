@@ -440,6 +440,7 @@ export class Review {
     ReviewerRole: ReviewerRoleEnum;
     Comment: string;
     PreviousReviewId: string;
+    ReviewCategory: string;
 }
 
 export enum ReviewStatusEnum {

@@ -41,38 +41,8 @@ namespace DDAS.Services.AuditService
                 else if (Review.RecId == null)
                     Review.RecId = Guid.NewGuid();
             }
-
-            //var QCReview = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-
-            //Form.Comments.Add(new Comment()
-            //{
-            //    ReviewId = QCReview.RecId.Value,
-            //    ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable,
-            //    CategoryEnum = CommentCategoryEnum.Minor
-            //});
-
-            //foreach(Finding finding in Form.Findings)
-            //{
-            //    if(finding.Comments.Count == 0)
-            //    {
-            //        var Comment = new Comment();
-            //        var Review =
-            //            Form.Reviews.Find(x =>
-            //            x.ReviewerRole == ReviewerRoleEnum.Reviewer);
-            //        Comment.ReviewId = Review.RecId.Value;
-            //        finding.Comments.Add(Comment);
-
-            //        var Comment1 = new Comment();
-            //        var Review1 =
-            //            Form.Reviews.Find(x =>
-            //            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-            //        Comment1.ReviewId = Review1.RecId.Value;
-            //        finding.Comments.Add(Comment1);
-            //    }
-            //}
-
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            //SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
+            SendQCRequestedMail(Form);
             return true;
         }
 
@@ -381,21 +351,37 @@ namespace DDAS.Services.AuditService
             }
         }
 
-        private void SendAuditRequestedMail(string SendMailTo, string AuditRequestedBy)
+        private void SendQCRequestedMail(ComplianceForm Form)
         {
+            var QCReview = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCRequested);
+
+            if (QCReview == null)
+                throw new Exception("Could not find QCRequested review. Send QC Request mail failed");
+
+            var PIName = "";
+            if (Form.InvestigatorDetails.Count > 0)
+                PIName = Form.InvestigatorDetails.First().Name;
+
+            var ProjectNumber = "";
+            if (Form.ProjectNumber2 != null)
+                ProjectNumber = Form.ProjectNumber + " " + Form.ProjectNumber2;
+            else
+                ProjectNumber = Form.ProjectNumber;
+
             var User = _UOW.UserRepository.GetAll()
-                .Find(x => x.UserName.ToLower() == SendMailTo.ToLower());
+                .Find(x => x.UserName.ToLower() == QCReview.AssigendTo.ToLower());
 
             if (User == null)
                 throw new Exception("invalid username");
 
             var UserEMail = User.EmailId;
-            var Subject = "DDAS Audit Request";
-            var MailBody = "Dear " + User.UserName + ",<br/><br/> ";
-            MailBody += AuditRequestedBy + " has requested you to audit a compliance form. <br/><br/>";
-            MailBody += "Please login to DDAS application and navigate to \"QC Audits\" to start the audit. <br/><br/>";
+            var Subject = "QC Request - " + QCReview.ReviewCategory + "_" +
+                ProjectNumber + "_" + PIName;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
+            MailBody += GetUserFullName(QCReview.AssignedBy) + " has requested you to review a compliance search outcome. <br/><br/>";
+            MailBody += "Please login to DDAS application and navigate to \"QC Checks\" to start the review. <br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
-            MailBody += "DDAS Team";
+            MailBody += GetUserFullName(QCReview.AssignedBy);
 
             SendMail(UserEMail, Subject, MailBody);
         }
@@ -426,6 +412,18 @@ namespace DDAS.Services.AuditService
             EMail.Subject = Subject;
             EMail.Body = Body;
             _EMailService.SendMail(EMail);
+        }
+
+        private string GetUserFullName(string AssignedTo)
+        {
+            if (AssignedTo == null || AssignedTo == "")
+                return null;
+
+            var User = _UOW.UserRepository.GetAll()
+                .Find(x => x.UserName.ToLower() == AssignedTo.ToLower());
+
+            return
+                User != null ? User.UserFullName : null;
         }
     }
 }
