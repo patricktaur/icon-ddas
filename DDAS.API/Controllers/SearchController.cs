@@ -158,7 +158,8 @@ namespace DDAS.API.Controllers
 
         [Route("UploadAttachments")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        //public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        public async Task<HttpResponseMessage> UploadAttachments(string SessionId)
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -197,7 +198,7 @@ namespace DDAS.API.Controllers
                     Attachment.FileName = UploadedFileName;
                     Attachment.GeneratedFileName = FilePathWithGUID;
                 }
-                _SearchService.AddAttachmentsToFindings(form);
+                //_SearchService.AddAttachmentsToFindings(form);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -887,6 +888,21 @@ namespace DDAS.API.Controllers
             }
             return Ok(CurrentReviewStatus);
         }
+
+        [Route("GetSessionId")]
+        [HttpGet]
+        public Guid GetSessionId()
+        {
+            return Guid.NewGuid();
+        }
+
+
+        //[Route("GetSessionId")]
+        //[HttpGet]
+        //public IHttpActionResult GetSessionId()
+        //{
+        //    return Ok("abc");
+        //}
 
         #region Download Data Files
         [Route("DownloadDataFiles")]

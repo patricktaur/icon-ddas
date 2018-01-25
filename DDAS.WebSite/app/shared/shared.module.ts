@@ -15,12 +15,13 @@ import { ConfirmDialogComponent }  from './components/confirm-dialog.component';
   //import { MyDatePickerModule } from 'mydatepicker/dist/my-date-picker.module';
 import { MyDatePickerModule } from './utils/my-date-picker/my-date-picker.module';
 import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination'; 
+import { Ng2Uploader } from '../shared/utils/ng2-uploader1/ng2-uploader'
 
 import {DateInputComponent} from './components/date-input.component'; 
 import {CommonService} from './common.service';
 //import {FileDownloadComponent} from './components/file-download.component';
 import {FileDownloadModule} from './modules/file-download/file-download.module' 
-
+import {FileUploadComponent} from './components/file-upload-component'
 
 
 
@@ -30,7 +31,8 @@ import {FileDownloadModule} from './modules/file-download/file-download.module'
   imports:     
    [ CommonModule,
    MyDatePickerModule,
-   FileDownloadModule
+   FileDownloadModule,
+   Ng2Uploader
     ],
   
   declarations: [ 
@@ -42,7 +44,8 @@ import {FileDownloadModule} from './modules/file-download/file-download.module'
   HighlightPipe,
   ToggleShowComponent,
   ConfirmDialogComponent,
-  DateInputComponent
+  DateInputComponent,
+  FileUploadComponent
   
   
    ],
@@ -60,7 +63,8 @@ import {FileDownloadModule} from './modules/file-download/file-download.module'
     Ng2PaginationModule,
     ConfirmDialogComponent,
     DateInputComponent,
-    FileDownloadModule
+    FileDownloadModule,
+    FileUploadComponent
                    ],
                    
 })

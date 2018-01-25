@@ -15,7 +15,7 @@
 					<div class="row">
 						<div class="col-md-6 ">
 							<h4>Filters:</h4>
-							 <!-- {{diagnostic}}  -->
+							<!-- {{diagnostic}}  -->
 						</div>
 					</div>
 					<div class="row">
@@ -36,9 +36,9 @@
 								<label for="Status">Status:</label>
 								<select class="form-control" ng-disabled="disableSelect" [(ngModel)]="ComplianceFormFilter.Status">
 									<option value="-1" disabled>All</option>
-  									<option value="1" selected="selected">Review Completed, Issues Identified</option>
-									<option value="2">Review Completed, No Issues Identified</option>  
-							  		<!-- <option value="5">No Matched Found, Review Completed</option>         -->
+									<option value="1" selected="selected">Review Completed, Issues Identified</option>
+									<option value="2">Review Completed, No Issues Identified</option>
+									<!-- <option value="5">No Matched Found, Review Completed</option>         -->
 								</select>
 							</div>
 						</div>
@@ -94,8 +94,8 @@
 
 						<td class="text-left">
 							<h5>
-								<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
-									{{item.Name}} 
+								<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1">
+									{{item.Name}}
 									<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 								</a>
 							</h5>
@@ -127,30 +127,31 @@
 						<!-- <td align="center">
 							<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
 						</td> -->
-						<td class="text-left" >
+						<td class="text-left">
 							{{status(item.CurrentReviewStatus)}}
 						</td>
 						<td>
-							
+
 							<div class="btn-group">
-										<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
+								<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
 								<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
-									<span class="glyphicon glyphicon-download-alt" ></span>
+									<span class="glyphicon glyphicon-download-alt"></span>
 								</button>
-										<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
+								<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
-								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open ICSF"><span class="glyphicon glyphicon-folder-open"></span></button>
-								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" 
-									class="btn btn-sm btn-primary" 
-									(click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open(); resetValues()" 
-									title="Request QC">
+								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open ICSF">
+									<span class="glyphicon glyphicon-folder-open"></span>
+								</button>
+								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
+								(click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open(); resetValues()"
+								 title="Request QC">
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
-								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" 
-									class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)" title="Undo QC Request">
+								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)"
+								 title="Undo QC Request">
 									<!-- <i clas="fa fa-undo"></i> -->
 									<span class="glyphicon glyphicon-repeat"></span>
 								</button>
@@ -188,29 +189,37 @@
 
 <modal #RequestAuditModal>
 	<modal-header>
-		<h4 class="modal-title">QC Request: <b> {{SelectedInvestigatorName}} </b> </h4>
+		<h4 class="modal-title">QC Request:
+			<b> {{SelectedInvestigatorName}} </b>
+		</h4>
 	</modal-header>
 	<modal-body>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-12">
 				<div class="form-group">
 					<label for="AssignedTo">QC Verifier:</label>
 					<select class="form-control" [(ngModel)]="selectedQCVerifier">
 						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
 					</select>
-				</div>		
+				</div>
 			</div>
-			<div class="col-md-6">
-			</div>
+			
 		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<label for="RequestorComment">Comments:</label>
-				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" 
-					rows="5" cols="20" placeholder="comments" [(ngModel)]="requestorComment">
+				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comments"
+				 [(ngModel)]="requestorComment">
 				</textarea>
 			</div>
 		</div>
+		<div class="row">
+				<div class="col-md-12">
+						<upload-attachments
+						[SessionId] = "SessionId" ></upload-attachments>
+				</div>
+		</div>
+
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button>

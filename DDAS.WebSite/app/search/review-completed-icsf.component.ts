@@ -64,6 +64,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public compForm: ComplianceFormA;
     public selectedQCVerifier: string;
     public requestorComment: string;
+    private SessionId: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -96,6 +97,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
         this.LoadUsers();
+        
     }
 
     LoadUsers() {
@@ -105,9 +107,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    setSelectedRecordDetails(complainceFormId: string) {
-        this.SelectedComplianceFormId = complainceFormId;
-    }
+    public loadSessionId(): void {
+    
+        this.service.getSessionId()
+          .subscribe(
+          (sessionId: string) => this.SessionId = sessionId
+          );
+     }
 
     SetDefaultFilterValues() {
         this.ComplianceFormFilter.InvestigatorName = null;
@@ -156,6 +162,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.service.getClosedComplianceFormFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
+                this.loadSessionId();
             });
 
         // this.service.getMyReviewCompletedPrincipalInvestigators()
@@ -228,23 +235,24 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    handleUpload(data: any): void {
-        this.Loading = true;
-        this.zone.run(() => {
-            //this.response = data.response;
-            if (data.response == null) {
+    //Commented by: Patrick 15Jan2018    
+    // handleUpload(data: any): void {
+    //     this.Loading = true;
+    //     this.zone.run(() => {
+    //         //this.response = data.response;
+    //         if (data.response == null) {
 
-            }
-            else {
-                this.Loading = false;
-                this.modal.close();
-                this.LoadPrincipalInvestigators();
-            }
+    //         }
+    //         else {
+    //             this.Loading = false;
+    //             this.modal.close();
+    //             this.LoadPrincipalInvestigators();
+    //         }
 
-            this.progress = data.progress.percent / 100;
-            //this.Loading = false;
-        });
-    }
+    //         this.progress = data.progress.percent / 100;
+    //         //this.Loading = false;
+    //     });
+    // }
 
     downloadComplianceForm(formId: string) {
         this.service.generateComplianceForm(formId)
@@ -309,6 +317,11 @@ export class ReviewCompletedICSFComponent implements OnInit {
     canUndoQCRequest(currentStatus: number){
         if(currentStatus == ReviewStatusEnum.QCRequested)
             return true;
+    }
+
+    setSelectedRecordDetails(complainceFormId: string) {
+        this.SelectedComplianceFormId = complainceFormId;
+
     }
 
     requestQC(qcVerifier: string, requestorComments:string) {
