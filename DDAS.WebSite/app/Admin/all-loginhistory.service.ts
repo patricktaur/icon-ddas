@@ -289,7 +289,15 @@ export class LoginHistoryService {
         .map((res: Response) => {
             return res.json();
         })
-        .catch(this.handleError);        
+        .catch(this.handleError);
+    }
+
+    getISprintToDDASLog(){
+        return this.http.get(this._baseUrl + 'admin/iSprintToDDASLog', this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     private handleError(error: any) {

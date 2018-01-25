@@ -34,7 +34,11 @@ export class CompletedICSFComponent implements OnInit {
 
     public formLoading: boolean;
     public currentReviewStatus: CurrentReviewStatusViewModel;
-
+    public undoQCSubmit: boolean;
+    public undoQCResponse: boolean;
+    public recId: string;
+    public pageNumber: number = 1;
+    
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -110,17 +114,7 @@ export class CompletedICSFComponent implements OnInit {
             });
     }
 
-    // getCurrentReviewStatus(complianceFormId: string) {
-    //     this.service.getCurrentReviewStatus(complianceFormId)
-    //         .subscribe((item: CurrentReviewStatusViewModel) => {
-    //             this.currentReviewStatus = item;
-    //         },
-    //         error => {
-
-    //         });
-    // }
-
-    get filteredPrincipalInvestigators() {
+    get filteredRecords() {
         if (this.PrincipalInvestigators) {
             return this.PrincipalInvestigators.filter(x =>
                 x.CurrentReviewStatus == ReviewStatusEnum.Completed);
@@ -129,37 +123,43 @@ export class CompletedICSFComponent implements OnInit {
             return null;
     }
 
-    // undo(complianceFormId: string) {
-    //     this.getCurrentReviewStatus(complianceFormId);
-    //     let undoEnum = 0;
-    //     if (this.currentReviewStatus &&
-    //         this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
-    //         this.authService.userName.toLowerCase() &&
-    //         this.currentReviewStatus.CurrentReview.ReviewerRole ==
-    //         ReviewerRoleEnum.QCVerifier) {
-    //         undoEnum = UndoEnum.UndoQCSubmit;
-    //     }
-    //     else if (this.currentReviewStatus &&
-    //         this.currentReviewStatus.QCVerifierRecId != null &&
-    //         this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase() ==
-    //         this.authService.userName.toLowerCase() &&
-    //         this.currentReviewStatus.CurrentReview.ReviewerRole ==
-    //         ReviewerRoleEnum.Reviewer) {
-    //         undoEnum = UndoEnum.UndoQCResponse;
-    //     }
+    canUndoQC(item: PrincipalInvestigatorDetails){
+        if(item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
+            item.UndoQCSubmit)
+            return true;
+        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
+            item.UndoQCResponse)
+            return true;
+        else
+            return false;
+    }
 
-    //     if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
-    //         this.service.undo(complianceFormId, undoEnum)
-    //         .subscribe((item: boolean) => {
-    //             this.LoadPrincipalInvestigators();
-    //         },
-    //         error => {
+    setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, RecId: string){
+        this.undoQCSubmit = UndoQCSubmit;
+        this.undoQCResponse = UndoQCResponse;
+        this.recId = RecId;
+    }
 
-    //         });
-    //     }
-    //     else
-    //         alert('undo request not sent');
-    // }
+    undoQC() {
+        let undoEnum = 0;
+
+        if(this.undoQCSubmit)
+            undoEnum = UndoEnum.UndoQCSubmit;
+        else if(this.undoQCResponse)
+            undoEnum = UndoEnum.UndoQCResponse;
+
+        if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
+            this.service.undo(this.recId, undoEnum)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+
+            });
+        }
+        else
+            alert('undo request not sent');
+    }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 

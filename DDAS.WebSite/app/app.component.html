@@ -27,7 +27,7 @@
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/review-completed-icsf" routerLinkActive="active">Review Completed ICSF's</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/completed-icsf" routerLinkActive="active">Completed ICSFs</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/completed-icsf" routerLinkActive="active">Completed ICSFs</a></li>
 							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/qc" routerLinkActive="active">Quality Check</a></li>
 							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/data-file" routerLinkActive="active">Downloaded Data Files</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
@@ -82,6 +82,7 @@
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/extraction-log" routerLinkActive="active">Extraction Log</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/exception-logger" routerLinkActive="active">Error Logs</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/isprint-to-ddas-log" routerLinkActive="active">iSprint to DDAS Log</a></li>
 									</ul>
 								</div>
 							</li>

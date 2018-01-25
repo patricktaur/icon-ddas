@@ -276,7 +276,7 @@ namespace DDAS.Services.Search
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
             //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
             form.Institute = DR.institute.name;
-            form.Address = DR.institute.address1;
+            form.Address =(DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  "," ");
             form.Country = DR.institute.country;
 
             //AddCountrySpecificSites(form);
@@ -294,7 +294,7 @@ namespace DDAS.Services.Search
                 Investigator.Id = InvId;
                 InvId += 1;
 
-                //Investigator.Name = InputRows[Index].DisplayName.Trim();
+                Investigator.Name = d.nameWithQualification.Trim();
                 Investigator.FirstName = d.firstName.Trim();
                 Investigator.MiddleName = d.middleName.Trim();
                 Investigator.LastName = d.lastName.Trim();
@@ -341,46 +341,50 @@ namespace DDAS.Services.Search
 
             if (PrincipleInvestigatorCount == 0)
             {
-                throw new Exception("Principle Investigator not Found");
+                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.");
             }
 
             if (PrincipleInvestigatorCount > 1)
             {
-                throw new Exception("Principle Investigator cannot be more than one");
+                throw new Exception("Principle Investigator cannot be more than one.");
             }
 
             ScanUpdateComplianceForm(form);
-            
+
             return form;
         }
 
-        public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
-            bool Active, Guid? RecId)
+        //public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
+        //    bool Active, Guid? RecId)
+        //{
+        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
+        //    form.AssignedTo = AssignedTo;
+        //    form.Active = Active;
+        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+        //    AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
+            
+        //}
+
+        //public void ClearAssignedTo(Guid? RecId, string AssignedBy)
+        //{
+        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
+        //    form.AssignedTo = "";
+        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+        //    AddToAssignementHistory(RecId.Value, AssignedBy, "");
+
+        //}
+
+        public void UpdateAssignedTo(Guid? RecId, string AssignedBy, string AssignedFrom, string AssignedTo)
         {
-            var form = _UOW.ComplianceFormRepository.FindById(RecId);
-            form.AssignedTo = AssignedTo;
-            form.Active = Active;
-            _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-            AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
-
-            //_UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedTo);
-
-            //var CompForm = _UOW.ComplianceFormRepository.FindById(RecId);
-
-            //var PreviousReview = CompForm.Reviews.Find(x =>
-            //x.PreviousReviewId == null);
-
-            //if(PreviousReview != null)
-            //{
-            //    var review = new Review();
-            //    review.AssigendTo = AssignedTo;
-            //    review.AssignedBy = AssignedBy;
-            //    review.AssignedOn = DateTime.Now;
-            //    review.PreviousReviewId = PreviousReview.RecId;
-            //    CompForm.Reviews.Add(review);
-            //    _UOW.ComplianceFormRepository.UpdateCollection(CompForm);
-            //}
+            
+            var retValue = _UOW.ComplianceFormRepository.UpdateAssignedTo(RecId.Value, AssignedBy, AssignedFrom, AssignedTo);
+            //Move to single update:
+            if (retValue == true)
+            {
+                AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
+            }
         }
 
         //used by Excel File Upload method.
@@ -725,9 +729,12 @@ namespace DDAS.Services.Search
 
                     foreach (Comment comment in finding.Comments)
                     {
-                        if (comment != null && comment.CategoryEnum != CommentCategoryEnum.NotApplicable)
+                        if (comment != null && 
+                            comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                            comment.AddedOn == null)
                             comment.AddedOn = DateTime.Now;
                         if(comment != null && 
+                            comment.CorrectedOn == null &&
                             (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
                             comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
@@ -826,6 +833,36 @@ namespace DDAS.Services.Search
 
         }
 
+        public bool UpdateQC(ComplianceForm Form)
+        {
+            foreach (Finding finding in Form.Findings)
+            {
+                if (finding.Id == null)
+                {
+                    finding.Id = Guid.NewGuid();
+                }
+
+                foreach (Comment comment in finding.Comments)
+                {
+                    if (comment != null &&
+                        comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                        comment.AddedOn == null)
+                        comment.AddedOn = DateTime.Now;
+                    if (comment != null &&
+                        comment.CorrectedOn == null &&
+                        (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                        comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
+                    {
+                        comment.CorrectedOn = DateTime.Now;
+                    }
+                }
+            }
+
+            RollUpSummary(Form);
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+            return true;
+        }
         #endregion
 
         private void AddCountrySpecificSites(ComplianceForm compForm)
@@ -2090,6 +2127,28 @@ namespace DDAS.Services.Search
             return retList;
         }
 
+        public List<PrincipalInvestigator> GetUnAssignedComplianceForms()
+        {
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
+
+            if (Forms.Count == 0)
+                return null;
+
+            Forms = Forms.Where(x => 
+                x.AssignedTo == null || 
+                x.AssignedTo.Length == 0)
+                .ToList();
+
+            var PIList = new List<PrincipalInvestigator>();
+
+            foreach(ComplianceForm Form in Forms)
+            {
+                var PI = getPrincipalInvestigators(Form);
+                PIList.Add(PI);
+            }
+            return PIList;
+        }
+
         private PrincipalInvestigator getPrincipalInvestigators(ComplianceForm compForm)
         {
             var item = new PrincipalInvestigator();
@@ -2103,6 +2162,8 @@ namespace DDAS.Services.Search
             item.Active = compForm.Active;
             item.SearchStartedOn = compForm.SearchStartedOn;
             item.CurrentReviewStatus = compForm.CurrentReviewStatus;
+            item.Reviewer = compForm.Reviewer;
+            item.QCVerifier = compForm.QCVerifier;
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
@@ -2125,7 +2186,24 @@ namespace DDAS.Services.Search
                     item.SubInvestigators.Add(SubInv);
                 }
             }
+            CanUndoQC(item, compForm);
             return item;
+        }
+
+        private void CanUndoQC(PrincipalInvestigator Investigator, ComplianceForm Form)
+        {
+            var QCReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCFailed);
+
+            var CompletedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (QCReview == null && 
+                CompletedReview != null && 
+                Form.QCVerifier != null) //For QCVerifier
+                Investigator.UndoQCSubmit = true;
+            else if(QCReview != null && CompletedReview != null) //For Reviewer
+                Investigator.UndoQCResponse = true;
         }
 
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
@@ -2136,12 +2214,12 @@ namespace DDAS.Services.Search
                 throw new Exception("Invalid CompFormFilter");
             }
 
-            var Filter = _UOW.ComplianceFormRepository.GetAll();
+            var Forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (Filter.Count == 0)
+            if (Forms.Count == 0)
                 return null;
 
-            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
+            var Filter1 = Forms.OrderByDescending(x => x.SearchStartedOn).ToList();
 
             if (CompFormFilter.InvestigatorName != null && 
                 CompFormFilter.InvestigatorName != "")
@@ -2220,7 +2298,7 @@ namespace DDAS.Services.Search
             var Filter8 = Filter7;
 
             if(CompFormFilter.AssignedTo != null &&
-                CompFormFilter.AssignedTo != "" &&
+                //CompFormFilter.AssignedTo != "" &&
                 CompFormFilter.AssignedTo != "-1")
             {
                 Filter8 = Filter7.Where(x =>

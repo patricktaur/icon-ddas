@@ -156,6 +156,12 @@ export class PrincipalInvestigatorDetails {
     AssignedTo: string;
     Active: boolean;
     StatusEnum: ComplianceFormStatusEnum;
+    Reviewer: string;
+    QCVerifier: string;
+    UndoQCRequest: boolean;
+    UndoQCSubmit: boolean;
+    UndoQCResponse: boolean;
+    UndoCompleted: boolean;
     ReviewCompleted: boolean;
     ExtractionPendingInvestigatorCount: number;
     ExtractionErrorInvestigatorCount: number;

@@ -1,41 +1,34 @@
 ﻿using DDAS.Data.Mongo;
+using DDAS.Models.Entities;
 using DDAS.Models.Entities.Domain;
 using DDAS.Services.Search;
 using System;
-using System.Web;
-using System.Web.Services;
-using WebScraping.Selenium.SearchEngine;
-using System.Web.Services.Protocols;
-using System.Xml;
-using static DDAS.Models.ViewModels.DDASResponseModel;
-using static DDAS.Models.ViewModels.RequestPayloadforDDAS;
-using DDAS.Models.Entities;
-using System.Xml.Serialization;
 using System.IO;
 using System.Text;
+using System.Web;
+using System.Web.Services;
+using System.Web.Services.Protocols;
+using System.Xml;
+using System.Xml.Serialization;
+using WebScraping.Selenium.SearchEngine;
+using static DDAS.Models.ViewModels.DDASResponseModel;
+using static DDAS.Models.ViewModels.RequestPayloadforDDAS;
 
 namespace DDAS.API.WS
 {
     /// <summary>
-    /// Summary description for ddaswebservice
+    /// Summary description for isprinttoddas
     /// </summary>
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
     // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
     // [System.Web.Script.Services.ScriptService]
-    public class ddaswebservice : System.Web.Services.WebService
+    public class isprinttodd : System.Web.Services.WebService
     {
 
         [WebMethod]
-        public string HelloWorld()
-        {
-            return "Hello World";
-
-        }
-
-        [WebMethod]
-        public ddresponse iSprintToDDAS(ddRequest DR)
+        public ddresponse iSprintToDD(ddRequest DR)
         {
             var objLog = new LogWSDDAS();
 
@@ -105,7 +98,7 @@ namespace DDAS.API.WS
                 }
 
                 //>>>>>
-                
+
 
                 return objResponse;
             }
@@ -134,42 +127,15 @@ namespace DDAS.API.WS
             }
             finally
             {
-                 objLog.Response = xml;
+                objLog.Response = xml;
 
-               _uow.LogWSDDASRepository.Add(objLog);
+                _uow.LogWSDDASRepository.Add(objLog);
             }
         }
-
 
         public class Utf8StringWriter : StringWriter
         {
             public override Encoding Encoding => Encoding.UTF8;
-        }
-
-        [WebMethod]
-        public ddresponse iSprintToDDASVerify(string Recid)
-        {
-            try
-            {
-                var ConnectionString =
-            System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-
-                var DBName =
-                    System.Configuration.ConfigurationManager.AppSettings["DBName"];
-
-                var _uow = new UnitOfWork(ConnectionString, DBName);
-                var _config = new Config();
-                var _SearchEngine = new SearchEngine(_uow, _config);
-                ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
-                var obj = c.GetComplianceForm(Guid.Parse(Recid));
-                return ComplianceFormToResponse(obj);
-            }
-            catch (Exception ex)
-            {
-                SoapException retEx = new SoapException(ex.Message, SoapException.ServerFaultCode, "", ex.InnerException);
-                throw retEx;
-            }
-
         }
 
         public ddresponse ComplianceFormToResponse(ComplianceForm form)

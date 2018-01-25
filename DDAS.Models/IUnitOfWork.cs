@@ -22,6 +22,8 @@ namespace DDAS.Models
         IAuditRepository AuditRepository { get; }
         IAssignmentHistoryRepository AssignmentHistoryRepository { get; }
 
+        ILogWSDDASRepository LogWSDDASRepository { get; }
+
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
 

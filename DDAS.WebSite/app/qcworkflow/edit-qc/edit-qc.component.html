@@ -154,10 +154,13 @@
 
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
-			<button type="button" class="btn btn-primary" (click)="Save()">Save</button>
+			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
-			<!-- <button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="undoQCSubmit()">Submit QC</button> -->
-			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">Submit QC Corrections</button>
+			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
+			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 
+				(click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">
+				Submit QC Corrections
+			</button>
 		</div>
 	</div>
 </div>
@@ -204,6 +207,7 @@
 	</modal-footer>
 </modal>
 
+<<<<<<< HEAD
 <modal #RemoveConfirmModal>
 	<modal-header>
 		<h4 class="modal-title">Confirm Removal</h4>
@@ -215,5 +219,17 @@
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close(); FindingResponseModal.close()">Remove</button>
 		<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
+=======
+<modal #ConfirmUndoModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Undo</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Undo this action?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="undoQCSubmit(); ConfirmUndoModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
+>>>>>>> QCWorkFlow
 	</modal-footer>
 </modal>

@@ -16,7 +16,8 @@ import {
     CommentCategoryEnum,
     ReviewerRoleEnum,
     ReviewStatusEnum,
-    CurrentReviewStatusViewModel
+    CurrentReviewStatusViewModel,
+    UndoEnum
 } from '../../search/search.classes';
 import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service";
 
@@ -310,6 +311,7 @@ export class EditQCComponent implements OnInit {
             return "--";
         }
     }
+
     openComplianceForm() {
         //this.router.navigate(['comp-form-edit', this.complianceForm.RecId, { rootPath: '', page: this.pageNumber }], { relativeTo: this.route });
         //this.qcAssignedTo
@@ -319,13 +321,9 @@ export class EditQCComponent implements OnInit {
     }
 
     Save() {
-
-        //this.service.saveReviewCompletedComplianceForm(this.complianceForm);
-
-        this.service.saveReviewCompletedComplianceForm(this.complianceForm)
-        .subscribe((item: ComplianceFormA) => {
-            this.pageChanged = false;
-            
+        this.service.saveReviewCompletedComplianceForm(this.complianceForm)            
+        .subscribe((item: boolean) => {
+            this.goBack();
         },
         error => {
         });
@@ -338,14 +336,6 @@ export class EditQCComponent implements OnInit {
         else
             return false;
     }
-
-    // get canUndoQCSubmit(){
-    //     if(this.complianceForm){
-    //         return this.compFormLogic.canUndoQCSubmit(this.complianceForm);
-    //     }
-    //     else
-    //         return false;
-    // }
 
     get disableQCResponse(){
         if(this.complianceForm){
@@ -361,8 +351,6 @@ export class EditQCComponent implements OnInit {
                 return finding;
             });
     }
-
-
 
     submit() {
         alert('You are about to submit QC. You will not be allowed to edit QC. Do you want to proceed ?');
@@ -393,6 +381,24 @@ export class EditQCComponent implements OnInit {
             },
             error => {
             });
+    }
+
+    get canUndoQCSubmit(){
+        if(this.complianceForm){
+            return this.compFormLogic.canUndoQCSubmit(this.complianceForm);
+        }
+        else
+            return false;
+    }
+
+    undoQCSubmit(){
+        this.service.undo(this.complianceForm.RecId, UndoEnum.UndoQCSubmit)
+        .subscribe((item: any) => {
+            this.goBack();
+        }, 
+        error => {
+
+        });
     }
 
     submitQCByReviewer(){
@@ -455,9 +461,16 @@ export class EditQCComponent implements OnInit {
         }
 
     }
+           
+    canDisableQCSave(){
+        if(this.currentReviewStatus &&
+            this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase()
+            != this.authService.userName.toLowerCase())
+            return true;
+        else
+            return false;
+    }
 
-
-            
     goBack() {
         //this._location.back();
         this.router.navigate(["qc"]);

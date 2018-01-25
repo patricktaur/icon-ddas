@@ -334,6 +334,13 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("UnAssignedComplianceForms")]
+        [HttpGet]
+        public IHttpActionResult GetUnAssignedComplianceForms()
+        {
+            return Ok(_SearchService.GetUnAssignedComplianceForms());
+        }
+
         #region Patrick
 
         [Route("GetComplianceForm")]
@@ -382,7 +389,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateQCEditComplianceForm(ComplianceForm form)
         {
-            return Ok(_UOW.ComplianceFormRepository.UpdateCollection(form));
+            return Ok(_SearchService.UpdateQC(form));
         }
 
         [Route("SaveComplianceForm")]
@@ -407,14 +414,43 @@ namespace DDAS.API.Controllers
 
         [Route("SaveAssignedToData")]
         [HttpGet]
-        public IHttpActionResult SaveAssginedToData(string AssignedTo, bool Active,
+        public IHttpActionResult SaveAssginedToData(string AssignedTo, string AssignedFrom,
             string ComplianceFormId)
+        {
+            //var AssignedBy = User.Identity.GetUserName();
+            //var RecId = Guid.Parse(ComplianceFormId);
+            //_SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
+            //return Ok(true);
+            try
+            {
+                if (AssignedFrom == null)
+                {
+                    AssignedFrom = "";
+                }
+                var AssignedBy = User.Identity.GetUserName();
+                var RecId = Guid.Parse(ComplianceFormId);
+                _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, AssignedTo);
+
+                return Ok(true);
+            }
+            catch (Exception)
+            {
+                return Content(HttpStatusCode.BadRequest, "Error");
+            }
+        }
+
+        [Route("ClearAssignedTo")]
+        [HttpGet]
+                                                                                 
+        public IHttpActionResult ClearAssginedTo(string ComplianceFormId, string AssignedFrom)
         {
             var AssignedBy = User.Identity.GetUserName();
             var RecId = Guid.Parse(ComplianceFormId);
-            _SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
+            _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, "");
+
             return Ok(true);
         }
+
 
         [Route("GetUploadsFolderPath")]
         [HttpGet]

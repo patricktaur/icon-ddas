@@ -7,7 +7,8 @@ import {
     ComplianceFormA,
     Review,
     ReviewerRoleEnum,
-    ReviewStatusEnum
+    ReviewStatusEnum, 
+    UndoEnum
     } from './search.classes';
 import { QualityCheck, AuditObservation } from '../qcworkflow/qc.classes';
 import { SearchService } from './search-service';
@@ -39,6 +40,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
 
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
+    public complianceFormId: string;
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
@@ -255,14 +257,14 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    downloadComplianceFormPDF(formId: string) {
-        this.service.generateComplianceFormPDF(formId)
-            .subscribe((item: any) => {
+    // downloadComplianceFormPDF(formId: string) {
+    //     this.service.generateComplianceFormPDF(formId)
+    //         .subscribe((item: any) => {
 
-            },
-            error => {
-            });
-    }
+    //         },
+    //         error => {
+    //         });
+    // }
 
     getBackgroundColor(color: number) {
         let retColor: string;
@@ -364,8 +366,12 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    undoQCRequest(complianceFormId: string){
-        this.service.undoQCRequest(complianceFormId)
+    setSelectedRecordToUndo(complianceFormId: string){
+        this.complianceFormId = complianceFormId;
+    }
+
+    undoQCRequest(){
+        this.service.undo(this.complianceFormId, UndoEnum.UndoQCRequest)
         .subscribe((item: boolean) =>{
             this.LoadPrincipalInvestigators();
         },
