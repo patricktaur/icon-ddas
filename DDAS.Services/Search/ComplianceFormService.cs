@@ -265,7 +265,7 @@ namespace DDAS.Services.Search
 
             //var InputRows = DataFromExcelFile.ExcelInputRows;
 
-            var form = GetNewComplianceForm("isprint");
+            var form = GetNewComplianceForm("");
 
             //Already assigning the name in GetNewComplianceForm
             //form.AssignedTo = UserName;
@@ -1519,7 +1519,7 @@ namespace DDAS.Services.Search
                             searchStatus.HasExtractionError = false;
                             searchStatus.ExtractionErrorMessage = "";
 
-                            searchStatus.ExtractedOn = siteSource.CreatedOn;
+                            searchStatus.ExtractedOn = siteSource.DataExtractedOn;
                             //searchStatus.SiteDataId = siteSource.SiteDataId.ToString();
                             if (MatchedRecords.Count == 0 && SingleMatchCount == 0)
                             {
