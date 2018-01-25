@@ -906,6 +906,13 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
+        [Route("ExportToiSprint")]
+        [HttpGet]
+        public IHttpActionResult ExportToiSprint(string ComplianceFormId)
+        {
+            return Ok();
+        }
+
         string ListToString(ExcelInput excelInput)
         {
             string retValue = "";

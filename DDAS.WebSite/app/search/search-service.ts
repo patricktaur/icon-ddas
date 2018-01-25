@@ -533,6 +533,14 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    exportToiSprint(complianceFormId: string){
+        return this.http.get(this._baseUrl + 'search/ExportToiSprint?ComplianceFormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

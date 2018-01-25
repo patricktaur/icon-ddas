@@ -28,7 +28,6 @@ namespace DDAS.Setup
             try
             {
                 string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                
                 _WriteLog = new LogText(exePath + @"\setup.log", true);
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog("DDAS Setup Utility");
@@ -38,7 +37,7 @@ namespace DDAS.Setup
                 if (configFile != null)
                 {
                     CreateFolders(configFile);
-
+                    Console.WriteLine("config file: " + configFile);
                     //Initialize DB for creating Roles and Users:
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
                     string DBName = GetWebConfigAppSetting(configFile, "DBName");
@@ -88,13 +87,14 @@ namespace DDAS.Setup
              }
             catch (Exception ex)
             {
-                _WriteLog.WriteLog("Error: ", ex.Message + " " +  ex.InnerException);
+                _WriteLog.WriteLog("Error: ", ex.Message + " " + ex.InnerException);
             }
             finally
             {
                 _WriteLog.WriteLog(DateTime.Now.ToString(), "End setup");
                 _WriteLog.LogEnd();
                 _WriteLog.Dispose();
+                Console.ReadKey();
             }
           }
 
@@ -376,6 +376,13 @@ namespace DDAS.Setup
         {
             Indexes idx = new Indexes();
             var x = idx.CreateIndex();
+        }
+
+        static void DeleteWSDDASLogRecords()
+        {
+            Console.WriteLine("Deleting WSDDAS Log");
+            _UOW.LogWSDDASRepository.DropAll(new Models.Entities.LogWSDDAS());
+            Console.WriteLine("Deleted WSDDAS Log");
         }
     }
 }
