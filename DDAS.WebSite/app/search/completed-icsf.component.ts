@@ -161,6 +161,16 @@ export class CompletedICSFComponent implements OnInit {
             alert('undo request not sent');
     }
 
+    exportToiSprint(complianceFormId: string){
+            this.service.exportToiSprint(complianceFormId)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+
+            });
+    }
+
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 
 }
