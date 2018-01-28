@@ -193,6 +193,7 @@ namespace DDAS.API.Controllers
                         UploadedFileName = Path.GetFileName(UploadedFileName);
                     }
 
+                    //File.Move(file.LocalFileName, Path.Combine(StoragePath, fileName));
                     var Attachment = new Attachment();
                     Attachment.Title = "";
                     Attachment.FileName = UploadedFileName;
@@ -207,6 +208,60 @@ namespace DDAS.API.Controllers
                     "Error Details: " + e.Message);
             }
         }
+
+        [Route("UploadComplianceFormAttachments")]
+        [HttpPost]
+        //public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        public async Task<HttpResponseMessage> UploadComplianceFormAttachments(string ComplianceFormId)
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            try
+            {
+                var userName = User.Identity.GetUserName();
+                //CustomMultipartFormDataStreamProvider provider = 
+                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+
+                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
+
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                var Attachments = new List<Attachment>();
+
+                List<string> ValidationMessages = new List<string>();
+
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    string FilePathWithGUID = file.LocalFileName;
+                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                    {
+                        UploadedFileName = UploadedFileName.Trim('"');
+                    }
+                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                    {
+                        UploadedFileName = Path.GetFileName(UploadedFileName);
+                    }
+
+                    var Attachment = new Attachment();
+                    Attachment.Title = "";
+                    Attachment.FileName = UploadedFileName;
+                    Attachment.GeneratedFileName = FilePathWithGUID;
+                }
+                //_SearchService.AddAttachmentsToFindings(form);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                    "Error Details: " + e.Message);
+            }
+        }
+
+
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
@@ -891,9 +946,11 @@ namespace DDAS.API.Controllers
 
         [Route("GetSessionId")]
         [HttpGet]
-        public Guid GetSessionId()
+        public string GetSessionId()
         {
-            return Guid.NewGuid();
+            var retValue = Guid.NewGuid().ToString().Replace("-", "A");
+
+            return retValue;
         }
 
 

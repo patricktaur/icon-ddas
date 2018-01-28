@@ -65,6 +65,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public selectedQCVerifier: string;
     public requestorComment: string;
     private SessionId: string;
+    private files : File[] = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -97,7 +98,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
         this.LoadUsers();
-        
+        this.loadSessionId();
     }
 
     LoadUsers() {
@@ -162,7 +163,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.service.getClosedComplianceFormFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
-                this.loadSessionId();
+                
             });
 
         // this.service.getMyReviewCompletedPrincipalInvestigators()
@@ -324,6 +325,26 @@ export class ReviewCompletedICSFComponent implements OnInit {
 
     }
 
+    requestQC1(){
+        var review = new Review();
+        //review.RecId = null;
+        review.AssigendTo = this.selectedQCVerifier;
+        review.AssignedBy = this.authService.userName;
+        review.AssignedOn = new Date();
+        review.Status = ReviewStatusEnum.QCRequested;
+        review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+        review.Comment = this.requestorComment;
+        //review.StartedOn = null;
+        //review.CompletedOn = null;
+        this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+
+            });
+    }
+    
     requestQC(qcVerifier: string, requestorComments:string) {
         if(qcVerifier == null || qcVerifier.length == 0){
             alert('please select a QC Verifier');

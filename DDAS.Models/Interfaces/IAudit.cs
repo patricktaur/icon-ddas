@@ -11,6 +11,7 @@ namespace DDAS.Models.Interfaces
     public interface IAudit
     {
         bool RequestQC(ComplianceForm Form);
+        bool RequestQC(Guid ComplianceFormId, Review review);
         List<QCListViewModel> ListQCs();
         ComplianceForm GetQC(Guid RecId, string AssignedTo, string LoggedInUserName);
         bool SaveQC(ComplianceForm Form);

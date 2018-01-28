@@ -76,6 +76,17 @@ namespace DDAS.Services.AuditService
             return true;
         }
 
+        public bool RequestQC(Guid ComplianceFormId, Review review)
+        {
+
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            form.Reviews.Add(review);
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+
+            return true;
+        }
+
         public List<QCListViewModel> ListQCs()
         {
             var Forms = _UOW.ComplianceFormRepository.GetAll();

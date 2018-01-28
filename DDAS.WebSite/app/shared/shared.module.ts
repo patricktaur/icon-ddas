@@ -22,7 +22,7 @@ import {CommonService} from './common.service';
 //import {FileDownloadComponent} from './components/file-download.component';
 import {FileDownloadModule} from './modules/file-download/file-download.module' 
 import {FileUploadComponent} from './components/file-upload-component'
-
+import {MultiFileUploadComponent} from './components/multi-file-upload.component'
 
 
  
@@ -45,7 +45,8 @@ import {FileUploadComponent} from './components/file-upload-component'
   ToggleShowComponent,
   ConfirmDialogComponent,
   DateInputComponent,
-  FileUploadComponent
+  FileUploadComponent,
+  MultiFileUploadComponent
   
   
    ],
@@ -64,7 +65,8 @@ import {FileUploadComponent} from './components/file-upload-component'
     ConfirmDialogComponent,
     DateInputComponent,
     FileDownloadModule,
-    FileUploadComponent
+    FileUploadComponent,
+    MultiFileUploadComponent
                    ],
                    
 })

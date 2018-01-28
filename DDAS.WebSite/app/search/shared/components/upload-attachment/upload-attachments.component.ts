@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ConfigService } from '../../../../shared/utils/config.service';
 
-import { ComplianceFormStatusEnum } from '../../../search.classes';
+import { Attachment } from '../../../search.classes';
 
 @Component({ 
 	selector: 'upload-attachments',
@@ -9,8 +9,12 @@ import { ComplianceFormStatusEnum } from '../../../search.classes';
 	templateUrl: 'upload-attachments.component.html'
 })
 export class UploadAttachmentsComponent implements OnInit {
-	@Input('SessionId') SessionId:string ;
+	//@Input('SessionId') SessionId:string ;
+
+	@Output() AttachmentsOutputChange = new EventEmitter<Attachment[]>();
+    @Input() SessionId: string = "";
 	//public uploadURL: string;
+	public Attachments: Attachment[];
 	constructor(
         private configService: ConfigService,
     ) { }
@@ -19,6 +23,8 @@ export class UploadAttachmentsComponent implements OnInit {
 	}
 	
 	get uploadURL(){
-		return this.configService.getApiURI() + "search/UploadAttachments?SessionId=" + this.SessionId;
+		return this.configService.getApiURI() + "search/UploadComplianceFormAttachments?ComplianceFormId=" +  this.SessionId ;
 	}
+
+
 }

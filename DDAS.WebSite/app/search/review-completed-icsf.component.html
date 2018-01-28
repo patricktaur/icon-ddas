@@ -213,16 +213,23 @@
 				</textarea>
 			</div>
 		</div>
-		<div class="row">
+		<!-- <div class="row">
 				<div class="col-md-12">
 						<upload-attachments
-						[SessionId] = "SessionId" ></upload-attachments>
+						[SessionId] = "SelectedComplianceFormId" ></upload-attachments>
+				</div>
+		</div> -->
+		<div class="row">
+				<div class="col-md-12">
+					Attachments: {{files.length}}
+					<multi-file-upload [Files]="files"></multi-file-upload>		
 				</div>
 		</div>
 
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button>
+		<!-- <button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button> -->
+		<button type="button" class="btn btn-default" (click)="requestQC1(); RequestAuditModal.close()">Request QC</button>
 		<button type="button" class="btn btn-default" (click)="RequestAuditModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

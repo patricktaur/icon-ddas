@@ -22,7 +22,8 @@ import {
     UpdateInstituteFindings,
     QualityCheck,
     CurrentReviewStatusViewModel,
-    UndoEnum
+    UndoEnum,
+    Review
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -416,6 +417,29 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
+
+    requestQC1(complianceFormId: string, review: Review, files: File[]){
+        
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        let options = new RequestOptions({ headers: headers });
+
+        let formData = new FormData();
+
+        files.forEach((file: File) => {
+            formData.append(file.name, file);
+        });
+
+        formData.append('ComplianceFormId', complianceFormId);
+        formData.append('Review', JSON.stringify(review));
+
+        return this.http.post(this._baseUrl + 'QC/RequestQC1', formData, options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+    
 
     undoQCRequest(complianceFormId: string){
         return this.http.get(this._baseUrl + 'QC/UndoQCRequest?ComplianceFormId=' + complianceFormId, this._options)
