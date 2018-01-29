@@ -133,8 +133,6 @@ namespace DDAS.API.Controllers
             var Result = _Audit.Undo(Id, undoEnum);
             return Ok(Result);
         }
-<<<<<<< HEAD
-=======
 
         //[Route("Undo")]
         //[HttpGet]
@@ -153,6 +151,5 @@ namespace DDAS.API.Controllers
                 return headers.ContentDisposition.FileName.Replace("\"", string.Empty);
             }
         }
->>>>>>> file-upload-component
     }
 }

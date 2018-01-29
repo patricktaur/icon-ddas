@@ -557,7 +557,6 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-<<<<<<< HEAD
     exportToiSprint(complianceFormId: string){
         return this.http.get(this._baseUrl + 'search/ExportToiSprint?ComplianceFormId=' + complianceFormId, this._options)
             .map((res: Response) => {
@@ -566,28 +565,6 @@ export class SearchService {
             .catch(this.handleError);        
     }
 
-=======
-    // public getSessionId(): Observable<any> {
-    //     const url = `${this._baseUrl}GetSessionId`;
-    //     return this.http.get(url, this._options)
-    //     .map((res: Response) => {
-    //         return res.json();
-    //     })
-    //     .catch(this.handleError);
-
-    //     //return this.dataService.get(url); 
-    // }
-    
-    getSessionId():Observable<any>{
-        return this.http.get(this._baseUrl + 'search/GetSessionId' , this._options)
-            .map((res: Response) => {
-                return res.json();
-            })
-            .catch(this.handleError);
-    }
-
-
->>>>>>> file-upload-component
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

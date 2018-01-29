@@ -136,13 +136,8 @@
 								<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
-<<<<<<< HEAD
-								<button type="button" *ngIf="canUndoQC" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
-									<span class="glyphicon glyphicon-download-alt" ></span>
-=======
 								<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt"></span>
->>>>>>> file-upload-component
 								</button>
 								<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
 									<span class="glyphicon glyphicon-download-alt" ></span>
@@ -154,13 +149,8 @@
 								 title="Request QC">
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
-<<<<<<< HEAD
-								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" 
-									class="btn btn-sm btn-primary" (click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()" title="Undo QC Request">
-=======
 								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)"
 								 title="Undo QC Request">
->>>>>>> file-upload-component
 									<!-- <i clas="fa fa-undo"></i> -->
 									<span class="glyphicon glyphicon-repeat"></span>
 								</button>
