@@ -63,7 +63,13 @@ namespace DDAS.API.Controllers
             }
 
             //Rename folder:
+
             string fileSaveLocation = attachmentsFolder + compFormId;
+            //Remove folder if it was created by previous QC Request Action:
+            if (Directory.Exists(fileSaveLocation))
+            {
+                Directory.Delete(fileSaveLocation, true);
+            }
             Directory.Move(tempFolder, fileSaveLocation);
 
             var guidCompForm = Guid.Parse(compFormId);
@@ -73,6 +79,8 @@ namespace DDAS.API.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "ok");
             
         }
+
+        
 
 
         [Route("GetQC")]

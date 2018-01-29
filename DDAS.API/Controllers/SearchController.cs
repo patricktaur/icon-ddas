@@ -20,6 +20,7 @@ using System.Linq;
 using DDAS.Models.Enums;
 using DDAS.API.Helpers;
 using DDAS.Models.ViewModels;
+using System.Text;
 
 namespace DDAS.API.Controllers
 {
@@ -32,6 +33,7 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         //private ILog _log;
         private IConfig _config;
+        private FileDownloadResponse _fileDownloadResponse;
 
         //private string DataExtractionLogFile;
         //private string UploadsFolder;
@@ -52,6 +54,7 @@ namespace DDAS.API.Controllers
             _UOW = UOW;
             _config = Config;
             _SearchService = SearchSummary;
+            _fileDownloadResponse = new FileDownloadResponse();
         }
 
         [Route("Upload")]
@@ -944,14 +947,61 @@ namespace DDAS.API.Controllers
             return Ok(CurrentReviewStatus);
         }
 
-        [Route("GetSessionId")]
+        [Route("GetAttachmentsList")]
         [HttpGet]
-        public string GetSessionId()
+        public IHttpActionResult GetAttachmentsList(string formId)
         {
-            var retValue = Guid.NewGuid().ToString().Replace("-", "A");
 
-            return retValue;
+            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+
+            //string[] files = Directory.GetFiles(dir).Select(file => Path.GetFileName(file)).ToArray(); – 
+
+            string[] FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
+
+            return Ok(FileList);
         }
+
+        [Route("DownloadAttachmentFile")]
+        [HttpGet]
+        public HttpResponseMessage DownloadAttachmentFile(string formId, string fileName)
+        {
+
+            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+            var fileNameWithPath = folder + "/" + fileName;
+
+            
+
+
+            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+            var stream = new FileStream(fileNameWithPath, FileMode.Open, FileAccess.Read);
+            //stream.ReadTimeout = 25000;
+            //stream.WriteTimeout = 25000;
+            result.Content = new StreamContent(stream);
+            result.Content.Headers.ContentType =
+                new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("Filename");
+            result.Content.Headers.ContentDisposition.FileName = fileName;
+
+            var UserAgent = Request.Headers.UserAgent.ToString();
+            var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+            var FileNameHeader = fileName + " " + Browser;
+            result.Content.Headers.Add("Filename", FileNameHeader);
+            result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+
+            return result;
+        }
+
+
+
+        //[Route("GetSessionId")]
+        //[HttpGet]
+        //public string GetSessionId()
+        //{
+        //    var retValue = Guid.NewGuid().ToString().Replace("-", "A");
+
+        //    return retValue;
+        //}
 
 
         //[Route("GetSessionId")]

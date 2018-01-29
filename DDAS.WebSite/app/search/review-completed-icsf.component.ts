@@ -98,7 +98,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
         this.LoadUsers();
-        this.loadSessionId();
+        //this.loadSessionId();
     }
 
     LoadUsers() {
@@ -108,13 +108,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    public loadSessionId(): void {
+    // public loadSessionId(): void {
     
-        this.service.getSessionId()
-          .subscribe(
-          (sessionId: string) => this.SessionId = sessionId
-          );
-     }
+    //     this.service.getSessionId()
+    //       .subscribe(
+    //       (sessionId: string) => this.SessionId = sessionId
+    //       );
+    //  }
 
     SetDefaultFilterValues() {
         this.ComplianceFormFilter.InvestigatorName = null;
@@ -321,11 +321,22 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     setSelectedRecordDetails(complainceFormId: string) {
+        this.files = [];
         this.SelectedComplianceFormId = complainceFormId;
 
     }
 
-    requestQC1(){
+    requestQC(){
+        
+        if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){
+            alert('Please select a QC Verifier');
+            return;
+        }
+        else if(this.authService.userName.toLowerCase() == this.selectedQCVerifier.toLowerCase()){
+            alert('You cannot assign the QC to yourself');
+            return;
+        }
+        
         var review = new Review();
         //review.RecId = null;
         review.AssigendTo = this.selectedQCVerifier;
@@ -345,7 +356,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
     
-    requestQC(qcVerifier: string, requestorComments:string) {
+    requestQCXXX(qcVerifier: string, requestorComments:string) {
         if(qcVerifier == null || qcVerifier.length == 0){
             alert('please select a QC Verifier');
             return;

@@ -27,58 +27,16 @@
 					<a data-toggle="tab" href="#qc-general">QC</a>
 				</li>
 				<li>
+						<a data-toggle="tab" href="#request">QC Request</a>
+					</li>
+					
+				<li>
 					<a data-toggle="tab" href="#comp-form">Compliance Form</a>
 				</li>
 			</ul>
 			<div class="tab-content">
 				<div id="qc-general" class="tab-pane fade {{defaultTabInActive}}">
 					<br/>
-					<!-- <h4>Finding Summary:</h4>
-					<table class="table table-bordered table-hover table-striped">
-						<thead>
-							<tr>
-								<th>Investigator/Institute Name</th>
-								<th>Source Name</th>
-								<th>Comment/Observation Type</th>
-								<th>Category</th>
-								<th>Observation/Comment</th>
-								<th>Response to QC</th>
-								<th>Open</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr class="active" *ngFor="let item of qcSummary">
-								<td class="text-left">
-									{{item.Investigator}}
-								</td>
-								<td class="text-left">
-									{{item.SourceName}}
-								</td>
-								<td class="text-left">
-									{{item.Type}}
-								</td>
-								<td class="text-left">
-									{{item.CategoryEnumString}}
-								</td>
-								<td class="text-left">
-									{{item.Comment}}
-								</td>
-								<td class="text-left">
-									{{item.ResponseToQC}}
-									*****{{item.FindingId}}
-								</td>
-								<td>
-									<button type="button" class="btn btn-sm btn-primary" (click)="openFindingDialog(item);" data-toggle="tooltip"
-									 data-placement="top" title="Open">
-										<span class="glyphicon glyphicon-edit"></span>
-									</button>
-
-								</td>
-							</tr>
-						</tbody>
-					</table> -->
-
-					<!-- <b>{{reviewerMessage}}</b> -->
 					<h4>QC Summary: </h4>
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
@@ -124,6 +82,31 @@
 						</tbody>
 					</table>
 					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+				</div>
+				<div id="request" class="tab-pane fade">
+					Request:
+					Attachments:
+					<table class="table table-bordered table-hover table-striped">
+							<thead>
+								<tr>
+									<th align="left">File Name </th>
+									<th >Download</th>
+									
+								</tr>
+							</thead>
+					
+							<tbody>
+								<tr *ngFor="let fileName of Attachments" >
+									<td align="left">
+											{{fileName}} 
+									</td>
+									<td align="center">
+										<div file-download [url]="getAttachmentDownloadURL(fileName)" class="pull-left">  </div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					
 				</div>
 				<div id="comp-form" class="tab-pane fade">
 					<br/>

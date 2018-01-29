@@ -80,7 +80,14 @@ namespace DDAS.Services.AuditService
         {
 
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            var lastReview = form.Reviews.LastOrDefault();
+            if (lastReview == null)
+            {
+                throw new Exception("Assigned to Review record expected for Compliance form: " + ComplianceFormId);
+            }
 
+            review.RecId = Guid.NewGuid();
+            review.PreviousReviewId = lastReview.RecId;
             form.Reviews.Add(review);
             _UOW.ComplianceFormRepository.UpdateCollection(form);
 

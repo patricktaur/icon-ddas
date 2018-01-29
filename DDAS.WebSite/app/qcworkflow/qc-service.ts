@@ -59,6 +59,14 @@ export class QCService {
             .catch(this.handleError);
     }
 
+    getAttachmentsList(formId: string): Observable<any> {
+        return this.http.get(this._baseUrl + 'search/GetAttachmentsList?formId=' + formId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     saveQC(compForm: ComplianceFormA){
         let body = JSON.stringify(compForm);
         return this.http.post(this._baseUrl + 'QC/SaveQC', body, this._options)

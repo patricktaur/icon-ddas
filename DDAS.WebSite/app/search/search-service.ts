@@ -274,9 +274,9 @@ export class SearchService {
                 // var browser = res.headers.get('Browser');
                 var browser = fileNameHeader.split(' ')[1].trim();
 
-                console.log("Filename header: " + fileNameHeader);
-                console.log("File Name: " + fileName);
-                console.log("Browser: " + browser);
+                // console.log("Filename header: " + fileNameHeader);
+                // console.log("File Name: " + fileName);
+                // console.log("Browser: " + browser);
 
                 if (browser.toLowerCase() == "edge" ||
                     browser.toLowerCase() == "ie") {
