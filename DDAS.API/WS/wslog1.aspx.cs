@@ -29,7 +29,7 @@ namespace DDAS.API.WS
             var _config = new Config();
             var _SearchEngine = new SearchEngine(_uow, _config);
 
-            var LogDetails = _uow.ComplianceFormRepository.GetAll();
+            var LogDetails = _uow.LogWSDDASRepository.GetAll();
 
             Response.Write( LogDetails.Count);
             dgGrid.DataSource = LogDetails;

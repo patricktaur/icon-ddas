@@ -21,7 +21,7 @@ export class DueDiligenceCheckComponent implements OnInit {
     public Loading: boolean = false;
     public uploadUrl: string;
     public validationMessage: string;
-    private error: any;
+    public error: any;
 
     public downloadUrl: string;
     public downloadTemplateUrl: string;
@@ -31,7 +31,7 @@ export class DueDiligenceCheckComponent implements OnInit {
 
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
-    private unAssginedPrincipalInvestigators: PrincipalInvestigatorDetails[];
+    public unAssginedPrincipalInvestigators: PrincipalInvestigatorDetails[];
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 

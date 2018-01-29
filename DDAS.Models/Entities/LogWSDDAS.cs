@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace DDAS.Models.Entities
 {
-    [Serializable]
     public class LogWSDDAS
     {
-        public LogWSDDAS()
-        {
-           
-        }
-
         public Guid? RecId { get; set; }
         public DateTime CreatedOn { get; set; }
 
