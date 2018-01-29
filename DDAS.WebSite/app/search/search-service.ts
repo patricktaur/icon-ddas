@@ -22,7 +22,8 @@ import {
     UpdateInstituteFindings,
     QualityCheck,
     CurrentReviewStatusViewModel,
-    UndoEnum
+    UndoEnum,
+    Review
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -281,6 +282,55 @@ export class SearchService {
                 // var browser = res.headers.get('Browser');
                 var browser = fileNameHeader.split(' ')[1].trim();
 
+                // console.log("Filename header: " + fileNameHeader);
+                // console.log("File Name: " + fileName);
+                // console.log("Browser: " + browser);
+
+                if (browser.toLowerCase() == "edge" ||
+                    browser.toLowerCase() == "ie") {
+                    window.navigator.msSaveBlob(file, fileName);
+                }
+
+                if (browser.toLowerCase() == "chrome") {
+                    var anchor = document.createElement("a");
+                    anchor.download = fileName;
+                    anchor.text = fileName;
+                    anchor.href = window.URL.createObjectURL(file, fileName);
+                    anchor.click();
+                }
+                if (browser.toLowerCase() == "unknown") {
+                    alert("could not identify the browser. File download failed");
+                }
+                if (browser == null) {
+                    //...
+                }
+                ////window.open(window.URL.createObjectURL(file));
+            })
+            .catch(this.handleError);
+    }
+
+    generateComplianceFormPDF(formId: string) {
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        headers.append('Content-Type', 'application/json');
+
+        let file = {};
+        return this.http.get(this._baseUrl + 'Search/GenerateComplianceFormPDF?ComplianceFormId=' + formId,
+            { headers: headers, responseType: ResponseContentType.ArrayBuffer })
+            .map((res: Response) => {
+                // return res.json();
+                file = new Blob([res.arrayBuffer()], {
+                    type: 'application/pdf'
+                });
+
+                //header 'Browser' in the response is not read by Microsoft 'Edge'. Not sure why
+                //hence the work around of 'split with space'!
+                // var browser = res.headers.get('Browser');
+                var fileNameHeader = res.headers.get('Filename');
+                var fileName = fileNameHeader.split(' ')[0].trim();
+                // var browser = res.headers.get('Browser');
+                var browser = fileNameHeader.split(' ')[1].trim();
+
                 console.log("Filename header: " + fileNameHeader);
                 console.log("File Name: " + fileName);
                 console.log("Browser: " + browser);
@@ -307,55 +357,6 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
-
-    // generateComplianceFormPDF(formId: string) {
-    //     let headers = new Headers();
-    //     headers.append("Authorization", "Bearer " + this.authService.token);
-    //     headers.append('Content-Type', 'application/json');
-
-    //     let file = {};
-    //     return this.http.get(this._baseUrl + 'Search/GenerateComplianceFormPDF?ComplianceFormId=' + formId,
-    //         { headers: headers, responseType: ResponseContentType.ArrayBuffer })
-    //         .map((res: Response) => {
-    //             // return res.json();
-    //             file = new Blob([res.arrayBuffer()], {
-    //                 type: 'application/pdf'
-    //             });
-
-    //             //header 'Browser' in the response is not read by Microsoft 'Edge'. Not sure why
-    //             //hence the work around of 'split with space'!
-    //             // var browser = res.headers.get('Browser');
-    //             var fileNameHeader = res.headers.get('Filename');
-    //             var fileName = fileNameHeader.split(' ')[0].trim();
-    //             // var browser = res.headers.get('Browser');
-    //             var browser = fileNameHeader.split(' ')[1].trim();
-
-    //             console.log("Filename header: " + fileNameHeader);
-    //             console.log("File Name: " + fileName);
-    //             console.log("Browser: " + browser);
-
-    //             if (browser.toLowerCase() == "edge" ||
-    //                 browser.toLowerCase() == "ie") {
-    //                 window.navigator.msSaveBlob(file, fileName);
-    //             }
-
-    //             if (browser.toLowerCase() == "chrome") {
-    //                 var anchor = document.createElement("a");
-    //                 anchor.download = fileName;
-    //                 anchor.text = fileName;
-    //                 anchor.href = window.URL.createObjectURL(file, fileName);
-    //                 anchor.click();
-    //             }
-    //             if (browser.toLowerCase() == "unknown") {
-    //                 alert("could not identify the browser. File download failed");
-    //             }
-    //             if (browser == null) {
-    //                 //...
-    //             }
-    //             ////window.open(window.URL.createObjectURL(file));
-    //         })
-    //         .catch(this.handleError);
-    // }
 
     generateOutputFile() {
         return this.http.get(this._baseUrl + 'search/GenerateOutputFile', this._options)
@@ -424,6 +425,29 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
+
+    requestQC1(complianceFormId: string, review: Review, files: File[]){
+        
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        let options = new RequestOptions({ headers: headers });
+
+        let formData = new FormData();
+
+        files.forEach((file: File) => {
+            formData.append(file.name, file);
+        });
+
+        formData.append('ComplianceFormId', complianceFormId);
+        formData.append('Review', JSON.stringify(review));
+
+        return this.http.post(this._baseUrl + 'QC/RequestQC1', formData, options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+    
 
     undoQCRequest(complianceFormId: string){
         return this.http.get(this._baseUrl + 'QC/UndoQCRequest?ComplianceFormId=' + complianceFormId, this._options)
@@ -533,6 +557,7 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+<<<<<<< HEAD
     exportToiSprint(complianceFormId: string){
         return this.http.get(this._baseUrl + 'search/ExportToiSprint?ComplianceFormId=' + complianceFormId, this._options)
             .map((res: Response) => {
@@ -541,6 +566,28 @@ export class SearchService {
             .catch(this.handleError);        
     }
 
+=======
+    // public getSessionId(): Observable<any> {
+    //     const url = `${this._baseUrl}GetSessionId`;
+    //     return this.http.get(url, this._options)
+    //     .map((res: Response) => {
+    //         return res.json();
+    //     })
+    //     .catch(this.handleError);
+
+    //     //return this.dataService.get(url); 
+    // }
+    
+    getSessionId():Observable<any>{
+        return this.http.get(this._baseUrl + 'search/GetSessionId' , this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+
+>>>>>>> file-upload-component
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

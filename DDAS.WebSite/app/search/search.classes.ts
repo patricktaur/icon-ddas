@@ -501,3 +501,17 @@ export class CurrentReviewStatusViewModel {
     QCVerifierRecId: string;
     CurrentReview: Review;
 }
+
+export class Attachment {
+  
+    // recId: number; 
+    // originalFileName : string;
+    // fileName : string;
+    // fileExt : string;
+    // title : string;
+    // new: boolean;
+    // deleted: boolean;
+
+    fileName : string;
+    generatedFileName : string;
+}

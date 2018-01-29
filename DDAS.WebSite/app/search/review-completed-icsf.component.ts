@@ -66,6 +66,8 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public compForm: ComplianceFormA;
     public selectedQCVerifier: string;
     public requestorComment: string;
+    private SessionId: string;
+    private files : File[] = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -98,6 +100,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
         this.LoadUsers();
+        //this.loadSessionId();
     }
 
     LoadUsers() {
@@ -107,9 +110,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    setSelectedRecordDetails(complainceFormId: string) {
-        this.SelectedComplianceFormId = complainceFormId;
-    }
+    // public loadSessionId(): void {
+    
+    //     this.service.getSessionId()
+    //       .subscribe(
+    //       (sessionId: string) => this.SessionId = sessionId
+    //       );
+    //  }
 
     SetDefaultFilterValues() {
         this.ComplianceFormFilter.InvestigatorName = null;
@@ -158,6 +165,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.service.getClosedComplianceFormFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
+                
             });
 
         // this.service.getMyReviewCompletedPrincipalInvestigators()
@@ -230,23 +238,24 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    handleUpload(data: any): void {
-        this.Loading = true;
-        this.zone.run(() => {
-            //this.response = data.response;
-            if (data.response == null) {
+    //Commented by: Patrick 15Jan2018    
+    // handleUpload(data: any): void {
+    //     this.Loading = true;
+    //     this.zone.run(() => {
+    //         //this.response = data.response;
+    //         if (data.response == null) {
 
-            }
-            else {
-                this.Loading = false;
-                this.modal.close();
-                this.LoadPrincipalInvestigators();
-            }
+    //         }
+    //         else {
+    //             this.Loading = false;
+    //             this.modal.close();
+    //             this.LoadPrincipalInvestigators();
+    //         }
 
-            this.progress = data.progress.percent / 100;
-            //this.Loading = false;
-        });
-    }
+    //         this.progress = data.progress.percent / 100;
+    //         //this.Loading = false;
+    //     });
+    // }
 
     downloadComplianceForm(formId: string) {
         this.service.generateComplianceForm(formId)
@@ -313,7 +322,43 @@ export class ReviewCompletedICSFComponent implements OnInit {
             return true;
     }
 
-    requestQC(qcVerifier: string, requestorComments:string) {
+    setSelectedRecordDetails(complainceFormId: string) {
+        this.files = [];
+        this.SelectedComplianceFormId = complainceFormId;
+
+    }
+
+    requestQC(){
+        
+        if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){
+            alert('Please select a QC Verifier');
+            return;
+        }
+        else if(this.authService.userName.toLowerCase() == this.selectedQCVerifier.toLowerCase()){
+            alert('You cannot assign the QC to yourself');
+            return;
+        }
+        
+        var review = new Review();
+        //review.RecId = null;
+        review.AssigendTo = this.selectedQCVerifier;
+        review.AssignedBy = this.authService.userName;
+        review.AssignedOn = new Date();
+        review.Status = ReviewStatusEnum.QCRequested;
+        review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+        review.Comment = this.requestorComment;
+        //review.StartedOn = null;
+        //review.CompletedOn = null;
+        this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+
+            });
+    }
+    
+    requestQCXXX(qcVerifier: string, requestorComments:string) {
         if(qcVerifier == null || qcVerifier.length == 0){
             alert('please select a QC Verifier');
             return;

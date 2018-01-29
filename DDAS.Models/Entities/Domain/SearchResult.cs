@@ -190,6 +190,7 @@ namespace DDAS.Models.Entities.Domain
         public List<Finding> Findings { get; set; }
         public List<Review> Reviews { get; set; } = new List<Review>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<Attachment> Attachments { get; set; } = new List<Attachment>();
 
         public string Reviewer {
             get {
@@ -1108,6 +1109,8 @@ public class MatchedRecord
         public string FileName { get; set; }
         public string GeneratedFileName { get; set; }
     }
+
+
     #endregion
 
     #region AppAdmin

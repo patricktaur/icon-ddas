@@ -8,7 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
-
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.IO;
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "user, admin")]
@@ -27,6 +32,56 @@ namespace DDAS.API.Controllers
         {
             return Ok(_Audit.RequestQC(Form));
         }
+
+
+        [Route("RequestQC1")]
+        [HttpPost]
+        // public async Task<HttpResponseMessage> PostFormData()
+        public async Task<HttpResponseMessage> RequestQC1()
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            //get Temp Folder:
+            var attachmentsFolder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/");
+            var tempFolder = attachmentsFolder + "TEMP-" + Guid.NewGuid();
+            Directory.CreateDirectory(tempFolder);
+
+            //Upload files:
+            CustomMultipartFormDataStreamProvider provider =
+                new CustomMultipartFormDataStreamProvider(tempFolder);
+
+            var result = await Request.Content.ReadAsMultipartAsync(provider);
+            var compFormId = result.FormData["ComplianceFormId"];
+            var strReview = result.FormData["Review"];
+            Review review = JsonConvert.DeserializeObject <Review> (strReview);
+            if (review == null)
+            {
+                throw new Exception("Review object expected");
+            }
+
+            //Rename folder:
+
+            string fileSaveLocation = attachmentsFolder + compFormId;
+            //Remove folder if it was created by previous QC Request Action:
+            if (Directory.Exists(fileSaveLocation))
+            {
+                Directory.Delete(fileSaveLocation, true);
+            }
+            Directory.Move(tempFolder, fileSaveLocation);
+
+            var guidCompForm = Guid.Parse(compFormId);
+            _Audit.RequestQC(guidCompForm, review);
+
+
+            return Request.CreateResponse(HttpStatusCode.OK, "ok");
+            
+        }
+
+        
+
 
         [Route("GetQC")]
         [HttpGet]
@@ -78,5 +133,26 @@ namespace DDAS.API.Controllers
             var Result = _Audit.Undo(Id, undoEnum);
             return Ok(Result);
         }
+<<<<<<< HEAD
+=======
+
+        //[Route("Undo")]
+        //[HttpGet]
+        //public IHttpActionResult Undo(string ComplianceFormId, UndoEnum undoEnum)
+        //{
+        //    return Ok();
+        //}
+
+
+        private class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
+        {
+            public CustomMultipartFormDataStreamProvider(string path) : base(path) { }
+
+            public override string GetLocalFileName(HttpContentHeaders headers)
+            {
+                return headers.ContentDisposition.FileName.Replace("\"", string.Empty);
+            }
+        }
+>>>>>>> file-upload-component
     }
 }
