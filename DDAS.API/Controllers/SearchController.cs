@@ -20,6 +20,7 @@ using System.Linq;
 using DDAS.Models.Enums;
 using DDAS.API.Helpers;
 using DDAS.Models.ViewModels;
+using System.Text;
 
 namespace DDAS.API.Controllers
 {
@@ -32,6 +33,7 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         //private ILog _log;
         private IConfig _config;
+        private FileDownloadResponse _fileDownloadResponse;
 
         //private string DataExtractionLogFile;
         //private string UploadsFolder;
@@ -52,6 +54,7 @@ namespace DDAS.API.Controllers
             _UOW = UOW;
             _config = Config;
             _SearchService = SearchSummary;
+            _fileDownloadResponse = new FileDownloadResponse();
         }
 
         [Route("Upload")]
@@ -158,7 +161,61 @@ namespace DDAS.API.Controllers
 
         [Route("UploadAttachments")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        //public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        public async Task<HttpResponseMessage> UploadAttachments(string SessionId)
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            try
+            {
+                var userName = User.Identity.GetUserName();
+                //CustomMultipartFormDataStreamProvider provider = 
+                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+
+                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
+
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                var Attachments = new List<Attachment>();
+
+                List<string> ValidationMessages = new List<string>();
+
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    string FilePathWithGUID = file.LocalFileName;
+                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                    {
+                        UploadedFileName = UploadedFileName.Trim('"');
+                    }
+                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                    {
+                        UploadedFileName = Path.GetFileName(UploadedFileName);
+                    }
+
+                    //File.Move(file.LocalFileName, Path.Combine(StoragePath, fileName));
+                    var Attachment = new Attachment();
+                    Attachment.Title = "";
+                    Attachment.FileName = UploadedFileName;
+                    Attachment.GeneratedFileName = FilePathWithGUID;
+                }
+                //_SearchService.AddAttachmentsToFindings(form);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                    "Error Details: " + e.Message);
+            }
+        }
+
+        [Route("UploadComplianceFormAttachments")]
+        [HttpPost]
+        //public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        public async Task<HttpResponseMessage> UploadComplianceFormAttachments(string ComplianceFormId)
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -197,7 +254,7 @@ namespace DDAS.API.Controllers
                     Attachment.FileName = UploadedFileName;
                     Attachment.GeneratedFileName = FilePathWithGUID;
                 }
-                _SearchService.AddAttachmentsToFindings(form);
+                //_SearchService.AddAttachmentsToFindings(form);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -206,6 +263,8 @@ namespace DDAS.API.Controllers
                     "Error Details: " + e.Message);
             }
         }
+
+
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
@@ -889,6 +948,70 @@ namespace DDAS.API.Controllers
             }
             return Ok(CurrentReviewStatus);
         }
+
+        [Route("GetAttachmentsList")]
+        [HttpGet]
+        public IHttpActionResult GetAttachmentsList(string formId)
+        {
+
+            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+
+            //string[] files = Directory.GetFiles(dir).Select(file => Path.GetFileName(file)).ToArray(); – 
+
+            string[] FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
+
+            return Ok(FileList);
+        }
+
+        [Route("DownloadAttachmentFile")]
+        [HttpGet]
+        public HttpResponseMessage DownloadAttachmentFile(string formId, string fileName)
+        {
+
+            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+            var fileNameWithPath = folder + "/" + fileName;
+
+            
+
+
+            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+            var stream = new FileStream(fileNameWithPath, FileMode.Open, FileAccess.Read);
+            //stream.ReadTimeout = 25000;
+            //stream.WriteTimeout = 25000;
+            result.Content = new StreamContent(stream);
+            result.Content.Headers.ContentType =
+                new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("Filename");
+            result.Content.Headers.ContentDisposition.FileName = fileName;
+
+            var UserAgent = Request.Headers.UserAgent.ToString();
+            var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+            var FileNameHeader = fileName + " " + Browser;
+            result.Content.Headers.Add("Filename", FileNameHeader);
+            result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+
+            return result;
+        }
+
+
+
+        //[Route("GetSessionId")]
+        //[HttpGet]
+        //public string GetSessionId()
+        //{
+        //    var retValue = Guid.NewGuid().ToString().Replace("-", "A");
+
+        //    return retValue;
+        //}
+
+
+        //[Route("GetSessionId")]
+        //[HttpGet]
+        //public IHttpActionResult GetSessionId()
+        //{
+        //    return Ok("abc");
+        //}
 
         #region Download Data Files
         [Route("DownloadDataFiles")]
