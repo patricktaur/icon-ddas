@@ -89,6 +89,7 @@ namespace DDAS.Data.Mongo
         private IAssignmentHistoryRepository _AssignmentHistoryRepository;
 
         private ILogWSDDASRepository _LogWSDDASRepository;
+        private ILogWSISPRINTRepository _LogWSISPRINTRepository;
 
         #endregion
 
@@ -462,6 +463,16 @@ namespace DDAS.Data.Mongo
                 return _LogWSDDASRepository ??
                     (_LogWSDDASRepository =
                     new LogWSDDASRepository(_db));
+            }
+        }
+
+        public ILogWSISPRINTRepository LogWSISPRINTRepository
+        {
+            get
+            {
+                return _LogWSISPRINTRepository ??
+                    (_LogWSISPRINTRepository =
+                    new LogWSISPRINTRepository(_db));
             }
         }
 

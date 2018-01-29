@@ -69,6 +69,7 @@
     <Compile Include="Repositories\ExceptionLoggerRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />
     <Compile Include="Repositories\LogWSDDASRepository.cs" />
+    <Compile Include="Repositories\LogWSISPRINTRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\SiteData\AdequateAssuranceListRepository.cs" />
