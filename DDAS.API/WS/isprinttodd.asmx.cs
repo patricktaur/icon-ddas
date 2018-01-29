@@ -99,6 +99,10 @@ namespace DDAS.API.WS
 
                 //>>>>>
 
+                objLog.Response = xml;
+                objLog.Status = "Success";
+
+                _uow.LogWSDDASRepository.Add(objLog);
 
                 return objResponse;
             }
@@ -123,13 +127,19 @@ namespace DDAS.API.WS
 
                 //>>>>>
 
+                objLog.Response = xml;
+                objLog.Status = "Failed";
+
+                _uow.LogWSDDASRepository.Add(objLog);
+
+
                 throw retEx;
             }
             finally
             {
-                objLog.Response = xml;
+               // objLog.Response = xml;
 
-                _uow.LogWSDDASRepository.Add(objLog);
+               // _uow.LogWSDDASRepository.Add(objLog);
             }
         }
 

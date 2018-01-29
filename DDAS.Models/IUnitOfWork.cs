@@ -23,6 +23,8 @@ namespace DDAS.Models
         IAssignmentHistoryRepository AssignmentHistoryRepository { get; }
 
         ILogWSDDASRepository LogWSDDASRepository { get; }
+        ILogWSISPRINTRepository LogWSISPRINTRepository { get; }
+
 
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
