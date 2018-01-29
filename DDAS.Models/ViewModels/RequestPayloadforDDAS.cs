@@ -15,7 +15,7 @@ namespace DDAS.Models.ViewModels
         [System.Diagnostics.DebuggerStepThroughAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-        [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+        [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://tempuri.org/", IsNullable = false)]
         public partial class ddRequest
         {
 
