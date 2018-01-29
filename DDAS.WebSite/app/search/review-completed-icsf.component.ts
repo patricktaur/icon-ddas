@@ -41,6 +41,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
     public complianceFormId: string;
+    public reviewCategory: string;
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
@@ -75,6 +76,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         private authService: AuthService) { }
 
     ngOnInit() {
+        this.reviewCategory = "Standard";
         this.uploadUrl = this.configService.getApiURI() + "search/Upload";
         this.downloadUrl = this.configService.getApiHost() + "Downloads";
 
@@ -353,6 +355,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.Status = ReviewStatusEnum.QCRequested;
         review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
         review.Comment = requestorComments;
+        review.ReviewCategory = this.reviewCategory;
         review.StartedOn = null;
         review.CompletedOn = null;
         this.compForm.Reviews.push(review);

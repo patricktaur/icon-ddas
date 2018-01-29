@@ -145,7 +145,7 @@
 								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open ICSF"><span class="glyphicon glyphicon-folder-open"></span></button>
 								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" 
 									class="btn btn-sm btn-primary" 
-									(click)="setSelectedRecordDetails(item.RecId); RequestAuditModal.open(); resetValues()" 
+									(click)="setSelectedRecordDetails(item.RecId); RequestQCModal.open(); resetValues()" 
 									title="Request QC">
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
@@ -186,35 +186,44 @@
 	</modal-footer>
 </modal>
 
-<modal #RequestAuditModal>
+<modal #RequestQCModal>
 	<modal-header>
 		<h4 class="modal-title">QC Request: <b> {{SelectedInvestigatorName}} </b> </h4>
 	</modal-header>
 	<modal-body>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-4">
+				<div class="form-group">
+					<label for="Category">Request Category:</label>
+					<select class="form-control" [(ngModel)]="reviewCategory">
+						<option selected="selected">Standard</option>
+						<option>Priority</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-4">
 				<div class="form-group">
 					<label for="AssignedTo">QC Verifier:</label>
 					<select class="form-control" [(ngModel)]="selectedQCVerifier">
 						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
 					</select>
-				</div>		
-			</div>
-			<div class="col-md-6">
+				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-9">
 				<label for="RequestorComment">Comments:</label>
 				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" 
 					rows="5" cols="20" placeholder="comments" [(ngModel)]="requestorComment">
 				</textarea>
 			</div>
+			<div class="col-md-3">
+			</div>
 		</div>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestAuditModal.close()">Request QC</button>
-		<button type="button" class="btn btn-default" (click)="RequestAuditModal.close()">Cancel</button>
+		<button type="button" class="btn btn-default" (click)="requestQC(selectedQCVerifier, requestorComment); RequestQCModal.close()">Request QC</button>
+		<button type="button" class="btn btn-default" (click)="RequestQCModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
 

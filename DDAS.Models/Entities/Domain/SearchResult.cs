@@ -968,6 +968,7 @@ namespace DDAS.Models.Entities.Domain
         public ReviewerRoleEnum ReviewerRole { get; set; }
         public string Comment { get; set; }
         public List<ReviewAttachment> Attachments { get; set; } = new List<ReviewAttachment>();
+        public string ReviewCategory { get; set; }
     }
 
     //Patrick 21Jan2018
