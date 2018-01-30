@@ -131,6 +131,7 @@
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
     <Compile Include="ViewModels\CurrentReviewStatusViewModel.cs" />
     <Compile Include="ViewModels\LogWDDDASViewModel.cs" />
+    <Compile Include="ViewModels\LogWSiSprintViewModel.cs" />
     <Compile Include="ViewModels\QCListViewModel.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\DDASResponseModel.cs" />

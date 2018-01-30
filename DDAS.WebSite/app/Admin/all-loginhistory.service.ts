@@ -300,6 +300,14 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
+    getDDAStoiSprintLog(){
+        return this.http.get(this._baseUrl + 'admin/DDAStoiSprintLog', this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();
