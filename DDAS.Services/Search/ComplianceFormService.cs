@@ -416,7 +416,7 @@ namespace DDAS.Services.Search
             institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
             institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
 
-            oInstitutionFinding.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+            oInstitutionFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
             oInstitutionFinding.type = "Regulatory";
             oInstitutionFinding.regulatoryCode = "OAI";
             oInstitutionFinding.regulatoryDeficiency = "No";
@@ -451,26 +451,26 @@ namespace DDAS.Services.Search
                 InvestigatorResult.middleName = InvestigatorDetail.MiddleName.ToString();
                 InvestigatorResult.lastName = InvestigatorDetail.LastName.ToString();
                 InvestigatorResult.ddStatus = "Available";
-                InvestigatorResult.ddCompletedDate = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+                InvestigatorResult.ddCompletedDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
 
                 investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = new investigatorResultsInvestigatorResultChecksCompleted();
                 investigatorResultsInvestigatorResultChecksCompletedCheck oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck();
 
                 oInvestigatorCheck.name = "investigator world check";
-                oInvestigatorCheck.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+                oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
                 oInvestigatorChecksCompleted.check = oInvestigatorCheck;
                 InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
 
 
-                InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+                InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 InvestigatorResult.dmc9002Exclusion = "Exclusion";
 
                 investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = new investigatorResultsInvestigatorResultDdFindings();
                 investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = new investigatorResultsInvestigatorResultDdFindingsFinding();
 
-                oInvestigatorFinding.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+                oInvestigatorFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 oInvestigatorFinding.type = "Regulatory";
                 oInvestigatorFinding.regulatoryCode = "OAI";
                 oInvestigatorFinding.regulatoryDeficiency = "No";
@@ -532,6 +532,15 @@ namespace DDAS.Services.Search
 
             //To be removed. temp code
             sRetval = sRetval + "</br>" + xml;
+
+            XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
+            TextReader textReader = new StreamReader(sRetval);
+            iSprintResponseModel.Envelope stud;
+            stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(textReader);
+            textReader.Close();
+
+            sRetval += " Success:" + stud.Body.iSprintResponse.success;
+            sRetval += " Message:" + stud.Body.iSprintResponse.header.errorMessage;
 
             return sRetval;
         }
