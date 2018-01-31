@@ -49,7 +49,6 @@ export class FileDownloadComponent implements OnInit {
     }
     
      downLoadFileByGet(url: string) {
-         console.log("test url:" + url);
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
@@ -60,8 +59,8 @@ export class FileDownloadComponent implements OnInit {
             .map((res: Response) => {
                 this.saveFile(res);
                 
-            })
-            .catch(this.handleError);
+            });
+            //.catch(this.handleError);
     }
     
     downLoadFileByPost(url: string, filter:any) {
@@ -70,13 +69,12 @@ export class FileDownloadComponent implements OnInit {
         headers.append('Content-Type', 'application/json');
         
         let filter1 = JSON.stringify(filter);
-        console.log("filter1:" + filter1);
         return this.http.post(this._baseUrl + url, filter1,
             { headers: headers, responseType: ResponseContentType.ArrayBuffer })
             .map((res: Response) => {
                 this.saveFile(res);
-            })
-            .catch(this.handleError);
+            });
+            //.catch(this.handleError);
 
     }
     
@@ -85,19 +83,21 @@ export class FileDownloadComponent implements OnInit {
         file = new Blob([res.arrayBuffer()], {
             type: 'application/ms-word'
         });
+        // console.log("Inside Save File");
+        // console.log("res.headers.get('Filename')" + res.headers.get('Filename'));
 
         //header 'Browser' in the response is not read by Microsoft 'Edge'. Not sure why
         //hence the work around of 'split with space'!
-        // var browser = res.headers.get('Browser');
+        var browser = res.headers.get('Browser');
         var fileNameHeader = res.headers.get('Filename');
         var fileName = fileNameHeader.split(' ')[0].trim();
         // var browser = res.headers.get('Browser');
         var browser = fileNameHeader.split(' ')[1].trim();
+        
+        //var browser = "chrome";
+        //var fileName = "test.xlsx";
 
-        console.log("Filename header: " + fileNameHeader);
-        console.log("File Name: " + fileName);
-        console.log("Browser: " + browser);
-
+        // console.log("FileName: " + fileName);
         if (browser.toLowerCase() == "edge" ||
             browser.toLowerCase() == "ie") {
             window.navigator.msSaveBlob(file, fileName);
@@ -123,7 +123,6 @@ export class FileDownloadComponent implements OnInit {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();
         var modelStateErrors: string = '';
-        console.log(error.json());
         if (!serverError.type) {
 
             console.log(serverError);

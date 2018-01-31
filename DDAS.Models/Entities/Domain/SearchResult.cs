@@ -190,6 +190,7 @@ namespace DDAS.Models.Entities.Domain
         public List<Finding> Findings { get; set; }
         public List<Review> Reviews { get; set; } = new List<Review>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<Attachment> Attachments { get; set; } = new List<Attachment>();
 
         public string Reviewer {
             get {
@@ -968,6 +969,7 @@ namespace DDAS.Models.Entities.Domain
         public ReviewerRoleEnum ReviewerRole { get; set; }
         public string Comment { get; set; }
         public List<ReviewAttachment> Attachments { get; set; } = new List<ReviewAttachment>();
+        public string ReviewCategory { get; set; }
     }
 
     //Patrick 21Jan2018
@@ -1108,6 +1110,8 @@ public class MatchedRecord
         public string FileName { get; set; }
         public string GeneratedFileName { get; set; }
     }
+
+
     #endregion
 
     #region AppAdmin

@@ -1705,8 +1705,45 @@ namespace DDAS.Services.AppAdminService
 
                 LogViewModel.Add(ViewModel);
             }
-            return LogViewModel;
+
+            if (LogViewModel.Count > 0)
+                return LogViewModel.OrderByDescending(x => x.CreatedOn).ToList();
+            else
+                return LogViewModel;
+
         }
+        #endregion
+
+        #region DDAS to iSprint Log
+
+        public List<LogWSiSprintViewModel> GetDDtoiSprintLog()
+        {
+            var Logs = _UOW.LogWSISPRINTRepository.GetAll();
+
+            if (Logs.Count == 0)
+                return null;
+
+            var LogViewModel = new List<LogWSiSprintViewModel>();
+
+            foreach (LogWSISPRINT Log in Logs)
+            {
+                var ViewModel = new LogWSiSprintViewModel();
+                ViewModel.CreatedOn = DateTime.Now;
+                ViewModel.CreatedOn = Log.CreatedOn;
+                ViewModel.RecId = Log.RecId;
+                ViewModel.RequestPayload = Log.RequestPayload;
+                ViewModel.Response = Log.Response;
+                ViewModel.Status = Log.Status;
+
+                LogViewModel.Add(ViewModel);
+            }
+
+            if (LogViewModel.Count > 0)
+                return LogViewModel.OrderByDescending(x => x.CreatedOn).ToList();
+            else
+                return LogViewModel;
+        }
+        
         #endregion
     }
 }
