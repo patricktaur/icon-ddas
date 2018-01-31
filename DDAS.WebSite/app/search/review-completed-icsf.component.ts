@@ -68,7 +68,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public selectedQCVerifier: string;
     public requestorComment: string;
     private SessionId: string;
-    private files : File[] = [];
+    public files : File[] = [];
 
     constructor(
         private route: ActivatedRoute,
