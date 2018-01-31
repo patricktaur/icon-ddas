@@ -953,14 +953,19 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAttachmentsList(string formId)
         {
-
             var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
 
+            string[] FileList = new string[0];
+
+            if (Directory.Exists(folder))
+            {
+                FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
+
+                return Ok(FileList);
+            }
+            else
+                return Ok(FileList);
             //string[] files = Directory.GetFiles(dir).Select(file => Path.GetFileName(file)).ToArray(); – 
-
-            string[] FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
-
-            return Ok(FileList);
         }
 
         [Route("DownloadAttachmentFile")]

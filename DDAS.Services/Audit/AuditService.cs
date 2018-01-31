@@ -60,7 +60,7 @@ namespace DDAS.Services.AuditService
             review.PreviousReviewId = lastReview.RecId;
             form.Reviews.Add(review);
             _UOW.ComplianceFormRepository.UpdateCollection(form);
-
+            SendQCRequestedMail(form);
             return true;
         }
 
