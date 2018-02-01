@@ -327,7 +327,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
     setSelectedRecordDetails(complainceFormId: string) {
         this.files = [];
         this.SelectedComplianceFormId = complainceFormId;
-
     }
 
     requestQC(){
