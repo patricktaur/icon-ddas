@@ -424,15 +424,15 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Dispose()
         {
-            //foreach (var process in Process.GetProcessesByName("phantomjs"))
-            //{
-            //    process.Dispose();
-            //}
-
-            if (_Driver != null)
+            foreach (var process in Process.GetProcessesByName("phantomjs"))
             {
-                _Driver.Dispose();
+                process.Dispose();
             }
+
+            //if (_Driver != null)
+            //{
+            //    _Driver.Dispose();
+            //}
         }
 
         public void SaveData()

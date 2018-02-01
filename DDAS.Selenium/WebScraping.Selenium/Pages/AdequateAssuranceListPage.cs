@@ -186,6 +186,8 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!IsPageLoaded())
                     throw new Exception("Page is not loaded");
+                else if (IsSiteDown)
+                    throw new Exception("Page Not Found");
 
                 _adequateAssuranceListSiteData.DataExtractionRequired = true;
                 LoadAdequateAssuranceInvestigators();
