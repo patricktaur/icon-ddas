@@ -46,6 +46,24 @@ namespace DDAS.Services.AuditService
             return true;
         }
 
+        public bool RequestQC(Guid ComplianceFormId, Review review)
+        {
+
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            var lastReview = form.Reviews.LastOrDefault();
+            if (lastReview == null)
+            {
+                throw new Exception("Assigned to Review record expected for Compliance form: " + ComplianceFormId);
+            }
+
+            review.RecId = Guid.NewGuid();
+            review.PreviousReviewId = lastReview.RecId;
+            form.Reviews.Add(review);
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+            SendQCRequestedMail(form);
+            return true;
+        }
+
         public List<QCListViewModel> ListQCs()
         {
             var Forms = _UOW.ComplianceFormRepository.GetAll();
@@ -80,9 +98,11 @@ namespace DDAS.Services.AuditService
                 QCViewModel.ProjectNumber = Form.ProjectNumber;
                 QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
                 QCViewModel.QCVerifier = Form.QCVerifier;
+                QCViewModel.QCVerifierFullName = GetUserFullName(Form.QCVerifier);
                 QCViewModel.Status = QCReview.Status;
                 QCViewModel.CompletedOn = QCReview.CompletedOn;
-                QCViewModel.Requestor = Form.Reviewer;
+                QCViewModel.Requester = Form.Reviewer;
+                QCViewModel.RequesterFullName = GetUserFullName(Form.Reviewer);
                 QCViewModel.RequestedOn = QCReview.AssignedOn;
 
                 AllQCs.Add(QCViewModel);

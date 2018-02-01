@@ -75,7 +75,7 @@ import {ResponseToQCVerifierCommentComponent} from "../compliance-form/findings/
 //import {SelectedFindingComponent} from "../compliance-form/findings/selected-finding/selected-finding.component";
 import {CompFormLogicService} from "./shared/services/comp-form-logic.service";
 import { CompletedICSFComponent } from './completed-icsf.component';
-
+import {UploadAttachmentsComponent} from './shared/components/upload-attachment/upload-attachments.component'
 @NgModule({
   imports: [
     CommonModule,
@@ -134,7 +134,8 @@ import { CompletedICSFComponent } from './completed-icsf.component';
     QCVerifierFindingComponent,
     ResponseToQCVerifierFindingComponent,
     ResponseToQCVerifierCommentComponent,
-    CompletedICSFComponent
+    CompletedICSFComponent,
+    UploadAttachmentsComponent
   ],
 
   providers: [

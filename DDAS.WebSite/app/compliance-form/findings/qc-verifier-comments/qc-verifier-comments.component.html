@@ -1,4 +1,4 @@
-<div finding-view-base [Finding]="Finding" [Title]="'QC Response'">
+<div finding-view-base [Finding]="Finding" [Title]="'QC Response'" (ValueChanged)="formValueChanged()">
     <div class="row">
         <div class="col-md-12">
             <!-- {{diagnostic}} -->
@@ -12,7 +12,9 @@
     <div class="row">
         <div class="col-md-12">
                 <label for="Category">Category:</label>
-                <select class="form-control" name="AssignedTo" [(ngModel)]="getQCVerifierComment.CategoryEnum">
+                <select class="form-control" name="AssignedTo" 
+                [(ngModel)]="getQCVerifierComment.CategoryEnum"
+                (change)="formValueChanged()">
                     <option value="8" selected="selected">Not Applicable</option>
                     <option value="0">Minor</option>
                     <option value="1">Major</option>
@@ -24,7 +26,9 @@
     </div>
     <div class="row">
             <div class="col-md-12">
-                    <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" [(ngModel)]="getQCVerifierComment.FindingComment">
+                    <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
+                    [(ngModel)]="getQCVerifierComment.FindingComment"
+                    (change)="formValueChanged()">
                         </textarea>
             </div>
         </div>

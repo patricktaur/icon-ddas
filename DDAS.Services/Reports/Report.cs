@@ -316,6 +316,7 @@ namespace DDAS.Services.Reports
                 var OpenInvestigation = new OpenInvestigationsViewModel();
 
                 var OpenInvestigators = ComplianceForms.Where(x =>
+                (x.AssignedTo != null || x.AssignedTo != "") &&
                 x.AssignedTo.ToLower() == user.UserName.ToLower())
                 .SelectMany(Inv => Inv.InvestigatorDetails)
                 .Where(s => s.ReviewCompletedOn == null)
@@ -340,8 +341,8 @@ namespace DDAS.Services.Reports
             }
             return OpenInvestigations;
         }
-
         #endregion
+
 
         #region Admin Dashboard
 
@@ -408,6 +409,7 @@ namespace DDAS.Services.Reports
         private List<AdminDashboardDrillDownViewModel> OpeningBalanceList(string UserName, List<ComplianceForm> Forms)
         {
             Forms = Forms.Where(x =>
+            (x.AssignedTo != null || x.AssignedTo != "") &&
             x.AssignedTo.ToLower() == UserName.ToLower() &&
             (x.ReviewCompletedOn == null ||
             x.ReviewCompletedOn.Value.Date >= DateTime.Now.Date) &&
@@ -473,6 +475,7 @@ namespace DDAS.Services.Reports
         private List<AdminDashboardDrillDownViewModel> ComplianceFormsReviewCompletedList(string UserName, List<ComplianceForm> Forms)
         {
             Forms = Forms.Where(x =>
+            (x.AssignedTo != null || x.AssignedTo != "") &&
             x.AssignedTo.ToLower() == UserName.ToLower() &&
             x.ReviewCompletedOn != null &&
             x.ReviewCompletedOn.Value.Date >= DateTime.Now.Date)
@@ -506,6 +509,7 @@ namespace DDAS.Services.Reports
         private List<AdminDashboardDrillDownViewModel> ClosingBalanceList(string UserName, List<ComplianceForm> Forms)
         {
             Forms = Forms.Where(x =>
+            (x.AssignedTo != null || x.AssignedTo != "") &&
             x.AssignedTo.ToLower() == UserName.ToLower() &&
             x.IsReviewCompleted == false)
             .ToList();
@@ -516,9 +520,12 @@ namespace DDAS.Services.Reports
             {
                 var DrillDownRecord = new AdminDashboardDrillDownViewModel();
                 DrillDownRecord.UserFullName = GetUserFullName(UserName);
-                DrillDownRecord.PrincipalInvestigator =
-                    Form.InvestigatorDetails.FirstOrDefault().Name;
                 DrillDownRecord.InvestigatorCount = Form.InvestigatorDetails.Count();
+
+                if (Form.InvestigatorDetails.Count > 0)
+                    DrillDownRecord.PrincipalInvestigator =
+                        Form.InvestigatorDetails.FirstOrDefault().Name;
+
                 DrillDownRecord.ProjectNumber = Form.ProjectNumber;
                 DrillDownRecord.ProjectNumber2 = Form.ProjectNumber2;
                 DrillDownRecord.SponsorProtocolNumber = Form.SponsorProtocolNumber;
@@ -557,17 +564,20 @@ namespace DDAS.Services.Reports
                 if (ComplianceForm == null)
                     continue;
 
-                assignmentHistoryViewModel.PrincipalInvestigator =
-                    ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
+                if(ComplianceForm.InvestigatorDetails.Count > 0)
+                {
+                    assignmentHistoryViewModel.PrincipalInvestigator =
+                        ComplianceForm.InvestigatorDetails.FirstOrDefault().Name;
+                    assignmentHistoryViewModel.InvestigatorCount =
+                        ComplianceForm.InvestigatorDetails.Count - 1;
+                }
+
                 assignmentHistoryViewModel.ProjectNumber =
                     ComplianceForm.ProjectNumber;
                 assignmentHistoryViewModel.ProjectNumber2 =
                     ComplianceForm.ProjectNumber2;
                 assignmentHistoryViewModel.SearchStartedOn =
                     ComplianceForm.SearchStartedOn;
-
-                assignmentHistoryViewModel.InvestigatorCount =
-                    ComplianceForm.InvestigatorDetails.Count - 1;
 
                 assignmentHistoryViewModel.AssignedBy =
                     GetUserFullName(assignmentHistory.AssignedBy);
@@ -828,13 +838,13 @@ namespace DDAS.Services.Reports
         private string GetUserFullName(string AssignedTo)
         {
             if (AssignedTo == null || AssignedTo == "")
-                return null;
+                return "";
 
             var User = _UOW.UserRepository.GetAll()
                 .Find(x => x.UserName.ToLower() == AssignedTo.ToLower());
 
             return
-                User != null ? User.UserFullName : null;
+                User != null ? User.UserFullName : "";
         }
     }
 }

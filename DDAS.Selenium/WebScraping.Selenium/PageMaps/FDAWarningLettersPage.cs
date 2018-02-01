@@ -97,7 +97,7 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-        public bool IsSiteDown
+        private bool IsSiteDown
         {
             get
             {

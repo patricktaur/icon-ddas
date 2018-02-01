@@ -124,7 +124,7 @@ export class CompletedICSFComponent implements OnInit {
     }
 
     canUndoQC(item: PrincipalInvestigatorDetails){
-        if(item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
+        if(item.QCVerifier && item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
             item.UndoQCSubmit)
             return true;
         else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
@@ -159,6 +159,16 @@ export class CompletedICSFComponent implements OnInit {
         }
         else
             alert('undo request not sent');
+    }
+
+    exportToiSprint(complianceFormId: string){
+            this.service.exportToiSprint(complianceFormId)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+
+            });
     }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }

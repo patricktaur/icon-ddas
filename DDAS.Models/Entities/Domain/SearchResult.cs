@@ -155,6 +155,7 @@ namespace DDAS.Models.Entities.Domain
         }
 
         public Guid? RecId { get; set; }
+        public string RowVersion { get; set; }
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
         public string AssignedTo { get; set; }
@@ -189,6 +190,7 @@ namespace DDAS.Models.Entities.Domain
         public List<Finding> Findings { get; set; }
         public List<Review> Reviews { get; set; } = new List<Review>();
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<Attachment> Attachments { get; set; } = new List<Attachment>();
 
         public string Reviewer {
             get {
@@ -966,13 +968,27 @@ namespace DDAS.Models.Entities.Domain
         public DateTime? CompletedOn { get; set; }
         public ReviewerRoleEnum ReviewerRole { get; set; }
         public string Comment { get; set; }
+        public List<ReviewAttachment> Attachments { get; set; } = new List<ReviewAttachment>();
         public string ReviewCategory { get; set; }
     }
-    #endregion
 
-    #region ByPatrick
+    //Patrick 21Jan2018
+    public class ReviewAttachment
+    {
+        public int RecId { get; set; }
+        public string OriginalFileName { get; set; }
+        public string FileName { get; set; }
+        public string FileExt { get; set; }
+        public string Title { get; set; }
 
-    public class MatchedRecord
+    }
+
+
+#endregion
+
+#region ByPatrick
+
+public class MatchedRecord
     {
         public bool IsFullMatch { get; set; }
         public int MatchCount { get; set; }
@@ -1094,6 +1110,8 @@ namespace DDAS.Models.Entities.Domain
         public string FileName { get; set; }
         public string GeneratedFileName { get; set; }
     }
+
+
     #endregion
 
     #region AppAdmin

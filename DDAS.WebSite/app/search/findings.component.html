@@ -2,7 +2,6 @@
 	<div class="col-lg-12">
 
 		<div class="well">
-
 			<div class="alert alert-info" *ngIf="loading">
 				<strong>Loading ...</strong>
 			</div>
@@ -142,7 +141,9 @@
 	<div class="row">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'findingEdit')" class="form-group col-md-6">
-				<div selected-finding-edit [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				<div selected-finding-edit [Finding]="matchedRecord" 
+				(ValueChanged)="formValueChanged($event)"	
+				(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 				</div>
 			</div>
 
@@ -153,23 +154,31 @@
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierComments')" class="form-group col-md-6">
-				<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord">
+				<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" 
+				[Finding]="matchedRecord"
+				(ValueChanged)="formValueChanged($event)"	>
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierFinding')" class="form-group col-md-6">
-				<div qc-verifier-finding [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord"
-				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				<div qc-verifier-finding [ReviewerRecId]="currentReviewStatus.ReviewerRecId" 
+				[Finding]="matchedRecord"
+				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"
+				 (ValueChanged)="formValueChanged($event)"	>
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierFinding')" class="form-group col-md-6">
-				<div response-to-qc-verifier-finding [Finding]="matchedRecord">
+				<div response-to-qc-verifier-finding 
+				[Finding]="matchedRecord"
+				(ValueChanged)="formValueChanged($event)"	>
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierComments')" class="form-group col-md-6">
-				<div response-to-qc-verifier-comment [Finding]="matchedRecord">
+				<div response-to-qc-verifier-comment 
+				[Finding]="matchedRecord"
+				(ValueChanged)="formValueChanged($event)"	>
 				</div>
 			</div>
 

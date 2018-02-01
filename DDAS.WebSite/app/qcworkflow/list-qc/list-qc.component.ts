@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { QCListViewModel, ReviewStatusEnum } from '../qc.classes';
+import { QCListViewModel } from '../qc.classes';
 import { ConfigService } from '../../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { IMyDate, IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 import { QCService } from '../qc-service';
+import { ReviewStatusEnum } from '../../search/search.classes';
 import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service";
 //import { Http, Response, Headers , RequestOptions } from '@angular/http';
 
@@ -63,26 +64,26 @@ export class ListQCComponent implements OnInit {
         }
         else if (this.qcList != undefined || this.qcList != null) {
             return this.qcList.filter(x =>
-                x.Requestor.toLowerCase() == this.authService.userName.toLowerCase() ||
+                x.Requester.toLowerCase() == this.authService.userName.toLowerCase() ||
                 x.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase());
         }
         else
             return null;
     }
 
-    isActionRequired(qcVerifier: string, requestor: string, Status: number) {
-        // if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
-        //     return true;
-        // else if ((Status == ReviewStatusEnum.QCPassed || Status == ReviewStatusEnum.QCFailed) &&
-        //     requestor.toLowerCase() == this.authService.userName.toLowerCase())
-        //     return true;
-        // else
-        //     return false;
-        return true;
+    isActionRequired(qcVerifier: string, requester: string, Status: number) {
+        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
+            return true;
+        else if ((Status == ReviewStatusEnum.QCPassed || 
+                Status == ReviewStatusEnum.QCFailed ||
+                Status == ReviewStatusEnum.QCCorrectionInProgress) &&
+            requester.toLowerCase() == this.authService.userName.toLowerCase())
+            return true;
+        else
+            return false;
     }
 
     editQC(complianceFormId: string, assignedTo: string) {
-        //this.router.navigate(['edit-qc', complianceFormId, assignedTo, { relativeTo: this.route.parent }]);
         this.router.navigate(['edit-qc', complianceFormId, assignedTo, {rootPath:'qc', page:this.pageNumber}], { relativeTo: this.route });
     }
 }

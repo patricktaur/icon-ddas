@@ -1667,7 +1667,7 @@ namespace DDAS.Services.AppAdminService
             foreach(Log DBLog in ExtractionLog)
             {
                 var Log = new ExtractionLogViewModel();
-                Log.SiteEnumString = DBLog.SiteEnumString; 
+                Log.SiteEnumString = DBLog.SiteEnumString;
                 Log.Step = DBLog.Step;
                 Log.Status = DBLog.Status;
                 Log.CreatedBy = DBLog.CreatedBy;
@@ -1678,6 +1678,70 @@ namespace DDAS.Services.AppAdminService
                 Logs.Add(Log);
             }
             return Logs;
+        }
+
+        #endregion
+
+        #region iSprint to DDAS Log
+
+        public List<LogWSDDASViewModel> GetiSprintToDDASLog()
+        {
+            var Logs = _UOW.LogWSDDASRepository.GetAll();
+
+            if (Logs.Count == 0)
+                return null;
+
+            var LogViewModel = new List<LogWSDDASViewModel>();
+
+            foreach (LogWSDDAS Log in Logs)
+            {
+                var ViewModel = new LogWSDDASViewModel();
+                ViewModel.CreatedOn = DateTime.Now;
+                ViewModel.CreatedOn = Log.CreatedOn;
+                ViewModel.RecId = Log.RecId;
+                ViewModel.RequestPayload = Log.RequestPayload;
+                ViewModel.Response = Log.Response;
+                ViewModel.Status = Log.Status;
+
+                LogViewModel.Add(ViewModel);
+            }
+
+            if (LogViewModel.Count > 0)
+                return LogViewModel.OrderByDescending(x => x.CreatedOn).ToList();
+            else
+                return LogViewModel;
+
+        }
+        #endregion
+
+        #region DDAS to iSprint Log
+
+        public List<LogWSiSprintViewModel> GetDDtoiSprintLog()
+        {
+            var Logs = _UOW.LogWSISPRINTRepository.GetAll();
+
+            if (Logs.Count == 0)
+                return null;
+
+            var LogViewModel = new List<LogWSiSprintViewModel>();
+
+            foreach (LogWSISPRINT Log in Logs)
+            {
+                var ViewModel = new LogWSiSprintViewModel();
+                ViewModel.CreatedOn = DateTime.Now;
+                ViewModel.CreatedOn = Log.CreatedOn;
+                ViewModel.RecId = Log.RecId;
+                ViewModel.RequestPayload = Log.RequestPayload;
+                ViewModel.Response = Log.Response;
+                ViewModel.Status = Log.Status;
+
+                LogViewModel.Add(ViewModel);
+            }
+
+            if (LogViewModel.Count > 0)
+                return LogViewModel.OrderByDescending(x => x.CreatedOn).ToList();
+            else
+                return LogViewModel;
         }
         
         #endregion

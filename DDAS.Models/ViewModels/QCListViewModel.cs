@@ -11,9 +11,11 @@ namespace DDAS.Models.ViewModels
     {
         public Guid? RecId { get; set; }
         public Guid ComplianceFormId { get; set; }
-        public string Requestor { get; set; }
+        public string Requester { get; set; }
+        public string RequesterFullName { get; set; }
         public DateTime RequestedOn { get; set; }
         public string QCVerifier { get; set; }
+        public string QCVerifierFullName { get; set; }
         public DateTime? CompletedOn { get; set; }
         public ReviewStatusEnum Status { get; set; }
         public string PrincipalInvestigator { get; set; }

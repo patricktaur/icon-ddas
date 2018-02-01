@@ -88,6 +88,9 @@ namespace DDAS.Data.Mongo
         private IAuditRepository _AuditRepository;
         private IAssignmentHistoryRepository _AssignmentHistoryRepository;
 
+        private ILogWSDDASRepository _LogWSDDASRepository;
+        private ILogWSISPRINTRepository _LogWSISPRINTRepository;
+
         #endregion
 
         /*
@@ -452,6 +455,27 @@ namespace DDAS.Data.Mongo
                     new AssignmentHistoryRepository(_db));
             }
         }
+
+        public ILogWSDDASRepository LogWSDDASRepository
+        {
+            get
+            {
+                return _LogWSDDASRepository ??
+                    (_LogWSDDASRepository =
+                    new LogWSDDASRepository(_db));
+            }
+        }
+
+        public ILogWSISPRINTRepository LogWSISPRINTRepository
+        {
+            get
+            {
+                return _LogWSISPRINTRepository ??
+                    (_LogWSISPRINTRepository =
+                    new LogWSISPRINTRepository(_db));
+            }
+        }
+
         #endregion
 
         private void InitializeMaps()

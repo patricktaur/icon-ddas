@@ -22,7 +22,8 @@ import {
     UpdateInstituteFindings,
     QualityCheck,
     CurrentReviewStatusViewModel,
-    UndoEnum
+    UndoEnum,
+    Review
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -141,6 +142,14 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    getUnAssignedComplianceForms(): Observable<PrincipalInvestigatorDetails[]> {
+        return this.http.get(this._baseUrl + 'search/UnAssignedComplianceForms', this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
+    }
+
     getUploadsFolderPath() {
         return this.http.get(this._baseUrl + 'search/GetUploadsFolderPath', this._options)
             .map((res: Response) => {
@@ -191,15 +200,29 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    SaveAssignedTo(AssignedTo: string, Active: boolean, ComplianceFormId: string): Observable<boolean> {
+    SaveAssignedTo(AssignedTo: string, AssignedFrom: string, ComplianceFormId: string): Observable<boolean> {
         return this.http.get(this._baseUrl + 'search/SaveAssignedToData?' +
-            'AssignedTo=' + AssignedTo + '&Active=' + Active + '&ComplianceFormId=' + ComplianceFormId,
+            'AssignedTo=' + AssignedTo 
+            + '&AssignedFrom=' + AssignedFrom + 
+            '&ComplianceFormId=' + ComplianceFormId,
             this._options)
             .map((res: Response) => {
                 return res.json();
             })
             .catch(this.handleError);
     }
+
+    ClearAssignedTo( ComplianceFormId: string, AssignedFrom: string): Observable<boolean> {
+        return this.http.get(this._baseUrl + 'search/ClearAssignedTo?' +
+            'ComplianceFormId=' + ComplianceFormId +
+            '&AssignedFrom=' + AssignedFrom,
+            this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
 
     saveComplianceForm(form: ComplianceFormA): Observable<ComplianceFormA> {
         let body = JSON.stringify(form);
@@ -259,9 +282,9 @@ export class SearchService {
                 // var browser = res.headers.get('Browser');
                 var browser = fileNameHeader.split(' ')[1].trim();
 
-                console.log("Filename header: " + fileNameHeader);
-                console.log("File Name: " + fileName);
-                console.log("Browser: " + browser);
+                // console.log("Filename header: " + fileNameHeader);
+                // console.log("File Name: " + fileName);
+                // console.log("Browser: " + browser);
 
                 if (browser.toLowerCase() == "edge" ||
                     browser.toLowerCase() == "ie") {
@@ -403,6 +426,29 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    requestQC1(complianceFormId: string, review: Review, files: File[]){
+        
+        let headers = new Headers();
+        headers.append("Authorization", "Bearer " + this.authService.token);
+        let options = new RequestOptions({ headers: headers });
+
+        let formData = new FormData();
+
+        files.forEach((file: File) => {
+            formData.append(file.name, file);
+        });
+
+        formData.append('ComplianceFormId', complianceFormId);
+        formData.append('Review', JSON.stringify(review));
+
+        return this.http.post(this._baseUrl + 'QC/RequestQC1', formData, options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+    
+
     undoQCRequest(complianceFormId: string){
         return this.http.get(this._baseUrl + 'QC/UndoQCRequest?ComplianceFormId=' + complianceFormId, this._options)
             .map((res: Response) => {
@@ -517,6 +563,14 @@ export class SearchService {
                 return res.json();
             })
             .catch(this.handleError);
+    }
+
+    exportToiSprint(complianceFormId: string){
+        return this.http.get(this._baseUrl + 'search/ExportToiSprint?ComplianceFormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);        
     }
 
     private handleError(error: any) {

@@ -53,6 +53,10 @@ namespace DDAS.Models.Interfaces
 
         List<ExtractionLogViewModel> GetExtractionLog();
 
+        List<LogWSDDASViewModel> GetiSprintToDDASLog();
+
+        List<LogWSiSprintViewModel> GetDDtoiSprintLog();
+
         List<CBERClinicalInvestigator> GetCBERData();
     }
 }

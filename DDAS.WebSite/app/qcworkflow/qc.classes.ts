@@ -1,25 +1,18 @@
+import { ReviewStatusEnum } from '../search/search.classes';
+
 export class QCListViewModel {
         RecId: string;
         ComplianceFormId: string;
-        Requestor: string;
+        Requester: string;
+        RequesterFullName: string;
         RequestedOn: Date;
         QCVerifier: string;
+        QCVerifierFullName: string;
         CompletedOn: Date;
         Status: ReviewStatusEnum;
         PrincipalInvestigator: string;
         ProjectNumber: string;
         ProjectNumber2: string;
-}
-
-export enum ReviewStatusEnum {
-        SearchCompleted,
-        ReviewInProgress,
-        ReviewCompleted,
-        Completed,
-        QCRequested,
-        QCInProgress,
-        QCFailed,
-        QCPassed
 }
 
 export class QualityCheck {
