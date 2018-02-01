@@ -2167,6 +2167,7 @@ namespace DDAS.Services.Search
 
         private void CanUndoQC(PrincipalInvestigator Investigator, ComplianceForm Form)
         {
+            //required for Undo action in completed icsf page
             var QCReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.QCFailed);
 

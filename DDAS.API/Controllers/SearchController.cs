@@ -870,6 +870,21 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
+        [Route("MoveReviewCompletedToCompleted")]
+        [HttpGet]
+        public IHttpActionResult MoveToCompletedICSF(string ComplianceFormId)
+        {
+            var Id = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(Id);
+            var Review = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.ReviewCompleted);
+
+            if (Review != null)
+                Review.Status = ReviewStatusEnum.Completed;
+
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            return Ok(true);
+        }
+
         string ListToString(ExcelInput excelInput)
         {
             string retValue = "";

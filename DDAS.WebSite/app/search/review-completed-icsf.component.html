@@ -132,15 +132,9 @@
 						</td>
 						<td>
 							<div class="btn-group">
-										<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)" title="Download Compliance Form">
+								<!-- <button type="button" *ngIf="canUndoQC" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
 									<span class="glyphicon glyphicon-download-alt" ></span>
-								</button>-->
-								<button type="button" *ngIf="canUndoQC" class="btn btn-sm btn-primary" (click)="downloadComplianceForm(item.RecId)" title="Download Compliance Form">
-									<span class="glyphicon glyphicon-download-alt" ></span>
-								</button>
-										<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
-									<span class="glyphicon glyphicon-download-alt" ></span>
-								</button>-->
+								</button> -->
 								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open"></span></button>
 								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" 
 									class="btn btn-sm btn-primary" 
@@ -152,6 +146,9 @@
 									class="btn btn-sm btn-primary" (click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()" title="Undo QC Request">
 									<!-- <i clas="fa fa-undo"></i> -->
 									<span class="">Undo QC Request</span>
+								</button>
+								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item.RecId); ConfirmMoveToCompletedICSFModal.open()" title="Opens">
+									<span class="glyphicon glyphicon-move"></span>
 								</button>
 							</div>
 						</td>
@@ -236,5 +233,18 @@
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="undoQCRequest(); ConfirmUndoModal.close()">Confirm Undo</button>
 		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #ConfirmMoveToCompletedICSFModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Move this compliance form to 'Completed ICSFs'?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="moveToCompletedICSF(); ConfirmMoveToCompletedICSFModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmMoveToCompletedICSFModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

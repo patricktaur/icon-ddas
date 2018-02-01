@@ -186,7 +186,9 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     get filteredRecords() {
-        return this.PrincipalInvestigators;
+        return this.PrincipalInvestigators.filter(x => 
+            x.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+            x.CurrentReviewStatus == ReviewStatusEnum.QCRequested);
     }
 
     setCompFormActiveValue(DataItem: PrincipalInvestigatorDetails) {
@@ -385,6 +387,15 @@ export class ReviewCompletedICSFComponent implements OnInit {
     resetValues(){
         this.selectedQCVerifier = "";
         this.requestorComment = "";
+    }
+
+    moveToCompletedICSF(){
+        this.service.moveReviewCompletedToCompleted(this.complianceFormId)
+        .subscribe((item: boolean) =>{
+            this.LoadPrincipalInvestigators();
+        },
+        error => {
+        });
     }
 
     get diagnostic() { return JSON.stringify(this.audit); }

@@ -420,6 +420,14 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    moveReviewCompletedToCompleted(complianceFormId: string){
+        return this.http.get(this._baseUrl + 'Search/MoveReviewCompletedToCompleted?ComplianceFormId=' + complianceFormId, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     saveCompFormGeneralNInvestigatorsNOptionalSites(form: ComplianceFormA) {
         let body = JSON.stringify(form);
         return this.http.post(this._baseUrl + 'search/UpdateCompFormGeneralNInvestigators', body, this._options)
