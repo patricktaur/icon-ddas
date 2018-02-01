@@ -33,7 +33,6 @@ namespace DDAS.API.Controllers
             return Ok(_Audit.RequestQC(Form));
         }
 
-
         [Route("RequestQC1")]
         [HttpPost]
         // public async Task<HttpResponseMessage> PostFormData()
@@ -79,9 +78,6 @@ namespace DDAS.API.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "ok");
             
         }
-
-        
-
 
         [Route("GetQC")]
         [HttpGet]
