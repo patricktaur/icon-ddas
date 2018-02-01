@@ -15,7 +15,7 @@ namespace DDAS.Models.ViewModels
         [System.Diagnostics.DebuggerStepThroughAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-        [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+        [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://tempuri.org/", IsNullable = false)]
         public partial class ddRequest
         {
 
@@ -72,6 +72,7 @@ namespace DDAS.Models.ViewModels
         [System.Diagnostics.DebuggerStepThroughAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+        [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://tempuri.org/", IsNullable = false)]
         public partial class ddRequestProject
         {
 
@@ -112,6 +113,7 @@ namespace DDAS.Models.ViewModels
         [System.Diagnostics.DebuggerStepThroughAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+        [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://tempuri.org/", IsNullable = false)]
         public partial class ddRequestInstitute
         {
 
@@ -227,6 +229,7 @@ namespace DDAS.Models.ViewModels
         [System.Diagnostics.DebuggerStepThroughAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+        [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://tempuri.org/", IsNullable = false)]
         public partial class ddRequestInvestigator
         {
 
