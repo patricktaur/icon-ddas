@@ -231,6 +231,7 @@ namespace DDAS.API.Providers
             IDictionary<string, string> data = new Dictionary<string, string>
             {
                 { "userName", user.UserName },
+                { "userFullName", user.UserFullName }
             };
             foreach (string role in roles)
             {
@@ -238,6 +239,5 @@ namespace DDAS.API.Providers
             }
             return new AuthenticationProperties(data);
         }
-
     }
 }

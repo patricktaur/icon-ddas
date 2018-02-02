@@ -94,7 +94,8 @@ namespace DDAS.Services.AuditService
                 QCViewModel.RecId = QCReview.RecId;
                 QCViewModel.ComplianceFormId = Form.RecId.Value;
                 QCViewModel.PrincipalInvestigator =
-                    Form.InvestigatorDetails.FirstOrDefault().Name;
+                    Form.InvestigatorDetails.First().Name;
+                QCViewModel.InvestigatorCount = Form.InvestigatorDetails.Count;
                 QCViewModel.ProjectNumber = Form.ProjectNumber;
                 QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
                 QCViewModel.QCVerifier = Form.QCVerifier;
@@ -251,9 +252,7 @@ namespace DDAS.Services.AuditService
                 var QCSummary = new QCSummaryViewModel();
                 QCSummary.Investigator =
                     finding.InvestigatorName;
-                QCSummary.SourceName =
-                    Form.SiteSources.Find(x =>
-                    x.Id == finding.SiteSourceId).SiteShortName;
+                QCSummary.SourceId = finding.SiteSourceId.Value;
                 QCSummary.CategoryEnumString =
                     GetCategoryEnumString(comment.CategoryEnum);
                 QCSummary.FindingId = finding.Id; //Patrick 14Jan2017

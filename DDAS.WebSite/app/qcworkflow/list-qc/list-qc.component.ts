@@ -50,6 +50,13 @@ export class ListQCComponent implements OnInit {
             });
     }
 
+    addInvestigatorCount(list: QCListViewModel[]){
+        this.qcList.forEach(record => {
+            if(record.InvestigatorCount > 0)
+                record.PrincipalInvestigator += " + " + record.InvestigatorCount;
+        });
+    }
+
     status(statusEnum: number){
         return this.compFormLogic.getReviewStatus(statusEnum);
     }

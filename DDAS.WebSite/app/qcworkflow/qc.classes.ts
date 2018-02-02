@@ -11,6 +11,7 @@ export class QCListViewModel {
         CompletedOn: Date;
         Status: ReviewStatusEnum;
         PrincipalInvestigator: string;
+        InvestigatorCount: number;
         ProjectNumber: string;
         ProjectNumber2: string;
 }

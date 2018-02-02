@@ -87,7 +87,9 @@ export class EditQCComponent implements OnInit {
     private pageChanged: boolean = false;
     private recordToDelete: Finding = new Finding;
     public Attachments: string[];
-    
+    public modalTitle: string;
+    public modalText: string;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -309,13 +311,6 @@ export class EditQCComponent implements OnInit {
         return CommentCategoryEnum[categoryEnum];
     }
 
-    getSourceName(finding: Finding){
-        if (finding){
-            return this.complianceForm.SiteSources.find( x=> x.Id == finding.SiteSourceId).SiteShortName;
-        }
-        //return "";
-    }
-
     getType(finding: Finding){
         if (finding ){
             if (finding.ReviewId == this.QCVerifierReview.RecId){
@@ -427,6 +422,15 @@ export class EditQCComponent implements OnInit {
             },
             error => {
             });
+    }
+
+    setValues(actionType: string){
+        switch(actionType){
+            case "submitQC": this.modalTitle = "Confirm QC Submit";
+                this.modalText = "are you sure you want to submit QC?";
+            case "submitQCCorrection": this.modalTitle = "Confirm Submit QC Correction";
+                this.modalText = "are you sure you want to submit QC Correction?";
+        }
     }
 
     formValueChanged() {

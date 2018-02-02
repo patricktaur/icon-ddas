@@ -499,6 +499,7 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
         public string AssignedTo { get; set; }
+        public string AssignedToFullName { get; set; }
         public string Reviewer { get; set; }
         public string QCVerifier { get; set; }
         public bool UndoQCRequest { get; set; }
@@ -983,10 +984,9 @@ namespace DDAS.Models.Entities.Domain
 
     }
 
-
 #endregion
 
-#region ByPatrick
+    #region ByPatrick
 
 public class MatchedRecord
     {

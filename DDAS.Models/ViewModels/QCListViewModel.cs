@@ -19,6 +19,7 @@ namespace DDAS.Models.ViewModels
         public DateTime? CompletedOn { get; set; }
         public ReviewStatusEnum Status { get; set; }
         public string PrincipalInvestigator { get; set; }
+        public int InvestigatorCount { get; set; }
         public string ProjectNumber { get; set; }
         public string ProjectNumber2 { get; set; }
     }

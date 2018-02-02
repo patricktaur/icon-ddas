@@ -56,7 +56,7 @@
 									{{item.InvestigatorName}}
 								</td>
 								<td class="text-left">
-									{{getSourceName(item)}}
+									{{item.SiteSourceId}}
 								</td>
 								<td class="text-left">
 									{{getType(item)}}
@@ -138,10 +138,10 @@
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
-			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
+			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="SubmitQCConfirmModal.open()">Submit QC</button>
 			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
 			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 
-				(click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">
+				(click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
 				Submit QC Corrections
 			</button>
 		</div>
@@ -213,5 +213,29 @@
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="undoQCSubmit(); ConfirmUndoModal.close()">Confirm Undo</button>
 		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+<modal #ConfirmQCSubmitModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm QC Submit</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Submit QC?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="submit(); ConfirmQCSubmitModal.close()">Confirm Submit QC</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+<modal #ConfirmQCCorrectionSubmitModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Submit QC Corrections</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Submit QC Corrections?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="submitQCByReviewer(); ConfirmQCCorrectionSubmitModal.close()">Confirm Submit QC Corrections</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

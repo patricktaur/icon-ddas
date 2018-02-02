@@ -2401,6 +2401,7 @@ namespace DDAS.Services.Search
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
             }
             item.AssignedTo = compForm.AssignedTo;
+            item.AssignedToFullName = GetUserFullName(compForm.AssignedTo);
             item.Status = compForm.Status;
             item.StatusEnum = compForm.StatusEnum;
             item.ExtractionErrorInvestigatorCount = compForm.ExtractionErrorInvestigatorCount;

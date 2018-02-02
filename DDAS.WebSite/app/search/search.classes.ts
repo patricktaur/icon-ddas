@@ -154,6 +154,7 @@ export class PrincipalInvestigatorDetails {
     SearchStartedOn: Date;
     Status: string;
     AssignedTo: string;
+    AssignedToFullName: string;
     Active: boolean;
     StatusEnum: ComplianceFormStatusEnum;
     Reviewer: string;

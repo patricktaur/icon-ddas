@@ -454,4 +454,17 @@ export class CompFormLogicService {
         else
             return true;
     }
+
+    canReassignOrClearReassignment(currentReviewStatus: ReviewStatusEnum){
+        if(currentReviewStatus == ReviewStatusEnum.SearchCompleted ||
+            currentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+            currentReviewStatus == ReviewStatusEnum.ReviewCompleted)
+            return true;
+        else
+            return false;
+    }
+
+    getUserFullName(){
+        return this.authService.userFullName;
+    }    
 }
