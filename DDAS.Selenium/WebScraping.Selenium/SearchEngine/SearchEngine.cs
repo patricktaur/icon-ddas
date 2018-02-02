@@ -426,7 +426,7 @@ namespace WebScraping.Selenium.SearchEngine
         {
             foreach (var process in Process.GetProcessesByName("phantomjs"))
             {
-                process.Dispose();
+                process.Kill();
             }
 
             //if (_Driver != null)
