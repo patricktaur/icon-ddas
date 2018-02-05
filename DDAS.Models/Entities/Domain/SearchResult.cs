@@ -988,7 +988,7 @@ namespace DDAS.Models.Entities.Domain
 
     #region ByPatrick
 
-public class MatchedRecord
+    public class MatchedRecord
     {
         public bool IsFullMatch { get; set; }
         public int MatchCount { get; set; }
