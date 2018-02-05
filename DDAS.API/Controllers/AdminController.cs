@@ -226,5 +226,12 @@ namespace DDAS.API.Controllers
             return Ok(_AppAdminService.GetiSprintToDDASLog());
         }
         #endregion
+
+        [Route("DDAStoiSprintLog")]
+        [HttpGet]
+        public IHttpActionResult GetDDAStoiSprintLog()
+        {
+            return Ok(_AppAdminService.GetDDtoiSprintLog());
+        }
     }
 }

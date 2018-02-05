@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 using static DDAS.Models.ViewModels.RequestPayloadforiSprint;
@@ -12,7 +7,7 @@ using System.Globalization;
 using System.Xml.Serialization;
 using System.Xml;
 using DDAS.Data.Mongo;
-using DDAS.DataExtractor;
+using DDAS.Models.Entities.Domain;
 using WebScraping.Selenium.SearchEngine;
 using DDAS.Services.Search;
 
@@ -60,7 +55,7 @@ namespace DDAS.API.WS
             DueDiligenceiSprintRequestDDResults r = new DueDiligenceiSprintRequestDDResults();
 
             project p = new project();
-            institutuions i = new institutuions();
+            institutions i = new institutions();
 
             p.projectNumber = "09002";
             p.sponsorProtocolNumber = "202";
@@ -68,7 +63,7 @@ namespace DDAS.API.WS
             //i.checksCompleted.check.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
 
             r.project = p;
-            //r.institutuions = i;
+            //r.institutions = i;
 
             x.DDResults = r;
             b.DueDiligenceiSprintRequest = x;
@@ -131,11 +126,11 @@ namespace DDAS.API.WS
 
             r.project = p;
 
-            //<<<<<<<<<<< institutuions
+            //<<<<<<<<<<< institutions
 
-            institutuions i = new institutuions();
-            institutuionsChecksCompleted ichk = new institutuionsChecksCompleted();
-            institutuionsChecksCompletedCheck ichkchk = new institutuionsChecksCompletedCheck();
+            institutions i = new institutions();
+            institutionsChecksCompleted ichk = new institutionsChecksCompleted();
+            institutionsChecksCompletedCheck ichkchk = new institutionsChecksCompletedCheck();
             ichkchk.name = "institution world check";
             ichkchk.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
@@ -143,8 +138,8 @@ namespace DDAS.API.WS
             i.checksCompleted = ichk;
             i.instituteComplianceIssue = true;
 
-            institutuionsDdFindings iddf = new institutuionsDdFindings();
-            institutuionsDdFindingsFinding iddff = new institutuionsDdFindingsFinding();
+            institutionsDdFindings iddf = new institutionsDdFindings();
+            institutionsDdFindingsFinding iddff = new institutionsDdFindingsFinding();
 
             iddff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
             iddff.type = "Regulatory";
@@ -156,7 +151,7 @@ namespace DDAS.API.WS
             iddf.finding = iddff;
             i.ddFindings = iddf;
 
-            r.institutuions = i;
+            r.institutions = i;
 
             //>>>>>>>>>>>>>>>>>
 
@@ -166,8 +161,8 @@ namespace DDAS.API.WS
             investigatorResults irs = new investigatorResults();
             investigatorResultsInvestigatorResult ir = new investigatorResultsInvestigatorResult();
 
-            ir.investigatorId = 101010;
-            ir.memberId = 101010;
+            ir.investigatorId = "101010";
+            ir.memberId = "101010";
             ir.firstName = "Srinivas";
             ir.middleName = "A";
             ir.lastName = "Suri";
@@ -257,155 +252,14 @@ namespace DDAS.API.WS
                 var _config = new Config();
                 var _SearchEngine = new SearchEngine(_uow, _config);
                 ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
-                var objCF = c.GetComplianceForm(Guid.Parse(txtRecid.Text));
+                txtBody.Text =  c.ExportDataToIsprint(Guid.Parse(txtRecid.Text)).Message;
 
-
-                Envelope en = new Envelope();
-                EnvelopeBody b = new EnvelopeBody();
-
-                DueDiligenceiSprintRequest x = new DueDiligenceiSprintRequest();
-                CultureInfo ci = CultureInfo.InvariantCulture;
-
-                DueDiligenceiSprintRequestHeader h = new DueDiligenceiSprintRequestHeader();
-                h.sender = "DDAS";
-                h.timestamp = DateTime.Now.ToUniversalTime();
-                h.message_id = objCF.RecId.ToString();
-
-                x.header = h;
-
-                DueDiligenceiSprintRequestDDResults r = new DueDiligenceiSprintRequestDDResults();
-
-                //<<<<<<<<<< project
-
-                project p = new project();
-
-                p.projectNumber = objCF.ProjectNumber;
-                p.sponsorProtocolNumber = objCF.SponsorProtocolNumber;
-
-                r.project = p;
-
-                //<<<<<<<<<<< institutuions
-
-                institutuions i = new institutuions();
-                institutuionsChecksCompleted ichk = new institutuionsChecksCompleted();
-                institutuionsChecksCompletedCheck ichkchk = new institutuionsChecksCompletedCheck();
-                ichkchk.name = "institution world check";
-                ichkchk.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-
-                ichk.check = ichkchk;
-                i.checksCompleted = ichk;
-                i.instituteComplianceIssue = true;
-
-                institutuionsDdFindings iddf = new institutuionsDdFindings();
-                institutuionsDdFindingsFinding iddff = new institutuionsDdFindingsFinding();
-
-                iddff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-                iddff.type = "Regulatory";
-                iddff.regulatoryCode = "OAI";
-                iddff.regulatoryDeficiency = "No";
-                iddff.worldCheckFinding = "No";
-                iddff.comment = "Test123";
-
-                iddf.finding = iddff;
-                i.ddFindings = iddf;
-
-                r.institutuions = i;
-
-                //>>>>>>>>>>>>>>>>>
-
-
-                //<<<<<<<<<<<<<<<<< investigatorResults
-
-                investigatorResults irs = new investigatorResults();
-
-
-                investigatorResultsInvestigatorResult[] ir = new investigatorResultsInvestigatorResult[objCF.InvestigatorDetails.Count];
-                Int32 elem = 0;
-
-                foreach (var invest in objCF.InvestigatorDetails)
-                {
-                    ir[elem].investigatorId = 101010;
-                    ir[elem].memberId = 101010;
-                    ir[elem].firstName = "Srinivas";
-                    ir[elem].middleName = "A";
-                    ir[elem].lastName = "Suri";
-                    ir[elem].ddStatus = "Available";
-                    ir[elem].ddCompletedDate = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-
-
-                    investigatorResultsInvestigatorResultChecksCompleted irschk = new investigatorResultsInvestigatorResultChecksCompleted();
-                    investigatorResultsInvestigatorResultChecksCompletedCheck irschkchk = new investigatorResultsInvestigatorResultChecksCompletedCheck();
-
-                    irschkchk.name = "investigator world check";
-                    irschkchk.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-
-                    irschk.check = irschkchk;
-                    ir[elem].checksCompleted = irschk;
-
-
-                    ir[elem].dmc9002CheckDate = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-                    ir[elem].dmc9002Exclusion = "Exclusion";
-
-                    investigatorResultsInvestigatorResultDdFindings irsddf = new investigatorResultsInvestigatorResultDdFindings();
-                    investigatorResultsInvestigatorResultDdFindingsFinding irsddff = new investigatorResultsInvestigatorResultDdFindingsFinding();
-
-                    irsddff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-                    irsddff.type = "Regulatory";
-                    irsddff.regulatoryCode = "OAI";
-                    irsddff.regulatoryDeficiency = "No";
-                    irsddff.worldCheckFinding = "No";
-                    irsddff.comment = "TestInv";
-
-                    irsddf.finding = irsddff;
-                    ir[elem].ddFindings = irsddf;
-                    elem += 1;
-                }
-
-                irs.investigatorResult = ir;
-              
-                r.investigatorResults = irs;
-
-                //>>>>>>>>>>>>>>>>>>>>>>
-
-                x.DDResults = r;
-                b.DueDiligenceiSprintRequest = x;
-                en.Body = b;
-
-
-                //XmlTypeMapping myTypeMapping = new SoapReflectionImporter().ImportTypeMapping(typeof(DueDiligenceiSprintRequest));
-                //XmlSerializer xsSubmit = new XmlSerializer(myTypeMapping);
-
-
-                XmlSerializer xsSubmit = new XmlSerializer(typeof(Envelope));
-                //var subReq = new MyObject();
-                string xml = "";
-
-                using (var sww = new Utf8StringWriter())
-                {
-                    using (XmlWriter writer = XmlWriter.Create(sww))
-                    {
-                        xsSubmit.Serialize(writer, en);
-                        xml = sww.ToString(); // Your XML
-                    }
-                }
-
-
-                //using (StringWriter writer = new StringWriter())
-                //{
-                //    xsSubmit.Serialize(writer, en);
-                //    xml = writer.ToString();
-                //}
-
-
-                //xml = ObjectToSOAP(en);
-
-                txtBody.Text = xml;
-
+                //var objCF = c.GetComplianceForm(Guid.Parse(txtRecid.Text));
 
             }
             catch (Exception ex)
             {
-                
+                throw ex;
             }
 
            
@@ -418,6 +272,10 @@ namespace DDAS.API.WS
             if (Convert.ToInt32(txtMode.Text) == 2)
             {
                 test2();
+            }
+            else if (Convert.ToInt32(txtMode.Text) == 3)
+            {
+                test3();
             }
             else
             {

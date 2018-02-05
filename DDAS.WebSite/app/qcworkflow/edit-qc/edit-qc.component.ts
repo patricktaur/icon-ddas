@@ -86,6 +86,7 @@ export class EditQCComponent implements OnInit {
     public findingRecordToEdit: Finding;
     private pageChanged: boolean = false;
     private recordToDelete: Finding = new Finding;
+    public Attachments: string[];
     
     constructor(
         private route: ActivatedRoute,
@@ -107,6 +108,7 @@ export class EditQCComponent implements OnInit {
         });
         //this.complianceForm = new ComplianceFormA;
         this.loadComplianceForm();
+        this.loadAttachments();
         //this.listQCSummary();
 
         //this.compFormLogic.CanDisplayFindingComponent
@@ -124,6 +126,15 @@ export class EditQCComponent implements OnInit {
             });
     }
 
+    loadAttachments(){
+        this.auditService.getAttachmentsList(this.complianceFormId)
+            .subscribe((item: any) => {
+                this.Attachments = item;
+            },
+            error => {
+                
+            });
+    }
     getCurrentReviewStatus() {
         this.service.getCurrentReviewStatus(this.complianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
@@ -135,6 +146,11 @@ export class EditQCComponent implements OnInit {
             });
     }
 
+    getAttachmentDownloadURL(fileName: string){
+        return "Search/DownloadAttachmentFile?formId=" + this.complianceFormId + "&fileName=" + fileName;
+        // return "Search/DownloadAttachmentFile?formId=" + this.complianceFormId
+        // + "&fileName=" + fileName;
+    }
     // get QCVerifiedFindings(){
     //     return this.complianceForm.Findings.find(
     //         x => x.Comments[1].CategoryEnum == QCVer

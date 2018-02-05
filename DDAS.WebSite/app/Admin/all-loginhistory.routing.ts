@@ -19,6 +19,7 @@ import { ExtractionLogComponent } from './extraction-log.component';
 import { DataFileComponent } from './data-file.component';
 import { AuthGuard } from '../auth/auth-guard.service';
 import { ISprintToDDASLogComponent } from './isprint-to-ddas-log.component';
+import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
 
 export const LoggedInUserRoutes: Routes = [
   { path: 'all-loginhistory', component: LoginHistoryComponent, canActivate: [AuthGuard] },
@@ -37,7 +38,9 @@ export const LoggedInUserRoutes: Routes = [
   { path: 'exception-logger', component: ExceptionLogComponent, canActivate: [AuthGuard] },
   { path: 'extraction-log', component: ExtractionLogComponent, canActivate: [AuthGuard] },
   { path: 'data-file', component: DataFileComponent, canActivate: [AuthGuard] },
-  { path: 'isprint-to-ddas-log', component: ISprintToDDASLogComponent, canActivate: [AuthGuard] }
+  { path: 'isprint-to-ddas-log', component: ISprintToDDASLogComponent, canActivate: [AuthGuard] },
+  { path: 'ddas-to-isprint-log', component: DDAStoiSprintLogComponent, canActivate: [AuthGuard] }
+
   //{ path: 'error-log', component: ErrorLogComponent},
 ]
 

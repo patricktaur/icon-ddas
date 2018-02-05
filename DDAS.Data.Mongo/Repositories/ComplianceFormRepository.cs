@@ -98,7 +98,7 @@ namespace DDAS.Data.Mongo.Repositories
 
 
         //Has Concurrency check:
-        //Pending: Update Assignment History:
+        //Pending: Include Update Assignment History :
         public bool UpdateAssignedTo(Guid id, string AssignedBy, string AssignedFrom, string AssignedTo)
         {            
             //AssignedFrom = current AssignedTo. -- for Concurrency check. If compForm.AssignedTo <> AssignedFrom then throw exception.
