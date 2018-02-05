@@ -39,11 +39,6 @@ namespace DDAS.DataExtractor
 
         static void ExtractData(int? SiteNum = null)
         {
-            foreach (var process in Process.GetProcessesByName("PhantomJs"))
-            {
-                process.Kill();
-            }
-
             MongoMaps.Initialize();
             //string appRootFolder = "";
             string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];

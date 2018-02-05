@@ -440,9 +440,18 @@ namespace WebScraping.Selenium.SearchEngine
             _searchPage.SaveData();
         }
 
+        private void KillPhantomJsInstace()
+        {
+            foreach (var process in Process.GetProcessesByName("phantomjs"))
+            {
+                process.Kill();
+            }
+        }
+
         public void ExtractData(List<SitesToSearch> query, 
             ILog log)
         {
+            KillPhantomJsInstace();
             var DBSites = query.Where(x => x.ExtractionMode.ToLower() == "db").ToList();
 
             var NewLog = new Log();
@@ -479,6 +488,8 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void ExtractData(SiteEnum siteEnum, ILog log)
         {
+            KillPhantomJsInstace();
+
             var NewLog = new Log();
 
             var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
