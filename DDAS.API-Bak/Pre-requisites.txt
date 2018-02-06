@@ -1,9 +1,0 @@
-Data files extracted by the extractor must be stored in below folders.
-
-Create these folders, if they do not exist
-
-\DataFiles\Downloads\CIILFolder ==> for weblink clinical investigator inspection list(CIIL/CDER)
-\DataFiles\Downloads\ExclusionDatabase ==> for weblink Exclusion Database Search
-\DataFiles\Downloads\FDAWarningLetters ==> for weblink FDA Warning Letters and Responses
-\DataFiles\Downloads\SAM ==> for weblink System for Award Management
-\DataFiles\Downloads\SDN ==> for weblink Specially Designated Nationals List

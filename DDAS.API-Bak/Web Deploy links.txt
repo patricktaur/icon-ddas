@@ -1,6 +1,0 @@
-https://www.troyhunt.com/you-deploying-it-wrong-teamcity_24/
-
-https://technet.microsoft.com/en-us/library/dd569089(WS.10).aspx
-
-https://stackoverflow.com/questions/20646941/prevent-overwriting-of-a-file-when-deploying
-

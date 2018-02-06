@@ -1,8 +1,0 @@
-C:\Development\p926-ddas\DDAS.Models\bin\Debug\DDAS.Models.dll.config
-C:\Development\p926-ddas\DDAS.Models\bin\Debug\DDAS.Models.dll
-C:\Development\p926-ddas\DDAS.Models\bin\Debug\DDAS.Models.pdb
-C:\Development\p926-ddas\DDAS.Models\bin\Debug\MongoDB.Bson.dll
-C:\Development\p926-ddas\DDAS.Models\bin\Debug\MongoDB.Bson.xml
-C:\Development\p926-ddas\DDAS.Models\obj\Debug\DDAS.Models.csprojResolveAssemblyReference.cache
-C:\Development\p926-ddas\DDAS.Models\obj\Debug\DDAS.Models.dll
-C:\Development\p926-ddas\DDAS.Models\obj\Debug\DDAS.Models.pdb
