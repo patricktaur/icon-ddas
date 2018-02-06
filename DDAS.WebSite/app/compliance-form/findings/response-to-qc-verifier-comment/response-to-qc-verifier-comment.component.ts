@@ -14,13 +14,11 @@ export class ResponseToQCVerifierCommentComponent implements OnInit {
     private pageChanged: boolean = false;
     
     ngOnInit(){
-        // if(this.Finding.Comments[0].CategoryEnum == 0)
-        //     this.Finding.Comments[0].ReviewerCategoryEnum = 5; //CorrectionPgending
     }
 
     formValueChanged(){
         this.pageChanged = true;
-        this.ValueChanged.emit() ;
+        this.ValueChanged.emit();
     } 
 
     Split = (RecordDetails: string) => {

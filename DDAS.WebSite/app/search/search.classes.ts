@@ -219,6 +219,8 @@ export class ComplianceFormA {
     CurrentReviewStatus: ReviewStatusEnum;
     Reviewer: string;
     QCVerifier: string;
+    QCGeneralComment: Comment;
+    QCAttachmentComment: Comment;
 }
 
 export class InvestigatorSearched {
@@ -345,6 +347,7 @@ export class Finding {
 export class Comment {
     ReviewId: string;
     FindingComment: string;
+    ReviewerComment: string;
     AddedOn: Date;
     CorrectedOn: Date;
     CategoryEnum: CommentCategoryEnum;
@@ -453,7 +456,9 @@ export enum ReviewStatusEnum {
     QCInProgress,
     QCFailed,
     QCPassed,
-    QCCorrectionInProgress
+    QCCorrectionInProgress,
+    ExportedToiSprint,
+    QCCompleted
 }
 
 export enum ReviewerRoleEnum {
@@ -470,7 +475,9 @@ export enum CommentCategoryEnum {
     CorrectionPending,
     CorrectionCompleted,
     Accepted,
-    NotApplicable
+    NotApplicable,
+    ExcludeFinding,
+    NotAccepted
 }
 
 export enum UndoEnum {

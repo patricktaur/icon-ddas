@@ -46,7 +46,8 @@
 								<th>Comment/Observation Type</th>
 								<th>Category</th>
 								<th>Observation/Comment</th>
-								<th>Response to QC</th>
+								<th>Response Category</th>
+								<th>Response</th>
 								<th>Open</th>
 							</tr>
 						</thead>
@@ -69,6 +70,9 @@
 								</td>
 								<td class="text-left">
 									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
+								</td>
+								<td class="text-left">
+									{{item.Comments[0].ReviewerComment}}
 								</td>
 								<td>
 									<!-- *ngIf="!isSubmitted" -->
@@ -106,7 +110,6 @@
 								</tr>
 							</tbody>
 						</table>
-					
 				</div>
 				<div id="comp-form" class="tab-pane fade">
 					<br/>
@@ -120,12 +123,12 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<br/>
-			<div class="row">
+			<!-- <div class="row">
 				<div class="col-md-3">
 					<div class="form-group">
 						<label for="Status">QC Response:</label>
 						<select class="form-control" [(ngModel)]="status" [disabled]="disableQCResponse">
-							<option value=-1 selected="selected">---select---</option>
+							<option value=-1 selected="selected">select</option>
 							<option value=0>Failed</option>
 							<option value=1>Passed</option>
 						</select>
@@ -133,12 +136,12 @@
 				</div>
 				<div class="col-md-9">
 				</div>
-			</div>
+			</div> -->
 
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
-			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="SubmitQCConfirmModal.open()">Submit QC</button>
+			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.open()">Submit QC</button>
 			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
 			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 
 				(click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">

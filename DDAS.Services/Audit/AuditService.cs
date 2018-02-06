@@ -141,8 +141,8 @@ namespace DDAS.Services.AuditService
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
             }
 
-            var QCFailedReview = Form.Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCFailed);
+            var QCCompletedReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCCompleted);
 
             var QCCorrectionReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.QCCorrectionInProgress);
@@ -150,7 +150,7 @@ namespace DDAS.Services.AuditService
             var CompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);
 
-            if (QCFailedReview != null &&
+            if (QCCompletedReview != null &&
                 QCCorrectionReview == null &&
                 CompletedReview == null &&
                 Form.AssignedTo.ToLower() == LoggedInUserName)
@@ -158,12 +158,12 @@ namespace DDAS.Services.AuditService
                 Form.Reviews.Add(new Review()
                 {
                     RecId = Guid.NewGuid(),
-                    AssignedOn = QCFailedReview.CompletedOn.Value,
-                    AssigendTo = QCFailedReview.AssignedBy,
-                    AssignedBy = QCFailedReview.AssigendTo,
+                    AssignedOn = QCCompletedReview.CompletedOn.Value,
+                    AssigendTo = QCCompletedReview.AssignedBy,
+                    AssignedBy = QCCompletedReview.AssigendTo,
                     StartedOn = DateTime.Now,
                     Status = ReviewStatusEnum.QCCorrectionInProgress,
-                    PreviousReviewId = QCFailedReview.RecId
+                    PreviousReviewId = QCCompletedReview.RecId
                 });
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
             }
@@ -182,17 +182,9 @@ namespace DDAS.Services.AuditService
                 UpdateReviewStatus(CurrentQCReview,
                     Form.Findings.Where(x => x.IsAnIssue).ToList());
             }
-            else if (CurrentQCReview.Status == ReviewStatusEnum.QCPassed)
+            else if (CurrentQCReview.Status == ReviewStatusEnum.QCCompleted)
             {
-                CurrentQCReview.Status = ReviewStatusEnum.Completed;
-                CurrentQCReview.CompletedOn = DateTime.Now;
-                SendQCSubmitMail(CurrentQCReview.AssignedBy,
-                    CurrentQCReview.AssigendTo,
-                    Form.InvestigatorDetails.First().Name,
-                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
-            }
-            else if(CurrentQCReview.Status == ReviewStatusEnum.QCFailed)
-            {
+                //CurrentQCReview.Status = ReviewStatusEnum.QCCompleted;
                 CurrentQCReview.CompletedOn = DateTime.Now;
                 SendQCSubmitMail(CurrentQCReview.AssignedBy,
                     CurrentQCReview.AssigendTo,
@@ -200,7 +192,6 @@ namespace DDAS.Services.AuditService
                     (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
             }
 
-            //Save QC is currently equivalent to submitting the QC
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return true;
         }
@@ -208,6 +199,7 @@ namespace DDAS.Services.AuditService
         private void UpdateReviewStatus(Review Review,
             List<Finding> FindingsWithIssues)
         {
+            //FindingsWithIssues = FindingsWithIssues.Where(x => x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.ExcludeFinding);
             FindingsWithIssues = FindingsWithIssues.Where(x =>
             x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
             .ToList();
@@ -326,8 +318,7 @@ namespace DDAS.Services.AuditService
                 throw new Exception("Could not find compliance form");
 
             var QCFailedOrPassedReview = Form.Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCFailed ||
-                x.Status == ReviewStatusEnum.QCPassed ||
+                x.Status == ReviewStatusEnum.QCCompleted ||
                 x.Status == ReviewStatusEnum.Completed);
 
             if (QCFailedOrPassedReview != null)
@@ -353,7 +344,7 @@ namespace DDAS.Services.AuditService
                 throw new Exception("Could not find compliance form");
 
             var QCFailedReview = Form.Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCFailed);
+                x.Status == ReviewStatusEnum.QCCompleted);
 
             var CompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);
@@ -382,6 +373,8 @@ namespace DDAS.Services.AuditService
                 case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
                 case CommentCategoryEnum.Accepted: return "Accepted";
                 case CommentCategoryEnum.NotApplicable: return "Not Applicable";
+                case CommentCategoryEnum.ExcludeFinding: return "Exclude Finding";
+                case CommentCategoryEnum.NotAccepted: return "Not Accepted";
                 default: throw new Exception("Invalid CommentCategoryEnum");
             }
         }

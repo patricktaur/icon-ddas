@@ -887,8 +887,6 @@ namespace DDAS.Services.Search
 
                     dbForm.Reviews.Clear();
                     dbForm.Reviews.AddRange(form.Reviews);
-                    dbForm.Comments.Clear();
-                    dbForm.Comments.AddRange(form.Comments);
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
@@ -2427,7 +2425,7 @@ namespace DDAS.Services.Search
         {
             //required for Undo action in completed icsf page
             var QCReview = Form.Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCFailed);
+                x.Status == ReviewStatusEnum.QCCompleted);
 
             var CompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);

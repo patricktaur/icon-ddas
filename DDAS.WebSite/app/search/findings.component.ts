@@ -444,7 +444,7 @@ export class FindingsComponent implements OnInit {
                 let comment = new Comment();
                 // comment.ReviewId = review.RecId;
                 comment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                comment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
+                comment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
                 // comments.push(comment);
                 // let emptyComment = new Comment();
                 // emptyComment.CategoryEnum = 0;
@@ -552,6 +552,7 @@ export class FindingsComponent implements OnInit {
 
     SaveAndClose() {
         //formId : string, siteEnum:number, InvestigatorId:number, ReviewCompleted : boolean,  Findings:Finding[]
+
         let updateFindings = new UpdateFindigs;
 
         updateFindings.FormId = this.ComplianceFormId;

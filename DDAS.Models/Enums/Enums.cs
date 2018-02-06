@@ -83,7 +83,9 @@
         QCInProgress,
         QCFailed,
         QCPassed,
-        QCCorrectionInProgress
+        QCCorrectionInProgress,
+        ExportedToiSprint,
+        QCCompleted
     }
 
     public enum ReviewerRoleEnum
@@ -102,8 +104,11 @@
         CorrectionPending,
         CorrectionCompleted,
         Accepted,
-        NotApplicable
+        NotApplicable,
+        ExcludeFinding,
+        NotAccepted
     }
+
     public enum AdminDashboardReportType
     {
         OpeningBalance,

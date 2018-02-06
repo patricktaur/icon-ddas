@@ -507,7 +507,6 @@ export class SearchService {
         let body = JSON.stringify(form);
         return this.http.post(this._baseUrl + 'search/UpdateQCEditComplianceForm', body, this._options)
             .map((res: Response) => {
-                console.log("AAAAA");
                 return res.json();
             })
             .catch(this.handleError);
