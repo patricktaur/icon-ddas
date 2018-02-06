@@ -97,7 +97,7 @@ export class MultiFileSelectComponent implements OnInit {
     ) { }
     
 
-    fileChange(event) {
+    fileChange(event: any) {
         
         let fileList: FileList = event.target.files;
         if(fileList.length > 0) {
@@ -116,27 +116,27 @@ export class MultiFileSelectComponent implements OnInit {
         }
     }
 
-    @HostListener('dragover', ['$event']) onDragOver(event) {
+    @HostListener('dragover', ['$event']) onDragOver(event: any) {
         this.dragAreaClass = "droparea";
         event.preventDefault();
     }
 
-    @HostListener('dragenter', ['$event']) onDragEnter(event) {
+    @HostListener('dragenter', ['$event']) onDragEnter(event: any) {
         this.dragAreaClass = "droparea";
         event.preventDefault();
     }
 
-    @HostListener('dragend', ['$event']) onDragEnd(event) {
+    @HostListener('dragend', ['$event']) onDragEnd(event: any) {
         this.dragAreaClass = "dragarea";
         event.preventDefault();
     }
 
-    @HostListener('dragleave', ['$event']) onDragLeave(event) {
+    @HostListener('dragleave', ['$event']) onDragLeave(event: any) {
         this.dragAreaClass = "dragarea";
         event.preventDefault();
     }
 
-    @HostListener('drop', ['$event']) onDrop(event) {   
+    @HostListener('drop', ['$event']) onDrop(event: any) {   
         this.dragAreaClass = "dragarea";           
         event.preventDefault();
         event.stopPropagation();
