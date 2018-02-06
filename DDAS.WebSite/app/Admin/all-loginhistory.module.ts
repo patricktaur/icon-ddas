@@ -10,7 +10,8 @@ import {LoginHistoryService} from './all-loginhistory.service';
 import {SharedModule} from '../shared/shared.module'
 
 import {ErrorImagesComponent} from './error-images.component';
-import {ExtractionHistoryComponent} from './data-extraction-history.component';
+//import {ExtractionHistoryComponent} from './data-extraction-history.component';
+//import {DataExtractionStatusComponent} from '../data-extractor/reports/data-extraction-status.component'
 import {DataExtractionComponent} from './data-extraction.component';
 import {ManageSiteSourcesComponent} from './manage-site-sources.component';
 import {EditSiteSourceComponent} from './edit-site-source.component';
@@ -39,7 +40,7 @@ import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
   declarations: [
       LoginHistoryComponent,
       ErrorImagesComponent,
-      ExtractionHistoryComponent,
+      //DataExtractionStatusComponent,
       DataExtractionComponent,
       ManageSiteSourcesComponent,
       EditSiteSourceComponent,

@@ -4,7 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 //          appRoutingProviders } from './app.routing';
 import { LoginHistoryComponent } from './all-loginhistory.component';
 import { ErrorImagesComponent } from './error-images.component';
-import { ExtractionHistoryComponent } from './data-extraction-history.component';
+//import { ExtractionHistoryComponent } from './data-extraction-history.component';
+//import {DataExtractionStatusComponent} from '../data-extractor/reports/data-extraction-status.component'
 import { DataExtractionComponent } from './data-extraction.component';
 import { ManageSiteSourcesComponent } from './manage-site-sources.component';
 import { EditSiteSourceComponent } from './edit-site-source.component';
@@ -24,7 +25,7 @@ import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
 export const LoggedInUserRoutes: Routes = [
   { path: 'all-loginhistory', component: LoginHistoryComponent, canActivate: [AuthGuard] },
   { path: 'error-images', component: ErrorImagesComponent, canActivate: [AuthGuard] },
-  { path: 'data-extraction-history', component: ExtractionHistoryComponent, canActivate: [AuthGuard] },
+  
   { path: 'data-extraction', component: DataExtractionComponent, canActivate: [AuthGuard] },
   { path: 'manage-site-sources', component: ManageSiteSourcesComponent, canActivate: [AuthGuard] },
   { path: 'edit-site-source/:RecId', component: EditSiteSourceComponent, canActivate: [AuthGuard] },

@@ -9,6 +9,13 @@
 
 			<div class="navbar-collapse collapse sidebar-navbar-collapse">
 				<div class="alert alert-info" *ngIf="showLocation">{{appLocation}} </div>
+				<div >
+					<data-extraction-indicator1 
+					[ShowLinkToExecuteExtractorPage]="authService.isAdmin || authService.isAppAdmin">
+
+					</data-extraction-indicator1>
+				</div>
+	
 				<ul class="nav navbar-nav">
 					<li class="active">
 						<a data-toggle="collapse" data-target="#loggedInAccount" data-parent="#sidenav01" class="collapsed">
@@ -73,13 +80,28 @@
 							</li>
 
 							<li class="active" *ngIf="authService.isAdmin">
+								<a data-toggle="collapse" data-target="#data-extractor" data-parent="#sidenav01" class="collapsed">
+						 			Data Extractor<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
+								</a>
+								<div class="collapse" id="data-extractor" style="height: 0px;">
+									<ul class="nav nav-list  panel-body">
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extractor" routerLinkActive="active">Execture Data Extractor</a></li>
+									</ul>
+								</div>
+							</li>
+
+
+
+
+
+							<li class="active" *ngIf="authService.isAdmin">
 								<a data-toggle="collapse" data-target="#logs" data-parent="#sidenav01" class="collapsed">
 						 			Logs<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
 								</a>
 								<div class="collapse" id="logs" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-status" routerLinkActive="active">Extraction Status</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/extraction-log" routerLinkActive="active">Extraction Log</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/exception-logger" routerLinkActive="active">Error Logs</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/isprint-to-ddas-log" routerLinkActive="active">iSprint to DDAS Log</a></li>

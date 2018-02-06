@@ -65,7 +65,7 @@ namespace DDAS.DataExtractor
             IConfig _config = new Config();
             ISearchEngine searchEngine = new SearchEngine(uow, _config);
 
-            var extractData = new ExtractData(searchEngine);
+            var extractData = new ExtractData(searchEngine, uow);
 
             //_WriteLog = new LogText(_config.DataExtractionLogFile, true);
             _WriteLog = new DBLog(uow, "DDAS.Extractor", true);

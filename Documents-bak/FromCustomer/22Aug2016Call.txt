@@ -1,0 +1,46 @@
+1. Some urls cannot be accessed
+	PHS Administrative Actions Listing  
+	http://ori.hhs.gov/misconduct/AdminBulletinBoard.shtml : 
+		Page Not found
+	
+	HHS/OIG Corporate Integrity Agreements/Watch List
+	http://oig.hhs.gov/compliance/corporate-integrity-agreements/cia-documents.asp: 
+		Investigator name ?
+		
+	SAM/SYSTEM FOR AWARD MANAGEMENT	
+	https://www.sam.gov/portal/SAM/##11 : 
+		Login: pradeep_chavhan   UserName: India@16
+
+2. SearchResults
+Search
+NameToSearch – 200 char string
+DateOfSearch - datetime
+SearchedBy  - 100 char string
+StudyNo – 9 char string
+
+SearchResult
+SearchId
+Site
+Location
+MatchFound
+MatchConfirmed
+Comments
+		
+
+3. Responsive:
+	Search timings: 2 to 120 secs, Total for all 12 sites: 260 seconds, ~ 5 minutes.
+	
+4. Search and Verified - are they done by the same person?
+
+5. Principal Investigator / Sub Investigator - in form Investigator Compliance Search Form	
+	a. Search - do you want to specify Principal / Sub Investigator?
+
+6. IE 8 ?
+
+7. Number of users, 
+	Number of concurrent users		
+8. SOS - Single Sign on
+9. Database - MSSQL - use existing license
+ 
+
+	

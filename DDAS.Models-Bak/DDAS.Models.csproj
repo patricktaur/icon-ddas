@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D441E38F-0564-4688-872B-25127A7B3EC5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DDAS.Models</RootNamespace>
+    <AssemblyName>DDAS.Models</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MongoDB.Bson, Version=2.4.2.27, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.4.2\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\AppSettings.cs" />
+    <Compile Include="Entities\Domain\ApplicationSettings.cs" />
+    <Compile Include="Entities\Domain\BaseSiteData.cs" />
+    <Compile Include="Entities\Domain\LIveSiteScannerMemoryModel.cs" />
+    <Compile Include="Entities\Domain\SiteDataViewModel.cs" />
+    <Compile Include="Entities\Domain\ScanHistory.cs" />
+    <Compile Include="Entities\Domain\SearchResult.cs" />
+    <Compile Include="Entities\Domain\SiteData\AdequateAssuranceListSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\CBERClinicalInvestigatorInspectionSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\ClinicalInvestigatorDisqualificationSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\ClinicalInvestigatorInspectionSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\CorporateIntegrityAgreementsListSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\ERRProposalToDebarPageSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\ExclusionDatabaseSearchPageSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\FDADebarPageSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\FDAWarningLettersSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\PHSAdministrativeActionListingSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SAMSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SiteDataItemBase.cs" />
+    <Compile Include="Entities\Domain\SiteData\SpeciallyDesignatedNationalsListSiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementEntitySiteData.cs" />
+    <Compile Include="Entities\Domain\SiteData\SystemForAwardManagementPageSiteData.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\ExceptionLogger.cs" />
+    <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
+    <Compile Include="Entities\LogWSDDAS.cs" />
+    <Compile Include="Entities\LogWSISPRINT.cs" />
+    <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Interfaces\IAppAdminService.cs" />
+    <Compile Include="Interfaces\IAudit.cs" />
+    <Compile Include="Interfaces\IAuditEntity.cs" />
+    <Compile Include="Interfaces\IConfig.cs" />
+    <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\IGenerateOutputFile.cs" />
+    <Compile Include="Interfaces\ILog.cs" />
+    <Compile Include="Interfaces\IReports.cs" />
+    <Compile Include="Interfaces\ISearchEngine.cs" />
+    <Compile Include="Interfaces\ISearchPage.cs" />
+    <Compile Include="Interfaces\ISearchService.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Interfaces\IWriter.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="MyCar.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Domain\IRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IAssignmentHistoryRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IAuditRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ICBERClinicalInvestigatorInspectionRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorDisqualificationRespository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionListRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IClinicalInvestigatorInspectionRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IComplianceForm.cs" />
+    <Compile Include="Repository\Domain\SiteData\ICorporateIntegrityAgreementRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ICountryRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IDefaultSiteRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IERRProposalToDebarRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IExclusionDatabaseRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IExclusionDatabaseSearchRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IFDADebarPageRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IAdequateAssuranceListRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IFDAWarningLettersRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IFDAWarningRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ILoginDetailsRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IPHSAdministrativeActionListingRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IRoleRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISAMSiteData.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISaveSearchResultRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISDNSiteDataRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISiteSourceRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISpeciallyDesignatedNationalsRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISponsorProtocolRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISystemForAwardManagementEntityRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\ISysytemForAwardManagementRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IUserRepository.cs" />
+    <Compile Include="Repository\Domain\SiteData\IUserRole.cs" />
+    <Compile Include="Entities\Log.cs" />
+    <Compile Include="Repository\IExceptionLoggerRepository.cs" />
+    <Compile Include="Repository\ILogRepository.cs" />
+    <Compile Include="Repository\ILogWSDDASRepository.cs" />
+    <Compile Include="Repository\ILogWSISPRINTRepository.cs" />
+    <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
+    <Compile Include="ViewModels\AdminDashbordDrillDownViewModel.cs" />
+    <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
+    <Compile Include="ViewModels\CurrentReviewStatusViewModel.cs" />
+    <Compile Include="ViewModels\LogWDDDASViewModel.cs" />
+    <Compile Include="ViewModels\LogWSiSprintViewModel.cs" />
+    <Compile Include="ViewModels\QCListViewModel.cs" />
+    <Compile Include="ViewModels\CountryViewModel.cs" />
+    <Compile Include="ViewModels\DDASResponseModel.cs" />
+    <Compile Include="ViewModels\DefaultSitesViewModel.cs" />
+    <Compile Include="ViewModels\DownloadDataFilesViewModel.cs" />
+    <Compile Include="ViewModels\iSprintResponseModel.cs" />
+    <Compile Include="ViewModels\RequestPayloadforDDAS.cs" />
+    <Compile Include="ViewModels\ExceptionLoggerViewModel.cs" />
+    <Compile Include="ViewModels\ExtractionLogViewModel.cs" />
+    <Compile Include="ViewModels\InvestigatorReviewCompletedTimeVM.cs" />
+    <Compile Include="ViewModels\InvestigatorFindingViewModel.cs" />
+    <Compile Include="ViewModels\OpenInvestigationsViewModel.cs" />
+    <Compile Include="ViewModels\OutputFileViewModel.cs" />
+    <Compile Include="ViewModels\QCSummaryViewModel.cs" />
+    <Compile Include="ViewModels\ReportFilter.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="ViewModels\RequestPayloadforiSprint.cs" />
+    <Compile Include="ViewModels\Search\InstituteFindingsSummaryViewModel.cs" />
+    <Compile Include="ViewModels\SponsorViewModel.cs" />
+    <Compile Include="ViewModels\StudySpecificInvestigatorVM.cs" />
+    <Compile Include="ViewModels\UploadsViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
