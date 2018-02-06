@@ -1,6 +1,7 @@
 ConsoleApplication1/bin/
 ConsoleApplication1/obj/
 DDAS.API/bin/
+DDAS.API/Web.config
 DDAS.API/obj/
 DDAS.EF/bin/
 DDAS.EF/obj/

@@ -518,19 +518,31 @@ namespace DDAS.Services.Search
                 }
             }
 
+            xml = xml.Replace("<investigatorResult>", "");
+            xml = xml.Replace("</investigatorResult>", "");
+            xml = xml.Replace("investigatorResultsInvestigatorResult>", "investigatorResult>");
 
             var objLog = new LogWSISPRINT();
 
             objLog.CreatedOn = DateTime.Now;
+            objLog.ComplianceFormId = form.RecId;
             objLog.RequestPayload = xml;
-
+            
             //sRetval = PostToIsprintWebService(xml, ref dataStreamResponse);
             //Stream dataStreamResponse =  PostToIsprintWebService(xml, ref sRetval);
             //iSprintResponseModel.Envelope stud = PostToIsprintWebService(xml, ref sRetval);
-            resp = PostToIsprintWebService(xml, ref sRetval);
+            resp = PostToIsprintWebService(xml, out sRetval);
 
             objLog.Response = sRetval;
-            objLog.Status = "ok";
+            if (resp.Success)
+            {
+                objLog.Status = "ok";
+            }
+            else
+            {
+                objLog.Status = "failed";
+            }
+
 
             _UOW.LogWSISPRINTRepository.Add(objLog);
 
@@ -561,12 +573,15 @@ namespace DDAS.Services.Search
         }
 
 
-        public iSprintResponseModel.DDtoIsprintResponse PostToIsprintWebService(string RequestPayload, ref string sRetVal)
+        public iSprintResponseModel.DDtoIsprintResponse PostToIsprintWebService(string RequestPayload, out string sRetVal)
         {
             var resp = new iSprintResponseModel.DDtoIsprintResponse();
             resp.Success = false;
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://fmsoadev.iconplc.com/soa-infra/services/ClinOps_ClientServices/initiateDDASiSprintFindings/DDASiSprintFindings?WSDL");
+
+            //HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://fmsoadev.iconplc.com/soa-infra/services/ClinOps_ClientServices/initiateDDASiSprintFindings/DDASiSprintFindings?WSDL");
+            var iSprintURL = System.Configuration.ConfigurationManager.AppSettings["IsprintWS"];
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(iSprintURL);
 
             req.Method = "POST";
             req.ContentType = "text/xml";
@@ -589,8 +604,12 @@ namespace DDAS.Services.Search
                     SR.Close();
 
                     resp.Success = true;
-                }
 
+                }
+                else
+                {
+                    sRetVal = "response.StatusCode:" + response.StatusCode;
+                }
                 //XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
                 //TextReader textReader = new StreamReader(dataStreamResponseOut);
                 //stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(textReader);
@@ -602,6 +621,7 @@ namespace DDAS.Services.Search
             catch (Exception ex)
             {
                 resp.Message = ex.Message;
+                sRetVal = "Request Error:" + ex.Message;
 
                 req.Abort();
             }
