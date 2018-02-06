@@ -83,6 +83,8 @@ export class ListQCComponent implements OnInit {
 
     editQC(complianceFormId: string, assignedTo: string) {
         //this.router.navigate(['edit-qc', complianceFormId, assignedTo, { relativeTo: this.route.parent }]);
+        console.log("complianceFormId:" + complianceFormId);
+        console.log("assignedTo" + assignedTo);
         this.router.navigate(['edit-qc', complianceFormId, assignedTo, {rootPath:'qc', page:this.pageNumber}], { relativeTo: this.route });
     }
 }

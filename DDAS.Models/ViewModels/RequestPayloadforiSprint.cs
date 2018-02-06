@@ -73,7 +73,7 @@ namespace DDAS.Models.ViewModels
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://edh.esb.iconplc.com")]
-            public institutuions institutuions { get; set; }
+            public institutions institutions { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://edh.esb.iconplc.com")]
@@ -95,29 +95,29 @@ namespace DDAS.Models.ViewModels
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://edh.esb.iconplc.com", IsNullable = false)]
-        public partial class institutuions
+        public partial class institutions
         {
             /// <remarks/>
-            public institutuionsChecksCompleted checksCompleted { get; set; }
+            public institutionsChecksCompleted checksCompleted { get; set; }
 
             /// <remarks/>
             public bool instituteComplianceIssue { get; set; }
 
             /// <remarks/>
-            public institutuionsDdFindings ddFindings { get; set; }
+            public institutionsDdFindings ddFindings { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
-        public partial class institutuionsChecksCompleted
+        public partial class institutionsChecksCompleted
         {
             /// <remarks/>
-            public institutuionsChecksCompletedCheck check { get; set; }
+            public institutionsChecksCompletedCheck check { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
-        public partial class institutuionsChecksCompletedCheck
+        public partial class institutionsChecksCompletedCheck
         {
             /// <remarks/>
             public string name { get; set; }
@@ -129,15 +129,15 @@ namespace DDAS.Models.ViewModels
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
-        public partial class institutuionsDdFindings
+        public partial class institutionsDdFindings
         {
             /// <remarks/>
-            public institutuionsDdFindingsFinding finding { get; set; }
+            public institutionsDdFindingsFinding finding { get; set; }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://edh.esb.iconplc.com")]
-        public partial class institutuionsDdFindingsFinding
+        public partial class institutionsDdFindingsFinding
         {
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
@@ -173,10 +173,10 @@ namespace DDAS.Models.ViewModels
         public partial class investigatorResultsInvestigatorResult
         {
             /// <remarks/>
-            public uint investigatorId { get; set; }
+            public string investigatorId { get; set; }
 
             /// <remarks/>
-            public uint memberId { get; set; }
+            public string memberId { get; set; }
 
             /// <remarks/>
             public string firstName { get; set; }

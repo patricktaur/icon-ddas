@@ -178,6 +178,7 @@
     <Content Include="WS\isprinttoddverify.asmx" />
     <Content Include="WS\mockisprint.asmx" />
     <Content Include="WS\test.aspx" />
+    <Content Include="WS\wslog1.aspx" />
     <None Include="..\packages\PhantomJS.2.1.1\tools\phantomjs\phantomjs.exe">
       <Link>phantomjs.exe</Link>
       <!--<<<<<<< HEAD
@@ -292,6 +293,13 @@
     </Compile>
     <Compile Include="WS\test.aspx.designer.cs">
       <DependentUpon>test.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WS\wslog1.aspx.cs">
+      <DependentUpon>wslog1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WS\wslog1.aspx.designer.cs">
+      <DependentUpon>wslog1.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

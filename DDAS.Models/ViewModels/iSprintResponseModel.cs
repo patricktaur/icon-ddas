@@ -374,6 +374,12 @@ namespace DDAS.Models.ViewModels
             }
         }
 
+        public partial class DDtoIsprintResponse
+        {
+            /// <remarks/>
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
 
     }
 }

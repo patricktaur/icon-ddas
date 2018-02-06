@@ -41,38 +41,26 @@ namespace DDAS.Services.AuditService
                 else if (Review.RecId == null)
                     Review.RecId = Guid.NewGuid();
             }
-
-            //var QCReview = Form.Reviews.Find(x => x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-
-            //Form.Comments.Add(new Comment()
-            //{
-            //    ReviewId = QCReview.RecId.Value,
-            //    ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable,
-            //    CategoryEnum = CommentCategoryEnum.Minor
-            //});
-
-            //foreach(Finding finding in Form.Findings)
-            //{
-            //    if(finding.Comments.Count == 0)
-            //    {
-            //        var Comment = new Comment();
-            //        var Review =
-            //            Form.Reviews.Find(x =>
-            //            x.ReviewerRole == ReviewerRoleEnum.Reviewer);
-            //        Comment.ReviewId = Review.RecId.Value;
-            //        finding.Comments.Add(Comment);
-
-            //        var Comment1 = new Comment();
-            //        var Review1 =
-            //            Form.Reviews.Find(x =>
-            //            x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-            //        Comment1.ReviewId = Review1.RecId.Value;
-            //        finding.Comments.Add(Comment1);
-            //    }
-            //}
-
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            //SendAuditRequestedMail(Audit.Auditor, Audit.RequestedBy);
+            SendQCRequestedMail(Form);
+            return true;
+        }
+
+        public bool RequestQC(Guid ComplianceFormId, Review review)
+        {
+
+            var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            var lastReview = form.Reviews.LastOrDefault();
+            if (lastReview == null)
+            {
+                throw new Exception("Assigned to Review record expected for Compliance form: " + ComplianceFormId);
+            }
+
+            review.RecId = Guid.NewGuid();
+            review.PreviousReviewId = lastReview.RecId;
+            form.Reviews.Add(review);
+            _UOW.ComplianceFormRepository.UpdateCollection(form);
+            SendQCRequestedMail(form);
             return true;
         }
 
@@ -190,17 +178,23 @@ namespace DDAS.Services.AuditService
             {
                 UpdateReviewStatus(CurrentQCReview,
                     Form.Findings.Where(x => x.IsAnIssue).ToList());
-
-                //CurrentQCReview.Status = ReviewStatusEnum.Completed;
             }
             else if (CurrentQCReview.Status == ReviewStatusEnum.QCPassed)
             {
                 CurrentQCReview.Status = ReviewStatusEnum.Completed;
                 CurrentQCReview.CompletedOn = DateTime.Now;
+                SendQCSubmitMail(CurrentQCReview.AssignedBy,
+                    CurrentQCReview.AssigendTo,
+                    Form.InvestigatorDetails.First().Name,
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
             }
             else if(CurrentQCReview.Status == ReviewStatusEnum.QCFailed)
             {
                 CurrentQCReview.CompletedOn = DateTime.Now;
+                SendQCSubmitMail(CurrentQCReview.AssignedBy,
+                    CurrentQCReview.AssigendTo,
+                    Form.InvestigatorDetails.First().Name,
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
             }
 
             //Save QC is currently equivalent to submitting the QC
@@ -311,6 +305,12 @@ namespace DDAS.Services.AuditService
             {
                 Form.Reviews.Remove(QCRequestedReview);
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+                SendUndoQCRequestMail(QCRequestedReview.AssignedBy, 
+                    QCRequestedReview.AssigendTo,
+                    Form.InvestigatorDetails.First().Name,
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    QCRequestedReview.ReviewCategory);
                 return true;
             }
             else
@@ -334,6 +334,10 @@ namespace DDAS.Services.AuditService
                 QCFailedOrPassedReview.Status = ReviewStatusEnum.QCInProgress;
                 QCFailedOrPassedReview.CompletedOn = null;
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                SendUndoQCSubmitMail(QCFailedOrPassedReview.AssignedBy,
+                    QCFailedOrPassedReview.AssigendTo,
+                    Form.InvestigatorDetails.First().Name,
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
                 return true;
             }
             else
@@ -381,40 +385,96 @@ namespace DDAS.Services.AuditService
             }
         }
 
-        private void SendAuditRequestedMail(string SendMailTo, string AuditRequestedBy)
+        #region QC Mails
+
+        private void SendQCRequestedMail(ComplianceForm Form)
         {
+            var QCReview = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCRequested);
+
+            if (QCReview == null)
+                throw new Exception("Could not find QCRequested review. Send QC Request mail failed");
+
+            var PIName = "";
+            if (Form.InvestigatorDetails.Count > 0)
+                PIName = Form.InvestigatorDetails.First().Name;
+
+            var ProjectNumber = "";
+            if (Form.ProjectNumber2 != null)
+                ProjectNumber = Form.ProjectNumber + " " + Form.ProjectNumber2;
+            else
+                ProjectNumber = Form.ProjectNumber;
+
             var User = _UOW.UserRepository.GetAll()
-                .Find(x => x.UserName.ToLower() == SendMailTo.ToLower());
+                .Find(x => x.UserName.ToLower() == QCReview.AssigendTo.ToLower());
 
             if (User == null)
                 throw new Exception("invalid username");
 
             var UserEMail = User.EmailId;
-            var Subject = "DDAS Audit Request";
-            var MailBody = "Dear " + User.UserName + ",<br/><br/> ";
-            MailBody += AuditRequestedBy + " has requested you to audit a compliance form. <br/><br/>";
-            MailBody += "Please login to DDAS application and navigate to \"QC Audits\" to start the audit. <br/><br/>";
+            var Subject = "QC Request - " + QCReview.ReviewCategory + "_" +
+                ProjectNumber + "_" + PIName;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
+            MailBody += GetUserFullName(QCReview.AssignedBy) + " has requested you to review a compliance search outcome. <br/><br/>";
+            MailBody += "Please login to DDAS application and navigate to \"QC Check\" to start the review. <br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
-            MailBody += "DDAS Team";
+            MailBody += GetUserFullName(QCReview.AssignedBy);
 
             SendMail(UserEMail, Subject, MailBody);
         }
 
-        private void SendAuditCompletedMail(string SendMailTo, string AuditCompletedBy)
+        private void SendUndoQCRequestMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber, string ReviewCategory)
         {
-            var User = _UOW.UserRepository.GetAll()
-                .Find(x => x.UserName.ToLower() == SendMailTo.ToLower());
+            var User = _UOW.UserRepository.FindByUserName(AssignedTo);
 
             if (User == null)
                 throw new Exception("invalid username");
 
             var UserEMail = User.EmailId;
-            var Subject = "DDAS Audit Response";
-            var MailBody = "Dear " + User.UserName + ",<br/><br/> ";
-            MailBody += "Your audit request has been completed by " + AuditCompletedBy + "<br/>";
-            MailBody += "Please login to DDAS application to view the results.<br/><br/>";
+            var Subject = "Undo QC Request - " + ReviewCategory + "_" +
+                ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
+            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request. <br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
-            MailBody += "DDAS Team";
+            MailBody += GetUserFullName(AssignedBy);
+
+            SendMail(UserEMail, Subject, MailBody);
+        }
+
+        private void SendQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber)
+        {
+            var User = _UOW.UserRepository.GetAll()
+                .Find(x => x.UserName.ToLower() == AssignedBy.ToLower());
+
+            if (User == null)
+                throw new Exception("invalid username");
+
+            var UserEMail = User.EmailId;
+            var Subject = "QC Complete - " + ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+            MailBody += "Your QC review request has been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
+            MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += "Yours Sincerely,<br/>";
+            MailBody += GetUserFullName(AssignedTo);
+
+            SendMail(UserEMail, Subject, MailBody);
+        }
+
+        private void SendUndoQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber)
+        {
+            var User = _UOW.UserRepository.FindByUserName(AssignedBy);
+
+            if (User == null)
+                throw new Exception("invalid username");
+
+            var UserEMail = User.EmailId;
+            var Subject = "Undo QC Complete - " + ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC submit. <br/><br/>";
+            MailBody += "Yours Sincerely,<br/>";
+            MailBody += GetUserFullName(AssignedTo);
 
             SendMail(UserEMail, Subject, MailBody);
         }
@@ -426,6 +486,20 @@ namespace DDAS.Services.AuditService
             EMail.Subject = Subject;
             EMail.Body = Body;
             _EMailService.SendMail(EMail);
+        }
+        
+        #endregion
+
+        private string GetUserFullName(string AssignedTo)
+        {
+            if (AssignedTo == null || AssignedTo == "")
+                return null;
+
+            var User = _UOW.UserRepository.GetAll()
+                .Find(x => x.UserName.ToLower() == AssignedTo.ToLower());
+
+            return
+                User != null ? User.UserFullName : null;
         }
     }
 }

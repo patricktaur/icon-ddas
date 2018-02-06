@@ -72,6 +72,7 @@
     <Compile Include="Entities\ExceptionLogger.cs" />
     <Compile Include="Entities\Identity\SetPasswordBindingModel.cs" />
     <Compile Include="Entities\LogWSDDAS.cs" />
+    <Compile Include="Entities\LogWSISPRINT.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Interfaces\IAppAdminService.cs" />
     <Compile Include="Interfaces\IAudit.cs" />
@@ -124,11 +125,13 @@
     <Compile Include="Repository\IExceptionLoggerRepository.cs" />
     <Compile Include="Repository\ILogRepository.cs" />
     <Compile Include="Repository\ILogWSDDASRepository.cs" />
+    <Compile Include="Repository\ILogWSISPRINTRepository.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="ViewModels\AdminDashbordDrillDownViewModel.cs" />
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
     <Compile Include="ViewModels\CurrentReviewStatusViewModel.cs" />
     <Compile Include="ViewModels\LogWDDDASViewModel.cs" />
+    <Compile Include="ViewModels\LogWSiSprintViewModel.cs" />
     <Compile Include="ViewModels\QCListViewModel.cs" />
     <Compile Include="ViewModels\CountryViewModel.cs" />
     <Compile Include="ViewModels\DDASResponseModel.cs" />
