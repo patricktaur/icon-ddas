@@ -901,7 +901,7 @@ namespace DDAS.API.Controllers
             }
             else if(Review.Status == ReviewStatusEnum.QCRequested ||
                 Review.Status == ReviewStatusEnum.QCInProgress ||
-                Review.Status == ReviewStatusEnum.QCFailed)
+                Review.Status == ReviewStatusEnum.QCCompleted)
             {
                 CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
                 CurrentReviewStatus.CurrentReview = Review;
@@ -915,7 +915,7 @@ namespace DDAS.API.Controllers
             else if(Review.Status == ReviewStatusEnum.QCCorrectionInProgress)
             {
                 var QCReview = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.QCFailed);
+                    x.Status == ReviewStatusEnum.QCCompleted);
                 if (QCReview != null)
                     CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
                 else
@@ -931,8 +931,7 @@ namespace DDAS.API.Controllers
             else if (Review.Status == ReviewStatusEnum.Completed)
             {
                 var QCReview = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.QCFailed || 
-                    x.Status == ReviewStatusEnum.QCPassed);
+                    x.Status == ReviewStatusEnum.QCCompleted);
                 if (QCReview != null)
                     CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
                 else

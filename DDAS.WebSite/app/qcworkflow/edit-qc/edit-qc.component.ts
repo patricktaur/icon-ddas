@@ -237,6 +237,28 @@ export class EditQCComponent implements OnInit {
         }
     }
 
+    get QCGeneralComment(){
+        if(this.complianceForm && this.complianceForm.QCGeneralComment)
+            return this.complianceForm.QCGeneralComment;
+        else if(this.complianceForm) {
+            this.complianceForm.QCGeneralComment = new Comment();
+            this.complianceForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+            this.complianceForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
+            return this.complianceForm.QCGeneralComment;
+        }
+    }
+
+    get QCAttachmentComment(){
+        if(this.complianceForm && this.complianceForm.QCAttachmentComment)
+            return this.complianceForm.QCAttachmentComment;
+        else if(this.complianceForm) {
+            this.complianceForm.QCAttachmentComment = new Comment();
+            this.complianceForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+            this.complianceForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
+            return this.complianceForm.QCAttachmentComment;
+        }        
+    }
+
     //Patrick:    
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
         if (selectedFinding){

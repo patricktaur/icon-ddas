@@ -1,0 +1,24 @@
+<div qc-verifier-general-comment-view [Comment]="Comment" [Title]="'General Comment/Observation'">
+    <br/>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="CommentCategory">Comment Category: </label>
+                <select class="form-control" name="CommentCategory" 
+                [(ngModel)]="tempNumber"
+                (change)="formValueChanged()">
+                    <option value="5" selected="selected">Pending</option>
+                    <option value="6">Corrections Completed</option>
+                    <option value="7">Accepted</option>
+                    <option value="10">Not Accepted</option>
+                </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
+                [(ngModel)]="tempText"
+                (change)="formValueChanged()">
+            </textarea>        
+        </div>
+    </div>
+</div>
