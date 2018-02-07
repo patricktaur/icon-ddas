@@ -488,8 +488,6 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void ExtractData(SiteEnum siteEnum, ILog log)
         {
-            KillPhantomJsInstace();
-
             var NewLog = new Log();
 
             var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
