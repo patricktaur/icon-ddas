@@ -224,7 +224,8 @@ export class EditQCComponent implements OnInit {
         if (this.complianceForm){
             return this.complianceForm.Findings.filter(x => x.Comments != undefined && 
                 x.Comments.length > 0 && 
-                x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
+                x.Selected == true);
+                //x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
             
             //this.compFormLogic.getQCVerifiedFindings(this.complianceForm, this.QCVerifierReviewId)
             //.filter(x => x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable);
@@ -314,6 +315,7 @@ export class EditQCComponent implements OnInit {
     }
 
     Save() {
+        this.excludeFinding();
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)            
         .subscribe((item: boolean) => {
             // this.goBack();
@@ -377,7 +379,7 @@ export class EditQCComponent implements OnInit {
         });
     }
 
-    submitQCByReviewer(){
+    excludeFinding(){
         let excludeFindings = this.QCVerifiedFindings.filter(x => 
             x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.ExcludeFinding ||
             x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.NotAccepted);
@@ -386,7 +388,20 @@ export class EditQCComponent implements OnInit {
             excludeFindings.forEach(record => {
                 record.IsAnIssue = false;
             });
-        }
+        }        
+    }
+
+    submitQCByReviewer(){
+        this.excludeFinding();
+        // let excludeFindings = this.QCVerifiedFindings.filter(x => 
+        //     x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.ExcludeFinding ||
+        //     x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.NotAccepted);
+
+        // if(excludeFindings){
+        //     excludeFindings.forEach(record => {
+        //         record.IsAnIssue = false;
+        //     });
+        // }
 
         this.auditService.submitQC(this.complianceForm)
             .subscribe((item: ComplianceFormA) => {

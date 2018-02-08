@@ -145,7 +145,7 @@
 								 title="Request QC">
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
-								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" class="btn btn-sm btn-primary" (click)="undoQCRequest(item.RecId)"
+								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()"
 								 title="Undo QC Request">
 									<span class="glyphicon glyphicon-repeat"></span>
 								</button>
@@ -260,7 +260,7 @@
 		Are you sure you want to Move this compliance form to 'Completed ICSFs'?
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-primary" (click)="moveToCompletedICSF(); ConfirmMoveToCompletedICSFModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="moveToCompletedICSF(); ConfirmMoveToCompletedICSFModal.close()">Confirm</button>
 		<button type="button" class="btn btn-primary" (click)="ConfirmMoveToCompletedICSFModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

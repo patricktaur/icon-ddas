@@ -48,8 +48,8 @@ export class CompFormLogicService {
                 if (reviewStatus != undefined &&
                     reviewStatus.CurrentReview.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     reviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCorrectionInProgress &&
-                    selectedFinding.ReviewId == reviewStatus.ReviewerRecId &&
-                    selectedFinding.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
+                    selectedFinding.ReviewId == reviewStatus.ReviewerRecId)
+                    // selectedFinding.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
                     return true;
                 else
                     return false;
