@@ -31,13 +31,7 @@ import {StatusActivatorService} from '../service/status.activator.service'
             top: -15px;
             left: -10px;
         }
-        .badge-notify{
-            
-        background:red;
-        position:relative;
-        top: -70px;
-        left: -5px;
-    }
+        
     .glyphicon.glyphicon-cloud-download {
         font-size: 25px;
     }
@@ -73,7 +67,7 @@ export class DataExtractionIndicatorComponent implements OnInit {
                     this.message = "No Data Extraction error."
                 }else{
                     this.message = "Data Extraction Error for " + this.SiteExtractionErrorCount + " Sites."
-                    this.color = "red";
+                    this.color = "black";
                 }
             });
     }

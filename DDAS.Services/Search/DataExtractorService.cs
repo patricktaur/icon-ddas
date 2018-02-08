@@ -7,24 +7,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using DDAS.Models.Repository;
+using DDAS.Models.Entities.Domain.SiteData;
+using System.IO;
+using DDAS.Models.ViewModels;
 
 namespace DDAS.Services.Search
 {
-    public class ExtractData :IExtractData
+    public class DataExtractorService :IDataExtractorService
     {
         private ISearchEngine _searchEngine;
         private IUnitOfWork _UOW;
+        private IConfig _config;
         //public ExtractData(ISearchEngine SearchEngine)
         //{
         //    _searchEngine = SearchEngine;
         //}
 
-        public ExtractData(ISearchEngine SearchEngine, IUnitOfWork UOW)
+        public DataExtractorService(ISearchEngine SearchEngine, IUnitOfWork UOW)
         {
             _searchEngine = SearchEngine;
             _UOW = UOW;
+            _config = _searchEngine.Config; //config info required for GetDataFile Functin.
+
         }
 
+        //public ExtractDataService(ISearchEngine SearchEngine, IUnitOfWork UOW, IConfig Config)
+        //{
+        //    _searchEngine = SearchEngine;
+        //    _UOW = UOW;
+        //    _config = Config;
+        //}
 
         //Currently ExtractData is only for DB sites
 
@@ -307,5 +319,146 @@ namespace DDAS.Services.Search
                 .Where(x => x.ExtractionDate < DateTime.Now.AddHours(-Hour))
                 .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
         }
+
+
+        #region Download Data Files
+
+        public List<DownloadDataFilesViewModel> GetDataFiles(int SiteEnum)
+        {
+            bool IsFilteredBySiteEnum = false;
+
+            var DownloadDataFilesVMList = new List<DownloadDataFilesViewModel>();
+
+            var DataFolders = new string[] {
+                _config.CIILFolder,
+                _config.FDAWarningLettersFolder,
+                _config.ExclusionDatabaseFolder,
+                _config.SAMFolder,
+                _config.SDNFolder
+            };
+
+            var FileTypes = new string[] {
+                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
+            };
+
+            int Index = 0;
+            foreach (string Folder in DataFolders)
+            {
+                if (IsFilteredBySiteEnum)
+                    break;
+
+                var Files = GetDataFiles(Folder, FileTypes[Index]);
+
+                Files.ForEach(fileInfo =>
+                {
+                    if (_UOW.SiteSourceRepository.GetAll().Find(
+                        x => (int)x.SiteEnum == SiteEnum) != null)
+                    {
+                        var VM = new DownloadDataFilesViewModel();
+                        VM.FileName = fileInfo.Name;
+                        var siteEnum = VM.FileName.Split('_')[0];
+
+                        var Site = _UOW.SiteSourceRepository.GetAll().Find(
+                        x => (int)x.SiteEnum == SiteEnum &&
+                        x.SiteEnum.ToString() == siteEnum);
+
+                        if (Site != null)
+                        {
+                            VM.SiteName = Site.SiteName;
+                            VM.FullPath = Folder + VM.FileName;
+                            VM.FileSize = (fileInfo.Length / 1024) //bytes to KB
+                            .ToString();
+                            VM.DownloadedOn = fileInfo.CreationTime;
+                            VM.FileType = fileInfo.Extension;
+                            DownloadDataFilesVMList.Add(VM);
+                            IsFilteredBySiteEnum = true;
+                        }
+                    }
+                });
+                Index += 1;
+            }
+            return DownloadDataFilesVMList;
+        }
+
+        private List<FileInfo> GetDataFiles(string Folder, string FileType)
+        {
+            var Files = new DirectoryInfo(Folder).GetFiles(FileType);
+
+            var AllFiles = new List<FileInfo>();
+            foreach (FileInfo fileInfo in Files)
+            {
+                AllFiles.Add(fileInfo);
+            }
+            return AllFiles;
+        }
+
+        #endregion
+
+        #region getExtractedData
+
+        //Site No: 1
+        public FDADebarPageSiteData GetFDADebarPageSiteData()
+        {
+            var FDADebarredPage = _UOW.FDADebarPageRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+            var Data = FDADebarredPage;
+            return Data;
+        }
+
+
+
+        //Site No: 4
+        public ERRProposalToDebarPageSiteData GetERRProposalToDebarPageSiteData()
+        {
+            return  _UOW.ERRProposalToDebarRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+        }
+
+        //Site No: 5
+        public AdequateAssuranceListSiteData GetAdequateAssuranceListSiteData()
+        {
+            return _UOW.AdequateAssuranceListRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+        }
+
+        //Site No: 6
+        public ClinicalInvestigatorDisqualificationSiteData GetClinicalInvestigatorDisqualificationSiteData()
+        {
+            return _UOW.ClinicalInvestigatorDisqualificationRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+        }
+
+
+        //Site No: 7
+        public PHSAdministrativeActionListingSiteData GetPHSAdministrativeActionListingSiteData()
+        {
+            return _UOW.PHSAdministrativeActionListingRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+        }
+
+        //Site No: 8
+        public CBERClinicalInvestigatorInspectionSiteData GetCBERClinicalInvestigatorInspectionSiteData()
+        {
+            return _UOW.CBERClinicalInvestigatorRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+        }
+
+
+
+        //Site No: 10
+        public CorporateIntegrityAgreementListSiteData GetCorporateIntegrityAgreementListSiteData()
+        {
+            return _UOW.CorporateIntegrityAgreementRepository.
+                GetAll()
+                .OrderByDescending(x => x.CreatedOn).Last();
+        }
+
+        #endregion
     }
 }

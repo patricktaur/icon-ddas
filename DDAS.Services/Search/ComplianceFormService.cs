@@ -40,6 +40,11 @@ namespace DDAS.Services.Search
             _config = Config;
         }
 
+         //Patrick: 7Jan2018 For use in ExtractDataService
+         public IConfig Config { get {
+                return _config;
+            } }
+
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
@@ -4590,78 +4595,7 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        #region Download Data Files
-
-        public List<DownloadDataFilesViewModel> GetDataFiles(int SiteEnum)
-        {
-            bool IsFilteredBySiteEnum = false;
-
-            var DownloadDataFilesVMList = new List<DownloadDataFilesViewModel>();
-
-            var DataFolders = new string[] {
-                _config.CIILFolder,
-                _config.FDAWarningLettersFolder,
-                _config.ExclusionDatabaseFolder,
-                _config.SAMFolder,
-                _config.SDNFolder
-            };
-
-            var FileTypes = new string[] {
-                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
-            };
-
-            int Index = 0;
-            foreach (string Folder in DataFolders)
-            {
-                if (IsFilteredBySiteEnum)
-                    break;
-
-                var Files = GetDataFiles(Folder, FileTypes[Index]);
-
-                Files.ForEach(fileInfo =>
-                {
-                    if (_UOW.SiteSourceRepository.GetAll().Find(
-                        x => (int)x.SiteEnum == SiteEnum) != null)
-                    {
-                        var VM = new DownloadDataFilesViewModel();
-                        VM.FileName = fileInfo.Name;
-                        var siteEnum = VM.FileName.Split('_')[0];
-
-                        var Site = _UOW.SiteSourceRepository.GetAll().Find(
-                        x => (int)x.SiteEnum == SiteEnum &&
-                        x.SiteEnum.ToString() == siteEnum);
-
-                        if (Site != null)
-                        {
-                            VM.SiteName = Site.SiteName;
-                            VM.FullPath = Folder + VM.FileName;
-                            VM.FileSize = (fileInfo.Length / 1024) //bytes to KB
-                            .ToString();
-                            VM.DownloadedOn = fileInfo.CreationTime;
-                            VM.FileType = fileInfo.Extension;
-                            DownloadDataFilesVMList.Add(VM);
-                            IsFilteredBySiteEnum = true;
-                        }
-                    }
-                });
-                Index += 1;
-            }
-            return DownloadDataFilesVMList;
-        }
-
-        private List<FileInfo> GetDataFiles(string Folder, string FileType)
-        {
-            var Files = new DirectoryInfo(Folder).GetFiles(FileType);
-
-            var AllFiles = new List<FileInfo>();
-            foreach (FileInfo fileInfo in Files)
-            {
-                AllFiles.Add(fileInfo);
-            }
-            return AllFiles;
-        }
-
-        #endregion
+        
 
         #region Helpers
 

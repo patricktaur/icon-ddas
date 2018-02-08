@@ -9,7 +9,7 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-        List<DownloadDataFilesViewModel> GetDataFiles(int Enum);
+        
 
         ComplianceForm GetComplianceForm(Guid ComplianceFormId);
         List<PrincipalInvestigator> getAllPrincipalInvestigators();

@@ -57,7 +57,7 @@ namespace DDAS.Models.Interfaces
 
         List<LogWSiSprintViewModel> GetDDtoiSprintLog();
 
-        List<CBERClinicalInvestigator> GetCBERData();
+        //List<CBERClinicalInvestigator> GetCBERData();
 
         //IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32);
     }

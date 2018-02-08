@@ -12,3 +12,12 @@ export enum SiteEnum {
     SystemForAwardManagementPage,
     SpeciallyDesignedNationalsListPage
 }
+
+export class DownloadDataFilesViewModel{
+    FileName: string;
+    FullPath: string;
+    SiteName: string;
+    DownloadedOn: Date;
+    FileSize: number;
+    FileType: string;
+}

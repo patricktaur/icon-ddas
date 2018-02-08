@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, Params, ActivatedRoute } from '@angular/router';
-import { LoginHistoryService } from './all-loginhistory.service';
-import { IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
-import { ConfigService } from '../shared/utils/config.service';
-import { DownloadDataFilesViewModel } from './appAdmin.classes';
+import {DataExtractorService} from '../data-extractor-service'
+import {DownloadDataFilesViewModel} from '../data-extractor.classes';
+
 
 @Component({
     moduleId: module.id,
     //selector: 'User-input',
-    templateUrl: 'data-file.component.html',
+    templateUrl: 'download-datafile.component.html',
 })
 export class DataFileComponent implements OnInit {
     //public dataFiles: DownloadDataFilesViewModel[];
-    public ApiHost: string;
+    //public ApiHost: string;
     public pageNumber: number;
     public formLoading: boolean;
     private selectedRecId: string;
@@ -23,13 +23,14 @@ export class DataFileComponent implements OnInit {
     public files: DownloadDataFilesViewModel[] = [];
 
     constructor(
-        private service: LoginHistoryService,
-        private configService: ConfigService
+        private service: DataExtractorService ,
+        private _location: Location,
+        //private configService: ConfigService
     ) { }
 
     ngOnInit() {
         this.filterBySite = 1;
-        this.ApiHost = this.configService.getApiHost();
+        //this.ApiHost = this.configService.getApiHost();
         this.loadDataFiles();
     }
 
@@ -49,5 +50,8 @@ export class DataFileComponent implements OnInit {
         }
         else
             return this.files;
-    }    
-}
+    }  
+    
+    goBack() {
+        this._location.back();}
+    }

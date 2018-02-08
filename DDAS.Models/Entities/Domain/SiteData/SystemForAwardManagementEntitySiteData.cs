@@ -9,6 +9,10 @@ namespace DDAS.Models.Entities.Domain.SiteData
     public class SystemForAwardManagementEntitySiteData : BaseSiteData
     {
         public Guid? RecId { get; set; }
+        //BaseClass properties do not get serialized, hence two ready only properties added:
+        public DateTime ExtractedOn { get { return CreatedOn; } }
+        public new DateTime? SiteLastUpdatedOn { get { return base.SiteLastUpdatedOn; } }
+
         public ICollection<SystemForAwardManagementEntity> SAMEntitySiteData { get; set; }
         = new List<SystemForAwardManagementEntity>();
     }

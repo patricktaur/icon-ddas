@@ -17,7 +17,7 @@ import { CountrySiteEditComponent } from './country-site-edit.component';
 import { SponsorSpecificSiteEditComponent } from './sponsor-protocol-edit.component';
 import { ExceptionLogComponent } from './exception-logger.component';
 import { ExtractionLogComponent } from './extraction-log.component';
-import { DataFileComponent } from './data-file.component';
+//import { DataFileComponent } from './data-file.component';
 import { AuthGuard } from '../auth/auth-guard.service';
 import { ISprintToDDASLogComponent } from './isprint-to-ddas-log.component';
 import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
@@ -38,7 +38,7 @@ export const LoggedInUserRoutes: Routes = [
   { path: 'sponsor-protocol-edit/:RecId', component: SponsorSpecificSiteEditComponent, canActivate: [AuthGuard] },
   { path: 'exception-logger', component: ExceptionLogComponent, canActivate: [AuthGuard] },
   { path: 'extraction-log', component: ExtractionLogComponent, canActivate: [AuthGuard] },
-  { path: 'data-file', component: DataFileComponent, canActivate: [AuthGuard] },
+  // { path: 'data-file', component: DataFileComponent, canActivate: [AuthGuard] },
   { path: 'isprint-to-ddas-log', component: ISprintToDDASLogComponent, canActivate: [AuthGuard] },
   { path: 'ddas-to-isprint-log', component: DDAStoiSprintLogComponent, canActivate: [AuthGuard] }
 

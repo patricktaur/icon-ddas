@@ -40,12 +40,12 @@ namespace DDAS.API.Controllers
                 System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"];
         }
 
-        [Route("GetCBERRecords")]
-        [HttpGet]
-        public IHttpActionResult GetCBERData()
-        {
-            return Ok(_AppAdminService.GetCBERData());
-        }
+        //[Route("GetCBERRecords")]
+        //[HttpGet]
+        //public IHttpActionResult GetCBERData()
+        //{
+        //    return Ok(_AppAdminService.GetCBERData());
+        //}
 
         #region Get/Delete/Download ErrorImages
         [Route("GetErrorImages")]

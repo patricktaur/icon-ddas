@@ -1013,21 +1013,7 @@ namespace DDAS.API.Controllers
         //    return Ok("abc");
         //}
 
-        #region Download Data Files
-        [Route("DownloadDataFiles")]
-        [HttpGet]
-        public IHttpActionResult GetDownloadedDataFiles(int SiteEnum)
-        {
-            var DataFiles = _SearchService.GetDataFiles(SiteEnum);
-
-            DataFiles.ForEach(DataFile =>
-            {
-                DataFile.FullPath = 
-                DataFile.FullPath.Replace(_RootPath, "");
-            });
-            return Ok(DataFiles);
-        }
-        #endregion
+        
 
         [Route("ExportToiSprint")]
         [HttpGet]
