@@ -170,7 +170,7 @@ namespace DDAS.Services.AuditService
             return Form;
         }
 
-        public bool SaveQC(ComplianceForm Form)
+        public ComplianceForm SubmitQC(ComplianceForm Form)
         {
             var CurrentQCReview = Form.Reviews.LastOrDefault();
 
@@ -193,7 +193,7 @@ namespace DDAS.Services.AuditService
             }
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            return true;
+            return Form;
         }
 
         private void UpdateReviewStatus(Review Review,

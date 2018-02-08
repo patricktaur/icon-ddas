@@ -42,22 +42,22 @@
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
-								<th>Investigator/Institute Name</th>
-								<th>Source Name</th>
-								<th>Comment/Observation Type</th>
-								<th>Category</th>
+								<th>Verifier Comment Category</th>
+								<th>Verifier Comment</th>
+								<th>Reviewer Comment Category</th>
+								<th>Reviewer Comment</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="active">
 								<td class="text-left">
-									{{QCGeneralComment?.CategoryEnum}}
+									{{getcommentCategory(QCGeneralComment?.CategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{QCGeneralComment?.FindingComment}}
 								</td>
 								<td class="text-left">
-									{{QCGeneralComment?.ReviewerCategoryEnum}}
+									{{getcommentCategory(QCGeneralComment?.ReviewerCategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{QCGeneralComment?.ReviewerComment}}
@@ -65,13 +65,13 @@
 							</tr>
 							<tr class="active">
 								<td class="text-left">
-									{{QCAttachmentComment?.CategoryEnum}}
+									{{getcommentCategory(QCAttachmentComment?.CategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{QCAttachmentComment?.FindingComment}}
 								</td>
 								<td class="text-left">
-									{{QCAttachmentComment?.ReviewerCategoryEnum}}
+									{{getcommentCategory(QCAttachmentComment?.ReviewerCategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{QCAttachmentComment?.ReviewerComment}}
@@ -112,7 +112,7 @@
 									{{item.Comments[0].FindingComment}}
 								</td>
 								<td class="text-left">
-									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
+									{{getcommentCategory(item.Comments[0].ReviewerCategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{item.Comments[0].ReviewerComment}}
@@ -123,7 +123,6 @@
 									 title="Open">
 										<span class="glyphicon glyphicon-edit"></span>
 									</button>
-
 								</td>
 							</tr>
 						</tbody>

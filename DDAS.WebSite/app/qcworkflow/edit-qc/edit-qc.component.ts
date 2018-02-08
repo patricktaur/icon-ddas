@@ -237,6 +237,10 @@ export class EditQCComponent implements OnInit {
         }
     }
 
+    enumValue(value: CommentCategoryEnum){
+        return this.compFormLogic.getCommentCategoryEnumValue(value);
+    }
+
     get QCGeneralComment(){
         if(this.complianceForm && this.complianceForm.QCGeneralComment)
             return this.complianceForm.QCGeneralComment;
@@ -259,7 +263,7 @@ export class EditQCComponent implements OnInit {
         }        
     }
 
-    //Patrick:    
+    //Patrick:
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
         if (selectedFinding){
             //console.log("selected finding:" + JSON.stringify(selectedFinding));
@@ -276,8 +280,7 @@ export class EditQCComponent implements OnInit {
         this.FindingResponseModal.open();
     }
     
-    openFindingDialogA(finding: Finding){
-       
+    openFindingDialogA(finding: Finding) {
         this.findingRecordToEdit =  finding;
         this.FindingResponseModal.open();
     }
@@ -313,7 +316,7 @@ export class EditQCComponent implements OnInit {
     Save() {
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)            
         .subscribe((item: boolean) => {
-            this.goBack();
+            // this.goBack();
         },
         error => {
         });
@@ -347,7 +350,7 @@ export class EditQCComponent implements OnInit {
             x.Status == ReviewStatusEnum.QCInProgress);
         review.Status = ReviewStatusEnum.QCCompleted;
 
-        this.auditService.saveQC(this.complianceForm)
+        this.auditService.submitQC(this.complianceForm)
             .subscribe((item: any) => {
                 this.isSubmitted = true;
                 this.goBack();
@@ -385,9 +388,11 @@ export class EditQCComponent implements OnInit {
             });
         }
 
-        this.auditService.saveQC(this.complianceForm)
-            .subscribe((item: any) => {
+        this.auditService.submitQC(this.complianceForm)
+            .subscribe((item: ComplianceFormA) => {
                 this.isSubmitted = true;
+                this.complianceForm = item;
+                this.Save();
                 this.goBack();
             },
             error => {
@@ -495,6 +500,9 @@ export class EditQCComponent implements OnInit {
         if(this.currentReviewStatus &&
             this.currentReviewStatus.CurrentReview.AssigendTo.toLowerCase()
             != this.authService.userName.toLowerCase())
+            return true;
+        else if(this.currentReviewStatus && 
+            this.currentReviewStatus.CurrentReview.Status == ReviewStatusEnum.QCCompleted)
             return true;
         else
             return false;

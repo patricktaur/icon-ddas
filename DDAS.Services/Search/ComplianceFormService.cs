@@ -1086,6 +1086,12 @@ namespace DDAS.Services.Search
                     }
                 }
             }
+             
+            if (Form.QCGeneralComment != null && Form.QCGeneralComment.AddedOn == null)
+                Form.QCGeneralComment.AddedOn = DateTime.Now;
+
+            if (Form.QCAttachmentComment != null && Form.QCAttachmentComment.AddedOn == null)
+                Form.QCAttachmentComment.AddedOn = DateTime.Now;
 
             RollUpSummary(Form);
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
@@ -2857,7 +2863,7 @@ namespace DDAS.Services.Search
                         DateOfInspection =
                             finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
-                    if (finding.Selected)
+                    if (finding.Selected && finding.IsAnIssue)
                     {
                         string[] CellValues = new string[]
                         {

@@ -122,10 +122,6 @@ export class CompFormLogicService {
         return compForm.Findings.filter(x => x.Comments.filter(y => y.ReviewId == reviewId ));
     }
 
-//    getFindingById(findings: Finding[], findingId: string){
-//       return findings.find(x => x.Id == findingId );
-//    }
-
     //Finding Comment:
     getReviewerComment(finding: Finding){
         //this.Finding.Comments[0].CategoryEnum = 5;
@@ -458,5 +454,21 @@ export class CompFormLogicService {
 
     getUserFullName(){
         return this.authService.userFullName;
-    }    
+    }
+
+    getCommentCategoryEnumValue(value: CommentCategoryEnum){
+        switch(value){
+            case CommentCategoryEnum.Minor: return "Minor";
+            case CommentCategoryEnum.Major: return "Major";
+            case CommentCategoryEnum.Critical: return "Critical";
+            case CommentCategoryEnum.Suggestion: return "Suggestion";
+            case CommentCategoryEnum.Others: return "Others";
+            case CommentCategoryEnum.NotApplicable: return "Not Applicable";
+            case CommentCategoryEnum.CorrectionPending: return "Pending";
+            case CommentCategoryEnum.CorrectionCompleted: return "Completed";
+            case CommentCategoryEnum.Accepted: return "Accepted";
+            case CommentCategoryEnum.NotAccepted: return "Not Accepted";
+            default: "";
+        }
+    }
 }

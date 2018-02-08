@@ -1,11 +1,12 @@
 <div qc-verifier-general-comment-view [Comment]="Comment" [Title]="'General Comment/Observation'">
     <br/>
     <div class="row">
+        <!-- {{diagnostic}} -->
         <div class="col-md-2">
             <label for="CommentCategory">Comment Category: </label>
                 <select class="form-control" name="CommentCategory" 
-                [(ngModel)]="tempNumber"
-                (change)="formValueChanged()">
+                [ngModel]="tempNumber" (ngModelChange)="onChange($event)"
+                (change)="formValueChanged()" required>
                     <option value="5" selected="selected">Pending</option>
                     <option value="6">Corrections Completed</option>
                     <option value="7">Accepted</option>

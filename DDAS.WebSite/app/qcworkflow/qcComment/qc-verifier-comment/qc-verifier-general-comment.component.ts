@@ -24,10 +24,14 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
         }
     }
 
+    onChange(newValue){
+        this.Comment.CategoryEnum = newValue;
+    }
+
     formValueChanged(){
         this.pageChanged = true;
         this.Comment.FindingComment = this.tempText;
-        this.Comment.CategoryEnum = this.tempNumber;
+        // this.Comment.CategoryEnum = this.tempNumber;
         this.ValueChanged.emit();
     }
 

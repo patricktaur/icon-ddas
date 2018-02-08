@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Comment } from '../../../search/search.classes';
+import { CompFormLogicService } from '../../../search/shared/services/comp-form-logic.service';
 
 @Component({
     selector: '[qc-verifier-general-comment-view]',
@@ -17,11 +18,19 @@ export class QCVerifierGeneralCommentViewComponent implements OnInit {
     public tempText: string;
     public tempNumber: number;
 
+    constructor(private compFormService: CompFormLogicService){
+
+    }
+
     ngOnInit(){
         if(this.Comment){
             this.tempNumber = this.Comment.CategoryEnum;
             this.tempText = this.Comment.FindingComment;
         }
+    }
+
+    enumValue(value: number){
+        return this.compFormService.getCommentCategoryEnumValue(value);
     }
 
     formValueChanged(){
