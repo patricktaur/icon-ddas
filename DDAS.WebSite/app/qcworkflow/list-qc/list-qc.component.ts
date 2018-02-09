@@ -79,7 +79,10 @@ export class ListQCComponent implements OnInit {
     }
 
     isActionRequired(qcVerifier: string, requester: string, Status: number) {
-        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase())
+        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase() && 
+            (Status == ReviewStatusEnum.QCRequested ||
+            Status == ReviewStatusEnum.QCInProgress ||
+            Status == ReviewStatusEnum.QCCompleted))
             return true;
         else if ((Status == ReviewStatusEnum.QCCompleted ||
                 Status == ReviewStatusEnum.QCCorrectionInProgress) &&

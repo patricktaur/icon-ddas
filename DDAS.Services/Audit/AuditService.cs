@@ -199,11 +199,6 @@ namespace DDAS.Services.AuditService
         private void UpdateReviewStatus(Review Review,
             List<Finding> FindingsWithIssues)
         {
-            //FindingsWithIssues = FindingsWithIssues.Where(x => x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.ExcludeFinding);
-            FindingsWithIssues = FindingsWithIssues.Where(x =>
-            x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable)
-            .ToList();
-
             var FindingsCorrectedOrAcceptedCount = 0;
 
             foreach (Finding finding in FindingsWithIssues)
@@ -280,6 +275,8 @@ namespace DDAS.Services.AuditService
                     return UndoQCSubmit(ComplianceFormId);
                 case UndoEnum.UndoQCResponse:
                     return UndoQCResponse(ComplianceFormId);
+                case UndoEnum.UndoCompleted:
+                    return UndoCompleted(ComplianceFormId);
                 default: throw new Exception("invalid UndoEnum");
             }
         }
@@ -358,6 +355,24 @@ namespace DDAS.Services.AuditService
             }
             else
                 return false;
+        }
+
+        private bool UndoCompleted(Guid ComplianceFormId)
+        {
+            var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+
+            var ReviewCompleted = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.ReviewCompleted);
+
+            var Completed = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.Completed);
+
+            if (ReviewCompleted == null && Completed != null)
+                Completed.Status = ReviewStatusEnum.ReviewCompleted;
+
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+            return true;
         }
 
         private string GetCategoryEnumString(CommentCategoryEnum Enum)

@@ -112,6 +112,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
+    onChange(value){
+        this.reviewCategory = value;
+    }
+
+    resetReviewCategory(){
+        this.reviewCategory = "Standard";
+    }
     // public loadSessionId(): void {
     
     //     this.service.getSessionId()
@@ -274,15 +281,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    // downloadComplianceFormPDF(formId: string) {
-    //     this.service.generateComplianceFormPDF(formId)
-    //         .subscribe((item: any) => {
-
-    //         },
-    //         error => {
-    //         });
-    // }
-
     getBackgroundColor(color: number) {
         let retColor: string;
 
@@ -353,6 +351,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.AssignedOn = new Date();
         review.Status = ReviewStatusEnum.QCRequested;
         review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+        review.ReviewCategory = this.reviewCategory;
         review.Comment = this.requestorComment;
         //review.StartedOn = null;
         //review.CompletedOn = null;
@@ -446,5 +445,5 @@ export class ReviewCompletedICSFComponent implements OnInit {
         });
     }
 
-    get diagnostic() { return JSON.stringify(this.audit); }
+    get diagnostic() { return JSON.stringify(this.reviewCategory); }
 }

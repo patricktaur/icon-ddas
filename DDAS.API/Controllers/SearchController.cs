@@ -425,6 +425,18 @@ namespace DDAS.API.Controllers
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
 
+                    if (compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    {
+                        compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                    }
+
+                    if (compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    {
+                        compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                    }
+
                     var Review = compForm.Reviews.FirstOrDefault();
                     if (Review != null &&
                         Review.Status == ReviewStatusEnum.SearchCompleted &&
@@ -997,8 +1009,6 @@ namespace DDAS.API.Controllers
 
             return result;
         }
-
-
 
         //[Route("GetSessionId")]
         //[HttpGet]

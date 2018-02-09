@@ -15,7 +15,7 @@
 					<div class="row">
 						<div class="col-md-6 ">
 							<h4>Filters:</h4>
-							<!-- {{diagnostic}}  -->
+							 <!-- {{diagnostic}}   -->
 						</div>
 					</div>
 					<div class="row">
@@ -138,18 +138,22 @@
 								<!--<button type="button" class="btn btn-sm btn-primary" (click)="downloadComplianceFormPDF(item.RecId)" title="Download Compliance Form PDF">
 									<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
-								<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open ICSF">
+								<button type="button" class="btn btn-sm btn-primary" 
+									(click)="OpenForEdit(item)" title="Open ICSF">
 									<span class="glyphicon glyphicon-folder-open"></span>
 								</button>
-								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item.RecId); RequestQCModal.open(); resetValues()"
-								 title="Request QC">
+								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
+									(click)="setSelectedRecordDetails(item.RecId); resetReviewCategory(); RequestQCModal.open(); resetValues()"
+								 	title="Request QC">
 									<span class="glyphicon glyphicon-retweet"></span>
 								</button>
-								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()"
-								 title="Undo QC Request">
+								<button *ngIf="canUndoQCRequest(item.CurrentReviewStatus)" type="button" class="btn btn-sm btn-primary" 
+									(click)="setSelectedRecordToUndo(item.RecId); ConfirmUndoModal.open()"
+								 	title="Undo QC Request">
 									<span class="glyphicon glyphicon-repeat"></span>
 								</button>
-								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item.RecId); ConfirmMoveToCompletedICSFModal.open()" title="Move to Completed ICSF">
+								<button type="button" *ngIf="isQCNotRequested(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
+									(click)="setSelectedRecordDetails(item.RecId); ConfirmMoveToCompletedICSFModal.open()" title="Move to Completed ICSF">
 									<span class="glyphicon glyphicon-move"></span>
 								</button>
 							</div>
@@ -193,9 +197,9 @@
 			<div class="col-md-4">
 				<div class="form-group">
 					<label for="Category">Request Category:</label>
-					<select class="form-control" [(ngModel)]="reviewCategory">
-						<option selected="selected">Standard</option>
-						<option>Priority</option>
+					<select class="form-control" [ngModel]="reviewCategory" (ngModelChange)="onChange($event)">
+						<option value="Standard" selected="selected">Standard</option>
+						<option value="Priority">Priority</option>
 					</select>
 				</div>
 			</div>
@@ -203,7 +207,7 @@
 				<div class="form-group">
 					<label for="AssignedTo">QC Verifier:</label>
 					<select class="form-control" [(ngModel)]="selectedQCVerifier">
-						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
+						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserFullName}}</option>
 					</select>
 				</div>
 			</div>
@@ -241,13 +245,13 @@
 
 <modal #ConfirmUndoModal>
 	<modal-header>
-		<h4 class="modal-title">Confirm Undo</h4>
+		<h4 class="modal-title">Undo Request QC</h4>
 	</modal-header>
 	<modal-body>
-		Are you sure you want to Undo this action?
+		Are you sure you want to Undo Request QC ?
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-primary" (click)="undoQCRequest(); ConfirmUndoModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="undoQCRequest(); ConfirmUndoModal.close()">Confirm Undo Request QC</button>
 		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

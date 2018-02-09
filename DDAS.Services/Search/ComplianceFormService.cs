@@ -2430,18 +2430,23 @@ namespace DDAS.Services.Search
         private void CanUndoQC(PrincipalInvestigator Investigator, ComplianceForm Form)
         {
             //required for Undo action in completed icsf page
+            var ReviewCompleted = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.ReviewCompleted);
+
             var QCReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.QCCompleted);
 
-            var CompletedReview = Form.Reviews.Find(x =>
+            var Completed = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);
 
             if (QCReview == null &&
-                CompletedReview != null &&
+                Completed != null &&
                 Form.QCVerifier != null) //For QCVerifier
                 Investigator.UndoQCSubmit = true;
-            else if (QCReview != null && CompletedReview != null) //For Reviewer
+            else if (QCReview != null && Completed != null) //For Reviewer
                 Investigator.UndoQCResponse = true;
+            else if (ReviewCompleted == null && Completed != null)
+                Investigator.UndoCompleted = true; //For reviewer, to undo completed to review completed
         }
 
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(

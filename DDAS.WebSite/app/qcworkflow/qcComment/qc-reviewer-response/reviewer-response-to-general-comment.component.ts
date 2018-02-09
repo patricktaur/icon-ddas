@@ -9,7 +9,7 @@ import { Comment, ComplianceFormA } from '../../../search/search.classes';
 })
 export class ReviewerResponseToGeneralCommentComponent implements OnInit {
     @Input() Comment: Comment;
-    // @Input() ComplianceForm: ComplianceFormA;
+    @Input() Title: string;
     @Output() ValueChanged = new EventEmitter();
 
     private pageChanged: boolean = false;
@@ -26,6 +26,12 @@ export class ReviewerResponseToGeneralCommentComponent implements OnInit {
         // if(this.ComplianceForm){
         //     this.generalComment = this.ComplianceForm.QCGeneralComment
         // }
+    }
+
+    get QCCommentCategory(){
+        if(this.Comment){
+            return this.tempNumber = this.Comment.ReviewerCategoryEnum;
+        }
     }
 
     onChange(newValue){

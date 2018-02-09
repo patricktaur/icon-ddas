@@ -27,9 +27,9 @@ namespace DDAS.API
             WebApiConfig.Register(config);
 
             //Enable CORS
-            
             var cors = new EnableCorsAttribute("*", "*", "*");
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+
             ConfigureAuth(app);
             app.UseWebApi(config);
             MongoMaps.Initialize();

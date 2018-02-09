@@ -24,6 +24,12 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
         }
     }
 
+    get QCCommentCategory(){
+        if(this.Comment){
+            return this.tempNumber = this.Comment.CategoryEnum;
+        }
+    }
+
     onChange(newValue){
         this.Comment.CategoryEnum = newValue;
     }
