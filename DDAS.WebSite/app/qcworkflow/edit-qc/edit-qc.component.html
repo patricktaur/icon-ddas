@@ -191,18 +191,19 @@
 </modal>
 
 <modal #RemoveConfirmModal>
-	<modal-header>
-		<h4 class="modal-title">Confirm Removal</h4>
-	</modal-header>
-	<modal-body>
-		Remove Finding ?.
-		<br> {{RecordToDeleteText}}
-	</modal-body>
-	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close(); FindingResponseModal.close()">Remove</button>
-		<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
-	</modal-footer>
-</modal>
+		<modal-header>
+			<h4 class="modal-title">Confirm Removal</h4>
+		</modal-header>
+		<modal-body>
+			Remove Finding ?.
+			<br> {{RecordToDeleteText}}
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close(); FindingResponseModal.close()">Remove</button>
+			<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>	
+
 <modal #ConfirmUndoModal>
 	<modal-header>
 		<h4 class="modal-title">Confirm Undo</h4>

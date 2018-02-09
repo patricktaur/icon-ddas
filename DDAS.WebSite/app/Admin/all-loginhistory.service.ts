@@ -25,8 +25,6 @@ export class LoginHistoryService {
     _controller: string = '';
     _options: RequestOptions;
 
-     
-
     constructor(private http: Http,
         private configService: ConfigService,
         private authService: AuthService
@@ -95,15 +93,24 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    getExtractionHistory(){
-        return this.http.get(this._baseUrl + 'admin/GetDataExtractionHistory',
-        this._options)
-        .map((res: Response) => {
-            return res.json();
-        })
-        .catch(this.handleError);
-    }
+    //  getExtractionHistory(){
+    //     return this.http.get(this._baseUrl + 'admin/GetDataExtractionHistory',
+    //     this._options)
+    //     .map((res: Response) => {
+    //         return res.json();
+    //     })
+    //     .catch(this.handleError);
+    // }
 
+    // getDataExtractionErrorSiteCount(){
+    //     return this.http.get(this._baseUrl + 'admin/GetDataExtractionErrorSiteCount',
+    //     this._options)
+    //     .map((res: Response) => {
+    //         return res.json();
+    //     })
+    //     .catch(this.handleError);
+    // }
+    
     deleteExtractionData(RecId: string, Enum: number){
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteExtractionData?RecId=' + RecId
         + '&Enum=' + Enum,

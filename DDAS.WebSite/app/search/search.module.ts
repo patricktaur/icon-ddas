@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { SharedModule } from '../shared/shared.module'
 import { ReactiveFormsModule } from '@angular/forms';
 import { SearchResultSummaryComponent } from './search-result-summary.component';
 import { SearchInputComponent } from './search-input.component';
@@ -28,7 +29,7 @@ import { InvestigatorSummaryComponent } from './investigator-summary.component'
 import { FindingsComponent } from './findings.component'
 
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
-import { SharedModule } from '../shared/shared.module'
+
 import { StatusCircleComponent } from './shared/components/status-circle.component';
 import { StatusCircleLegendVerticalComponent } from './shared/components/status-circle-legend-vertical';
 import { StatusCircleLegHorComponent } from './shared/components/status-circle-legend-horizontal';

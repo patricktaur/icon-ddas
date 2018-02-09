@@ -1125,7 +1125,7 @@ public class MatchedRecord
     #endregion
 
     #region DataExtractionView
-    public class DataExtractionHistory
+    public class ExtractionStatus
     {
         //public string SiteName { get; set; }
         public Guid? RecId { get; set; }

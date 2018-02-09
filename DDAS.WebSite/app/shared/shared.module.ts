@@ -23,7 +23,7 @@ import {CommonService} from './common.service';
 import {FileDownloadModule} from './modules/file-download/file-download.module' 
 import {FileUploadComponent} from './components/file-upload-component'
 import {MultiFileSelectComponent} from './components/multi-file-select.component'
-
+import {ProgressIndicatorComponent} from './components/progress-indicator.component'
 
  
 
@@ -46,7 +46,9 @@ import {MultiFileSelectComponent} from './components/multi-file-select.component
   ConfirmDialogComponent,
   DateInputComponent,
   FileUploadComponent,
-  MultiFileSelectComponent
+  MultiFileSelectComponent,
+  ProgressIndicatorComponent
+
   
   
    ],
@@ -66,7 +68,8 @@ import {MultiFileSelectComponent} from './components/multi-file-select.component
     DateInputComponent,
     FileDownloadModule,
     FileUploadComponent,
-    MultiFileSelectComponent
+    MultiFileSelectComponent,
+    ProgressIndicatorComponent
                    ],
                    
 })

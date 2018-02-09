@@ -51,19 +51,25 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "M/d/yyyy",
                     "yyyy-MM-dd", "M-d-yyyy"
                 };
-
+                var dateOfInspection = new DateTime();
+                var IsDateParsed = false;
                 if (InspectionStartAndEndDate.Contains("-"))
                 {
                     var InspectionStartDate = InspectionStartAndEndDate.Split('-')[0].Trim();
-                    return
-                        DateTime.ParseExact(InspectionStartDate,
+                    IsDateParsed = DateTime.TryParseExact(InspectionStartDate,
                         Formats, null,
-                        System.Globalization.DateTimeStyles.None);
+                        System.Globalization.DateTimeStyles.None, out dateOfInspection);
+                    if (IsDateParsed)
+                        return dateOfInspection;
+                    else
+                        return null;
                 }
                 else if (InspectionStartAndEndDate.Trim() != "")
-                    return DateTime.ParseExact(InspectionStartAndEndDate.Trim(),
+                    IsDateParsed = DateTime.TryParseExact(InspectionStartAndEndDate,
                         Formats, null,
-                        System.Globalization.DateTimeStyles.None);
+                        System.Globalization.DateTimeStyles.None, out dateOfInspection);
+                if (IsDateParsed)
+                    return dateOfInspection;
                 else
                     return null;
             }
