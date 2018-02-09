@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 export class StatusActivatorService{
     private reLoadSubject = new Subject<any>();
 
-    reloadEvent(event){
+    reloadEvent(event: any){
         this.reLoadSubject.next(event);
     }    
 

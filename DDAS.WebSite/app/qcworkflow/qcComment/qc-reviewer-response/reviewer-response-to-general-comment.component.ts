@@ -34,7 +34,7 @@ export class ReviewerResponseToGeneralCommentComponent implements OnInit {
         }
     }
 
-    onChange(newValue){
+    onChange(newValue: any){
         this.Comment.ReviewerCategoryEnum = newValue;
     }
 

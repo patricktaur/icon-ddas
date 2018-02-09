@@ -39,7 +39,6 @@ import  {CorporateIntegrityAgreementListSiteDataComponent}  from './reports/extr
     AdequateAssuranceListsiteDataComponent,
     ClinicalInvestigatorDisqualificationSiteDataComponent,
     PHSAdministrativeActionListingSiteDataComponent,
-    PHSAdministrativeActionListingSiteDataComponent,
     CBERClinicalInvestigatorInspectionSiteDataComponent,
     CorporateIntegrityAgreementListSiteDataComponent
   ],

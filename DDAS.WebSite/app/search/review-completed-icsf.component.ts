@@ -112,7 +112,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    onChange(value){
+    onChange(value:any){
         this.reviewCategory = value;
     }
 
