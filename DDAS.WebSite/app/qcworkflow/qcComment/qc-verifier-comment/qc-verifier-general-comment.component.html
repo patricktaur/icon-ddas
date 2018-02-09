@@ -1,0 +1,30 @@
+<!-- <form role='form'> -->
+    <div class="well">
+         <!-- {{diagnostic}}
+        {{tempNumber}}  -->
+        <h4>{{Title}}</h4>
+        <div class="row">
+            <div class="col-md-2">
+                    <select class="form-control" name="CommentCategory" 
+                    [ngModel]="tempNumber" (ngModelChange)="onChange($event)"
+                    (change)="formValueChanged()">
+                        <option value="8" selected="selected">Not Applicable</option> 
+                        <option value="0">Minor</option>
+                        <option value="1">Major</option>
+                        <option value="2">Critical</option>
+                        <option value="3">Suggestions</option>
+                        <option value="4">Others</option>
+                    </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
+                    [(ngModel)]="tempText"
+                    (change)="formValueChanged()">
+                </textarea>        
+            </div>
+        </div>
+        <!-- <ng-content></ng-content> -->
+    </div>
+<!-- </form> -->

@@ -12,6 +12,15 @@ import { SharedModule } from '../shared/shared.module';
 import {SearchModule} from '../search/search.module';
 //import {ModalModule} from "ng2-modal";
 
+import { QCVerifierGeneralCommentComponent } from 
+'./qcComment/qc-verifier-comment/qc-verifier-general-comment.component';
+
+import { ReviewerResponseToGeneralCommentComponent } from 
+'./qcComment/qc-reviewer-response/reviewer-response-to-general-comment.component';
+
+import { QCVerifierGeneralCommentViewComponent } from
+'./qcComment/qc-verifier-comment-view/qc-verifier-general-comment-view.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -25,9 +34,16 @@ import {SearchModule} from '../search/search.module';
   ],
   declarations: [
     ListQCComponent,
-    EditQCComponent
+    EditQCComponent,
+    QCVerifierGeneralCommentComponent,
+    ReviewerResponseToGeneralCommentComponent,
+    QCVerifierGeneralCommentViewComponent
   ],
-
+  exports: [
+    QCVerifierGeneralCommentComponent,
+    ReviewerResponseToGeneralCommentComponent,
+    QCVerifierGeneralCommentViewComponent
+  ],
   providers: [
     QCService
   ]

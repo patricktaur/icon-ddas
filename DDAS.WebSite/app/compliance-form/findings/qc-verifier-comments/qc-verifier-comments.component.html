@@ -10,9 +10,9 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-4">
                 <label for="Category">Category:</label>
-                <select class="form-control" name="AssignedTo" 
+                <select class="form-control" name="CommentCategory" 
                 [(ngModel)]="getQCVerifierComment.CategoryEnum"
                 (change)="formValueChanged()">
                     <option value="8" selected="selected">Not Applicable</option>
@@ -25,11 +25,11 @@
         </div>
     </div>
     <div class="row">
-            <div class="col-md-12">
-                    <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
+        <div class="col-md-12">
+                <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
                     [(ngModel)]="getQCVerifierComment.FindingComment"
                     (change)="formValueChanged()">
-                        </textarea>
-            </div>
+                </textarea>
         </div>
+    </div>
 </div>

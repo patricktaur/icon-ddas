@@ -1,6 +1,9 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="well">
+			<div class="alert alert-info" *ngIf="Loading">
+				<strong>Loading ...</strong>
+			</div>
 			<h3>QC for Principal Investigator -
 				<b>{{principalInvestigatorName}}</b>
 			</h3>
@@ -12,14 +15,13 @@
 			<label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label>
 			<!-- QCVerifierReviewId:{{QCVerifierReviewId}} -->
 			<br>
-
 			<!-- Test: {{Test?.RecId}} -->
 		</div>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-lg-12 ">
+	<div class="col-lg-12">
 		<div class="well">
 			<ul class="nav nav-tabs">
 
@@ -37,6 +39,57 @@
 			<div class="tab-content">
 				<div id="qc-general" class="tab-pane fade {{defaultTabInActive}}">
 					<br/>
+					<h4>General Comment/Observations:</h4>
+					<div>
+						<table class="table table-bordered table-hover table-striped">
+							<thead>
+								<tr>
+									<th>Comment Type</th>
+									<th>Verifier Comment Category</th>
+									<th>Verifier Comment</th>
+									<th>Reviewer Comment Category</th>
+									<th>Response</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="active" *ngIf="canDisplayGeneralComment">
+									<td class="text-left">
+										Comment A
+									</td>
+									<td class="text-left">
+										{{getcommentCategory(QCGeneralComment?.CategoryEnum)}}
+									</td>
+									<td class="text-left">
+										{{QCGeneralComment?.FindingComment}}
+									</td>
+									<td class="text-left">
+										{{getcommentCategory(QCGeneralComment?.ReviewerCategoryEnum)}}
+									</td>
+									<td class="text-left">
+										{{QCGeneralComment?.ReviewerComment}}
+									</td>
+								</tr>
+								 <tr class="active" *ngIf="canDisplayAttachmentComment">
+									<td class="text-left">
+										Comment B
+									</td>									 
+									<td class="text-left">
+										{{getcommentCategory(QCAttachmentComment?.CategoryEnum)}}
+									</td>
+									<td class="text-left">
+										{{QCAttachmentComment?.FindingComment}}
+									</td>
+									<td class="text-left">
+										{{getcommentCategory(QCAttachmentComment?.ReviewerCategoryEnum)}}
+									</td>
+									<td class="text-left">
+										{{QCAttachmentComment?.ReviewerComment}}
+									</td>
+								</tr> 
+							</tbody>
+						</table>
+					</div>
+
 					<h4>QC Summary: </h4>
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
@@ -46,7 +99,8 @@
 								<th>Comment/Observation Type</th>
 								<th>Category</th>
 								<th>Observation/Comment</th>
-								<th>Response to QC</th>
+								<th>Response Category</th>
+								<th>Response</th>
 								<th>Open</th>
 							</tr>
 						</thead>
@@ -56,7 +110,7 @@
 									{{item.InvestigatorName}}
 								</td>
 								<td class="text-left">
-									{{getSourceName(item)}}
+									{{item.SiteSourceId}}
 								</td>
 								<td class="text-left">
 									{{getType(item)}}
@@ -68,7 +122,10 @@
 									{{item.Comments[0].FindingComment}}
 								</td>
 								<td class="text-left">
-									{{getReviewerCategory(item.Comments[0].ReviewerCategoryEnum)}}
+									{{getcommentCategory(item.Comments[0].ReviewerCategoryEnum)}}
+								</td>
+								<td class="text-left">
+									{{item.Comments[0].ReviewerComment}}
 								</td>
 								<td>
 									<!-- *ngIf="!isSubmitted" -->
@@ -76,7 +133,6 @@
 									 title="Open">
 										<span class="glyphicon glyphicon-edit"></span>
 									</button>
-
 								</td>
 							</tr>
 						</tbody>
@@ -84,32 +140,56 @@
 					<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 				</div>
 				<div id="request" class="tab-pane fade">
+					<br/>
+					<div *ngIf="canSubmitQC">
+						<div qc-verifier-general-comment
+						[Comment]="QCAttachmentComment" [Title]="'Comment B'"
+						(ValueChanged)="formValueChanged($event)">
+						</div>
+					</div>
+
+					<div *ngIf="reviewerSubmitQC">
+						<div reviewer-response-to-general-comment [Title]="'Response to Comment B'"
+						[Comment]="QCAttachmentComment" (ValueChanged)="formValueChanged($event)">
+						</div>
+					</div>
+
 					Request:
 					Attachments:
 					<table class="table table-bordered table-hover table-striped">
-							<thead>
-								<tr>
-									<th align="left">File Name </th>
-									<th >Download</th>
-									
-								</tr>
-							</thead>
-					
-							<tbody>
-								<tr *ngFor="let fileName of Attachments" >
-									<td align="left">
-											{{fileName}} 
-									</td>
-									<td align="center">
-										<div file-download [url]="getAttachmentDownloadURL(fileName)" class="pull-left">  </div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					
+						<thead>
+							<tr>
+								<th align="left">File Name </th>
+								<th >Download</th>		
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let fileName of Attachments" >
+								<td align="left">
+										{{fileName}} 
+								</td>
+								<td align="center">
+									<div file-download [url]="getAttachmentDownloadURL(fileName)" class="pull-left">  </div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 				<div id="comp-form" class="tab-pane fade">
 					<br/>
+					<div *ngIf="canSubmitQC">
+						<div qc-verifier-general-comment
+						[Comment]="QCGeneralComment" [Title]="'Comment A'"
+						(ValueChanged)="formValueChanged($event)">
+						</div>
+					</div>
+
+					<div *ngIf="reviewerSubmitQC">
+						<div reviewer-response-to-general-comment [Title]="'Response to Comment A'"
+						[Comment]="QCGeneralComment" (ValueChanged)="formValueChanged($event)">
+						</div>
+					</div>
+
 					<div compliance-form-view [complianceForm]="complianceForm"></div>
 				</div>
 			</div>
@@ -120,12 +200,12 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<br/>
-			<div class="row">
+			<!-- <div class="row">
 				<div class="col-md-3">
 					<div class="form-group">
 						<label for="Status">QC Response:</label>
 						<select class="form-control" [(ngModel)]="status" [disabled]="disableQCResponse">
-							<option value=-1 selected="selected">---select---</option>
+							<option value=-1 selected="selected">select</option>
 							<option value=0>Failed</option>
 							<option value=1>Passed</option>
 						</select>
@@ -133,15 +213,15 @@
 				</div>
 				<div class="col-md-9">
 				</div>
-			</div>
+			</div> -->
 
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
-			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="submit()">Submit QC</button>
+			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.open()">Submit QC</button>
 			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
 			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 
-				(click)="submitQCByReviewer()" [disabled]="CanSubmitCorrectionsCompleted">
+				(click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
 				Submit QC Corrections
 			</button>
 		</div>
@@ -214,5 +294,29 @@
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="undoQCSubmit(); ConfirmUndoModal.close()">Confirm Undo</button>
 		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+<modal #ConfirmQCSubmitModal>
+	<modal-header>	
+		<h4 class="modal-title">Confirm Submit QC</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Submit QC?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="submit(); ConfirmQCSubmitModal.close()">Confirm Submit QC</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+<modal #ConfirmQCCorrectionSubmitModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Submit QC Corrections</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to Submit QC Corrections?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-primary" (click)="submitQCByReviewer(); ConfirmQCCorrectionSubmitModal.close()">Confirm Submit QC Corrections</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

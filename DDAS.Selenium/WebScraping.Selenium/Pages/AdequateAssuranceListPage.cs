@@ -169,7 +169,7 @@ namespace WebScraping.Selenium.Pages
 
             for (int Index = 1; Index <= 25; Index++)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(100);
                 if (executor.ExecuteScript("return document.readyState").ToString().
                     Equals("complete"))
                 {
@@ -186,6 +186,8 @@ namespace WebScraping.Selenium.Pages
             {
                 if (!IsPageLoaded())
                     throw new Exception("Page is not loaded");
+                else if (IsSiteDown)
+                    throw new Exception("Page Not Found");
 
                 _adequateAssuranceListSiteData.DataExtractionRequired = true;
                 LoadAdequateAssuranceInvestigators();

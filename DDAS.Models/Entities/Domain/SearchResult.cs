@@ -189,8 +189,12 @@ namespace DDAS.Models.Entities.Domain
         public List<SiteSource> SiteSources { get; set; }
         public List<Finding> Findings { get; set; }
         public List<Review> Reviews { get; set; } = new List<Review>();
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+        //public List<Comment> Comments { get; set; } = new List<Comment>();
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+
+        public Comment QCGeneralComment { get; set; }
+
+        public Comment QCAttachmentComment { get; set; }
 
         public string Reviewer {
             get {
@@ -499,6 +503,7 @@ namespace DDAS.Models.Entities.Domain
         public string Status { get; set; }
         public ComplianceFormStatusEnum StatusEnum { get; set; }
         public string AssignedTo { get; set; }
+        public string AssignedToFullName { get; set; }
         public string Reviewer { get; set; }
         public string QCVerifier { get; set; }
         public bool UndoQCRequest { get; set; }
@@ -983,12 +988,11 @@ namespace DDAS.Models.Entities.Domain
 
     }
 
-
 #endregion
 
-#region ByPatrick
+    #region ByPatrick
 
-public class MatchedRecord
+    public class MatchedRecord
     {
         public bool IsFullMatch { get; set; }
         public int MatchCount { get; set; }
@@ -1073,6 +1077,7 @@ public class MatchedRecord
     {
         public Guid? ReviewId { get; set; }
         public string FindingComment { get; set; }
+        public string ReviewerComment { get; set; }
         public DateTime? AddedOn { get; set; }
         public DateTime? CorrectedOn { get; set; }
         public CommentCategoryEnum CategoryEnum { get; set; }

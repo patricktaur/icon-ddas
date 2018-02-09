@@ -109,8 +109,8 @@
 							<th class="">Principal Investigator </th>
 							<th class="text-left">ICON Project Number</th>
 							<th class="text-left">Active</th>
-							<th class="text-center">Searched on</th>
 							<th class="text-center">Assigned to</th>
+							<th class="text-center">Searched on</th>
 							<th class="text-left">Status</th>
 							<th class="text-center">Actions</th>
 						</tr>
@@ -143,12 +143,11 @@
 							<td>
 								{{item.Active | boolToYesNo}}
 							</td>
-
 							<td class="text-left">
-								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+								{{item.AssignedToFullName}}
 							</td>
 							<td class="text-left">
-								{{item.AssignedTo}}
+								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
 							</td>
 							<td class="text-center">
 								<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>

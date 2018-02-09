@@ -112,6 +112,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
+    onChange(value){
+        this.reviewCategory = value;
+    }
+
+    resetReviewCategory(){
+        this.reviewCategory = "Standard";
+    }
     // public loadSessionId(): void {
     
     //     this.service.getSessionId()
@@ -194,7 +201,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     get filteredRecords() {
-        return this.PrincipalInvestigators;
+        if(this.PrincipalInvestigators != undefined){
+            return this.PrincipalInvestigators.filter(x => 
+                x.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+                x.CurrentReviewStatus == ReviewStatusEnum.QCRequested);
+        }
+        else
+            return null;
     }
 
     setCompFormActiveValue(DataItem: PrincipalInvestigatorDetails) {
@@ -268,15 +281,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    // downloadComplianceFormPDF(formId: string) {
-    //     this.service.generateComplianceFormPDF(formId)
-    //         .subscribe((item: any) => {
-
-    //         },
-    //         error => {
-    //         });
-    // }
-
     getBackgroundColor(color: number) {
         let retColor: string;
 
@@ -327,7 +331,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
     setSelectedRecordDetails(complainceFormId: string) {
         this.files = [];
         this.SelectedComplianceFormId = complainceFormId;
-
     }
 
     requestQC(){
@@ -348,6 +351,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.AssignedOn = new Date();
         review.Status = ReviewStatusEnum.QCRequested;
         review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+        review.ReviewCategory = this.reviewCategory;
         review.Comment = this.requestorComment;
         //review.StartedOn = null;
         //review.CompletedOn = null;
@@ -432,5 +436,14 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.requestorComment = "";
     }
 
-    get diagnostic() { return JSON.stringify(this.audit); }
+    moveToCompletedICSF(){
+        this.service.moveReviewCompletedToCompleted(this.SelectedComplianceFormId)
+        .subscribe((item: boolean) =>{
+            this.LoadPrincipalInvestigators();
+        },
+        error => {
+        });
+    }
+
+    get diagnostic() { return JSON.stringify(this.reviewCategory); }
 }

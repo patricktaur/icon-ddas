@@ -269,7 +269,6 @@ namespace DDAS.Services.Search
 
         #endregion
 
-
         public ComplianceForm ImportIsprintData(ddRequest DR)
         {
             //var ComplianceForms = new ComplianceForm();
@@ -892,8 +891,6 @@ namespace DDAS.Services.Search
 
                     dbForm.Reviews.Clear();
                     dbForm.Reviews.AddRange(form.Reviews);
-                    dbForm.Comments.Clear();
-                    dbForm.Comments.AddRange(form.Comments);
 
                     //Correct DisplayPosition etc
                     AddMissingSearchStatusRecords(dbForm);
@@ -1093,6 +1090,12 @@ namespace DDAS.Services.Search
                     }
                 }
             }
+             
+            if (Form.QCGeneralComment != null && Form.QCGeneralComment.AddedOn == null)
+                Form.QCGeneralComment.AddedOn = DateTime.Now;
+
+            if (Form.QCAttachmentComment != null && Form.QCAttachmentComment.AddedOn == null)
+                Form.QCAttachmentComment.AddedOn = DateTime.Now;
 
             RollUpSummary(Form);
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
@@ -2406,6 +2409,7 @@ namespace DDAS.Services.Search
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
             }
             item.AssignedTo = compForm.AssignedTo;
+            item.AssignedToFullName = GetUserFullName(compForm.AssignedTo);
             item.Status = compForm.Status;
             item.StatusEnum = compForm.StatusEnum;
             item.ExtractionErrorInvestigatorCount = compForm.ExtractionErrorInvestigatorCount;
@@ -2429,18 +2433,24 @@ namespace DDAS.Services.Search
 
         private void CanUndoQC(PrincipalInvestigator Investigator, ComplianceForm Form)
         {
-            var QCReview = Form.Reviews.Find(x =>
-                x.Status == ReviewStatusEnum.QCFailed);
+            //required for Undo action in completed icsf page
+            var ReviewCompleted = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.ReviewCompleted);
 
-            var CompletedReview = Form.Reviews.Find(x =>
+            var QCReview = Form.Reviews.Find(x =>
+                x.Status == ReviewStatusEnum.QCCompleted);
+
+            var Completed = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);
 
             if (QCReview == null &&
-                CompletedReview != null &&
+                Completed != null &&
                 Form.QCVerifier != null) //For QCVerifier
                 Investigator.UndoQCSubmit = true;
-            else if (QCReview != null && CompletedReview != null) //For Reviewer
+            else if (QCReview != null && Completed != null) //For Reviewer
                 Investigator.UndoQCResponse = true;
+            else if (ReviewCompleted == null && Completed != null)
+                Investigator.UndoCompleted = true; //For reviewer, to undo completed to review completed
         }
 
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
@@ -2862,7 +2872,7 @@ namespace DDAS.Services.Search
                         DateOfInspection =
                             finding.DateOfInspection.Value.ToString("dd MMM yyyy");
 
-                    if (finding.Selected)
+                    if (finding.Selected && finding.IsAnIssue)
                     {
                         string[] CellValues = new string[]
                         {

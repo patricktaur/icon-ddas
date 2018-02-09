@@ -36,9 +36,10 @@ export class CompletedICSFComponent implements OnInit {
     public currentReviewStatus: CurrentReviewStatusViewModel;
     public undoQCSubmit: boolean;
     public undoQCResponse: boolean;
+    public undoCompleted: boolean;
     public recId: string;
     public pageNumber: number = 1;
-    
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -124,19 +125,23 @@ export class CompletedICSFComponent implements OnInit {
     }
 
     canUndoQC(item: PrincipalInvestigatorDetails){
-        if(item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
+        if(item.QCVerifier && item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
             item.UndoQCSubmit)
             return true;
         else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
             item.UndoQCResponse)
             return true;
+        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
+            item.UndoCompleted)
+            return true;
         else
             return false;
     }
 
-    setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, RecId: string){
+    setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, UndoCompleted: boolean, RecId: string){
         this.undoQCSubmit = UndoQCSubmit;
         this.undoQCResponse = UndoQCResponse;
+        this.undoCompleted = UndoCompleted;
         this.recId = RecId;
     }
 
@@ -147,8 +152,11 @@ export class CompletedICSFComponent implements OnInit {
             undoEnum = UndoEnum.UndoQCSubmit;
         else if(this.undoQCResponse)
             undoEnum = UndoEnum.UndoQCResponse;
+        else if(this.undoCompleted)
+            undoEnum = UndoEnum.UndoCompleted;
 
-        if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse){
+        if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse ||
+            undoEnum == UndoEnum.UndoCompleted) {
             this.service.undo(this.recId, undoEnum)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
