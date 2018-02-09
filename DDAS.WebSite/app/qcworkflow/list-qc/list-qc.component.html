@@ -30,26 +30,26 @@
 							{{item.ProjectNumber}} {{item.ProjectNumber2}}
 						</td>
 						<td>
-							{{item.Requestor}}
+							{{item.RequesterFullName}}
 						</td>
 						<td class="text-left">
-							{{item.RequestedOn | date: 'dd MMM yyyy'}}
+							{{item.RequestedOn | date: 'dd MMM yyyy HH:mm'}}
 						</td>
 						<td class="text-left">
-							{{item.QCVerifier}}
+							{{item.QCVerifierFullName}}
 						</td>
 						<td align="center">
 							{{status(item.Status)}}
 						</td>
 						<td class="text-left">
-							 {{item.CompletedOn | date: 'dd MMM yyyy'}} 
+							 {{item.CompletedOn | date: 'dd MMM yyyy HH:mm'}} 
 						</td>
 						<td>
 							<!-- <button type="button" class="btn btn-sm btn-primary" (click)="editQC(item.RecId)" title="Opens" *ngIf="isAuditorOrIsAuditPending(item.QCVerifier, item.Status)">
                             	<span class="glyphicon glyphicon-folder-open"></span>
 							</button> -->
 							<button type="button" class="btn btn-sm btn-primary" 
-							*ngIf="isActionRequired(item.QCVerifier, item.Requestor, item.Status)"
+							*ngIf="isActionRequired(item.QCVerifier, item.Requester, item.Status)"
 							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="Open">
                             	<span class="glyphicon glyphicon-folder-open"></span>
                         	</button>							

@@ -15,7 +15,7 @@ namespace DDAS.Models.Interfaces
         bool RequestQC(Guid ComplianceFormId, Review review);
         List<QCListViewModel> ListQCs();
         ComplianceForm GetQC(Guid RecId, string AssignedTo, string LoggedInUserName);
-        bool SaveQC(ComplianceForm Form);
+        ComplianceForm SubmitQC(ComplianceForm Form);
         List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);
         //bool UndoQCRequest(Guid ComplianceFormId);
         //bool UndoQCSubmit(Guid ComplianceFormId);
