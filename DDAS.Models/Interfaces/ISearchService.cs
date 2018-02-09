@@ -80,5 +80,8 @@ namespace DDAS.Models.Interfaces
             List<ComplianceForm> forms);
 
         bool UpdateQC(ComplianceForm Form);
+
+        iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(Guid ComplianceFormId);
+        iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(ComplianceForm Form);
     }
 }

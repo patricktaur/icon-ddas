@@ -10,7 +10,7 @@ namespace DDAS.Models.Entities
     {
         public Guid? RecId { get; set; }
         public DateTime CreatedOn { get; set; }
-
+        public Guid? ComplianceFormId { get; set; }
         public string RequestPayload { get; set; }
         public string Response { get; set; }
         public string Status { get; set; }

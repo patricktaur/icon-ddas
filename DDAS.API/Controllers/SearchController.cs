@@ -1048,7 +1048,20 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ExportToiSprint(string ComplianceFormId)
         {
-            return Ok();
+            var RecId = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(RecId);
+            var ExportResponse = _SearchService.ExportDataToIsprint(Form);
+
+            if (ExportResponse.Success)
+            {
+                Form.ExportedToiSprintOn = DateTime.Now;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return Ok();
+            }
+            else
+            {
+                return Ok(ExportResponse.Message);
+            }
         }
 
         string ListToString(ExcelInput excelInput)

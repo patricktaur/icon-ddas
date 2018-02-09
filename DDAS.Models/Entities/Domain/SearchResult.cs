@@ -191,6 +191,7 @@ namespace DDAS.Models.Entities.Domain
         public List<Review> Reviews { get; set; } = new List<Review>();
         //public List<Comment> Comments { get; set; } = new List<Comment>();
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
+        public DateTime? ExportedToiSprintOn { get; set; }
 
         public Comment QCGeneralComment { get; set; }
 

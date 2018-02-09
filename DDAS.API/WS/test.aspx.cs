@@ -252,7 +252,7 @@ namespace DDAS.API.WS
                 var _config = new Config();
                 var _SearchEngine = new SearchEngine(_uow, _config);
                 ComplianceFormService c = new ComplianceFormService(_uow, _SearchEngine, _config);
-                txtBody.Text =  c.ExportDataToIsprint(Guid.Parse(txtRecid.Text));
+                txtBody.Text =  c.ExportDataToIsprint(Guid.Parse(txtRecid.Text)).Message;
 
                 //var objCF = c.GetComplianceForm(Guid.Parse(txtRecid.Text));
 
