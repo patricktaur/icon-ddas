@@ -31,6 +31,13 @@ namespace WebScraping.Selenium.SearchEngine
             _config = Config;
             //_Driver = webDriver;
         }
+        public IConfig Config
+        {
+            get
+            {
+                return _config;
+            }
+        }
 
         private ISearchPage GetSearchPage(SiteEnum siteEnum, ILog Log)
         {
@@ -409,6 +416,8 @@ namespace WebScraping.Selenium.SearchEngine
                 return _searchPage.baseSiteData;
             }
         }
+
+        
 
         public enum DriverEnum
         {

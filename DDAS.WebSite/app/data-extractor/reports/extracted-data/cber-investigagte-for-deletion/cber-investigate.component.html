@@ -5,8 +5,9 @@
 		</div>
 	</div>
 </div>
-
-
+Data Extracted On: {{CBERInvestigator?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}<br>
+Site Last Updated On: {{CBERInvestigator?.SiteLastUpdatedOn | date: 'dd MMM yyyy HH:mm' }}
+<!-- {{diagnostic}} -->
 <div class="table-responsive">
 	<div statusCircle-Legend-Horizontal></div>
 	<table class="table table-bordered table-hover table-striped">
@@ -22,7 +23,7 @@
 
 		<tbody>
 			<!--<tr *ngFor="let item of cberRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">-->
-			<tr *ngFor="let item of cberRecords" class="active">	
+			<tr *ngFor="let item of CBERInvestigator?.ClinicalInvestigator | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">	
 				<td class="text-left">
                     {{item.Name}}
 				</td>
@@ -41,5 +42,6 @@
 			</tr>
 		</tbody>
 	</table>
-	<!--<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>-->
+	<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+	<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
 </div>

@@ -13,6 +13,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
             ClinicalInvestigator = new List<CBERClinicalInvestigator>();
         }
         public Guid? RecId { get; set; }
+        //BaseClass properties do not get serialized, hence two ready only properties added:
+        public DateTime ExtractedOn { get  { return CreatedOn;} }
+        public new DateTime?  SiteLastUpdatedOn { get { return base.SiteLastUpdatedOn; } }
         public List<CBERClinicalInvestigator> ClinicalInvestigator { get; set; }
     }
 

@@ -28,15 +28,15 @@ namespace DDAS.Services.AppAdminService
             _config = config;
         }
 
-        public List<CBERClinicalInvestigator> GetCBERData()
-        {
-            var CBERData = _UOW.CBERClinicalInvestigatorRepository.
-                GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+        //public List<CBERClinicalInvestigator> GetCBERData()
+        //{
+        //    var CBERData = _UOW.CBERClinicalInvestigatorRepository.
+        //        GetAll()
+        //        .OrderByDescending(x => x.CreatedOn).Last();
 
-            var Data = CBERData.ClinicalInvestigator;
-            return Data;
-        }
+        //    var Data = CBERData.ClinicalInvestigator;
+        //    return Data;
+        //}
 
         //public List<DataExtractionHistory> GetDataExtractionHistory()
         //{
