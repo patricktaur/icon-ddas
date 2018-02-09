@@ -46,18 +46,19 @@ namespace DDAS.API.WS
 
             XmlSerializer xsSubmit = new XmlSerializer(typeof(ddRequest));
             //var subReq = new MyObject();
-            string xml = "";
+            string xmlRequestPayload = "";
+            string xmlResponse = "";
 
             using (var sww = new Utf8StringWriter())
             {
                 using (XmlWriter writer = XmlWriter.Create(sww))
                 {
                     xsSubmit.Serialize(writer, DR);
-                    xml = sww.ToString(); // Your XML
+                    xmlRequestPayload = sww.ToString(); // Your XML
                 }
             }
 
-            objLog.RequestPayload = xml;
+            objLog.RequestPayload = xmlRequestPayload;
 
 
             //===========================
@@ -86,20 +87,19 @@ namespace DDAS.API.WS
 
                 XmlSerializer xsResponse = new XmlSerializer(typeof(ddresponse));
 
-                xml = "";
 
                 using (var sww = new Utf8StringWriter())
                 {
                     using (XmlWriter writer = XmlWriter.Create(sww))
                     {
                         xsResponse.Serialize(writer, objResponse);
-                        xml = sww.ToString(); // Your XML
+                        xmlResponse = sww.ToString(); // Your XML
                     }
                 }
 
                 //>>>>>
 
-                //objLog.Response = xml;
+                //objLog.Response = xmlResponse;
                 objLog.Status = "Success";
 
                 //_uow.LogWSDDASRepository.Add(objLog);
@@ -110,34 +110,40 @@ namespace DDAS.API.WS
             {
                 SoapException retEx = new SoapException(ex.Message, SoapException.ServerFaultCode, "", ex.InnerException);
 
-                //<<<< Convert response to log
+                xmlResponse = ex.Message;
 
-                XmlSerializer xsException = new XmlSerializer(typeof(SoapException));
-
-                xml = "";
-
-                using (var sww = new Utf8StringWriter())
+                if (ex.InnerException != null)
                 {
-                    using (XmlWriter writer = XmlWriter.Create(sww))
-                    {
-                        xsException.Serialize(writer, retEx);
-                        xml = sww.ToString(); // Your XML
-                    }
+                    xmlResponse += ": " + ex.InnerException.Message;
                 }
 
-                //>>>>>
 
-                //objLog.Response = xml;
+                ////<<<< Convert response to log
+
+                //XmlSerializer xsException = new XmlSerializer(typeof(SoapException));
+
+                //xmlResponse = "";
+
+                //using (var sww = new Utf8StringWriter())
+                //{
+                //    using (XmlWriter writer = XmlWriter.Create(sww))
+                //    {
+                //        xsException.Serialize(writer, retEx);
+                //        xmlResponse = sww.ToString(); // Your XML
+                //    }
+                //}
+
+                ////>>>>>
+                //objLog.Response = xmlResponse;
                 objLog.Status = "Failed";
 
                 //_uow.LogWSDDASRepository.Add(objLog);
-
 
                 throw retEx;
             }
             finally
             {
-                objLog.Response = xml;
+                objLog.Response = xmlResponse;
 
                 _uow.LogWSDDASRepository.Add(objLog);
             }
@@ -182,7 +188,16 @@ namespace DDAS.API.WS
                 investigator.licenceNumber = ddasinvestigator.MedicalLiceseNumber;
                 investigator.memberId = ddasinvestigator.MemberId;
                 investigator.nameWithQualification = ddasinvestigator.Name;
-                investigator.role = ddasinvestigator.Role;
+
+                if (ddasinvestigator.Role.ToLower() == "sub i")
+                {
+                    investigator.role = "SubI";
+                }
+                else
+                {
+                    investigator.role = ddasinvestigator.Role;
+                }
+
 
                 obj.investigators[el] = investigator;
 

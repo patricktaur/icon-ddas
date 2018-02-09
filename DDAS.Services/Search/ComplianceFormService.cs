@@ -271,26 +271,22 @@ namespace DDAS.Services.Search
 
         public ComplianceForm ImportIsprintData(ddRequest DR)
         {
-            //var ComplianceForms = new ComplianceForm();
-
-            //var InputRows = DataFromExcelFile.ExcelInputRows;
 
             var form = GetNewComplianceForm("");
 
-            //Already assigning the name in GetNewComplianceForm
-            //form.AssignedTo = UserName;
-            //form.UploadedFileName = UploadedFileName;
-            //form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
+            if (!IsValidProjectNumber(DR.project.projectNumber))
+            {
+                throw new Exception("change the project number format to '1234/5678", new Exception("Data Validation Failed."));
+            }
+
             form.ProjectNumber = DR.project.projectNumber;
-            //form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
-            //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
             form.Institute = DR.institute.name;
             form.Address = (DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  ", " ");
             form.Country = DR.institute.country;
 
-            //AddCountrySpecificSites(form);
-            //AddSponsorSpecificSites(form);
+            AddCountrySpecificSites(form);
+            AddSponsorSpecificSites(form);
 
 
             int InvId = 1;
@@ -298,8 +294,6 @@ namespace DDAS.Services.Search
 
             foreach (ddRequestInvestigator d in DR.investigators)
             {
-
-
                 var Investigator = new InvestigatorSearched();
                 Investigator.Id = InvId;
                 InvId += 1;
@@ -308,7 +302,8 @@ namespace DDAS.Services.Search
                 Investigator.FirstName = d.firstName.Trim();
                 Investigator.MiddleName = d.middleName.Trim();
                 Investigator.LastName = d.lastName.Trim();
-                Investigator.Role = d.role.ToString().Trim();
+
+
                 Investigator.MedicalLiceseNumber = d.licenceNumber;
                 Investigator.MemberId = d.memberId;
                 Investigator.InvestigatorId = d.investigatorId;
@@ -318,45 +313,23 @@ namespace DDAS.Services.Search
 
                 if (d.role.ToString().ToLower() == "pi")
                 {
+                    Investigator.Role = "PI";
                     PrincipleInvestigatorCount += 1;
                 }
-
-
-                //int tempIndex = Index + 1; //to add SI's
-
-                //while (tempIndex < InputRows.Count &&
-                //    d.role.ToString().ToLower() == "sub i")
-                //{
-                //    var Inv = new InvestigatorSearched();
-                //    Inv.Id = InvId;
-                //    InvId += 1;
-
-                //    Inv.Name = InputRows[tempIndex].DisplayName.Trim();
-                //    Inv.FirstName = InputRows[tempIndex].FirstName;
-                //    Inv.MiddleName = InputRows[tempIndex].MiddleName;
-                //    Inv.LastName = InputRows[tempIndex].LastName;
-                //    Inv.Role = InputRows[tempIndex].Role;
-                //    Inv.MedicalLiceseNumber =
-                //        InputRows[tempIndex].MedicalLicenseNumber;
-                //    Inv.MemberId = InputRows[tempIndex].MemberID;
-                //    Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
-
-                //    form.InvestigatorDetails.Add(Inv);
-                //    tempIndex += 1;
-                //}
-                //Index = tempIndex - 1;
-
-                //ComplianceForms.Add(form);
+                else if (d.role.ToString().ToLower() == "subi")
+                {
+                    Investigator.Role = "Sub I";
+                }
             }
 
             if (PrincipleInvestigatorCount == 0)
             {
-                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.");
+                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.", new Exception("Data Validation Failed."));
             }
 
             if (PrincipleInvestigatorCount > 1)
             {
-                throw new Exception("Principle Investigator cannot be more than one.");
+                throw new Exception("Principle Investigator cannot be more than one.", new Exception("Data Validation Failed."));
             }
 
             ScanUpdateComplianceForm(form);
@@ -418,20 +391,20 @@ namespace DDAS.Services.Search
             oInstitutionsList.checksCompleted = oChecksCompleted;
             oInstitutionsList.instituteComplianceIssue = true;
 
-            institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
-            institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
+            //institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
+            //institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
 
-            oInstitutionFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-            oInstitutionFinding.type = "Regulatory";
-            oInstitutionFinding.regulatoryCode = "OAI";
-            oInstitutionFinding.regulatoryDeficiency = "No";
-            oInstitutionFinding.worldCheckFinding = "No";
-            oInstitutionFinding.comment = "Test123";
+            //oInstitutionFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+            //oInstitutionFinding.type = "Regulatory";
+            //oInstitutionFinding.regulatoryCode = "OAI";
+            //oInstitutionFinding.regulatoryDeficiency = "No";
+            //oInstitutionFinding.worldCheckFinding = "No";
+            //oInstitutionFinding.comment = "Test123";
 
-            oInstitutionsFindingsList.finding = oInstitutionFinding;
+            //oInstitutionsFindingsList.finding = oInstitutionFinding;
 
-            //Optional
-            oInstitutionsList.ddFindings = oInstitutionsFindingsList;
+            ////Optional
+            //oInstitutionsList.ddFindings = oInstitutionsFindingsList;
 
             // institutions >>>>>>
 
@@ -462,30 +435,46 @@ namespace DDAS.Services.Search
                 investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = new investigatorResultsInvestigatorResultChecksCompleted();
                 investigatorResultsInvestigatorResultChecksCompletedCheck oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck();
 
-                oInvestigatorCheck.name = "investigator world check";
-                oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //oInvestigatorCheck.name = "investigator world check";
+                //oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
-                oInvestigatorChecksCompleted.check = oInvestigatorCheck;
-                InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+                var WorldCheckPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.WorldCheckPage);
+                if (WorldCheckPage != null)
+                {
+                    oInvestigatorCheck.name = "investigator world check";
+                    if (WorldCheckPage.SiteSourceUpdatedOn != null)
+                        oInvestigatorCheck.date = DateTime.ParseExact(WorldCheckPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci); 
+                    oInvestigatorChecksCompleted.check = oInvestigatorCheck;
+                    InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+                }
 
 
-                InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                InvestigatorResult.dmc9002Exclusion = "Exclusion";
+                var DMCExclusionPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.PfizerDMCChecksPage);
 
-                investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = new investigatorResultsInvestigatorResultDdFindings();
-                investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = new investigatorResultsInvestigatorResultDdFindingsFinding();
+                if (DMCExclusionPage != null)
+                {
+                    InvestigatorResult.dmc9002Exclusion = "Exclusion";
+                    if (DMCExclusionPage.SiteSourceUpdatedOn != null)
+                        InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DMCExclusionPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                }
 
-                oInvestigatorFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                oInvestigatorFinding.type = "Regulatory";
-                oInvestigatorFinding.regulatoryCode = "OAI";
-                oInvestigatorFinding.regulatoryDeficiency = "No";
-                oInvestigatorFinding.worldCheckFinding = "No";
-                oInvestigatorFinding.comment = "TestInv";
+                //InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //InvestigatorResult.dmc9002Exclusion = "Exclusion";
 
-                oInvestigatorFindings.finding = oInvestigatorFinding;
+                //investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = new investigatorResultsInvestigatorResultDdFindings();
+                //investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = new investigatorResultsInvestigatorResultDdFindingsFinding();
 
-                //Optional
-                InvestigatorResult.ddFindings = oInvestigatorFindings;
+                //oInvestigatorFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //oInvestigatorFinding.type = "Regulatory";
+                //oInvestigatorFinding.regulatoryCode = "OAI";
+                //oInvestigatorFinding.regulatoryDeficiency = "No";
+                //oInvestigatorFinding.worldCheckFinding = "No";
+                //oInvestigatorFinding.comment = "TestInv";
+
+                //oInvestigatorFindings.finding = oInvestigatorFinding;
+
+                ////Optional
+                //InvestigatorResult.ddFindings = oInvestigatorFindings;
 
                 arrInvestigatorResult[elem] = InvestigatorResult;
 
@@ -531,10 +520,7 @@ namespace DDAS.Services.Search
             objLog.CreatedOn = DateTime.Now;
             objLog.ComplianceFormId = form.RecId;
             objLog.RequestPayload = xml;
-            
-            //sRetval = PostToIsprintWebService(xml, ref dataStreamResponse);
-            //Stream dataStreamResponse =  PostToIsprintWebService(xml, ref sRetval);
-            //iSprintResponseModel.Envelope stud = PostToIsprintWebService(xml, ref sRetval);
+
             resp = PostToIsprintWebService(xml, out sRetval);
 
             objLog.Response = sRetval;
@@ -555,19 +541,6 @@ namespace DDAS.Services.Search
 
             resp.Message = sRetval;
 
-            //XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
-
-            //TextReader textReader = new StreamReader(dataStreamResponse);
-            //iSprintResponseModel.Envelope stud;
-            //stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(textReader);
-            //dataStreamResponse.Close();
-            //textReader.Close();
-
-            //To be removed. temp code
-            //sRetval += " Success:" + stud.Body.iSprintResponse.success;
-            //sRetval += " Message:" + stud.Body.iSprintResponse.header.errorMessage;
-
-            //return sRetval;
             return resp;
         }
 
@@ -606,18 +579,28 @@ namespace DDAS.Services.Search
                     sRetVal = SR.ReadToEnd();
                     dataStreamResponse.Close();
                     SR.Close();
-
                     resp.Success = true;
 
+                    //XmlSerializer serializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
+                    //StringReader rdr = new StringReader(sRetVal);
+                    //var stud = (iSprintResponseModel.Envelope)serializer.Deserialize(rdr);
+
+                    //XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
+                    //TextReader textReader = new StreamReader(dataStreamResponseOut);
+                    //var stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(SR);
+
+                    //sRetVal += " </br> iSprintResponse.success => " + stud.Body.iSprintResponse.success;
+                    //sRetVal += " </br> iSprintResponse.header.errorMessage => " + stud.Body.iSprintResponse.header.errorMessage;
+                    //sRetVal += " </br> Header.MessageID => " + stud.Header.MessageID;
+                    //sRetVal += " </br> Header.ReplyTo.ReferenceParameters.trackingecid => " + stud.Header.ReplyTo.ReferenceParameters.trackingecid;
+                    //sRetVal += " </br> Header.ReplyTo.ReferenceParameters.trackingFlowId => " + stud.Header.ReplyTo.ReferenceParameters.trackingFlowId;
+                    //sRetVal += " </br> Header.ReplyTo.ReferenceParameters.trackingFlowEventId => " + stud.Header.ReplyTo.ReferenceParameters.trackingFlowEventId;
                 }
                 else
                 {
                     sRetVal = "response.StatusCode:" + response.StatusCode;
                 }
-                //XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
-                //TextReader textReader = new StreamReader(dataStreamResponseOut);
-                //stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(textReader);
-                //dataStreamResponseOut.Close();
+
 
                 response.Close();
                 req.Abort();
