@@ -10,6 +10,7 @@ using DDAS.Models.Repository;
 using DDAS.Models.Entities.Domain.SiteData;
 using System.IO;
 using DDAS.Models.ViewModels;
+using System.Diagnostics;
 
 namespace DDAS.Services.Search
 {
@@ -104,6 +105,29 @@ namespace DDAS.Services.Search
 
         }
 
+        public void ExtractThruShell(Int32 siteNumber)
+        {
+            string exePath = @"C:\Development\p926-ddas\DDAS.API\bin\DDAS.DataExtractor.exe";
+
+            ProcessStartInfo processInfo = new ProcessStartInfo(exePath);
+            processInfo.CreateNoWindow = true;
+            processInfo.UseShellExecute = false;
+            try
+            {
+                Process process = Process.Start(processInfo);
+                process.WaitForExit();
+                if (process.ExitCode != 0)
+                { // success}
+                    throw new Exception("Extractor did not complete the process");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception (ex.Message);
+            }
+            
+        }
 
         public List<ExtractionStatus> GetLatestExtractionStatus()
         {
@@ -401,7 +425,7 @@ namespace DDAS.Services.Search
         {
             var FDADebarredPage = _UOW.FDADebarPageRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
             var Data = FDADebarredPage;
             return Data;
         }
@@ -413,7 +437,7 @@ namespace DDAS.Services.Search
         {
             return  _UOW.ERRProposalToDebarRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
         }
 
         //Site No: 5
@@ -421,7 +445,7 @@ namespace DDAS.Services.Search
         {
             return _UOW.AdequateAssuranceListRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
         }
 
         //Site No: 6
@@ -429,7 +453,7 @@ namespace DDAS.Services.Search
         {
             return _UOW.ClinicalInvestigatorDisqualificationRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
         }
 
 
@@ -438,7 +462,7 @@ namespace DDAS.Services.Search
         {
             return _UOW.PHSAdministrativeActionListingRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
         }
 
         //Site No: 8
@@ -446,7 +470,7 @@ namespace DDAS.Services.Search
         {
             return _UOW.CBERClinicalInvestigatorRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
         }
 
 
@@ -456,7 +480,7 @@ namespace DDAS.Services.Search
         {
             return _UOW.CorporateIntegrityAgreementRepository.
                 GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+                .OrderByDescending(x => x.CreatedOn).First();
         }
 
         #endregion

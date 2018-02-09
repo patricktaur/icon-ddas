@@ -13,6 +13,9 @@ namespace DDAS.Models.Interfaces
     public interface IDataExtractorService
     {
         void ExtractDataSingleSite(SiteEnum siteEnum, string userName);
+
+        void ExtractThruShell(Int32 siteNumber);
+
         List<ExtractionStatus> GetLatestExtractionStatus();
         IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32);
         List<DownloadDataFilesViewModel> GetDataFiles(int Enum);
