@@ -25,8 +25,11 @@ import {LoggedInUserModule} from './LoggedInUser/LoggedInUser.module';
 import {LoginHistoryModule} from './admin/all-loginhistory.module';
 import {AppAdminModule} from './app-admin/app-admin.module';
 import { HelpModule } from './help/help.module';
-
+import { QCModule } from './qcworkflow/qc.module';
 import {CommonService} from './shared/common.service';
+import {FileService} from './shared/utils/file.service';
+import {DataExtractorModule} from "./data-extractor/data-extractor.module";
+import {LoginHistoryService} from "./Admin/all-loginhistory.service"
 
 @NgModule({
   imports:      [ 
@@ -40,7 +43,9 @@ import {CommonService} from './shared/common.service';
     LoggedInUserModule,
     LoginHistoryModule,
     AppAdminModule,
-    HelpModule
+    HelpModule,
+    QCModule,
+    DataExtractorModule
   ],
   declarations: [ 
     AppComponent,
@@ -55,7 +60,9 @@ import {CommonService} from './shared/common.service';
     DialogService,
     ConfigService,
     SearchService,
-    CommonService
+    CommonService,
+    FileService,
+    LoginHistoryService
     ],
   bootstrap:    [ AppComponent ]
 })

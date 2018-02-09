@@ -19,6 +19,8 @@ using Utilities.WordTemplate;
 using System.Linq;
 using DDAS.Models.Enums;
 using DDAS.API.Helpers;
+using DDAS.Models.ViewModels;
+using System.Text;
 
 namespace DDAS.API.Controllers
 {
@@ -31,6 +33,7 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         //private ILog _log;
         private IConfig _config;
+        private FileDownloadResponse _fileDownloadResponse;
 
         //private string DataExtractionLogFile;
         //private string UploadsFolder;
@@ -51,6 +54,7 @@ namespace DDAS.API.Controllers
             _UOW = UOW;
             _config = Config;
             _SearchService = SearchSummary;
+            _fileDownloadResponse = new FileDownloadResponse();
         }
 
         [Route("Upload")]
@@ -157,7 +161,61 @@ namespace DDAS.API.Controllers
 
         [Route("UploadAttachments")]
         [HttpPost]
-        public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        //public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        public async Task<HttpResponseMessage> UploadAttachments(string SessionId)
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            try
+            {
+                var userName = User.Identity.GetUserName();
+                //CustomMultipartFormDataStreamProvider provider = 
+                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+
+                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
+
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                var Attachments = new List<Attachment>();
+
+                List<string> ValidationMessages = new List<string>();
+
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    string FilePathWithGUID = file.LocalFileName;
+                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                    {
+                        UploadedFileName = UploadedFileName.Trim('"');
+                    }
+                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                    {
+                        UploadedFileName = Path.GetFileName(UploadedFileName);
+                    }
+
+                    //File.Move(file.LocalFileName, Path.Combine(StoragePath, fileName));
+                    var Attachment = new Attachment();
+                    Attachment.Title = "";
+                    Attachment.FileName = UploadedFileName;
+                    Attachment.GeneratedFileName = FilePathWithGUID;
+                }
+                //_SearchService.AddAttachmentsToFindings(form);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                    "Error Details: " + e.Message);
+            }
+        }
+
+        [Route("UploadComplianceFormAttachments")]
+        [HttpPost]
+        //public async Task<HttpResponseMessage> UploadAttachments(ComplianceForm form)
+        public async Task<HttpResponseMessage> UploadComplianceFormAttachments(string ComplianceFormId)
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
@@ -196,7 +254,7 @@ namespace DDAS.API.Controllers
                     Attachment.FileName = UploadedFileName;
                     Attachment.GeneratedFileName = FilePathWithGUID;
                 }
-                _SearchService.AddAttachmentsToFindings(form);
+                //_SearchService.AddAttachmentsToFindings(form);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -205,6 +263,8 @@ namespace DDAS.API.Controllers
                     "Error Details: " + e.Message);
             }
         }
+
+
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
@@ -333,9 +393,16 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("UnAssignedComplianceForms")]
+        [HttpGet]
+        public IHttpActionResult GetUnAssignedComplianceForms()
+        {
+            return Ok(_SearchService.GetUnAssignedComplianceForms());
+        }
+
         #region Patrick
 
-        [Route("GetComplianceFormA")]
+        [Route("GetComplianceForm")]
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
@@ -354,9 +421,46 @@ namespace DDAS.API.Controllers
                 }
                 else
                 {
-                    return Ok(compForm);
+                   
+                    UpdateFormToCurrentVersion.
+                        UpdateComplianceFormToCurrentVersion(compForm);
+
+                    if (compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    {
+                        compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                    }
+
+                    if (compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    {
+                        compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                    }
+
+                    var Review = compForm.Reviews.FirstOrDefault();
+                    if (Review != null &&
+                        Review.Status == ReviewStatusEnum.SearchCompleted &&
+                        compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
+                    {
+                        Review.StartedOn = DateTime.Now;
+                        Review.Status = ReviewStatusEnum.ReviewInProgress;
+                        //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    }
+                    _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+
+                    
                 }
+                return Ok(compForm);
             }
+        }
+
+        //Patrick: 16Jan2018
+        //_UOW.ComplianceFormRepository.UpdateCollection(frm);
+        [Route("UpdateQCEditComplianceForm")]
+        [HttpPost]
+        public IHttpActionResult UpdateQCEditComplianceForm(ComplianceForm form)
+        {
+            return Ok(_SearchService.UpdateQC(form));
         }
 
         [Route("SaveComplianceForm")]
@@ -381,13 +485,43 @@ namespace DDAS.API.Controllers
 
         [Route("SaveAssignedToData")]
         [HttpGet]
-        public IHttpActionResult SaveAssginedToData(string AssignedTo, bool Active,
+        public IHttpActionResult SaveAssginedToData(string AssignedTo, string AssignedFrom,
             string ComplianceFormId)
         {
+            //var AssignedBy = User.Identity.GetUserName();
+            //var RecId = Guid.Parse(ComplianceFormId);
+            //_SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
+            //return Ok(true);
+            try
+            {
+                if (AssignedFrom == null)
+                {
+                    AssignedFrom = "";
+                }
+                var AssignedBy = User.Identity.GetUserName();
+                var RecId = Guid.Parse(ComplianceFormId);
+                _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, AssignedTo);
+
+                return Ok(true);
+            }
+            catch (Exception)
+            {
+                return Content(HttpStatusCode.BadRequest, "Error");
+            }
+        }
+
+        [Route("ClearAssignedTo")]
+        [HttpGet]
+                                                                                 
+        public IHttpActionResult ClearAssginedTo(string ComplianceFormId, string AssignedFrom)
+        {
+            var AssignedBy = User.Identity.GetUserName();
             var RecId = Guid.Parse(ComplianceFormId);
-            _SearchService.UpdateAssignedToData(AssignedTo, Active, RecId);
+            _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, "");
+
             return Ok(true);
         }
+
 
         [Route("GetUploadsFolderPath")]
         [HttpGet]
@@ -753,6 +887,168 @@ namespace DDAS.API.Controllers
             //return Ok(SearchSites.GetNewSearchQuery());
             var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
             return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
+        }
+
+        [Route("CurrentReviewStatus")]
+        [HttpGet]
+        public IHttpActionResult GetCurrentReviewStatus(string ComplianceFormId)
+        {
+            var FormId = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(FormId);
+
+            var Review = Form.Reviews.LastOrDefault();
+
+            if (Review == null)
+                throw new Exception("Review collection cannot be empty!");
+
+            var CurrentReviewStatus = new CurrentReviewStatusViewModel();
+
+            if (Review.Status == ReviewStatusEnum.SearchCompleted ||
+                Review.Status == ReviewStatusEnum.ReviewInProgress ||
+                Review.Status == ReviewStatusEnum.ReviewCompleted)
+            {
+                CurrentReviewStatus.ReviewerRecId = Review.RecId.Value;
+                CurrentReviewStatus.QCVerifierRecId = null;
+                CurrentReviewStatus.CurrentReview = Review;
+            }
+            else if(Review.Status == ReviewStatusEnum.QCRequested ||
+                Review.Status == ReviewStatusEnum.QCInProgress ||
+                Review.Status == ReviewStatusEnum.QCCompleted)
+            {
+                CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
+                CurrentReviewStatus.CurrentReview = Review;
+                var ReviewCompleted = Form.Reviews.Find(x => 
+                    x.Status == ReviewStatusEnum.ReviewCompleted);
+                if(ReviewCompleted != null)
+                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                else
+                    CurrentReviewStatus.ReviewerRecId = null;
+            }
+            else if(Review.Status == ReviewStatusEnum.QCCorrectionInProgress)
+            {
+                var QCReview = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.QCCompleted);
+                if (QCReview != null)
+                    CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
+                else
+                    CurrentReviewStatus.QCVerifierRecId = null;
+                var ReviewCompleted = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.ReviewCompleted);
+                if (ReviewCompleted != null)
+                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                else
+                    CurrentReviewStatus.ReviewerRecId = null;
+                CurrentReviewStatus.CurrentReview = Review;
+            }
+            else if (Review.Status == ReviewStatusEnum.Completed)
+            {
+                var QCReview = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.QCCompleted);
+                if (QCReview != null)
+                    CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
+                else
+                    CurrentReviewStatus.QCVerifierRecId = null;
+
+                var ReviewCompleted = Form.Reviews.Find(x =>
+                    x.Status == ReviewStatusEnum.ReviewCompleted);
+                if (ReviewCompleted != null)
+                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                else
+                    CurrentReviewStatus.ReviewerRecId = null;
+                CurrentReviewStatus.CurrentReview = Review;
+            }
+            return Ok(CurrentReviewStatus);
+        }
+
+        [Route("GetAttachmentsList")]
+        [HttpGet]
+        public IHttpActionResult GetAttachmentsList(string formId)
+        {
+            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+
+            string[] FileList = new string[0];
+
+            if (Directory.Exists(folder))
+            {
+                FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
+
+                return Ok(FileList);
+            }
+            else
+                return Ok(FileList);
+            //string[] files = Directory.GetFiles(dir).Select(file => Path.GetFileName(file)).ToArray(); – 
+        }
+
+        [Route("DownloadAttachmentFile")]
+        [HttpGet]
+        public HttpResponseMessage DownloadAttachmentFile(string formId, string fileName)
+        {
+
+            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+            var fileNameWithPath = folder + "/" + fileName;
+
+            
+
+
+            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+            var stream = new FileStream(fileNameWithPath, FileMode.Open, FileAccess.Read);
+            //stream.ReadTimeout = 25000;
+            //stream.WriteTimeout = 25000;
+            result.Content = new StreamContent(stream);
+            result.Content.Headers.ContentType =
+                new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("Filename");
+            result.Content.Headers.ContentDisposition.FileName = fileName;
+
+            var UserAgent = Request.Headers.UserAgent.ToString();
+            var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+            var FileNameHeader = fileName + " " + Browser;
+            result.Content.Headers.Add("Filename", FileNameHeader);
+            result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+
+            return result;
+        }
+
+        //[Route("GetSessionId")]
+        //[HttpGet]
+        //public string GetSessionId()
+        //{
+        //    var retValue = Guid.NewGuid().ToString().Replace("-", "A");
+
+        //    return retValue;
+        //}
+
+
+        //[Route("GetSessionId")]
+        //[HttpGet]
+        //public IHttpActionResult GetSessionId()
+        //{
+        //    return Ok("abc");
+        //}
+
+        
+
+        [Route("MoveReviewCompletedToCompleted")]
+        [HttpGet]
+        public IHttpActionResult MoveToCompletedICSF(string ComplianceFormId)
+        {
+            var Id = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(Id);
+            var Review = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.ReviewCompleted);
+
+            if (Review != null)
+                Review.Status = ReviewStatusEnum.Completed;
+
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            return Ok(true);
+        }
+
+        [Route("ExportToiSprint")]
+        [HttpGet]
+        public IHttpActionResult ExportToiSprint(string ComplianceFormId)
+        {
+            return Ok();
         }
 
         string ListToString(ExcelInput excelInput)

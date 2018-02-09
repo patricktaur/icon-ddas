@@ -1,0 +1,72 @@
+<form role='form'>
+    <!-- <div class="form-group col-md-6"> -->
+    <div class="well">
+        <h3>{{Title}}</h3>
+        
+        <!-- {{diagnostic}} -->
+        <div *ngIf="Finding.IsMatchedRecord==true">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Record Details</h4>
+                    <div *ngFor="let SplitItem of Split(Finding.RecordDetails)" align="left">
+                        {{SplitItem}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div *ngIf="Finding.Links.length > 0">
+                        <h4>Document Links:</h4>
+                        <div *ngFor="let link of Finding.Links" align="left">
+                            <a target="_blank" [href]="link.url">
+                                {{link.Title}}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Findings:</h4>
+                <textarea class="form-control" name="Observation" 
+                [(ngModel)]="Finding.Observation" 
+                (change)="formValueChanged()"
+                rows="3" cols="30" required placeholder="Observations"></textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Date of Inspection:</h4>
+
+                <div *ngIf="!Finding.IsMatchedRecord">
+                    <input type="date" 
+                    [(ngModel)]="Finding.DateOfInspection" 
+                    (change)="formValueChanged()"
+                    name="dateOfInspection">
+                    <b>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</b>
+                    <!--<div date-picker [(DateValue)]="Finding.DateOfInspection"></div>-->
+                </div>
+                <div *ngIf="Finding.IsMatchedRecord">
+                    <label>{{Finding.DateOfInspection | date: 'dd MMM yyyy'}}</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+            </div>
+        </div>
+        <ng-content></ng-content>
+        <!-- <br/>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-default" (click)="RemoveClicked()">Remove</button>
+                </div>
+            </div> -->
+    </div>
+    <!-- </div> -->
+    <!-- <div *ngIf="dividerGeneration(indexVal)">
+        <div style="clear:both;"></div>
+    </div> -->
+
+</form>

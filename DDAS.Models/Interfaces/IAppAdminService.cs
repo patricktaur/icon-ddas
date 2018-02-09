@@ -12,8 +12,8 @@ namespace DDAS.Models.Interfaces
 {
     public interface IAppAdminService
     {
-        List<DataExtractionHistory> GetDataExtractionHistory();
-        List<DataExtractionHistory> GetDataExtractionPerSite(SiteEnum Enum);
+        //List<DataExtractionHistory> GetDataExtractionHistory();
+        List<ExtractionStatus> GetDataExtractionPerSite(SiteEnum Enum);
         void DeleteExtractionEntry(SiteEnum Enum, Guid? RecId);
 
         bool LaunchLiveScanner(string exeFolder);
@@ -53,6 +53,12 @@ namespace DDAS.Models.Interfaces
 
         List<ExtractionLogViewModel> GetExtractionLog();
 
-        List<CBERClinicalInvestigator> GetCBERData();
+        List<LogWSDDASViewModel> GetiSprintToDDASLog();
+
+        List<LogWSiSprintViewModel> GetDDtoiSprintLog();
+
+        //List<CBERClinicalInvestigator> GetCBERData();
+
+        //IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32);
     }
 }

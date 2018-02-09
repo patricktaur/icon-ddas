@@ -15,17 +15,24 @@ import { ConfirmDialogComponent }  from './components/confirm-dialog.component';
   //import { MyDatePickerModule } from 'mydatepicker/dist/my-date-picker.module';
 import { MyDatePickerModule } from './utils/my-date-picker/my-date-picker.module';
 import { Ng2PaginationModule }   from './utils/ng2-pagination/ng2-pagination'; 
+import { Ng2Uploader } from '../shared/utils/ng2-uploader1/ng2-uploader'
 
 import {DateInputComponent} from './components/date-input.component'; 
 import {CommonService} from './common.service';
-
+//import {FileDownloadComponent} from './components/file-download.component';
+import {FileDownloadModule} from './modules/file-download/file-download.module' 
+import {FileUploadComponent} from './components/file-upload-component'
+import {MultiFileSelectComponent} from './components/multi-file-select.component'
+import {ProgressIndicatorComponent} from './components/progress-indicator.component'
 
  
 
 @NgModule({
   imports:     
    [ CommonModule,
-   MyDatePickerModule
+   MyDatePickerModule,
+   FileDownloadModule,
+   Ng2Uploader
     ],
   
   declarations: [ 
@@ -38,6 +45,10 @@ import {CommonService} from './common.service';
   ToggleShowComponent,
   ConfirmDialogComponent,
   DateInputComponent,
+  FileUploadComponent,
+  MultiFileSelectComponent,
+  ProgressIndicatorComponent
+
   
   
    ],
@@ -55,7 +66,10 @@ import {CommonService} from './common.service';
     Ng2PaginationModule,
     ConfirmDialogComponent,
     DateInputComponent,
-   
+    FileDownloadModule,
+    FileUploadComponent,
+    MultiFileSelectComponent,
+    ProgressIndicatorComponent
                    ],
                    
 })

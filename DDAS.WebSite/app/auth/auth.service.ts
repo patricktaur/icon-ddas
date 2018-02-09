@@ -19,7 +19,7 @@ export class AuthService {
   isLoggedIn: boolean = false;
   public token: string;
   public userName: string;
-  
+  public userFullName: string;
   public isAdmin: boolean;
   public isUser: boolean;
   public isAppAdmin: boolean;
@@ -55,9 +55,9 @@ export class AuthService {
             .map((response: Response) => {
   
                 this.isLoggedIn = true;
-                 this.token = response.json().access_token;
-                  this.userName = response.json().userName;
-
+                this.token = response.json().access_token;
+                this.userName = response.json().userName;
+                this.userFullName = response.json().userFullName;
                 //refactor code to handle dynamic addition of roles:
                 let comma : string = ""
                 this.roles = "";

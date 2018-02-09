@@ -49,11 +49,33 @@
 						</div>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-xs-5">
 
-				<!--<div *ngIf="!generating">-->
-				<button type="button" class="btn btn-primary" (click)="GetInvestigationsCompleted()">
-					Generate 
-				</button>
+						<button style="float: left" type="button" class="btn btn-primary" (click)="GetInvestigationsCompleted()">
+							Generate
+						</button>
+						
+						<div  
+						style="float: left; margin-left: 10px"
+						file-download 
+						[url]="'Reports/InvestigationsCompletedReport?mode=csv'" 
+						[filter]="ReportFilter"
+						(ButtonClicked)="ResetReportFilter();"
+						> 
+						</div>
+					</div>
+					<div class="col-xs-1">
+						
+					</div>
+
+					<div class="col-xs-6">
+
+					</div>
+				</div>
+
+
+
 			</div>
 			<div class="col-md-4 ">
 
@@ -73,7 +95,7 @@
 			<tbody>
 				<tr *ngFor="let item of recordsByUserName | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
 					<td class="text-left">
-						{{item.UserName}}
+						{{item.UserFullName}}
 					</td>
 					<td *ngFor="let subitem of item.ReportItems" class="text-center">
 						{{subitem.Value}}

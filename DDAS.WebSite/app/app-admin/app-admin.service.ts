@@ -75,14 +75,14 @@ export class AppAdminService {
             .catch(this.handleError);
     }
 
-    getcberRecords(){
-            return this.http.get(this._baseUrl + 'AppAdmin/GetCBERRecords',
-            this._options)
-            .map((res: Response) => {
-                return res.json();
-            })
-            .catch(this.handleError);
-    }
+    // getcberRecords(){
+    //         return this.http.get(this._baseUrl + 'AppAdmin/GetCBERRecords',
+    //         this._options)
+    //         .map((res: Response) => {
+    //             return res.json();
+    //         })
+    //         .catch(this.handleError);
+    // }
 
     getUploadedFile(generatedFileName: string, originalFileName: string){
         let headers = new Headers();

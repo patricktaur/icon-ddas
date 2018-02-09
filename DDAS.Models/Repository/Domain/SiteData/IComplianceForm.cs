@@ -13,7 +13,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
         Task UpdateCollection(ComplianceForm form);
         bool DropComplianceForm(object ComplianceFormId);
 
-        bool UpdateAssignedTo(Guid id, string AssignedTo);
+        bool UpdateAssignedTo(Guid id, string AssignedBy, string AssignedFrom, string AssignedTo);
         bool UpdateComplianceForm(Guid id, ComplianceForm form);
         bool UpdateInvestigator(Guid formId, InvestigatorSearched Investigator);
         bool UpdateFindings(UpdateFindigs updateFindings);

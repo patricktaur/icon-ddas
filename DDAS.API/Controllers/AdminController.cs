@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -28,12 +29,23 @@ namespace DDAS.API.Controllers
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
         }
 
-        [Route("GetDataExtractionHistory")]
-        [HttpGet]
-        public IHttpActionResult GetDataExtractionHistory()
-        {
-            return Ok(_AppAdminService.GetDataExtractionHistory());
-        }
+
+
+        //[Route("GetDataExtractionHistory")]
+        //[HttpGet]
+        //public IHttpActionResult GetDataExtractionHistory()
+        //{
+        //    return Ok(_AppAdminService.GetDataExtractionHistory());
+        //}
+
+        //[Route("GetDataExtractionErrorSiteCount")]
+        //[HttpGet]
+        //public IHttpActionResult GetDataExtractionErrorSiteCount()
+        //{
+        //    return Ok(_AppAdminService.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count);
+        //}
+
+
 
         [Route("GetExtractionLog")]
         [HttpGet]
@@ -206,8 +218,10 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
-        #region GetExceptionLogs
         
+
+        #region GetExceptionLogs
+
         [Route("GetExceptionLogs")]
         [HttpGet]
         public IHttpActionResult GetExceptionLogs()
@@ -216,5 +230,22 @@ namespace DDAS.API.Controllers
         }
 
         #endregion
+
+        #region iSprint to DDAS Log
+        
+        [Route("iSprintToDDASLog")]
+        [HttpGet]
+        public IHttpActionResult GetiSprintToDDASLog()
+        {
+            return Ok(_AppAdminService.GetiSprintToDDASLog());
+        }
+        #endregion
+
+        [Route("DDAStoiSprintLog")]
+        [HttpGet]
+        public IHttpActionResult GetDDAStoiSprintLog()
+        {
+            return Ok(_AppAdminService.GetDDtoiSprintLog());
+        }
     }
 }

@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using DDAS.Models.Entities.Domain;
 using DDAS.Models.Repository.Domain.SiteData;
 using MongoDB.Driver;
+
 using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using DDAS.Models.Enums;
 using MongoDB.Bson;
+
 
 namespace DDAS.Data.Mongo.Repositories
 {
@@ -40,6 +42,31 @@ namespace DDAS.Data.Mongo.Repositories
         {
             return _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name).
                 ReplaceOneAsync(CompForm => CompForm.RecId == form.RecId, form);
+
+
+        }
+
+        //Patrick 21Jan2018:
+        //with Concurrency Test
+        public Boolean UpdateComplianceForm(ComplianceForm form)
+        {
+            
+            var currentRowVersion = form.RowVersion;
+            form.RowVersion = NewRowVersion();
+
+            var result =  _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name).
+               ReplaceOneAsync(CompForm => CompForm.RecId == form.RecId && CompForm.RowVersion == currentRowVersion, form);
+           
+            if (result.Result.ModifiedCount == 1)
+            {
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         public bool DropComplianceForm(object ComplianceFormId)
@@ -50,25 +77,84 @@ namespace DDAS.Data.Mongo.Repositories
             return true;
         }
 
-        public bool UpdateAssignedTo(Guid id, string AssignedTo)
-        {
-            var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
+        //public bool UpdateAssignedTo(Guid id, string AssignedTo)
+        //{
+        //    var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
 
+        //    var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+        //    var update = Builders<ComplianceForm>.Update
+        //    .Set("AssignedTo", AssignedTo)
+        //    .CurrentDate("UpdatedOn");
+        //    var result =  collection.UpdateOne(filter, update);
+        //    if (result.IsAcknowledged && result.ModifiedCount == 1)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        // }
+
+
+        //Has Concurrency check:
+        //Pending: Include Update Assignment History :
+        public bool UpdateAssignedTo(Guid id, string AssignedBy, string AssignedFrom, string AssignedTo)
+        {            
+            //AssignedFrom = current AssignedTo. -- for Concurrency check. If compForm.AssignedTo <> AssignedFrom then throw exception.
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
-            var update = Builders<ComplianceForm>.Update
-            .Set("AssignedTo", AssignedTo)
-            .CurrentDate("UpdatedOn");
-            var result =  collection.UpdateOne(filter, update);
-            if (result.IsAcknowledged && result.ModifiedCount == 1)
+            var compForm = collection.Find(x => x.RecId == id).FirstOrDefault();
+            if (compForm != null)
             {
-                return true;
+                if ( AssignedFrom != compForm.AssignedTo)
+                {
+                    throw new Exception(String.Format("Comp Form has been modified by: {0} on {1}", compForm.UpdatedBy, compForm.UpdatedOn) );
+                }
+                 
+                var Reviews = compForm.Reviews;
+                var CurrentReview = Reviews.FirstOrDefault();
+                
+                //CurrentReview.AssigendTo
+                if (CurrentReview != null)
+                {
+                    var CurrentReviewId = CurrentReview.RecId;
+                    CurrentReview.AssignedBy = AssignedBy;
+                    CurrentReview.AssigendTo = AssignedTo;
+                    CurrentReview.AssignedOn = DateTime.Now;
+
+                    var filter = Builders<ComplianceForm>.Filter;
+                    var updateFilter = filter.And(
+                      filter.Eq(x => x.RecId, id),
+                      filter.Eq(x => x.AssignedTo, AssignedFrom)
+                      );
+
+                   var update = Builders<ComplianceForm>.Update
+                         
+                    .Set("AssignedTo", AssignedTo)
+                    .Set ("Reviews", Reviews)      
+                     .CurrentDate("UpdatedOn");
+                    var result = collection.UpdateOne(updateFilter, update);
+                    if (result.IsAcknowledged && result.ModifiedCount == 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception("Update not successful");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No Review Record Found on Comp Form id = " + id );
+                }
             }
             else
             {
-                return false;
+                throw new Exception("Comp Form with id = " + id + " Not Found");
             }
-         }
+        }
 
+        //Not used??
         public bool UpdateComplianceForm(Guid id, ComplianceForm form)
         {
             var filter = Builders<ComplianceForm>.Filter.Eq("_id", id);
@@ -95,6 +181,9 @@ namespace DDAS.Data.Mongo.Repositories
                 return false;
             }
         }
+
+        
+
 
         public bool UpdateReviewCompleted(Guid formId, int investigatorId, SiteEnum siteEnum, bool ReviewCompleted)
         {
@@ -304,6 +393,16 @@ namespace DDAS.Data.Mongo.Repositories
             //.CurrentDate("UpdatedOn");
 
             return true;
+        }
+
+
+        private static string NewRowVersion()
+        {
+            return Guid.NewGuid().ToString()
+                .Replace("-", "")
+                .Replace("{", "")
+                .Replace("}", "");
+                //.Substring(0, 6);
         }
     }
 }

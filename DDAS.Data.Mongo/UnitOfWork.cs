@@ -84,6 +84,13 @@ namespace DDAS.Data.Mongo
         private IDefaultSiteRepository _DefaultSiteRepository;
 
         private IExceptionLoggerRepository _ExceptionLoggerRepository;
+
+        private IAuditRepository _AuditRepository;
+        private IAssignmentHistoryRepository _AssignmentHistoryRepository;
+
+        private ILogWSDDASRepository _LogWSDDASRepository;
+        private ILogWSISPRINTRepository _LogWSISPRINTRepository;
+
         #endregion
 
         /*
@@ -429,6 +436,46 @@ namespace DDAS.Data.Mongo
                     (_ExceptionLoggerRepository = new ExceptionLoggerRepository(_db));
             } 
         }
+
+        public IAuditRepository AuditRepository
+        {
+            get
+            {
+                return _AuditRepository ??
+                    (_AuditRepository = new AuditRepository(_db));
+            }
+        }
+
+        public IAssignmentHistoryRepository AssignmentHistoryRepository
+        {
+            get
+            {
+                return _AssignmentHistoryRepository ??
+                    (_AssignmentHistoryRepository = 
+                    new AssignmentHistoryRepository(_db));
+            }
+        }
+
+        public ILogWSDDASRepository LogWSDDASRepository
+        {
+            get
+            {
+                return _LogWSDDASRepository ??
+                    (_LogWSDDASRepository =
+                    new LogWSDDASRepository(_db));
+            }
+        }
+
+        public ILogWSISPRINTRepository LogWSISPRINTRepository
+        {
+            get
+            {
+                return _LogWSISPRINTRepository ??
+                    (_LogWSISPRINTRepository =
+                    new LogWSISPRINTRepository(_db));
+            }
+        }
+
         #endregion
 
         private void InitializeMaps()

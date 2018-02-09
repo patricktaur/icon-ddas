@@ -16835,7 +16835,6 @@ DDAS.WebSite/node_modules/zone.js/lib/zone-spec/task-tracking.ts
 DDAS.WebSite/node_modules/zone.js/lib/zone-spec/wtf.ts
 DDAS.WebSite/node_modules/zone.js/lib/zone.ts
 DDAS.WebSite/node_modules/zone.js/package.json
-DDAS.WebSite/package.json
 DDAS.WebSite/systemjs.config.js
 DDAS.WebSite/tsconfig.json
 DDAS.WebSite/typings.json
@@ -16927,10 +16926,10 @@ Documents/Technical/Errors/fromServer/MongoDBLog/mongod.log.2017-03-15T04-52-34
 DDAS - Copy.sln
 Documents/Technical/~$~$ProjectPlan-Internal.xlsx
 Documents/Technical/Design/~$DefaultSites.xlsx
-DDAS.API/App_Data/Downloads/CIILFolder/cliil.txt
 *.csv
 *.xls
 DDAS.API/DataFiles/OutputFileFolder/OutputFile*
 DDAS.API/Properties/PublishProfiles/DDASProfile.pubxml.user
 Documents/Technical/Help/UserManual/~$er Manual - ICON - DDAS - Draft.docm
 DDAS.API/App_Data/Downloads/SDN/SDNList*
+.vs/DDAS/v14/.suo

@@ -86,7 +86,7 @@ namespace WebScraping.Selenium.Pages
         private string DownloadCIIList()
         {
             string fileName = _config.CIILFolder + 
-                "cliil_" +
+                SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MM_yyyy_hh_mm") +
                 ".zip";
 
@@ -99,10 +99,22 @@ namespace WebScraping.Selenium.Pages
             _log.WriteLog(
                 string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
                 Path.GetFileName(fileName), myStringWebResource));
+            
+            //myWebClient.Headers.Add(HttpRequestHeader.UserAgent, "My app.");
+            //myWebClient.Headers.Add("User-Agent: Other");   //that is the simple line!
+
+            Uri uriWebClient = new Uri(myStringWebResource);
+            myWebClient.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+            myWebClient.Headers.Add("Content-Type", "application / zip, application / octet - stream");
+            myWebClient.Headers.Add("Accept-Encoding", "gzip,deflate,sdch");
+            //objWebClient.Headers.Add("Referer", "http://Something");
+            myWebClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
 
             try
             {
-                myWebClient.DownloadFile(myStringWebResource, fileName);
+                //myWebClient.DownloadFile(myStringWebResource, fileName);
+                myWebClient.DownloadFile(uriWebClient, fileName);
+
             }
             catch (WebException Ex)
             {
@@ -210,6 +222,8 @@ namespace WebScraping.Selenium.Pages
             //    _clinicalSiteData.ClinicalInvestigatorInspectionList.Count());
             _log.WriteLog("Total records inserted - " +
                 _UOW.ClinicalInvestigatorInspectionRepository.GetAll().Count());
+
+            File.Delete(FilePath); //delete txt file, retain zipped file
         }
 
         public override void LoadContent(string NameToSearch,

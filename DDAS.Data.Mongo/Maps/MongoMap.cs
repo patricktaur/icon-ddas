@@ -66,6 +66,38 @@ namespace DDAS.Data.Mongo.Maps
                 u.RecId).SetIdGenerator(GuidGenerator.Instance);
             });
 
+            BsonClassMap.RegisterClassMap<Audit>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<AssignmentHistory>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<LogWSDDAS>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
+            BsonClassMap.RegisterClassMap<LogWSISPRINT>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                map.MapIdProperty(u =>
+                u.RecId).SetIdGenerator(GuidGenerator.Instance);
+            });
+
             #region BaseClasses
             BsonClassMap.RegisterClassMap<SiteDataItemBase>(map =>
             {
@@ -111,6 +143,13 @@ namespace DDAS.Data.Mongo.Maps
                 {
                     child.AutoMap();
                     child.SetIgnoreExtraElements(true);
+                });
+
+                BsonClassMap.RegisterClassMap<Review>(child =>
+                {
+                    child.AutoMap();
+                    child.SetIgnoreExtraElements(true);
+                    child.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
                 });
             });
             #endregion

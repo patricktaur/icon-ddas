@@ -9,10 +9,17 @@
 
 			<div class="navbar-collapse collapse sidebar-navbar-collapse">
 				<div class="alert alert-info" *ngIf="showLocation">{{appLocation}} </div>
+				<div >
+					<data-extraction-indicator1 
+					[ShowLinkToExecuteExtractorPage]="authService.isAdmin || authService.isAppAdmin">
+
+					</data-extraction-indicator1>
+				</div>
+	
 				<ul class="nav navbar-nav">
 					<li class="active">
 						<a data-toggle="collapse" data-target="#loggedInAccount" data-parent="#sidenav01" class="collapsed">
-						 Logged in: {{authService.userName}} <span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
+						 Logged in: {{authService.userFullName}} <span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
 						</a>
 						<div class="collapse " id="loggedInAccount" style="height: 0px;">
 							<ul class="nav nav-list  panel-body">
@@ -25,8 +32,11 @@
 						</div>
 						<li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/closed-icfs" routerLinkActive="active">Closed Reviews</a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/review-completed-icsf" routerLinkActive="active">Review Completed ICSF's</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/completed-icsf" routerLinkActive="active">Completed ICSFs</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/qc" routerLinkActive="active">Quality Check</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/extracted-data-menu" routerLinkActive="active">Extracted Data</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
 
 							<!-- <li class="active" *ngIf="authService.isUser || authService.isAdmin"><a routerLink="/reports" routerLinkActive="active">Reports</a></li> -->
@@ -40,7 +50,12 @@
 										<li class="active">
 											<a routerLink="/output-report" routerLinkActive="active">Output Report</a>
 											<a routerLink="/investigations-completed" routerLinkActive="active">Investigations Completed</a>
-											<a routerLink="/open-investigations" routerLinkActive="active">Open Investigations</a>
+											<a routerLink="/open-investigations" routerLinkActive="active">Investigations Open</a>
+											<a routerLink="/admin-dashboard" routerLinkActive="active">Admin Dashboard</a>
+											<a routerLink="/assignment-history" routerLinkActive="active">Re-Assignment History</a>
+											<a routerLink="/investigator-reviewcompletedtime" routerLinkActive="active">Review Completed Time</a>
+											<a routerLink="/investigator-findings" routerLinkActive="active">Investigators By Findings</a>
+											<a routerLink="/study-specific-investigator" routerLinkActive="active">Study Specific Investigators</a>
 										</li>
 									</ul>
 								</div>
@@ -65,15 +80,32 @@
 							</li>
 
 							<li class="active" *ngIf="authService.isAdmin">
+								<a data-toggle="collapse" data-target="#data-extractor" data-parent="#sidenav01" class="collapsed">
+						 			Data Extractor<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
+								</a>
+								<div class="collapse" id="data-extractor" style="height: 0px;">
+									<ul class="nav nav-list  panel-body">
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extractor" routerLinkActive="active">Execture Data Extractor</a></li>
+									</ul>
+								</div>
+							</li>
+
+
+
+
+
+							<li class="active" *ngIf="authService.isAdmin">
 								<a data-toggle="collapse" data-target="#logs" data-parent="#sidenav01" class="collapsed">
 						 			Logs<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
 								</a>
 								<div class="collapse" id="logs" style="height: 0px;">
 									<ul class="nav nav-list  panel-body">
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/all-loginhistory" routerLinkActive="active">Login History</a></li>
-										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-history" routerLinkActive="active">Extraction Status</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/data-extraction-status" routerLinkActive="active">Extraction Status</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/extraction-log" routerLinkActive="active">Extraction Log</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/exception-logger" routerLinkActive="active">Error Logs</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/isprint-to-ddas-log" routerLinkActive="active">iSprint to DDAS Log</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/ddas-to-isprint-log" routerLinkActive="active">DDAS to iSprint Log</a></li>
 									</ul>
 								</div>
 							</li>

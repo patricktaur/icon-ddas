@@ -4,7 +4,14 @@ import { AuthGuard }             from '../auth/auth-guard.service';
 import { ReportComponent }     from './report.component';
 import { OutputReportComponent }     from './output-report.component';
 import {InvestigationsCompletedReportComponent} from './investigations-completed.component';
-import {OpenInvestigationsReport} from './open-investigations.component';
+import {OpenInvestigationsComponent} from './open-investigations.component';
+import { AdminDashboardComponent } from './admin-dashboard.component';
+import { AssignmentHistoryComponent } from './assignment-history.component';
+import { InvestigatorReviewCompletedTimeComponent } 
+  from './investigator-reviewcompletedtime.component';
+import { InvestigatorFindingsComponent } from './investigator-findings.component';
+import { StudySpecificInvestigatorComponent } from './study-specific-investigator.component';
+import { AdminDashboardDrillDownComponent } from './admin-dashboard-drilldown.component';
 
 const reportRoutes: Routes = [
  {
@@ -27,7 +34,32 @@ const reportRoutes: Routes = [
   },
   {
     path: 'open-investigations',
-    component: OpenInvestigationsReport, canActivate: [AuthGuard]
+    component: OpenInvestigationsComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboardComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'assignment-history',
+    component: AssignmentHistoryComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'investigator-reviewcompletedtime',
+    component: InvestigatorReviewCompletedTimeComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'investigator-findings',
+    component: InvestigatorFindingsComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'study-specific-investigator',
+    component: StudySpecificInvestigatorComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dashboard-drilldown/:assignedTo/:reportType',
+    component: AdminDashboardDrillDownComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

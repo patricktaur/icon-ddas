@@ -14,7 +14,6 @@ import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-
 
 export class OutputReportComponent implements OnChanges {
     public myDatePickerOptions = {
-
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
     };

@@ -20,6 +20,7 @@ using DDAS.Models.Entities.Domain;
 using DDAS.Services.AppAdminService;
 using System.Web;
 using DDAS.Services.Reports;
+using DDAS.Services.AuditService;
 
 namespace DDAS.API.App_Start
 {
@@ -79,6 +80,7 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
             container.Register<ISearchEngine, SearchEngine>();
+            container.Register<IDataExtractorService, DataExtractorService>();
             
             //container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 
@@ -136,6 +138,8 @@ namespace DDAS.API.App_Start
             container.Register<IAppAdminService, AppAdminService>();
 
             container.Register<IReport, Report>();
+
+            container.Register<IAudit, AuditService>();
         }
     }
 }

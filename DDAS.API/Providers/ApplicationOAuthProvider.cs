@@ -23,8 +23,7 @@ namespace DDAS.API.Providers
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
 
         private IUserService _UserService;
-
-        private string _ClientVer = "T1.0.18";
+        private string _ClientVer = "T1.0.34";
 
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{
@@ -60,7 +59,7 @@ namespace DDAS.API.Providers
                     var form = await context.Request.ReadFormAsync();
                     var verSubmitted = form["Ver"];
                     
-                    if (verSubmitted.Substring(0, _ClientVer.Length) != _ClientVer)
+                    if (verSubmitted.Length != _ClientVer.Length ||  verSubmitted.Substring(0, _ClientVer.Length) != _ClientVer)
                     {
                         context.SetError(
                            "invalid_grant", "Incorrect version used.  The current version is: " + _ClientVer + "  Close the web page to clear the cache and reopen.");
@@ -232,6 +231,7 @@ namespace DDAS.API.Providers
             IDictionary<string, string> data = new Dictionary<string, string>
             {
                 { "userName", user.UserName },
+                { "userFullName", user.UserFullName }
             };
             foreach (string role in roles)
             {
@@ -239,6 +239,5 @@ namespace DDAS.API.Providers
             }
             return new AuthenticationProperties(data);
         }
-
     }
 }

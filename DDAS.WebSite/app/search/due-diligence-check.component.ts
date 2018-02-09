@@ -21,9 +21,7 @@ export class DueDiligenceCheckComponent implements OnInit {
     public Loading: boolean = false;
     public uploadUrl: string;
     public validationMessage: string;
-   
-
-    private error: any;
+    public error: any;
 
     public downloadUrl: string;
     public downloadTemplateUrl: string;
@@ -33,7 +31,7 @@ export class DueDiligenceCheckComponent implements OnInit {
 
     public filterStatus: number = -1;
     public filterInvestigatorName: string = "";
-
+    public unAssginedPrincipalInvestigators: PrincipalInvestigatorDetails[];
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
@@ -53,7 +51,7 @@ export class DueDiligenceCheckComponent implements OnInit {
         this.downloadUrl = this.configService.getApiHost() + "Downloads";
 
         this.downloadTemplateUrl = this.configService.getApiHost() + "DataFiles/Templates/DDAS_Upload_Template.xlsx";
-     
+
         this.zone = new NgZone({ enableLongStackTrace: false });
         this.basicOptions = {
             url: this.uploadUrl,
@@ -63,7 +61,7 @@ export class DueDiligenceCheckComponent implements OnInit {
 
         this.route.params.forEach((params: Params) => {
             let page = +params['page'];
-            if (page != null){
+            if (page != null) {
                 this.pageNumber = page;
             }
         });
@@ -87,29 +85,29 @@ export class DueDiligenceCheckComponent implements OnInit {
     }
 
     get extractionPendingRecordCount(): number {
-        if (this.PrincipalInvestigators == null){
+        if (this.PrincipalInvestigators == null) {
             return null;
         }
-        else{
+        else {
             return this.PrincipalInvestigators.filter(x => x.ExtractionPendingInvestigatorCount > 0).length;
         }
-        
+
     }
-    
-      get reviewPendingRecordCount(): number {
-        if (this.PrincipalInvestigators == null){
+
+    get reviewPendingRecordCount(): number {
+        if (this.PrincipalInvestigators == null) {
             return null;
         }
-        else{
+        else {
             //Records are already filtered for Review Pending.  
             return this.PrincipalInvestigators.filter(x => x.ExtractionPendingInvestigatorCount == 0).length;
         }
-        
+
     }
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
 
         //this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
-        this.router.navigate(['comp-form-edit', DataItem.RecId, {rootPath:'search', page:this.pageNumber}], { relativeTo: this.route });
+        this.router.navigate(['comp-form-edit', DataItem.RecId, { rootPath: 'search', page: this.pageNumber }], { relativeTo: this.route });
 
 
     }
@@ -123,8 +121,6 @@ export class DueDiligenceCheckComponent implements OnInit {
         this.Loading = false;
     }
 
-
-
     handleUpload(data: any): void {
         this.Loading = true;
         this.zone.run(() => {
@@ -134,17 +130,17 @@ export class DueDiligenceCheckComponent implements OnInit {
             }
             else {
                 this.Loading = false;
-                
-                this.validationMessage = data.response; 
+
+                this.validationMessage = data.response;
                 let ok = "\"ok\"";
-                if (this.validationMessage == ok){
+                if (this.validationMessage == ok) {
                     this.modal.close();
                     this.LoadPrincipalInvestigators();
                 }
-                else{
-                    
+                else {
+
                 }
-   
+
             }
 
             this.progress = data.progress.percent / 100;
@@ -153,19 +149,40 @@ export class DueDiligenceCheckComponent implements OnInit {
     }
 
     DownloadCompForm(formid: string) {
-
         this.service.downLoadComplianceForm(formid)
             .subscribe((item: any) => {
-
             },
             error => {
             });
     }
 
-  Reload(){
+    Reload() {
+        this.LoadPrincipalInvestigators();
+    }
 
-      this.LoadPrincipalInvestigators();
-  }
+    getUnAssignedComplianceForms() {
+        this.service.getUnAssignedComplianceForms()
+            .subscribe((item: PrincipalInvestigatorDetails[]) => {
+                this.unAssginedPrincipalInvestigators = item;
+            },
+            error => {
+            });
+    }
 
-    get diagnostic() { return JSON.stringify(this.validationMessage); }
+    assignComplianceForm(complianceFormId: string) {
+        this.service.SaveAssignedTo(this.authService.userName, "", complianceFormId)
+            .subscribe((item: any) => {
+                this.reloadUnAssignedComplianceForms();
+            },
+            error => {
+                this.error = error;
+                this.reloadUnAssignedComplianceForms();
+            });
+    }
+
+    reloadUnAssignedComplianceForms(){
+        this.getUnAssignedComplianceForms();
+    }
+
+    get diagnostic() { return JSON.stringify(this.error); }
 }
