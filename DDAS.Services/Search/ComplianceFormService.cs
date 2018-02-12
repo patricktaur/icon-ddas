@@ -66,7 +66,7 @@ namespace DDAS.Services.Search
             return newForm;
         }
 
-        private string GetUserFullName(string UserName)
+        public string GetUserFullName(string UserName)
         {
             var User = _UOW.UserRepository.FindByUserName(UserName);
 
@@ -2782,6 +2782,8 @@ namespace DDAS.Services.Search
             }
 
         }
+
+       
 
         #endregion
 

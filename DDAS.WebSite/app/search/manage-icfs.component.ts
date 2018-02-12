@@ -21,7 +21,7 @@ export class ManageICFsComponent implements OnInit {
     //public ComplianceFormIdToManage: string;
 
     //public Active: boolean;
-    public AssignedTo: string;
+    public AssignedTo: string = "";
     public AssignedFrom: string
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
@@ -175,9 +175,17 @@ export class ManageICFsComponent implements OnInit {
         this.setSelectedRecordDetails(Investigator);
         
         //this.AssignedTo Bound to drop down user list:
-        this.AssignedFrom = Investigator.AssignedTo + "";
+        this.AssignedFrom = Investigator.AssignedTo + " ";
     }
 
+    assignToEnabled(){
+        
+        if (this.AssignedTo){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
     setComplianceFormToClear(Investigator: PrincipalInvestigatorDetails) {
         
@@ -185,7 +193,7 @@ export class ManageICFsComponent implements OnInit {
                 //this.AssignedTo Bound to drop down user list:
                 // 
                 //From existing Value, for concurrency check on server:
-                this.AssignedFrom = Investigator.AssignedTo + "";
+                this.AssignedFrom = Investigator.AssignedTo + " ";
 
     }
 
@@ -198,6 +206,8 @@ export class ManageICFsComponent implements OnInit {
             error => {
             });
     }
+
+    
 
     ClearAssignedTo() {
         this.service.ClearAssignedTo( this.SelectedComplianceFormId, this.AssignedFrom)

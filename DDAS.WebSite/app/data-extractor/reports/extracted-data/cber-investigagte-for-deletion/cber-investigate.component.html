@@ -5,8 +5,9 @@
 		</div>
 	</div>
 </div>
-Data Extracted On: {{CBERInvestigator?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}<br>
-Site Last Updated On: {{CBERInvestigator?.SiteLastUpdatedOn | date: 'dd MMM yyyy HH:mm' }}
+Data Extracted On: {{CBERInvestigator?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
+<br>Records: {{SiteDataList?.length}}
+<br>Site Last Updated On: {{CBERInvestigator?.SiteLastUpdatedOn | date: 'dd MMM yyyy HH:mm' }}
 <!-- {{diagnostic}} -->
 <div class="table-responsive">
 	<div statusCircle-Legend-Horizontal></div>

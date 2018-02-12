@@ -80,6 +80,7 @@ export class EditQCComponent implements OnInit {
     public status: number = -1;
     public qcSummary: any[];
     public qcVerifierComment: Comment;
+    public qcVerifierFullName: string;
     public defaultTab: boolean = true;
     public defaultTabInActive: string = " in active";
     public currentReviewStatus: CurrentReviewStatusViewModel;
@@ -90,6 +91,7 @@ export class EditQCComponent implements OnInit {
     public modalTitle: string;
     public modalText: string;
     public showGenralComment: boolean = false;
+    
 
     constructor(
         private route: ActivatedRoute,
@@ -128,6 +130,7 @@ export class EditQCComponent implements OnInit {
                 this.complianceForm = item;
                 this.isSubmitted = this.isQCPassedOrFailed;
                 this.getCurrentReviewStatus();
+                this.loadQCVerifierFullName(this.complianceForm.QCVerifier);
             },
             error => {
                 
@@ -142,6 +145,16 @@ export class EditQCComponent implements OnInit {
             error => {
                 
             });
+    }
+
+    loadQCVerifierFullName(qcVerifier: string){
+        this.service.getUserFullName(qcVerifier)
+        .subscribe((item: string) => {
+            this.qcVerifierFullName = item;
+            },
+        error => {
+
+        });
     }
     getCurrentReviewStatus() {
         this.service.getCurrentReviewStatus(this.complianceFormId)

@@ -333,16 +333,26 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.SelectedComplianceFormId = complainceFormId;
     }
 
+    enableRequestQC(){
+        if (this.selectedQCVerifier 
+        && this.authService.userName.toLowerCase() != this.selectedQCVerifier.toLowerCase())
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }
     requestQC(){
         
-        if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){
-            alert('Please select a QC Verifier');
-            return;
-        }
-        else if(this.authService.userName.toLowerCase() == this.selectedQCVerifier.toLowerCase()){
-            alert('You cannot assign the QC to yourself');
-            return;
-        }
+        // if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){
+        //     alert('Please select a QC Verifier');
+        //     return;
+        // }
+        // else if(this.authService.userName.toLowerCase() == this.selectedQCVerifier.toLowerCase()){
+        //     alert('You cannot assign the QC to yourself');
+        //     return;
+        // }
         
         var review = new Review();
         //review.RecId = null;
@@ -364,25 +374,25 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
     
-    requestQCXXX(qcVerifier: string, requestorComments:string) {
-        if(qcVerifier == null || qcVerifier.length == 0){
-            alert('please select a QC Verifier');
-            return;
-        }
-        else if(this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()){
-            alert('cannot assign the QC to yourself');
-            return;
-        }
+    // requestQCXXX(qcVerifier: string, requestorComments:string) {
+    //     if(qcVerifier == null || qcVerifier.length == 0){
+    //         alert('please select a QC Verifier');
+    //         return;
+    //     }
+    //     else if(this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()){
+    //         alert('cannot assign the QC to yourself');
+    //         return;
+    //     }
         
-        this.service.getComplianceForm(this.SelectedComplianceFormId)
-        .subscribe((item: ComplianceFormA) => {
-            this.compForm = item;
-        },
-        error =>{
+    //     this.service.getComplianceForm(this.SelectedComplianceFormId)
+    //     .subscribe((item: ComplianceFormA) => {
+    //         this.compForm = item;
+    //     },
+    //     error =>{
 
-        });
-        this.getComplianceForm(qcVerifier, requestorComments);
-    }
+    //     });
+    //     this.getComplianceForm(qcVerifier, requestorComments);
+    // }
 
     getComplianceForm(qcVerifier: string, requestorComments: string) {
         this.service.getComplianceForm(this.SelectedComplianceFormId)

@@ -83,5 +83,7 @@ namespace DDAS.Models.Interfaces
 
         iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(Guid ComplianceFormId);
         iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(ComplianceForm Form);
+
+        string GetUserFullName(string UserName);
     }
 }

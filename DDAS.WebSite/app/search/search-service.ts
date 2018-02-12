@@ -102,7 +102,7 @@ export class SearchService {
     }
 
     getAllUsers() {
-        return this.http.get(this._baseUrl + 'Account/GetUsers', this._options)
+        return this.http.get(this._baseUrl + 'Account//GetUsers', this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -570,6 +570,14 @@ export class SearchService {
                 return res.json();
             })
             .catch(this.handleError);        
+    }
+
+    getUserFullName(userName: string){
+        return this.http.get(this._baseUrl + 'search/getUserFullName?userName=' + userName, this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
     }
 
     private handleError(error: any) {
