@@ -90,9 +90,19 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteSiteSource(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            _AppAdminService.DeleteSiteSource(Id);
-            return Ok(true);
+            try
+            {
+                var Id = Guid.Parse(RecId);
+                _AppAdminService.DeleteSiteSource(Id);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+           
+            
         }
 
         #endregion

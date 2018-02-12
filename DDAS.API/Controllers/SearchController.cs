@@ -361,6 +361,14 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("GetUserFullName")]
+        [HttpGet]
+        public IHttpActionResult GetUserFullName(
+           string userName)
+        {
+            return Ok(_SearchService.GetUserFullName(userName));
+        }
+
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)

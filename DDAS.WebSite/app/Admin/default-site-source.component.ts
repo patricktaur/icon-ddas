@@ -20,6 +20,7 @@ export class DefaultSitesComponent implements OnInit {
     public pageNumber: number;
     public formLoading: boolean;
     public message: string;
+    public error: any;
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -84,7 +85,7 @@ export class DefaultSitesComponent implements OnInit {
                 this.loadDefaultSites();
             },
             error => {
-
+                this.error = error;
             });
     }
 }

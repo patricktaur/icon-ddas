@@ -20,7 +20,7 @@ export class ManageSiteSourcesComponent implements OnInit {
     public filterSiteURL: string = "";
     private selectedRecId: string;
     public selectedRecordName: string;
-    
+    public error: any;
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -84,12 +84,13 @@ export class ManageSiteSourcesComponent implements OnInit {
    
    Delete(){ 
       //CompFormId to be set by the delete button
+      this.error = "";
       this.service.deleteSiteSource(this.selectedRecId)
             .subscribe((item: any) => {
               this.LoadSiteSources();
             },
             error => {
-
+                this.error = "Unable to delete " + this.selectedRecordName + " : " + error;
             });
    }
 

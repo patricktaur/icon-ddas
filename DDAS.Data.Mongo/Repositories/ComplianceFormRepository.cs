@@ -99,13 +99,25 @@ namespace DDAS.Data.Mongo.Repositories
 
         //Has Concurrency check:
         //Pending: Include Update Assignment History :
-        public bool UpdateAssignedTo(Guid id, string AssignedBy, string AssignedFrom, string AssignedTo)
+        public bool UpdateAssignedTo(Guid id, string AssignedBy, string AssignedFrom = "", string AssignedTo = "")
         {            
             //AssignedFrom = current AssignedTo. -- for Concurrency check. If compForm.AssignedTo <> AssignedFrom then throw exception.
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var compForm = collection.Find(x => x.RecId == id).FirstOrDefault();
             if (compForm != null)
             {
+                //AssignedFrom is receied from client as null:
+                if (AssignedFrom == null)
+                {
+                    AssignedFrom = "";
+                }
+
+                if (compForm.AssignedTo == null)
+                {
+                    compForm.AssignedTo = "";
+                }
+
+
                 if ( AssignedFrom != compForm.AssignedTo)
                 {
                     throw new Exception(String.Format("Comp Form has been modified by: {0} on {1}", compForm.UpdatedBy, compForm.UpdatedOn) );

@@ -33,11 +33,10 @@
 						<li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/search" routerLinkActive="active">Due Diligence Search</a></li>
 							<li class="active" *ngIf="authService.isUser"> <a routerLink="/review-completed-icsf" routerLinkActive="active">Review Completed ICSF's</a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
-							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/completed-icsf" routerLinkActive="active">Completed ICSFs</a></li>
 							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/qc" routerLinkActive="active">Quality Check</a></li>
+							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/completed-icsf" routerLinkActive="active">Completed ICSFs</a></li>
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/all-iscfs" routerLinkActive="active">All Searches</a></li>
 							<li class="active" *ngIf="authService.isUser || authService.isAdmin"> <a routerLink="/extracted-data-menu" routerLinkActive="active">Extracted Data</a></li>
-							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
 
 							<!-- <li class="active" *ngIf="authService.isUser || authService.isAdmin"><a routerLink="/reports" routerLinkActive="active">Reports</a></li> -->
 
@@ -90,10 +89,6 @@
 								</div>
 							</li>
 
-
-
-
-
 							<li class="active" *ngIf="authService.isAdmin">
 								<a data-toggle="collapse" data-target="#logs" data-parent="#sidenav01" class="collapsed">
 						 			Logs<span class="glyphicon glyphicon-menu-down plus plus-glyphicon" aria-hidden="true"></span>
@@ -129,7 +124,7 @@
 									</ul>
 								</div>
 							</li>
-
+							<li class="active" *ngIf="authService.isUser"> <a routerLink="/help" routerLinkActive="active">Help</a></li>
 							<li class="active"> <a routerLink="about-ddas" routerLinkActive="active">About DDAS</a></li>
 
 				</ul>
