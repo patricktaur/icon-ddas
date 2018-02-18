@@ -88,9 +88,23 @@ namespace DDAS.Setup
 
                     //Executred on Prod Server on 
                     //DeleteOrphanedRecordsInDefaultSiteRepository();
-                    DeleteOrphanedRecordsInCountryRepository();
+                    //DeleteOrphanedRecordsInCountryRepository();
                     //DeleteOrphanedRecordsInSponsorProtocolRepository();
                     //CreateIndexes();
+
+                    string firstArg = "";
+                    if (args.Length != 0)
+                    {
+                        firstArg = args[0];
+                    }
+                    switch (firstArg)
+                    {
+                        case "cleardb":
+
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else
                 {
@@ -483,5 +497,9 @@ namespace DDAS.Setup
             }
         }
 
+        static void ClearDB()
+        {
+
+        }
     }
 }
