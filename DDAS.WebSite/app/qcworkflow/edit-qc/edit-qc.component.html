@@ -8,7 +8,7 @@
 				<b>{{principalInvestigatorName}}</b>
 			</h3>
 			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
-			<h3 class="no-margin-top">QC by {{qcAssignedTo}}</h3>
+			<h3 class="no-margin-top">QC by {{qcVerifierFullName}}</h3>
 			<label for="auditStatus">Status: {{reviewStatus}}</label>
 			<!-- {{diagnostic}} -->
 			<br>
@@ -217,7 +217,7 @@
 
 			<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
-			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
+			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.open()">Submit QC</button>
 			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
 			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" 

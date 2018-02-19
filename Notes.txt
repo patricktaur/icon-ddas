@@ -1,3 +1,20 @@
+11Feb2018
+Testing on ICON Test Server:
+Due Diligence Search Page
+	Select > Choose from iSprint
+	After selection, the Comp form is not displayed on the background page.
+	Title of pick comp form: Pick a Compliance Form from iSprint
+
+Completed ICSFs
+	Filter: Review completed filters + Completed On + Exported On
+
+Quality Check
+	Do not hide button - QC Corrections in progress
+
+
+09Feb2018
+
+
 10Oct2017
 1. Output report - User to get his/her investigators searched. Admin to get all investigators
 2. World check was appearing for sub i's which should not as the world check is added only for PIs.

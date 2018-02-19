@@ -9,7 +9,12 @@ import { IMyDate, IMyDateModel, IMyInputFieldChanged } from '../shared/utils/my-
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'investigations-completed.component.html'
+    templateUrl: 'investigations-completed.component.html',
+    styles: [`
+        .table { table-layout: fixed;
+        margin-left: 2em;
+        margin-right: 2em }
+    `]
 })
 
 export class InvestigationsCompletedReportComponent implements OnChanges {
@@ -35,6 +40,8 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
     public pageNumber: number;
     public DatesAdjustedTo: string = "";
     public assignedTo: string = "";
+
+    public formLoading: boolean = false;
 
     constructor(
         private service: ReportService,
@@ -91,13 +98,15 @@ export class InvestigationsCompletedReportComponent implements OnChanges {
 
     GetInvestigationsCompleted() {
         this.ResetReportFilter();
+        this.formLoading = true;
         this.service.getInvestigationsCompletedReport(this.ReportFilter)
         .subscribe((item: InvestigationsReport) => {
             this.InvestigationsCompletedReport = item;
             this.DatesAdjustedTo = this.InvestigationsCompletedReport.DatesAdjustedTo;
+            this.formLoading = false;
         },
         error => {
-
+            this.formLoading = false;
         });
     }
 

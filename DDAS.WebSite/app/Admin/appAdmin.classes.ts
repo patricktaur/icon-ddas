@@ -47,11 +47,11 @@ export class SponsorProtocol{
     //ExcludeSI : boolean;
 }
 
-export class DownloadDataFilesViewModel{
-        FileName: string;
-        FullPath: string;
-        SiteName: string;
-        DownloadedOn: Date;
-        FileSize: number;
-        FileType: string;
-}
+// export class DownloadDataFilesViewModel{
+//         FileName: string;
+//         FullPath: string;
+//         SiteName: string;
+//         DownloadedOn: Date;
+//         FileSize: number;
+//         FileType: string;
+// }

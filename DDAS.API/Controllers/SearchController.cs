@@ -361,6 +361,14 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("GetUserFullName")]
+        [HttpGet]
+        public IHttpActionResult GetUserFullName(
+           string userName)
+        {
+            return Ok(_SearchService.GetUserFullName(userName));
+        }
+
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
@@ -420,7 +428,7 @@ namespace DDAS.API.Controllers
                     return NotFound();
                 }
                 else
-                { 
+                {
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
 
@@ -1028,21 +1036,7 @@ namespace DDAS.API.Controllers
         //    return Ok("abc");
         //}
 
-        #region Download Data Files
-        [Route("DownloadDataFiles")]
-        [HttpGet]
-        public IHttpActionResult GetDownloadedDataFiles(int SiteEnum)
-        {
-            var DataFiles = _SearchService.GetDataFiles(SiteEnum);
-
-            DataFiles.ForEach(DataFile =>
-            {
-                DataFile.FullPath = 
-                DataFile.FullPath.Replace(_RootPath, "");
-            });
-            return Ok(DataFiles);
-        }
-        #endregion
+        
 
         [Route("MoveReviewCompletedToCompleted")]
         [HttpGet]
@@ -1063,7 +1057,20 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ExportToiSprint(string ComplianceFormId)
         {
-            return Ok();
+            var RecId = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(RecId);
+            var ExportResponse = _SearchService.ExportDataToIsprint(Form);
+
+            if (ExportResponse.Success)
+            {
+                Form.ExportedToiSprintOn = DateTime.Now;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return Ok();
+            }
+            else
+            {
+                return Ok(ExportResponse.Message);
+            }
         }
 
         string ListToString(ExcelInput excelInput)

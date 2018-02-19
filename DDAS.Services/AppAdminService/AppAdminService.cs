@@ -28,15 +28,15 @@ namespace DDAS.Services.AppAdminService
             _config = config;
         }
 
-        public List<CBERClinicalInvestigator> GetCBERData()
-        {
-            var CBERData = _UOW.CBERClinicalInvestigatorRepository.
-                GetAll()
-                .OrderByDescending(x => x.CreatedOn).Last();
+        //public List<CBERClinicalInvestigator> GetCBERData()
+        //{
+        //    var CBERData = _UOW.CBERClinicalInvestigatorRepository.
+        //        GetAll()
+        //        .OrderByDescending(x => x.CreatedOn).Last();
 
-            var Data = CBERData.ClinicalInvestigator;
-            return Data;
-        }
+        //    var Data = CBERData.ClinicalInvestigator;
+        //    return Data;
+        //}
 
         //public List<DataExtractionHistory> GetDataExtractionHistory()
         //{
@@ -1281,6 +1281,31 @@ namespace DDAS.Services.AppAdminService
 
         public void DeleteSiteSource(Guid? RecId)
         {
+            //Referential check:
+            var DefaultSiteRecords = _UOW.DefaultSiteRepository.GetAll();
+            var matchingDefaultSiteRecord = DefaultSiteRecords.Where(x => x.SiteId == RecId).FirstOrDefault();
+            if (matchingDefaultSiteRecord != null)
+            {
+                throw new Exception("This record is used in Default Site Sources");
+            }
+
+
+            var CountryRecords = _UOW.CountryRepository.GetAll();
+            var matchingCountryRecord = CountryRecords.Where(x => x.SiteId == RecId).FirstOrDefault();
+            if (matchingCountryRecord != null)
+            {
+                throw new Exception("This record is used in Country Specific Site Sources");
+            }
+
+            var SponosorRecords = _UOW.SponsorProtocolRepository.GetAll();
+            var matchingSponsorRecord = SponosorRecords.Where(x => x.SiteId == RecId).FirstOrDefault();
+            if (matchingSponsorRecord != null)
+            {
+                throw new Exception("This record is used in Sponsor Specific Site Sources");
+            }
+
+
+
             _UOW.SiteSourceRepository.RemoveById(RecId);
         }
 

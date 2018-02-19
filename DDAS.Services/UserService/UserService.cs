@@ -89,7 +89,14 @@ namespace DDAS.Services.UserService
                 var userToAdd = new UserViewModel();
                 userToAdd.Active = user.Active;
                 userToAdd.EmailId = user.EmailId;
-                userToAdd.UserFullName = user.UserFullName;
+                if (user.UserFullName == null)
+                {
+                    userToAdd.UserFullName = user.UserName;
+                }else
+                {
+                    userToAdd.UserFullName = user.UserFullName;
+                }
+                
                 userToAdd.UserId = user.UserId;
                 userToAdd.UserName = user.UserName;
                 userToAdd.Roles =  getAlluserRolesViewModel(user.UserId);
@@ -114,7 +121,7 @@ namespace DDAS.Services.UserService
             //  }
             //return retUsers;
 
-            return GetAllUsers().OrderBy(x => x.UserName).ToList();
+            return GetAllUsers().OrderBy(x => x.UserFullName).ToList();
         }
 
         public List<UserViewModel> GetAdmins()
