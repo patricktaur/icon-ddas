@@ -420,8 +420,7 @@ namespace DDAS.API.Controllers
                     return NotFound();
                 }
                 else
-                {
-                   
+                { 
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
 
