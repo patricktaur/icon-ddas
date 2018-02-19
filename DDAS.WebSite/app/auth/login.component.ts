@@ -1,6 +1,9 @@
 import { Component, OnInit }        from '@angular/core';
 import { Router,
-         NavigationExtras } from '@angular/router';
+          ActivatedRoute,
+         NavigationExtras,
+         } from '@angular/router';
+         import {LocationStrategy} from '@angular/common';         
 import { AuthService }      from './auth.service';
 import { loginInfo }      from './auth.classes';
 import { ConfigService } from '../shared/utils/config.service';
@@ -15,16 +18,30 @@ export class LoginComponent implements OnInit{
     public logInfo: loginInfo;
     loading = false;
     error = '';
+    returnUrl: string;
     public rememberChecked:boolean=false;
 
     
-  constructor(public authService: AuthService, public router: Router, private configService: ConfigService) {
+  constructor(public authService: AuthService, 
+    public router: Router, 
+    private route: ActivatedRoute,
+    private locationStrategy : LocationStrategy,
+    private configService: ConfigService) {
     this.setMessage();
     
   }
 
   ngOnInit() {
       this.authService.logout();
+      this.route.queryParams
+      .subscribe(params => this.returnUrl = params['return'] || '/');
+
+      console.log("locationStrategy: " + this.locationStrategy.path());
+      let qcUrl = this.locationStrategy.path().split("openqc");
+      console.log("openqc" + qcUrl);
+      this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+      console.log("returnUrl: " + this.returnUrl);
+      
       this.logInfo = new loginInfo();
       this.logInfo.username=localStorage.getItem('currentUsername');
       this.logInfo.password=localStorage.getItem('currentUserpassword');
@@ -42,25 +59,34 @@ export class LoginComponent implements OnInit{
         this.authService.login(this.logInfo.username, this.logInfo.password)
             .subscribe(
                 data => {
-                    
-                    if(this.authService.isAppAdmin){
-                       this.router.navigate(['/']);                      
-                    }
+                  //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1;rootPath=qc;page=1";
+                  //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1";
+                  
+                  // let urls = this.locationStrategy.path().split("/login");
+                  // let url = urls[0] || '/'
+                  // console.log("url:" + url);
+                  this.router.navigateByUrl(this.returnUrl);
+                  //this.router.navigate(['/']); 
+                  //this.router.navigate([this.returnUrl]); 
+                  
+                  //   if(this.authService.isAppAdmin){
+                  //      this.router.navigate(['/']);                      
+                  //   }
 
-                    if (this.authService.isAdmin){
-                       this.router.navigate(['/']);
-                       // this.router.navigate(['/users']);
-                    }
-                    else{
-                      if (this.authService.isUser){
+                  //   if (this.authService.isAdmin){
+                  //      this.router.navigate(['/']);
+                  //      // this.router.navigate(['/users']);
+                  //   }
+                  //   else{
+                  //     if (this.authService.isUser){
                         
-                        this.router.navigate(['/']);
-                    }
-                    if (this.rememberChecked == true){
-                            localStorage.setItem('currentUsername', this.logInfo.username);
-                            localStorage.setItem('currentUserpassword', this.logInfo.password);
-                    }
-                  }
+                  //       this.router.navigate(['/']);
+                  //   }
+                  //   if (this.rememberChecked == true){
+                  //           localStorage.setItem('currentUsername', this.logInfo.username);
+                  //           localStorage.setItem('currentUserpassword', this.logInfo.password);
+                  //   }
+                  // }
                 },
                 error => {
                     //this.test = error;
