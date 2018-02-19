@@ -425,13 +425,15 @@ namespace DDAS.API.Controllers
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
 
-                    if (compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    if (compForm.QCGeneralComment != null &&
+                        compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
                     {
                         compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
                         compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
                     }
 
-                    if (compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    if (compForm.QCAttachmentComment != null &&
+                        compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
                     {
                         compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
                         compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
