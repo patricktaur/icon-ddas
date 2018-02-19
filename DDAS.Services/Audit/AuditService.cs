@@ -93,9 +93,15 @@ namespace DDAS.Services.AuditService
                 //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
                 QCViewModel.RecId = QCReview.RecId;
                 QCViewModel.ComplianceFormId = Form.RecId.Value;
+
+                foreach(InvestigatorSearched Investigator in 
+                    Form.InvestigatorDetails.Where(x => x.Role.ToLower() == "sub i"))
+                {
+                    QCViewModel.SubInvestigators.Add(Investigator.Name);
+                }
+
                 QCViewModel.PrincipalInvestigator =
                     Form.InvestigatorDetails.First().Name;
-                QCViewModel.InvestigatorCount = Form.InvestigatorDetails.Count;
                 QCViewModel.ProjectNumber = Form.ProjectNumber;
                 QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
                 QCViewModel.QCVerifier = Form.QCVerifier;
@@ -108,6 +114,9 @@ namespace DDAS.Services.AuditService
 
                 AllQCs.Add(QCViewModel);
             }
+            if (AllQCs.Count > 0)
+                return AllQCs.OrderByDescending(x => x.RequestedOn).ToList();
+
             return AllQCs;
         }
 

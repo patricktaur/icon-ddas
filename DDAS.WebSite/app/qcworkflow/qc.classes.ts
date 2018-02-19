@@ -14,6 +14,7 @@ export class QCListViewModel {
         InvestigatorCount: number;
         ProjectNumber: string;
         ProjectNumber2: string;
+        SubInvestigators: string[];
 }
 
 export class QualityCheck {
