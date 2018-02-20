@@ -17,18 +17,18 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.authService.isLoggedIn) 
     { 
-      console.log("Logged In");
+      //console.log("Logged In");
       return true; 
     }
     else{
-      console.log("Logged out");
-      console.log("state.url: " + state.url);
+      //console.log("Logged out");
+      //console.log("state.url: " + state.url);
       let qcUrls = state.url.split("openqc");
       let qcUrl :string;
       if (qcUrls.length > 0){
         qcUrl = qcUrls[0];
       }
-      console.log("qcURl:" + qcUrl);
+      //console.log("qcURl:" + qcUrl);
       this.router.navigate(['/login'], { queryParams: { returnUrl: qcUrl }});
       return false;
     }

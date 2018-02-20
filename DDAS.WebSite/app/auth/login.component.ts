@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit{
     loading = false;
     error = '';
     returnUrl: string;
+    redirectFullURL: string;
     public rememberChecked:boolean=false;
 
     
@@ -33,14 +34,13 @@ export class LoginComponent implements OnInit{
 
   ngOnInit() {
       this.authService.logout();
+      
+      //not workinng:
       this.route.queryParams
       .subscribe(params => this.returnUrl = params['return'] || '/');
-
-      console.log("locationStrategy: " + this.locationStrategy.path());
-      let qcUrl = this.locationStrategy.path().split("openqc");
-      console.log("openqc" + qcUrl);
-      this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-      console.log("returnUrl: " + this.returnUrl);
+     
+     console.log("redirectURL:" + this.redirectURL());
+     this.returnUrl = this.redirectURL() || '/';
       
       this.logInfo = new loginInfo();
       this.logInfo.username=localStorage.getItem('currentUsername');
@@ -62,12 +62,8 @@ export class LoginComponent implements OnInit{
                   //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1;rootPath=qc;page=1";
                   //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1";
                   
-                  // let urls = this.locationStrategy.path().split("/login");
-                  // let url = urls[0] || '/'
-                  // console.log("url:" + url);
                   this.router.navigateByUrl(this.returnUrl);
                   //this.router.navigate(['/']); 
-                  //this.router.navigate([this.returnUrl]); 
                   
                   //   if(this.authService.isAppAdmin){
                   //      this.router.navigate(['/']);                      
@@ -103,6 +99,23 @@ export class LoginComponent implements OnInit{
   
   get appLocaation(){
     return this.authService.appLocation;
+  }
+  
+  redirectURL() : string{
+    let locationPath1 = this.locationStrategy.path();
+    if (locationPath1.indexOf("start") == 0){
+      return null;
+    }
+    if (locationPath1.indexOf("end") == 0){
+      return null;
+    }
+
+    var locationPath =  locationPath1.replace(/%252F/g, "/");
+    let startPos = locationPath.indexOf("start")+5
+    let lastPos = locationPath.lastIndexOf("end");
+    let length = lastPos - startPos;
+
+    return   locationPath.substr(startPos, length-1);
   }
   
   ///
