@@ -36,7 +36,7 @@ namespace DDAS.Setup
                 string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
                 if (configFile != null)
                 {
-                    CreateFolders(configFile);
+                    //CreateFolders(configFile);
                     Console.WriteLine("config file: " + configFile);
                     //Initialize DB for creating Roles and Users:
                     string connString = GetWebConfigConnectionString(configFile, "DefaultConnection");
@@ -44,14 +44,15 @@ namespace DDAS.Setup
 
                     MongoMaps.Initialize();
                     _UOW = new UnitOfWork(connString, DBName);
-                    CreateRoles();
-                    CreateUsers();
+
+                    //CreateRoles();
+                    //CreateUsers();
 
                     _config = new Config(); //empty values for config prop.. ?
                     _AppAdminService = new AppAdminService(_UOW, _config);
 
                     //Executed on FindMeServerOn 1April2017.
-                    var sitesInDB = _UOW.SiteSourceRepository.GetAll();
+                    //var sitesInDB = _UOW.SiteSourceRepository.GetAll();
 
                     //Executed on DDASTEST server on 18Sept2017
                     //SAM site ExtractionMode was not updated to 'DB' - changed
@@ -63,22 +64,47 @@ namespace DDAS.Setup
                     //_UOW.DefaultSiteRepository.DropAll(
                     //    _UOW.DefaultSiteRepository.GetAll().FirstOrDefault());
 
-                    _WriteLog.WriteLog("site Sources InDB:", sitesInDB.Count.ToString());
-                    if (sitesInDB.Count > 0)
-                    {
-                        _WriteLog.WriteLog("Sites already exist. Not added");
-                    }
-                    else
-                    {
-                        _WriteLog.WriteLog("Adding Sites");
-                        SitesToSearch Sites = new SitesToSearch();
-                        _AppAdminService.AddSitesInDbCollection(Sites);
-                    }
+                    //For execution on DDAS Prod server on ..
+                    //Error in application: User deleted a record in SiteSourceRepository 
+                    //which was referenced in CountryRepository
+                    //Clear the orphaned record in CountryRepository
+
+
+
+                    //_WriteLog.WriteLog("site Sources InDB:", sitesInDB.Count.ToString());
+                    //if (sitesInDB.Count > 0)
+                    //{
+                    //    _WriteLog.WriteLog("Sites already exist. Not added");
+                    //}
+                    //else
+                    //{
+                    //    _WriteLog.WriteLog("Adding Sites");
+                    //    SitesToSearch Sites = new SitesToSearch();
+                    //    _AppAdminService.AddSitesInDbCollection(Sites);
+                    //}
 
                     //Executed on 20-4-2017
                     //ModifySiteSource_ChangeLive2DB();
 
+                    //Executred on Prod Server on 
+                    //DeleteOrphanedRecordsInDefaultSiteRepository();
+                    //DeleteOrphanedRecordsInCountryRepository();
+                    //DeleteOrphanedRecordsInSponsorProtocolRepository();
                     //CreateIndexes();
+
+                    string firstArg = "";
+                    if (args.Length != 0)
+                    {
+                        firstArg = args[0];
+                    }
+                    switch (firstArg)
+                    {
+                        case "cleardb":
+
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else
                 {
@@ -383,6 +409,97 @@ namespace DDAS.Setup
             Console.WriteLine("Deleting WSDDAS Log");
             _UOW.LogWSDDASRepository.DropAll(new Models.Entities.LogWSDDAS());
             Console.WriteLine("Deleted WSDDAS Log");
+        }
+
+        static void DeleteOrphanedRecordsInDefaultSiteRepository()
+        {
+            _WriteLog.WriteLog("Deleting orphaned records from Default Site Repository", "Start");
+            var DefaultSites = _UOW.DefaultSiteRepository.GetAll()
+                .ToList();
+            foreach (DefaultSite defaultSite in DefaultSites)
+            {
+                try
+                {
+                    var site = _UOW.SiteSourceRepository.FindById(defaultSite.SiteId);
+                    if (site == null)
+                    {
+                        _WriteLog.WriteLog("Record not found in Site Source", defaultSite.Name);
+                        _WriteLog.WriteLog("Deleting from Default Site Repository", "");
+                        _UOW.DefaultSiteRepository.RemoveById(defaultSite.RecId);
+                        _WriteLog.WriteLog("Deleted", "");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _WriteLog.WriteLog("Error", ex.Message);
+                }
+
+            }
+        }
+
+
+
+        static void DeleteOrphanedRecordsInCountryRepository()
+        {
+            _WriteLog.WriteLog("Deleting orphaned records from Country Repository", "Start");
+            var Countries = _UOW.CountryRepository.GetAll()
+                .OrderBy(x => x.CountryName)
+                .ToList();
+            foreach (Country country in Countries)
+            {
+                try
+                {
+                    var site = _UOW.SiteSourceRepository.FindById(country.SiteId);
+                    if (site == null)
+                    {
+                        _WriteLog.WriteLog("Record not found in Site Source", country.CountryName);
+                        _WriteLog.WriteLog("Deleting from Country Repository", "");
+                        _UOW.CountryRepository.RemoveById(country.RecId);
+                        _WriteLog.WriteLog("Deleted", "");
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _WriteLog.WriteLog("Error", ex.Message);
+                }
+
+            }
+        }
+
+
+        static void DeleteOrphanedRecordsInSponsorProtocolRepository()
+        {
+            _WriteLog.WriteLog("Deleting orphaned records from Sponsor Protocol Repository", "Start");
+            var SponsorProtocols = _UOW.SponsorProtocolRepository.GetAll()
+                .ToList();
+            foreach (SponsorProtocol sponsorProtocol in SponsorProtocols)
+            {
+                try
+                {
+                    var site = _UOW.SiteSourceRepository.FindById(sponsorProtocol.SiteId);
+                    if (site == null)
+                    {
+                        _WriteLog.WriteLog("Record not found in Site Source", sponsorProtocol.Name);
+                        _WriteLog.WriteLog("Deleting from Sponsor Protocol Repository", "");
+                        _UOW.SponsorProtocolRepository.RemoveById(sponsorProtocol.RecId);
+                        _WriteLog.WriteLog("Deleted", "");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    _WriteLog.WriteLog("Error", ex.Message);
+                }
+
+            }
+        }
+
+        static void ClearDB()
+        {
+
         }
     }
 }

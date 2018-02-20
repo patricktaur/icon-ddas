@@ -197,7 +197,9 @@
 		</div>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="manageComplianceForm(); ManageICFModal.close()">Save</button>
+		<button type="button" class="btn btn-default" 
+		(click)="manageComplianceForm(); ManageICFModal.close()"
+		[disabled]="!assignToEnabled()">Assign</button>
 		<button type="button" class="btn btn-default" (click)="ManageICFModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

@@ -70,9 +70,16 @@
 							</button> -->
 							<button type="button" class="btn btn-sm btn-primary" 
 							*ngIf="isActionRequired(item.QCVerifier, item.Requester, item.Status)"
-							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="Open">
+							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="Edit">
+                            	<span class="glyphicon glyphicon-edit"></span>
+							</button>	
+							
+							<button type="button" class="btn btn-sm btn-primary" 
+							*ngIf="!isActionRequired(item.QCVerifier, item.Requester, item.Status)"
+							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="View">
                             	<span class="glyphicon glyphicon-folder-open"></span>
-                        	</button>							
+							</button>
+							
 						</td>
 					</tr>
 				</tbody>

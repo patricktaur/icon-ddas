@@ -72,17 +72,19 @@ export class ListQCComponent implements OnInit {
     }
 
     isActionRequired(qcVerifier: string, requester: string, Status: number) {
-        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase() && 
-            (Status == ReviewStatusEnum.QCRequested ||
-            Status == ReviewStatusEnum.QCInProgress ||
-            Status == ReviewStatusEnum.QCCompleted))
-            return true;
-        else if ((Status == ReviewStatusEnum.QCCompleted ||
-                Status == ReviewStatusEnum.QCCorrectionInProgress) &&
-            requester.toLowerCase() == this.authService.userName.toLowerCase())
-            return true;
-        else
-            return false;
+        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()
+            && (Status == ReviewStatusEnum.QCRequested ||
+                Status == ReviewStatusEnum.QCInProgress )){
+                    return true;
+        }
+
+        if (this.authService.userName.toLowerCase() == requester.toLowerCase()
+        && (Status == ReviewStatusEnum.QCCompleted ||
+            Status == ReviewStatusEnum.QCCorrectionInProgress )){
+                return true;
+        }
+
+        return false;
     }
 
     editQC(complianceFormId: string, assignedTo: string) {

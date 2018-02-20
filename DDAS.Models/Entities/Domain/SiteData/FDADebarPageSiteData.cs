@@ -16,6 +16,9 @@ namespace DDAS.Models.Entities.Domain.SiteData
             
         }
         public Guid? RecId { get; set; }
+        //BaseClass properties do not get serialized, hence two ready only properties are added:
+        public DateTime ExtractedOn { get { return CreatedOn; } }
+        public new DateTime? SiteLastUpdatedOn { get { return base.SiteLastUpdatedOn; } }
         public List<DebarredPerson> DebarredPersons { get; set; }
     }
 
@@ -54,17 +57,27 @@ namespace DDAS.Models.Entities.Domain.SiteData
         }
 
         public override DateTime? DateOfInspection {
-            get {
+            get
+            {
                 if (EffectiveDate == null || EffectiveDate == "")
                     return null;
 
                 string[] Formats =
                     { "M/d/yyyy", "M-d-yyyy" };
-
-                return DateTime.ParseExact(
-                    EffectiveDate.Trim(), Formats, null,
-                    System.Globalization.DateTimeStyles.None);
+                DateTime DateValue;
+                if (DateTime.TryParseExact(EffectiveDate.Trim(), Formats, null, System.Globalization.DateTimeStyles.None, out DateValue))
+                {
+                    return DateValue;
+                    //return DateTime.ParseExact(
+                    //EffectiveDate.Trim(), Formats, null,
+                    //System.Globalization.DateTimeStyles.None);
+                }else
+                {
+                    return null;
+                }
             }
+                
+            
         }
     }
 }

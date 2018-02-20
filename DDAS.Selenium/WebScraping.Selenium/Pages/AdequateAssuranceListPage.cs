@@ -169,7 +169,7 @@ namespace WebScraping.Selenium.Pages
 
             for (int Index = 1; Index <= 25; Index++)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(100);
                 if (executor.ExecuteScript("return document.readyState").ToString().
                     Equals("complete"))
                 {

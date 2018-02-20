@@ -173,6 +173,7 @@ export class DueDiligenceCheckComponent implements OnInit {
         this.service.SaveAssignedTo(this.authService.userName, "", complianceFormId)
             .subscribe((item: any) => {
                 this.reloadUnAssignedComplianceForms();
+                this.LoadPrincipalInvestigators();
             },
             error => {
                 this.error = error;

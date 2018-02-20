@@ -16,7 +16,7 @@ import {SiteSourceViewModel} from './appAdmin.classes';
 import {Country} from './appAdmin.classes';
 import {SponsorProtocol} from './appAdmin.classes';
 import {DefaultSite} from './appAdmin.classes';
-import { DownloadDataFilesViewModel } from './appAdmin.classes';
+// import { DownloadDataFilesViewModel } from './appAdmin.classes';
 
 @Injectable()
 export class LoginHistoryService {
@@ -24,8 +24,6 @@ export class LoginHistoryService {
     //_controller: string = 'search/'; 
     _controller: string = '';
     _options: RequestOptions;
-
-     
 
     constructor(private http: Http,
         private configService: ConfigService,
@@ -59,14 +57,14 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    getAllDataFiles(siteEnum: number):Observable<DownloadDataFilesViewModel[]>{
-        return this.http.get(this._baseUrl + 'Search/DownloadDataFiles?SiteEnum=' + siteEnum,
-        this._options)
-        .map((res: Response) => {
-            return res.json();
-        })
-        .catch(this.handleError);        
-    }
+    // getAllDataFiles(siteEnum: number):Observable<DownloadDataFilesViewModel[]>{
+    //     return this.http.get(this._baseUrl + 'Search/DownloadDataFiles?SiteEnum=' + siteEnum,
+    //     this._options)
+    //     .map((res: Response) => {
+    //         return res.json();
+    //     })
+    //     .catch(this.handleError);        
+    // }
 
     deleteErrorImage(FileName: string){
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteErrorImage?FileName=' + FileName,
@@ -95,15 +93,24 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    getExtractionHistory(){
-        return this.http.get(this._baseUrl + 'admin/GetDataExtractionHistory',
-        this._options)
-        .map((res: Response) => {
-            return res.json();
-        })
-        .catch(this.handleError);
-    }
+    //  getExtractionHistory(){
+    //     return this.http.get(this._baseUrl + 'admin/GetDataExtractionHistory',
+    //     this._options)
+    //     .map((res: Response) => {
+    //         return res.json();
+    //     })
+    //     .catch(this.handleError);
+    // }
 
+    // getDataExtractionErrorSiteCount(){
+    //     return this.http.get(this._baseUrl + 'admin/GetDataExtractionErrorSiteCount',
+    //     this._options)
+    //     .map((res: Response) => {
+    //         return res.json();
+    //     })
+    //     .catch(this.handleError);
+    // }
+    
     deleteExtractionData(RecId: string, Enum: number){
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteExtractionData?RecId=' + RecId
         + '&Enum=' + Enum,

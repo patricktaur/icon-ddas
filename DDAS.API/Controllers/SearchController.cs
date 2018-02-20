@@ -361,6 +361,14 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("GetUserFullName")]
+        [HttpGet]
+        public IHttpActionResult GetUserFullName(
+           string userName)
+        {
+            return Ok(_SearchService.GetUserFullName(userName));
+        }
+
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
@@ -421,17 +429,18 @@ namespace DDAS.API.Controllers
                 }
                 else
                 {
-                   
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
 
-                    if (compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    if (compForm.QCGeneralComment != null &&
+                        compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
                     {
                         compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
                         compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
                     }
 
-                    if (compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    if (compForm.QCAttachmentComment != null &&
+                        compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
                     {
                         compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
                         compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
@@ -1027,21 +1036,7 @@ namespace DDAS.API.Controllers
         //    return Ok("abc");
         //}
 
-        #region Download Data Files
-        [Route("DownloadDataFiles")]
-        [HttpGet]
-        public IHttpActionResult GetDownloadedDataFiles(int SiteEnum)
-        {
-            var DataFiles = _SearchService.GetDataFiles(SiteEnum);
-
-            DataFiles.ForEach(DataFile =>
-            {
-                DataFile.FullPath = 
-                DataFile.FullPath.Replace(_RootPath, "");
-            });
-            return Ok(DataFiles);
-        }
-        #endregion
+        
 
         [Route("MoveReviewCompletedToCompleted")]
         [HttpGet]
@@ -1062,7 +1057,20 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ExportToiSprint(string ComplianceFormId)
         {
-            return Ok();
+            var RecId = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(RecId);
+            var ExportResponse = _SearchService.ExportDataToIsprint(Form);
+
+            if (ExportResponse.Success)
+            {
+                Form.ExportedToiSprintOn = DateTime.Now;
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return Ok();
+            }
+            else
+            {
+                return Ok(ExportResponse.Message);
+            }
         }
 
         string ListToString(ExcelInput excelInput)

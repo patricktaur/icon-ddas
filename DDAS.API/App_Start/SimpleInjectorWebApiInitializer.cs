@@ -80,6 +80,7 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<ISearchEngine, SearchEngine>();
             container.Register<ISearchEngine, SearchEngine>();
+            container.Register<IDataExtractorService, DataExtractorService>();
             
             //container.RegisterWebApiRequest<ILog>(() => new LogText(logFile, true));
 

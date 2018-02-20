@@ -40,6 +40,11 @@ namespace DDAS.Services.Search
             _config = Config;
         }
 
+         //Patrick: 7Jan2018 For use in ExtractDataService
+         public IConfig Config { get {
+                return _config;
+            } }
+
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
@@ -61,7 +66,7 @@ namespace DDAS.Services.Search
             return newForm;
         }
 
-        private string GetUserFullName(string UserName)
+        public string GetUserFullName(string UserName)
         {
             var User = _UOW.UserRepository.FindByUserName(UserName);
 
@@ -264,29 +269,24 @@ namespace DDAS.Services.Search
 
         #endregion
 
-
         public ComplianceForm ImportIsprintData(ddRequest DR)
         {
-            //var ComplianceForms = new ComplianceForm();
-
-            //var InputRows = DataFromExcelFile.ExcelInputRows;
 
             var form = GetNewComplianceForm("");
 
-            //Already assigning the name in GetNewComplianceForm
-            //form.AssignedTo = UserName;
-            //form.UploadedFileName = UploadedFileName;
-            //form.GeneratedFileName = Path.GetFileName(FilePathWithGUID);
+            if (!IsValidProjectNumber(DR.project.projectNumber))
+            {
+                throw new Exception("change the project number format to '1234/5678", new Exception("Data Validation Failed."));
+            }
+
             form.ProjectNumber = DR.project.projectNumber;
-            //form.ProjectNumber2 = InputRows[Index].ProjectNumber2;
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
-            //form.SponsorProtocolNumber2 = InputRows[Index].SponsorProtocolNumber2;
             form.Institute = DR.institute.name;
             form.Address = (DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  ", " ");
             form.Country = DR.institute.country;
 
-            //AddCountrySpecificSites(form);
-            //AddSponsorSpecificSites(form);
+            AddCountrySpecificSites(form);
+            AddSponsorSpecificSites(form);
 
 
             int InvId = 1;
@@ -294,8 +294,6 @@ namespace DDAS.Services.Search
 
             foreach (ddRequestInvestigator d in DR.investigators)
             {
-
-
                 var Investigator = new InvestigatorSearched();
                 Investigator.Id = InvId;
                 InvId += 1;
@@ -304,7 +302,8 @@ namespace DDAS.Services.Search
                 Investigator.FirstName = d.firstName.Trim();
                 Investigator.MiddleName = d.middleName.Trim();
                 Investigator.LastName = d.lastName.Trim();
-                Investigator.Role = d.role.ToString().Trim();
+
+
                 Investigator.MedicalLiceseNumber = d.licenceNumber;
                 Investigator.MemberId = d.memberId;
                 Investigator.InvestigatorId = d.investigatorId;
@@ -314,45 +313,23 @@ namespace DDAS.Services.Search
 
                 if (d.role.ToString().ToLower() == "pi")
                 {
+                    Investigator.Role = "PI";
                     PrincipleInvestigatorCount += 1;
                 }
-
-
-                //int tempIndex = Index + 1; //to add SI's
-
-                //while (tempIndex < InputRows.Count &&
-                //    d.role.ToString().ToLower() == "sub i")
-                //{
-                //    var Inv = new InvestigatorSearched();
-                //    Inv.Id = InvId;
-                //    InvId += 1;
-
-                //    Inv.Name = InputRows[tempIndex].DisplayName.Trim();
-                //    Inv.FirstName = InputRows[tempIndex].FirstName;
-                //    Inv.MiddleName = InputRows[tempIndex].MiddleName;
-                //    Inv.LastName = InputRows[tempIndex].LastName;
-                //    Inv.Role = InputRows[tempIndex].Role;
-                //    Inv.MedicalLiceseNumber =
-                //        InputRows[tempIndex].MedicalLicenseNumber;
-                //    Inv.MemberId = InputRows[tempIndex].MemberID;
-                //    Inv.InvestigatorId = InputRows[tempIndex].InvestigatorID;
-
-                //    form.InvestigatorDetails.Add(Inv);
-                //    tempIndex += 1;
-                //}
-                //Index = tempIndex - 1;
-
-                //ComplianceForms.Add(form);
+                else if (d.role.ToString().ToLower() == "subi")
+                {
+                    Investigator.Role = "Sub I";
+                }
             }
 
             if (PrincipleInvestigatorCount == 0)
             {
-                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.");
+                throw new Exception("Principle Investigator not Found. At least one PI must be present in the data.", new Exception("Data Validation Failed."));
             }
 
             if (PrincipleInvestigatorCount > 1)
             {
-                throw new Exception("Principle Investigator cannot be more than one.");
+                throw new Exception("Principle Investigator cannot be more than one.", new Exception("Data Validation Failed."));
             }
 
             ScanUpdateComplianceForm(form);
@@ -360,16 +337,17 @@ namespace DDAS.Services.Search
             return form;
         }
 
-        public string ExportDataToIsprint(Guid Recid)
+        public iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(Guid Recid)
         {
             var form = GetComplianceForm(Recid);
             return ExportDataToIsprint(form);
         }
 
-        public string ExportDataToIsprint(ComplianceForm form)
+        public iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(ComplianceForm form)
         {
             //bool bRetVal = false;
             string sRetval = "";
+            var resp = new iSprintResponseModel.DDtoIsprintResponse();
 
             Envelope oEnvelope = new Envelope();
             EnvelopeBody oBody = new EnvelopeBody();
@@ -413,20 +391,20 @@ namespace DDAS.Services.Search
             oInstitutionsList.checksCompleted = oChecksCompleted;
             oInstitutionsList.instituteComplianceIssue = true;
 
-            institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
-            institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
+            //institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
+            //institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
 
-            oInstitutionFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-            oInstitutionFinding.type = "Regulatory";
-            oInstitutionFinding.regulatoryCode = "OAI";
-            oInstitutionFinding.regulatoryDeficiency = "No";
-            oInstitutionFinding.worldCheckFinding = "No";
-            oInstitutionFinding.comment = "Test123";
+            //oInstitutionFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+            //oInstitutionFinding.type = "Regulatory";
+            //oInstitutionFinding.regulatoryCode = "OAI";
+            //oInstitutionFinding.regulatoryDeficiency = "No";
+            //oInstitutionFinding.worldCheckFinding = "No";
+            //oInstitutionFinding.comment = "Test123";
 
-            oInstitutionsFindingsList.finding = oInstitutionFinding;
+            //oInstitutionsFindingsList.finding = oInstitutionFinding;
 
-            //Optional
-            oInstitutionsList.ddFindings = oInstitutionsFindingsList;
+            ////Optional
+            //oInstitutionsList.ddFindings = oInstitutionsFindingsList;
 
             // institutions >>>>>>
 
@@ -457,30 +435,46 @@ namespace DDAS.Services.Search
                 investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = new investigatorResultsInvestigatorResultChecksCompleted();
                 investigatorResultsInvestigatorResultChecksCompletedCheck oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck();
 
-                oInvestigatorCheck.name = "investigator world check";
-                oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //oInvestigatorCheck.name = "investigator world check";
+                //oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
-                oInvestigatorChecksCompleted.check = oInvestigatorCheck;
-                InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+                var WorldCheckPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.WorldCheckPage);
+                if (WorldCheckPage != null)
+                {
+                    oInvestigatorCheck.name = "investigator world check";
+                    if (WorldCheckPage.SiteSourceUpdatedOn != null)
+                        oInvestigatorCheck.date = DateTime.ParseExact(WorldCheckPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci); 
+                    oInvestigatorChecksCompleted.check = oInvestigatorCheck;
+                    InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+                }
 
 
-                InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                InvestigatorResult.dmc9002Exclusion = "Exclusion";
+                var DMCExclusionPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.PfizerDMCChecksPage);
 
-                investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = new investigatorResultsInvestigatorResultDdFindings();
-                investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = new investigatorResultsInvestigatorResultDdFindingsFinding();
+                if (DMCExclusionPage != null)
+                {
+                    InvestigatorResult.dmc9002Exclusion = "Exclusion";
+                    if (DMCExclusionPage.SiteSourceUpdatedOn != null)
+                        InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DMCExclusionPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                }
 
-                oInvestigatorFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                oInvestigatorFinding.type = "Regulatory";
-                oInvestigatorFinding.regulatoryCode = "OAI";
-                oInvestigatorFinding.regulatoryDeficiency = "No";
-                oInvestigatorFinding.worldCheckFinding = "No";
-                oInvestigatorFinding.comment = "TestInv";
+                //InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //InvestigatorResult.dmc9002Exclusion = "Exclusion";
 
-                oInvestigatorFindings.finding = oInvestigatorFinding;
+                //investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = new investigatorResultsInvestigatorResultDdFindings();
+                //investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = new investigatorResultsInvestigatorResultDdFindingsFinding();
 
-                //Optional
-                InvestigatorResult.ddFindings = oInvestigatorFindings;
+                //oInvestigatorFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //oInvestigatorFinding.type = "Regulatory";
+                //oInvestigatorFinding.regulatoryCode = "OAI";
+                //oInvestigatorFinding.regulatoryDeficiency = "No";
+                //oInvestigatorFinding.worldCheckFinding = "No";
+                //oInvestigatorFinding.comment = "TestInv";
+
+                //oInvestigatorFindings.finding = oInvestigatorFinding;
+
+                ////Optional
+                //InvestigatorResult.ddFindings = oInvestigatorFindings;
 
                 arrInvestigatorResult[elem] = InvestigatorResult;
 
@@ -517,32 +511,37 @@ namespace DDAS.Services.Search
                 }
             }
 
+            xml = xml.Replace("<investigatorResult>", "");
+            xml = xml.Replace("</investigatorResult>", "");
+            xml = xml.Replace("investigatorResultsInvestigatorResult>", "investigatorResult>");
 
             var objLog = new LogWSISPRINT();
 
             objLog.CreatedOn = DateTime.Now;
+            objLog.ComplianceFormId = form.RecId;
             objLog.RequestPayload = xml;
 
+            resp = PostToIsprintWebService(xml, out sRetval);
 
-            sRetval = PostToIsprintWebService(xml);
             objLog.Response = sRetval;
-            objLog.Status = "ok";
+            if (resp.Success)
+            {
+                objLog.Status = "ok";
+            }
+            else
+            {
+                objLog.Status = "failed";
+            }
+
 
             _UOW.LogWSISPRINTRepository.Add(objLog);
 
             //To be removed. temp code
-            sRetval = sRetval + "</br>" + xml;
+            sRetval = xml + "</br>Response ==> " + sRetval;
 
-            XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
-            TextReader textReader = new StreamReader(sRetval);
-            iSprintResponseModel.Envelope stud;
-            stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(textReader);
-            textReader.Close();
+            resp.Message = sRetval;
 
-            sRetval += " Success:" + stud.Body.iSprintResponse.success;
-            sRetval += " Message:" + stud.Body.iSprintResponse.header.errorMessage;
-
-            return sRetval;
+            return resp;
         }
 
         public class Utf8StringWriter : StringWriter
@@ -550,11 +549,16 @@ namespace DDAS.Services.Search
             public override Encoding Encoding => Encoding.UTF8;
         }
 
-        public string PostToIsprintWebService(string RequestPayload)
-        {
-            string sRetval = "";
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://fmsoadev.iconplc.com/soa-infra/services/ClinOps_ClientServices/initiateDDASiSprintFindings/DDASiSprintFindings?WSDL");
+        public iSprintResponseModel.DDtoIsprintResponse PostToIsprintWebService(string RequestPayload, out string sRetVal)
+        {
+            var resp = new iSprintResponseModel.DDtoIsprintResponse();
+            resp.Success = false;
+
+
+            //HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://fmsoadev.iconplc.com/soa-infra/services/ClinOps_ClientServices/initiateDDASiSprintFindings/DDASiSprintFindings?WSDL");
+            var iSprintURL = System.Configuration.ConfigurationManager.AppSettings["IsprintWS"];
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(iSprintURL);
 
             req.Method = "POST";
             req.ContentType = "text/xml";
@@ -569,20 +573,87 @@ namespace DDAS.Services.Search
             {
                 HttpWebResponse response = (HttpWebResponse)req.GetResponse();
                 Stream dataStreamResponse = response.GetResponseStream();
-                StreamReader SR = new StreamReader(dataStreamResponse, Encoding.UTF8);
-                sRetval = SR.ReadToEnd();
+                if (response.StatusCode == HttpStatusCode.OK) //on success
+                {
+                    StreamReader SR = new StreamReader(dataStreamResponse, Encoding.UTF8);
+                    sRetVal = SR.ReadToEnd();
+                    dataStreamResponse.Close();
+                    SR.Close();
+                    resp.Success = true;
+
+                    //XmlSerializer serializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
+                    //StringReader rdr = new StringReader(sRetVal);
+                    //var stud = (iSprintResponseModel.Envelope)serializer.Deserialize(rdr);
+
+                    //XmlSerializer deserializer = new XmlSerializer(typeof(iSprintResponseModel.Envelope));
+                    //TextReader textReader = new StreamReader(dataStreamResponseOut);
+                    //var stud = (iSprintResponseModel.Envelope)deserializer.Deserialize(SR);
+
+                    //sRetVal += " </br> iSprintResponse.success => " + stud.Body.iSprintResponse.success;
+                    //sRetVal += " </br> iSprintResponse.header.errorMessage => " + stud.Body.iSprintResponse.header.errorMessage;
+                    //sRetVal += " </br> Header.MessageID => " + stud.Header.MessageID;
+                    //sRetVal += " </br> Header.ReplyTo.ReferenceParameters.trackingecid => " + stud.Header.ReplyTo.ReferenceParameters.trackingecid;
+                    //sRetVal += " </br> Header.ReplyTo.ReferenceParameters.trackingFlowId => " + stud.Header.ReplyTo.ReferenceParameters.trackingFlowId;
+                    //sRetVal += " </br> Header.ReplyTo.ReferenceParameters.trackingFlowEventId => " + stud.Header.ReplyTo.ReferenceParameters.trackingFlowEventId;
+                }
+                else
+                {
+                    sRetVal = "response.StatusCode:" + response.StatusCode;
+                }
+
+
                 response.Close();
-                dataStreamResponse.Close();
-                SR.Close();
                 req.Abort();
             }
-            catch
+            catch (Exception ex)
             {
+                resp.Message = ex.Message;
+                sRetVal = "Request Error:" + ex.Message;
+
                 req.Abort();
             }
 
-            return sRetval;
+            return resp;
         }
+
+
+
+        //public String PostToIsprintWebService(string RequestPayload, ref Stream dataStreamResponse)
+        //{
+        //    string sRetval = "";
+        //    //Stream dataStreamResponse = null;
+
+        //    HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://fmsoadev.iconplc.com/soa-infra/services/ClinOps_ClientServices/initiateDDASiSprintFindings/DDASiSprintFindings?WSDL");
+
+        //    req.Method = "POST";
+        //    req.ContentType = "text/xml";
+
+        //    byte[] byteArray = Encoding.UTF8.GetBytes(RequestPayload);
+        //    req.ContentLength = byteArray.Length;
+        //    Stream dataStream = req.GetRequestStream();
+        //    dataStream.Write(byteArray, 0, byteArray.Length);
+        //    dataStream.Close();
+
+        //    try
+        //    {
+        //        HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+        //        //Stream dataStreamResponse = response.GetResponseStream();
+        //        dataStreamResponse = response.GetResponseStream();
+        //        StreamReader SR = new StreamReader(dataStreamResponse, Encoding.UTF8);
+        //        sRetval = SR.ReadToEnd();
+        //        response.Close();
+        //        //dataStreamResponse.Close();
+        //        SR.Close();
+        //        req.Abort();
+        //    }
+        //    catch
+        //    {
+        //        req.Abort();
+        //    }
+
+        //    return sRetval;
+        //    //return dataStreamResponse;
+        //}
 
         //public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
         //    bool Active, Guid? RecId)
@@ -2695,6 +2766,8 @@ namespace DDAS.Services.Search
 
         }
 
+       
+
         #endregion
 
         #region ComplianceFormGeneration - both PDF and Word
@@ -4610,78 +4683,7 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        #region Download Data Files
-
-        public List<DownloadDataFilesViewModel> GetDataFiles(int SiteEnum)
-        {
-            bool IsFilteredBySiteEnum = false;
-
-            var DownloadDataFilesVMList = new List<DownloadDataFilesViewModel>();
-
-            var DataFolders = new string[] {
-                _config.CIILFolder,
-                _config.FDAWarningLettersFolder,
-                _config.ExclusionDatabaseFolder,
-                _config.SAMFolder,
-                _config.SDNFolder
-            };
-
-            var FileTypes = new string[] {
-                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
-            };
-
-            int Index = 0;
-            foreach (string Folder in DataFolders)
-            {
-                if (IsFilteredBySiteEnum)
-                    break;
-
-                var Files = GetDataFiles(Folder, FileTypes[Index]);
-
-                Files.ForEach(fileInfo =>
-                {
-                    if (_UOW.SiteSourceRepository.GetAll().Find(
-                        x => (int)x.SiteEnum == SiteEnum) != null)
-                    {
-                        var VM = new DownloadDataFilesViewModel();
-                        VM.FileName = fileInfo.Name;
-                        var siteEnum = VM.FileName.Split('_')[0];
-
-                        var Site = _UOW.SiteSourceRepository.GetAll().Find(
-                        x => (int)x.SiteEnum == SiteEnum &&
-                        x.SiteEnum.ToString() == siteEnum);
-
-                        if (Site != null)
-                        {
-                            VM.SiteName = Site.SiteName;
-                            VM.FullPath = Folder + VM.FileName;
-                            VM.FileSize = (fileInfo.Length / 1024) //bytes to KB
-                            .ToString();
-                            VM.DownloadedOn = fileInfo.CreationTime;
-                            VM.FileType = fileInfo.Extension;
-                            DownloadDataFilesVMList.Add(VM);
-                            IsFilteredBySiteEnum = true;
-                        }
-                    }
-                });
-                Index += 1;
-            }
-            return DownloadDataFilesVMList;
-        }
-
-        private List<FileInfo> GetDataFiles(string Folder, string FileType)
-        {
-            var Files = new DirectoryInfo(Folder).GetFiles(FileType);
-
-            var AllFiles = new List<FileInfo>();
-            foreach (FileInfo fileInfo in Files)
-            {
-                AllFiles.Add(fileInfo);
-            }
-            return AllFiles;
-        }
-
-        #endregion
+        
 
         #region Helpers
 

@@ -8,7 +8,7 @@
 				<b>{{principalInvestigatorName}}</b>
 			</h3>
 			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
-			<h3 class="no-margin-top">QC by {{qcAssignedTo}}</h3>
+			<h3 class="no-margin-top">QC by {{qcVerifierFullName}}</h3>
 			<label for="auditStatus">Status: {{reviewStatus}}</label>
 			<!-- {{diagnostic}} -->
 			<br>
@@ -256,18 +256,19 @@
 </modal>
 
 <modal #RemoveConfirmModal>
-	<modal-header>
-		<h4 class="modal-title">Confirm Removal</h4>
-	</modal-header>
-	<modal-body>
-		Remove Finding ?.
-		<br> {{RecordToDeleteText}}
-	</modal-body>
-	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close(); FindingResponseModal.close()">Remove</button>
-		<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
-	</modal-footer>
-</modal>
+		<modal-header>
+			<h4 class="modal-title">Confirm Removal</h4>
+		</modal-header>
+		<modal-body>
+			Remove Finding ?.
+			<br> {{RecordToDeleteText}}
+		</modal-body>
+		<modal-footer>
+			<button type="button" class="btn btn-default" (click)="RemoveFinding(); RemoveConfirmModal.close(); FindingResponseModal.close()">Remove</button>
+			<button type="button" class="btn btn-default" (click)=" RemoveConfirmModal.close()">Cancel</button>
+		</modal-footer>
+	</modal>	
+
 <modal #ConfirmUndoModal>
 	<modal-header>
 		<h4 class="modal-title">Confirm Undo</h4>
