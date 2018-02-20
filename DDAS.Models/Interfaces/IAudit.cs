@@ -19,6 +19,6 @@ namespace DDAS.Models.Interfaces
         List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);
         //bool UndoQCRequest(Guid ComplianceFormId);
         //bool UndoQCSubmit(Guid ComplianceFormId);
-        bool Undo(Guid ComplianceFormId, UndoEnum Enum);
+        bool Undo(Guid ComplianceFormId, UndoEnum Enum, string UndoComment);
     }
 }

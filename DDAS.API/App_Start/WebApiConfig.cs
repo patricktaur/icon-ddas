@@ -26,8 +26,8 @@ namespace DDAS.API
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
             config.MapHttpAttributeRoutes();
 
-            //var cors = new EnableCorsAttribute("*", "*", "*");
-            //config.EnableCors(cors);
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
 
             config.Filters.Add(new OfflineActionFilter());
             //GlobalFilters.Filters.Add(new OfflineActionFilter());

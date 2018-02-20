@@ -54,17 +54,17 @@ namespace DDAS.API.Helpers
             //    }
             //}
 
-            //Patrick: 11Feb2018: 
+            //Patrick: 11Feb2018:
             if (CompForm.QCGeneralComment == null) {
                 var newComment = new Comment();
-                newComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                newComment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
+                newComment.CategoryEnum = CommentCategoryEnum.Minor;
+                newComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionCompleted;
                 CompForm.QCGeneralComment = newComment;
             }
             if (CompForm.QCAttachmentComment == null) {
                 var newComment = new Comment();
-                newComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                newComment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
+                newComment.CategoryEnum = CommentCategoryEnum.Minor;
+                newComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionCompleted;
                 CompForm.QCAttachmentComment = newComment;
             }
         }

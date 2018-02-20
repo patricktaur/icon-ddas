@@ -37,6 +37,7 @@ namespace DDAS.Services.AuditService
                     x.AssigendTo.ToLower() == Review.AssignedBy.ToLower());
 
                     Review.PreviousReviewId = PreviousReview.RecId;
+                    Review.QCStatus = QCCompletedStatusEnum.InProgress;
                 }
                 else if (Review.RecId == null)
                     Review.RecId = Guid.NewGuid();
@@ -274,12 +275,12 @@ namespace DDAS.Services.AuditService
             return QCSummaryList;
         }
 
-        public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum)
+        public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum, string UndoComment)
         {
             switch (undoEnum)
             {
                 case UndoEnum.UndoQCRequest:
-                    return UndoQCRequest(ComplianceFormId);
+                    return UndoQCRequest(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoQCSubmit:
                     return UndoQCSubmit(ComplianceFormId);
                 case UndoEnum.UndoQCResponse:
@@ -290,7 +291,7 @@ namespace DDAS.Services.AuditService
             }
         }
 
-        private bool UndoQCRequest(Guid ComplianceFormId)
+        private bool UndoQCRequest(Guid ComplianceFormId, string UndoComment)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -309,7 +310,7 @@ namespace DDAS.Services.AuditService
                     QCRequestedReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
                     (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
-                    QCRequestedReview.ReviewCategory);
+                    QCRequestedReview.ReviewCategory, UndoComment);
                 return true;
             }
             else
@@ -441,7 +442,7 @@ namespace DDAS.Services.AuditService
         }
 
         private void SendUndoQCRequestMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber, string ReviewCategory)
+            string ProjectNumber, string ReviewCategory, string UndoComment)
         {
             var User = _UOW.UserRepository.FindByUserName(AssignedTo);
 
@@ -452,7 +453,13 @@ namespace DDAS.Services.AuditService
             var Subject = "Undo QC Request - " + ReviewCategory + "_" +
                 ProjectNumber + "_" + PI;
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
-            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request. <br/><br/>";
+
+            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request ";
+
+            if (UndoComment != null)
+                MailBody += " as <b>" + UndoComment + "</b>";
+
+            MailBody += "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedBy);
 

@@ -17,7 +17,8 @@ import {
     ReviewerRoleEnum,
     ReviewStatusEnum,
     CurrentReviewStatusViewModel,
-    UndoEnum
+    UndoEnum,
+    QCCompletedStatusEnum
 } from '../../search/search.classes';
 import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service";
 
@@ -115,13 +116,6 @@ export class EditQCComponent implements OnInit {
         this.loadComplianceForm();
         this.loadAttachments();
         //this.listQCSummary();
-        // this.setShowGeneralComment();
-        //this.compFormLogic.CanDisplayFindingComponent
-    }
-
-    setShowGeneralComment(){
-        // this.showGenralComment = false;
-        this.showGenralComment = this.canDisplayGeneralComment;
     }
 
     loadComplianceForm() {
@@ -156,6 +150,7 @@ export class EditQCComponent implements OnInit {
 
         });
     }
+
     getCurrentReviewStatus() {
         this.service.getCurrentReviewStatus(this.complianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
@@ -193,14 +188,13 @@ export class EditQCComponent implements OnInit {
 
     get isQCPassedOrFailed() {
         let review = this.complianceForm.Reviews.find(x =>
-            x.Status == ReviewStatusEnum.QCFailed ||
-            x.Status == ReviewStatusEnum.QCPassed ||
-            x.Status == ReviewStatusEnum.Completed);
+            x.QCStatus == QCCompletedStatusEnum.NoIssues ||
+            x.QCStatus == QCCompletedStatusEnum.IssuesNoted);
 
-        if(review != undefined && review.Status == ReviewStatusEnum.QCFailed)
-            this.status = 0;
-        else if(review != undefined && review.Status == ReviewStatusEnum.QCPassed)
-            this.status = 1;
+        if(review != undefined && review.QCStatus == QCCompletedStatusEnum.NoIssues)
+            this.status = 2;
+        else if(review != undefined && review.QCStatus == QCCompletedStatusEnum.IssuesNoted)
+            this.status = 3;
 
         if (review != undefined)
             return true;
@@ -421,6 +415,7 @@ export class EditQCComponent implements OnInit {
         let review = this.complianceForm.Reviews.find(x => 
             x.Status == ReviewStatusEnum.QCInProgress);
         review.Status = ReviewStatusEnum.QCCompleted;
+        review.QCStatus = this.status;
 
         this.auditService.submitQC(this.complianceForm)
             .subscribe((item: any) => {
@@ -441,7 +436,7 @@ export class EditQCComponent implements OnInit {
     }
 
     undoQCSubmit(){
-        this.service.undo(this.complianceForm.RecId, UndoEnum.UndoQCSubmit)
+        this.service.undo(this.complianceForm.RecId, UndoEnum.UndoQCSubmit, '')
         .subscribe((item: any) => {
             this.goBack();
         }, 

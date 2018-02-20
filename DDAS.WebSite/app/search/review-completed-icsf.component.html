@@ -224,8 +224,8 @@
 		</div>
 		<div class="row">
 			<div class="col-md-9">
-				<label for="RequestorComment">Comments:</label>
-				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comments"
+				<label for="RequestorComment">Comment:</label>
+				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comment"
 				 [(ngModel)]="requestorComment">
 				</textarea>
 			</div>
@@ -260,6 +260,17 @@
 		<h4 class="modal-title">Undo Request QC</h4>
 	</modal-header>
 	<modal-body>
+		<div class="row">
+			<div class="col-md-9">
+				<label for="RequestorComment">Comment:</label>
+				<textarea name="UndoComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comment"
+				 [(ngModel)]="undoComment">
+				</textarea>
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+
 		Are you sure you want to Undo Request QC ?
 	</modal-body>
 	<modal-footer>

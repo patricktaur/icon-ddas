@@ -441,8 +441,8 @@ export class CompFormLogicService {
         if(!this.isLoggedInUserQCVerifier(complianceForm)) 
             return true;
         else if(this.isLoggedInUserQCVerifier(complianceForm) &&
-            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted))
+            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress))// ||
+            // complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted))
             return false;
         else
             return true;

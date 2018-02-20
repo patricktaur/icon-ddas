@@ -69,6 +69,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public requestorComment: string;
     private SessionId: string;
     public files : File[] = [];
+    public undoComment: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -433,7 +434,8 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     undoQCRequest(){
-        this.service.undo(this.complianceFormId, UndoEnum.UndoQCRequest)
+        this.service.undo(
+            this.complianceFormId, UndoEnum.UndoQCRequest, this.undoComment)
         .subscribe((item: boolean) =>{
             this.LoadPrincipalInvestigators();
         },
