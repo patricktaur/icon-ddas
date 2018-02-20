@@ -4,6 +4,9 @@
 			<div class="alert alert-info" *ngIf="Loading">
 				<strong>Loading ...</strong>
 			</div>
+			<div class="alert alert-warning" *ngIf="error">
+				<strong>Error : {{error}} </strong>
+			</div>
 			<h3>QC for Principal Investigator -
 				<b>{{principalInvestigatorName}}</b>
 			</h3>

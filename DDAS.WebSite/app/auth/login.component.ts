@@ -102,6 +102,9 @@ export class LoginComponent implements OnInit{
   }
   
   redirectURL() : string{
+    //link requirements:site url + /login?returnUrl=start/ + page path + /end
+    //example:
+    //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
     let locationPath1 = this.locationStrategy.path();
     if (locationPath1.indexOf("start") == 0){
       return null;
