@@ -9,7 +9,7 @@
 			</h3>
 			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
 			<h3 class="no-margin-top">QC by {{qcVerifierFullName}}</h3>
-			<label for="auditStatus">Status: {{reviewStatus}}</label>
+			<label for="auditStatus">Status: {{reviewStatus}}{{getQCStatus}}</label>
 			<!-- {{diagnostic}} -->
 			<br>
 			<label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label>
@@ -189,7 +189,7 @@
 </div>
 <div class="well">
 	<div class="row">
- 		<div class="row">
+ 		<div class="row" *ngIf="canShowQCResponse">
 			<div class="col-md-3">
 				<div class="form-group">
 					<label for="Status">QC Response:</label>

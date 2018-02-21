@@ -344,6 +344,12 @@ export class CompFormEditComponent implements OnInit {
     //     }
     // }
 
+    get getQCStatus(){
+        if(this.CompForm){
+            return this.compFormLogic.getQCStatus(this.CompForm.QCStatus);
+        }
+    }
+
     get isLoggedInUserReviewer(){
         if (this.CompForm) {
             return this.compFormLogic.canSaveComplianceForm(this.CompForm);

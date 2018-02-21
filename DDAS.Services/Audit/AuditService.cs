@@ -37,7 +37,6 @@ namespace DDAS.Services.AuditService
                     x.AssigendTo.ToLower() == Review.AssignedBy.ToLower());
 
                     Review.PreviousReviewId = PreviousReview.RecId;
-                    Review.QCStatus = QCCompletedStatusEnum.InProgress;
                 }
                 else if (Review.RecId == null)
                     Review.RecId = Guid.NewGuid();
@@ -49,7 +48,6 @@ namespace DDAS.Services.AuditService
 
         public bool RequestQC(Guid ComplianceFormId, Review review)
         {
-
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
             var lastReview = form.Reviews.LastOrDefault();
             if (lastReview == null)
@@ -60,6 +58,7 @@ namespace DDAS.Services.AuditService
             review.RecId = Guid.NewGuid();
             review.PreviousReviewId = lastReview.RecId;
             form.Reviews.Add(review);
+            form.QCStatus = QCCompletedStatusEnum.InProgress;
             _UOW.ComplianceFormRepository.UpdateCollection(form);
             SendQCRequestedMail(form);
             return true;
@@ -108,6 +107,7 @@ namespace DDAS.Services.AuditService
                 QCViewModel.QCVerifier = Form.QCVerifier;
                 QCViewModel.QCVerifierFullName = GetUserFullName(Form.QCVerifier);
                 QCViewModel.Status = QCReview.Status;
+                QCViewModel.QCStatus = Form.QCStatus;
                 QCViewModel.CompletedOn = QCReview.CompletedOn;
                 QCViewModel.Requester = Form.Reviewer;
                 QCViewModel.RequesterFullName = GetUserFullName(Form.Reviewer);

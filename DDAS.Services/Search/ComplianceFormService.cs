@@ -4683,8 +4683,6 @@ namespace DDAS.Services.Search
 
         #endregion
 
-        
-
         #region Helpers
 
         private string RemoveExtraCharacters(string Value)

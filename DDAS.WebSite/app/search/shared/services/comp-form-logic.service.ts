@@ -5,7 +5,7 @@ import { AuthService } from '../../../auth/auth.service';
 import {
     ComplianceFormA, Finding, CurrentReviewStatusViewModel, 
     ReviewStatusEnum, Review, ReviewerRoleEnum, ComplianceForm,
-    CommentCategoryEnum
+    CommentCategoryEnum, QCCompletedStatusEnum
 } from '../../search.classes';
 import { reverse } from 'dns';
 
@@ -437,6 +437,15 @@ export class CompFormLogicService {
             return false;
     }
 
+    canShowQCResponse(complianceForm: ComplianceFormA){
+        if(this.isLoggedInUserQCVerifier(complianceForm) &&
+            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted)) 
+            return true;
+        else
+            return false;
+    }
+
     canDisableQCResponse(complianceForm: ComplianceFormA){
         if(!this.isLoggedInUserQCVerifier(complianceForm)) 
             return true;
@@ -461,7 +470,7 @@ export class CompFormLogicService {
         return this.authService.userFullName;
     }
 
-    getCommentCategoryEnumValue(value: CommentCategoryEnum){
+    getCommentCategoryEnumValue(value: number){
         switch(value){
             case CommentCategoryEnum.Minor: return "Minor";
             case CommentCategoryEnum.Major: return "Major";
@@ -469,11 +478,19 @@ export class CompFormLogicService {
             case CommentCategoryEnum.Suggestion: return "Suggestion";
             case CommentCategoryEnum.Others: return "Others";
             case CommentCategoryEnum.NotApplicable: return "Not Applicable";
-            case CommentCategoryEnum.CorrectionPending: return "Pending";
-            case CommentCategoryEnum.CorrectionCompleted: return "Completed";
+            case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+            case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
             case CommentCategoryEnum.Accepted: return "Accepted";
             case CommentCategoryEnum.NotAccepted: return "Not Accepted";
             default: "";
         }
+    }
+
+    getQCStatus(qcStatusEnum: number){
+        switch(qcStatusEnum){
+            case QCCompletedStatusEnum.NoIssues: return ", No Issues";
+            case QCCompletedStatusEnum.IssuesNoted: return ", Issues Noted";
+            default: "";
+        }        
     }
 }

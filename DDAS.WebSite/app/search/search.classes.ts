@@ -213,6 +213,7 @@ export class ComplianceFormA {
     Reviews: Review[] = new Array<Review>();
     Comments: Comment[] = new Array<Comment>();
     CurrentReviewStatus: ReviewStatusEnum;
+    QCStatus: QCCompletedStatusEnum;
     Reviewer: string;
     QCVerifier: string;
     QCGeneralComment: Comment;
@@ -433,7 +434,7 @@ export class Review {
     AssignedOn: Date;
     AssignedBy: string;
     Status: ReviewStatusEnum;
-    QCStatus: QCCompletedStatusEnum;
+    // QCStatus: QCCompletedStatusEnum;
     StartedOn: Date;
     CompletedOn: Date;
     ReviewerRole: ReviewerRoleEnum;

@@ -230,6 +230,8 @@ namespace DDAS.Models.Entities.Domain
             }
         }
 
+        public QCCompletedStatusEnum QCStatus { get; set; }
+
         public bool IsReviewCompleted {
             get {
                 return 
@@ -970,7 +972,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime AssignedOn { get; set; }
         public string AssignedBy { get; set; }
         public ReviewStatusEnum Status { get; set; }
-        public QCCompletedStatusEnum QCStatus { get; set; }
+        //public QCCompletedStatusEnum QCStatus { get; set; }
         public DateTime? StartedOn { get; set; }
         public DateTime? CompletedOn { get; set; }
         public ReviewerRoleEnum ReviewerRole { get; set; }

@@ -18,6 +18,7 @@ namespace DDAS.Models.ViewModels
         public string QCVerifierFullName { get; set; }
         public DateTime? CompletedOn { get; set; }
         public ReviewStatusEnum Status { get; set; }
+        public QCCompletedStatusEnum QCStatus { get; set; }
         public string PrincipalInvestigator { get; set; }
         public List<string> SubInvestigators { get; set; } = new List<string>();
         public string ProjectNumber { get; set; }

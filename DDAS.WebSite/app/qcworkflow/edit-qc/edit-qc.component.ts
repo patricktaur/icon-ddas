@@ -187,16 +187,12 @@ export class EditQCComponent implements OnInit {
     }
 
     get isQCPassedOrFailed() {
-        let review = this.complianceForm.Reviews.find(x =>
-            x.QCStatus == QCCompletedStatusEnum.NoIssues ||
-            x.QCStatus == QCCompletedStatusEnum.IssuesNoted);
-
-        if(review != undefined && review.QCStatus == QCCompletedStatusEnum.NoIssues)
+        if(this.complianceForm != undefined && this.complianceForm.QCStatus == QCCompletedStatusEnum.NoIssues)
             this.status = 2;
-        else if(review != undefined && review.QCStatus == QCCompletedStatusEnum.IssuesNoted)
+        else if(this.complianceForm != undefined && this.complianceForm.QCStatus == QCCompletedStatusEnum.IssuesNoted)
             this.status = 3;
 
-        if (review != undefined)
+        if (this.status == 2 || this.status == 3)
             return true;
         else
             return false;
@@ -252,8 +248,16 @@ export class EditQCComponent implements OnInit {
         }
     }
 
-    enumValue(value: CommentCategoryEnum){
-        return this.compFormLogic.getCommentCategoryEnumValue(value);
+    get getQCStatus(){
+        if(this.complianceForm){
+            return this.compFormLogic.getQCStatus(this.complianceForm.QCStatus);
+        }
+    }
+
+    enumValue(value: number){
+        if(value){
+            return this.compFormLogic.getCommentCategoryEnumValue(value);
+        }
     }
 
     get QCGeneralComment(){
@@ -376,6 +380,12 @@ export class EditQCComponent implements OnInit {
 
     Save() {
         this.excludeOrIncludeFinding();
+
+        let review = this.complianceForm.Reviews.find(x => 
+            x.Status == ReviewStatusEnum.QCInProgress);
+
+        this.complianceForm.QCStatus = this.status;
+
         this.Loading = true;
         this.service.saveReviewCompletedComplianceForm(this.complianceForm)            
         .subscribe((item: boolean) => {
@@ -394,6 +404,14 @@ export class EditQCComponent implements OnInit {
             return true;
         else
             return false;
+    }
+
+    get canShowQCResponse(){
+        if(this.complianceForm){
+            return this.compFormLogic.canShowQCResponse(this.complianceForm);
+        }
+        else
+            return false; //hide the QC response dropdown        
     }
 
     get disableQCResponse(){
@@ -415,7 +433,8 @@ export class EditQCComponent implements OnInit {
         let review = this.complianceForm.Reviews.find(x => 
             x.Status == ReviewStatusEnum.QCInProgress);
         review.Status = ReviewStatusEnum.QCCompleted;
-        review.QCStatus = this.status;
+        
+        this.complianceForm.QCStatus = this.status;
 
         this.auditService.submitQC(this.complianceForm)
             .subscribe((item: any) => {
