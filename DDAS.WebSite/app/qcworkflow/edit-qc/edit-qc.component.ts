@@ -92,7 +92,8 @@ export class EditQCComponent implements OnInit {
     public modalTitle: string;
     public modalText: string;
     public showGenralComment: boolean = false;
-    
+    public generalCommentToRemove: Comment;
+    public attachmentCommentToRemove: Comment;
 
     constructor(
         private route: ActivatedRoute,
@@ -191,6 +192,8 @@ export class EditQCComponent implements OnInit {
             this.status = 2;
         else if(this.complianceForm != undefined && this.complianceForm.QCStatus == QCCompletedStatusEnum.IssuesNoted)
             this.status = 3;
+        else
+            this.status = 1; //In progress
 
         if (this.status == 2 || this.status == 3)
             return true;
@@ -242,10 +245,22 @@ export class EditQCComponent implements OnInit {
         }
     }
 
-    get reviewStatus(){
-        if(this.complianceForm){
-            return this.compFormLogic.getReviewStatus(this.complianceForm.CurrentReviewStatus);
+    // get reviewStatus(){
+    //     if(this.complianceForm){
+    //         return this.compFormLogic.getReviewStatus(this.complianceForm.CurrentReviewStatus);
+    //     }
+    // }
+
+    reviewStatus(statusEnum: number, qcStatusEnum: number){
+        let value = "";
+        if(statusEnum == ReviewStatusEnum.QCCompleted){
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+            value = value + this.compFormLogic.getQCStatus(qcStatusEnum);
         }
+        else {
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+        }
+        return value;
     }
 
     get getQCStatus(){
@@ -260,74 +275,64 @@ export class EditQCComponent implements OnInit {
         }
     }
 
-    get QCGeneralComment(){
-        if(this.complianceForm && this.complianceForm.QCGeneralComment){
-            if(this.complianceForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor){
-                this.complianceForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                this.complianceForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
-            }
-            return this.complianceForm.QCGeneralComment;
-        }
-        else if(this.complianceForm) {
-            this.complianceForm.QCGeneralComment = new Comment();
-            this.complianceForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-            this.complianceForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
-            return this.complianceForm.QCGeneralComment;
-        }
+    get QCGeneralComments(){
+        if(this.complianceForm && this.complianceForm.QCGeneralComments && 
+            this.complianceForm.QCGeneralComments.length > 0)
+            return this.complianceForm.QCGeneralComments;
     }
 
-    get QCAttachmentComment(){
-        if(this.complianceForm && this.complianceForm.QCAttachmentComment){
-            if(this.complianceForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor){
-                this.complianceForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                this.complianceForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
-            }
-            return this.complianceForm.QCAttachmentComment;
-        }
-        if(this.complianceForm) {
-            this.complianceForm.QCAttachmentComment = new Comment();
-            this.complianceForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-            this.complianceForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
-            return this.complianceForm.QCAttachmentComment;
-        }
+    get QCAttachmentComments(){
+        if(this.complianceForm && this.complianceForm.QCAttachmentComments && 
+            this.complianceForm.QCAttachmentComments.length > 0)
+            return this.complianceForm.QCAttachmentComments;
     }
 
-    get canDisplayComments(){
-        let value = false;
-        if(this.complianceForm && this.complianceForm.QCGeneralComment){
-            if(this.complianceForm.QCGeneralComment.CategoryEnum != CommentCategoryEnum.NotApplicable)
-                value = true;
-        }
-        
-        if(this.complianceForm && this.complianceForm.QCAttachmentComment){
-            if(this.complianceForm.QCAttachmentComment.CategoryEnum != CommentCategoryEnum.NotApplicable)
-                value = true;
-        }
-        else
-            value = false;
-
-        return value;
-    }
-
-    get canDisplayGeneralComment(){
-        // return false;
-        if(this.complianceForm && this.complianceForm.QCGeneralComment &&
-            this.complianceForm.QCGeneralComment.CategoryEnum != CommentCategoryEnum.NotApplicable){
+    dividerGeneration(indexVal: number) {
+        if ((indexVal + 1) % 2 == 0) {
             return true;
-        }else{
+        }
+        else {
             return false;
         }
     }
 
-    get canDisplayAttachmentComment(){
-        if(this.complianceForm && this.complianceForm.QCAttachmentComment){
-            if(this.complianceForm.QCAttachmentComment.CategoryEnum != CommentCategoryEnum.NotApplicable)
-                return true;
-        }
-        else
-            return false;
+    addQCGeneralComment(){
+        let comment = new Comment();
+        comment.CategoryEnum = CommentCategoryEnum.Minor;
+        comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+        this.complianceForm.QCGeneralComments.push(comment);
     }
 
+    addAttachmentComment(){
+        let comment = new Comment();
+        comment.CategoryEnum = CommentCategoryEnum.Minor;
+        comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+        this.complianceForm.QCAttachmentComments.push(comment);
+    }
+
+    setGeneralCommentToRemove(selectedComment: Comment){
+        this.generalCommentToRemove = selectedComment;
+    }
+
+    setAttachmentCommentToRemove(selectedComment: Comment){
+        this.attachmentCommentToRemove = selectedComment;
+    }
+
+    removeGeneralComment(){
+        if(this.generalCommentToRemove){
+            var index = this.complianceForm.QCGeneralComments.indexOf(this.generalCommentToRemove, 0);
+            if(index > -1)
+                this.complianceForm.QCGeneralComments.splice(index, 1);
+        }
+    }
+
+    removeAttachmentComment(){
+        if(this.attachmentCommentToRemove){
+            var index = this.complianceForm.QCAttachmentComments.indexOf(this.attachmentCommentToRemove, 0);
+            if(index > -1)
+                this.complianceForm.QCAttachmentComments.splice(index, 1);
+        }
+    }
     //Patrick:
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
         if (selectedFinding){
@@ -435,6 +440,12 @@ export class EditQCComponent implements OnInit {
         review.Status = ReviewStatusEnum.QCCompleted;
         
         this.complianceForm.QCStatus = this.status;
+
+        if(this.complianceForm.QCStatus == QCCompletedStatusEnum.InProgress ||
+           this.complianceForm.QCStatus == QCCompletedStatusEnum.NotApplicable){
+            alert('Please select whether \'Issues Noted\' or \'No Issues\' under the QC Response');
+            return;
+           }
 
         this.auditService.submitQC(this.complianceForm)
             .subscribe((item: any) => {

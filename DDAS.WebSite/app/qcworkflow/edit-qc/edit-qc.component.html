@@ -9,7 +9,7 @@
 			</h3>
 			<h3>Project Number - {{complianceForm?.ProjectNumber}} {{complianceForm?.ProjectNumber2}}</h3>
 			<h3 class="no-margin-top">QC by {{qcVerifierFullName}}</h3>
-			<label for="auditStatus">Status: {{reviewStatus}}{{getQCStatus}}</label>
+			<label for="auditStatus">Status: {{reviewStatus(complianceForm?.CurrentReviewStatus, complianceForm?.QCStatus)}}</label>
 			<!-- {{diagnostic}} -->
 			<br>
 			<label for="RequestorComments">Requestor Comments: {{qcRequestorComment}}</label>
@@ -50,38 +50,38 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr class="active" *ngIf="canDisplayGeneralComment">
+								<tr class="active" *ngFor="let item of QCGeneralComments">
 									<td class="text-left">
 										Comment A
 									</td>
 									<td class="text-left">
-										{{getcommentCategory(QCGeneralComment?.CategoryEnum)}}
+										{{getcommentCategory(item.CategoryEnum)}}
 									</td>
 									<td class="text-left">
-										{{QCGeneralComment?.FindingComment}}
+										{{item.FindingComment}}
 									</td>
 									<td class="text-left">
-										{{getcommentCategory(QCGeneralComment?.ReviewerCategoryEnum)}}
+										{{getcommentCategory(item.ReviewerCategoryEnum)}}
 									</td>
 									<td class="text-left">
-										{{QCGeneralComment?.ReviewerComment}}
+										{{item.ReviewerComment}}
 									</td>
-								</tr>
-								<tr class="active" *ngIf="canDisplayAttachmentComment">
+								</tr> 
+								<tr class="active" *ngFor="let item of QCAttachmentComments">
 									<td class="text-left">
 										Comment B
 									</td>
 									<td class="text-left">
-										{{getcommentCategory(QCAttachmentComment?.CategoryEnum)}}
+										{{getcommentCategory(item.CategoryEnum)}}
 									</td>
 									<td class="text-left">
-										{{QCAttachmentComment?.FindingComment}}
+										{{item.FindingComment}}
 									</td>
 									<td class="text-left">
-										{{getcommentCategory(QCAttachmentComment?.ReviewerCategoryEnum)}}
+										{{getcommentCategory(item.ReviewerCategoryEnum)}}
 									</td>
 									<td class="text-left">
-										{{QCAttachmentComment?.ReviewerComment}}
+										{{item.ReviewerComment}}
 									</td>
 								</tr>
 							</tbody>
@@ -139,15 +139,21 @@
 				</div>
 				<div id="request" class="tab-pane fade">
 					<br/>
-					<div *ngIf="canSubmitQC">
-						<div qc-verifier-general-comment [Comment]="QCAttachmentComment" [Title]="'Comment B'" (ValueChanged)="formValueChanged($event)">
+					<!-- <div *ngIf="canSubmitQC" *ngFor="let comment of QCGeneralComments; let indexVal = index">
+						<div qc-verifier-general-comment [Comment]="comment" [Title]="'Comment B'" (ValueChanged)="formValueChanged($event)">
+						</div>
+						<div *ngIf="dividerGeneration(indexVal)">
+							<div style="clear:both;"></div>
 						</div>
 					</div>
 
-					<div *ngIf="reviewerSubmitQC">
+					<div *ngIf="reviewerSubmitQC" *ngFor="let comment of QCGeneralComments">
 						<div reviewer-response-to-general-comment [Title]="'Response to Comment B'" [Comment]="QCAttachmentComment" (ValueChanged)="formValueChanged($event)">
 						</div>
-					</div>
+						<div *ngIf="dividerGeneration(indexVal)">
+							<div style="clear:both;"></div>
+						</div>
+					</div> -->
 
 					Request: Attachments:
 					<table class="table table-bordered table-hover table-striped">
@@ -171,16 +177,31 @@
 				</div>
 				<div id="comp-form" class="tab-pane fade">
 					<br/>
-					<div *ngIf="canSubmitQC">
-						<div qc-verifier-general-comment [Comment]="QCGeneralComment" [Title]="'Comment A'" (ValueChanged)="formValueChanged($event)">
+					<div *ngIf="canSubmitQC"> 
+						<div *ngFor="let Comment of QCAttachmentComments; let indexVal = index">
+							<div qc-verifier-general-comment [Comment]="Comment" [Title]="'Comment A'" 
+							(ValueChanged)="formValueChanged($event)"
+							(Remove)="setAttachmentCommentToRemove(Comment); RemoveAttachmentCommentConfirmModal.open()">
+							</div>
+							<div *ngIf="dividerGeneration(indexVal)">
+								<div style="clear:both;"></div>
+							</div>
 						</div>
-					</div>
+					</div> 
 
-					<div *ngIf="reviewerSubmitQC">
-						<div reviewer-response-to-general-comment [Title]="'Response to Comment A'" [Comment]="QCGeneralComment" (ValueChanged)="formValueChanged($event)">
+					<div *ngIf="reviewerSubmitQC"> 
+						<div *ngFor="let Comment of QCAttachmentComments; let indexVal = index">
+							<div reviewer-response-to-general-comment [Title]="'Response to Comment A'" 
+							[Comment]="QCGeneralComment" (ValueChanged)="formValueChanged($event)">
+							</div>
+							<div *ngIf="dividerGeneration(indexVal)">
+								<div style="clear:both;"></div>
+							</div>
 						</div>
-					</div>
+					</div> 
 
+					<button type="button" class="btn btn-primary" (click)="addAttachmentComment()">Add Comment</button>
+					<br>
 					<div compliance-form-view [complianceForm]="complianceForm"></div>
 				</div>
 			</div>
@@ -304,5 +325,18 @@
 	<modal-footer>
 		<button type="button" class="btn btn-primary" (click)="submitQCByReviewer(); ConfirmQCCorrectionSubmitModal.close()">Confirm Submit QC Corrections</button>
 		<button type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #RemoveAttachmentCommentConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Removal</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to remove this comment ?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="removeAttachmentComment(); RemoveAttachmentCommentConfirmModal.close()">Remove</button>
+		<button type="button" class="btn btn-default" (click)=" RemoveAttachmentCommentConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

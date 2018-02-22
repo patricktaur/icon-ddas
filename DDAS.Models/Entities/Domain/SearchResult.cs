@@ -193,9 +193,11 @@ namespace DDAS.Models.Entities.Domain
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
         public DateTime? ExportedToiSprintOn { get; set; }
 
-        public Comment QCGeneralComment { get; set; }
+        //public Comment QCGeneralComment { get; set; }
+        public List<Comment> QCGeneralComments { get; set; } = new List<Comment>();
 
-        public Comment QCAttachmentComment { get; set; }
+        //public Comment QCAttachmentComment { get; set; }
+        public List<Comment> QCAttachmentComments { get; set; } = new List<Comment>();
 
         public string Reviewer {
             get {

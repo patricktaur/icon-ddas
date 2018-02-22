@@ -50,8 +50,16 @@ export class ListQCComponent implements OnInit {
             });
     }
 
-    status(statusEnum: number){
-        return this.compFormLogic.getReviewStatus(statusEnum);
+    reviewStatus(statusEnum: number, qcStatusEnum: number){
+        let value = "";
+        if(statusEnum == ReviewStatusEnum.QCCompleted){
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+            value = value + this.compFormLogic.getQCStatus(qcStatusEnum);
+        }
+        else {
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+        }
+        return value;
     }
 
     getQCStatus(qcStatusEnum: number){

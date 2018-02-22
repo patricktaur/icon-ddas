@@ -59,7 +59,7 @@
 							{{item.QCVerifierFullName}}
 						</td>
 						<td align="center">
-							{{status(item.Status)}}{{getQCStatus(item.QCStatus)}}
+							{{reviewStatus(item.Status, item.QCStatus)}}
 						</td>
 						<td class="text-left">
 							 {{item.CompletedOn | date: 'dd MMM yyyy HH:mm'}} 

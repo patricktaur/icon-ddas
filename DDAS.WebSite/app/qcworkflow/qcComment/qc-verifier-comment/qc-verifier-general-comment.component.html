@@ -1,4 +1,4 @@
-<!-- <form role='form'> -->
+ <form role='form'> 
     <div class="well">
          <!-- {{diagnostic}}
         {{tempNumber}}  -->
@@ -17,13 +17,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
                     [(ngModel)]="tempText"
                     (change)="formValueChanged()">
                 </textarea>        
             </div>
         </div>
+        <button type="button" class="btn btn-default" (click)="RemoveClicked()">Remove</button>
         <!-- <ng-content></ng-content> -->
     </div>
-<!-- </form> -->
+ </form>

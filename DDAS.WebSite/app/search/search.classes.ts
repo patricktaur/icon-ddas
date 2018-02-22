@@ -216,8 +216,10 @@ export class ComplianceFormA {
     QCStatus: QCCompletedStatusEnum;
     Reviewer: string;
     QCVerifier: string;
-    QCGeneralComment: Comment;
-    QCAttachmentComment: Comment;
+    // QCGeneralComment: Comment;
+    // QCAttachmentComment: Comment;
+    QCGeneralComments: Comment[];
+    QCAttachmentComments: Comment[];
 }
 
 export class InvestigatorSearched {
