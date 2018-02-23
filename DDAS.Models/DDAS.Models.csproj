@@ -79,6 +79,7 @@
     <Compile Include="Interfaces\IAuditEntity.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
+    <Compile Include="Interfaces\IExtractData.cs" />
     <Compile Include="Interfaces\IGenerateOutputFile.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\IReports.cs" />

@@ -361,6 +361,14 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("GetUserFullName")]
+        [HttpGet]
+        public IHttpActionResult GetUserFullName(
+           string userName)
+        {
+            return Ok(_SearchService.GetUserFullName(userName));
+        }
+
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
@@ -424,6 +432,18 @@ namespace DDAS.API.Controllers
                    
                     UpdateFormToCurrentVersion.
                         UpdateComplianceFormToCurrentVersion(compForm);
+
+                    if (compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    {
+                        compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                    }
+
+                    if (compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                    {
+                        compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                    }
 
                     var Review = compForm.Reviews.FirstOrDefault();
                     if (Review != null &&
@@ -901,7 +921,7 @@ namespace DDAS.API.Controllers
             }
             else if(Review.Status == ReviewStatusEnum.QCRequested ||
                 Review.Status == ReviewStatusEnum.QCInProgress ||
-                Review.Status == ReviewStatusEnum.QCFailed)
+                Review.Status == ReviewStatusEnum.QCCompleted)
             {
                 CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
                 CurrentReviewStatus.CurrentReview = Review;
@@ -915,7 +935,7 @@ namespace DDAS.API.Controllers
             else if(Review.Status == ReviewStatusEnum.QCCorrectionInProgress)
             {
                 var QCReview = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.QCFailed);
+                    x.Status == ReviewStatusEnum.QCCompleted);
                 if (QCReview != null)
                     CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
                 else
@@ -931,8 +951,7 @@ namespace DDAS.API.Controllers
             else if (Review.Status == ReviewStatusEnum.Completed)
             {
                 var QCReview = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.QCFailed || 
-                    x.Status == ReviewStatusEnum.QCPassed);
+                    x.Status == ReviewStatusEnum.QCCompleted);
                 if (QCReview != null)
                     CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
                 else
@@ -999,8 +1018,6 @@ namespace DDAS.API.Controllers
             return result;
         }
 
-
-
         //[Route("GetSessionId")]
         //[HttpGet]
         //public string GetSessionId()
@@ -1018,21 +1035,22 @@ namespace DDAS.API.Controllers
         //    return Ok("abc");
         //}
 
-        #region Download Data Files
-        [Route("DownloadDataFiles")]
-        [HttpGet]
-        public IHttpActionResult GetDownloadedDataFiles(int SiteEnum)
-        {
-            var DataFiles = _SearchService.GetDataFiles(SiteEnum);
+        
 
-            DataFiles.ForEach(DataFile =>
-            {
-                DataFile.FullPath = 
-                DataFile.FullPath.Replace(_RootPath, "");
-            });
-            return Ok(DataFiles);
+        [Route("MoveReviewCompletedToCompleted")]
+        [HttpGet]
+        public IHttpActionResult MoveToCompletedICSF(string ComplianceFormId)
+        {
+            var Id = Guid.Parse(ComplianceFormId);
+            var Form = _UOW.ComplianceFormRepository.FindById(Id);
+            var Review = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.ReviewCompleted);
+
+            if (Review != null)
+                Review.Status = ReviewStatusEnum.Completed;
+
+            _UOW.ComplianceFormRepository.UpdateCollection(Form);
+            return Ok(true);
         }
-        #endregion
 
         [Route("ExportToiSprint")]
         [HttpGet]

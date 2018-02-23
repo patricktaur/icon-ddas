@@ -112,6 +112,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
+    onChange(value:any){
+        this.reviewCategory = value;
+    }
+
+    resetReviewCategory(){
+        this.reviewCategory = "Standard";
+    }
     // public loadSessionId(): void {
     
     //     this.service.getSessionId()
@@ -194,7 +201,13 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     get filteredRecords() {
-        return this.PrincipalInvestigators;
+        if(this.PrincipalInvestigators != undefined){
+            return this.PrincipalInvestigators.filter(x => 
+                x.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+                x.CurrentReviewStatus == ReviewStatusEnum.QCRequested);
+        }
+        else
+            return null;
     }
 
     setCompFormActiveValue(DataItem: PrincipalInvestigatorDetails) {
@@ -268,15 +281,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
 
-    // downloadComplianceFormPDF(formId: string) {
-    //     this.service.generateComplianceFormPDF(formId)
-    //         .subscribe((item: any) => {
-
-    //         },
-    //         error => {
-    //         });
-    // }
-
     getBackgroundColor(color: number) {
         let retColor: string;
 
@@ -327,19 +331,28 @@ export class ReviewCompletedICSFComponent implements OnInit {
     setSelectedRecordDetails(complainceFormId: string) {
         this.files = [];
         this.SelectedComplianceFormId = complainceFormId;
-
     }
 
+    enableRequestQC(){
+        if (this.selectedQCVerifier 
+        && this.authService.userName.toLowerCase() != this.selectedQCVerifier.toLowerCase())
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }
     requestQC(){
         
-        if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){
-            alert('Please select a QC Verifier');
-            return;
-        }
-        else if(this.authService.userName.toLowerCase() == this.selectedQCVerifier.toLowerCase()){
-            alert('You cannot assign the QC to yourself');
-            return;
-        }
+        // if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){
+        //     alert('Please select a QC Verifier');
+        //     return;
+        // }
+        // else if(this.authService.userName.toLowerCase() == this.selectedQCVerifier.toLowerCase()){
+        //     alert('You cannot assign the QC to yourself');
+        //     return;
+        // }
         
         var review = new Review();
         //review.RecId = null;
@@ -348,6 +361,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.AssignedOn = new Date();
         review.Status = ReviewStatusEnum.QCRequested;
         review.ReviewerRole = ReviewerRoleEnum.QCVerifier;
+        review.ReviewCategory = this.reviewCategory;
         review.Comment = this.requestorComment;
         //review.StartedOn = null;
         //review.CompletedOn = null;
@@ -360,25 +374,25 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
     }
     
-    requestQCXXX(qcVerifier: string, requestorComments:string) {
-        if(qcVerifier == null || qcVerifier.length == 0){
-            alert('please select a QC Verifier');
-            return;
-        }
-        else if(this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()){
-            alert('cannot assign the QC to yourself');
-            return;
-        }
+    // requestQCXXX(qcVerifier: string, requestorComments:string) {
+    //     if(qcVerifier == null || qcVerifier.length == 0){
+    //         alert('please select a QC Verifier');
+    //         return;
+    //     }
+    //     else if(this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()){
+    //         alert('cannot assign the QC to yourself');
+    //         return;
+    //     }
         
-        this.service.getComplianceForm(this.SelectedComplianceFormId)
-        .subscribe((item: ComplianceFormA) => {
-            this.compForm = item;
-        },
-        error =>{
+    //     this.service.getComplianceForm(this.SelectedComplianceFormId)
+    //     .subscribe((item: ComplianceFormA) => {
+    //         this.compForm = item;
+    //     },
+    //     error =>{
 
-        });
-        this.getComplianceForm(qcVerifier, requestorComments);
-    }
+    //     });
+    //     this.getComplianceForm(qcVerifier, requestorComments);
+    // }
 
     getComplianceForm(qcVerifier: string, requestorComments: string) {
         this.service.getComplianceForm(this.SelectedComplianceFormId)
@@ -432,5 +446,14 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.requestorComment = "";
     }
 
-    get diagnostic() { return JSON.stringify(this.audit); }
+    moveToCompletedICSF(){
+        this.service.moveReviewCompletedToCompleted(this.SelectedComplianceFormId)
+        .subscribe((item: boolean) =>{
+            this.LoadPrincipalInvestigators();
+        },
+        error => {
+        });
+    }
+
+    get diagnostic() { return JSON.stringify(this.reviewCategory); }
 }

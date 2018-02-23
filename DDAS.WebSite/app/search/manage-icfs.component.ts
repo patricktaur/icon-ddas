@@ -6,7 +6,8 @@ import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
 import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
-//import { Http, Response, Headers , RequestOptions } from '@angular/http';
+import { CompFormLogicService } from './shared/services/comp-form-logic.service'
+//import { Http, Response, He   aders , RequestOptions } from '@angular/http';
 
 @Component({
     moduleId: module.id,
@@ -20,7 +21,7 @@ export class ManageICFsComponent implements OnInit {
     //public ComplianceFormIdToManage: string;
 
     //public Active: boolean;
-    public AssignedTo: string;
+    public AssignedTo: string = "";
     public AssignedFrom: string
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
@@ -42,7 +43,8 @@ export class ManageICFsComponent implements OnInit {
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
-        private authService: AuthService
+        private authService: AuthService,
+        private compFormLogicService: CompFormLogicService
     ) { }
     ngOnInit() {
 
@@ -89,6 +91,14 @@ export class ManageICFsComponent implements OnInit {
             formatted: '',
             epoc: null
         }
+    }
+
+    canReassignOrClearReassignment(currentReviewStatus: number){
+        return this.compFormLogicService.canReassignOrClearReassignment(currentReviewStatus);
+    }
+
+    get getLoggedInUserFullName(){
+        return this.compFormLogicService.getUserFullName();
     }
 
     LoadUsers() {
@@ -165,9 +175,17 @@ export class ManageICFsComponent implements OnInit {
         this.setSelectedRecordDetails(Investigator);
         
         //this.AssignedTo Bound to drop down user list:
-        this.AssignedFrom = Investigator.AssignedTo + "";
+        this.AssignedFrom = Investigator.AssignedTo + " ";
     }
 
+    assignToEnabled(){
+        
+        if (this.AssignedTo){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
     setComplianceFormToClear(Investigator: PrincipalInvestigatorDetails) {
         
@@ -175,7 +193,7 @@ export class ManageICFsComponent implements OnInit {
                 //this.AssignedTo Bound to drop down user list:
                 // 
                 //From existing Value, for concurrency check on server:
-                this.AssignedFrom = Investigator.AssignedTo + "";
+                this.AssignedFrom = Investigator.AssignedTo + " ";
 
     }
 
@@ -189,6 +207,8 @@ export class ManageICFsComponent implements OnInit {
             });
     }
 
+    
+
     ClearAssignedTo() {
         this.service.ClearAssignedTo( this.SelectedComplianceFormId, this.AssignedFrom)
             .subscribe((item: boolean) => {
@@ -197,14 +217,10 @@ export class ManageICFsComponent implements OnInit {
             error => {
             });
     }
-    
+
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
-
-
         //this.router.navigate(['complianceform', DataItem.RecId, {rootPath:'manage-compliance-forms', page:this.pageNumber}], { relativeTo: this.route });
         this.router.navigate(['comp-form-edit', DataItem.RecId, { rootPath: 'manage-compliance-forms', page: this.pageNumber }], { relativeTo: this.route });
-
-
     }
 
     generateComplianceForm(formId: string) {

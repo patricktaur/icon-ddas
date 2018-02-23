@@ -55,7 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Report.cs" />
     <Compile Include="Search\ComplianceFormService.cs" />
-    <Compile Include="Search\ExtractData.cs" />
+    <Compile Include="Search\DataExtractorService.cs" />
     <Compile Include="Search\GenerateComplianceForm.cs" />
     <Compile Include="LiveScan\LiveScan.cs" />
     <Compile Include="Search\SearchService.cs" />

@@ -5,7 +5,7 @@ import {AppAdminRouting} from './app-admin.routing'
 import {AppAdminService} from './app-admin.service';
 import {AppAdminDashboardComponent} from './app-admin-dashboard.component';
 import { ManageUploadsComponent } from './manage-uploads.component';
-import {CBERComponent} from './cber-investigate.component';
+//import {CBERComponent} from './cber-investigate.component';
 
 @NgModule({ 
   imports: [
@@ -16,7 +16,7 @@ import {CBERComponent} from './cber-investigate.component';
   declarations: [
       AppAdminDashboardComponent,
       ManageUploadsComponent,
-      CBERComponent
+      //CBERComponent
   ],
   providers: [      
       AppAdminService

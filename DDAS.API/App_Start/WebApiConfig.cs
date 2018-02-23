@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web.Configuration;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.ExceptionHandling;
 
 namespace DDAS.API
@@ -24,6 +25,10 @@ namespace DDAS.API
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
             config.MapHttpAttributeRoutes();
+
+            //var cors = new EnableCorsAttribute("*", "*", "*");
+            //config.EnableCors(cors);
+
             config.Filters.Add(new OfflineActionFilter());
             //GlobalFilters.Filters.Add(new OfflineActionFilter());
             config.Routes.MapHttpRoute(

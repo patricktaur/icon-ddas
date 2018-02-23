@@ -37,5 +37,18 @@ namespace WebScraping.Selenium.Pages
                 }
             }
         }
+
+        private bool IsSiteDown
+        {
+            get
+            {
+                if (driver.PageSource.ToLower().Contains("page not found"))
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
     }
 }

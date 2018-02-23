@@ -67,9 +67,9 @@ export class QCService {
             .catch(this.handleError);
     }
 
-    saveQC(compForm: ComplianceFormA){
+    submitQC(compForm: ComplianceFormA): Observable<ComplianceFormA>{
         let body = JSON.stringify(compForm);
-        return this.http.post(this._baseUrl + 'QC/SaveQC', body, this._options)
+        return this.http.post(this._baseUrl + 'QC/SubmitQC', body, this._options)
         .map((res: Response) => {
             return res.json();
         })
@@ -83,6 +83,8 @@ export class QCService {
             })
             .catch(this.handleError);        
     }
+
+    
 
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

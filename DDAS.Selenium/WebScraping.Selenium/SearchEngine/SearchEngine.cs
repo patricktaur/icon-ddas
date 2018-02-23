@@ -31,6 +31,13 @@ namespace WebScraping.Selenium.SearchEngine
             _config = Config;
             //_Driver = webDriver;
         }
+        public IConfig Config
+        {
+            get
+            {
+                return _config;
+            }
+        }
 
         private ISearchPage GetSearchPage(SiteEnum siteEnum, ILog Log)
         {
@@ -410,6 +417,8 @@ namespace WebScraping.Selenium.SearchEngine
             }
         }
 
+        
+
         public enum DriverEnum
         {
             ChromeDriver,
@@ -424,15 +433,15 @@ namespace WebScraping.Selenium.SearchEngine
 
         public void Dispose()
         {
-            //foreach (var process in Process.GetProcessesByName("phantomjs"))
-            //{
-            //    process.Dispose();
-            //}
-
-            if (_Driver != null)
+            foreach (var process in Process.GetProcessesByName("phantomjs"))
             {
-                _Driver.Dispose();
+                process.Kill();
             }
+
+            //if (_Driver != null)
+            //{
+            //    _Driver.Dispose();
+            //}
         }
 
         public void SaveData()
@@ -440,9 +449,18 @@ namespace WebScraping.Selenium.SearchEngine
             _searchPage.SaveData();
         }
 
+        private void KillPhantomJsInstace()
+        {
+            foreach (var process in Process.GetProcessesByName("phantomjs"))
+            {
+                process.Kill();
+            }
+        }
+
         public void ExtractData(List<SitesToSearch> query, 
             ILog log)
         {
+            KillPhantomJsInstace();
             var DBSites = query.Where(x => x.ExtractionMode.ToLower() == "db").ToList();
 
             var NewLog = new Log();

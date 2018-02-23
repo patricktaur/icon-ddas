@@ -33,7 +33,6 @@ namespace DDAS.API.Controllers
             return Ok(_Audit.RequestQC(Form));
         }
 
-
         [Route("RequestQC1")]
         [HttpPost]
         // public async Task<HttpResponseMessage> PostFormData()
@@ -80,9 +79,6 @@ namespace DDAS.API.Controllers
             
         }
 
-        
-
-
         [Route("GetQC")]
         [HttpGet]
         public IHttpActionResult GetAudit(string Id, string AssignedTo)
@@ -102,11 +98,11 @@ namespace DDAS.API.Controllers
             return Ok(_Audit.ListQCs());
         }
 
-        [Route("SaveQC")]
+        [Route("SubmitQC")]
         [HttpPost]
         public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
-            return Ok(_Audit.SaveQC(Form));
+            return Ok(_Audit.SubmitQC(Form));
         }
 
         [Route("ListQCSummary")]

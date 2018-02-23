@@ -1,4 +1,5 @@
 ﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -28,12 +29,23 @@ namespace DDAS.API.Controllers
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
         }
 
-        [Route("GetDataExtractionHistory")]
-        [HttpGet]
-        public IHttpActionResult GetDataExtractionHistory()
-        {
-            return Ok(_AppAdminService.GetDataExtractionHistory());
-        }
+
+
+        //[Route("GetDataExtractionHistory")]
+        //[HttpGet]
+        //public IHttpActionResult GetDataExtractionHistory()
+        //{
+        //    return Ok(_AppAdminService.GetDataExtractionHistory());
+        //}
+
+        //[Route("GetDataExtractionErrorSiteCount")]
+        //[HttpGet]
+        //public IHttpActionResult GetDataExtractionErrorSiteCount()
+        //{
+        //    return Ok(_AppAdminService.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count);
+        //}
+
+
 
         [Route("GetExtractionLog")]
         [HttpGet]
@@ -78,9 +90,19 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteSiteSource(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            _AppAdminService.DeleteSiteSource(Id);
-            return Ok(true);
+            try
+            {
+                var Id = Guid.Parse(RecId);
+                _AppAdminService.DeleteSiteSource(Id);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+           
+            
         }
 
         #endregion
@@ -206,8 +228,10 @@ namespace DDAS.API.Controllers
         }
         #endregion
 
-        #region GetExceptionLogs
         
+
+        #region GetExceptionLogs
+
         [Route("GetExceptionLogs")]
         [HttpGet]
         public IHttpActionResult GetExceptionLogs()

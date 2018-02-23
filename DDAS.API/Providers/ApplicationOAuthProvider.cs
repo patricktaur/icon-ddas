@@ -23,7 +23,7 @@ namespace DDAS.API.Providers
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
 
         private IUserService _UserService;
-        private string _ClientVer = "T1.0.33";
+        private string _ClientVer = "T1.0.35";
 
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{
@@ -231,6 +231,7 @@ namespace DDAS.API.Providers
             IDictionary<string, string> data = new Dictionary<string, string>
             {
                 { "userName", user.UserName },
+                { "userFullName", user.UserFullName }
             };
             foreach (string role in roles)
             {
@@ -238,6 +239,5 @@ namespace DDAS.API.Providers
             }
             return new AuthenticationProperties(data);
         }
-
     }
 }

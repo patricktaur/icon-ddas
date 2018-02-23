@@ -106,10 +106,13 @@
 							<td class="text-left">
 								<!-- {{item.Name}} -->
 								<h5>
-									<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+									<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
 										{{item.Name}} 
-										<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+										<span class="glyphicon glyphicon-plus plus-glyphicon"  aria-hidden="true"></span>
 									</a>
+									<div *ngIf="item.SubInvestigators.length == 0">
+											{{item.Name}} 
+									</div>
 								</h5>
 								<div class="panel-group" role="tablist" style="border:0">
 									<div class="panel panel-default" style="border:0">
@@ -133,7 +136,7 @@
 								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
 							</td>
 							<td class="text-left">
-								{{item.AssignedTo}}
+								{{item.AssignedToFullName}}
 							</td>
 							<!-- <td class="text-center">
 								<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
@@ -144,7 +147,7 @@
 								<span class="glyphicon glyphicon-download-alt"></span>
 							</button>
 							<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
-								(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.RecId); UndoConfirmModal.open()" title="undo">
+								(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="undo">
 								Undo
 							</button>
 

@@ -215,7 +215,7 @@ export class InstituteFindingsComponent implements OnInit {
                 let comment = new Comment();
                 // comment.ReviewId = review.RecId;
                 comment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                comment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
+                comment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
                 // comments.push(comment);
                 // let emptyComment = new Comment();
                 // emptyComment.CategoryEnum = 0;

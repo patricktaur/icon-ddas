@@ -9,7 +9,7 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-        List<DownloadDataFilesViewModel> GetDataFiles(int Enum);
+        
 
         ComplianceForm GetComplianceForm(Guid ComplianceFormId);
         List<PrincipalInvestigator> getAllPrincipalInvestigators();
@@ -83,5 +83,7 @@ namespace DDAS.Models.Interfaces
 
         iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(Guid ComplianceFormId);
         iSprintResponseModel.DDtoIsprintResponse ExportDataToIsprint(ComplianceForm Form);
+
+        string GetUserFullName(string UserName);
     }
 }

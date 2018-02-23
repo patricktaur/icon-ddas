@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="well">
+            <h3 class="no-margin-top">Adequate Assurance List Site Data</h3>
+
+           
+        </div>
+    </div>
+</div>
+Data Extracted On: {{SiteData?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
+<br>Records: {{SiteDataList?.length}}
+<br> Site Last Updated On: {{SiteData?.SiteLastUpdatedOn | date: 'dd MMM yyyy HH:mm' }}
+<!-- {{diagnostic}} -->
+<div class="table-responsive">
+    <div statusCircle-Legend-Horizontal></div>
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th class="col-md-3 text-left">Name</th>
+                <th class="col-md-2 text-left">NameAndAddress</th>
+                <th class="text-left">Center</th>
+                <th class="text-center">Type</th>
+                <th class="text-left">ActionDate</th>
+                <th class="text-left">Comments</th>
+                <th class="text-left">DateOfInspection</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!--<tr *ngFor="let item of cberRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">-->
+            <tr *ngFor="let item of SiteDataList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
+                <td class="text-left">
+                    {{item.FullName}}
+                </td>
+                <td>
+                    {{item.NameAndAddress}}
+                </td>
+                <td>
+                        {{item.Center}}
+                </td>
+                    
+                <td class="text-left">
+                    {{item.Type}}
+                </td>
+                <td class="text-left">
+                    {{item.ActionDate | date: 'dd MMM yyyy HH:mm'}}
+                </td>
+                <td class="text-left">
+                    {{item.Comments}}
+                </td>
+                <td class="text-left">
+                        {{item.DateOfInspection | date: 'dd MMM yyyy HH:mm'}}
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+    <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+    <button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+</div>

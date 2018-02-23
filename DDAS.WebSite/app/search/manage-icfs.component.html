@@ -81,7 +81,7 @@
 					<th class="">Principal Investigator </th>
 					<th class="text-left">ICON Project Number</th>
 					<th class="text-left">Review Completed</th>
-					<th class="text-left">Assigned To</th>
+					<th class="text-left">Assigned to</th>
 					<th class="text-center">Searched on</th>
 					<th class="text-center">Actions</th>
 				</tr>
@@ -115,10 +115,10 @@
 						{{item.ReviewCompleted | boolToYesNo}}
 					</td>
 					<td class="text-left">
-						{{item.AssignedTo}}
+						{{item.AssignedToFullName}}
 					</td>
 					<td class="text-center">
-						{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+						{{item.SearchStartedOn | date: 'dd MMM yyyy HH:mm'}}
 
 					</td>
 					<td class="text-center">
@@ -134,23 +134,18 @@
 								</button>
 								
 							<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open"> <span class="glyphicon glyphicon-folder-open"></span> </button>
-							<button type="button" class="btn btn-sm btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Reassign"> <span class="glyphicon glyphicon-retweet"></span> </button>
-							<button type="button" class="btn btn-sm btn-primary" (click)="setComplianceFormToClear(item); ClearAssignedToModal.open()" title="Clear 'Assigned To'"> <span class="glyphicon glyphicon-repeat"></span> </button>
-							<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()"
-								title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>
-						</div>
-						<div *ngIf="LoggedInUserIsAppAdmin">
-							UploadedFileName:{{item.UploadedFileName }} / GeneratedFileName: {{item.GeneratedFileName }} / ExtractionQueue: {{item.ExtractionQueue
-							}} / ExtractionQuePosition: {{item.ExtractionQuePosition }} / Extraction: {{item.Extraction}} / ExtractionQueStart:
-							{{item.ExtractionQueStart }} / ExtractionEstimatedCompletion: {{item.ExtractionEstimatedCompletion }} / ExtractedOn:
-							{{item.ExtractedOn }} / ExtractionPendingInvestigatorCount: {{item.ExtractionPendingInvestigatorCount}} /
-
-						</div>
-						<div *ngIf="LoggedInUserIsAppAdmin">
-							ExtractionErrorInvestigatorCount: {{item.ExtractionErrorInvestigatorCount }} / ExtractedInvestigatorCount: {{item.ExtractedInvestigatorCount
-							}} / FullMatchesFoundInvestigatorCount: {{item.FullMatchesFoundInvestigatorCount}} / PartialMatchesFoundInvestigatorCount:
-							{{item.PartialMatchesFoundInvestigatorCount }} / IssuesFoundInvestigatorCount: {{item.IssuesFoundInvestigatorCount
-							}} / ReviewCompletedInvestigatorCount: {{item.ReviewCompletedInvestigatorCount}} /
+							<button type="button" *ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
+							(click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Reassign">
+								<span class="glyphicon glyphicon-retweet"></span>
+							</button>
+							<button type="button" *ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
+							(click)="setComplianceFormToClear(item); ClearAssignedToModal.open()" title="Clear 'Assigned To'">
+								<span class="glyphicon glyphicon-repeat"></span>
+							</button>
+							<button type="button" class="btn btn-sm btn-primary" 
+							(click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
 						</div>
 					</td>
 				</tr>
@@ -187,7 +182,7 @@
 				<div class="form-group">
 					<label for="AssignedTo">Assign to:</label>
 					<select class="form-control" [(ngModel)]="AssignedTo">
-						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserName}}</option>
+						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserFullName}}</option>
 					</select>
 				</div>
 			</div>
@@ -202,7 +197,9 @@
 		</div>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="manageComplianceForm(); ManageICFModal.close()">Save</button>
+		<button type="button" class="btn btn-default" 
+		(click)="manageComplianceForm(); ManageICFModal.close()"
+		[disabled]="!assignToEnabled()">Assign</button>
 		<button type="button" class="btn btn-default" (click)="ManageICFModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

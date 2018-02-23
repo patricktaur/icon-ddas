@@ -25,11 +25,16 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    string XPathValue = "//div[@id='pagetools_right']/p";
-                    IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
-                    return Elements[0];
+                    //Site modified: 10Feb2018
+                    //string XPathValue = "//div[@id='pagetools_right']/p";
+                    //IList<IWebElement> Elements = driver.FindElements(By.XPath(XPathValue));
+                    //return Elements[0];
+
+                    string XPathValue = "//div[@class='col-lg-12 pagetools-bottom']";
+                    IWebElement Elem = driver.FindElement(By.XPath(XPathValue));
+                    return Elem;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new Exception("Unable to find PageLastUpdatedElement. " +
                         "Site may have been udpated. Error Message: " +
