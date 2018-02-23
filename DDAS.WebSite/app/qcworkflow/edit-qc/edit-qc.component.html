@@ -157,7 +157,8 @@
 
 					<div *ngIf="reviewerSubmitQC">
 						<div *ngFor="let comment of QCAttachmentComments">
-							<div reviewer-response-to-general-comment [Title]="'Response to Comment B'" [Comment]="QCAttachmentComment" (ValueChanged)="formValueChanged($event)">
+							<div reviewer-response-to-general-comment [Title]="'Response to Comment B'" 
+							[Comment]="comment" (ValueChanged)="formValueChanged($event)">
 							</div>
 							<div *ngIf="dividerGeneration(indexVal)">
 								<div style="clear:both;"></div>
@@ -202,9 +203,9 @@
 					</div> 
 
 					<div *ngIf="reviewerSubmitQC"> 
-						<div *ngFor="let Comment of QCGeneralComments; let indexVal = index">
+						<div *ngFor="let comment of QCGeneralComments; let indexVal = index">
 							<div reviewer-response-to-general-comment [Title]="'Response to Comment A'" 
-							[Comment]="QCGeneralComment" (ValueChanged)="formValueChanged($event)">
+							[Comment]="comment" (ValueChanged)="formValueChanged($event)">
 							</div>
 							<div *ngIf="dividerGeneration(indexVal)">
 								<div style="clear:both;"></div>

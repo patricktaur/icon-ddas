@@ -192,26 +192,37 @@ namespace DDAS.Services.AuditService
 
             if (CurrentQCReview.Status == ReviewStatusEnum.QCCorrectionInProgress)
             {
-                UpdateReviewStatus(CurrentQCReview,
+                var IsCompleted = UpdateReviewStatus(CurrentQCReview,
                     Form.Findings.Where(x => x.IsAnIssue).ToList());
+
+                if(IsCompleted)
+                    SendQCSubmitMail(CurrentQCReview.AssignedBy,
+                        CurrentQCReview.AssigendTo,
+                        Form.InvestigatorDetails.First().Name,
+                        (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                        GetQCCorrectionCompletedSummary(Form));
             }
             else if (CurrentQCReview.Status == ReviewStatusEnum.QCCompleted)
             {
                 //CurrentQCReview.Status = ReviewStatusEnum.QCCompleted;
                 CurrentQCReview.CompletedOn = DateTime.Now;
+
                 SendQCSubmitMail(CurrentQCReview.AssignedBy,
                     CurrentQCReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
-                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    GetQCCompletedSummary(Form));
             }
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return Form;
         }
 
-        private void UpdateReviewStatus(Review Review,
+        private bool UpdateReviewStatus(Review Review,
             List<Finding> FindingsWithIssues)
         {
+            var IsCompleted = false;
+
             var FindingsCorrectedOrAcceptedCount = 0;
 
             foreach (Finding finding in FindingsWithIssues)
@@ -228,7 +239,9 @@ namespace DDAS.Services.AuditService
             {
                 Review.Status = ReviewStatusEnum.Completed;
                 Review.CompletedOn = DateTime.Now;
+                IsCompleted = true;
             }
+            return IsCompleted;
         }
 
         public List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId)
@@ -479,7 +492,7 @@ namespace DDAS.Services.AuditService
         }
 
         private void SendQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber)
+            string ProjectNumber, string QCCompletedSummary)
         {
             var User = _UOW.UserRepository.GetAll()
                 .Find(x => x.UserName.ToLower() == AssignedBy.ToLower());
@@ -492,7 +505,8 @@ namespace DDAS.Services.AuditService
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += "Your QC review request has been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
-            MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += "Below is the brief QC Summary.<br/> <br/>";
+            MailBody += QCCompletedSummary;
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedTo);
 
@@ -517,6 +531,28 @@ namespace DDAS.Services.AuditService
             SendMail(UserEMail, Subject, MailBody);
         }
 
+        private void SendQCCorrectionCompletedMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber, string QCCompletedSummary)
+        {
+            var User = _UOW.UserRepository.GetAll()
+                .Find(x => x.UserName.ToLower() == AssignedBy.ToLower());
+
+            if (User == null)
+                throw new Exception("invalid username");
+
+            var UserEMail = User.EmailId;
+            var Subject = "QC Correction Complete - " + ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+            MailBody += "QC Corrections have been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
+            MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += "Below is the brief QC Summary.<br/> <br/>";
+            MailBody += QCCompletedSummary;
+            MailBody += "Yours Sincerely,<br/>";
+            MailBody += GetUserFullName(AssignedTo);
+
+            SendMail(UserEMail, Subject, MailBody);
+        }
+
         private void SendMail(string To, string Subject, string Body)
         {
             var EMail = new EMailModel();
@@ -530,8 +566,145 @@ namespace DDAS.Services.AuditService
 
         private string GetQCCompletedSummary(ComplianceForm Form)
         {
-            var QCCompletedSummary = "<b>Comment Type:</b> Comment A";
+            var QCerReview = Form.Reviews.Find(x => 
+            x.Status == ReviewStatusEnum.QCCompleted);
 
+            var QCCompletedSummary = "<b>Comment Type:</b> Comment A <br/>";
+
+            foreach(Comment comment in Form.QCGeneralComments)
+            {
+                QCCompletedSummary += "<b>Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Comment:</b> <br/>" + comment.FindingComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>Comment Type:</b> Comment B <br/>";
+
+            foreach (Comment comment in Form.QCAttachmentComments)
+            {
+                QCCompletedSummary += "<b>Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Comment:</b> <br/>" + comment.FindingComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>QC Summary:</b> <br/>";
+
+            foreach(Finding finding in Form.Findings.Where(x => x.IsAnIssue))
+            {
+                QCCompletedSummary += "<b>Investigator/Institute Name:</b> " +
+                    finding.InvestigatorName
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Source Number:</b> " +
+                    finding.SiteSourceId
+                    + "<br/>";
+
+                if(QCerReview.RecId == finding.ReviewId)
+                {
+                    QCCompletedSummary += "<b>QCer Observation/Comment:</b> <br/>" +
+                        finding.Observation
+                        + "<br/>";
+                }
+
+                QCCompletedSummary += "<b>QCer Category:</b> " +
+                    GetCategoryEnumString(finding.Comments[0].CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" +
+                    finding.Comments[0].FindingComment
+                    + "<br/><br/>";
+            }
+            return QCCompletedSummary;
+        }
+
+        private string GetQCCorrectionCompletedSummary(ComplianceForm Form)
+        {
+            var QCerReview = Form.Reviews.Find(x =>
+            x.Status == ReviewStatusEnum.QCCompleted);
+
+            var QCCompletedSummary = "<b>Comment Type:</b> Comment A <br/>";
+
+            foreach (Comment comment in Form.QCGeneralComments)
+            {
+                QCCompletedSummary += "<b>QCer Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" 
+                    + comment.FindingComment
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment Category:</b>"
+                    + GetCategoryEnumString(comment.ReviewerCategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment:</b> <br/>" 
+                    + comment.ReviewerComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>QCer Comment Type:</b> Comment B <br/>";
+
+            foreach (Comment comment in Form.QCAttachmentComments)
+            {
+                QCCompletedSummary += "<b>QCer Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" 
+                    + comment.FindingComment
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment Category:</b>"
+                    + GetCategoryEnumString(comment.ReviewerCategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment:</b> <br/>"
+                    + comment.ReviewerComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>QC Summary:</b> <br/>";
+
+            foreach (Finding finding in Form.Findings.Where(x => x.IsAnIssue))
+            {
+                QCCompletedSummary += "<b>Investigator/Institute Name:</b> " +
+                    finding.InvestigatorName
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Source Number:</b> " +
+                    finding.SiteSourceId
+                    + "<br/>";
+
+                if (QCerReview.RecId == finding.ReviewId)
+                {
+                    QCCompletedSummary += "<b>QCer Observation/Comment:</b> <br/>" +
+                        finding.Observation
+                        + "<br/>";
+                }
+
+                QCCompletedSummary += "<b>Category:</b> " +
+                    GetCategoryEnumString(finding.Comments[0].CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" +
+                    finding.Comments[0].FindingComment
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Category:</b>" +
+                    GetCategoryEnumString(finding.Comments[0].ReviewerCategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment:</b> <br/>" +
+                    finding.Comments[0].ReviewerComment
+                    + "<br/><br/>";
+            }
             return QCCompletedSummary;
         }
 
