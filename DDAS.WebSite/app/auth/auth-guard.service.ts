@@ -3,14 +3,35 @@ import { CanActivate, Router,
          ActivatedRouteSnapshot,
          RouterStateSnapshot,
          NavigationExtras }       from '@angular/router';
+
 import { AuthService }            from './auth.service';
+import { QCListViewModel } from '../qcworkflow/qc.classes';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authService.isLoggedIn) { return true; }
+    if (this.authService.isLoggedIn) 
+    { 
+      //console.log("Logged In");
+      return true; 
+    }
+    else{
+      //console.log("Logged out");
+      //console.log("state.url: " + state.url);
+      let qcUrls = state.url.split("openqc");
+      let qcUrl :string;
+      if (qcUrls.length > 0){
+        qcUrl = qcUrls[0];
+      }
+      //console.log("qcURl:" + qcUrl);
+      this.router.navigate(['/login'], { queryParams: { returnUrl: qcUrl }});
+      return false;
+    }
 
     // // Store the attempted URL for redirecting
     // this.authService.redirectUrl = state.url;
@@ -27,9 +48,8 @@ export class AuthGuard implements CanActivate {
 
     // Navigate to the login page with extras
     //this.router.navigate(['/login'], navigationExtras);
-    this.router.navigate(['/login']);
+   
     
-    return false;
   }
 }
 

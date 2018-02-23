@@ -125,7 +125,10 @@ namespace DDAS.Services.AuditService
         public ComplianceForm GetQC(Guid ComplianceFormId, string QCAssignedTo, string LoggedInUserName)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-
+            if (Form == null)
+            {
+                throw new Exception("Compliance Form cannot be accessed");
+            }
             var Review = Form.Reviews.Find(x =>
             x.AssigendTo.ToLower() == QCAssignedTo.ToLower() &&
             x.AssignedBy.ToLower() == Form.AssignedTo.ToLower() &&

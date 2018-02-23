@@ -83,12 +83,20 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAudit(string Id, string AssignedTo)
         {
-            var RecId = Guid.Parse(Id);
-            var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
-            UpdateFormToCurrentVersion
-                .UpdateComplianceFormToCurrentVersion(CompForm);
+            try
+            {
+                var RecId = Guid.Parse(Id);
+                var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
+                UpdateFormToCurrentVersion
+                    .UpdateComplianceFormToCurrentVersion(CompForm);
 
-            return Ok(CompForm);
+                return Ok(CompForm);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Route("ListQCs")]
