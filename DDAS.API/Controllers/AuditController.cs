@@ -43,6 +43,8 @@ namespace DDAS.API.Controllers
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
+            string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
+            URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
             //get Temp Folder:
             var attachmentsFolder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/");
             var tempFolder = attachmentsFolder + "TEMP-" + Guid.NewGuid();
@@ -72,11 +74,9 @@ namespace DDAS.API.Controllers
             Directory.Move(tempFolder, fileSaveLocation);
 
             var guidCompForm = Guid.Parse(compFormId);
-            _Audit.RequestQC(guidCompForm, review);
-
+            _Audit.RequestQC(guidCompForm, review, URL);
 
             return Request.CreateResponse(HttpStatusCode.OK, "ok");
-            
         }
 
         [Route("GetQC")]
@@ -110,7 +110,8 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
-            return Ok(_Audit.SubmitQC(Form));
+            string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
+            return Ok(_Audit.SubmitQC(Form, URL));
         }
 
         [Route("ListQCSummary")]

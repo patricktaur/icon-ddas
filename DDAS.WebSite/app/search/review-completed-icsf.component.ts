@@ -171,10 +171,14 @@ export class ReviewCompletedICSFComponent implements OnInit {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
+        this.Loading = true;
         this.service.getClosedComplianceFormFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
-                
+                this.Loading = false;
+            }, 
+            error => {
+                this.Loading = false;
             });
 
         // this.service.getMyReviewCompletedPrincipalInvestigators()

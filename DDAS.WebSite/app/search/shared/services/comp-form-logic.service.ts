@@ -381,7 +381,8 @@ export class CompFormLogicService {
     unHideReviewCompletedSiteCheckBox(CompForm: ComplianceFormA){
         if(CompForm && 
             (CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
-            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)){
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted)){
             return true;
         }
         else{

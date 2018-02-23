@@ -33,7 +33,7 @@
 				 <!-- Extraction Pending: <strong>{{Investigator.ExtractionPendingSiteCount}}</strong> -->
 			</h4>
 			<h4>
-				<div *ngIf="unHideReviewCompletedSiteCheckBox">
+				<div *ngIf="unHideReviewCompletedSiteCheckBox()">
 					Filters:<br> Hide Review Completed Sites: <input type="checkbox" style="width:20px; height:20px;" [(ngModel)]="HideReviewCompletedSites"/>
 				</div>
 			</h4>
