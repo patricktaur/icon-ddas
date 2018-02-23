@@ -24,7 +24,10 @@
                 </textarea>        
             </div>
         </div>
-        <button type="button" class="btn btn-default" (click)="RemoveClicked()">Remove</button>
+        <button type="button" class="btn btn-default" 
+            (click)="RemoveClicked()" [disabled]="CanRemoveComment">
+            Remove
+        </button>
         <!-- <ng-content></ng-content> -->
     </div>
  </form>

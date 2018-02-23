@@ -139,22 +139,30 @@
 				</div>
 				<div id="request" class="tab-pane fade">
 					<br/>
-					<!-- <div *ngIf="canSubmitQC" *ngFor="let comment of QCGeneralComments; let indexVal = index">
-						<div qc-verifier-general-comment [Comment]="comment" [Title]="'Comment B'" (ValueChanged)="formValueChanged($event)">
-						</div>
-						<div *ngIf="dividerGeneration(indexVal)">
-							<div style="clear:both;"></div>
+					<div *ngIf="canSubmitQC">
+						<div *ngFor="let comment of QCAttachmentComments; let indexVal = index">
+							<div qc-verifier-general-comment [Comment]="comment" [Title]="'Comment B'" 
+								[CanRemoveComment]="canRemoveAttachmentComment"
+								(ValueChanged)="formValueChanged($event)"
+								(Remove)="setCommentToRemove(comment); RemoveAttachmentCommentConfirmModal.open()">
+							</div>
+							<div *ngIf="dividerGeneration(indexVal)">
+								<div style="clear:both;"></div>
+							</div>
 						</div>
 					</div>
 
-					<div *ngIf="reviewerSubmitQC" *ngFor="let comment of QCGeneralComments">
-						<div reviewer-response-to-general-comment [Title]="'Response to Comment B'" [Comment]="QCAttachmentComment" (ValueChanged)="formValueChanged($event)">
+					<div *ngIf="reviewerSubmitQC">
+						<div *ngFor="let comment of QCAttachmentComments">
+							<div reviewer-response-to-general-comment [Title]="'Response to Comment B'" [Comment]="QCAttachmentComment" (ValueChanged)="formValueChanged($event)">
+							</div>
+							<div *ngIf="dividerGeneration(indexVal)">
+								<div style="clear:both;"></div>
+							</div>
 						</div>
-						<div *ngIf="dividerGeneration(indexVal)">
-							<div style="clear:both;"></div>
-						</div>
-					</div> -->
-
+					</div>
+					<button type="button" class="btn btn-primary" (click)="addAttachmentComment()">Add Comment</button>
+					<br/>
 					Request: Attachments:
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
@@ -178,10 +186,11 @@
 				<div id="comp-form" class="tab-pane fade">
 					<br/>
 					<div *ngIf="canSubmitQC"> 
-						<div *ngFor="let Comment of QCAttachmentComments; let indexVal = index">
-							<div qc-verifier-general-comment [Comment]="Comment" [Title]="'Comment A'" 
-							(ValueChanged)="formValueChanged($event)"
-							(Remove)="setAttachmentCommentToRemove(Comment); RemoveAttachmentCommentConfirmModal.open()">
+						<div *ngFor="let comment of QCGeneralComments; let indexVal = index">
+							<div qc-verifier-general-comment [Comment]="comment" [Title]="'Comment A'" 
+								[CanRemoveComment]="canRemoveGeneralComment"
+								(ValueChanged)="formValueChanged($event)"
+								(Remove)="setCommentToRemove(comment); RemoveGeneralCommentConfirmModal.open()">
 							</div>
 							<div *ngIf="dividerGeneration(indexVal)">
 								<div style="clear:both;"></div>
@@ -190,7 +199,7 @@
 					</div> 
 
 					<div *ngIf="reviewerSubmitQC"> 
-						<div *ngFor="let Comment of QCAttachmentComments; let indexVal = index">
+						<div *ngFor="let Comment of QCGeneralComments; let indexVal = index">
 							<div reviewer-response-to-general-comment [Title]="'Response to Comment A'" 
 							[Comment]="QCGeneralComment" (ValueChanged)="formValueChanged($event)">
 							</div>
@@ -200,7 +209,7 @@
 						</div>
 					</div> 
 
-					<button type="button" class="btn btn-primary" (click)="addAttachmentComment()">Add Comment</button>
+					<button type="button" class="btn btn-primary" (click)="addGeneralComment()">Add Comment</button>
 					<br>
 					<div compliance-form-view [complianceForm]="complianceForm"></div>
 				</div>
@@ -338,5 +347,18 @@
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="removeAttachmentComment(); RemoveAttachmentCommentConfirmModal.close()">Remove</button>
 		<button type="button" class="btn btn-default" (click)=" RemoveAttachmentCommentConfirmModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #RemoveGeneralCommentConfirmModal>
+	<modal-header>
+		<h4 class="modal-title">Confirm Removal</h4>
+	</modal-header>
+	<modal-body>
+		Are you sure you want to remove this comment ?
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="removeGeneralComment(); RemoveGeneralCommentConfirmModal.close()">Remove</button>
+		<button type="button" class="btn btn-default" (click)=" RemoveGeneralCommentConfirmModal.close()">Cancel</button>
 	</modal-footer>
 </modal>

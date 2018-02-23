@@ -296,7 +296,7 @@ export class EditQCComponent implements OnInit {
         }
     }
 
-    addQCGeneralComment(){
+    addGeneralComment(){
         let comment = new Comment();
         comment.CategoryEnum = CommentCategoryEnum.Minor;
         comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
@@ -314,13 +314,13 @@ export class EditQCComponent implements OnInit {
         this.generalCommentToRemove = selectedComment;
     }
 
-    setAttachmentCommentToRemove(selectedComment: Comment){
+    setCommentToRemove(selectedComment: Comment){
         this.attachmentCommentToRemove = selectedComment;
     }
 
     removeGeneralComment(){
-        if(this.generalCommentToRemove){
-            var index = this.complianceForm.QCGeneralComments.indexOf(this.generalCommentToRemove, 0);
+        if(this.attachmentCommentToRemove){
+            var index = this.complianceForm.QCGeneralComments.indexOf(this.attachmentCommentToRemove, 0);
             if(index > -1)
                 this.complianceForm.QCGeneralComments.splice(index, 1);
         }
@@ -333,6 +333,24 @@ export class EditQCComponent implements OnInit {
                 this.complianceForm.QCAttachmentComments.splice(index, 1);
         }
     }
+
+    get canRemoveGeneralComment(){
+        let value = false;
+        if(this.complianceForm && this.complianceForm.QCGeneralComments &&
+            this.complianceForm.QCGeneralComments.length == 1)
+            return true;   
+        else
+            return false;
+    }
+
+    get canRemoveAttachmentComment(){
+        if(this.complianceForm && this.complianceForm.QCAttachmentComments &&
+            this.complianceForm.QCAttachmentComments.length == 1)
+            return true;
+        else
+            return false;
+    }
+
     //Patrick:
     selectFindingComponentToDisplay(selectedFinding: Finding, componentName: string) {
         if (selectedFinding){

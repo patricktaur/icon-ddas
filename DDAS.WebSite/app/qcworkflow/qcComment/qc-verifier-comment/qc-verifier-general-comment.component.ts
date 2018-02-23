@@ -10,6 +10,7 @@ import { Comment } from '../../../search/search.classes';
 export class QCVerifierGeneralCommentComponent implements OnInit {
     @Input() Comment: Comment;
     @Input() Title: string;
+    @Input() CanRemoveComment: boolean;
     @Output() Remove = new EventEmitter();
     @Output() ValueChanged = new EventEmitter();
 
