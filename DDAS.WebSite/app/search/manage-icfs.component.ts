@@ -22,7 +22,7 @@ export class ManageICFsComponent implements OnInit {
 
     //public Active: boolean;
     public AssignedTo: string = "";
-    public AssignedFrom: string
+    public AssignedFrom: string;
     public SelectedInvestigatorName: string;
     public SelectedComplianceFormId: string;
     public LoggedInUserIsAppAdmin: boolean;
@@ -32,9 +32,10 @@ export class ManageICFsComponent implements OnInit {
     public Users: any[];
     public FromDate: IMyDateModel;
     public ToDate: IMyDateModel;
-    public pageNumber: number;
+    public pageNumber: number = 1;
+    public loading: boolean;
+    
     public myDatePickerOptions = {
-
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
     };
@@ -46,10 +47,11 @@ export class ManageICFsComponent implements OnInit {
         private authService: AuthService,
         private compFormLogicService: CompFormLogicService
     ) { }
-    ngOnInit() {
 
+    ngOnInit() {
+        this.loading = true;
         this.route.params.forEach((params: Params) => {
-            let page = +params['page'];
+            let page = + params['page'];
             if (page != null) {
                 this.pageNumber = page;
             }
@@ -70,7 +72,7 @@ export class ManageICFsComponent implements OnInit {
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.AssignedTo = "-1";
         this.ComplianceFormFilter.Status = -1;
-        
+
         var fromDay = new Date();
         fromDay.setDate(fromDay.getDate() - 10);
 
@@ -93,11 +95,11 @@ export class ManageICFsComponent implements OnInit {
         }
     }
 
-    canReassignOrClearReassignment(currentReviewStatus: number){
+    canReassignOrClearReassignment(currentReviewStatus: number) {
         return this.compFormLogicService.canReassignOrClearReassignment(currentReviewStatus);
     }
 
-    get getLoggedInUserFullName(){
+    get getLoggedInUserFullName() {
         return this.compFormLogicService.getUserFullName();
     }
 
@@ -105,6 +107,10 @@ export class ManageICFsComponent implements OnInit {
         this.service.getAllUsers()
             .subscribe((item: any[]) => {
                 this.Users = item;
+                this.loading = false;
+            },
+            error => {
+                this.loading = false;
             });
     }
 
@@ -121,8 +127,11 @@ export class ManageICFsComponent implements OnInit {
 
         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
-
                 this.PrincipalInvestigators = item;
+                this.loading = false;
+            },
+            error => {
+                this.loading = false;
             });
     }
 
@@ -132,8 +141,7 @@ export class ManageICFsComponent implements OnInit {
         filter1 = this.PrincipalInvestigators;
         if (this.filterInvestigatorName.length > 0) {
             filter1 = this.PrincipalInvestigators.filter((a) =>
-                a.Name.toLowerCase().includes(this.filterInvestigatorName.toLowerCase())
-            )
+                a.Name.toLowerCase().includes(this.filterInvestigatorName.toLowerCase()))
         }
 
         let filter2: PrincipalInvestigatorDetails[];
@@ -146,7 +154,6 @@ export class ManageICFsComponent implements OnInit {
         return filter2;
     }
 
-
     setComplianceFormIdToDelete(inv: PrincipalInvestigatorDetails) {
         //this.ComplianceFormIdToDelete = inv.RecId;
         this.SelectedInvestigatorName = inv.Name;
@@ -155,7 +162,6 @@ export class ManageICFsComponent implements OnInit {
 
     DeleteComplianceForm() {
         //CompFormId to be set by the delete button
-
         this.service.deleteComplianceForm(this.SelectedComplianceFormId)
             .subscribe((item: any) => {
                 this.LoadPrincipalInvestigators();
@@ -173,27 +179,27 @@ export class ManageICFsComponent implements OnInit {
     setComplianceFormToManage(Investigator: PrincipalInvestigatorDetails) {
 
         this.setSelectedRecordDetails(Investigator);
-        
+
         //this.AssignedTo Bound to drop down user list:
         this.AssignedFrom = Investigator.AssignedTo + " ";
     }
 
-    assignToEnabled(){
-        
-        if (this.AssignedTo){
+    assignToEnabled() {
+
+        if (this.AssignedTo) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
+
     setComplianceFormToClear(Investigator: PrincipalInvestigatorDetails) {
-        
-                this.setSelectedRecordDetails(Investigator);
-                //this.AssignedTo Bound to drop down user list:
-                // 
-                //From existing Value, for concurrency check on server:
-                this.AssignedFrom = Investigator.AssignedTo + " ";
+
+        this.setSelectedRecordDetails(Investigator);
+        //this.AssignedTo Bound to drop down user list:
+        // 
+        //From existing Value, for concurrency check on server:
+        this.AssignedFrom = Investigator.AssignedTo + " ";
 
     }
 
@@ -207,10 +213,10 @@ export class ManageICFsComponent implements OnInit {
             });
     }
 
-    
+
 
     ClearAssignedTo() {
-        this.service.ClearAssignedTo( this.SelectedComplianceFormId, this.AssignedFrom)
+        this.service.ClearAssignedTo(this.SelectedComplianceFormId, this.AssignedFrom)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },

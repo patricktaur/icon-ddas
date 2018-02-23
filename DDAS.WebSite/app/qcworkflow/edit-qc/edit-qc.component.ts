@@ -108,7 +108,6 @@ export class EditQCComponent implements OnInit {
 
     ngOnInit() {
         this.isSubmitted = false;
-        this.Loading = true;
         this.route.params.forEach((params: Params) => {
             this.complianceFormId = params['complianceFormId'];
             this.qcAssignedTo = params['qcAssignedTo'];
@@ -120,15 +119,19 @@ export class EditQCComponent implements OnInit {
     }
 
     loadComplianceForm() {
+        this.Loading = true;
+
         this.auditService.getQC(this.complianceFormId, this.qcAssignedTo)
             .subscribe((item: any) => {
                 this.complianceForm = item;
                 this.isSubmitted = this.isQCPassedOrFailed;
                 this.getCurrentReviewStatus();
                 this.loadQCVerifierFullName(this.complianceForm.QCVerifier);
+                this.Loading = false;
             },
             error => {
-                
+                this.error = error;
+                this.Loading = false;
             });
     }
 
@@ -156,7 +159,7 @@ export class EditQCComponent implements OnInit {
         this.service.getCurrentReviewStatus(this.complianceFormId)
             .subscribe((item: CurrentReviewStatusViewModel) => {
                 this.currentReviewStatus = item;
-                this.Loading = false;
+                
                 //console.log('current review status: ', this.currentReviewStatus);
             },
             error => {

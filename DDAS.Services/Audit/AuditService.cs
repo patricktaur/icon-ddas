@@ -42,11 +42,11 @@ namespace DDAS.Services.AuditService
                     Review.RecId = Guid.NewGuid();
             }
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            SendQCRequestedMail(Form);
+            SendQCRequestedMail(Form, "");
             return true;
         }
 
-        public bool RequestQC(Guid ComplianceFormId, Review review)
+        public bool RequestQC(Guid ComplianceFormId, Review review, string URL)
         {
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
             var lastReview = form.Reviews.LastOrDefault();
@@ -60,7 +60,7 @@ namespace DDAS.Services.AuditService
             form.Reviews.Add(review);
             form.QCStatus = QCCompletedStatusEnum.InProgress;
             _UOW.ComplianceFormRepository.UpdateCollection(form);
-            SendQCRequestedMail(form);
+            SendQCRequestedMail(form, URL);
             return true;
         }
 
@@ -135,7 +135,10 @@ namespace DDAS.Services.AuditService
         public ComplianceForm GetQC(Guid ComplianceFormId, string QCAssignedTo, string LoggedInUserName)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-
+            if (Form == null)
+            {
+                throw new Exception("Compliance Form cannot be accessed");
+            }
             var Review = Form.Reviews.Find(x =>
             x.AssigendTo.ToLower() == QCAssignedTo.ToLower() &&
             x.AssignedBy.ToLower() == Form.AssignedTo.ToLower() &&
@@ -180,7 +183,7 @@ namespace DDAS.Services.AuditService
             return Form;
         }
 
-        public ComplianceForm SubmitQC(ComplianceForm Form)
+        public ComplianceForm SubmitQC(ComplianceForm Form, string URL)
         {
             var CurrentQCReview = Form.Reviews.LastOrDefault();
 
@@ -406,7 +409,7 @@ namespace DDAS.Services.AuditService
 
         #region QC Mails
 
-        private void SendQCRequestedMail(ComplianceForm Form)
+        private void SendQCRequestedMail(ComplianceForm Form, string URL)
         {
             var QCReview = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCRequested);
 
@@ -432,11 +435,20 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "QC Request - " + QCReview.ReviewCategory + "_" +
                 ProjectNumber + "_" + PIName;
-            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
+
+            var Link = URL + "/login?returnUrl=start/qc/edit-qc/";
+            Link += Form.RecId + "/" + QCReview.AssigendTo + "/end";
+
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy) + " has requested you to review a compliance search outcome. <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to start the review. <br/><br/>";
+            MailBody += Link + "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy);
+
+            //link requirements:site url + /login?returnUrl=start/ + page path + /end
+            //example:
+            //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
 
             SendMail(UserEMail, Subject, MailBody);
         }
@@ -480,6 +492,7 @@ namespace DDAS.Services.AuditService
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += "Your QC review request has been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedTo);
 
@@ -514,6 +527,13 @@ namespace DDAS.Services.AuditService
         }
         
         #endregion
+
+        private string GetQCCompletedSummary(ComplianceForm Form)
+        {
+            var QCCompletedSummary = "<b>Comment Type:</b> Comment A";
+
+            return QCCompletedSummary;
+        }
 
         private string GetUserFullName(string AssignedTo)
         {
