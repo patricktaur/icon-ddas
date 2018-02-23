@@ -25,7 +25,6 @@ namespace Utilities.EMail
             _fromEMailId = cred.FromEMailId;
         }
 
-     
         public bool SendMail( EMailModel email)
         {
             MailMessage mail = new MailMessage();

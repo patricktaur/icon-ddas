@@ -1157,12 +1157,18 @@ namespace DDAS.Services.Search
                     }
                 }
             }
-             
-            if (Form.QCGeneralComment != null && Form.QCGeneralComment.AddedOn == null)
-                Form.QCGeneralComment.AddedOn = DateTime.Now;
 
-            if (Form.QCAttachmentComment != null && Form.QCAttachmentComment.AddedOn == null)
-                Form.QCAttachmentComment.AddedOn = DateTime.Now;
+            Form.QCGeneralComments.ForEach(x =>
+            {
+                if (x.AddedOn == null)
+                    x.AddedOn = DateTime.Now;
+            });
+
+            Form.QCAttachmentComments.ForEach(x =>
+            {
+                if (x.AddedOn == null)
+                    x.AddedOn = DateTime.Now;
+            });
 
             RollUpSummary(Form);
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
@@ -4682,8 +4688,6 @@ namespace DDAS.Services.Search
         }
 
         #endregion
-
-        
 
         #region Helpers
 

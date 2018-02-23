@@ -1,10 +1,9 @@
 export class SiteInfo {
-
     SiteName: string;
     SiteId: number;
     Component: string;
-
 }
+
 export class NameSearch {
     NameToSearch: string;
 }
@@ -19,6 +18,7 @@ export class SearchSummary {
     TotalIssuesFound: number;
     SearchSummaryItems: SearchSummaryItem[];
 }
+
 export class SearchSummaryItem {
     RecId: string;
     SiteName: string;
@@ -28,11 +28,11 @@ export class SearchSummaryItem {
 
 }
 
-
 export class StudyNumbers {
     StudyNumber: string;
     //StudyNumber : StudyNumberDetail;
 }
+
 export class StudyNumberDetail {
     Name: string;
     Id: number;
@@ -44,13 +44,13 @@ export class SiteResultDetails {
     SiteEnum: number;
 }
 
-
 export class SearchResultSaveData {
     NameToSearch: string;
     SiteEnum: number;
     DataId: string;
     saveSearchDetails: saveSearchDetails[] = [];
 }
+
 export class saveSearchDetails {
     RowNumber: number;
     Status: string;
@@ -88,9 +88,7 @@ export class Link {
     url: string;
 }
 
-
 export class SitesIncludedInSearch {
-
     SiteName: string = "";
     SiteEnum: number = 0;
     SiteUrl: number = 0;
@@ -138,8 +136,6 @@ export class ComplianceForm {
     IssueStatus: string = "";
     SiteDetails: string = "";
     //List<SitesIncludedInSearch> SiteDetails : string = "";
-
-
 }
 
 export class PrincipalInvestigatorDetails {
@@ -217,10 +213,13 @@ export class ComplianceFormA {
     Reviews: Review[] = new Array<Review>();
     Comments: Comment[] = new Array<Comment>();
     CurrentReviewStatus: ReviewStatusEnum;
+    QCStatus: QCCompletedStatusEnum;
     Reviewer: string;
     QCVerifier: string;
-    QCGeneralComment: Comment;
-    QCAttachmentComment: Comment;
+    // QCGeneralComment: Comment;
+    // QCAttachmentComment: Comment;
+    QCGeneralComments: Comment[];
+    QCAttachmentComments: Comment[];
 }
 
 export class InvestigatorSearched {
@@ -371,7 +370,6 @@ export class SiteSource {
 
 }
 
-
 export class ComplianceFormManage {
     AssignedTo: string;
     Active: Boolean;
@@ -387,7 +385,6 @@ export class UpdateFindigs {
     //InvestigatorSearched: InvestigatorSearched;
     Findings: Finding[];
 }
-
 
 export class UpdateInstituteFindings {
     FormId: string;
@@ -439,6 +436,7 @@ export class Review {
     AssignedOn: Date;
     AssignedBy: string;
     Status: ReviewStatusEnum;
+    // QCStatus: QCCompletedStatusEnum;
     StartedOn: Date;
     CompletedOn: Date;
     ReviewerRole: ReviewerRoleEnum;
@@ -523,4 +521,11 @@ export class Attachment {
 
     fileName : string;
     generatedFileName : string;
+}
+
+export enum QCCompletedStatusEnum {
+    NotApplicable,
+    InProgress,
+    NoIssues,
+    IssuesNoted
 }

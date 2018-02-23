@@ -23,7 +23,7 @@ namespace DDAS.API.Providers
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
 
         private IUserService _UserService;
-        private string _ClientVer = "T1.0.35";
+        private string _ClientVer = "T1.0.36";
 
         //public ApplicationOAuthProvider(string publicClientId, Func<UserManager<IdentityUser, Guid>> userManagerFactory)
         //{
@@ -228,10 +228,15 @@ namespace DDAS.API.Providers
         //Added: to include user roles: temp until mongo Identity is implemented.
         public static AuthenticationProperties CreateProperties(IdentityUser user, IList<string> roles)
         {
+            var UserFullName = user.UserFullName;
+
+            if (UserFullName == null)
+                UserFullName = "";
+
             IDictionary<string, string> data = new Dictionary<string, string>
             {
                 { "userName", user.UserName },
-                { "userFullName", user.UserFullName }
+                { "userFullName", UserFullName }
             };
             foreach (string role in roles)
             {

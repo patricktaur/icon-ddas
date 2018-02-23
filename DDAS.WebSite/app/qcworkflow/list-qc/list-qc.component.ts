@@ -6,7 +6,7 @@ import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { IMyDate, IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 import { QCService } from '../qc-service';
-import { ReviewStatusEnum } from '../../search/search.classes';
+import { ReviewStatusEnum, QCCompletedStatusEnum } from '../../search/search.classes';
 import {CompFormLogicService} from "../../search/shared/services/comp-form-logic.service";
 //import { Http, Response, Headers , RequestOptions } from '@angular/http';
 
@@ -50,20 +50,21 @@ export class ListQCComponent implements OnInit {
             });
     }
 
-    addInvestigatorCount(list: QCListViewModel[]){
-        this.qcList.forEach(record => {
-            if(record.InvestigatorCount > 0)
-                record.PrincipalInvestigator += " + " + record.InvestigatorCount;
-        });
+    reviewStatus(statusEnum: number, qcStatusEnum: number){
+        let value = "";
+        if(statusEnum == ReviewStatusEnum.QCCompleted){
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+            value = value + this.compFormLogic.getQCStatus(qcStatusEnum);
+        }
+        else {
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+        }
+        return value;
     }
 
-    status(statusEnum: number){
-        return this.compFormLogic.getReviewStatus(statusEnum);
+    getQCStatus(qcStatusEnum: number){
+        return this.compFormLogic.getQCStatus(qcStatusEnum);
     }
-
-    // filterQCReviews(){
-    //     this.qcList = this.qcList.filter(x => x.ComplianceFormId)
-    // }
 
     get filterQCByUserName() {
         if(this.authService.isAdmin){
@@ -79,18 +80,18 @@ export class ListQCComponent implements OnInit {
     }
 
     isActionRequired(qcVerifier: string, requester: string, Status: number) {
-        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase()
-            && (Status == ReviewStatusEnum.QCRequested ||
-                Status == ReviewStatusEnum.QCInProgress )){
-                    return true;
+        if (this.authService.userName.toLowerCase() == qcVerifier.toLowerCase() && 
+            (Status == ReviewStatusEnum.QCRequested ||
+            Status == ReviewStatusEnum.QCInProgress ||
+            Status == ReviewStatusEnum.QCCompleted)){
+            return true;
         }
 
-        if (this.authService.userName.toLowerCase() == requester.toLowerCase()
-        && (Status == ReviewStatusEnum.QCCompleted ||
-            Status == ReviewStatusEnum.QCCorrectionInProgress )){
-                return true;
+        if (this.authService.userName.toLowerCase() == requester.toLowerCase() && 
+            (Status == ReviewStatusEnum.QCCorrectionInProgress ||
+            Status == ReviewStatusEnum.QCCompleted)){
+            return true;
         }
-
         return false;
     }
 

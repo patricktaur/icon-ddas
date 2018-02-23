@@ -29,7 +29,7 @@ namespace DDAS.Services.Reports
                 Filters.FromDate, Filters.ReportPeriodEnum);
 
             var AdjustedEndDate = AdjustEndDate(
-                Filters.ToDate, Filters.ReportPeriodEnum);
+                Filters.FromDate, Filters.ToDate, Filters.ReportPeriodEnum);
 
             InvestigationsReport.DatesAdjustedTo =
                 "Review Completed On From and To dates are adjusted to " +
@@ -175,17 +175,36 @@ namespace DDAS.Services.Reports
             return tempStartDate.Date;
         }
 
-        private DateTime AdjustEndDate(DateTime EndDate, ReportPeriodEnum Enum)
+        private DateTime AdjustEndDate(DateTime StartDate, DateTime EndDate, ReportPeriodEnum Enum)
         {
+            var maxResults = 15;
             var tempEndDate = new DateTime();
             switch (Enum)
             {
                 case ReportPeriodEnum.Day:
-                    tempEndDate = EndDate;
+                    var days = (EndDate - StartDate).Days;
+                    if (days > maxResults)
+                    {
+                        tempEndDate = StartDate.Date.AddDays(maxResults);
+                    }
+                    else
+                    {
+                        tempEndDate = EndDate;
+                    }
+                    
                     break;
                 case ReportPeriodEnum.Week:
-                    tempEndDate = DateTimeExtensions.StartOfWeek(EndDate.Date, DayOfWeek.Monday);
-                    tempEndDate = tempEndDate.Date.AddDays(7);
+                    var weeks = (EndDate - StartDate).Days / 7;
+                    if (weeks > maxResults)
+                    {
+                        tempEndDate = DateTimeExtensions.StartOfWeek(StartDate.AddDays(7 * maxResults), DayOfWeek.Monday);
+                        tempEndDate = tempEndDate.Date.AddDays(6);
+                    }
+                    else
+                    {
+                        tempEndDate = DateTimeExtensions.StartOfWeek(EndDate.Date, DayOfWeek.Monday);
+                        tempEndDate = tempEndDate.Date.AddDays(6);
+                    }
                     break;
                 case ReportPeriodEnum.Month:
                     tempEndDate = DateTimeExtensions.LastDayOfMonth(EndDate.Date);

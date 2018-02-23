@@ -534,9 +534,7 @@ export class FindingsComponent implements OnInit {
             if (index > -1) {
                 this.CompForm.Findings.splice(index, 1);
             }
-
         }
-
     }
 
     get ExtractionModeIsManual() {

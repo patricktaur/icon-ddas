@@ -157,7 +157,7 @@ export class CompletedICSFComponent implements OnInit {
 
         if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse ||
             undoEnum == UndoEnum.UndoCompleted) {
-            this.service.undo(this.recId, undoEnum)
+            this.service.undo(this.recId, undoEnum, '')
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },

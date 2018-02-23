@@ -1,8 +1,7 @@
-<div finding-view-base [Finding]="Finding" [Title]="'Added by QC Verifier'" (ValueChanged)="formValueChanged()">
+<div finding-edit-base [Finding]="Finding" [Title]="'Added by QC Verifier'" (ValueChanged)="formValueChanged()">
     <div class="row">
         <div class="col-md-12">
             <h4>QC Verifier's comments:</h4>
-
             <br/>
             <label>Comment Category: {{qcVerifierCommentCategoryEnum}}</label>
             <br/>
@@ -13,7 +12,6 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <!-- Notes: Finding added by QC Verifier cannot be modified by Reviewer. It will be included in the ICSF. -->
             <br/>
             <h4>Respone to QC Verifier's Finding:</h4>
             <label>QC Correction Status:</label>

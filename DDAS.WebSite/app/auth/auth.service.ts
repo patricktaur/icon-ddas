@@ -19,7 +19,7 @@ export class AuthService {
   isLoggedIn: boolean = false;
   public token: string;
   public userName: string;
-  public userFullName: string;
+  public userFullName: string = "";
   public isAdmin: boolean;
   public isUser: boolean;
   public isAppAdmin: boolean;

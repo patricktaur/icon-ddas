@@ -1,4 +1,4 @@
-import { ReviewStatusEnum } from '../search/search.classes';
+import { ReviewStatusEnum, QCCompletedStatusEnum } from '../search/search.classes';
 
 export class QCListViewModel {
         RecId: string;
@@ -10,10 +10,12 @@ export class QCListViewModel {
         QCVerifierFullName: string;
         CompletedOn: Date;
         Status: ReviewStatusEnum;
+        QCStatus: QCCompletedStatusEnum;
         PrincipalInvestigator: string;
         InvestigatorCount: number;
         ProjectNumber: string;
         ProjectNumber2: string;
+        SubInvestigators: string[];
 }
 
 export class QualityCheck {

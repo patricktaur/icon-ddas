@@ -193,9 +193,11 @@ namespace DDAS.Models.Entities.Domain
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
         public DateTime? ExportedToiSprintOn { get; set; }
 
-        public Comment QCGeneralComment { get; set; }
+        //public Comment QCGeneralComment { get; set; }
+        public List<Comment> QCGeneralComments { get; set; } = new List<Comment>();
 
-        public Comment QCAttachmentComment { get; set; }
+        //public Comment QCAttachmentComment { get; set; }
+        public List<Comment> QCAttachmentComments { get; set; } = new List<Comment>();
 
         public string Reviewer {
             get {
@@ -229,6 +231,8 @@ namespace DDAS.Models.Entities.Domain
                     return ReviewStatusEnum.SearchCompleted;
             }
         }
+
+        public QCCompletedStatusEnum QCStatus { get; set; }
 
         public bool IsReviewCompleted {
             get {
@@ -970,6 +974,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime AssignedOn { get; set; }
         public string AssignedBy { get; set; }
         public ReviewStatusEnum Status { get; set; }
+        //public QCCompletedStatusEnum QCStatus { get; set; }
         public DateTime? StartedOn { get; set; }
         public DateTime? CompletedOn { get; set; }
         public ReviewerRoleEnum ReviewerRole { get; set; }

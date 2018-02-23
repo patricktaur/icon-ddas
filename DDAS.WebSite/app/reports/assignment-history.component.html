@@ -1,18 +1,15 @@
 <div class="col-md-12">
 	<div class="well">
-        <h3 class="no-margin-top">Re-Assignment History</h3>
-        <!-- {{diagnostic}} -->
+		<h3 class="no-margin-top">Re-Assignment History</h3>
+		<!-- {{diagnostic}} -->
 	</div>
-	<div class="alert alert-info" *ngIf="formLoading">
-		<strong>Loading ...</strong>
-	</div>	
 </div>
 
 <div class="col-md-12">
-	
-	
+
+
 	<div class="well">
-		
+
 		<div class="row">
 			<div class="col-md-3">
 				<div class="form-group">
@@ -31,23 +28,26 @@
 				</div>
 			</div>
 		</div>
-		<button type="button" class="btn btn-primary pull-left" 
-		(click)="getAssignmentHistoryList()">Generate Report</button>
-
-		<div style="margin-left: 10px" 
-		class="pull-left"  file-download 
-		[url]="'Reports/AssignmentHistory?mode=csv'" 
-		[filter]="reportFilter"
-		(ButtonClicked)="ResetReportFilter();"> </div>
+		<div class="row">
+			<div class="col-md-12">
+					<button type="button" class="btn btn-primary pull-left" (click)="getAssignmentHistoryList()">Generate Report</button>
+					<div style="margin-left: 10px" class="pull-left" file-download [url]="'Reports/AssignmentHistory?mode=csv'" [filter]="reportFilter"
+					 (ButtonClicked)="ResetReportFilter();"> </div>
+			</div>
+		</div>
 		<br>
+		<div class="alert alert-info" *ngIf="formLoading">
+			<progress-indicator [show]="formLoading"></progress-indicator>
+			<strong style="margin-left: 20px"> Loading ...</strong>
+		</div>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th>Principal Investigator</th>
 					<th>Project Number</th>
 					<th>Search Started On</th>
-                    <th>Re-assigned On</th>
-                    <th>Re-assigned From</th>
+					<th>Re-assigned On</th>
+					<th>Re-assigned From</th>
 					<th>Re-assigned To</th>
 					<th>Re-assigned By</th>
 				</tr>
@@ -60,21 +60,21 @@
 					<td class="text-center">
 						{{item.ProjectNumber}} {{item.ProjectNumber2}}
 					</td>
-                    <td class="text-center">
-                        {{item.SearchStartedOn | date: 'dd MMM yyyy hh:mm'}}
+					<td class="text-center">
+						{{item.SearchStartedOn | date: 'dd MMM yyyy hh:mm'}}
 					</td>
-                    <td class="text-center">
-                        {{item.AssignedOn | date: 'dd MMM yyyy hh:mm'}}
+					<td class="text-center">
+						{{item.AssignedOn | date: 'dd MMM yyyy hh:mm'}}
 					</td>
-                    <td class="text-center">
-                        {{item.PreviouslyAssignedTo}}
-                    </td>					
-                    <td class="text-center">
-                        {{item.AssignedTo}}
+					<td class="text-center">
+						{{item.PreviouslyAssignedTo}}
+					</td>
+					<td class="text-center">
+						{{item.AssignedTo}}
 					</td>
 					<td class="text-center">
 						{{item.AssignedBy}}
-                    </td>					
+					</td>
 				</tr>
 			</tbody>
 		</table>

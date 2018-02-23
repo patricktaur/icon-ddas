@@ -1,6 +1,9 @@
 import { Component, OnInit }        from '@angular/core';
 import { Router,
-         NavigationExtras } from '@angular/router';
+          ActivatedRoute,
+         NavigationExtras,
+         } from '@angular/router';
+         import {LocationStrategy} from '@angular/common';         
 import { AuthService }      from './auth.service';
 import { loginInfo }      from './auth.classes';
 import { ConfigService } from '../shared/utils/config.service';
@@ -15,16 +18,30 @@ export class LoginComponent implements OnInit{
     public logInfo: loginInfo;
     loading = false;
     error = '';
+    returnUrl: string;
+    redirectFullURL: string;
     public rememberChecked:boolean=false;
 
     
-  constructor(public authService: AuthService, public router: Router, private configService: ConfigService) {
+  constructor(public authService: AuthService, 
+    public router: Router, 
+    private route: ActivatedRoute,
+    private locationStrategy : LocationStrategy,
+    private configService: ConfigService) {
     this.setMessage();
     
   }
 
   ngOnInit() {
       this.authService.logout();
+      
+      //not workinng:
+      this.route.queryParams
+      .subscribe(params => this.returnUrl = params['return'] || '/');
+     
+     console.log("redirectURL:" + this.redirectURL());
+     this.returnUrl = this.redirectURL() || '/';
+      
       this.logInfo = new loginInfo();
       this.logInfo.username=localStorage.getItem('currentUsername');
       this.logInfo.password=localStorage.getItem('currentUserpassword');
@@ -42,25 +59,30 @@ export class LoginComponent implements OnInit{
         this.authService.login(this.logInfo.username, this.logInfo.password)
             .subscribe(
                 data => {
-                    
-                    if(this.authService.isAppAdmin){
-                       this.router.navigate(['/']);                      
-                    }
+                  //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1;rootPath=qc;page=1";
+                  //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1";
+                  
+                  this.router.navigateByUrl(this.returnUrl);
+                  //this.router.navigate(['/']); 
+                  
+                  //   if(this.authService.isAppAdmin){
+                  //      this.router.navigate(['/']);                      
+                  //   }
 
-                    if (this.authService.isAdmin){
-                       this.router.navigate(['/']);
-                       // this.router.navigate(['/users']);
-                    }
-                    else{
-                      if (this.authService.isUser){
+                  //   if (this.authService.isAdmin){
+                  //      this.router.navigate(['/']);
+                  //      // this.router.navigate(['/users']);
+                  //   }
+                  //   else{
+                  //     if (this.authService.isUser){
                         
-                        this.router.navigate(['/']);
-                    }
-                    if (this.rememberChecked == true){
-                            localStorage.setItem('currentUsername', this.logInfo.username);
-                            localStorage.setItem('currentUserpassword', this.logInfo.password);
-                    }
-                  }
+                  //       this.router.navigate(['/']);
+                  //   }
+                  //   if (this.rememberChecked == true){
+                  //           localStorage.setItem('currentUsername', this.logInfo.username);
+                  //           localStorage.setItem('currentUserpassword', this.logInfo.password);
+                  //   }
+                  // }
                 },
                 error => {
                     //this.test = error;
@@ -77,6 +99,26 @@ export class LoginComponent implements OnInit{
   
   get appLocaation(){
     return this.authService.appLocation;
+  }
+  
+  redirectURL() : string{
+    //link requirements:site url + /login?returnUrl=start/ + page path + /end
+    //example:
+    //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
+    let locationPath1 = this.locationStrategy.path();
+    if (locationPath1.indexOf("start") == 0){
+      return null;
+    }
+    if (locationPath1.indexOf("end") == 0){
+      return null;
+    }
+
+    var locationPath =  locationPath1.replace(/%252F/g, "/");
+    let startPos = locationPath.indexOf("start")+5
+    let lastPos = locationPath.lastIndexOf("end");
+    let length = lastPos - startPos;
+
+    return   locationPath.substr(startPos, length-1);
   }
   
   ///

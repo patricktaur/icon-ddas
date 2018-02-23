@@ -17,6 +17,7 @@ using System.Web;
 using System.Web.Http;
 using Utilities;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace DDAS.API.Controllers
 {
@@ -384,7 +385,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetAdminDashboard(string mode = "view")
         {
             //return Ok(_Report.GetAdminDashboard());
-
+            Thread.Sleep(1000);
             var list = _Report.GetAdminDashboard();
 
             switch (mode)

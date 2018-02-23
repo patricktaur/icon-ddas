@@ -28,6 +28,7 @@ export class AssignmentHistoryComponent {
 
     public reportFilter: ReportFilterViewModel;
     public investigatorNameAndCount: string;
+    
 
     constructor(
         private service: ReportService,
@@ -38,7 +39,7 @@ export class AssignmentHistoryComponent {
 
     ngOnInit() {
         this.reportFilter = new ReportFilterViewModel;
-        this.formLoading = true;
+        
         this.SetDefaultFilterValues();
         this.getAssignmentHistoryList();
     }
@@ -77,6 +78,7 @@ export class AssignmentHistoryComponent {
 
     getAssignmentHistoryList(){
         this.ResetReportFilter();
+        this.formLoading = true;
         this.service.getAssignmentHistoryList(this.reportFilter)
             .subscribe((item: AssignmentHistoryViewModel[]) => {
                 this.assignmentHisotryList = this.reAssignmentList(item);

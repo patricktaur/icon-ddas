@@ -1,4 +1,4 @@
-<!-- <form role='form'> -->
+ <form role='form'> 
     <div class="well">
          <!-- {{diagnostic}}
         {{tempNumber}}  -->
@@ -8,8 +8,7 @@
                     <select class="form-control" name="CommentCategory" 
                     [ngModel]="tempNumber" (ngModelChange)="onChange($event)"
                     (change)="formValueChanged()">
-                        <option value="8" selected="selected">Not Applicable</option> 
-                        <option value="0">Minor</option>
+                        <option value="0" selected="selected">Minor</option>
                         <option value="1">Major</option>
                         <option value="2">Critical</option>
                         <option value="3">Suggestions</option>
@@ -18,13 +17,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <textarea class="form-control" name="Comment" rows="3" cols="30" required placeholder="Comment" 
                     [(ngModel)]="tempText"
                     (change)="formValueChanged()">
                 </textarea>        
             </div>
         </div>
+        <button type="button" class="btn btn-default" 
+            (click)="RemoveClicked()" [disabled]="CanRemoveComment">
+            Remove
+        </button>
         <!-- <ng-content></ng-content> -->
     </div>
-<!-- </form> -->
+ </form>
