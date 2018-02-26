@@ -121,7 +121,7 @@ namespace DDAS.Services.UserService
             //  }
             //return retUsers;
 
-            return GetAllUsers().OrderBy(x => x.UserFullName).ToList();
+            return GetAllUsers().OrderBy(x => x.UserName).ToList();
         }
 
         public List<UserViewModel> GetAdmins()
@@ -224,8 +224,6 @@ namespace DDAS.Services.UserService
 
         public bool SetPassword(SetPasswordBindingModel model)
         {
-
-
             return true;
         }
 

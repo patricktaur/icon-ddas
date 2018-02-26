@@ -298,9 +298,9 @@ namespace DDAS.Services.AuditService
                 case UndoEnum.UndoQCRequest:
                     return UndoQCRequest(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoQCSubmit:
-                    return UndoQCSubmit(ComplianceFormId);
+                    return UndoQCSubmit(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoQCResponse:
-                    return UndoQCResponse(ComplianceFormId);
+                    return UndoQCResponse(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoCompleted:
                     return UndoCompleted(ComplianceFormId);
                 default: throw new Exception("invalid UndoEnum");
@@ -333,7 +333,7 @@ namespace DDAS.Services.AuditService
                 return false;
         }
 
-        private bool UndoQCSubmit(Guid ComplianceFormId)
+        private bool UndoQCSubmit(Guid ComplianceFormId, string UndoComment)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -352,31 +352,38 @@ namespace DDAS.Services.AuditService
                 SendUndoQCSubmitMail(QCFailedOrPassedReview.AssignedBy,
                     QCFailedOrPassedReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
-                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    UndoComment);
                 return true;
             }
             else
                 return false;
         }
 
-        private bool UndoQCResponse(Guid ComplianceFormId)
+        private bool UndoQCResponse(Guid ComplianceFormId, string UndoComment)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             if (Form == null)
                 throw new Exception("Could not find compliance form");
 
-            var QCFailedReview = Form.Reviews.Find(x =>
+            var QCCompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.QCCompleted);
 
             var CompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);
 
-            if (QCFailedReview != null && CompletedReview != null)
+            if (QCCompletedReview != null && CompletedReview != null)
             {
                 CompletedReview.Status = ReviewStatusEnum.QCCorrectionInProgress;
                 CompletedReview.CompletedOn = null;
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+                SendUndoQCCorrectionMail(CompletedReview.AssignedBy,
+                    CompletedReview.AssigendTo,
+                    Form.InvestigatorDetails.First().Name,
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    UndoComment);
                 return true;
             }
             else
@@ -477,12 +484,12 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "Undo QC Request - " + ReviewCategory + "_" +
                 ProjectNumber + "_" + PI;
-            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
 
-            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request ";
+            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request. <br/>";
 
             if (UndoComment != null)
-                MailBody += " as <b>" + UndoComment + "</b>";
+                MailBody += "<b>Requestor Comment:</b> " + UndoComment;
 
             MailBody += "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
@@ -514,7 +521,7 @@ namespace DDAS.Services.AuditService
         }
 
         private void SendUndoQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber)
+            string ProjectNumber, string UndoComment)
         {
             var User = _UOW.UserRepository.FindByUserName(AssignedBy);
 
@@ -524,7 +531,12 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "Undo QC Complete - " + ProjectNumber + "_" + PI;
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
-            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC submit. <br/><br/>";
+            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC submit. <br/>";
+
+            if (UndoComment != null)
+                MailBody += "<b>QCer Comment:</b> " + UndoComment;
+
+            MailBody += "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedTo);
 
@@ -547,6 +559,29 @@ namespace DDAS.Services.AuditService
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
             MailBody += "Below is the brief QC Summary.<br/> <br/>";
             MailBody += QCCompletedSummary;
+            MailBody += "Yours Sincerely,<br/>";
+            MailBody += GetUserFullName(AssignedTo);
+
+            SendMail(UserEMail, Subject, MailBody);
+        }
+
+        private void SendUndoQCCorrectionMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber, string UndoComment)
+        {
+            var User = _UOW.UserRepository.FindByUserName(AssignedBy);
+
+            if (User == null)
+                throw new Exception("invalid username");
+
+            var UserEMail = User.EmailId;
+            var Subject = "Undo QC Correction - " + ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC Corrections submit. <br/>";
+
+            if (UndoComment != null)
+                MailBody += "<b>Requestor Comment:</b> " + UndoComment;
+
+            MailBody += "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedTo);
 

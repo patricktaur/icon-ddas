@@ -165,7 +165,13 @@
 							</div>
 						</div>
 					</div>
-					<button type="button" class="btn btn-primary" (click)="addAttachmentComment()">Add Comment</button>
+					<div *ngIf="canSubmitQC">
+						<button  type="button" class="btn btn-primary" 
+							(click)="addAttachmentComment()">
+							Add Comment
+						</button>
+						<hr>
+					</div>
 					<br/>
 					Request: Attachments:
 					<table class="table table-bordered table-hover table-striped">
@@ -212,9 +218,14 @@
 							</div>
 						</div>
 					</div> 
-
-					<button type="button" class="btn btn-primary" (click)="addGeneralComment()">Add Comment</button>
-					<br>
+					<div *ngIf="canSubmitQC">
+						<button type="button" class="btn btn-primary" 
+							(click)="addGeneralComment()">
+							Add Comment
+						</button>
+						<hr>
+					</div>
+					<br/>
 					<div compliance-form-view [complianceForm]="complianceForm"></div>
 				</div>
 			</div>
@@ -244,7 +255,7 @@
 			<button type="button" class="btn btn-primary" (click)="openComplianceForm()">Open ICSF</button>
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.open()">Submit QC</button>
-			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoModal.open()">Undo QC Submit</button>
+			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoQCModal.open()">Undo QC Submit</button>
 			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
 				Submit QC Corrections
 			</button>
@@ -304,16 +315,27 @@
 	</modal-footer>
 </modal>
 
-<modal #ConfirmUndoModal>
+<modal #ConfirmUndoQCModal>
 	<modal-header>
-		<h4 class="modal-title">Confirm Undo</h4>
+		<h4 class="modal-title">Confirm Undo QC</h4>
 	</modal-header>
 	<modal-body>
-		Are you sure you want to Undo this action?
+		<div class="row">
+			<div class="col-md-9">
+				<label for="QCUndoComment">Comment:</label>
+				<textarea name="UndoComment" class="form-control" id="QCUndoComment" rows="5" cols="20" placeholder="comment"
+				 [(ngModel)]="undoComment">
+				</textarea>
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+
+		Are you sure you want to Undo QC Submit?
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-primary" (click)="undoQCSubmit(); ConfirmUndoModal.close()">Confirm Undo</button>
-		<button type="button" class="btn btn-primary" (click)="ConfirmUndoModal.close()">Cancel</button>
+		<button type="button" class="btn btn-primary" (click)="undoQCSubmit(); ConfirmUndoQCModal.close()">Confirm Undo</button>
+		<button type="button" class="btn btn-primary" (click)="ConfirmUndoQCModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
 <modal #ConfirmQCSubmitModal>

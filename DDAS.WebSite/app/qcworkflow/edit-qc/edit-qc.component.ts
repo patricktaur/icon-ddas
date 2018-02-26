@@ -94,6 +94,7 @@ export class EditQCComponent implements OnInit {
     public showGenralComment: boolean = false;
     public generalCommentToRemove: Comment;
     public attachmentCommentToRemove: Comment;
+    public undoComment: string = "";
 
     constructor(
         private route: ActivatedRoute,
@@ -304,6 +305,7 @@ export class EditQCComponent implements OnInit {
         comment.CategoryEnum = CommentCategoryEnum.Minor;
         comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
         this.complianceForm.QCGeneralComments.push(comment);
+        this.pageChanged = true;
     }
 
     addAttachmentComment(){
@@ -311,6 +313,7 @@ export class EditQCComponent implements OnInit {
         comment.CategoryEnum = CommentCategoryEnum.Minor;
         comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
         this.complianceForm.QCAttachmentComments.push(comment);
+        this.pageChanged = true;
     }
 
     setGeneralCommentToRemove(selectedComment: Comment){
@@ -324,16 +327,20 @@ export class EditQCComponent implements OnInit {
     removeGeneralComment(){
         if(this.attachmentCommentToRemove){
             var index = this.complianceForm.QCGeneralComments.indexOf(this.attachmentCommentToRemove, 0);
-            if(index > -1)
+            if(index > -1){
                 this.complianceForm.QCGeneralComments.splice(index, 1);
+                this.pageChanged = true;
+            }
         }
     }
 
     removeAttachmentComment(){
         if(this.attachmentCommentToRemove){
             var index = this.complianceForm.QCAttachmentComments.indexOf(this.attachmentCommentToRemove, 0);
-            if(index > -1)
+            if(index > -1){
                 this.complianceForm.QCAttachmentComments.splice(index, 1);
+                this.pageChanged = true;
+            }
         }
     }
 
@@ -458,6 +465,10 @@ export class EditQCComponent implements OnInit {
     submit() {
         let review = this.complianceForm.Reviews.find(x => 
             x.Status == ReviewStatusEnum.QCInProgress);
+        
+        if(!review)
+            return;
+
         review.Status = ReviewStatusEnum.QCCompleted;
         
         this.complianceForm.QCStatus = this.status;
@@ -487,7 +498,8 @@ export class EditQCComponent implements OnInit {
     }
 
     undoQCSubmit(){
-        this.service.undo(this.complianceForm.RecId, UndoEnum.UndoQCSubmit, '')
+        this.service.undo(
+            this.complianceForm.RecId, UndoEnum.UndoQCSubmit, this.undoComment)
         .subscribe((item: any) => {
             this.goBack();
         }, 
@@ -525,6 +537,7 @@ export class EditQCComponent implements OnInit {
             .subscribe((item: ComplianceFormA) => {
                 this.isSubmitted = true;
                 this.complianceForm = item;
+                this.pageChanged = false;
                 this.Save(); //for rollup.. in case of excluding a finding
                 this.goBack();
             },

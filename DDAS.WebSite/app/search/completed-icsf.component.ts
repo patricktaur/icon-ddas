@@ -39,6 +39,7 @@ export class CompletedICSFComponent implements OnInit {
     public undoCompleted: boolean;
     public recId: string;
     public pageNumber: number = 1;
+    public undoComment: string = "";
 
     constructor(
         private route: ActivatedRoute,
@@ -138,6 +139,13 @@ export class CompletedICSFComponent implements OnInit {
             return false;
     }
 
+    getUndoAction(){
+        if(this.undoQCSubmit)
+            return "QC Submit";
+        else if(this.undoQCResponse)
+            return "QC Corrections";
+    }
+
     setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, UndoCompleted: boolean, RecId: string){
         this.undoQCSubmit = UndoQCSubmit;
         this.undoQCResponse = UndoQCResponse;
@@ -157,7 +165,7 @@ export class CompletedICSFComponent implements OnInit {
 
         if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse ||
             undoEnum == UndoEnum.UndoCompleted) {
-            this.service.undo(this.recId, undoEnum, '')
+            this.service.undo(this.recId, undoEnum, this.undoComment)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },

@@ -69,7 +69,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public requestorComment: string;
     private SessionId: string;
     public files : File[] = [];
-    public undoComment: string;
+    public undoComment: string = "";
 
     constructor(
         private route: ActivatedRoute,
