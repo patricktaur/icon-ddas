@@ -41,18 +41,23 @@ namespace DDAS.Services.Search
         }
 
          //Patrick: 7Jan2018 For use in ExtractDataService
-         public IConfig Config { get {
+        public IConfig Config
+        {
+            get
+            {
                 return _config;
-            } }
+            }
+        }
 
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
-        public ComplianceForm GetNewComplianceForm(string UserName)
+        public ComplianceForm GetNewComplianceForm(string UserName, string InputSource)
         {
             ComplianceForm newForm = new ComplianceForm();
             newForm.AssignedTo = UserName;
             newForm.SearchStartedOn = DateTime.Now;
+            newForm.InputSource = InputSource;
 
             var review = new Review();
             review.RecId = Guid.NewGuid();
@@ -60,8 +65,8 @@ namespace DDAS.Services.Search
             review.AssignedBy = UserName;
             review.AssignedOn = DateTime.Now;
             review.ReviewerRole = ReviewerRoleEnum.Reviewer;
-
             newForm.Reviews.Add(review);
+
             AddMandatorySitesToComplianceForm(newForm);
             return newForm;
         }
@@ -200,10 +205,8 @@ namespace DDAS.Services.Search
 
             for (int Index = 0; Index < InputRows.Count; Index++)
             {
-                var form = GetNewComplianceForm(UserName);
+                var form = GetNewComplianceForm(UserName, "Batch-Upload");
 
-                //Already assigning the name in GetNewComplianceForm
-                //form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName =
                     Path.GetFileName(FilePathWithGUID);
@@ -271,8 +274,7 @@ namespace DDAS.Services.Search
 
         public ComplianceForm ImportIsprintData(ddRequest DR)
         {
-
-            var form = GetNewComplianceForm("");
+            var form = GetNewComplianceForm("", "iSprint");
 
             if (!IsValidProjectNumber(DR.project.projectNumber))
             {
@@ -549,7 +551,6 @@ namespace DDAS.Services.Search
             public override Encoding Encoding => Encoding.UTF8;
         }
 
-
         public iSprintResponseModel.DDtoIsprintResponse PostToIsprintWebService(string RequestPayload, out string sRetVal)
         {
             var resp = new iSprintResponseModel.DDtoIsprintResponse();
@@ -615,8 +616,6 @@ namespace DDAS.Services.Search
 
             return resp;
         }
-
-
 
         //public String PostToIsprintWebService(string RequestPayload, ref Stream dataStreamResponse)
         //{

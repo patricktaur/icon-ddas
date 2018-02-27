@@ -98,11 +98,6 @@ namespace DDAS.Services.Search
                 //Process currentProcess = Process.GetCurrentProcess();
                 //currentProcess.CloseMainWindow();
             }
-
-
-
-
-
         }
 
         public void ExtractThruShell(Int32 siteNumber)
@@ -112,21 +107,25 @@ namespace DDAS.Services.Search
             ProcessStartInfo processInfo = new ProcessStartInfo(exePath);
             processInfo.CreateNoWindow = true;
             processInfo.UseShellExecute = false;
+            processInfo.Arguments = siteNumber.ToString();
+            processInfo.RedirectStandardOutput = true;
+            processInfo.RedirectStandardError = true;
             try
             {
                 Process process = Process.Start(processInfo);
                 process.WaitForExit();
+                var Output = process.StandardOutput.ReadToEnd();
+                var Error = process.StandardError.ReadToEnd();
                 if (process.ExitCode != 0)
                 { // success}
                     throw new Exception("Extractor did not complete the process");
                 }
+                process.Close();
             }
             catch (Exception ex)
             {
-
                 throw new Exception (ex.Message);
             }
-            
         }
 
         public List<ExtractionStatus> GetLatestExtractionStatus()

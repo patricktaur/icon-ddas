@@ -16,7 +16,7 @@ namespace DDAS.Models.Interfaces
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
 
-        ComplianceForm GetNewComplianceForm(string UserName);
+        ComplianceForm GetNewComplianceForm(string UserName, string InputSource);
 
         void AddMatchingRecords(ComplianceForm frm);
 

@@ -417,7 +417,7 @@ namespace DDAS.API.Controllers
             var UserName = User.Identity.GetUserName();
             if (formId == null)
             {
-                return Ok(_SearchService.GetNewComplianceForm(UserName));
+                return Ok(_SearchService.GetNewComplianceForm(UserName, "Manual"));
             }
             else
             {
@@ -528,7 +528,6 @@ namespace DDAS.API.Controllers
 
             return Ok(true);
         }
-
 
         [Route("GetUploadsFolderPath")]
         [HttpGet]

@@ -220,6 +220,7 @@ export class ComplianceFormA {
     // QCAttachmentComment: Comment;
     QCGeneralComments: Comment[];
     QCAttachmentComments: Comment[];
+    InputSource: string;
 }
 
 export class InvestigatorSearched {
