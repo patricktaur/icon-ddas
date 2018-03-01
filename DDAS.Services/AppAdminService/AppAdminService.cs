@@ -1498,6 +1498,13 @@ namespace DDAS.Services.AppAdminService
                 defaultSiteViewModel.SearchAppliesTo = defaultSite.SearchAppliesTo;
                 defaultSiteViewModel.SearchAppliesToText = defaultSite.SearchAppliesTo.ToString();
                 //defaultSiteViewModel.ExcludeSI = defaultSite.ExcludeSI;
+                if (defaultSite.SiteType == SiteTypeEnum.WorldCheck)
+                    defaultSiteViewModel.SiteTypeText = "World Check";
+                else if(defaultSite.SiteType == SiteTypeEnum.DMCExclusion)
+                    defaultSiteViewModel.SiteTypeText = "DMC Exclusion";
+                else if (defaultSite.SiteType == SiteTypeEnum.NotApplicable)
+                    defaultSiteViewModel.SiteTypeText = "Not Applicable";
+
                 var site = _UOW.SiteSourceRepository.FindById(defaultSite.SiteId);
                 
                 if (site == null)
@@ -1561,9 +1568,25 @@ namespace DDAS.Services.AppAdminService
             //{
             //    defaultSite.ExtractionMode = ExtractionMode;
             //}
+
+            if(defaultSite.SiteType != SiteTypeEnum.NotApplicable)
+            {
+                var Site =
+                    _UOW.DefaultSiteRepository.GetAll().Find(x =>
+                    x.SiteType == defaultSite.SiteType &&
+                    x.SearchAppliesTo == defaultSite.SearchAppliesTo &&
+                    x.RecId != defaultSite.RecId);
+                
+                if(Site != null)
+                {
+                    Site.SiteType = SiteTypeEnum.NotApplicable;
+                    _UOW.DefaultSiteRepository.UpdateDefaultSite(Site);
+                }
+            }
+
             if (defaultSite.RecId == null)
             {
-                 _UOW.DefaultSiteRepository.Add(defaultSite);
+                _UOW.DefaultSiteRepository.Add(defaultSite);
                 return true;
             }
             else

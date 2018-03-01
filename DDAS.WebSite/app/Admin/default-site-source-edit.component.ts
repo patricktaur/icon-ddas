@@ -98,6 +98,14 @@ export class DefaultSiteSourceEditComponent implements OnInit {
 
     }
     
+    get siteTypes(){
+        var items: { id: number, name: string } [] = [
+            { "id":0, "name":"Not Applicable" },
+            { "id":1, "name":"World Check" },
+            { "id":2, "name": "DMC Check"}];
+        return items;
+    }
+
     CancelSave() {
         this.router.navigate(["/default-sites"]);
     }

@@ -1273,6 +1273,7 @@ namespace DDAS.Models.Entities.Domain
         public bool IsMandatory { get; set; }
         //public string SiteName { get; set; }
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
+        public SiteTypeEnum SiteType { get; set; }
     }
     #endregion
 

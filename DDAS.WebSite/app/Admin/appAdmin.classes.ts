@@ -44,6 +44,7 @@ export class SponsorProtocol{
     OrderNo : number;
     IsMandatory : boolean;
     SearchAppliesTo: number;
+    SiteType: number;
     //ExcludeSI : boolean;
 }
 

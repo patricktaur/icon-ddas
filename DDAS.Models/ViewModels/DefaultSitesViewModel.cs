@@ -17,8 +17,10 @@ namespace DDAS.Models.ViewModels
         public string ExtractionMode { get; set; }
         public string SearchAppliesToText { get; set; }
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
-
         public bool IsMandatory { get; set; }
+        public string SiteTypeText { get; set; }
+        public SiteTypeEnum SiteType { get; set; }
+
         //public bool ExcludeSI { get; set; }
     }
   
