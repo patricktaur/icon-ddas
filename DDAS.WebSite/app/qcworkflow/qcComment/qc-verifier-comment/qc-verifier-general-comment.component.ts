@@ -34,6 +34,7 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
 
     onChange(newValue:any){
         this.Comment.CategoryEnum = newValue;
+        this.ValueChanged.emit();
     }
 
     formValueChanged(){
