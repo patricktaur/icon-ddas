@@ -86,6 +86,7 @@
 					<th class="text-left">Review Completed</th>
 					<th class="text-left">Assigned to</th>
 					<th class="text-center">Searched on</th>
+					<th class="text-left">Input Source</th>
 					<th class="text-center">Actions</th>
 				</tr>
 			</thead>
@@ -122,8 +123,10 @@
 					</td>
 					<td class="text-center">
 						{{item.SearchStartedOn | date: 'dd MMM yyyy HH:mm'}}
-
 					</td>
+					<td class="text-left">
+						{{item.InputSource}}
+					</td>					
 					<td class="text-center">
 						<div class="btn-group">
 							<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"

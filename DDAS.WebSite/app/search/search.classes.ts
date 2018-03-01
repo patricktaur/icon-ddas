@@ -165,6 +165,7 @@ export class PrincipalInvestigatorDetails {
     EstimatedExtractionCompletionWithin: string;
     SubInvestigators: SubInvestigator[] = [];
     CurrentReviewStatus: ReviewStatusEnum;
+    InputSource: string;
 }
 
 export class SubInvestigator {
