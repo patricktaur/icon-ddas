@@ -126,14 +126,13 @@
 										{{item.Name}} 
 										<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 									</a> -->
-									<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
-											{{item.Name}} 
-											<span class="glyphicon glyphicon-plus plus-glyphicon"  aria-hidden="true"></span>
-										</a>
-										<div *ngIf="item.SubInvestigators.length == 0">
-												{{item.Name}} 
-										</div>
-	
+									<div *ngIf="item.SubInvestigators.length == 0">
+										{{item.Name}} 
+									</div>
+									<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1">
+										{{item.Name}} 
+										<span class="glyphicon glyphicon-plus plus-glyphicon"  aria-hidden="true"></span>
+									</a>
 								</h5>
 								<div class="panel-group" role="tablist" style="border:0">
 									<div class="panel panel-default" style="border:0">

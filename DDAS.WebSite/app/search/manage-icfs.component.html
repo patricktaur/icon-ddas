@@ -93,10 +93,12 @@
 				<tr *ngFor="let item of PrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
 
 					<td class="text-left">
-						<!-- {{item.Name}} -->
 						<h5>
-							<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+							<div *ngIf="item.SubInvestigators.length == 0">
 								{{item.Name}} 
+							</div>
+							<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+								{{item.Name}}
 								<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 							</a>
 						</h5>

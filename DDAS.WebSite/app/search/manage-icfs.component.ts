@@ -125,6 +125,7 @@ export class ManageICFsComponent implements OnInit {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
+        this.loading = true;
         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;

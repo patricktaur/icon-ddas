@@ -590,6 +590,9 @@ namespace DDAS.Services.AuditService
 
         private void SendMail(string To, string Subject, string Body)
         {
+            if (To == null || To == "")
+                throw new Exception("Email id is empty");
+
             var EMail = new EMailModel();
             EMail.To.Add(To);
             EMail.Subject = Subject;
@@ -675,7 +678,7 @@ namespace DDAS.Services.AuditService
                     + comment.FindingComment
                     + "<br/>";
 
-                QCCompletedSummary += "<b>Requestor Comment Category:</b>"
+                QCCompletedSummary += "<b>Requestor Comment Category:</b> "
                     + GetCategoryEnumString(comment.ReviewerCategoryEnum)
                     + "<br/>";
 
@@ -696,7 +699,7 @@ namespace DDAS.Services.AuditService
                     + comment.FindingComment
                     + "<br/>";
 
-                QCCompletedSummary += "<b>Requestor Comment Category:</b>"
+                QCCompletedSummary += "<b>Requestor Comment Category:</b> "
                     + GetCategoryEnumString(comment.ReviewerCategoryEnum)
                     + "<br/>";
 
@@ -732,7 +735,7 @@ namespace DDAS.Services.AuditService
                     finding.Comments[0].FindingComment
                     + "<br/>";
 
-                QCCompletedSummary += "<b>Requestor Category:</b>" +
+                QCCompletedSummary += "<b>Requestor Category:</b> " +
                     GetCategoryEnumString(finding.Comments[0].ReviewerCategoryEnum)
                     + "<br/>";
 

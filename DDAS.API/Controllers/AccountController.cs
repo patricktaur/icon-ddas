@@ -144,6 +144,10 @@ namespace DDAS.API.Controllers
             string hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
             
             var user = userManager.FindById(userId);
+
+            if (user.EmailId == null)
+                throw new Exception("user " + user.UserFullName + " email id is empty");
+
             userStore.SetPasswordHashAsync(user, hashedNewPassword);
 
             var EMail = new EMailModel();

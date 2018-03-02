@@ -2544,6 +2544,8 @@ namespace DDAS.Services.Search
                 CompFormFilter.InvestigatorName != "")
             {
                 Filter1 = Filter1.FindAll(x =>
+                x.InvestigatorDetails.Count > 0 &&
+                x.InvestigatorDetails.FirstOrDefault().Name != null &&
                 x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
                 .Contains(
                     CompFormFilter.InvestigatorName.ToLower()));
