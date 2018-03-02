@@ -443,7 +443,7 @@ export class FindingsComponent implements OnInit {
                 selectedFinding.Comments = new Array<Comment>();
                 let comment = new Comment();
                 // comment.ReviewId = review.RecId;
-                comment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                comment.CategoryEnum = CommentCategoryEnum.Minor;
                 comment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
                 // comments.push(comment);
                 // let emptyComment = new Comment();

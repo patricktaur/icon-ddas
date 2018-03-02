@@ -17,9 +17,9 @@ const reportRoutes: Routes = [
     children: [
       { path: '', component: ListQCComponent },
       { 
-        path: 'edit-qc/:complianceFormId/:qcAssignedTo', 
+        path: 'edit-qc/:complianceFormId/:qcAssignedTo',
         component: EditQCComponent,
-        canDeactivate: [CanDeactivateGuard]
+        // canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'comp-form-edit/:formId',
