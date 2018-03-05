@@ -228,10 +228,13 @@ namespace DDAS.API.Providers
         //Added: to include user roles: temp until mongo Identity is implemented.
         public static AuthenticationProperties CreateProperties(IdentityUser user, IList<string> roles)
         {
+            var userFullName = user.UserFullName != null ? user.UserFullName : "";
+
             IDictionary<string, string> data = new Dictionary<string, string>
             {
                 { "userName", user.UserName },
-                { "userFullName", user.UserFullName }
+                
+                { "userFullName", userFullName }
             };
             foreach (string role in roles)
             {
