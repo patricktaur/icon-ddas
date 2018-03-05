@@ -593,8 +593,8 @@ export class EditQCComponent implements OnInit {
         }
     }
 
-    formValueChanged() {
-        this.pageChanged = true;
+    formValueChanged(val: any) {
+        this.pageChanged = val;
     }
 
     canDeactivate(): Promise<boolean> | boolean {

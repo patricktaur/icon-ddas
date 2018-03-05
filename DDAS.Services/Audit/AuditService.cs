@@ -591,8 +591,7 @@ namespace DDAS.Services.AuditService
         private void SendMail(string To, string Subject, string Body)
         {
             if (To == null || To == "")
-                throw new Exception("Email id is empty");
-
+                throw new Exception("email id is empty");
             var EMail = new EMailModel();
             EMail.To.Add(To);
             EMail.Subject = Subject;

@@ -2464,6 +2464,7 @@ namespace DDAS.Services.Search
         private PrincipalInvestigator getPrincipalInvestigators(ComplianceForm compForm)
         {
             var item = new PrincipalInvestigator();
+            item.InputSource = compForm.InputSource;
             item.Address = compForm.Address;
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;

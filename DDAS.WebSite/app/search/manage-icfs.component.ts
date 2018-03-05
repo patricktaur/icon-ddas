@@ -142,15 +142,14 @@ export class ManageICFsComponent implements OnInit {
         filter1 = this.PrincipalInvestigators;
         if (this.filterInvestigatorName.length > 0) {
             filter1 = this.PrincipalInvestigators.filter((a) =>
-                a.Name.toLowerCase().includes(this.filterInvestigatorName.toLowerCase()))
+                a.Name.toLowerCase().includes(this.filterInvestigatorName.toLowerCase()));
         }
 
         let filter2: PrincipalInvestigatorDetails[];
         filter2 = filter1;
         if (this.filterStatus >= 0) {
             filter2 = filter1.filter((a) =>
-                a.StatusEnum == this.filterStatus
-            )
+                a.StatusEnum == this.filterStatus);
         }
         return filter2;
     }

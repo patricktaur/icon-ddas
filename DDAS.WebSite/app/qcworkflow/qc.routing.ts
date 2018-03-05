@@ -13,17 +13,15 @@ import {InstituteFindingsComponent} from './../search/institute-findings.compone
 
 const reportRoutes: Routes = [
   {
-    path: 'qc'
-    , canActivate: [AuthGuard],
+    path: 'qc', canActivate: [AuthGuard],
     children: [
-  
       { path: '', component: ListQCComponent },
-      { path: 'edit-qc/:complianceFormId/:qcAssignedTo', 
-      component: EditQCComponent,
-      canDeactivate: [CanDeactivateGuard]
-       },
-     
-        {
+      { 
+        path: 'edit-qc/:complianceFormId/:qcAssignedTo',
+        component: EditQCComponent,
+        // canDeactivate: [CanDeactivateGuard]
+      },
+      {
         path: 'comp-form-edit/:formId',
         component: CompFormEditComponent,
         canDeactivate: [CanDeactivateGuard]
@@ -43,10 +41,9 @@ const reportRoutes: Routes = [
       {
         path: 'institute-findings/:formId/:siteSourceId',
         component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
-      },
-      
+      }      
     ]
-  },
+  }
 ];
 
 export const reportRouting: ModuleWithProviders = RouterModule.forChild(reportRoutes);
