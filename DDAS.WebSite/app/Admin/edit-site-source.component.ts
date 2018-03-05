@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
-import {LoginHistoryService} from './all-loginhistory.service';
-import {  IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import { LoginHistoryService } from './all-loginhistory.service';
+import { IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
 import { ConfigService } from '../shared/utils/config.service';
-import {SiteSourceViewModel} from './appAdmin.classes';
+import { SiteSourceViewModel } from './appAdmin.classes';
 
 @Component({
     moduleId: module.id,
@@ -15,26 +15,26 @@ export class EditSiteSourceComponent implements OnInit {
     public SiteSource: SiteSourceViewModel = new SiteSourceViewModel;
     public pageNumber: number;
     public formLoading: boolean;
-    
+
     private RecId: string;
 
-     private processing: boolean;
-     public isNew: boolean = false;
-    public isNewText: string = "";    
-    
+    private processing: boolean;
+    public isNew: boolean = false;
+    public isNewText: string = "";
+
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
-        private router: Router, 
+        private router: Router,
         private route: ActivatedRoute
     ) { }
 
-    ngOnInit(){
+    ngOnInit() {
         this.route.params.forEach((params: Params) => {
             this.RecId = params['RecId'];
             this.isNew = false;
             this.isNewText = "Edit";
-            if (this.RecId == ""){
+            if (this.RecId == "") {
                 this.isNew = true;
                 this.isNewText = "New";
                 //this.isNewText.toLowerCase
@@ -43,23 +43,31 @@ export class EditSiteSourceComponent implements OnInit {
         });
     }
 
-    LoadSiteSource(){
+    LoadSiteSource() {
 
-        if (this.RecId == ""){
+        if (this.RecId == "") {
             let newSiteSource = new SiteSourceViewModel();
             newSiteSource.ExtractionMode = "Manual";
             this.SiteSource = newSiteSource;
         }
-        else{
+        else {
             this.service.getSiteSource(this.RecId)
-        .subscribe((item: any) => {
-        this.SiteSource = item;
-        });
+                .subscribe((item: any) => {
+                    this.SiteSource = item;
+                });
         }
-        
+
     }
 
-   Save() {
+    get siteTypes() {
+        var items: { id: number, name: string }[] = [
+            { "id": 0, "name": "Normal" },
+            { "id": 1, "name": "World Check" },
+            { "id": 2, "name": "DMC Exclusion" }];
+        return items;
+    }
+
+    Save() {
         this.service.saveSiteSource(this.SiteSource)
             .subscribe((item: any) => {
                 this.router.navigate(["/manage-site-sources"]);

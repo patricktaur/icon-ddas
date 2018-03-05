@@ -29,6 +29,7 @@ namespace DDAS.Models.Entities.Domain
         //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
+        public SiteTypeEnum SiteType { get; set; }
         //public bool ExcludeSI { get; set; }
         //public bool ExcludePI { get; set; }
         //public string SearchTimeTakenInMs { get; set; }

@@ -5,6 +5,7 @@ export class SiteSourceViewModel{
     //Mandatory: boolean;
     ExtractionMode: string;
     SiteUrl: string;
+    SiteType: number;
     //ExcludeSI: boolean;
     //ExcludePI: boolean;
 }
@@ -44,7 +45,7 @@ export class SponsorProtocol{
     OrderNo : number;
     IsMandatory : boolean;
     SearchAppliesTo: number;
-    SiteType: number;
+    // SiteType: number;
     //ExcludeSI : boolean;
 }
 

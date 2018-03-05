@@ -15,7 +15,7 @@ import {SiteSourceViewModel} from './appAdmin.classes';
 export class ManageSiteSourcesComponent implements OnInit {
     public SiteSources: SiteSourceViewModel[];
     public ApiHost: string;
-    public pageNumber: number;
+    public pageNumber: number = 1;
     public formLoading: boolean;
     public filterSiteURL: string = "";
     private selectedRecId: string;
@@ -46,23 +46,19 @@ export class ManageSiteSourcesComponent implements OnInit {
 
     get filteredRecords(){
         //return this.SiteSources;
-        
         if (this.SiteSources == null){
            return this.SiteSources;
         }
         else{
            if (this.filterSiteURL.trim().length > 0){
                //return this.SiteSources;
-               
                return this.SiteSources.filter(x => x.SiteUrl.indexOf(this.filterSiteURL.trim() ) > 0);
                //return this.SiteSources.filter(x => x.SiteUrl.indexOf(this.filterSiteURL.trim() ) > 0);
            }
            else{
                return this.SiteSources;
-           }
-            
+           }   
         }
-        
     }
 
     extractionModeIsManual(extractionMode: string){
@@ -82,6 +78,15 @@ export class ManageSiteSourcesComponent implements OnInit {
        this.selectedRecordName = rec.SiteName;   
    }
    
+    siteType(siteType: number){
+        switch(siteType){
+            case 0: return "Normal";
+            case 1: return "World Check";
+            case 2: return "DMC Exclusion";
+            default: return "";
+        }
+    }
+
    Delete(){ 
       //CompFormId to be set by the delete button
       this.error = "";

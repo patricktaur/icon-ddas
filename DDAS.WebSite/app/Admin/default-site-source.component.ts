@@ -17,7 +17,7 @@ export class DefaultSitesComponent implements OnInit {
     public SiteSources: any[];
     public selectedRecId: string;
     public selectedRecordName: string;
-    public pageNumber: number;
+    public pageNumber: number = 1;
     public formLoading: boolean;
     public message: string;
     public error: any;

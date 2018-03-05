@@ -58,7 +58,6 @@ export class DefaultSiteSourceEditComponent implements OnInit {
     }
     
     LoadRecord(){
-
         if (this.RecId == ""){
             let newSiteSource = new DefaultSite();
             //newSiteSource.ExtractionMode = "Manual";
@@ -70,7 +69,6 @@ export class DefaultSiteSourceEditComponent implements OnInit {
             this.DefaultSite = item;
         });
         }
-        
     }
 
     test: any;
@@ -95,16 +93,15 @@ export class DefaultSiteSourceEditComponent implements OnInit {
         { "id": 1, "name": "PIs" },
         { "id": 2, "name": "Institute" }];
         return items;
-
     }
     
-    get siteTypes(){
-        var items: { id: number, name: string } [] = [
-            { "id":0, "name":"Not Applicable" },
-            { "id":1, "name":"World Check" },
-            { "id":2, "name": "DMC Check"}];
-        return items;
-    }
+    // get siteTypes(){
+    //     var items: { id: number, name: string } [] = [
+    //         { "id":0, "name":"Not Applicable" },
+    //         { "id":1, "name":"World Check" },
+    //         { "id":2, "name": "DMC Check"}];
+    //     return items;
+    // }
 
     CancelSave() {
         this.router.navigate(["/default-sites"]);

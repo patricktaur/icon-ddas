@@ -1267,6 +1267,20 @@ namespace DDAS.Services.AppAdminService
 
         public bool UpdateSiteSource(SitesToSearch SiteSource)
         {
+            if (SiteSource.SiteType != SiteTypeEnum.NotApplicable)
+            {
+                var Site =
+                    _UOW.SiteSourceRepository.GetAll().Find(x =>
+                    x.SiteType == SiteSource.SiteType &&
+                    x.RecId != SiteSource.RecId);
+
+                if (Site != null)
+                {
+                    Site.SiteType = SiteTypeEnum.NotApplicable;
+                    _UOW.SiteSourceRepository.UpdateSiteSource(Site);
+                }
+            }
+
             if (SiteSource.RecId == null)
             {
                 _UOW.SiteSourceRepository.Add(SiteSource);
