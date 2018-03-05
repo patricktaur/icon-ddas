@@ -88,6 +88,7 @@
 						<th class="text-left">Country</th>
 						<th class="text-center">Searched on</th>
 						<th class="text-left">Status</th>
+						<th class="text-left">Input Source</th>
 						<th class="col-sm-2 text-center">Actions</th>
 					</tr>
 				</thead>
@@ -139,6 +140,9 @@
 						</td> -->
 						<td class="text-left">
 							{{status(item.CurrentReviewStatus)}}
+						</td>
+						<td class="text-left">
+							{{item.InputSource}}
 						</td>
 						<td>
 							<div class="btn-group">
