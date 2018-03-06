@@ -135,7 +135,7 @@
 
     public enum SiteTypeEnum
     {
-        NotApplicable,
+        Normal,
         WorldCheck,
         DMCExclusion
     }

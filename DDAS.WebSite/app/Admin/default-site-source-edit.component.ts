@@ -16,14 +16,13 @@ export class DefaultSiteSourceEditComponent implements OnInit {
     public DefaultSite: DefaultSite = new DefaultSite;
     public pageNumber: number;
     public formLoading: boolean;
-    
     private RecId: string;
-
-     private processing: boolean;
-     public isNew: boolean = false;
+    private processing: boolean;
+    public isNew: boolean = false;
     public isNewText: string = "";    
     public SiteSources: any[];
-    
+    public error: string = "";
+
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -79,15 +78,19 @@ export class DefaultSiteSourceEditComponent implements OnInit {
    
    Save() {
         this.service.saveDefaultSite(this.DefaultSite)
-            .subscribe((item: any) => {
-                this.router.navigate(["/default-sites"]);
+            .subscribe((item: boolean) => {
+                if(!item){
+                    this.error = "Default site with same settings already exists";
+                }
+                else
+                    this.router.navigate(["/default-sites"]);
             },
             error => {
 
             });
     }
 
-    get AppliesToItems(){       
+    get AppliesToItems(){
         var items: { id: number, name: string }[] = [
         { "id": 0, "name": "PIs and SIs" },
         { "id": 1, "name": "PIs" },
@@ -95,16 +98,23 @@ export class DefaultSiteSourceEditComponent implements OnInit {
         return items;
     }
     
-    // get siteTypes(){
-    //     var items: { id: number, name: string } [] = [
-    //         { "id":0, "name":"Not Applicable" },
-    //         { "id":1, "name":"World Check" },
-    //         { "id":2, "name": "DMC Check"}];
-    //     return items;
-    // }
+    get siteTypes(){
+        var items: { id: number, name: string } [] = [
+            { "id":0, "name":"Normal" },
+            { "id":1, "name":"World Check" }];
+            // { "id":2, "name": "DMC Exclusion"}];
+        return items;
+    }
 
     CancelSave() {
         this.router.navigate(["/default-sites"]);
+    }
+
+    get canShowError(){
+        if(this.error.length > 0)
+            return true;
+        else
+            return false;
     }
 
     get diagnostic() { return JSON.stringify(this.test); }

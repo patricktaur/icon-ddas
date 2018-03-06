@@ -26,7 +26,6 @@
 							<th>Short Name</th>
 							<th>Url</th>
 							<th>Extraction Mode</th>
-							<th>Site Type</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -44,9 +43,6 @@
 							</td>
 							<td class="text-center">
 								{{item.ExtractionMode}}
-							</td>
-							<td class="text-center">
-								{{siteType(item.SiteType)}}
 							</td>
 							<td>
 								<button type="button" class="btn btn-sm btn-primary" (click)="EditSiteDetails(item.RecId)" title="Edit">

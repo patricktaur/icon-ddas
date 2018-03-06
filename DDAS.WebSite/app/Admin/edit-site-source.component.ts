@@ -44,7 +44,6 @@ export class EditSiteSourceComponent implements OnInit {
     }
 
     LoadSiteSource() {
-
         if (this.RecId == "") {
             let newSiteSource = new SiteSourceViewModel();
             newSiteSource.ExtractionMode = "Manual";
@@ -57,14 +56,6 @@ export class EditSiteSourceComponent implements OnInit {
                 });
         }
 
-    }
-
-    get siteTypes() {
-        var items: { id: number, name: string }[] = [
-            { "id": 0, "name": "Normal" },
-            { "id": 1, "name": "World Check" },
-            { "id": 2, "name": "DMC Exclusion" }];
-        return items;
     }
 
     Save() {

@@ -33,13 +33,20 @@
                                 <option *ngFor="let item of AppliesToItems" value={{item.id}} selected="selected">{{item.name}}</option>
                             </select>
 
+							<label for="SiteType">Site Type:</label>
+							<select class="form-control" [(ngModel)]="DefaultSite.SiteType" name="SiteType">
+                                <option *ngFor="let item of siteTypes" value={{item.id}} selected="selected">
+									{{item.name}}
+								</option>
+							</select>
+							
 							<label for="EditIsMandatory">Is Mandatory:</label>
-							<input type="checkbox" name="EditIsMandatory" [(ngModel)]="DefaultSite.IsMandatory"><br>
+							<input type="checkbox" name="EditIsMandatory" [(ngModel)]="DefaultSite.IsMandatory"><br>							
 						</div>
 					</div>
-
 					<div site-source-toadd></div>
 				</div>
+				<div *ngIf="canShowError" class="alert alert-danger">{{error}}</div>
 				<div class="row">
 					<div class="col-lg-4">
 						<button type="button" class="btn btn-primary" (click)="Save()" title="Save"><span class="glyphicon glyphicon-ok" > Save</span></button>

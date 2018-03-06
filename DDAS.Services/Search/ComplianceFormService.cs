@@ -1336,7 +1336,7 @@ namespace DDAS.Services.Search
             siteSourceToAdd.ExtractionMode = sourceSite.ExtractionMode;
             siteSourceToAdd.SearchAppliesTo = siteToAdd.SearchAppliesTo;
             siteSourceToAdd.SearchAppliesToText = siteToAdd.SearchAppliesTo.ToString().Replace("_", " ");
-
+            siteSourceToAdd.SiteType = siteToAdd.SiteType;
             //siteSourceToAdd.ExcludePI = siteToAdd.ExcludePI;
             //siteSourceToAdd.ExcludeSI = siteToAdd.ExcludeSI;
 
@@ -4626,28 +4626,27 @@ namespace DDAS.Services.Search
 
                 foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
                 {
-                    var WorldCheckSite =
-                        form.SiteSources.Where(x =>
-                        x.SiteEnum == SiteEnum.WorldCheckPage).FirstOrDefault();
+                    var InvestigatorWorldCheck =
+                        form.SiteSources.Find(x =>
+                        x.SiteType == SiteTypeEnum.WorldCheck &&
+                        x.SearchAppliesTo == SearchAppliesToEnum.PIs);
 
-                    if (WorldCheckSite != null)
-                        WorldCheckCompletedOn = WorldCheckSite.SiteSourceUpdatedOn;
+                    if (InvestigatorWorldCheck != null)
+                        WorldCheckCompletedOn = InvestigatorWorldCheck.SiteSourceUpdatedOn;
 
-                    var InstituteSite = form.SiteSources.Where(x =>
-                    x.SiteEnum == SiteEnum.WorldCheckPage &&
-                    x.SearchAppliesTo == SearchAppliesToEnum.Institute)
-                    .FirstOrDefault();
+                    var InstituteWorldCheck = form.SiteSources.Find(x =>
+                    x.SiteType == SiteTypeEnum.WorldCheck &&
+                    x.SearchAppliesTo == SearchAppliesToEnum.Institute);
 
-                    if (InstituteSite != null)
+                    if (InstituteWorldCheck != null)
                         InstituteWorldCheckCompletedOn =
-                            InstituteSite.SiteSourceUpdatedOn;
+                            InstituteWorldCheck.SiteSourceUpdatedOn;
 
-                    var DMCCheck = form.SiteSources.Where(x =>
-                    x.SiteEnum == SiteEnum.PfizerDMCChecksPage)
-                    .FirstOrDefault();
+                    var DMCExclusion = form.SiteSources.Find(x =>
+                    x.SiteType == SiteTypeEnum.DMCExclusion);
 
-                    if (DMCCheck != null)
-                        DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
+                    if (DMCExclusion != null)
+                        DMCCheckCompletedOn = DMCExclusion.SiteSourceUpdatedOn;
 
                     if (Investigator.ReviewCompletedOn != null)
                     {
@@ -4664,9 +4663,9 @@ namespace DDAS.Services.Search
                             WorldCheckCompletedOn,
                             1,
                             InstituteWorldCheckCompletedOn,
-                            InstituteSite != null ? ToYesNoString(InstituteSite.IssuesIdentified) : "",
+                            InstituteWorldCheck != null ? ToYesNoString(InstituteWorldCheck.IssuesIdentified) : "",
                             DMCCheckCompletedOn,
-                            DMCCheck != null ? ToYesNoString(DMCCheck.IssuesIdentified) : "",
+                            DMCExclusion != null ? ToYesNoString(DMCExclusion.IssuesIdentified) : "",
                             Row);
                         Row += 1;
                         WorldCheckCompletedOn = null;
@@ -4686,6 +4685,70 @@ namespace DDAS.Services.Search
             return GenerateOutputFile.GetMemoryStream();
         }
 
+        private DateTime? InvestigatorWorldCheckCompletedOn(List<SiteSource> Sites)
+        {
+            DateTime? InvWorldCheckCompletedOn = null;
+
+            var InvWorldCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.PIs);
+
+            if (InvWorldCheck != null)
+                InvWorldCheckCompletedOn = InvWorldCheck.SiteSourceUpdatedOn;
+
+            return InvWorldCheck != null ? InvWorldCheck.SiteSourceUpdatedOn : InvWorldCheckCompletedOn;
+        }
+
+        private DateTime? InstituteWorldCheckCompletedOn(List<SiteSource> Sites)
+        {
+            DateTime? InstituteWorldCheckCompletedOn = null;
+
+            var InsWorldCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.Institute);
+
+            if (InsWorldCheck != null)
+                InstituteWorldCheckCompletedOn = InsWorldCheck.SiteSourceUpdatedOn;
+
+            return InsWorldCheck != null ? InsWorldCheck.SiteSourceUpdatedOn : InstituteWorldCheckCompletedOn;
+        }
+
+        private string InstituteComplianceIssue(List<SiteSource> Sites)
+        {
+            var InsWorldCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.Institute);
+
+            if (InsWorldCheck != null)
+                return ToYesNoString(InsWorldCheck.IssuesIdentified);
+            else
+                return null;
+        }
+
+        private DateTime? DMCExclusionCompletedOn(List<SiteSource> Sites)
+        {
+            DateTime? DMCCheckCompletedOn = null;
+
+            var DMCCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.Institute);
+
+            if (DMCCheck != null)
+                DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
+
+            return DMCCheck != null ? DMCCheck.SiteSourceUpdatedOn : DMCCheckCompletedOn;
+        }
+
+        private string DMCExclusionIssuesIdentified(List<SiteSource> Sites)
+        {
+            var DMCExclusion = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.DMCExclusion);
+
+            if (DMCExclusion != null)
+                return ToYesNoString(DMCExclusion.IssuesIdentified);
+            else
+                return null;
+        }
         #endregion
 
         #region Helpers

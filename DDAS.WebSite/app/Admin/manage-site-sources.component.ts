@@ -78,14 +78,14 @@ export class ManageSiteSourcesComponent implements OnInit {
        this.selectedRecordName = rec.SiteName;   
    }
    
-    siteType(siteType: number){
-        switch(siteType){
-            case 0: return "Normal";
-            case 1: return "World Check";
-            case 2: return "DMC Exclusion";
-            default: return "";
-        }
-    }
+    // siteType(siteType: number){
+    //     switch(siteType){
+    //         case 0: return "Normal";
+    //         case 1: return "World Check";
+    //         case 2: return "DMC Exclusion";
+    //         default: return "";
+    //     }
+    // }
 
    Delete(){ 
       //CompFormId to be set by the delete button

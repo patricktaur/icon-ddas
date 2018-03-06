@@ -201,7 +201,7 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
     
-    saveSponsorProtocol(sponsorProtocol : SponsorProtocol){
+    saveSponsorProtocol(sponsorProtocol : SponsorProtocol): Observable<boolean>{
         let body = JSON.stringify(sponsorProtocol);
         return this.http.post(this._baseUrl + 'admin/AddSponsorProtocol/', body, this._options)
                    .map((res: Response) => {
@@ -264,7 +264,7 @@ export class LoginHistoryService {
         .catch(this.handleError);        
     }
      
-    saveDefaultSite(SiteSource: DefaultSite): Observable<DefaultSite>{
+    saveDefaultSite(SiteSource: DefaultSite): Observable<boolean>{
         let body = JSON.stringify(SiteSource);
         return this.http.post(this._baseUrl + 'admin/SaveDefaultSite/', body, this._options)
                    .map((res: Response) => {
