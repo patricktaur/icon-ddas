@@ -29,6 +29,7 @@ namespace DDAS.Models.Entities.Domain
         //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
+        //public SiteTypeEnum SiteType { get; set; }
         //public bool ExcludeSI { get; set; }
         //public bool ExcludePI { get; set; }
         //public string SearchTimeTakenInMs { get; set; }
@@ -1028,7 +1029,7 @@ namespace DDAS.Models.Entities.Domain
         public string SiteUrl { get; set; }
         public bool IssuesIdentified { get; set; }
         public bool Deleted { get; set; } = false; //Patrick 30NOv2016
-
+        public SiteTypeEnum SiteType { get; set; } //Pradeep 06Mar2018
         //public bool ExcludeSI { get; set; }
         //public bool ExcludePI { get; set; }
 
@@ -1275,6 +1276,7 @@ namespace DDAS.Models.Entities.Domain
         public bool IsMandatory { get; set; }
         //public string SiteName { get; set; }
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
+        public SiteTypeEnum SiteType { get; set; }
     }
     #endregion
 

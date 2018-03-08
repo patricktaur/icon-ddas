@@ -1386,6 +1386,21 @@ namespace DDAS.Services.AppAdminService
         
         public bool AddSponsor(SponsorProtocol sponsor)
         {
+            if (sponsor.SiteType != SiteTypeEnum.Normal)
+            {
+                var Site =
+                    _UOW.SponsorProtocolRepository.GetAll().Find(x =>
+                    x.SiteType == sponsor.SiteType &&
+                    //x.SearchAppliesTo == sponsor.SearchAppliesTo &&
+                    x.RecId != sponsor.RecId);
+
+                if (Site != null)
+                {
+                    //site with same SiteType exists..
+                    return false;
+                }
+            }
+
             if (sponsor.RecId == null)
             {
                 _UOW.SponsorProtocolRepository.Add(sponsor);
@@ -1419,7 +1434,15 @@ namespace DDAS.Services.AppAdminService
                 sponsorViewModel.SearchAppliesToText =
                     sponsor.SearchAppliesTo.ToString();
                 sponsorViewModel.IsMandatory = sponsor.IsMandatory;
-                
+
+                if (sponsor.SiteType == SiteTypeEnum.WorldCheck)
+                    sponsorViewModel.SiteTypeText = "World Check";
+                else if (sponsor.SiteType == SiteTypeEnum.DMCExclusion)
+                    sponsorViewModel.SiteTypeText = "DMC Exclusion";
+                else if (sponsor.SiteType == SiteTypeEnum.Normal)
+                    sponsorViewModel.SiteTypeText = "Normal";
+                sponsorViewModel.SiteType = sponsor.SiteType;
+
                 var site = _UOW.SiteSourceRepository.FindById(sponsor.SiteId);
 
                 if (site == null)
@@ -1498,6 +1521,14 @@ namespace DDAS.Services.AppAdminService
                 defaultSiteViewModel.SearchAppliesTo = defaultSite.SearchAppliesTo;
                 defaultSiteViewModel.SearchAppliesToText = defaultSite.SearchAppliesTo.ToString();
                 //defaultSiteViewModel.ExcludeSI = defaultSite.ExcludeSI;
+                if (defaultSite.SiteType == SiteTypeEnum.WorldCheck)
+                    defaultSiteViewModel.SiteTypeText = "World Check";
+                else if(defaultSite.SiteType == SiteTypeEnum.DMCExclusion)
+                    defaultSiteViewModel.SiteTypeText = "DMC Exclusion";
+                else if (defaultSite.SiteType == SiteTypeEnum.Normal)
+                    defaultSiteViewModel.SiteTypeText = "Normal";
+                defaultSiteViewModel.SiteType = defaultSite.SiteType;
+
                 var site = _UOW.SiteSourceRepository.FindById(defaultSite.SiteId);
                 
                 if (site == null)
@@ -1561,9 +1592,25 @@ namespace DDAS.Services.AppAdminService
             //{
             //    defaultSite.ExtractionMode = ExtractionMode;
             //}
+
+            if(defaultSite.SiteType != SiteTypeEnum.Normal)
+            {
+                var Site =
+                    _UOW.DefaultSiteRepository.GetAll().Find(x =>
+                    x.SiteType == defaultSite.SiteType &&
+                    x.SearchAppliesTo == defaultSite.SearchAppliesTo &&
+                    x.RecId != defaultSite.RecId);
+                
+                if(Site != null)
+                {
+                    //site with same SearchAppliesTo and SiteType exists..
+                    return false;
+                }
+            }
+
             if (defaultSite.RecId == null)
             {
-                 _UOW.DefaultSiteRepository.Add(defaultSite);
+                _UOW.DefaultSiteRepository.Add(defaultSite);
                 return true;
             }
             else

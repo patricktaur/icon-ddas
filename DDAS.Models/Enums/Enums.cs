@@ -132,4 +132,11 @@
         NoIssues,
         IssuesNoted
     }
+
+    public enum SiteTypeEnum
+    {
+        Normal,
+        WorldCheck,
+        DMCExclusion
+    }
 }
