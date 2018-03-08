@@ -183,7 +183,7 @@ namespace DDAS.API.WS
             ir.dmc9002CheckDate = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
             ir.dmc9002Exclusion = "Exclusion";
 
-            investigatorResultsInvestigatorResultDdFindings irsddf = new investigatorResultsInvestigatorResultDdFindings();
+            investigatorResultsInvestigatorResultDdFindings[] irsddf = new investigatorResultsInvestigatorResultDdFindings[1];
             investigatorResultsInvestigatorResultDdFindingsFinding irsddff = new investigatorResultsInvestigatorResultDdFindingsFinding();
 
             irsddff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
@@ -193,7 +193,7 @@ namespace DDAS.API.WS
             irsddff.worldCheckFinding = "No";
             irsddff.comment = "TestInv";
 
-            irsddf.finding = irsddff;
+            irsddf[0].finding = irsddff;
             ir.ddFindings = irsddf;
 
             //irs.investigatorResult = ir; jojo
