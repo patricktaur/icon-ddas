@@ -1031,9 +1031,7 @@ namespace DDAS.API.Controllers
         //public IHttpActionResult GetSessionId()
         //{
         //    return Ok("abc");
-        //}
-
-        
+        //}   
 
         [Route("MoveReviewCompletedToCompleted")]
         [HttpGet]
