@@ -391,9 +391,6 @@ namespace DDAS.Services.Search
 
             oCheck.date = InstituteWorldCheckCompletedOn(form.SiteSources);
 
-            //****temporary, until date is nullable in xml payload
-            oCheck.date = oCheck.date == null ? new DateTime() : oCheck.date;
-
             oChecksCompleted.check = oCheck;
             oInstitutionsList.checksCompleted = oChecksCompleted;
             //oInstitutionsList.instituteComplianceIssue = true;
@@ -439,10 +436,6 @@ namespace DDAS.Services.Search
                 InvestigatorResult.ddStatus = "Available";
                 //InvestigatorResult.ddCompletedDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 InvestigatorResult.ddCompletedDate = InvestigatorDetail.ReviewCompletedOn;
-                
-                //****temporary, until date is nullable in xml payload
-                InvestigatorResult.ddCompletedDate =
-                    InvestigatorResult.ddCompletedDate == null ? new DateTime() : InvestigatorResult.ddCompletedDate;
 
                 investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = new investigatorResultsInvestigatorResultChecksCompleted();
                 investigatorResultsInvestigatorResultChecksCompletedCheck oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck();
@@ -450,10 +443,6 @@ namespace DDAS.Services.Search
                 oInvestigatorCheck.name = "investigator world check";
                 //oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 oInvestigatorCheck.date = InvestigatorWorldCheckCompletedOn(form.SiteSources);
-                
-                //****temporary, until date is nullable in xml payload
-                oInvestigatorCheck.date = 
-                    oInvestigatorCheck.date == null ? new DateTime() : oInvestigatorCheck.date;
 
                 oInvestigatorChecksCompleted.check = oInvestigatorCheck;
                 InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
@@ -479,10 +468,6 @@ namespace DDAS.Services.Search
 
                 InvestigatorResult.dmc9002CheckDate = DMCExclusionCompletedOn(form.SiteSources);
                 InvestigatorResult.dmc9002Exclusion = "Exclusion";
-
-                //****temporary, until date is nullable in xml payload
-                InvestigatorResult.dmc9002CheckDate =
-                    InvestigatorResult.dmc9002CheckDate == null ? new DateTime() : InvestigatorResult.dmc9002CheckDate;
 
                 var InvestigatorFindings = form.Findings.Where(x => 
                     x.InvestigatorSearchedId == InvestigatorDetail.Id &&
