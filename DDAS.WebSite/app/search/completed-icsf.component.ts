@@ -179,7 +179,13 @@ export class CompletedICSFComponent implements OnInit {
 
     exportToiSprint(complianceFormId: string){
             this.service.exportToiSprint(complianceFormId)
-            .subscribe((item: boolean) => {
+            .subscribe((item: string) => {
+                if(item != null && item.length > 0){
+                    alert('Could not export data to iSprint. Error Message: ' + item);
+                }
+                else{
+                    alert('data exported to iSprint successfully');
+                }
                 this.LoadPrincipalInvestigators();
             },
             error => {

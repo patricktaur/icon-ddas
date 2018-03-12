@@ -184,19 +184,21 @@ namespace DDAS.API.WS
             ir.dmc9002Exclusion = "Exclusion";
 
             investigatorResultsInvestigatorResultDdFindings irsddf = new investigatorResultsInvestigatorResultDdFindings();
-            investigatorResultsInvestigatorResultDdFindingsFinding irsddff = new investigatorResultsInvestigatorResultDdFindingsFinding();
+            investigatorResultsInvestigatorResultDdFindingsFinding[] irsddff = new investigatorResultsInvestigatorResultDdFindingsFinding[1];
+            investigatorResultsInvestigatorResultDdFindingsFinding irsddfff = new investigatorResultsInvestigatorResultDdFindingsFinding();
 
-            irsddff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-            irsddff.type = "Regulatory";
-            irsddff.regulatoryCode = "OAI";
-            irsddff.regulatoryDeficiency = "No";
-            irsddff.worldCheckFinding = "No";
-            irsddff.comment = "TestInv";
+            irsddfff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+            irsddfff.type = "Regulatory";
+            irsddfff.regulatoryCode = "OAI";
+            irsddfff.regulatoryDeficiency = "No";
+            irsddfff.worldCheckFinding = "No";
+            irsddfff.comment = "TestInv";
 
+            irsddff[0] = irsddfff;
             irsddf.finding = irsddff;
             ir.ddFindings = irsddf;
 
-            //irs.investigatorResult = ir; jojo
+            //irs.investigatorResult = ir; //jojo
             r.investigatorResults = irs;
 
             //>>>>>>>>>>>>>>>>>>>>>>
