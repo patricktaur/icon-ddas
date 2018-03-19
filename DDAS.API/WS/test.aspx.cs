@@ -130,11 +130,14 @@ namespace DDAS.API.WS
 
             institutions i = new institutions();
             institutionsChecksCompleted ichk = new institutionsChecksCompleted();
+            institutionsChecksCompletedCheck[] ichkchks = new institutionsChecksCompletedCheck[1];
+
             institutionsChecksCompletedCheck ichkchk = new institutionsChecksCompletedCheck();
             ichkchk.name = "institution world check";
             ichkchk.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
-            ichk.check = ichkchk;
+            ichkchks[0] = ichkchk;
+            ichk.check = ichkchks;
             i.checksCompleted = ichk;
             i.instituteComplianceIssue = true;
 

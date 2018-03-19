@@ -112,7 +112,7 @@ namespace DDAS.Models.ViewModels
         public partial class institutionsChecksCompleted
         {
             /// <remarks/>
-            public institutionsChecksCompletedCheck check { get; set; }
+            public institutionsChecksCompletedCheck[] check { get; set; }
         }
 
         /// <remarks/>
