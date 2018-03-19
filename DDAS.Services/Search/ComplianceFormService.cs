@@ -385,13 +385,20 @@ namespace DDAS.Services.Search
 
             institutions oInstitutionsList = new institutions();
             institutionsChecksCompleted oChecksCompleted = new institutionsChecksCompleted();
-            institutionsChecksCompletedCheck oCheck = new institutionsChecksCompletedCheck();
-            oCheck.name = "institution world check";
-            //oCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+            institutionsChecksCompletedCheck[] oChecks = new institutionsChecksCompletedCheck[2];
 
-            oCheck.date = InstituteWorldCheckCompletedOn(form.SiteSources);
+            institutionsChecksCompletedCheck oCheck1 = new institutionsChecksCompletedCheck();
 
-            oChecksCompleted.check = oCheck;
+            oCheck1.name = "institution world check";
+            oCheck1.date = InstituteWorldCheckCompletedOn(form.SiteSources);
+            oChecks[0] = oCheck1;
+
+            institutionsChecksCompletedCheck oCheck2 = new institutionsChecksCompletedCheck();
+            oCheck2.name = "foi";
+            oCheck2.date = form.ReviewCompletedOn;
+            oChecks[1] = oCheck2;
+
+            oChecksCompleted.check = oChecks;
             oInstitutionsList.checksCompleted = oChecksCompleted;
             //oInstitutionsList.instituteComplianceIssue = true;
             oInstitutionsList.instituteComplianceIssue = InstituteComplianceIssue(form.SiteSources);
@@ -467,7 +474,16 @@ namespace DDAS.Services.Search
                 //}
 
                 InvestigatorResult.dmc9002CheckDate = DMCExclusionCompletedOn(form.SiteSources);
-                InvestigatorResult.dmc9002Exclusion = "Exclusion";
+
+                if(InvestigatorResult.dmc9002CheckDate != null)
+                {
+                    var DMCSite = form.SiteSources.Find(x =>
+                    x.SiteType == SiteTypeEnum.DMCExclusion &&
+                    x.IssuesIdentified == true);
+
+                    if (DMCSite != null)
+                        InvestigatorResult.dmc9002Exclusion = DMCSite.IssuesIdentified.ToString();
+                }
 
                 var InvestigatorFindings = form.Findings.Where(x => 
                     x.InvestigatorSearchedId == InvestigatorDetail.Id &&
@@ -563,13 +579,15 @@ namespace DDAS.Services.Search
             xml = xml.Replace("</investigatorResult>", "");
             xml = xml.Replace("investigatorResultsInvestigatorResult>", "investigatorResult>");
 
-            //if(form.Findings.Count > 0)
-            //{
-                xml = xml.Replace("<finding>", "");
-                xml = xml.Replace("</finding>", "");
-                xml = xml.Replace("<investigatorResultsInvestigatorResultDdFindingsFinding>", "<finding>");
-                xml = xml.Replace("</investigatorResultsInvestigatorResultDdFindingsFinding>", "</finding>");
-            //}
+            xml = xml.Replace("<finding>", "");
+            xml = xml.Replace("</finding>", "");
+            xml = xml.Replace("<investigatorResultsInvestigatorResultDdFindingsFinding>", "<finding>");
+            xml = xml.Replace("</investigatorResultsInvestigatorResultDdFindingsFinding>", "</finding>");
+
+            xml = xml.Replace("<check>", "");
+            xml = xml.Replace("</check>", "");
+            xml = xml.Replace("<institutionsChecksCompletedCheck>", "<check>");
+            xml = xml.Replace("</institutionsChecksCompletedCheck>", "</check>");
 
             var objLog = new LogWSISPRINT();
 
