@@ -96,7 +96,7 @@
 							<th class="text-left">Active</th>
 							<th class="text-center">Searched on</th>
 							<th class="text-center">Assigned to</th>
-							<!-- <th class="text-left">Status</th> -->
+							 <th class="text-center">Exported to iSprint On</th> 
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -133,7 +133,7 @@
 							</td>
 
 							<td class="text-left">
-								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+								{{item.SearchStartedOn | date: 'dd MMM yyyy:hh mm'}}
 							</td>
 							<td class="text-left">
 								{{item.AssignedToFullName}}
@@ -142,18 +142,22 @@
 								<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
 							</td> -->
 							<td class="text-center">
+								{{item.ExportedToiSprintOn | date: 'dd MMM yyyy:hh mm'}}
+							</td>
+							<td class="text-center">
 								<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
-								 [attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
-								<span class="glyphicon glyphicon-download-alt"></span>
-							</button>
-							<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
-								(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="Undo">
-								<span class="glyphicon glyphicon-repeat"></span>
-							</button>
-							<button type="button" class="btn btn-sm btn-primary" 
-								(click)="exportToiSprint(item.RecId)" title="Export to iSprint">
-								<span class="glyphicon glyphicon-export"></span>
-							</button>
+								 	[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
+									<span class="glyphicon glyphicon-download-alt"></span>
+								</button>
+								<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
+									(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="Undo">
+									<span class="glyphicon glyphicon-repeat"></span>
+								</button>
+								<button type="button" class="btn btn-sm btn-primary" 
+									(click)="exportToiSprint(item.RecId)" title="Export to iSprint">
+									<span class="glyphicon glyphicon-export"></span>
+								</button>
+								<font color="maroon"><b>{{exportToiSprintResult}}</b></font>
 							<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
 							<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
 							</td>

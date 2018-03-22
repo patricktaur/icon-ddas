@@ -1060,11 +1060,12 @@ namespace DDAS.API.Controllers
             {
                 Form.ExportedToiSprintOn = DateTime.Now;
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
-                return Ok();
+                return Ok("Data exported to iSprint");
             }
             else
             {
-                return Ok(ExportResponse.Message);
+                return Ok("Failed to export data to iSprint");
+                //return Ok(ExportResponse.Message);
             }
         }
 

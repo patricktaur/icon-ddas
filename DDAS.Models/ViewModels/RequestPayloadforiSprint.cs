@@ -213,7 +213,7 @@ namespace DDAS.Models.ViewModels
         public partial class investigatorResultsInvestigatorResultChecksCompleted
         {
             /// <remarks/>
-            public investigatorResultsInvestigatorResultChecksCompletedCheck check { get; set; }
+            public investigatorResultsInvestigatorResultChecksCompletedCheck[] check { get; set; }
         }
 
         /// <remarks/>
