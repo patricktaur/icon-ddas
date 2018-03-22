@@ -284,12 +284,17 @@ namespace DDAS.Services.Search
             form.ProjectNumber = DR.project.projectNumber;
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
             form.Institute = DR.institute.name;
-            form.Address = (DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  ", " ");
+            form.Address = (
+                DR.institute.address1 + " " + 
+                DR.institute.address2 + " " + 
+                DR.institute.city + " " + 
+                DR.institute.stateProvince + " " + 
+                DR.institute.zipCode).Replace("  ", " ");
+
             form.Country = DR.institute.country;
 
             AddCountrySpecificSites(form);
             AddSponsorSpecificSites(form);
-
 
             int InvId = 1;
             int PrincipleInvestigatorCount = 0;
@@ -301,17 +306,22 @@ namespace DDAS.Services.Search
                 InvId += 1;
 
                 Investigator.Name = d.nameWithQualification.Trim();
-                Investigator.FirstName = d.firstName.Trim();
-                Investigator.MiddleName = d.middleName.Trim();
-                Investigator.LastName = d.lastName.Trim();
+                Investigator.FirstName = d.firstName == null ? "" : d.firstName.Trim();
+                Investigator.MiddleName = d.middleName == null ? "" : d.middleName.Trim();
+                Investigator.LastName = d.lastName == null ? "" : d.lastName.Trim();
 
+                if (Investigator.SearchName == null ||
+                    Investigator.SearchName == "" ||
+                    Investigator.SearchName.Split(' ').Count() <= 1)
+                {
+                    throw new Exception("Provide atleast two name components(first/middle/last) to carry out the search");
+                }
 
                 Investigator.MedicalLiceseNumber = d.licenceNumber;
                 Investigator.MemberId = d.memberId;
                 Investigator.InvestigatorId = d.investigatorId;
 
                 form.InvestigatorDetails.Add(Investigator);
-
 
                 if (d.role.ToString().ToLower() == "pi")
                 {
