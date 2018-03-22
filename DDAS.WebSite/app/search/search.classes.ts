@@ -166,6 +166,7 @@ export class PrincipalInvestigatorDetails {
     SubInvestigators: SubInvestigator[] = [];
     CurrentReviewStatus: ReviewStatusEnum;
     InputSource: string;
+    ExportedToiSprintOn: Date;
 }
 
 export class SubInvestigator {
@@ -222,6 +223,7 @@ export class ComplianceFormA {
     QCGeneralComments: Comment[];
     QCAttachmentComments: Comment[];
     InputSource: string;
+    ExportedToiSprintOn: Date;
 }
 
 export class InvestigatorSearched {

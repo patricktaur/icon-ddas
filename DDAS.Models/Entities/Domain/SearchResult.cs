@@ -533,6 +533,7 @@ namespace DDAS.Models.Entities.Domain
             new List<SubInvestigator>();
         public ReviewStatusEnum CurrentReviewStatus { get; set; }
         public string InputSource { get; set; }
+        public DateTime? ExportedToiSprintOn { get; set; }
 
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }

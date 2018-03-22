@@ -40,7 +40,7 @@ export class CompletedICSFComponent implements OnInit {
     public recId: string;
     public pageNumber: number = 1;
     public undoComment: string = "";
-
+    public exportToiSprintResult: string = "";
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -51,6 +51,7 @@ export class CompletedICSFComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.exportToiSprintResult = "";
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
         this.LoadPrincipalInvestigators();
@@ -180,16 +181,14 @@ export class CompletedICSFComponent implements OnInit {
     exportToiSprint(complianceFormId: string){
             this.service.exportToiSprint(complianceFormId)
             .subscribe((item: string) => {
-                if(item != null && item.length > 0){
-                    alert('Could not export data to iSprint. Error Message: ' + item);
+                if(item.indexOf("Failed") > -1){
+                    alert(item);
                 }
-                else{
-                    alert('data exported to iSprint successfully');
-                }
+                this.exportToiSprintResult = item;
                 this.LoadPrincipalInvestigators();
             },
             error => {
-
+                this.exportToiSprintResult = "failed to export data to iSprint";
             });
     }
 
