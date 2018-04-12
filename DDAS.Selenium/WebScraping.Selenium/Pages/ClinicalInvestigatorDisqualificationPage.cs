@@ -287,7 +287,8 @@ namespace WebScraping.Selenium.Pages
                 var ErrorCaptureFilePath =
                     _config.ErrorScreenCaptureFolder +
                     "Error_DisqualificationProceedings_" +
-                    DateTime.Now.ToString("dd MMM yyyy hh_mm");
+                    DateTime.Now.ToString("dd MMM yyyy hh_mm")
+                    + ".jpeg";
                 SaveScreenShot(ErrorCaptureFilePath);
 
                 _DisqualificationSiteData.DataExtractionSucceeded = false;

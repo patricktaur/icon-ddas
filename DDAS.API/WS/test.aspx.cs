@@ -169,7 +169,6 @@ namespace DDAS.API.WS
             ir.firstName = "Srinivas";
             ir.middleName = "A";
             ir.lastName = "Suri";
-            ir.ddStatus = "Available";
             ir.ddCompletedDate = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
 
 
