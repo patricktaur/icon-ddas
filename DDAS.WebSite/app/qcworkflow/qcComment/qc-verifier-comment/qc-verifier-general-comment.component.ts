@@ -10,6 +10,8 @@ import { Comment } from '../../../search/search.classes';
 export class QCVerifierGeneralCommentComponent implements OnInit {
     @Input() Comment: Comment;
     @Input() Title: string;
+    @Input() CanRemoveComment: boolean;
+    @Output() Remove = new EventEmitter();
     @Output() ValueChanged = new EventEmitter();
 
     private pageChanged: boolean = false;
@@ -39,6 +41,10 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
         this.Comment.FindingComment = this.tempText;
         // this.Comment.CategoryEnum = this.tempNumber;
         this.ValueChanged.emit();
+    }
+
+    RemoveClicked(){
+        this.Remove.emit();
     }
 
     get diagnostic() { return JSON.stringify(this.Comment); }

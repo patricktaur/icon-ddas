@@ -16,14 +16,13 @@ export class SponsorSpecificSiteEditComponent implements OnInit {
     public SponsorSpecificSite: SponsorProtocol = new SponsorProtocol;
     public pageNumber: number;
     public formLoading: boolean;
-    
     private RecId: string;
-
-     private processing: boolean;
-     public isNew: boolean = false;
+    private processing: boolean;
+    public isNew: boolean = false;
     public isNewText: string = "";    
     public SiteSources: any[];
-    
+    public error: string = "";
+
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,
@@ -66,7 +65,7 @@ export class SponsorSpecificSiteEditComponent implements OnInit {
         this.service.getSponsorProtocol(this.RecId)
         .subscribe((item: any) => {
             this.SponsorSpecificSite = item;
-            });        
+            });
         }
     }
 
@@ -78,8 +77,12 @@ export class SponsorSpecificSiteEditComponent implements OnInit {
    
    Save() {
         this.service.saveSponsorProtocol(this.SponsorSpecificSite)
-            .subscribe((item: any) => {
-                this.router.navigate(["/manage-sponsor-protocol"]);
+            .subscribe((item: boolean) => {
+                if(!item){
+                    this.error = "Sponsor specific site with same settings already exists";
+                }
+                else
+                    this.router.navigate(["/manage-sponsor-protocol"]);
             },
             error => {
 
@@ -94,8 +97,23 @@ export class SponsorSpecificSiteEditComponent implements OnInit {
         return items;
     }
     
+    get siteTypes(){
+        var items: { id: number, name: string } [] = [
+            { "id":0, "name":"Normal" },
+            // { "id":1, "name":"World Check" },
+            { "id":2, "name": "DMC Exclusion"}];
+        return items;
+    }
+
     CancelSave() {
         this.router.navigate(["/manage-sponsor-protocol"]);
+    }
+
+    get canShowError(){
+        if(this.error.length > 0)
+            return true;
+        else
+            return false;
     }
 
     get diagnostic() { return JSON.stringify(this.test); }

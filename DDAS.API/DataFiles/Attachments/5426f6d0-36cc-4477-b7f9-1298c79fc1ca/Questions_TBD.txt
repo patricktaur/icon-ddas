@@ -1,0 +1,17 @@
+1. Archive extracted zip files for SAM site.
+2. Explore 'Sounds like' for database search
+3. DB log should have one boolean value for each entry - Detect extraction errors and display to users
+3a. Some sites may have a Pop-up or alert window when accessed. In such cases,
+   window is not captured and PageElement not found exception is thrown
+3b. Screenshot is not saved/captured while reading PageLastUpdated element
+3c. If a site has extraction errors regularly, need to indicate to the user 
+   that the site was last updated on 'this date'
+3d. Should we retain the extraction entries for sites which download files ?
+9. Any page on 'Refresh' return a 404
+10. Findings marked as 'Not an Issue' are appearing in the ICSF
+11. 'Date of inspection' for a matched record (coming from db) can be null. should we provide a date filter?
+12. Provision to download DB extraction log
+
+
+13. Date of Inspection for PHS site cannot be added as the date is within a free flowing text (sentence).
+    There's no provision for the user to add Date of Inspection

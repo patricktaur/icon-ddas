@@ -130,11 +130,14 @@ namespace DDAS.API.WS
 
             institutions i = new institutions();
             institutionsChecksCompleted ichk = new institutionsChecksCompleted();
-            institutionsChecksCompletedCheck ichkchk = new institutionsChecksCompletedCheck();
-            ichkchk.name = "institution world check";
-            ichkchk.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
 
-            ichk.check = ichkchk;
+            institutionsChecksCompletedCheck[] ichkchks = new institutionsChecksCompletedCheck[1];
+            institutionsChecksCompletedCheck ichkchk1 = new institutionsChecksCompletedCheck();
+            ichkchk1.name = "institution world check";
+            ichkchk1.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+
+            ichkchks[0] = ichkchk1;
+            ichk.check = ichkchks;
             i.checksCompleted = ichk;
             i.instituteComplianceIssue = true;
 
@@ -171,10 +174,10 @@ namespace DDAS.API.WS
 
 
             investigatorResultsInvestigatorResultChecksCompleted irschk = new investigatorResultsInvestigatorResultChecksCompleted();
-            investigatorResultsInvestigatorResultChecksCompletedCheck irschkchk = new investigatorResultsInvestigatorResultChecksCompletedCheck();
+            investigatorResultsInvestigatorResultChecksCompletedCheck[] irschkchk = new investigatorResultsInvestigatorResultChecksCompletedCheck[1];
 
-            irschkchk.name = "investigator world check";
-            irschkchk.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+            irschkchk[0].name = "investigator world check";
+            irschkchk[0].date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
 
             irschk.check = irschkchk;
             ir.checksCompleted = irschk;
@@ -184,19 +187,21 @@ namespace DDAS.API.WS
             ir.dmc9002Exclusion = "Exclusion";
 
             investigatorResultsInvestigatorResultDdFindings irsddf = new investigatorResultsInvestigatorResultDdFindings();
-            investigatorResultsInvestigatorResultDdFindingsFinding irsddff = new investigatorResultsInvestigatorResultDdFindingsFinding();
+            investigatorResultsInvestigatorResultDdFindingsFinding[] irsddff = new investigatorResultsInvestigatorResultDdFindingsFinding[1];
+            investigatorResultsInvestigatorResultDdFindingsFinding irsddfff = new investigatorResultsInvestigatorResultDdFindingsFinding();
 
-            irsddff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
-            irsddff.type = "Regulatory";
-            irsddff.regulatoryCode = "OAI";
-            irsddff.regulatoryDeficiency = "No";
-            irsddff.worldCheckFinding = "No";
-            irsddff.comment = "TestInv";
+            irsddfff.date = DateTime.ParseExact("2017-08-20", "yyyy-MM-dd", ci);
+            irsddfff.type = "Regulatory";
+            irsddfff.regulatoryCode = "OAI";
+            irsddfff.regulatoryDeficiency = "No";
+            irsddfff.worldCheckFinding = "No";
+            irsddfff.comment = "TestInv";
 
+            irsddff[0] = irsddfff;
             irsddf.finding = irsddff;
             ir.ddFindings = irsddf;
 
-            //irs.investigatorResult = ir; jojo
+            //irs.investigatorResult = ir; //jojo
             r.investigatorResults = irs;
 
             //>>>>>>>>>>>>>>>>>>>>>>

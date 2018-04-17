@@ -154,11 +154,12 @@ namespace DDAS.API.Controllers
         public IHttpActionResult AddSponsor(SponsorProtocol sponsor)
         {
             var result = _AppAdminService.AddSponsor(sponsor);
-            if (result)
-                return Ok("sponsor: " + sponsor.SponsorProtocolNumber +
-                    " added successfully");
-            else
-                return Ok("could not add sponsor protocol");
+            return Ok(result);
+            //if (result)
+            //    return Ok("sponsor: " + sponsor.SponsorProtocolNumber +
+            //        " added successfully");
+            //else
+            //    return Ok("could not add sponsor protocol");
         }
 
         [Route("GetSponsorProtocols")]
@@ -213,9 +214,10 @@ namespace DDAS.API.Controllers
 
         [Route("SaveDefaultSite")]
         [HttpPost]
-        public IHttpActionResult UpdateDefaultSource(DefaultSite DefaultSite)
+        public IHttpActionResult SaveOrUpdateDefaultSource(DefaultSite DefaultSite)
         {
-            return Ok(_AppAdminService.UpdateDefaultSite(DefaultSite));
+            var Status = _AppAdminService.UpdateDefaultSite(DefaultSite);
+            return Ok(Status);
         }
 
         [Route("DeleteDefaultSite")]
@@ -227,8 +229,6 @@ namespace DDAS.API.Controllers
             return Ok(true);
         }
         #endregion
-
-        
 
         #region GetExceptionLogs
 

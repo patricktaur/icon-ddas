@@ -36,6 +36,7 @@
 				<th class="text-left">Country</th>
 				<th class="text-center">Searched on</th>
 				<th class="text-left">Status</th>
+				<th class="text-left">Input Source</th>
 				<th class="text-center">Actions</th>
 			</tr>
 		</thead>
@@ -51,11 +52,14 @@
 						<ul class="dropdown-menu" aria-labelledby="dLabel" *ngIf="item.SubInvestigators.length > 0">
 							<li *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>							
 						</ul>-->
-						<h5> <a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
-							<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+						<h5> 
+							<div *ngIf="item.SubInvestigators.length == 0">
+								{{item.Name}} 
+							</div>
+							<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> {{item.Name}} 
+								<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 							</a>
 						</h5>
-
 						<div class="panel-group" role="tablist" style="border:0">
 							<div class="panel panel-default" style="border:0">
 								<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
@@ -76,23 +80,21 @@
 				</td>
 				<td class="text-left">
 					{{item.Country}}
-
 				</td>
 				<td class="text-center">
 					{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
-
 				</td>
 				<td align="center">
 					<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
 					<div *ngIf="item.ExtractionPendingInvestigatorCount > 0" class="glyphicon glyphicon-search" title="Data Extraction pending, Estimated:{{item.EstimatedExtractionCompletionWithin}}"></div>
 					<!--glyphicon glyphicon-transfer-->
 				</td>
+				<td class="text-left">
+					{{item.InputSource}}
+				</td>
 				<td>
-
 					<!--<button type="button" class="btn btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator: ' + item.Name)"
 						title="Download Compliance Form"><span class="glyphicon glyphicon-download-alt" ></span></button>-->
-
-
 					<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Opens"><span class="glyphicon glyphicon-folder-open" ></span></button>
 				</td>
 			</tr>

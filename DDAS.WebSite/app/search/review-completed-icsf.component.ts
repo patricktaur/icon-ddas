@@ -28,7 +28,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public basicOptions: Object;
     public progress: number = 0;
     public response: any = {};
-    public Loading: boolean = false;
+    public loading: boolean = false;
     public uploadUrl: string;
     private error: any;
 
@@ -69,6 +69,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     public requestorComment: string;
     private SessionId: string;
     public files : File[] = [];
+    public undoComment: string = "";
 
     constructor(
         private route: ActivatedRoute,
@@ -171,10 +172,14 @@ export class ReviewCompletedICSFComponent implements OnInit {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
+        this.loading = true;
         this.service.getClosedComplianceFormFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
-                
+                this.loading = false;
+            }, 
+            error => {
+                this.loading = false;
             });
 
         // this.service.getMyReviewCompletedPrincipalInvestigators()
@@ -235,7 +240,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     UploadFile() {
-        this.Loading = false;
+        this.loading = false;
     }
 
     GenerateComplianceForm(inv: PrincipalInvestigatorDetails) {   //(formid: string){
@@ -433,7 +438,8 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     undoQCRequest(){
-        this.service.undo(this.complianceFormId, UndoEnum.UndoQCRequest)
+        this.service.undo(
+            this.complianceFormId, UndoEnum.UndoQCRequest, this.undoComment)
         .subscribe((item: boolean) =>{
             this.LoadPrincipalInvestigators();
         },

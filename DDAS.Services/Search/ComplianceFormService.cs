@@ -41,18 +41,23 @@ namespace DDAS.Services.Search
         }
 
          //Patrick: 7Jan2018 For use in ExtractDataService
-         public IConfig Config { get {
+        public IConfig Config
+        {
+            get
+            {
                 return _config;
-            } }
+            }
+        }
 
         #region ComplianceFormCreationNUpdates
 
         //Patrick 27Nov2016 
-        public ComplianceForm GetNewComplianceForm(string UserName)
+        public ComplianceForm GetNewComplianceForm(string UserName, string InputSource)
         {
             ComplianceForm newForm = new ComplianceForm();
             newForm.AssignedTo = UserName;
             newForm.SearchStartedOn = DateTime.Now;
+            newForm.InputSource = InputSource;
 
             var review = new Review();
             review.RecId = Guid.NewGuid();
@@ -60,8 +65,8 @@ namespace DDAS.Services.Search
             review.AssignedBy = UserName;
             review.AssignedOn = DateTime.Now;
             review.ReviewerRole = ReviewerRoleEnum.Reviewer;
-
             newForm.Reviews.Add(review);
+
             AddMandatorySitesToComplianceForm(newForm);
             return newForm;
         }
@@ -200,10 +205,8 @@ namespace DDAS.Services.Search
 
             for (int Index = 0; Index < InputRows.Count; Index++)
             {
-                var form = GetNewComplianceForm(UserName);
+                var form = GetNewComplianceForm(UserName, "Batch-Upload");
 
-                //Already assigning the name in GetNewComplianceForm
-                //form.AssignedTo = UserName;
                 form.UploadedFileName = UploadedFileName;
                 form.GeneratedFileName =
                     Path.GetFileName(FilePathWithGUID);
@@ -271,8 +274,7 @@ namespace DDAS.Services.Search
 
         public ComplianceForm ImportIsprintData(ddRequest DR)
         {
-
-            var form = GetNewComplianceForm("");
+            var form = GetNewComplianceForm("", "iSprint");
 
             if (!IsValidProjectNumber(DR.project.projectNumber))
             {
@@ -282,12 +284,17 @@ namespace DDAS.Services.Search
             form.ProjectNumber = DR.project.projectNumber;
             form.SponsorProtocolNumber = DR.project.sponsorProtocolNumber;
             form.Institute = DR.institute.name;
-            form.Address = (DR.institute.address1 + " " + DR.institute.address2 + " " + DR.institute.city + " " + DR.institute.stateProvince + " " + DR.institute.zipCode).Replace("  ", " ");
+            form.Address = (
+                DR.institute.address1 + " " + 
+                DR.institute.address2 + " " + 
+                DR.institute.city + " " + 
+                DR.institute.stateProvince + " " + 
+                DR.institute.zipCode).Replace("  ", " ");
+
             form.Country = DR.institute.country;
 
             AddCountrySpecificSites(form);
             AddSponsorSpecificSites(form);
-
 
             int InvId = 1;
             int PrincipleInvestigatorCount = 0;
@@ -299,17 +306,22 @@ namespace DDAS.Services.Search
                 InvId += 1;
 
                 Investigator.Name = d.nameWithQualification.Trim();
-                Investigator.FirstName = d.firstName.Trim();
-                Investigator.MiddleName = d.middleName.Trim();
-                Investigator.LastName = d.lastName.Trim();
+                Investigator.FirstName = d.firstName == null ? "" : d.firstName.Trim();
+                Investigator.MiddleName = d.middleName == null ? "" : d.middleName.Trim();
+                Investigator.LastName = d.lastName == null ? "" : d.lastName.Trim();
 
+                if (Investigator.SearchName == null ||
+                    Investigator.SearchName == "" ||
+                    Investigator.SearchName.Split(' ').Count() <= 1)
+                {
+                    throw new Exception("Provide atleast two name components(first/middle/last) to carry out the search");
+                }
 
                 Investigator.MedicalLiceseNumber = d.licenceNumber;
                 Investigator.MemberId = d.memberId;
                 Investigator.InvestigatorId = d.investigatorId;
 
                 form.InvestigatorDetails.Add(Investigator);
-
 
                 if (d.role.ToString().ToLower() == "pi")
                 {
@@ -383,13 +395,17 @@ namespace DDAS.Services.Search
 
             institutions oInstitutionsList = new institutions();
             institutionsChecksCompleted oChecksCompleted = new institutionsChecksCompleted();
-            institutionsChecksCompletedCheck oCheck = new institutionsChecksCompletedCheck();
-            oCheck.name = "institution world check";
-            oCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+            institutionsChecksCompletedCheck[] oCheck = new institutionsChecksCompletedCheck[1];
 
+            institutionsChecksCompletedCheck oCheck1 = new institutionsChecksCompletedCheck();
+            oCheck1.name = "institution world check";
+            oCheck1.date = InstituteWorldCheckCompletedOn(form.SiteSources);
+
+            oCheck[0] = oCheck1;
             oChecksCompleted.check = oCheck;
             oInstitutionsList.checksCompleted = oChecksCompleted;
-            oInstitutionsList.instituteComplianceIssue = true;
+            //oInstitutionsList.instituteComplianceIssue = true;
+            oInstitutionsList.instituteComplianceIssue = InstituteComplianceIssue(form.SiteSources);
 
             //institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
             //institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
@@ -418,7 +434,7 @@ namespace DDAS.Services.Search
 
             investigatorResultsInvestigatorResult[] arrInvestigatorResult = new investigatorResultsInvestigatorResult[form.InvestigatorDetails.Count];
             Int32 elem = 0;
-
+            Int32 Index = 0;
             foreach (var InvestigatorDetail in form.InvestigatorDetails)
             {
                 var InvestigatorResult = new investigatorResultsInvestigatorResult();
@@ -429,52 +445,105 @@ namespace DDAS.Services.Search
                 InvestigatorResult.middleName = InvestigatorDetail.MiddleName.ToString();
                 InvestigatorResult.lastName = InvestigatorDetail.LastName.ToString();
                 InvestigatorResult.ddStatus = "Available";
-                InvestigatorResult.ddCompletedDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-
+                //InvestigatorResult.ddCompletedDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                InvestigatorResult.ddCompletedDate = InvestigatorDetail.ReviewCompletedOn;
 
                 investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = new investigatorResultsInvestigatorResultChecksCompleted();
-                investigatorResultsInvestigatorResultChecksCompletedCheck oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck();
+                investigatorResultsInvestigatorResultChecksCompletedCheck[] oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck[2];
 
-                //oInvestigatorCheck.name = "investigator world check";
+                investigatorResultsInvestigatorResultChecksCompletedCheck oInvCheck1 = new investigatorResultsInvestigatorResultChecksCompletedCheck();
+
+                oInvCheck1.name = "investigator world check";
                 //oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                oInvCheck1.date = InvestigatorWorldCheckCompletedOn(form.SiteSources);
+                oInvestigatorCheck[0] = oInvCheck1;
 
-                var WorldCheckPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.WorldCheckPage);
-                if (WorldCheckPage != null)
+                investigatorResultsInvestigatorResultChecksCompletedCheck oInvCheck2 = new investigatorResultsInvestigatorResultChecksCompletedCheck();
+                oInvCheck2.name = "foi";
+                oInvCheck2.date = InvestigatorDetail.ReviewCompletedOn;
+                oInvestigatorCheck[1] = oInvCheck2;
+
+                oInvestigatorChecksCompleted.check = oInvestigatorCheck;
+                InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+
+                //var WorldCheckPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.WorldCheckPage);
+                //if (WorldCheckPage != null)
+                //{
+                //    oInvestigatorCheck.name = "investigator world check";
+                //    if (WorldCheckPage.SiteSourceUpdatedOn != null)
+                //        oInvestigatorCheck.date = DateTime.ParseExact(WorldCheckPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //    oInvestigatorChecksCompleted.check = oInvestigatorCheck;
+                //    InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+                //}
+
+                //var DMCExclusionPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.PfizerDMCChecksPage);
+
+                //if (DMCExclusionPage != null)
+                //{
+                //    InvestigatorResult.dmc9002Exclusion = "Exclusion";
+                //    if (DMCExclusionPage.SiteSourceUpdatedOn != null)
+                //        InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DMCExclusionPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
+                //}
+
+                InvestigatorResult.dmc9002CheckDate = DMCExclusionCompletedOn(form.SiteSources);
+
+                var DMCSite = form.SiteSources.Find(x =>
+                x.SiteType == SiteTypeEnum.DMCExclusion);
+
+                if (DMCSite != null)
+                    InvestigatorResult.dmc9002Exclusion = DMCSite.IssuesIdentified.ToString();
+
+                var InvestigatorFindings = form.Findings.Where(x => 
+                    x.InvestigatorSearchedId == InvestigatorDetail.Id &&
+                    x.IsAnIssue)
+                    .ToList();
+
+                investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = 
+                    new investigatorResultsInvestigatorResultDdFindings();
+
+                investigatorResultsInvestigatorResultDdFindingsFinding[] oInvFindings =
+                    new investigatorResultsInvestigatorResultDdFindingsFinding[InvestigatorFindings.Count()];
+
+                Index = 0;
+                foreach(Finding finding in InvestigatorFindings)
                 {
-                    oInvestigatorCheck.name = "investigator world check";
-                    if (WorldCheckPage.SiteSourceUpdatedOn != null)
-                        oInvestigatorCheck.date = DateTime.ParseExact(WorldCheckPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci); 
-                    oInvestigatorChecksCompleted.check = oInvestigatorCheck;
-                    InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
+                    var Observation = "";
+                    investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = 
+                        new investigatorResultsInvestigatorResultDdFindingsFinding();
+
+                    oInvestigatorFinding.date = finding.DateOfInspection;
+
+                    var Site = form.SiteSources.Find(x => x.SiteEnum == finding.SiteEnum);
+                    if (Site != null)
+                    {
+                        Observation = Site.SiteName;
+                        Observation += "_" + finding.Observation;
+                    }
+                    else
+                        Observation = finding.Observation;
+
+                    //Pradeep 08Mar2018
+                    //as per the mail from Moore Damien on 01Mar2018, setting up character limit to 32000
+                    if (Observation.Length > 32000)
+                    {
+                        Observation = Observation.Remove(31997);
+                        Observation += "...";
+                    }
+
+                    oInvestigatorFinding.comment = Observation;
+
+                    oInvFindings[Index] = oInvestigatorFinding;
+                    //oInvestigatorFindings.finding = oInvFindings;
+                    Index += 1;
                 }
-
-
-                var DMCExclusionPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.PfizerDMCChecksPage);
-
-                if (DMCExclusionPage != null)
-                {
-                    InvestigatorResult.dmc9002Exclusion = "Exclusion";
-                    if (DMCExclusionPage.SiteSourceUpdatedOn != null)
-                        InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DMCExclusionPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                }
-
-                //InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                //InvestigatorResult.dmc9002Exclusion = "Exclusion";
-
-                //investigatorResultsInvestigatorResultDdFindings oInvestigatorFindings = new investigatorResultsInvestigatorResultDdFindings();
-                //investigatorResultsInvestigatorResultDdFindingsFinding oInvestigatorFinding = new investigatorResultsInvestigatorResultDdFindingsFinding();
-
-                //oInvestigatorFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 //oInvestigatorFinding.type = "Regulatory";
                 //oInvestigatorFinding.regulatoryCode = "OAI";
                 //oInvestigatorFinding.regulatoryDeficiency = "No";
                 //oInvestigatorFinding.worldCheckFinding = "No";
-                //oInvestigatorFinding.comment = "TestInv";
 
-                //oInvestigatorFindings.finding = oInvestigatorFinding;
-
-                ////Optional
-                //InvestigatorResult.ddFindings = oInvestigatorFindings;
+                //Optional
+                oInvestigatorFindings.finding = oInvFindings;
+                InvestigatorResult.ddFindings = oInvestigatorFindings;
 
                 arrInvestigatorResult[elem] = InvestigatorResult;
 
@@ -497,7 +566,6 @@ namespace DDAS.Services.Search
             //Add Body to Envelope
             oEnvelope.Body = oBody;
 
-
             XmlSerializer xsSubmit = new XmlSerializer(typeof(Envelope));
             //var subReq = new MyObject();
             string xml = "";
@@ -514,6 +582,20 @@ namespace DDAS.Services.Search
             xml = xml.Replace("<investigatorResult>", "");
             xml = xml.Replace("</investigatorResult>", "");
             xml = xml.Replace("investigatorResultsInvestigatorResult>", "investigatorResult>");
+
+            xml = xml.Replace("<finding>", "");
+            xml = xml.Replace("</finding>", "");
+            xml = xml.Replace("<investigatorResultsInvestigatorResultDdFindingsFinding>", "<finding>");
+            xml = xml.Replace("</investigatorResultsInvestigatorResultDdFindingsFinding>", "</finding>");
+
+            xml = xml.Replace("<check>", "");
+            xml = xml.Replace("</check>", "");
+            
+            xml = xml.Replace("<institutionsChecksCompletedCheck>", "<check>");
+            xml = xml.Replace("</institutionsChecksCompletedCheck>", "</check>");
+
+            xml = xml.Replace("<investigatorResultsInvestigatorResultChecksCompletedCheck>", "<check>");
+            xml = xml.Replace("</investigatorResultsInvestigatorResultChecksCompletedCheck>", "</check>");
 
             var objLog = new LogWSISPRINT();
 
@@ -549,12 +631,10 @@ namespace DDAS.Services.Search
             public override Encoding Encoding => Encoding.UTF8;
         }
 
-
         public iSprintResponseModel.DDtoIsprintResponse PostToIsprintWebService(string RequestPayload, out string sRetVal)
         {
             var resp = new iSprintResponseModel.DDtoIsprintResponse();
             resp.Success = false;
-
 
             //HttpWebRequest req = (HttpWebRequest)WebRequest.Create("http://fmsoadev.iconplc.com/soa-infra/services/ClinOps_ClientServices/initiateDDASiSprintFindings/DDASiSprintFindings?WSDL");
             var iSprintURL = System.Configuration.ConfigurationManager.AppSettings["IsprintWS"];
@@ -615,8 +695,6 @@ namespace DDAS.Services.Search
 
             return resp;
         }
-
-
 
         //public String PostToIsprintWebService(string RequestPayload, ref Stream dataStreamResponse)
         //{
@@ -1157,12 +1235,18 @@ namespace DDAS.Services.Search
                     }
                 }
             }
-             
-            if (Form.QCGeneralComment != null && Form.QCGeneralComment.AddedOn == null)
-                Form.QCGeneralComment.AddedOn = DateTime.Now;
 
-            if (Form.QCAttachmentComment != null && Form.QCAttachmentComment.AddedOn == null)
-                Form.QCAttachmentComment.AddedOn = DateTime.Now;
+            Form.QCGeneralComments.ForEach(x =>
+            {
+                if (x.AddedOn == null)
+                    x.AddedOn = DateTime.Now;
+            });
+
+            Form.QCAttachmentComments.ForEach(x =>
+            {
+                if (x.AddedOn == null)
+                    x.AddedOn = DateTime.Now;
+            });
 
             RollUpSummary(Form);
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
@@ -1331,7 +1415,7 @@ namespace DDAS.Services.Search
             siteSourceToAdd.ExtractionMode = sourceSite.ExtractionMode;
             siteSourceToAdd.SearchAppliesTo = siteToAdd.SearchAppliesTo;
             siteSourceToAdd.SearchAppliesToText = siteToAdd.SearchAppliesTo.ToString().Replace("_", " ");
-
+            siteSourceToAdd.SiteType = siteToAdd.SiteType;
             //siteSourceToAdd.ExcludePI = siteToAdd.ExcludePI;
             //siteSourceToAdd.ExcludeSI = siteToAdd.ExcludeSI;
 
@@ -2459,6 +2543,7 @@ namespace DDAS.Services.Search
         private PrincipalInvestigator getPrincipalInvestigators(ComplianceForm compForm)
         {
             var item = new PrincipalInvestigator();
+            item.InputSource = compForm.InputSource;
             item.Address = compForm.Address;
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;
@@ -2471,6 +2556,8 @@ namespace DDAS.Services.Search
             item.CurrentReviewStatus = compForm.CurrentReviewStatus;
             item.Reviewer = compForm.Reviewer;
             item.QCVerifier = compForm.QCVerifier;
+            item.ExportedToiSprintOn = compForm.ExportedToiSprintOn;
+
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
@@ -2539,6 +2626,8 @@ namespace DDAS.Services.Search
                 CompFormFilter.InvestigatorName != "")
             {
                 Filter1 = Filter1.FindAll(x =>
+                x.InvestigatorDetails.Count > 0 &&
+                x.InvestigatorDetails.FirstOrDefault().Name != null &&
                 x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
                 .Contains(
                     CompFormFilter.InvestigatorName.ToLower()));
@@ -4616,33 +4705,38 @@ namespace DDAS.Services.Search
             foreach (ComplianceForm form in forms)
             {
                 DateTime? WorldCheckCompletedOn = null;
-                DateTime? InstituteWorldCheckCompletedOn = null;
+                DateTime? InsWorldCheckCompletedOn = null;
                 DateTime? DMCCheckCompletedOn = null;
 
                 foreach (InvestigatorSearched Investigator in form.InvestigatorDetails)
                 {
-                    var WorldCheckSite =
-                        form.SiteSources.Where(x =>
-                        x.SiteEnum == SiteEnum.WorldCheckPage).FirstOrDefault();
+                    //var InvestigatorWorldCheck =
+                    //    form.SiteSources.Find(x =>
+                    //    x.SiteType == SiteTypeEnum.WorldCheck &&
+                    //    x.SearchAppliesTo == SearchAppliesToEnum.PIs);
 
-                    if (WorldCheckSite != null)
-                        WorldCheckCompletedOn = WorldCheckSite.SiteSourceUpdatedOn;
+                    //if (InvestigatorWorldCheck != null)
+                    //    WorldCheckCompletedOn = InvestigatorWorldCheck.SiteSourceUpdatedOn;
 
-                    var InstituteSite = form.SiteSources.Where(x =>
-                    x.SiteEnum == SiteEnum.WorldCheckPage &&
-                    x.SearchAppliesTo == SearchAppliesToEnum.Institute)
-                    .FirstOrDefault();
+                    WorldCheckCompletedOn = InvestigatorWorldCheckCompletedOn(form.SiteSources);
 
-                    if (InstituteSite != null)
-                        InstituteWorldCheckCompletedOn =
-                            InstituteSite.SiteSourceUpdatedOn;
+                    //var InstituteWorldCheck = form.SiteSources.Find(x =>
+                    //x.SiteType == SiteTypeEnum.WorldCheck &&
+                    //x.SearchAppliesTo == SearchAppliesToEnum.Institute);
 
-                    var DMCCheck = form.SiteSources.Where(x =>
-                    x.SiteEnum == SiteEnum.PfizerDMCChecksPage)
-                    .FirstOrDefault();
+                    //if (InstituteWorldCheck != null)
+                    //    InsWorldCheckCompletedOn =
+                    //        InstituteWorldCheck.SiteSourceUpdatedOn;
 
-                    if (DMCCheck != null)
-                        DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
+                    InsWorldCheckCompletedOn = InstituteWorldCheckCompletedOn(form.SiteSources);
+
+                    //var DMCExclusion = form.SiteSources.Find(x =>
+                    //x.SiteType == SiteTypeEnum.DMCExclusion);
+
+                    //if (DMCExclusion != null)
+                    //    DMCCheckCompletedOn = DMCExclusion.SiteSourceUpdatedOn;
+
+                    DMCCheckCompletedOn = DMCExclusionCompletedOn(form.SiteSources);
 
                     if (Investigator.ReviewCompletedOn != null)
                     {
@@ -4658,14 +4752,16 @@ namespace DDAS.Services.Search
                             1,
                             WorldCheckCompletedOn,
                             1,
-                            InstituteWorldCheckCompletedOn,
-                            InstituteSite != null ? ToYesNoString(InstituteSite.IssuesIdentified) : "",
+                            InsWorldCheckCompletedOn,
+                            //InstituteWorldCheck != null ? ToYesNoString(InstituteWorldCheck.IssuesIdentified) : "",
+                            ToYesNoString(InstituteComplianceIssue(form.SiteSources)),
                             DMCCheckCompletedOn,
-                            DMCCheck != null ? ToYesNoString(DMCCheck.IssuesIdentified) : "",
+                            //DMCExclusion != null ? ToYesNoString(DMCExclusion.IssuesIdentified) : "",
+                            DMCExclusionIssuesIdentified(form.SiteSources),
                             Row);
                         Row += 1;
                         WorldCheckCompletedOn = null;
-                        InstituteWorldCheckCompletedOn = null;
+                        InsWorldCheckCompletedOn = null;
                         DMCCheckCompletedOn = null;
                     }
                 }
@@ -4681,9 +4777,67 @@ namespace DDAS.Services.Search
             return GenerateOutputFile.GetMemoryStream();
         }
 
-        #endregion
+        private DateTime? InvestigatorWorldCheckCompletedOn(List<SiteSource> Sites)
+        {
+            DateTime? InvWorldCheckCompletedOn = null;
 
-        
+            var InvWorldCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.PIs);
+
+            if (InvWorldCheck != null)
+                InvWorldCheckCompletedOn = InvWorldCheck.SiteSourceUpdatedOn;
+
+            return InvWorldCheck != null ? InvWorldCheck.SiteSourceUpdatedOn : InvWorldCheckCompletedOn;
+        }
+
+        private DateTime? InstituteWorldCheckCompletedOn(List<SiteSource> Sites)
+        {
+            DateTime? InstituteWorldCheckCompletedOn = null;
+
+            var InsWorldCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.Institute);
+
+            if (InsWorldCheck != null)
+                InstituteWorldCheckCompletedOn = InsWorldCheck.SiteSourceUpdatedOn;
+
+            return InsWorldCheck != null ? InsWorldCheck.SiteSourceUpdatedOn : InstituteWorldCheckCompletedOn;
+        }
+
+        private bool InstituteComplianceIssue(List<SiteSource> Sites)
+        {
+            var InsWorldCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.WorldCheck &&
+                x.SearchAppliesTo == SearchAppliesToEnum.Institute);
+
+            return InsWorldCheck != null ? InsWorldCheck.IssuesIdentified : false;
+        }
+
+        private DateTime? DMCExclusionCompletedOn(List<SiteSource> Sites)
+        {
+            DateTime? DMCCheckCompletedOn = null;
+
+            var DMCCheck = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.DMCExclusion);
+
+            if (DMCCheck != null)
+                DMCCheckCompletedOn = DMCCheck.SiteSourceUpdatedOn;
+
+            return DMCCheck != null ? DMCCheck.SiteSourceUpdatedOn : DMCCheckCompletedOn;
+        }
+
+        private string DMCExclusionIssuesIdentified(List<SiteSource> Sites)
+        {
+            var DMCExclusion = Sites.Find(x =>
+                x.SiteType == SiteTypeEnum.DMCExclusion);
+
+            if (DMCExclusion != null)
+                return ToYesNoString(DMCExclusion.IssuesIdentified);
+            else
+                return null;
+        }
+        #endregion
 
         #region Helpers
 

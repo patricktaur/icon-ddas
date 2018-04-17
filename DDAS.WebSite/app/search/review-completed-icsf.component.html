@@ -8,6 +8,9 @@
 	<div class="col-md-12">
 		<div class="well">
 			<!-- <div class="table-responsive"> -->
+			<div class="alert alert-info" *ngIf="loading">
+				<strong>Loading ...</strong>
+			</div>
 			<div statusCircle-Legend-Horizontal></div>
 			<!-- </div> -->
 			<div class="row">
@@ -85,6 +88,7 @@
 						<th class="text-left">Country</th>
 						<th class="text-center">Searched on</th>
 						<th class="text-left">Status</th>
+						<th class="text-left">Input Source</th>
 						<th class="col-sm-2 text-center">Actions</th>
 					</tr>
 				</thead>
@@ -98,14 +102,13 @@
 									{{item.Name}}
 									<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 								</a> -->
-								<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+								<div *ngIf="item.SubInvestigators.length == 0">
 										{{item.Name}} 
-										<span class="glyphicon glyphicon-plus plus-glyphicon"  aria-hidden="true"></span>
-									</a>
-									<div *ngIf="item.SubInvestigators.length == 0">
-											{{item.Name}} 
-									</div>
-
+								</div>
+								<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+									{{item.Name}} 
+									<span class="glyphicon glyphicon-plus plus-glyphicon"  aria-hidden="true"></span>
+								</a>
 							</h5>
 							<div class="panel-group" role="tablist" style="border:0">
 								<div class="panel panel-default" style="border:0">
@@ -137,6 +140,9 @@
 						</td> -->
 						<td class="text-left">
 							{{status(item.CurrentReviewStatus)}}
+						</td>
+						<td class="text-left">
+							{{item.InputSource}}
 						</td>
 						<td>
 							<div class="btn-group">
@@ -224,8 +230,8 @@
 		</div>
 		<div class="row">
 			<div class="col-md-9">
-				<label for="RequestorComment">Comments:</label>
-				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comments"
+				<label for="RequestorComment">Comment:</label>
+				<textarea name="RequestorComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comment"
 				 [(ngModel)]="requestorComment">
 				</textarea>
 			</div>
@@ -260,6 +266,17 @@
 		<h4 class="modal-title">Undo Request QC</h4>
 	</modal-header>
 	<modal-body>
+		<div class="row">
+			<div class="col-md-9">
+				<label for="RequestorComment">Comment:</label>
+				<textarea name="UndoComment" class="form-control" id="QCRequestorComment" rows="5" cols="20" placeholder="comment"
+				 [(ngModel)]="undoComment">
+				</textarea>
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+
 		Are you sure you want to Undo Request QC ?
 	</modal-body>
 	<modal-footer>

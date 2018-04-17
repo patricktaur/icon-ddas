@@ -43,7 +43,6 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
     }
 
     LoadInstituteSiteSummary() {
-        console.log("Inside LoadInstituteSiteSummary");
         if (this.ComplianceFormId != null && this.ComplianceFormId.length > 0) {  //ComplianceFormId is null when the form is created manually
             //this.formLoading = true;
             this.service.getInstituteFindingsSummary(this.ComplianceFormId)
@@ -55,7 +54,6 @@ export class ComplianceFormInstituteEditComponent implements OnInit, OnChanges {
                     //this.formLoading = false;
                 });
         }
-
     }
 
     private Todate = new Date();

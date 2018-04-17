@@ -457,9 +457,10 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    undo(complianceFormId: string, undoEnum: UndoEnum){
+    undo(complianceFormId: string, undoEnum: UndoEnum, UndoComment: string){
         return this.http.get(this._baseUrl + 'QC/Undo?ComplianceFormId=' + complianceFormId
-        + '&undoEnum=' + undoEnum, this._options)
+        + '&undoEnum=' + undoEnum
+        + '&UndoComment=' + UndoComment, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -564,12 +565,12 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    exportToiSprint(complianceFormId: string){
+    exportToiSprint(complianceFormId: string): Observable<string>{
         return this.http.get(this._baseUrl + 'search/ExportToiSprint?ComplianceFormId=' + complianceFormId, this._options)
             .map((res: Response) => {
                 return res.json();
             })
-            .catch(this.handleError);        
+            .catch(this.handleError);
     }
 
     getUserFullName(userName: string){

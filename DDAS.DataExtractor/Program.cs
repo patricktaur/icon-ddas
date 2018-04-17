@@ -1,13 +1,11 @@
 ﻿using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Maps;
 using DDAS.Models;
-using DDAS.Models.Entities.Domain;
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Services.Search;
 using System;
 using System.Configuration;
-using Utilities;
 using WebScraping.Selenium.SearchEngine;
 using System.Diagnostics;
 using System.IO;
@@ -91,7 +89,6 @@ namespace DDAS.DataExtractor
                 }
                 else
                 {
-                    //var query = SearchSites.GetNewSearchQuery();
                     var query = uow.SiteSourceRepository.GetAll();
 
                     extractData.ExtractDataAllDBSites(
@@ -124,6 +121,10 @@ namespace DDAS.DataExtractor
         static string GetWebConfigAppSetting(string configFile, string keyName)
         {
             string error;
+
+            if (configFile == null)
+                throw new Exception("Config File should not be null");
+
             ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
             fileMap.ExeConfigFilename = configFile;
             Configuration config =
@@ -150,7 +151,6 @@ namespace DDAS.DataExtractor
                     throw new Exception(error);
                 }
             }
-
         }
 
         static string GetWebConfigConnectionString(string configFile, string keyName)

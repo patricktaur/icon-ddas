@@ -42,13 +42,12 @@ namespace DDAS.Services.AuditService
                     Review.RecId = Guid.NewGuid();
             }
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            SendQCRequestedMail(Form);
+            SendQCRequestedMail(Form, "");
             return true;
         }
 
-        public bool RequestQC(Guid ComplianceFormId, Review review)
+        public bool RequestQC(Guid ComplianceFormId, Review review, string URL)
         {
-
             var form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
             var lastReview = form.Reviews.LastOrDefault();
             if (lastReview == null)
@@ -59,8 +58,9 @@ namespace DDAS.Services.AuditService
             review.RecId = Guid.NewGuid();
             review.PreviousReviewId = lastReview.RecId;
             form.Reviews.Add(review);
+            form.QCStatus = QCCompletedStatusEnum.InProgress;
             _UOW.ComplianceFormRepository.UpdateCollection(form);
-            SendQCRequestedMail(form);
+            SendQCRequestedMail(form, URL);
             return true;
         }
 
@@ -93,14 +93,21 @@ namespace DDAS.Services.AuditService
                 //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
                 QCViewModel.RecId = QCReview.RecId;
                 QCViewModel.ComplianceFormId = Form.RecId.Value;
+
+                foreach(InvestigatorSearched Investigator in 
+                    Form.InvestigatorDetails.Where(x => x.Role.ToLower() == "sub i"))
+                {
+                    QCViewModel.SubInvestigators.Add(Investigator.Name);
+                }
+
                 QCViewModel.PrincipalInvestigator =
                     Form.InvestigatorDetails.First().Name;
-                QCViewModel.InvestigatorCount = Form.InvestigatorDetails.Count;
                 QCViewModel.ProjectNumber = Form.ProjectNumber;
                 QCViewModel.ProjectNumber2 = Form.ProjectNumber2;
                 QCViewModel.QCVerifier = Form.QCVerifier;
                 QCViewModel.QCVerifierFullName = GetUserFullName(Form.QCVerifier);
                 QCViewModel.Status = QCReview.Status;
+                QCViewModel.QCStatus = Form.QCStatus;
                 QCViewModel.CompletedOn = QCReview.CompletedOn;
                 QCViewModel.Requester = Form.Reviewer;
                 QCViewModel.RequesterFullName = GetUserFullName(Form.Reviewer);
@@ -108,6 +115,9 @@ namespace DDAS.Services.AuditService
 
                 AllQCs.Add(QCViewModel);
             }
+            if (AllQCs.Count > 0)
+                return AllQCs.OrderByDescending(x => x.RequestedOn).ToList();
+
             return AllQCs;
         }
 
@@ -173,7 +183,7 @@ namespace DDAS.Services.AuditService
             return Form;
         }
 
-        public ComplianceForm SubmitQC(ComplianceForm Form)
+        public ComplianceForm SubmitQC(ComplianceForm Form, string URL)
         {
             var CurrentQCReview = Form.Reviews.LastOrDefault();
 
@@ -182,26 +192,37 @@ namespace DDAS.Services.AuditService
 
             if (CurrentQCReview.Status == ReviewStatusEnum.QCCorrectionInProgress)
             {
-                UpdateReviewStatus(CurrentQCReview,
+                var IsCompleted = UpdateReviewStatus(CurrentQCReview,
                     Form.Findings.Where(x => x.IsAnIssue).ToList());
+
+                if(IsCompleted)
+                    SendQCSubmitMail(CurrentQCReview.AssignedBy,
+                        CurrentQCReview.AssigendTo,
+                        Form.InvestigatorDetails.First().Name,
+                        (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                        GetQCCorrectionCompletedSummary(Form));
             }
             else if (CurrentQCReview.Status == ReviewStatusEnum.QCCompleted)
             {
                 //CurrentQCReview.Status = ReviewStatusEnum.QCCompleted;
                 CurrentQCReview.CompletedOn = DateTime.Now;
+
                 SendQCSubmitMail(CurrentQCReview.AssignedBy,
                     CurrentQCReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
-                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    GetQCCompletedSummary(Form));
             }
 
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return Form;
         }
 
-        private void UpdateReviewStatus(Review Review,
+        private bool UpdateReviewStatus(Review Review,
             List<Finding> FindingsWithIssues)
         {
+            var IsCompleted = false;
+
             var FindingsCorrectedOrAcceptedCount = 0;
 
             foreach (Finding finding in FindingsWithIssues)
@@ -218,7 +239,9 @@ namespace DDAS.Services.AuditService
             {
                 Review.Status = ReviewStatusEnum.Completed;
                 Review.CompletedOn = DateTime.Now;
+                IsCompleted = true;
             }
+            return IsCompleted;
         }
 
         public List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId)
@@ -268,23 +291,23 @@ namespace DDAS.Services.AuditService
             return QCSummaryList;
         }
 
-        public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum)
+        public bool Undo(Guid ComplianceFormId, UndoEnum undoEnum, string UndoComment)
         {
             switch (undoEnum)
             {
                 case UndoEnum.UndoQCRequest:
-                    return UndoQCRequest(ComplianceFormId);
+                    return UndoQCRequest(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoQCSubmit:
-                    return UndoQCSubmit(ComplianceFormId);
+                    return UndoQCSubmit(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoQCResponse:
-                    return UndoQCResponse(ComplianceFormId);
+                    return UndoQCResponse(ComplianceFormId, UndoComment);
                 case UndoEnum.UndoCompleted:
                     return UndoCompleted(ComplianceFormId);
                 default: throw new Exception("invalid UndoEnum");
             }
         }
 
-        private bool UndoQCRequest(Guid ComplianceFormId)
+        private bool UndoQCRequest(Guid ComplianceFormId, string UndoComment)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -303,14 +326,14 @@ namespace DDAS.Services.AuditService
                     QCRequestedReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
                     (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
-                    QCRequestedReview.ReviewCategory);
+                    QCRequestedReview.ReviewCategory, UndoComment);
                 return true;
             }
             else
                 return false;
         }
 
-        private bool UndoQCSubmit(Guid ComplianceFormId)
+        private bool UndoQCSubmit(Guid ComplianceFormId, string UndoComment)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
@@ -329,31 +352,38 @@ namespace DDAS.Services.AuditService
                 SendUndoQCSubmitMail(QCFailedOrPassedReview.AssignedBy,
                     QCFailedOrPassedReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
-                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim());
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    UndoComment);
                 return true;
             }
             else
                 return false;
         }
 
-        private bool UndoQCResponse(Guid ComplianceFormId)
+        private bool UndoQCResponse(Guid ComplianceFormId, string UndoComment)
         {
             var Form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             if (Form == null)
                 throw new Exception("Could not find compliance form");
 
-            var QCFailedReview = Form.Reviews.Find(x =>
+            var QCCompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.QCCompleted);
 
             var CompletedReview = Form.Reviews.Find(x =>
                 x.Status == ReviewStatusEnum.Completed);
 
-            if (QCFailedReview != null && CompletedReview != null)
+            if (QCCompletedReview != null && CompletedReview != null)
             {
                 CompletedReview.Status = ReviewStatusEnum.QCCorrectionInProgress;
                 CompletedReview.CompletedOn = null;
                 _UOW.ComplianceFormRepository.UpdateCollection(Form);
+
+                SendUndoQCCorrectionMail(CompletedReview.AssignedBy,
+                    CompletedReview.AssigendTo,
+                    Form.InvestigatorDetails.First().Name,
+                    (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
+                    UndoComment);
                 return true;
             }
             else
@@ -399,7 +429,7 @@ namespace DDAS.Services.AuditService
 
         #region QC Mails
 
-        private void SendQCRequestedMail(ComplianceForm Form)
+        private void SendQCRequestedMail(ComplianceForm Form, string URL)
         {
             var QCReview = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.QCRequested);
 
@@ -425,17 +455,26 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "QC Request - " + QCReview.ReviewCategory + "_" +
                 ProjectNumber + "_" + PIName;
-            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
+
+            var Link = URL + "/login?returnUrl=start/qc/edit-qc/";
+            Link += Form.RecId + "/" + QCReview.AssigendTo + "/end";
+
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy) + " has requested you to review a compliance search outcome. <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to start the review. <br/><br/>";
+            MailBody += Link + "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy);
+
+            //link requirements:site url + /login?returnUrl=start/ + page path + /end
+            //example:
+            //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
 
             SendMail(UserEMail, Subject, MailBody);
         }
 
         private void SendUndoQCRequestMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber, string ReviewCategory)
+            string ProjectNumber, string ReviewCategory, string UndoComment)
         {
             var User = _UOW.UserRepository.FindByUserName(AssignedTo);
 
@@ -445,8 +484,14 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "Undo QC Request - " + ReviewCategory + "_" +
                 ProjectNumber + "_" + PI;
-            var MailBody = "Dear " + User.UserFullName + ",<br/><br/> ";
-            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request. <br/><br/>";
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+
+            MailBody += GetUserFullName(AssignedBy) + " has recalled the review request. <br/>";
+
+            if (UndoComment != null)
+                MailBody += "<b>Requestor Comment:</b> " + UndoComment;
+
+            MailBody += "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedBy);
 
@@ -454,7 +499,7 @@ namespace DDAS.Services.AuditService
         }
 
         private void SendQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber)
+            string ProjectNumber, string QCCompletedSummary)
         {
             var User = _UOW.UserRepository.GetAll()
                 .Find(x => x.UserName.ToLower() == AssignedBy.ToLower());
@@ -467,6 +512,8 @@ namespace DDAS.Services.AuditService
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += "Your QC review request has been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += "Below is the brief QC Summary.<br/> <br/>";
+            MailBody += QCCompletedSummary;
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedTo);
 
@@ -474,7 +521,7 @@ namespace DDAS.Services.AuditService
         }
 
         private void SendUndoQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber)
+            string ProjectNumber, string UndoComment)
         {
             var User = _UOW.UserRepository.FindByUserName(AssignedBy);
 
@@ -484,7 +531,57 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "Undo QC Complete - " + ProjectNumber + "_" + PI;
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
-            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC submit. <br/><br/>";
+            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC submit. <br/>";
+
+            if (UndoComment != null)
+                MailBody += "<b>QCer Comment:</b> " + UndoComment;
+
+            MailBody += "<br/><br/>";
+            MailBody += "Yours Sincerely,<br/>";
+            MailBody += GetUserFullName(AssignedTo);
+
+            SendMail(UserEMail, Subject, MailBody);
+        }
+
+        private void SendQCCorrectionCompletedMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber, string QCCompletedSummary)
+        {
+            var User = _UOW.UserRepository.GetAll()
+                .Find(x => x.UserName.ToLower() == AssignedBy.ToLower());
+
+            if (User == null)
+                throw new Exception("invalid username");
+
+            var UserEMail = User.EmailId;
+            var Subject = "QC Correction Complete - " + ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+            MailBody += "QC Corrections have been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
+            MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += "Below is the brief QC Summary.<br/> <br/>";
+            MailBody += QCCompletedSummary;
+            MailBody += "Yours Sincerely,<br/>";
+            MailBody += GetUserFullName(AssignedTo);
+
+            SendMail(UserEMail, Subject, MailBody);
+        }
+
+        private void SendUndoQCCorrectionMail(string AssignedBy, string AssignedTo, string PI,
+            string ProjectNumber, string UndoComment)
+        {
+            var User = _UOW.UserRepository.FindByUserName(AssignedBy);
+
+            if (User == null)
+                throw new Exception("invalid username");
+
+            var UserEMail = User.EmailId;
+            var Subject = "Undo QC Correction - " + ProjectNumber + "_" + PI;
+            var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
+            MailBody += GetUserFullName(AssignedTo) + " has recalled the QC Corrections submit. <br/>";
+
+            if (UndoComment != null)
+                MailBody += "<b>Requestor Comment:</b> " + UndoComment;
+
+            MailBody += "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(AssignedTo);
 
@@ -493,6 +590,8 @@ namespace DDAS.Services.AuditService
 
         private void SendMail(string To, string Subject, string Body)
         {
+            if (To == null || To == "")
+                throw new Exception("email id is empty");
             var EMail = new EMailModel();
             EMail.To.Add(To);
             EMail.Subject = Subject;
@@ -501,6 +600,150 @@ namespace DDAS.Services.AuditService
         }
         
         #endregion
+
+        private string GetQCCompletedSummary(ComplianceForm Form)
+        {
+            var QCerReview = Form.Reviews.Find(x => 
+            x.Status == ReviewStatusEnum.QCCompleted);
+
+            var QCCompletedSummary = "<b>Comment Type:</b> Comment A <br/>";
+
+            foreach(Comment comment in Form.QCGeneralComments)
+            {
+                QCCompletedSummary += "<b>Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Comment:</b> <br/>" + comment.FindingComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>Comment Type:</b> Comment B <br/>";
+
+            foreach (Comment comment in Form.QCAttachmentComments)
+            {
+                QCCompletedSummary += "<b>Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Comment:</b> <br/>" + comment.FindingComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>QC Summary:</b> <br/>";
+
+            foreach(Finding finding in Form.Findings.Where(x => x.IsAnIssue))
+            {
+                QCCompletedSummary += "<b>Investigator/Institute Name:</b> " +
+                    finding.InvestigatorName
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Source Number:</b> " +
+                    finding.SiteSourceId
+                    + "<br/>";
+
+                if(QCerReview.RecId == finding.ReviewId)
+                {
+                    QCCompletedSummary += "<b>QCer Observation/Comment:</b> <br/>" +
+                        finding.Observation
+                        + "<br/>";
+                }
+
+                QCCompletedSummary += "<b>QCer Category:</b> " +
+                    GetCategoryEnumString(finding.Comments[0].CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" +
+                    finding.Comments[0].FindingComment
+                    + "<br/><br/>";
+            }
+            return QCCompletedSummary;
+        }
+
+        private string GetQCCorrectionCompletedSummary(ComplianceForm Form)
+        {
+            var QCerReview = Form.Reviews.Find(x =>
+            x.Status == ReviewStatusEnum.QCCompleted);
+
+            var QCCompletedSummary = "<b>Comment Type:</b> Comment A <br/>";
+
+            foreach (Comment comment in Form.QCGeneralComments)
+            {
+                QCCompletedSummary += "<b>QCer Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" 
+                    + comment.FindingComment
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment Category:</b> "
+                    + GetCategoryEnumString(comment.ReviewerCategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment:</b> <br/>" 
+                    + comment.ReviewerComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>QCer Comment Type:</b> Comment B <br/>";
+
+            foreach (Comment comment in Form.QCAttachmentComments)
+            {
+                QCCompletedSummary += "<b>QCer Comment Category:</b> " +
+                    GetCategoryEnumString(comment.CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" 
+                    + comment.FindingComment
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment Category:</b> "
+                    + GetCategoryEnumString(comment.ReviewerCategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment:</b> <br/>"
+                    + comment.ReviewerComment
+                    + "<br/><br/>";
+            }
+
+            QCCompletedSummary += "<b>QC Summary:</b> <br/>";
+
+            foreach (Finding finding in Form.Findings.Where(x => x.IsAnIssue))
+            {
+                QCCompletedSummary += "<b>Investigator/Institute Name:</b> " +
+                    finding.InvestigatorName
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Source Number:</b> " +
+                    finding.SiteSourceId
+                    + "<br/>";
+
+                if (QCerReview.RecId == finding.ReviewId)
+                {
+                    QCCompletedSummary += "<b>QCer Observation/Comment:</b> <br/>" +
+                        finding.Observation
+                        + "<br/>";
+                }
+
+                QCCompletedSummary += "<b>Category:</b> " +
+                    GetCategoryEnumString(finding.Comments[0].CategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>QCer Comment:</b> <br/>" +
+                    finding.Comments[0].FindingComment
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Category:</b> " +
+                    GetCategoryEnumString(finding.Comments[0].ReviewerCategoryEnum)
+                    + "<br/>";
+
+                QCCompletedSummary += "<b>Requestor Comment:</b> <br/>" +
+                    finding.Comments[0].ReviewerComment
+                    + "<br/><br/>";
+            }
+            return QCCompletedSummary;
+        }
 
         private string GetUserFullName(string AssignedTo)
         {

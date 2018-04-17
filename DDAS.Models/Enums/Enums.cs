@@ -124,4 +124,19 @@
         UndoQCResponse,
         UndoCompleted
     }
+
+    public enum QCCompletedStatusEnum
+    {
+        NotApplicable,
+        InProgress,
+        NoIssues,
+        IssuesNoted
+    }
+
+    public enum SiteTypeEnum
+    {
+        Normal,
+        WorldCheck,
+        DMCExclusion
+    }
 }

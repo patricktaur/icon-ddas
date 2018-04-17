@@ -23,6 +23,7 @@
 								<th>Mandatory</th>
 								<th>Extraction Mode</th>
 								<th>Applies To</th>
+								<th>Site Type</th>
 								<th>Actions</th>
 							</tr>
 						</thead>
@@ -46,7 +47,10 @@
 								</td>
 								<td class="text-center">
 									{{item.SearchAppliesToText}}
-								</td>								
+								</td>
+								<td class="text-center">
+									{{item.SiteTypeText}}
+								</td>
 								<td>
 									<button type="button" class="btn btn-sm btn-primary" (click)="Edit(item.RecId)" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-edit" ></span></button>									
 									<button type="button" *ngIf="extractionModeIsManual(item.ExtractionMode)" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="delete"> <span class="glyphicon glyphicon-remove"></span> </button>

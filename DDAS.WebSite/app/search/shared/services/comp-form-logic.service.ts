@@ -5,7 +5,7 @@ import { AuthService } from '../../../auth/auth.service';
 import {
     ComplianceFormA, Finding, CurrentReviewStatusViewModel, 
     ReviewStatusEnum, Review, ReviewerRoleEnum, ComplianceForm,
-    CommentCategoryEnum
+    CommentCategoryEnum, QCCompletedStatusEnum
 } from '../../search.classes';
 import { reverse } from 'dns';
 
@@ -256,14 +256,13 @@ export class CompFormLogicService {
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    //CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else if(CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     (CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    //CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else
@@ -285,14 +284,13 @@ export class CompFormLogicService {
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    // CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else if(CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     (CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    // CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else
@@ -314,14 +312,13 @@ export class CompFormLogicService {
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    // CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
+                    CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else if(CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     (CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    // CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||                    
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else
@@ -343,14 +340,12 @@ export class CompFormLogicService {
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    // CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else if(CompForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
                     (CompForm.CurrentReviewStatus == ReviewStatusEnum.QCRequested ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
-                    // CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress ||
                     CompForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
                     return true;
                 else
@@ -381,7 +376,8 @@ export class CompFormLogicService {
     unHideReviewCompletedSiteCheckBox(CompForm: ComplianceFormA){
         if(CompForm && 
             (CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
-            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)){
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted)){
             return true;
         }
         else{
@@ -437,12 +433,21 @@ export class CompFormLogicService {
             return false;
     }
 
+    canShowQCResponse(complianceForm: ComplianceFormA){
+        if(this.isLoggedInUserQCVerifier(complianceForm) &&
+            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted)) 
+            return true;
+        else
+            return false;
+    }
+
     canDisableQCResponse(complianceForm: ComplianceFormA){
         if(!this.isLoggedInUserQCVerifier(complianceForm)) 
             return true;
         else if(this.isLoggedInUserQCVerifier(complianceForm) &&
-            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted))
+            (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress))// ||
+            // complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted))
             return false;
         else
             return true;
@@ -461,7 +466,7 @@ export class CompFormLogicService {
         return this.authService.userFullName;
     }
 
-    getCommentCategoryEnumValue(value: CommentCategoryEnum){
+    getCommentCategoryEnumValue(value: number){
         switch(value){
             case CommentCategoryEnum.Minor: return "Minor";
             case CommentCategoryEnum.Major: return "Major";
@@ -469,11 +474,19 @@ export class CompFormLogicService {
             case CommentCategoryEnum.Suggestion: return "Suggestion";
             case CommentCategoryEnum.Others: return "Others";
             case CommentCategoryEnum.NotApplicable: return "Not Applicable";
-            case CommentCategoryEnum.CorrectionPending: return "Pending";
-            case CommentCategoryEnum.CorrectionCompleted: return "Completed";
+            case CommentCategoryEnum.CorrectionPending: return "Correction Pending";
+            case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
             case CommentCategoryEnum.Accepted: return "Accepted";
             case CommentCategoryEnum.NotAccepted: return "Not Accepted";
             default: "";
         }
+    }
+
+    getQCStatus(qcStatusEnum: number){
+        switch(qcStatusEnum){
+            case QCCompletedStatusEnum.NoIssues: return ", No Issues";
+            case QCCompletedStatusEnum.IssuesNoted: return ", Issues Noted";
+            default: "";
+        }        
     }
 }

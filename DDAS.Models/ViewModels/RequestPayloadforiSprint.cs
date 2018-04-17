@@ -112,7 +112,7 @@ namespace DDAS.Models.ViewModels
         public partial class institutionsChecksCompleted
         {
             /// <remarks/>
-            public institutionsChecksCompletedCheck check { get; set; }
+            public institutionsChecksCompletedCheck[] check { get; set; }
         }
 
         /// <remarks/>
@@ -124,7 +124,7 @@ namespace DDAS.Models.ViewModels
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date { get; set; }
+            public System.DateTime? date { get; set; }
         }
 
         /// <remarks/>
@@ -141,7 +141,7 @@ namespace DDAS.Models.ViewModels
         {
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date { get; set; }
+            public System.DateTime? date { get; set; }
 
             /// <remarks/>
             public string type { get; set; }
@@ -192,14 +192,14 @@ namespace DDAS.Models.ViewModels
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime ddCompletedDate { get; set; }
+            public System.DateTime? ddCompletedDate { get; set; }
 
             /// <remarks/>
             public investigatorResultsInvestigatorResultChecksCompleted checksCompleted { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime dmc9002CheckDate {get; set;}
+            public System.DateTime? dmc9002CheckDate {get; set;}
 
             /// <remarks/>
             public string dmc9002Exclusion { get; set; }
@@ -213,7 +213,7 @@ namespace DDAS.Models.ViewModels
         public partial class investigatorResultsInvestigatorResultChecksCompleted
         {
             /// <remarks/>
-            public investigatorResultsInvestigatorResultChecksCompletedCheck check { get; set; }
+            public investigatorResultsInvestigatorResultChecksCompletedCheck[] check { get; set; }
         }
 
         /// <remarks/>
@@ -225,7 +225,7 @@ namespace DDAS.Models.ViewModels
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date { get; set; }
+            public System.DateTime? date { get; set; }
         }
 
         /// <remarks/>
@@ -233,7 +233,7 @@ namespace DDAS.Models.ViewModels
         public partial class investigatorResultsInvestigatorResultDdFindings
         {
             /// <remarks/>
-            public investigatorResultsInvestigatorResultDdFindingsFinding finding { get; set; }
+            public investigatorResultsInvestigatorResultDdFindingsFinding[] finding { get; set; }
         }
 
         /// <remarks/>
@@ -242,7 +242,7 @@ namespace DDAS.Models.ViewModels
         {
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-            public System.DateTime date { get; set; }
+            public System.DateTime? date { get; set; }
 
             /// <remarks/>
             public string type { get; set; }

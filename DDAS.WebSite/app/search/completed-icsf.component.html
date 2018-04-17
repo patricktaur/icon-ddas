@@ -96,7 +96,7 @@
 							<th class="text-left">Active</th>
 							<th class="text-center">Searched on</th>
 							<th class="text-center">Assigned to</th>
-							<!-- <th class="text-left">Status</th> -->
+							 <th class="text-center">Exported to iSprint On</th> 
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -106,13 +106,13 @@
 							<td class="text-left">
 								<!-- {{item.Name}} -->
 								<h5>
+									<div *ngIf="item.SubInvestigators.length == 0">
+											{{item.Name}}
+									</div>									
 									<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
-										{{item.Name}} 
+										{{item.Name}}
 										<span class="glyphicon glyphicon-plus plus-glyphicon"  aria-hidden="true"></span>
 									</a>
-									<div *ngIf="item.SubInvestigators.length == 0">
-											{{item.Name}} 
-									</div>
 								</h5>
 								<div class="panel-group" role="tablist" style="border:0">
 									<div class="panel panel-default" style="border:0">
@@ -133,7 +133,7 @@
 							</td>
 
 							<td class="text-left">
-								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
+								{{item.SearchStartedOn | date: 'dd MMM yyyy:hh mm'}}
 							</td>
 							<td class="text-left">
 								{{item.AssignedToFullName}}
@@ -142,19 +142,21 @@
 								<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
 							</td> -->
 							<td class="text-center">
+								{{item.ExportedToiSprintOn | date: 'dd MMM yyyy:hh mm'}}
+							</td>
+							<td class="text-center">
 								<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
-								 [attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
-								<span class="glyphicon glyphicon-download-alt"></span>
-							</button>
-							<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
-								(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="undo">
-								Undo
-							</button>
-
-							<button type="button" class="btn btn-sm btn-primary" 
-								(click)="exportToiSprint(item.RecId)" title="Export">
-								Export to iSprint
-							</button>
+								 	[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
+									<span class="glyphicon glyphicon-download-alt"></span>
+								</button>
+								<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
+									(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="Undo">
+									<span class="glyphicon glyphicon-repeat"></span>
+								</button>
+								<button type="button" class="btn btn-sm btn-primary" 
+									(click)="exportToiSprint(item.RecId)" title="Export to iSprint">
+									<span class="glyphicon glyphicon-export"></span>
+								</button>
 							<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
 							<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
 							</td>
@@ -176,7 +178,18 @@
 		<h4 class="modal-title">Confirm Undo</h4>
 	</modal-header>
 	<modal-body>
-		Are you sure you want to Undo this action?
+		<div class="row">
+			<div class="col-md-9">
+				<label for="Undo">Comment:</label>
+				<textarea name="Undo" class="form-control" id="Undo" rows="5" cols="20" placeholder="comment"
+				 [(ngModel)]="undoComment">
+				</textarea>
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+
+		Are you sure you want to Undo {{getUndoAction()}}?
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-primary" 

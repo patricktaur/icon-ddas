@@ -103,7 +103,7 @@ export class CompFormEditComponent implements OnInit {
     //public SourceSite: DefaultSite = new DefaultSite;
     public SiteSource: SiteSource = new SiteSource;
     public isQCVerifier: boolean;
-    public reviewStatus: string;
+    // public reviewStatus: string;
 
     public qcAssignedTo: string;
 
@@ -174,6 +174,18 @@ export class CompFormEditComponent implements OnInit {
         else{
             return null;
         }
+    }
+
+    reviewStatus(statusEnum: number, qcStatusEnum: number){
+        let value = "";
+        if(statusEnum == ReviewStatusEnum.QCCompleted){
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+            value = value + this.compFormLogic.getQCStatus(qcStatusEnum);
+        }
+        else {
+            value = this.compFormLogic.getReviewStatus(statusEnum);
+        }
+        return value;
     }
 
     //for REactive Validation
@@ -322,27 +334,18 @@ export class CompFormEditComponent implements OnInit {
                 this.buildForm();
                 this.setFileUploadFolderPath();
                 this.formLoading = false;
-                this.reviewStatus = this.status();
-                // this.isQCVerifier = this.isLoggedInUserQCVerifier;
-                // this.addCommentCollection();
+                // this.reviewStatus = this.status();
             },
             error => {
                 this.formLoading = false;
             });
     }
 
-    // get isLoggedInUserQCVerifier() {
-    //     if (this.CompForm.Reviews.length > 0) {
-    //         var review = this.CompForm.Reviews.find(x =>
-    //             x.AssigendTo.toLowerCase() == this.authService.userName.toLowerCase() &&
-    //             x.ReviewerRole == ReviewerRoleEnum.QCVerifier);
-
-    //         if (!review)
-    //             return false;
-    //         else
-    //             return true;
-    //     }
-    // }
+    get getQCStatus(){
+        if(this.CompForm){
+            return this.compFormLogic.getQCStatus(this.CompForm.QCStatus);
+        }
+    }
 
     get isLoggedInUserReviewer(){
         if (this.CompForm) {

@@ -30,42 +30,36 @@ namespace DDAS.API.Helpers
                 };
             }
 
-            //if (CompForm.Comments == null ||
-            //    CompForm.Comments.Count == 0)
-            //{
-            //    CompForm.Comments = new List<Comment>();
-            //    CompForm.Comments.Add(new Comment()
-            //    {
-            //        ReviewId = CompForm.Reviews.First().RecId
-            //    });
+            //Patrick: 11Feb2018:
+            //if (CompForm.QCGeneralComment == null) {
+            //    var newComment = new Comment();
+            //    newComment.CategoryEnum = CommentCategoryEnum.Minor;
+            //    newComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionCompleted;
+            //    CompForm.QCGeneralComment = newComment;
+            //}
+            //if (CompForm.QCAttachmentComment == null) {
+            //    var newComment = new Comment();
+            //    newComment.CategoryEnum = CommentCategoryEnum.Minor;
+            //    newComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionCompleted;
+            //    CompForm.QCAttachmentComment = newComment;
             //}
 
-            //foreach(Finding finding in CompForm.Findings)
-            //{
-            //    if(finding.Comments == null ||
-            //        finding.Comments.Count == 0)
-            //    {
-            //        finding.Comments = new List<Comment>() {
-            //            new Comment()
-            //            {
-
-            //            }
-            //        };
-            //    }
-            //}
-
-            //Patrick: 11Feb2018: 
-            if (CompForm.QCGeneralComment == null) {
+            //Pradeep 22Feb2018
+            if(CompForm.QCGeneralComments == null || 
+                CompForm.QCGeneralComments.Count == 0)
+            {
                 var newComment = new Comment();
-                newComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                newComment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
-                CompForm.QCGeneralComment = newComment;
+                newComment.CategoryEnum = CommentCategoryEnum.Minor;
+                newComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                CompForm.QCGeneralComments.Add(newComment);
             }
-            if (CompForm.QCAttachmentComment == null) {
+            if(CompForm.QCAttachmentComments == null ||
+                CompForm.QCAttachmentComments.Count == 0)
+            {
                 var newComment = new Comment();
-                newComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                newComment.ReviewerCategoryEnum = CommentCategoryEnum.NotApplicable;
-                CompForm.QCAttachmentComment = newComment;
+                newComment.CategoryEnum = CommentCategoryEnum.Minor;
+                newComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                CompForm.QCAttachmentComments.Add(newComment);
             }
         }
 

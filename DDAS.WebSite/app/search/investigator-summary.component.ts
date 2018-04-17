@@ -81,8 +81,9 @@ export class InvestigatorSummaryComponent {
 
                 if (this.CompForm &&
                     (this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
-                        this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress)) {
-                    //...
+                        this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
+                        this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted)) {
+                    //...hide sites
                 }
                 else {
                     this.HideReviewCompletedSites = false;
@@ -180,7 +181,7 @@ export class InvestigatorSummaryComponent {
     }
 
     unHideReviewCompletedSiteCheckBox() {
-        this.compFormLogic.unHideReviewCompletedSiteCheckBox(this.CompForm);
+        return this.compFormLogic.unHideReviewCompletedSiteCheckBox(this.CompForm);
     }
 
     gotoSiteDetails(siteSourceId: number) {

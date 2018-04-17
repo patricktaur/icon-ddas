@@ -7,6 +7,9 @@
 </div>
 <div class="col-md-12">
 	<div class="well">
+		<div class="alert alert-info" *ngIf="loading">
+			<strong>Loading ...</strong>
+		</div>
 		<div class="row">
 			<div class="col-md-8 ">
 				<div class="row">
@@ -83,6 +86,7 @@
 					<th class="text-left">Review Completed</th>
 					<th class="text-left">Assigned to</th>
 					<th class="text-center">Searched on</th>
+					<th class="text-left">Input Source</th>
 					<th class="text-center">Actions</th>
 				</tr>
 			</thead>
@@ -90,10 +94,12 @@
 				<tr *ngFor="let item of PrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
 
 					<td class="text-left">
-						<!-- {{item.Name}} -->
 						<h5>
-							<a href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+							<div *ngIf="item.SubInvestigators.length == 0">
 								{{item.Name}} 
+							</div>
+							<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+								{{item.Name}}
 								<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 							</a>
 						</h5>
@@ -119,8 +125,10 @@
 					</td>
 					<td class="text-center">
 						{{item.SearchStartedOn | date: 'dd MMM yyyy HH:mm'}}
-
 					</td>
+					<td class="text-left">
+						{{item.InputSource}}
+					</td>					
 					<td class="text-center">
 						<div class="btn-group">
 							<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"

@@ -29,6 +29,7 @@ namespace DDAS.Models.Entities.Domain
         //public bool Selected { get; set; }
         public SiteEnum SiteEnum { get; set; }
         public string SiteUrl { get; set; }
+        //public SiteTypeEnum SiteType { get; set; }
         //public bool ExcludeSI { get; set; }
         //public bool ExcludePI { get; set; }
         //public string SearchTimeTakenInMs { get; set; }
@@ -192,10 +193,12 @@ namespace DDAS.Models.Entities.Domain
         //public List<Comment> Comments { get; set; } = new List<Comment>();
         public List<Attachment> Attachments { get; set; } = new List<Attachment>();
         public DateTime? ExportedToiSprintOn { get; set; }
+        public string InputSource { get; set; }
+        //public Comment QCGeneralComment { get; set; }
+        public List<Comment> QCGeneralComments { get; set; } = new List<Comment>();
 
-        public Comment QCGeneralComment { get; set; }
-
-        public Comment QCAttachmentComment { get; set; }
+        //public Comment QCAttachmentComment { get; set; }
+        public List<Comment> QCAttachmentComments { get; set; } = new List<Comment>();
 
         public string Reviewer {
             get {
@@ -229,6 +232,8 @@ namespace DDAS.Models.Entities.Domain
                     return ReviewStatusEnum.SearchCompleted;
             }
         }
+
+        public QCCompletedStatusEnum QCStatus { get; set; }
 
         public bool IsReviewCompleted {
             get {
@@ -527,6 +532,9 @@ namespace DDAS.Models.Entities.Domain
         public List<SubInvestigator> SubInvestigators { get; set; } =
             new List<SubInvestigator>();
         public ReviewStatusEnum CurrentReviewStatus { get; set; }
+        public string InputSource { get; set; }
+        public DateTime? ExportedToiSprintOn { get; set; }
+
         public int ExtractionPendingInvestigatorCount { get; set; }
         public int ExtractionErrorInvestigatorCount { get; set; }
         public string EstimatedExtractionCompletionWithin { get; set; }
@@ -970,6 +978,7 @@ namespace DDAS.Models.Entities.Domain
         public DateTime AssignedOn { get; set; }
         public string AssignedBy { get; set; }
         public ReviewStatusEnum Status { get; set; }
+        //public QCCompletedStatusEnum QCStatus { get; set; }
         public DateTime? StartedOn { get; set; }
         public DateTime? CompletedOn { get; set; }
         public ReviewerRoleEnum ReviewerRole { get; set; }
@@ -1021,7 +1030,7 @@ namespace DDAS.Models.Entities.Domain
         public string SiteUrl { get; set; }
         public bool IssuesIdentified { get; set; }
         public bool Deleted { get; set; } = false; //Patrick 30NOv2016
-
+        public SiteTypeEnum SiteType { get; set; } //Pradeep 06Mar2018
         //public bool ExcludeSI { get; set; }
         //public bool ExcludePI { get; set; }
 
@@ -1268,6 +1277,7 @@ namespace DDAS.Models.Entities.Domain
         public bool IsMandatory { get; set; }
         //public string SiteName { get; set; }
         public SearchAppliesToEnum SearchAppliesTo { get; set; }
+        public SiteTypeEnum SiteType { get; set; }
     }
     #endregion
 

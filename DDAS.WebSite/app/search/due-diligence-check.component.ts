@@ -35,7 +35,7 @@ export class DueDiligenceCheckComponent implements OnInit {
 
     @ViewChild('UploadComplianceFormInputsModal') modal: ModalComponent;
 
-    public pageNumber: number;
+    public pageNumber: number = 1;
 
     constructor(
         private route: ActivatedRoute,

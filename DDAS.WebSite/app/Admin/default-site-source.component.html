@@ -26,6 +26,7 @@
 									<th>Extraction Mode</th>
 									<th>Mandatory</th>
 									<th>Search Applies To</th>
+									<th>Site Type</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
@@ -38,13 +39,11 @@
 									<td class="text-left">
 										{{item.SiteName}}
 									</td>
-
 									<td class="text-left" title="{{item.SiteUrl}}">
 										{{item.SiteUrl | slice:0:50}}
 									</td>
 									<td class="text-center">
 										{{item.ExtractionMode}}
-										       
 									</td>
 									<td class="text-center">
 										{{item.IsMandatory | boolToYesNo}}
@@ -52,6 +51,9 @@
 									<td class="text-center">
 										{{item.SearchAppliesToText}}
 									</td>
+									<td class="text-center">
+										{{item.SiteTypeText}}
+									</td>									
 									<td>
 										<button type="button" class="btn btn-sm btn-primary" (click)="Edit(item.RecId)" data-toggle="tooltip" data-placement="top">
 											<span class="glyphicon glyphicon-edit" ></span>
@@ -83,9 +85,8 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="7" class="text-left">
+									<td colspan="8" class="text-left">
 										<button type="button" class="btn btn-primary" (click)="Add()">Add</button>
-										
 									</td>
 								</tr>
 							</tbody>

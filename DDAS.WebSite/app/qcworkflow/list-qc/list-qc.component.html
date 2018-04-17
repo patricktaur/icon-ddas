@@ -21,11 +21,34 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let item of filterQCByUserName | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
-
-						<td class="text-left">
+					<tr *ngFor="let item of filterQCByUserName | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
+						<!-- <td class="text-left">
 							{{item.PrincipalInvestigator}}
+						</td> -->
+						<td class="text-left">
+							<div class="dropdown">
+								<h5> 
+									<div *ngIf="item.SubInvestigators.length == 0">
+										{{item.PrincipalInvestigator}}
+									</div>
+									<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+										{{item.PrincipalInvestigator}}
+										<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
+									</a>
+								</h5>
+								<div class="panel-group" role="tablist" style="border:0">
+									<div class="panel panel-default" style="border:0">
+										<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
+										aria-expanded="false" style="border:0">
+											<ul class="list-group" style="border:0">
+												<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv}}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
 						</td>
+
 						<td class="text-center">
 							{{item.ProjectNumber}} {{item.ProjectNumber2}}
 						</td>
@@ -39,7 +62,7 @@
 							{{item.QCVerifierFullName}}
 						</td>
 						<td align="center">
-							{{status(item.Status)}}
+							{{reviewStatus(item.Status, item.QCStatus)}}
 						</td>
 						<td class="text-left">
 							 {{item.CompletedOn | date: 'dd MMM yyyy HH:mm'}} 
@@ -54,11 +77,11 @@
                             	<span class="glyphicon glyphicon-edit"></span>
 							</button>	
 							
-							<button type="button" class="btn btn-sm btn-primary" 
+							<!-- <button type="button" class="btn btn-sm btn-primary" 
 							*ngIf="!isActionRequired(item.QCVerifier, item.Requester, item.Status)"
 							(click)="editQC(item.ComplianceFormId, item.QCVerifier)" title="View">
                             	<span class="glyphicon glyphicon-folder-open"></span>
-							</button>
+							</button> -->
 							
 						</td>
 					</tr>
