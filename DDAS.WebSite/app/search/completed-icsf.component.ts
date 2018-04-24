@@ -120,7 +120,8 @@ export class CompletedICSFComponent implements OnInit {
     get filteredRecords() {
         if (this.PrincipalInvestigators) {
             return this.PrincipalInvestigators.filter(x =>
-                x.CurrentReviewStatus == ReviewStatusEnum.Completed);
+                x.CurrentReviewStatus == ReviewStatusEnum.Completed &&
+                x.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase());
         }
         else
             return null;
