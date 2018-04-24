@@ -85,8 +85,10 @@ namespace DDAS.Services.AuditService
                     continue;
                 else if (QCReview.Status == ReviewStatusEnum.SearchCompleted ||
                     QCReview.Status == ReviewStatusEnum.ReviewInProgress ||
-                    QCReview.Status == ReviewStatusEnum.ReviewCompleted ||
-                    QCReview.Status == ReviewStatusEnum.Completed)
+                    QCReview.Status == ReviewStatusEnum.ReviewCompleted)
+                    //QCReview.Status == ReviewStatusEnum.Completed)
+                    continue;
+                else if (Form.QCVerifier == null || Form.QCVerifier.Trim() == "")
                     continue;
 
                 var QCViewModel = new QCListViewModel();

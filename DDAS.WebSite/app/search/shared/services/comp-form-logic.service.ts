@@ -478,6 +478,7 @@ export class CompFormLogicService {
             case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
             case CommentCategoryEnum.Accepted: return "Accepted";
             case CommentCategoryEnum.NotAccepted: return "Not Accepted";
+            case CommentCategoryEnum.NoIssues: return "No Issues";
             default: "";
         }
     }

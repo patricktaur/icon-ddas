@@ -279,6 +279,14 @@ export class EditQCComponent implements OnInit {
         }
     }
 
+    canDisplayComments(comment: Comment){
+        if(comment && comment.CategoryEnum == CommentCategoryEnum.Select){
+            return false;
+        }
+        else
+            return true;
+    }
+
     get QCGeneralComments(){
         if(this.complianceForm && this.complianceForm.QCGeneralComments && 
             this.complianceForm.QCGeneralComments.length > 0)

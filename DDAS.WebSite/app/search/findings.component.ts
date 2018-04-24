@@ -98,7 +98,6 @@ export class FindingsComponent implements OnInit {
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
-                //console.log('comp form -> ', this.CompForm);
                 //this.IntiliazeRecords();
                 this.loading = false;
                 this.isQCVerifier = this.isReviewerOrQCVerifier;
@@ -270,15 +269,10 @@ export class FindingsComponent implements OnInit {
     }
 
     get FullMatchRecords() {
-
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == true).sort(s => s.MatchCount).reverse();
     }
 
-
     get filteredFullMatchRecords() {
-        
-        
-        
         if (this.FullMatchRecords == null) {
             return null;
         }
@@ -292,7 +286,6 @@ export class FindingsComponent implements OnInit {
                 return this.FullMatchRecords;
             }
         }
-
     }
 
     get filteredFullMatchCount() {
@@ -547,7 +540,6 @@ export class FindingsComponent implements OnInit {
 
     }
 
-
     SaveAndClose() {
         //formId : string, siteEnum:number, InvestigatorId:number, ReviewCompleted : boolean,  Findings:Finding[]
 
@@ -616,11 +608,7 @@ export class FindingsComponent implements OnInit {
         else {
             return false;
         }
-    }
-
-
-
-    
+    }   
 
     setDeactivateValue() {
         this.canDeactivateValue = true;
@@ -631,7 +619,6 @@ export class FindingsComponent implements OnInit {
             return null;
         }
         var middleNames: string[] = RecordDetails.split("~");
-
         return middleNames;
     }
 

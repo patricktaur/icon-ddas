@@ -264,7 +264,6 @@ namespace DDAS.API.Controllers
             }
         }
 
-
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]

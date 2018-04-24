@@ -479,7 +479,9 @@ export enum CommentCategoryEnum {
     Accepted,
     NotApplicable,
     ExcludeFinding,
-    NotAccepted
+    NotAccepted,
+    NoIssues,
+    Select
 }
 
 export enum UndoEnum {

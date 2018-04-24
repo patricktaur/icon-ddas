@@ -1074,12 +1074,12 @@ namespace DDAS.Services.Search
                     foreach (Comment comment in finding.Comments)
                     {
                         if (comment != null &&
-                            comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                            comment.CategoryEnum != CommentCategoryEnum.Select &&
                             comment.AddedOn == null)
                             comment.AddedOn = DateTime.Now;
                         if (comment != null &&
                             comment.CorrectedOn == null &&
-                            (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                            (/*comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||*/
                             comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
                             comment.CorrectedOn = DateTime.Now;
@@ -1194,7 +1194,7 @@ namespace DDAS.Services.Search
                         comment.AddedOn = DateTime.Now;
                     if (comment != null &&
                         comment.CorrectedOn == null &&
-                        (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                        (/*comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||*/
                         comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                     {
                         comment.CorrectedOn = DateTime.Now;

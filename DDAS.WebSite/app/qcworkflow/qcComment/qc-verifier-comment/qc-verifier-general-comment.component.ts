@@ -47,6 +47,13 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
         this.Remove.emit();
     }
 
+    get canDisableComment(){
+        if(this.tempNumber != 12)
+            return true;
+        else
+            return false;
+    }
+
     get diagnostic() { return JSON.stringify(this.Comment); }
     
 }
