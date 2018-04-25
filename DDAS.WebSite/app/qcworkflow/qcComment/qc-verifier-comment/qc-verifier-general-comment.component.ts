@@ -33,6 +33,7 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
     }
 
     onChange(newValue:any){
+        this.tempNumber = newValue;
         this.Comment.CategoryEnum = newValue;
     }
 
@@ -48,7 +49,7 @@ export class QCVerifierGeneralCommentComponent implements OnInit {
     }
 
     get canDisableComment(){
-        if(this.tempNumber != 12)
+        if(this.tempNumber == 12)
             return true;
         else
             return false;

@@ -108,6 +108,7 @@ export class EditQCComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.pageNumber = 1;
         this.isSubmitted = false;
         this.route.params.forEach((params: Params) => {
             this.complianceFormId = params['complianceFormId'];
@@ -311,7 +312,7 @@ export class EditQCComponent implements OnInit {
     addGeneralComment(){
         let comment = new Comment();
         comment.CategoryEnum = CommentCategoryEnum.Minor;
-        comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+        comment.ReviewerCategoryEnum = CommentCategoryEnum.NotAccepted;
         this.complianceForm.QCGeneralComments.push(comment);
         this.pageChanged = true;
     }
@@ -319,7 +320,7 @@ export class EditQCComponent implements OnInit {
     addAttachmentComment(){
         let comment = new Comment();
         comment.CategoryEnum = CommentCategoryEnum.Minor;
-        comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+        comment.ReviewerCategoryEnum = CommentCategoryEnum.NotAccepted;
         this.complianceForm.QCAttachmentComments.push(comment);
         this.pageChanged = true;
     }
@@ -391,7 +392,7 @@ export class EditQCComponent implements OnInit {
         this.FindingResponseModal.open();
     }
 
-    getcommentCategory(categoryEnum: CommentCategoryEnum){
+    getCommentCategory(categoryEnum: number){
         return CommentCategoryEnum[categoryEnum];
     }
     
@@ -483,7 +484,7 @@ export class EditQCComponent implements OnInit {
 
         if(this.complianceForm.QCStatus == QCCompletedStatusEnum.InProgress ||
            this.complianceForm.QCStatus == QCCompletedStatusEnum.NotApplicable){
-            alert('Please select whether \'Issues Noted\' or \'No Issues\' under the QC Response');
+            alert('Please select \'Issues Noted\' or \'No Issues\' under the QC Response');
             return;
            }
 
@@ -553,7 +554,7 @@ export class EditQCComponent implements OnInit {
             });
     }
 
-    get reviewerSubmitQC(){
+    get canReviewerSubmitQC(){
         if(this.complianceForm && 
             this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress &&
             this.currentReviewStatus && 
@@ -572,7 +573,7 @@ export class EditQCComponent implements OnInit {
                 || x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.CorrectionPending
             ).length;
             if (count > 0){
-                return true
+                return true;
             }
             else {
                 return false;

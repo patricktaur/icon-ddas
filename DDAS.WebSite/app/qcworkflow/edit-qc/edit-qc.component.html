@@ -54,42 +54,42 @@
 							</thead>
 							<tbody>
 								<tr class="active" *ngFor="let item of QCGeneralComments">
-									<div *ngIf="canDisplayComments(item)">
+									<ng-container *ngIf="canDisplayComments(item)">
 										<td class="text-left">
 											Compliance Form Comments
 										</td>
 										<td class="text-left">
-											{{getcommentCategory(item.CategoryEnum)}}
+											{{getCommentCategory(item.CategoryEnum)}}
 										</td>
 										<td class="text-left">
 											{{item.FindingComment}}
 										</td>
 										<td class="text-left">
-											{{getcommentCategory(item.ReviewerCategoryEnum)}}
+											{{getCommentCategory(item.ReviewerCategoryEnum)}}
 										</td>
 										<td class="text-left">
 											{{item.ReviewerComment}}
 										</td>
-									</div>
+									</ng-container>
 								</tr>
 								<tr class="active" *ngFor="let item of QCAttachmentComments">
-									<div *ngIf="canDisplayComments(item)">
+									<ng-container *ngIf="canDisplayComments(item)">
 										<td class="text-left">
 											Supporting Document Comments
 										</td>
 										<td class="text-left">
-											{{getcommentCategory(item.CategoryEnum)}}
+											{{getCommentCategory(item.CategoryEnum)}}
 										</td>
 										<td class="text-left">
 											{{item.FindingComment}}
 										</td>
 										<td class="text-left">
-											{{getcommentCategory(item.ReviewerCategoryEnum)}}
+											{{getCommentCategory(item.ReviewerCategoryEnum)}}
 										</td>
 										<td class="text-left">
 											{{item.ReviewerComment}}
 										</td>
-									</div>
+									</ng-container>
 								</tr>
 							</tbody>
 						</table>
@@ -101,7 +101,7 @@
 							<tr>
 								<th>Investigator/Institute Name</th>
 								<th>Source Number</th>
-								<th>Comment/Observation Type</th>
+								<th>Observation/Comment Type</th>
 								<th>Category</th>
 								<th>Observation/Comment</th>
 								<th>Response Category</th>
@@ -121,13 +121,13 @@
 									{{getType(item)}}
 								</td>
 								<td class="text-left">
-									{{getcommentCategory(item.Comments[0].CategoryEnum)}}
+									{{getCommentCategory(item.Comments[0].CategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{item.Comments[0].FindingComment}}
 								</td>
 								<td class="text-left">
-									{{getcommentCategory(item.Comments[0].ReviewerCategoryEnum)}}
+									{{getCommentCategory(item.Comments[0].ReviewerCategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{item.Comments[0].ReviewerComment}}
@@ -159,7 +159,7 @@
 						</div>
 					</div>
 
-					<div *ngIf="reviewerSubmitQC">
+					<div *ngIf="canReviewerSubmitQC">
 						<div *ngFor="let comment of QCAttachmentComments">
 							<div reviewer-response-to-general-comment [Title]="'Response to Supporting Document Comments'" 
 							[Comment]="comment" (ValueChanged)="formValueChanged($event)">
@@ -177,7 +177,7 @@
 						<hr>
 					</div>
 					<br/>
-					Request: Attachments:
+					Attachments:
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
@@ -212,7 +212,7 @@
 						</div>
 					</div> 
 
-					<div *ngIf="reviewerSubmitQC"> 
+					<div *ngIf="canReviewerSubmitQC"> 
 						<div *ngFor="let comment of QCGeneralComments; let indexVal = index">
 							<div reviewer-response-to-general-comment [Title]="'Response to Compliance Form Comments'" 
 							[Comment]="comment" (ValueChanged)="formValueChanged($event)">
@@ -260,7 +260,7 @@
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.open()">Submit QC</button>
 			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoQCModal.open()">Undo QC Submit</button>
-			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
+			<button *ngIf="canReviewerSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
 				Submit QC Corrections
 			</button>
 		</div>
