@@ -202,7 +202,7 @@ namespace DDAS.Services.AuditService
                         CurrentQCReview.AssigendTo,
                         Form.InvestigatorDetails.First().Name,
                         (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
-                        GetQCCorrectionCompletedSummary(Form));
+                        GetQCCorrectionCompletedSummary(Form), URL, Form.RecId.ToString());
             }
             else if (CurrentQCReview.Status == ReviewStatusEnum.QCCompleted)
             {
@@ -213,9 +213,8 @@ namespace DDAS.Services.AuditService
                     CurrentQCReview.AssigendTo,
                     Form.InvestigatorDetails.First().Name,
                     (Form.ProjectNumber + " " + Form.ProjectNumber2).Trim(),
-                    GetQCCompletedSummary(Form));
+                    GetQCCompletedSummary(Form), URL, Form.RecId.ToString());
             }
-
             _UOW.ComplianceFormRepository.UpdateCollection(Form);
             return Form;
         }
@@ -425,6 +424,7 @@ namespace DDAS.Services.AuditService
                 case CommentCategoryEnum.NotApplicable: return "Not Applicable";
                 case CommentCategoryEnum.ExcludeFinding: return "Exclude Finding";
                 case CommentCategoryEnum.NotAccepted: return "Not Accepted";
+                case CommentCategoryEnum.NoIssues: return "No Issues";
                 default: throw new Exception("Invalid CommentCategoryEnum");
             }
         }
@@ -458,6 +458,10 @@ namespace DDAS.Services.AuditService
             var Subject = "QC Request - " + QCReview.ReviewCategory + "_" +
                 ProjectNumber + "_" + PIName;
 
+            //link requirements:site url + /login?returnUrl=start/ + page path + /end
+            //example:
+            //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
+
             var Link = URL + "/login?returnUrl=start/qc/edit-qc/";
             Link += Form.RecId + "/" + QCReview.AssigendTo + "/end";
 
@@ -467,10 +471,6 @@ namespace DDAS.Services.AuditService
             MailBody += Link + "<br/><br/>";
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy);
-
-            //link requirements:site url + /login?returnUrl=start/ + page path + /end
-            //example:
-            //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
 
             SendMail(UserEMail, Subject, MailBody);
         }
@@ -501,7 +501,7 @@ namespace DDAS.Services.AuditService
         }
 
         private void SendQCSubmitMail(string AssignedBy, string AssignedTo, string PI,
-            string ProjectNumber, string QCCompletedSummary)
+            string ProjectNumber, string QCCompletedSummary, string URL, string CompFormId)
         {
             var User = _UOW.UserRepository.GetAll()
                 .Find(x => x.UserName.ToLower() == AssignedBy.ToLower());
@@ -509,11 +509,15 @@ namespace DDAS.Services.AuditService
             if (User == null)
                 throw new Exception("invalid username");
 
+            var Link = URL + "/login?returnUrl=start/qc/edit-qc/";
+            Link += CompFormId + "/" + AssignedTo + "/end";
+
             var UserEMail = User.EmailId;
             var Subject = "QC Complete - " + ProjectNumber + "_" + PI;
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += "Your QC review request has been completed by " + GetUserFullName(AssignedTo) + ". <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to view the observations/comments. <br/><br/>";
+            MailBody += Link + "<br/><br/>";
             MailBody += "Below is the brief QC Summary.<br/> <br/>";
             MailBody += QCCompletedSummary;
             MailBody += "Yours Sincerely,<br/>";

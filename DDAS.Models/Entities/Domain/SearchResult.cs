@@ -225,9 +225,15 @@ namespace DDAS.Models.Entities.Domain
         public ReviewStatusEnum CurrentReviewStatus {
             get
             {
-                var Review = Reviews.LastOrDefault();
-                if (Review != null)
+                var Review = Reviews.FirstOrDefault();
+
+                if (Review != null && Review.Status != ReviewStatusEnum.ReviewCompleted)
                     return Review.Status;
+                else if (Review != null)
+                {
+                    Review = Reviews.LastOrDefault();
+                    return Review.Status;
+                }
                 else
                     return ReviewStatusEnum.SearchCompleted;
             }

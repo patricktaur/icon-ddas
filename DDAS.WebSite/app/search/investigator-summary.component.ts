@@ -82,23 +82,20 @@ export class InvestigatorSummaryComponent {
                 if (this.CompForm &&
                     (this.CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
                         this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
-                        this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted)) {
+                        this.CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+                        this.CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress)) {
                     //...hide sites
                 }
                 else {
                     this.HideReviewCompletedSites = false;
                 }
-
             },
             error => {
                 this.loading = false;
             });
     }
 
-
-
     get InvestigatorSiteSummary() {
-
         let sitesSearched: SiteSearchStatus[];
         if (this.Investigator == undefined) {
             return sitesSearched;
@@ -106,22 +103,18 @@ export class InvestigatorSummaryComponent {
         else {
             return this.Investigator.SitesSearched.filter(x => x.Exclude == false);
         }
-
     }
 
     get FilteredInvestigatorSiteSummary() {
-
         if (this.HideReviewCompletedSites == true) {
             return this.InvestigatorSiteSummary.filter(x => x.ReviewCompleted == false && x.Exclude == false);
         }
         else {
             return this.InvestigatorSiteSummary.filter(x => x.Exclude == false);
         }
-
     }
 
     get Investigator(): InvestigatorSearched {
-
         let inv: InvestigatorSearched = new InvestigatorSearched;
         let inv1 = this.CompForm.InvestigatorDetails.find(x => x.Id == this.InvestigatorId);
         if (inv1 == undefined) {
@@ -132,11 +125,7 @@ export class InvestigatorSummaryComponent {
         }
     }
 
-
-
-
     get ReviewPendingCount() {
-
         return (this.InvestigatorSiteSummary.length - this.Investigator.ReviewCompletedSiteCount);
     }
 
@@ -216,7 +205,6 @@ export class InvestigatorSummaryComponent {
     }
 
     isUrl(url: string) {
-
         if (url == null) {
             return false;
         }

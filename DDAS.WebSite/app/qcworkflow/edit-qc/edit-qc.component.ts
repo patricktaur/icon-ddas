@@ -529,8 +529,7 @@ export class EditQCComponent implements OnInit {
         }
 
         let includeFindings = this.QCVerifiedFindings.filter(x =>
-            x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.Accepted ||
-            x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted);
+            x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
 
         if(includeFindings){
             includeFindings.forEach(record => {
@@ -583,15 +582,6 @@ export class EditQCComponent implements OnInit {
             return false;
         }
     }
-
-    // get canReviewerSubmitQC(){
-    //     if (this.complianceForm){
-    //         return this.complianceForm.Findings.filter(x => x.Comments != undefined && 
-    //             x.Comments.length > 0 && 
-    //             x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable &&
-    //             x.Comments[0].ReviewerCategoryEnum != CommentCategoryEnum.NotApplicable);
-    //     }
-    // }
 
     setValues(actionType: string){
         switch(actionType){
@@ -664,7 +654,6 @@ export class EditQCComponent implements OnInit {
     }
 
     goBack() {
-        //this._location.back();
         this.router.navigate(["qc"]);
     }
 
