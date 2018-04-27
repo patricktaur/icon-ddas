@@ -111,6 +111,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
             string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
+            URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
             return Ok(_Audit.SubmitQC(Form, URL));
         }
 
