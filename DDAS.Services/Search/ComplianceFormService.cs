@@ -2819,9 +2819,7 @@ namespace DDAS.Services.Search
                 return null;
             }
 
-        }
-
-       
+        } 
 
         #endregion
 
