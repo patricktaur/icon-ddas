@@ -455,14 +455,23 @@ namespace DDAS.Services.AuditService
             var UserEMail = User.EmailId;
             var Subject = "QC Request - " + QCReview.ReviewCategory + "_" +
                 ProjectNumber + "_" + PIName;
+            
+            //Patrick: 27April2018:
+            //var Link = URL + "/login?returnUrl=start/qc/edit-qc/";
+            var Link = URL + "/login?returnUrl=start/edit-qc/";
 
-            var Link = URL + "/login?returnUrl=start/qc/edit-qc/";
             Link += Form.RecId + "/" + QCReview.AssigendTo + "/end";
 
             var MailBody = "Dear " + User.UserFullName + ",<br/><br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy) + " has requested you to review a compliance search outcome. <br/><br/>";
             MailBody += "Please login to DDAS application and navigate to \"QC Check\" to start the review. <br/><br/>";
-            MailBody += Link + "<br/><br/>";
+            
+            //Patrick: 27April2018:
+            //MailBody += Link + "<br/><br/>";
+            MailBody += String.Format(@" <p>  <a href = ""{0}"" > Click here to navigate to DDAS</a> </p> <br/><br/>", Link);
+
+                      
+
             MailBody += "Yours Sincerely,<br/>";
             MailBody += GetUserFullName(QCReview.AssignedBy);
 
@@ -596,6 +605,7 @@ namespace DDAS.Services.AuditService
             EMail.To.Add(To);
             EMail.Subject = Subject;
             EMail.Body = Body;
+            
             _EMailService.SendMail(EMail);
         }
         
