@@ -59,10 +59,11 @@ export class LoginComponent implements OnInit{
         this.authService.login(this.logInfo.username, this.logInfo.password)
             .subscribe(
                 data => {
-                  //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1;rootPath=qc;page=1";
-                  //this.returnUrl = "/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1";
                   
                   this.router.navigateByUrl(this.returnUrl);
+                  
+                  //this.router.navigate(['/' + this.returnUrl]);   
+
                   //this.router.navigate(['/']); 
                   
                   //   if(this.authService.isAppAdmin){

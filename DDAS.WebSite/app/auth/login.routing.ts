@@ -14,12 +14,7 @@ export const loginRoutes: Routes = [
   { path: 'logout', redirectTo: '/login' },
   { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   {path: '',     redirectTo: '/login',  pathMatch: 'full'  },
-  {
-  path: 'edit-qc/:complianceFormId/:qcAssignedTo',
-  component: EditQCComponent,
-  canDeactivate: [CanDeactivateGuard]
-  },
-     // { path: '**', redirectTo: '/login', pathMatch: 'full'  },
+      // { path: '**', redirectTo: '/login', pathMatch: 'full'  },
       { path: "**", component: NotFoundComponent, data: { title: "Page Not Found" } }
 
     ];
