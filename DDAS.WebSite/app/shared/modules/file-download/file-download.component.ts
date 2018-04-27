@@ -67,7 +67,7 @@ export class FileDownloadComponent implements OnInit {
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         headers.append('Content-Type', 'application/json');
-        
+        headers.append("Accept", "text/csv" ); //added
         let filter1 = JSON.stringify(filter);
         return this.http.post(this._baseUrl + url, filter1,
             { headers: headers, responseType: ResponseContentType.ArrayBuffer })

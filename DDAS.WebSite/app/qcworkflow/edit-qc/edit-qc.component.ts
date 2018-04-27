@@ -170,15 +170,8 @@ export class EditQCComponent implements OnInit {
 
     getAttachmentDownloadURL(fileName: string){
         return "Search/DownloadAttachmentFile?formId=" + this.complianceFormId + "&fileName=" + fileName;
-        // return "Search/DownloadAttachmentFile?formId=" + this.complianceFormId
-        // + "&fileName=" + fileName;
     }
-    // get QCVerifiedFindings(){
-    //     return this.complianceForm.Findings.find(
-    //         x => x.Comments[1].CategoryEnum == QCVer
-    //     )
-    // }
-
+    
     get principalInvestigatorName(){
         if(this.complianceForm){
             return this.complianceForm.InvestigatorDetails[0].Name;
