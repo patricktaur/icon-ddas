@@ -24,7 +24,7 @@ import {FileDownloadModule} from './modules/file-download/file-download.module'
 import {FileUploadComponent} from './components/file-upload-component'
 import {MultiFileSelectComponent} from './components/multi-file-select.component'
 import {ProgressIndicatorComponent} from './components/progress-indicator.component'
-
+import {NotFoundComponent} from '../shared/components/not-found.component'
  
 
 @NgModule({
@@ -47,7 +47,8 @@ import {ProgressIndicatorComponent} from './components/progress-indicator.compon
   DateInputComponent,
   FileUploadComponent,
   MultiFileSelectComponent,
-  ProgressIndicatorComponent
+  ProgressIndicatorComponent,
+  NotFoundComponent
 
   
   
@@ -69,7 +70,8 @@ import {ProgressIndicatorComponent} from './components/progress-indicator.compon
     FileDownloadModule,
     FileUploadComponent,
     MultiFileSelectComponent,
-    ProgressIndicatorComponent
+    ProgressIndicatorComponent,
+    NotFoundComponent
                    ],
                    
 })
