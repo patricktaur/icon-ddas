@@ -2,7 +2,7 @@ import { Component, Input, OnInit  } from '@angular/core';
 @Component({ 
     template: `
     <div class="well">
-        <h3>The information you were looking for is not found.</h3>    
+        <h3>The information you were looking for could not be found.</h3>    
         <p>Please use the menu options on the left to navigate to the page you are looking for.</p>    
 
    
