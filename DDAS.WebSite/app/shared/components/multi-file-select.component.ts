@@ -49,6 +49,8 @@ import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@a
             </div>
 
         </div>
+        <div class="row">
+        </div>
         <div class="row error " *ngIf="errors.length> 0">
             <div class="col-md-12 text-center">
                 <ul>
@@ -77,7 +79,13 @@ import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@a
             </button>
 
 				</td>
-			</tr>
+            </tr>
+            <tr>
+                <td colspan="2">
+                <span class="glyphicon glyphicon-warning-sign">  When files are uploaded the filenames longer than 50 characters will be shortened.</span>
+                </td>
+            </tr>
+
 		</tbody>
 	</table>
 
