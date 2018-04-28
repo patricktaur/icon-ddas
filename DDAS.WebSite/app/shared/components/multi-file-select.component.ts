@@ -107,7 +107,7 @@ export class MultiFileSelectComponent implements OnInit {
         // }
     
         let files = [].slice.call(event.target.files);
-        files.map(f =>  this.Files.push(f));
+        files.map((f : any) =>  this.Files.push(f));
     }
 
     Remove(file: any){
@@ -150,7 +150,7 @@ export class MultiFileSelectComponent implements OnInit {
         // }
  
         let files = [].slice.call(event.dataTransfer.files);
-        files.map(f =>  this.Files.push(f));
+        files.map((f : any) =>  this.Files.push(f));
     
     
     }
