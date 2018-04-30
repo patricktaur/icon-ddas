@@ -106,15 +106,17 @@ export class LoginComponent implements OnInit{
     //link requirements:site url + /login?returnUrl=start/ + page path + /end
     //example:
     //http://localhost:3000/login?returnUrl=start/qc/edit-qc/a0cd3a08-8d76-45dc-a2d0-4c7a13726abd/admin1/end
-    let locationPath1 = this.locationStrategy.path();
-    if (locationPath1.indexOf("start") == 0){
+    let locationPath = this.locationStrategy.path();
+    if (locationPath.indexOf("start") == 0){
       return null;
     }
-    if (locationPath1.indexOf("end") == 0){
+    if (locationPath.indexOf("end") == 0){
       return null;
     }
 
-    var locationPath =  locationPath1.replace(/%252F/g, "/");
+    locationPath =  locationPath.replace(/%252F/g, "/");
+    locationPath =  locationPath.replace(/%2F/g, "/");
+       
     let startPos = locationPath.indexOf("start")+5
     let lastPos = locationPath.lastIndexOf("end");
     let length = lastPos - startPos;
