@@ -24,9 +24,9 @@ namespace DDAS.Models.Interfaces
 
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
         bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form);
-        //void UpdateAssignedToData(string AssignedTo, string AssignedBy, bool Active, Guid? RecId);
         void UpdateAssignedTo(Guid? RecId, string  AssignedBy, string AssignedFrom, string AssignedTo);
-     
+        void UpdateAssignedTo(string AssignedBy, AssignComplianceFormsTo AssignComplianceFormsTo);
+
 
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 

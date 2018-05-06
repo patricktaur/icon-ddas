@@ -23,7 +23,8 @@ import {
     QualityCheck,
     CurrentReviewStatusViewModel,
     UndoEnum,
-    Review
+    Review,
+    AssignComplianceFormsTo
 } from './search.classes';
 
 //import {FDADebarPageSiteData} from './detail-classes/FDADebarPageSiteData';
@@ -212,6 +213,21 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    AssignComplianceFormsTo(assignComplianceFormsTo: AssignComplianceFormsTo): Observable<boolean> {
+        
+        let body = JSON.stringify(assignComplianceFormsTo);
+
+        return this.http.post(this._baseUrl + 'search/AssignComplianceFormsTo', body, this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+
+
+    }
+
+
+
     ClearAssignedTo( ComplianceFormId: string, AssignedFrom: string): Observable<boolean> {
         return this.http.get(this._baseUrl + 'search/ClearAssignedTo?' +
             'ComplianceFormId=' + ComplianceFormId +
@@ -223,6 +239,9 @@ export class SearchService {
             .catch(this.handleError);
     }
 
+    ClearSelectedAssignedTo(){
+
+    }
 
     saveComplianceForm(form: ComplianceFormA): Observable<ComplianceFormA> {
         let body = JSON.stringify(form);

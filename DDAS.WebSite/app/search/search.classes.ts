@@ -167,6 +167,7 @@ export class PrincipalInvestigatorDetails {
     CurrentReviewStatus: ReviewStatusEnum;
     InputSource: string;
     ExportedToiSprintOn: Date;
+    Selected: boolean;
 }
 
 export class SubInvestigator {
@@ -533,3 +534,12 @@ export enum QCCompletedStatusEnum {
     NoIssues,
     IssuesNoted
 }
+
+
+
+export class AssignComplianceFormsTo
+{
+   AssignedTo  : string;
+   PrincipalInvestigators: PrincipalInvestigatorDetails[] = [];
+}
+    
