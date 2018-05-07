@@ -13,7 +13,7 @@ namespace DDAS.Models.Interfaces
     {
         bool RequestQC(ComplianceForm Form);
         bool RequestQC(Guid ComplianceFormId, Review review, string URL);
-        List<QCListViewModel> ListQCs();
+        List<QCListViewModel> ListQCs(ComplianceFormFilter Filter);
         ComplianceForm GetQC(Guid RecId, string AssignedTo, string LoggedInUserName);
         ComplianceForm SubmitQC(ComplianceForm Form, string URL);
         List<QCSummaryViewModel> ListQCSummary(Guid ComplianceFormId);

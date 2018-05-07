@@ -64,7 +64,7 @@ namespace DDAS.Services.AuditService
             return true;
         }
 
-        public List<QCListViewModel> ListQCs()
+        public List<QCListViewModel> ListQCs(ComplianceFormFilter Filter)
         {
             var Forms = _UOW.ComplianceFormRepository.GetAll();
 
@@ -73,6 +73,12 @@ namespace DDAS.Services.AuditService
 
             Forms = Forms.Where(x =>
                 x.IsReviewCompleted == true)
+                .ToList();
+
+            Forms = Forms.FindAll(x => 
+                x.Reviews.Any(y => 
+                    y.AssignedOn >= Filter.SearchedOnFrom && 
+                    y.CompletedOn <= Filter.SearchedOnTo))
                 .ToList();
 
             var AllQCs = new List<QCListViewModel>();

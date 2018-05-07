@@ -102,10 +102,10 @@ namespace DDAS.API.Controllers
         }
 
         [Route("ListQCs")]
-        [HttpGet]
-        public IHttpActionResult ListQCs()
+        [HttpPost]
+        public IHttpActionResult ListQCs(ComplianceFormFilter Filter)
         {
-            return Ok(_Audit.ListQCs());
+            return Ok(_Audit.ListQCs(Filter));
         }
 
         [Route("SubmitQC")]
@@ -156,6 +156,7 @@ namespace DDAS.API.Controllers
 
             }
         }
+
         private string ModifyFileNameIfItAlreadyExists(string folder, string fileName)
         {
 
@@ -171,6 +172,7 @@ namespace DDAS.API.Controllers
             } while (AppendNumber < 9999);
             return modifiedFileName;
         }
+
         private class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
         {
             public CustomMultipartFormDataStreamProvider(string path) : base(path) { }
