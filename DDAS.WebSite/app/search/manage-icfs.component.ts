@@ -50,7 +50,6 @@ export class ManageICFsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.loading = true;
         this.route.params.forEach((params: Params) => {
             let page = + params['page'];
             if (page != null) {
@@ -105,6 +104,7 @@ export class ManageICFsComponent implements OnInit {
     }
 
     LoadUsers() {
+        this.loading = true;
         this.service.getAllUsers()
             .subscribe((item: any[]) => {
                 this.Users = item;

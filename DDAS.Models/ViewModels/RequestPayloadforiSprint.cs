@@ -188,7 +188,7 @@ namespace DDAS.Models.ViewModels
             public string lastName { get; set; }
 
             /// <remarks/>
-            public string ddStatus { get; set; }
+            //public string ddStatus { get; set; }
 
             /// <remarks/>
             [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]

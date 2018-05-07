@@ -363,11 +363,13 @@ namespace DDAS.Services.Search
 
             Envelope oEnvelope = new Envelope();
             EnvelopeBody oBody = new EnvelopeBody();
-            DueDiligenceiSprintRequest oDueDiligenceiSprintRequest = new DueDiligenceiSprintRequest();
+            DueDiligenceiSprintRequest oDueDiligenceiSprintRequest = 
+                new DueDiligenceiSprintRequest();
             CultureInfo ci = CultureInfo.InvariantCulture;
 
             //<<<Header
-            DueDiligenceiSprintRequestHeader oHeader = new DueDiligenceiSprintRequestHeader();
+            DueDiligenceiSprintRequestHeader oHeader = 
+                new DueDiligenceiSprintRequestHeader();
             oHeader.sender = "DDAS";
             oHeader.timestamp = DateTime.Now.ToUniversalTime();
             oHeader.message_id = form.RecId.ToString();
@@ -376,7 +378,8 @@ namespace DDAS.Services.Search
             //>>>>
 
             //<<<<<<<<<< DDResults
-            DueDiligenceiSprintRequestDDResults oDDresults = new DueDiligenceiSprintRequestDDResults();
+            DueDiligenceiSprintRequestDDResults oDDresults = 
+                new DueDiligenceiSprintRequestDDResults();
 
             //<<<<<<<<<< project
 
@@ -394,36 +397,23 @@ namespace DDAS.Services.Search
             //<<<<<<<<<<< institutions
 
             institutions oInstitutionsList = new institutions();
-            institutionsChecksCompleted oChecksCompleted = new institutionsChecksCompleted();
-            institutionsChecksCompletedCheck[] oCheck = new institutionsChecksCompletedCheck[1];
+            institutionsChecksCompleted oChecksCompleted = 
+                new institutionsChecksCompleted();
+            institutionsChecksCompletedCheck[] oCheck = 
+                new institutionsChecksCompletedCheck[1];
 
-            institutionsChecksCompletedCheck oCheck1 = new institutionsChecksCompletedCheck();
+            institutionsChecksCompletedCheck oCheck1 = 
+                new institutionsChecksCompletedCheck();
             oCheck1.name = "institution world check";
             oCheck1.date = InstituteWorldCheckCompletedOn(form.SiteSources);
 
             oCheck[0] = oCheck1;
             oChecksCompleted.check = oCheck;
             oInstitutionsList.checksCompleted = oChecksCompleted;
-            //oInstitutionsList.instituteComplianceIssue = true;
-            oInstitutionsList.instituteComplianceIssue = InstituteComplianceIssue(form.SiteSources);
-
-            //institutionsDdFindings oInstitutionsFindingsList = new institutionsDdFindings();
-            //institutionsDdFindingsFinding oInstitutionFinding = new institutionsDdFindingsFinding();
-
-            //oInstitutionFinding.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-            //oInstitutionFinding.type = "Regulatory";
-            //oInstitutionFinding.regulatoryCode = "OAI";
-            //oInstitutionFinding.regulatoryDeficiency = "No";
-            //oInstitutionFinding.worldCheckFinding = "No";
-            //oInstitutionFinding.comment = "Test123";
-
-            //oInstitutionsFindingsList.finding = oInstitutionFinding;
-
-            ////Optional
-            //oInstitutionsList.ddFindings = oInstitutionsFindingsList;
+            oInstitutionsList.instituteComplianceIssue = 
+                InstituteComplianceIssue(form.SiteSources);
 
             // institutions >>>>>>
-
             //Add institutions to DDResults
             oDDresults.institutions = oInstitutionsList;
 
@@ -432,7 +422,8 @@ namespace DDAS.Services.Search
 
             var oInvestigatorResultsList = new investigatorResults();
 
-            investigatorResultsInvestigatorResult[] arrInvestigatorResult = new investigatorResultsInvestigatorResult[form.InvestigatorDetails.Count];
+            investigatorResultsInvestigatorResult[] arrInvestigatorResult = 
+                new investigatorResultsInvestigatorResult[form.InvestigatorDetails.Count];
             Int32 elem = 0;
             Int32 Index = 0;
             foreach (var InvestigatorDetail in form.InvestigatorDetails)
@@ -444,46 +435,28 @@ namespace DDAS.Services.Search
                 InvestigatorResult.firstName = InvestigatorDetail.FirstName.ToString(); //"Srinivas";
                 InvestigatorResult.middleName = InvestigatorDetail.MiddleName.ToString();
                 InvestigatorResult.lastName = InvestigatorDetail.LastName.ToString();
-                InvestigatorResult.ddStatus = "Available";
-                //InvestigatorResult.ddCompletedDate = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 InvestigatorResult.ddCompletedDate = InvestigatorDetail.ReviewCompletedOn;
 
-                investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = new investigatorResultsInvestigatorResultChecksCompleted();
-                investigatorResultsInvestigatorResultChecksCompletedCheck[] oInvestigatorCheck = new investigatorResultsInvestigatorResultChecksCompletedCheck[2];
+                investigatorResultsInvestigatorResultChecksCompleted oInvestigatorChecksCompleted = 
+                    new investigatorResultsInvestigatorResultChecksCompleted();
+                investigatorResultsInvestigatorResultChecksCompletedCheck[] oInvestigatorCheck = 
+                    new investigatorResultsInvestigatorResultChecksCompletedCheck[2];
 
-                investigatorResultsInvestigatorResultChecksCompletedCheck oInvCheck1 = new investigatorResultsInvestigatorResultChecksCompletedCheck();
+                investigatorResultsInvestigatorResultChecksCompletedCheck oInvCheck1 = 
+                    new investigatorResultsInvestigatorResultChecksCompletedCheck();
 
                 oInvCheck1.name = "investigator world check";
-                //oInvestigatorCheck.date = DateTime.ParseExact(DateTime.Now.Date.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
                 oInvCheck1.date = InvestigatorWorldCheckCompletedOn(form.SiteSources);
                 oInvestigatorCheck[0] = oInvCheck1;
 
-                investigatorResultsInvestigatorResultChecksCompletedCheck oInvCheck2 = new investigatorResultsInvestigatorResultChecksCompletedCheck();
+                investigatorResultsInvestigatorResultChecksCompletedCheck oInvCheck2 = 
+                    new investigatorResultsInvestigatorResultChecksCompletedCheck();
                 oInvCheck2.name = "foi";
                 oInvCheck2.date = InvestigatorDetail.ReviewCompletedOn;
                 oInvestigatorCheck[1] = oInvCheck2;
 
                 oInvestigatorChecksCompleted.check = oInvestigatorCheck;
                 InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
-
-                //var WorldCheckPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.WorldCheckPage);
-                //if (WorldCheckPage != null)
-                //{
-                //    oInvestigatorCheck.name = "investigator world check";
-                //    if (WorldCheckPage.SiteSourceUpdatedOn != null)
-                //        oInvestigatorCheck.date = DateTime.ParseExact(WorldCheckPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                //    oInvestigatorChecksCompleted.check = oInvestigatorCheck;
-                //    InvestigatorResult.checksCompleted = oInvestigatorChecksCompleted;
-                //}
-
-                //var DMCExclusionPage = InvestigatorDetail.SitesSearched.Find(x => x.siteEnum == SiteEnum.PfizerDMCChecksPage);
-
-                //if (DMCExclusionPage != null)
-                //{
-                //    InvestigatorResult.dmc9002Exclusion = "Exclusion";
-                //    if (DMCExclusionPage.SiteSourceUpdatedOn != null)
-                //        InvestigatorResult.dmc9002CheckDate = DateTime.ParseExact(DMCExclusionPage.SiteSourceUpdatedOn.Value.ToString("yyyy-MM-dd"), "yyyy-MM-dd", ci);
-                //}
 
                 InvestigatorResult.dmc9002CheckDate = DMCExclusionCompletedOn(form.SiteSources);
 
@@ -533,15 +506,8 @@ namespace DDAS.Services.Search
                     oInvestigatorFinding.comment = Observation;
 
                     oInvFindings[Index] = oInvestigatorFinding;
-                    //oInvestigatorFindings.finding = oInvFindings;
                     Index += 1;
                 }
-                //oInvestigatorFinding.type = "Regulatory";
-                //oInvestigatorFinding.regulatoryCode = "OAI";
-                //oInvestigatorFinding.regulatoryDeficiency = "No";
-                //oInvestigatorFinding.worldCheckFinding = "No";
-
-                //Optional
                 oInvestigatorFindings.finding = oInvFindings;
                 InvestigatorResult.ddFindings = oInvestigatorFindings;
 
@@ -567,7 +533,6 @@ namespace DDAS.Services.Search
             oEnvelope.Body = oBody;
 
             XmlSerializer xsSubmit = new XmlSerializer(typeof(Envelope));
-            //var subReq = new MyObject();
             string xml = "";
 
             using (var sww = new Utf8StringWriter())
@@ -579,6 +544,7 @@ namespace DDAS.Services.Search
                 }
             }
 
+            //'Replace' tags to get required xml output
             xml = xml.Replace("<investigatorResult>", "");
             xml = xml.Replace("</investigatorResult>", "");
             xml = xml.Replace("investigatorResultsInvestigatorResult>", "investigatorResult>");
@@ -1114,12 +1080,12 @@ namespace DDAS.Services.Search
                     foreach (Comment comment in finding.Comments)
                     {
                         if (comment != null &&
-                            comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                            comment.CategoryEnum != CommentCategoryEnum.Select &&
                             comment.AddedOn == null)
                             comment.AddedOn = DateTime.Now;
                         if (comment != null &&
                             comment.CorrectedOn == null &&
-                            (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                            (/*comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||*/
                             comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
                             comment.CorrectedOn = DateTime.Now;
@@ -1234,7 +1200,7 @@ namespace DDAS.Services.Search
                         comment.AddedOn = DateTime.Now;
                     if (comment != null &&
                         comment.CorrectedOn == null &&
-                        (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                        (/*comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||*/
                         comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                     {
                         comment.CorrectedOn = DateTime.Now;
@@ -2859,9 +2825,7 @@ namespace DDAS.Services.Search
                 return null;
             }
 
-        }
-
-       
+        } 
 
         #endregion
 

@@ -2,7 +2,7 @@
 	<div class="col-lg-12">
 		<div class="well">
 			<div class="row text-left">
-				<div class="col-md-12">
+				<div class="col-md-9">
 					<h3 class="no-margin-top">Due Diligence Search</h3>
 					<br>
 					<button type="button" class="btn-lg btn btn-primary" (click)="OpenNew()" title="Create a new Investigator Compliance Form"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Manual Search</button>
@@ -19,6 +19,16 @@
 					title="Select from unassigned list (iSprint and unassigned" >
 						Select from Unassigned (includes iSprint) 
 					</button> -->
+				</div>
+				<div class="col-md-3">
+					<div class="text-right vertical-center">
+						<p><a class="btn btn-default btn-sm" href="{{downloadTemplateUrl}}" download title="Download a sample/template file, fill in the Compliance Form Details and then upload using Due Diligence Search / Batch Upload"><span class="glyphicon glyphicon-download" aria-hidden="true"></span>  Batch Upload Template</a></p>
+						<p>Review Pending: {{reviewPendingRecordCount}} </p>
+						<!--<p>Extraction Pending: {{extractionPendingRecordCount}} 
+							<span *ngIf="extractionPendingRecordCount > 0">&nbsp;</span>
+							<button type="button"
+								*ngIf="extractionPendingRecordCount > 0" class="glyphicon glyphicon-refresh" title="Reload" (click)="Reload();"></button></p>-->
+					</div>
 				</div>
 			</div>
 

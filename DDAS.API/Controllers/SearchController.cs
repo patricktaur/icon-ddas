@@ -264,7 +264,6 @@ namespace DDAS.API.Controllers
             }
         }
 
-
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
@@ -928,10 +927,17 @@ namespace DDAS.API.Controllers
             var FormId = Guid.Parse(ComplianceFormId);
             var Form = _UOW.ComplianceFormRepository.FindById(FormId);
 
-            var Review = Form.Reviews.LastOrDefault();
+            var Review = Form.Reviews.FirstOrDefault();
 
             if (Review == null)
                 throw new Exception("Review collection cannot be empty!");
+
+            if(Review.Status != ReviewStatusEnum.ReviewCompleted)
+            {//Pradeep 26Apr2018
+                //No action required
+            }
+            else //Review is completed, look for 'QC' and 'Completed' Status
+                Review = Form.Reviews.LastOrDefault();
 
             var CurrentReviewStatus = new CurrentReviewStatusViewModel();
 
