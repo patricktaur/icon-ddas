@@ -8,7 +8,7 @@ import 'rxjs/add/operator/catch';
 import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
 import { QualityCheck } from './qc.classes';
-import { ComplianceFormA } from '../search/search.classes';
+import { ComplianceFormA, CompFormFilter } from '../search/search.classes';
 
 @Injectable()
 export class QCService {
@@ -26,8 +26,9 @@ export class QCService {
         this._options = new RequestOptions({ headers: headers });
     }
 
-    listQCs() {
-        return this.http.get(this._baseUrl + 'QC/ListQCs', this._options)
+    listQCs(filter: CompFormFilter) {
+        let filterJSON = JSON.stringify(filter);
+        return this.http.post(this._baseUrl + 'QC/ListQCs', filterJSON, this._options)
         .map((res: Response) => {
             return res.json();
         })

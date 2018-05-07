@@ -16,8 +16,7 @@ namespace Utilities
         private string _logFile;
         public LogText(string logFile, bool showMessage = false)
         {
-            _logFile = logFile;
-            
+            _logFile = logFile;        
             _showMessage = showMessage;
         }
 
@@ -51,7 +50,6 @@ namespace Utilities
             {
                 _writer.Close();
             }
-            
         }
 
         public void WriteLog(Log log)

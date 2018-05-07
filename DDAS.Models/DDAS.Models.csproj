@@ -129,6 +129,7 @@
     <Compile Include="Repository\ILogWSISPRINTRepository.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="ViewModels\AdminDashbordDrillDownViewModel.cs" />
+    <Compile Include="ViewModels\AssignComplianceFormsTo.cs" />
     <Compile Include="ViewModels\AssignmentHistoryViewModel.cs" />
     <Compile Include="ViewModels\CurrentReviewStatusViewModel.cs" />
     <Compile Include="ViewModels\LogWDDDASViewModel.cs" />

@@ -28,14 +28,14 @@
 						<div class="form-group">
 							<label for="Status">Status:</label>
 							<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
-									<option value="-1" selected="selected">All</option>
-  									<option value="0">Data Not Extracted</option>
-  									<option value="1">Review Completed, Issues Identified</option>
-									<option value="2">Review Completed, No Issues Identified</option>  
- 						     		<option value="3">Full Match Found, Review Pending</option>
-									<option value="4">Partial Match Found, Review Pending</option>
-							  		<option value="5">No Matches Found, Review Pending</option>              
-								</select>
+								<option value="-1" selected="selected">All</option>
+								<option value="0">Data Not Extracted</option>
+								<option value="1">Review Completed, Issues Identified</option>
+								<option value="2">Review Completed, No Issues Identified</option>
+								<option value="3">Full Match Found, Review Pending</option>
+								<option value="4">Partial Match Found, Review Pending</option>
+								<option value="5">No Matches Found, Review Pending</option>
+							</select>
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -69,11 +69,38 @@
 						</div>
 					</div>
 				</div>
-				<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
-				<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
+				<div class="row">
+					<div class="col-md-12 ">
+						<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
+						<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 ">
+					<br>
+						<div class="dropdown">
+							<button 
+							[disabled]="SelectedCount==0"
+							class="btn btn-primary dropdown-toggle" 
+							type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+							 aria-expanded="true">
+								Action ({{SelectedCount}})
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								<li>
+									<a (click)="AssignSelectedComplianceFormsToModal.open()">Assign To</a>
+								</li>
+								<li role="separator" class="divider"></li>
+								<li>
+									<a (click)="ClearSelectedComplianceFormsAssignTo.open()">Clear 'Assign To'</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-4 ">
-
 			</div>
 		</div>
 		<!--</div>-->
@@ -81,24 +108,40 @@
 		<table class="table table-bordered">
 			<thead>
 				<tr>
+					<th class = "">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" [(ngModel)]="AllSelected" 
+								(click)="selectAll()"/>
+								<b>Select All</b>
+							</label>
+						</div>
+					</th>
 					<th class="">Principal Investigator </th>
 					<th class="text-left">ICON Project Number</th>
-					<th class="text-left">Review Completed</th>
+					<th class="text-left col-md-1">Review Completed</th>
 					<th class="text-left">Assigned to</th>
 					<th class="text-center">Searched on</th>
-					<th class="text-left">Input Source</th>
-					<th class="text-center">Actions</th>
+					<th class="text-left col-md-1">Input Source</th>
+					<th class="text-center col-md-2">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr *ngFor="let item of PrincipalInvestigators | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index" class="active">
-
+					<td class="text-center">
+						
+						<input 
+						*ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)"
+						type="checkbox" 
+						[(ngModel)]="item.Selected">
+					</td>
 					<td class="text-left">
 						<h5>
 							<div *ngIf="item.SubInvestigators.length == 0">
-								{{item.Name}} 
+								{{item.Name}}
 							</div>
-							<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1"> 
+							<a *ngIf="item.SubInvestigators.length > 0" href="#collapseListGroup{{idx}}" role="button" data-toggle="collapse" aria-expanded="false"
+							 aria-controls="collapseListGroup1">
 								{{item.Name}}
 								<span class="glyphicon glyphicon-plus plus-glyphicon" *ngIf="item.SubInvestigators.length > 0" aria-hidden="true"></span>
 							</a>
@@ -106,7 +149,7 @@
 						<div class="panel-group" role="tablist" style="border:0">
 							<div class="panel panel-default" style="border:0">
 								<div class="panel-collapse collapse" role="tabpanel" id="collapseListGroup{{idx}}" aria-labelledby="collapseListGroupHeading1"
-									aria-expanded="false" style="border:0">
+								 aria-expanded="false" style="border:0">
 									<ul class="list-group" style="border:0">
 										<li style="border:0" class="list-group-item" *ngFor="let inv of item.SubInvestigators">{{inv.Name}}</li>
 									</ul>
@@ -128,7 +171,7 @@
 					</td>
 					<td class="text-left">
 						{{item.InputSource}}
-					</td>					
+					</td>
 					<td class="text-center">
 						<div class="btn-group">
 							<!--<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
@@ -136,22 +179,23 @@
 								<span class="glyphicon glyphicon-download-alt" ></span>
 								</button>-->
 
-							<button type="button" class="btn btn-sm btn-primary" (click)="generateComplianceForm(item.RecId)"
-								[disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
-								<span class="glyphicon glyphicon-download-alt" ></span>
-								</button>
-								
-							<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open"> <span class="glyphicon glyphicon-folder-open"></span> </button>
-							<button type="button" *ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
-							(click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Reassign">
+							<button type="button" class="btn btn-sm btn-primary" (click)="generateComplianceForm(item.RecId)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
+								<span class="glyphicon glyphicon-download-alt"></span>
+							</button>
+
+							<button type="button" class="btn btn-sm btn-primary" (click)="OpenForEdit(item)" title="Open">
+								<span class="glyphicon glyphicon-folder-open"></span>
+							</button>
+							<!-- <button type="button" *ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()"
+							 title="Reassign">
 								<span class="glyphicon glyphicon-retweet"></span>
-							</button>
-							<button type="button" *ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" 
-							(click)="setComplianceFormToClear(item); ClearAssignedToModal.open()" title="Clear 'Assigned To'">
+							</button> -->
+							<!-- <button type="button" *ngIf="canReassignOrClearReassignment(item.CurrentReviewStatus)" class="btn btn-sm btn-primary" (click)="setComplianceFormToClear(item); ClearAssignedToModal.open()"
+							 title="Clear 'Assigned To'">
 								<span class="glyphicon glyphicon-repeat"></span>
-							</button>
-							<button type="button" class="btn btn-sm btn-primary" 
-							(click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form">
+							</button> -->
+							<button type="button" class="btn btn-sm btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()"
+							 title="Delete Compliance Form">
 								<span class="glyphicon glyphicon-remove"></span>
 							</button>
 						</div>
@@ -172,7 +216,8 @@
 		<h4 class="modal-title">Delete confirm</h4>
 	</modal-header>
 	<modal-body>
-		Compliance Form for Principal Investigator <b> {{SelectedInvestigatorName}} </b> will be deleted.
+		Compliance Form for Principal Investigator
+		<b> {{SelectedInvestigatorName}} </b> will be deleted.
 	</modal-body>
 	<modal-footer>
 		<button type="button" class="btn btn-default" (click)="DeleteComplianceForm(); DeleteConfirmModal.close()">Confirm Delete</button>
@@ -182,7 +227,9 @@
 
 <modal #ManageICFModal>
 	<modal-header>
-		<h4 class="modal-title">Assign ICSF: <b> {{SelectedInvestigatorName}} </b> </h4>
+		<h4 class="modal-title">Assign ICSF:
+			<b> {{SelectedInvestigatorName}} </b>
+		</h4>
 	</modal-header>
 	<modal-body>
 		<div class="row">
@@ -205,16 +252,48 @@
 		</div>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" 
-		(click)="manageComplianceForm(); ManageICFModal.close()"
-		[disabled]="!assignToEnabled()">Assign</button>
+		<button type="button" class="btn btn-default" (click)="manageComplianceForm(); ManageICFModal.close()" [disabled]="!assignToEnabled()">Assign</button>
 		<button type="button" class="btn btn-default" (click)="ManageICFModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
 
+<modal #AssignSelectedComplianceFormsToModal>
+	<modal-header>
+		<h4 class="modal-title">Assign ICSF:
+			
+		</h4>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="AssignedTo">Assign selected {{SelectedCount}} Compliance Forms to:</label>
+					<select class="form-control" [(ngModel)]="AssignedTo">
+						<option *ngFor="let item of Users" [value]="item.UserName">{{item.UserFullName}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div>
+					
+				</div>
+			</div>
+			<div class="col-md-4">
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="assignSelectedComplianceFormsTo(); AssignSelectedComplianceFormsToModal.close()" [disabled]="!assignToEnabled()">Assign</button>
+		<button type="button" class="btn btn-default" (click)="AssignSelectedComplianceFormsToModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+
 <modal #ClearAssignedToModal>
 	<modal-header>
-		<h4 class="modal-title">Clear 'Assigned To': <b> {{SelectedInvestigatorName}} </b> </h4>
+		<h4 class="modal-title">Clear 'Assigned To':
+			<b> {{SelectedInvestigatorName}} </b>
+		</h4>
 	</modal-header>
 	<modal-body>
 		<div class="row">
@@ -224,7 +303,26 @@
 		</div>
 	</modal-body>
 	<modal-footer>
-		<button type="button" class="btn btn-default" (click)="ClearAssignedTo(); ClearAssignedToModal.close()">Save</button>
+		<button type="button" class="btn btn-default" (click)="ClearAssignedTo(); ClearAssignedToModal.close()">Confirm</button>
 		<button type="button" class="btn btn-default" (click)="ClearAssignedToModal.close()">Cancel</button>
+	</modal-footer>
+</modal>
+
+<modal #ClearSelectedComplianceFormsAssignTo>
+	<modal-header>
+		<h4 class="modal-title">Clear 'Assigned To' :
+			
+		</h4>
+	</modal-header>
+	<modal-body>
+		<div class="row">
+			<div class="col-md-12">
+				The 'Assigned To' will be removed for {{SelectedCount}} Compliance Forms.
+			</div>
+		</div>
+	</modal-body>
+	<modal-footer>
+		<button type="button" class="btn btn-default" (click)="clearSelectedComplianceFormsAssignTo(); ClearSelectedComplianceFormsAssignTo.close()">Confirm</button>
+		<button type="button" class="btn btn-default" (click)="ClearSelectedComplianceFormsAssignTo.close()">Cancel</button>
 	</modal-footer>
 </modal>

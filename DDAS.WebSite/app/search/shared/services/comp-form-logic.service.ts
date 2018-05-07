@@ -439,7 +439,8 @@ export class CompFormLogicService {
     canShowQCResponse(complianceForm: ComplianceFormA){
         if(this.isLoggedInUserQCVerifier(complianceForm) &&
             (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted)) 
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
             return true;
         else
             return false;

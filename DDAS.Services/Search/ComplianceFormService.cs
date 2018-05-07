@@ -699,27 +699,7 @@ namespace DDAS.Services.Search
         //    //return dataStreamResponse;
         //}
 
-        //public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
-        //    bool Active, Guid? RecId)
-        //{
-        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
-        //    form.AssignedTo = AssignedTo;
-        //    form.Active = Active;
-        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-        //    AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
-
-        //}
-
-        //public void ClearAssignedTo(Guid? RecId, string AssignedBy)
-        //{
-        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
-        //    form.AssignedTo = "";
-        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-        //    AddToAssignementHistory(RecId.Value, AssignedBy, "");
-
-        //}
+        
 
         public void UpdateAssignedTo(Guid? RecId, string AssignedBy, string AssignedFrom, string AssignedTo)
         {
@@ -731,6 +711,32 @@ namespace DDAS.Services.Search
                 AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
             }
         }
+
+        public void UpdateAssignedTo(string AssignedBy, AssignComplianceFormsTo AssignComplianceFormsTo)
+        {
+            string Errors="";
+            string Comma = "";
+            foreach (PrincipalInvestigator prInv in AssignComplianceFormsTo.PrincipalInvestigators)
+            {
+                try
+                {
+                    UpdateAssignedTo(prInv.RecId, AssignedBy, prInv.AssignedTo, AssignComplianceFormsTo.AssignedTo);
+                }
+                catch (Exception ex)
+                {
+                    //collect exceptions:
+                    Errors = Comma + prInv.Name + " - " + prInv.ProjectNumber +  ex.Message;
+                    Comma = ", ";
+                }
+            }
+            if (Errors.Length > 0)
+            {
+                throw new Exception(Errors);
+            }
+
+        }
+
+
 
         //used by Excel File Upload method.
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm)

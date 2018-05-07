@@ -23,7 +23,6 @@ export class CompletedICSFComponent implements OnInit {
     public ComplianceFormFilter: CompFormFilter;
 
     public myDatePickerOptions = {
-
         dateFormat: 'dd mmm yyyy',
         selectionTxtFontSize: 14
     };
@@ -125,6 +124,10 @@ export class CompletedICSFComponent implements OnInit {
         }
         else
             return null;
+    }
+
+    openICSF(compFormId: string){
+        this.router.navigate(['comp-form-edit', compFormId, { rootPath: 'completed-icsf', page: this.pageNumber }], { relativeTo: this.route });
     }
 
     canUndoQC(item: PrincipalInvestigatorDetails){
