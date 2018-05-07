@@ -494,10 +494,6 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAssginedToData(string AssignedTo, string AssignedFrom,
             string ComplianceFormId)
         {
-            //var AssignedBy = User.Identity.GetUserName();
-            //var RecId = Guid.Parse(ComplianceFormId);
-            //_SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
-            //return Ok(true);
             try
             {
                 if (AssignedFrom == null)
@@ -510,11 +506,30 @@ namespace DDAS.API.Controllers
 
                 return Ok(true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Content(HttpStatusCode.BadRequest, "Error");
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+
+        [Route("AssignComplianceFormsTo")]
+        [HttpPost]
+        public IHttpActionResult AssignComplianceFormsTo(AssignComplianceFormsTo AssignComplianceFormsTo)
+        {
+           
+            try
+            {
+                var AssignedBy = User.Identity.GetUserName();
+                _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
+
+
 
         [Route("ClearAssignedTo")]
         [HttpGet]
@@ -527,6 +542,17 @@ namespace DDAS.API.Controllers
 
             return Ok(true);
         }
+
+        [Route("ClearAssignedTo")]
+        [HttpGet]
+        public IHttpActionResult ClearAssginedTo(AssignComplianceFormsTo AssignComplianceFormsTo)
+        {
+            var AssignedBy = User.Identity.GetUserName();
+            _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
+
+            return Ok(true);
+        }
+
 
         [Route("GetUploadsFolderPath")]
         [HttpGet]
