@@ -13,7 +13,8 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using Utilities;
-
+using MongoDB.Driver;
+using System.Threading.Tasks;
 namespace DDAS.Setup
 {
     class Program
@@ -90,21 +91,21 @@ namespace DDAS.Setup
                     //DeleteOrphanedRecordsInDefaultSiteRepository();
                     //DeleteOrphanedRecordsInCountryRepository();
                     //DeleteOrphanedRecordsInSponsorProtocolRepository();
-                    //CreateIndexes();
+                    CreateIndexes(DBName, connString);
 
-                    string firstArg = "";
-                    if (args.Length != 0)
-                    {
-                        firstArg = args[0];
-                    }
-                    switch (firstArg)
-                    {
-                        case "cleardb":
+                    //string firstArg = "";
+                    //if (args.Length != 0)
+                    //{
+                    //    firstArg = args[0];
+                    //}
+                    //switch (firstArg)
+                    //{
+                    //    case "cleardb":
 
-                            break;
-                        default:
-                            break;
-                    }
+                    //        break;
+                    //    default:
+                    //        break;
+                    //}
                 }
                 else
                 {
@@ -359,7 +360,7 @@ namespace DDAS.Setup
         }
 
         //20Apr2017
-        static void ModifySiteSource_ChangeLive2DB()
+        static  void ModifySiteSource_ChangeLive2DB()
         {
             var sites = _AppAdminService.GetAllSiteSources();
             //var FDAWarningLettersSite = sites.Find(x => x.SiteEnum == SiteEnum.FDAWarningLettersPage);
@@ -398,10 +399,34 @@ namespace DDAS.Setup
             //_AppAdminService.UpdateSiteSource()
         }
 
-        static void CreateIndexes()
+        static  void CreateIndexes(string DBName, string connectionString)
         {
-            Indexes idx = new Indexes();
-            var x = idx.CreateIndex();
+            _WriteLog.WriteLog(String.Format("Connecting to {0}, connection string: {1}", DBName, connectionString));
+            var mongo = new MongoClient(connectionString);
+
+            var db = mongo.GetDatabase(DBName);
+            _WriteLog.WriteLog("Connected");
+            var collection = db.GetCollection<ComplianceForm>("ComplianceForm");
+            _WriteLog.WriteLog("Start creating SearchStartedOn key");
+
+            //await collection.Indexes.CreateOneAsync(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.SearchStartedOn));
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.SearchStartedOn));
+            _WriteLog.WriteLog("Start creating AssignedTo key");
+            //await collection.Indexes.CreateOneAsync(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.AssignedTo));
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.AssignedTo));
+
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails.Name"));
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails. ReviewCompletedSiteCount"));
+
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails.FirstName, InvestigatorDetails.MiddleName, InvestigatorDetails.LastName"));
+           
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("Reviews.Status"));
+
+            _WriteLog.WriteLog("Key Creation completed");
+
+            //var indexColl = collection.Indexes.
+            
+            
         }
 
         static void DeleteWSDDASLogRecords()

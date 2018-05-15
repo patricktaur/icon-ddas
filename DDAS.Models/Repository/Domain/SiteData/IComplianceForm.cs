@@ -23,5 +23,12 @@ namespace DDAS.Models.Repository.Domain.SiteData
         bool AddFindings(Guid formId, List<Finding> findings);
         bool UpdateExtractionQueStart(Guid id, DateTime? dateValue, int QueueNumber);
         bool UpdateExtractionQueEnd(Guid id, DateTime? dateValue);
+
+        List<ComplianceForm> FindComplianceForms(string AssignedTo, ReviewStatusEnum ReviewStatus);
+        List<ComplianceForm> FindComplianceForms(string AssignedTo);
+        List<ComplianceForm> FindComplianceForms(ReviewStatusEnum ReviewStatus);
+        List<ComplianceForm> FindComplianceForms(ComplianceFormFilter CompFormFilter);
+
+        List<ComplianceForm> FindQCComplianceForms(DateTime? ReviewAssignedOn, DateTime? ReviewCompletedOn);
     }
 }
