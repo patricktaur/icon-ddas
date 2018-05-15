@@ -401,7 +401,7 @@ namespace DDAS.Setup
 
         static  void CreateIndexes(string DBName, string connectionString)
         {
-            _WriteLog.WriteLog(String.Format("Connecting to {0}, connection string: {1}", DBName, connectionString));
+            _WriteLog.WriteLog(string.Format("Connecting to {0}, connection string: {1}", DBName, connectionString));
             var mongo = new MongoClient(connectionString);
 
             var db = mongo.GetDatabase(DBName);
@@ -416,17 +416,17 @@ namespace DDAS.Setup
             collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.AssignedTo));
 
             collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails.Name"));
-            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails. ReviewCompletedSiteCount"));
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails.ReviewCompletedSiteCount"));
 
             collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("InvestigatorDetails.FirstName, InvestigatorDetails.MiddleName, InvestigatorDetails.LastName"));
            
             collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending("Reviews.Status"));
 
+            collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.InputSource));
+
             _WriteLog.WriteLog("Key Creation completed");
 
             //var indexColl = collection.Indexes.
-            
-            
         }
 
         static void DeleteWSDDASLogRecords()

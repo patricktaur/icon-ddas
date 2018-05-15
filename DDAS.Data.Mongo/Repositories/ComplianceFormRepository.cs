@@ -68,21 +68,21 @@ namespace DDAS.Data.Mongo.Repositories
             return entity;
         }
 
-        
+
 
         public List<ComplianceForm> FindComplianceForms(ComplianceFormFilter CompFormFilter)
         {
 
             var builder = Builders<ComplianceForm>.Filter;
             var filter = builder.Empty;
-                //-------------------
+            //-------------------
 
 
             if (CompFormFilter.InvestigatorName != null &&
                 CompFormFilter.InvestigatorName != "")
             {
-                 //var filter = Builders<ComplianceForm>.Filter
-                 //   .Where(x => x.InvestigatorDetails.Any(y => y.Name.ToLower().Contains(CompFormFilter.InvestigatorName.ToLower())));
+                //var filter = Builders<ComplianceForm>.Filter
+                //   .Where(x => x.InvestigatorDetails.Any(y => y.Name.ToLower().Contains(CompFormFilter.InvestigatorName.ToLower())));
 
                 filter = filter & builder.Where(x => x.InvestigatorDetails.Any(y => y.Name.ToLower().Contains(CompFormFilter.InvestigatorName.ToLower())));
                 //Filter1 = Filter1.FindAll(x =>
@@ -91,7 +91,7 @@ namespace DDAS.Data.Mongo.Repositories
                 //    CompFormFilter.InvestigatorName.ToLower()));
             }
 
-            
+
 
             if (CompFormFilter.ProjectNumber != null &&
                 CompFormFilter.ProjectNumber != "")
@@ -131,12 +131,12 @@ namespace DDAS.Data.Mongo.Repositories
                 filter = filter & builder.Where(
                     x => x.SearchStartedOn >= startDate);
 
-               // Filter4 = Filter3.Where(x =>
-               //x.SearchStartedOn >= startDate)
-               //.ToList();
+                // Filter4 = Filter3.Where(x =>
+                //x.SearchStartedOn >= startDate)
+                //.ToList();
             }
 
-            
+
             if (CompFormFilter.SearchedOnTo != null)
             {
                 DateTime endDate;
@@ -185,9 +185,13 @@ namespace DDAS.Data.Mongo.Repositories
                 CompFormFilter.AssignedTo != "-1")
             {
                 filter = filter & builder.Where(x => x.AssignedTo.ToLower() == CompFormFilter.AssignedTo.ToLower());
-
             }
 
+            if (CompFormFilter.InputSource != null && 
+                CompFormFilter.InputSource.ToLower() != "all")
+            {
+                filter = filter & builder.Where(x => x.InputSource.ToLower() == CompFormFilter.InputSource.ToLower());
+            }
             //var Filter8 = Filter7.Where(x =>
             //x.AssignedTo == AssignedTo).ToList();
             //--------------------
