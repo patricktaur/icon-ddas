@@ -136,7 +136,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.ComplianceFormFilter.SearchedOnTo = null;
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.AssignedTo = "-1";
-        this.ComplianceFormFilter.Status = -1;
+        this.ComplianceFormFilter.Status = 1; //Review Completed
 
         var fromDay = new Date();
         fromDay.setDate(fromDay.getDate() - 10);

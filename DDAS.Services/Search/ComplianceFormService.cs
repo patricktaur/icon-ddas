@@ -2610,20 +2610,35 @@ namespace DDAS.Services.Search
 
             if ((int)CompFormFilter.Status == -1)
             {
-
-                compForms = compForms.FindAll(x => x.StatusEnum ==
-                ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                //Commented on 16May2018: Pradeep
+                //compForms = compForms.FindAll(x => x.StatusEnum ==
+                //ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                //x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                //.ToList();
+            }
+            else if (CompFormFilter.Status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
+            {
+                compForms = compForms.Where(x =>
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
                 x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                 .ToList();
             }
-            else if ((int)CompFormFilter.Status != -1)
+            else if (CompFormFilter.Status == ComplianceFormStatusEnum.FullMatchFoundReviewPending)
             {
                 compForms = compForms.Where(x =>
-                x.StatusEnum == CompFormFilter.Status).ToList();
+                x.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.NoMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.ManualSearchSiteReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors ||
+                x.StatusEnum == ComplianceFormStatusEnum.NotScanned)
+                .ToList();
             }
 
             return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
-
+            
             //var Forms = _UOW.ComplianceFormRepository.GetAll();
 
             //if (Forms.Count == 0)

@@ -93,19 +93,21 @@ namespace DDAS.Setup
                     //DeleteOrphanedRecordsInSponsorProtocolRepository();
                     CreateIndexes(DBName, connString);
 
-                    //string firstArg = "";
-                    //if (args.Length != 0)
-                    //{
-                    //    firstArg = args[0];
-                    //}
-                    //switch (firstArg)
-                    //{
-                    //    case "cleardb":
-
-                    //        break;
-                    //    default:
-                    //        break;
-                    //}
+                    string firstArg = "";
+                    if (args.Length != 0)
+                    {
+                        firstArg = args[0];
+                    }
+                    switch (firstArg)
+                    {
+                        case "cleardb":
+                            break;
+                        case "complianceFormIndex":
+                            ListComplianceFormIndexes(DBName, connString);
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else
                 {
@@ -425,8 +427,34 @@ namespace DDAS.Setup
             collection.Indexes.CreateOne(Builders<ComplianceForm>.IndexKeys.Ascending(_ => _.InputSource));
 
             _WriteLog.WriteLog("Key Creation completed");
-
             //var indexColl = collection.Indexes.
+        }
+
+        static void ListComplianceFormIndexes(
+            string DBName, string connectionString)
+        {
+            _WriteLog.WriteLog(string.Format("Connecting to {0}, connection string: {1}", DBName, connectionString));
+            var mongo = new MongoClient(connectionString);
+            var db = mongo.GetDatabase(DBName);
+            _WriteLog.WriteLog("Connected");
+
+            var collection = db.GetCollection<ComplianceForm>("ComplianceForm");
+            var Indexes = collection.Indexes.List();
+            _WriteLog.WriteLog("Listing Indexes for ComplianceForm collection");
+
+            while (Indexes.MoveNext())
+            {
+                var CurrentIndex = Indexes.Current;
+                foreach (var Document in CurrentIndex)
+                {
+                    var DocNames = Document.Names;
+                    foreach (string Name in DocNames)
+                    {
+                        var Value = Document.GetValue(Name);
+                        _WriteLog.WriteLog(string.Concat(Name, ": ", Value));
+                    }
+                }
+            }
         }
 
         static void DeleteWSDDASLogRecords()
@@ -463,8 +491,6 @@ namespace DDAS.Setup
             }
         }
 
-
-
         static void DeleteOrphanedRecordsInCountryRepository()
         {
             _WriteLog.WriteLog("Deleting orphaned records from Country Repository", "Start");
@@ -493,7 +519,6 @@ namespace DDAS.Setup
 
             }
         }
-
 
         static void DeleteOrphanedRecordsInSponsorProtocolRepository()
         {
