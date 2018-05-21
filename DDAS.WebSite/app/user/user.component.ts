@@ -11,7 +11,7 @@ import { AuthService } from '../auth/auth.service';
 @Component({
     moduleId: module.id,
     selector: 'User',
-    templateUrl: 'user.component.html',
+    templateUrl: 'user.component.html'
 })
 export class UserComponent {
 

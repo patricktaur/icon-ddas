@@ -418,7 +418,8 @@ export class CompFormFilter {
     SearchedOnTo: Date;
     AssignedTo: string;
     Country: string;
-    Status: ComplianceFormStatusEnum
+    Status: ComplianceFormStatusEnum;
+    InputSource: string;
 }
 
 export class CalenderDate {

@@ -41,12 +41,14 @@
 									<label for="Status">Status:</label>
 									<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
 										<option value="-1" selected="selected">All</option>
-										<option value="0">Data Not Extracted</option>
+										<!-- <option value="0">Data Not Extracted</option>
 										<option value="1">Review Completed, Issues Identified</option>
 										<option value="2">Review Completed, No Issues Identified</option>  
 										<option value="3">Full Match Found, Review Pending</option>
 										<option value="4">Partial Match Found, Review Pending</option>
-										<option value="5">No Matches Found, Review Pending</option>              
+										<option value="5">No Matches Found, Review Pending</option> -->
+										<option value="1">Review Completed</option>
+										<option value="3">Review Pending</option>
 									</select>
 								</div>
 							</div>

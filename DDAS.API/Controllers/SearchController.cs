@@ -288,8 +288,12 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetMyReviewPendingPrincipalInvestigators()
         {
             var UserName = User.Identity.GetUserName();
+            //return Ok(
+            //    _SearchService.getPrincipalInvestigators(UserName, true, false));
+
             return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, true, false));
+                _SearchService.getPrincipalInvestigators(UserName, ReviewStatusEnum.ReviewInProgress));
+
         }
 
         [Route("GetMyClosedPrincipalInvestigators")]

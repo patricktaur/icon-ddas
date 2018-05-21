@@ -1174,6 +1174,7 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public string Country { get; set; }
         public ComplianceFormStatusEnum Status { get; set; }
+        public string InputSource { get; set; }
     }
 
     #endregion

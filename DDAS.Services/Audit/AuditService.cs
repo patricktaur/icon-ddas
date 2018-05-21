@@ -64,22 +64,31 @@ namespace DDAS.Services.AuditService
             return true;
         }
 
+        //To Pradeep:
+        //REplace ComplianceFormFilter parameter with DateTime ReviewAssignedOn, DateTime ReviewCompletedOn
+        //as this is what you want.
+        // Pradeep to recheck the entire code
         public List<QCListViewModel> ListQCs(ComplianceFormFilter Filter)
         {
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
+            //var Forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (Forms.Count == 0)
-                return null;
+            //if (Forms.Count == 0)
+            //    return null;
 
-            Forms = Forms.Where(x =>
-                x.IsReviewCompleted == true)
-                .ToList();
+            //Forms = Forms.Where(x =>
+            //    x.IsReviewCompleted == true)
+            //    .ToList();
 
-            Forms = Forms.FindAll(x => 
-                x.Reviews.Any(y => 
-                    y.AssignedOn >= Filter.SearchedOnFrom && 
-                    y.CompletedOn <= Filter.SearchedOnTo))
-                .ToList();
+            //Forms = Forms.FindAll(x => 
+            //    x.Reviews.Any(y => 
+            //        y.AssignedOn >= Filter.SearchedOnFrom && 
+            //        y.CompletedOn <= Filter.SearchedOnTo))
+            //    .ToList();
+
+            //Patrick: 13May2018
+            DateTime? ReviewAssignedOn = Filter.SearchedOnFrom;
+            DateTime? ReviewCompletedOn = Filter.SearchedOnTo;
+            var Forms = _UOW.ComplianceFormRepository.FindQCComplianceForms(ReviewAssignedOn, ReviewCompletedOn);
 
             var AllQCs = new List<QCListViewModel>();
 
@@ -92,13 +101,13 @@ namespace DDAS.Services.AuditService
                 else if (QCReview.Status == ReviewStatusEnum.SearchCompleted ||
                     QCReview.Status == ReviewStatusEnum.ReviewInProgress ||
                     QCReview.Status == ReviewStatusEnum.ReviewCompleted)
-                    //QCReview.Status == ReviewStatusEnum.Completed)
+                    
                     continue;
                 else if (Form.QCVerifier == null || Form.QCVerifier.Trim() == "")
                     continue;
 
                 var QCViewModel = new QCListViewModel();
-                //SetComplianceFormDetails(AuditViewModel, audit.ComplianceFormId);
+                
                 QCViewModel.RecId = QCReview.RecId;
                 QCViewModel.ComplianceFormId = Form.RecId.Value;
 

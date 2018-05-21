@@ -8,15 +8,12 @@ import { CanDeactivateGuard } from '../shared/services/can-deactivate-guard.serv
 import {EditQCComponent}  from '../qcworkflow/edit-qc/edit-qc.component';
 
 export const loginRoutes: Routes = [
- 
-  
   { path: 'login', component: LoginComponent },
   { path: 'logout', redirectTo: '/login' },
   { path: 'changepassword', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   {path: '',     redirectTo: '/login',  pathMatch: 'full'  },
       // { path: '**', redirectTo: '/login', pathMatch: 'full'  },
       { path: "**", component: NotFoundComponent, data: { title: "Page Not Found" } }
-
     ];
 
 export const authProviders = [
