@@ -2753,18 +2753,13 @@ namespace DDAS.Services.Search
             CompFormFilter.AssignedTo = AssignedTo;
 
             var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(CompFormFilter);
-            if ((int)CompFormFilter.Status == -1)
-            {
 
-                compForms = compForms.FindAll(x => x.StatusEnum ==
-                ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
-                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-                .ToList();
-            }
-            else if ((int)CompFormFilter.Status != -1)
+            if (CompFormFilter.Status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
             {
                 compForms = compForms.Where(x =>
-                x.StatusEnum == CompFormFilter.Status).ToList();
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                .ToList();
             }
 
             return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
