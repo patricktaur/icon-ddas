@@ -218,7 +218,9 @@ export class FindingsComponent implements OnInit {
     setHighlighter(){
         let inv1 = this.Investigator;
         let str = inv1.Name.replace(/[^a-zA-Z ]/g, '');
-        this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
+        //below line did not work for investigator 'Li Li'. Could not highlight the name
+        // this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
+        this.highlightFilter = str;
     }
 
     private comps: string[];
@@ -623,7 +625,6 @@ export class FindingsComponent implements OnInit {
     }
 
     goBack() {
-
         this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId, { siteId: this.siteSourceId, rootPath: this.rootPath, hideReviewCompleted: this.hideReviewCompleted }], { relativeTo: this.route.parent });
         //this.router.navigate(['comp-form-edit', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
 

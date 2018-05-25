@@ -213,19 +213,22 @@ namespace DDAS.Data.Mongo.Repositories
                 filter = filter & builder.Where(x => x.Reviews.Any(y => y.AssignedOn >= startDate));
             }
 
-            if (ReviewCompletedOn.HasValue)
-            {
-                var endDate = ReviewCompletedOn.Value.AddDays(1);
-                filter = filter & builder.Where(x => x.Reviews.Any(y => y.CompletedOn < endDate));
-            }
+            //if (ReviewCompletedOn.HasValue)
+            //{
+            //    var endDate = ReviewCompletedOn.Value.AddDays(1);
+            //    filter = filter & builder.Where(x => x.Reviews.Any(y => y.CompletedOn < endDate));
+            //}
+
             filter = filter & builder.Where(x => x.Reviews.Any(
                 y =>
                      y.Status == ReviewStatusEnum.QCRequested
                      || y.Status == ReviewStatusEnum.QCInProgress
                      || y.Status == ReviewStatusEnum.QCFailed
                      || y.Status == ReviewStatusEnum.QCPassed
-                     || y.Status == ReviewStatusEnum.QCCorrectionInProgress
-                     || y.Status == ReviewStatusEnum.QCCompleted
+                     || (y.Status == ReviewStatusEnum.QCCorrectionInProgress 
+                     && y.CompletedOn < ReviewCompletedOn.Value.AddDays(1))
+                     || (y.Status == ReviewStatusEnum.QCCorrectionInProgress
+                     && y.CompletedOn < ReviewCompletedOn.Value.AddDays(1))
                      )
                 );
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
