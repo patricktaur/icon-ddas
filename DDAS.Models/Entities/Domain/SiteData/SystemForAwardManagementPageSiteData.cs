@@ -57,20 +57,19 @@ namespace DDAS.Models.Entities.Domain.SiteData
         //return Entity for live search
         public override string FullName {
             get {
-                First = First + "";
-                Middle = Middle + "";
-                Last = Last + "";
-                return First.Trim() + " " + Middle.Trim() + " " + Last.Trim();
+                //First = First + "";
+                //Middle = Middle + "";
+                //Last = Last + "";
+                //return First.Trim() + " " + Middle.Trim() + " " + Last.Trim();
                 //return Entity;
-                //var fullName = "";
-                //if (First != null && First.Trim().Length > 0)
-                //    fullName += First.Trim();
-                //if (Middle != null && Middle.Trim().Length > 0)
-                //    fullName += " " + Middle.Trim();
-                //if (Last != null && Last.Trim().Length > 0)
-                //    fullName += " " + Last.Trim();
-                //return fullName;
-                //return Name;
+                var FullName = "";
+                if (First != null && First.Trim().Length > 0)
+                    FullName += First.Trim();
+                if (Middle != null && Middle.Trim().Length > 0)
+                    FullName += " " + Middle.Trim();
+                if (Last != null && Last.Trim().Length > 0)
+                    FullName += " " + Last.Trim();
+                return FullName;
             }
         }
 
