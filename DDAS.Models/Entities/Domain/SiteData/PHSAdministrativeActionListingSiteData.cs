@@ -37,7 +37,14 @@ namespace DDAS.Models.Entities.Domain.SiteData
 
         public override string FullName {
             get {
-                return FirstName + " " + MiddleName + " " + LastName;
+                string Name = "";
+                if (FirstName != null && FirstName.Trim().Length > 0)
+                    Name = FirstName.Trim();
+                if (MiddleName != null && MiddleName.Trim().Length > 0)
+                    Name += " " + MiddleName.Trim();
+                if (LastName != null && LastName.Trim().Length > 0)
+                    Name += " " + LastName.Trim();
+                return Name;
             }
         }
 
