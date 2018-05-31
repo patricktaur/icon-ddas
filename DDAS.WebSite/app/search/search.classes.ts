@@ -143,6 +143,7 @@ export class PrincipalInvestigatorDetails {
     Name: string = "";
     SponsorProtocolNumber: string = "";
     SponsorProtocolNumber2: string = "";
+    Institute: string = "";
     Country: string = "";
     Address: string = "";
     ProjectNumber: string = "";

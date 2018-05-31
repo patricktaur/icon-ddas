@@ -507,6 +507,7 @@ namespace DDAS.Models.Entities.Domain
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public string SponsorProtocolNumber2 { get; set; }
+        public string Institute { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
