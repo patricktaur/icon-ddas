@@ -40,7 +40,7 @@
 			<div class="tab-content">
 				<div id="qc-general" class="tab-pane fade {{defaultTabInActive}}">
 					<br/>
-					<h4>General Comment/Observations:</h4>
+					<h4>General Comments/Observations:</h4>
 					<div>
 						<table class="table table-bordered table-hover table-striped">
 							<thead>
@@ -54,38 +54,42 @@
 							</thead>
 							<tbody>
 								<tr class="active" *ngFor="let item of QCGeneralComments">
-									<td class="text-left">
-										Comment A
-									</td>
-									<td class="text-left">
-										{{getcommentCategory(item.CategoryEnum)}}
-									</td>
-									<td class="text-left">
-										{{item.FindingComment}}
-									</td>
-									<td class="text-left">
-										{{getcommentCategory(item.ReviewerCategoryEnum)}}
-									</td>
-									<td class="text-left">
-										{{item.ReviewerComment}}
-									</td>
-								</tr> 
+									<ng-container *ngIf="canDisplayComments(item)">
+										<td class="text-left">
+											Compliance Form Comments
+										</td>
+										<td class="text-left">
+											{{getCommentCategory(item.CategoryEnum)}}
+										</td>
+										<td class="text-left">
+											{{item.FindingComment}}
+										</td>
+										<td class="text-left">
+											{{getCommentCategory(item.ReviewerCategoryEnum)}}
+										</td>
+										<td class="text-left">
+											{{item.ReviewerComment}}
+										</td>
+									</ng-container>
+								</tr>
 								<tr class="active" *ngFor="let item of QCAttachmentComments">
-									<td class="text-left">
-										Comment B
-									</td>
-									<td class="text-left">
-										{{getcommentCategory(item.CategoryEnum)}}
-									</td>
-									<td class="text-left">
-										{{item.FindingComment}}
-									</td>
-									<td class="text-left">
-										{{getcommentCategory(item.ReviewerCategoryEnum)}}
-									</td>
-									<td class="text-left">
-										{{item.ReviewerComment}}
-									</td>
+									<ng-container *ngIf="canDisplayComments(item)">
+										<td class="text-left">
+											Supporting Document Comments
+										</td>
+										<td class="text-left">
+											{{getCommentCategory(item.CategoryEnum)}}
+										</td>
+										<td class="text-left">
+											{{item.FindingComment}}
+										</td>
+										<td class="text-left">
+											{{getCommentCategory(item.ReviewerCategoryEnum)}}
+										</td>
+										<td class="text-left">
+											{{item.ReviewerComment}}
+										</td>
+									</ng-container>
 								</tr>
 							</tbody>
 						</table>
@@ -97,7 +101,7 @@
 							<tr>
 								<th>Investigator/Institute Name</th>
 								<th>Source Number</th>
-								<th>Comment/Observation Type</th>
+								<th>Observation/Comment Type</th>
 								<th>Category</th>
 								<th>Observation/Comment</th>
 								<th>Response Category</th>
@@ -117,13 +121,13 @@
 									{{getType(item)}}
 								</td>
 								<td class="text-left">
-									{{getcommentCategory(item.Comments[0].CategoryEnum)}}
+									{{getCommentCategory(item.Comments[0].CategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{item.Comments[0].FindingComment}}
 								</td>
 								<td class="text-left">
-									{{getcommentCategory(item.Comments[0].ReviewerCategoryEnum)}}
+									{{getCommentCategory(item.Comments[0].ReviewerCategoryEnum)}}
 								</td>
 								<td class="text-left">
 									{{item.Comments[0].ReviewerComment}}
@@ -144,7 +148,7 @@
 					<br/>
 					<div *ngIf="canSubmitQC">
 						<div *ngFor="let comment of QCAttachmentComments; let indexVal = index">
-							<div qc-verifier-general-comment [Comment]="comment" [Title]="'Comment B'" 
+							<div qc-verifier-general-comment [Comment]="comment" [Title]="'Supporting Document Comments'" 
 								[CanRemoveComment]="canRemoveAttachmentComment"
 								(ValueChanged)="formValueChanged($event)"
 								(Remove)="setCommentToRemove(comment); RemoveAttachmentCommentConfirmModal.open()">
@@ -155,9 +159,9 @@
 						</div>
 					</div>
 
-					<div *ngIf="reviewerSubmitQC">
+					<div *ngIf="canReviewerSubmitQC">
 						<div *ngFor="let comment of QCAttachmentComments">
-							<div reviewer-response-to-general-comment [Title]="'Response to Comment B'" 
+							<div reviewer-response-to-general-comment [Title]="'Response to Supporting Document Comments'" 
 							[Comment]="comment" (ValueChanged)="formValueChanged($event)">
 							</div>
 							<div *ngIf="dividerGeneration(indexVal)">
@@ -173,7 +177,7 @@
 						<hr>
 					</div>
 					<br/>
-					Request: Attachments:
+					Attachments:
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
@@ -197,7 +201,7 @@
 					<br/>
 					<div *ngIf="canSubmitQC"> 
 						<div *ngFor="let comment of QCGeneralComments; let indexVal = index">
-							<div qc-verifier-general-comment [Comment]="comment" [Title]="'Comment A'" 
+							<div qc-verifier-general-comment [Comment]="comment" [Title]="'Compliance Form Comments'" 
 								[CanRemoveComment]="canRemoveGeneralComment"
 								(ValueChanged)="formValueChanged($event)"
 								(Remove)="setCommentToRemove(comment); RemoveGeneralCommentConfirmModal.open()">
@@ -208,9 +212,9 @@
 						</div>
 					</div> 
 
-					<div *ngIf="reviewerSubmitQC"> 
+					<div *ngIf="canReviewerSubmitQC"> 
 						<div *ngFor="let comment of QCGeneralComments; let indexVal = index">
-							<div reviewer-response-to-general-comment [Title]="'Response to Comment A'" 
+							<div reviewer-response-to-general-comment [Title]="'Response to Compliance Form Comments'" 
 							[Comment]="comment" (ValueChanged)="formValueChanged($event)">
 							</div>
 							<div *ngIf="dividerGeneration(indexVal)">
@@ -256,7 +260,7 @@
 			<button type="button" class="btn btn-primary" (click)="Save()" [disabled]="canDisableQCSave()">Save</button>
 			<button *ngIf="canSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.open()">Submit QC</button>
 			<button *ngIf="canUndoQCSubmit" type="button" class="btn btn-primary" (click)="ConfirmUndoQCModal.open()">Undo QC Submit</button>
-			<button *ngIf="reviewerSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
+			<button *ngIf="canReviewerSubmitQC" type="button" class="btn btn-primary" (click)="ConfirmQCCorrectionSubmitModal.open()" [disabled]="CanSubmitCorrectionsCompleted">
 				Submit QC Corrections
 			</button>
 		</div>
@@ -301,6 +305,7 @@
 		<button type="button" class="btn btn-primary" (click)="FindingResponseModal.close()">Close</button>
 	</modal-footer>
 </modal>
+
 <modal #RemoveConfirmModal>
 	<modal-header>
 		<h4 class="modal-title">Confirm Removal</h4>
@@ -338,6 +343,7 @@
 		<button type="button" class="btn btn-primary" (click)="ConfirmUndoQCModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
+
 <modal #ConfirmQCSubmitModal>
 	<modal-header>
 		<h4 class="modal-title">Confirm Submit QC</h4>
@@ -350,6 +356,7 @@
 		<button type="button" class="btn btn-primary" (click)="ConfirmQCSubmitModal.close()">Cancel</button>
 	</modal-footer>
 </modal>
+
 <modal #ConfirmQCCorrectionSubmitModal>
 	<modal-header>
 		<h4 class="modal-title">Confirm Submit QC Corrections</h4>

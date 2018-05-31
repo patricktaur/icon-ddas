@@ -1,4 +1,5 @@
-﻿using DDAS.Models.Entities.Domain.SiteData;
+﻿using DDAS.Models.Entities.Domain;
+using DDAS.Models.Entities.Domain.SiteData;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,21 @@ namespace DDAS.Data.Mongo.Indexes
         private IMongoDatabase _db;
         public Indexes()
         {
-            var mongo = new MongoClient("mongodb://127.0.0.1");
-            _db = mongo.GetDatabase("DDAS");
+            //var ConnStr =
+            //    System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
+            //var DBName =
+            //    System.Configuration.ConfigurationManager.AppSettings["DBName"];
+
+            //var uow = new UnitOfWork(ConnStr, DBName);
+
+            //var mongo = new MongoClient(ConnectionString);
+
+            //_db = mongo.GetDatabase(DBName);
+
+
+            //var mongo = new MongoClient("mongodb://127.0.0.1");
+            //_db = mongo.GetDatabase("DDAS");
         }
        
 
@@ -27,12 +41,12 @@ namespace DDAS.Data.Mongo.Indexes
         public async Task CreateIndex()
         {
 
-            var collection = _db.GetCollection<FDADebarPageSiteData>("FDADebarPageSiteData");
+            var collection = _db.GetCollection<ComplianceForm>("ComplianceForm");
           
             
             //await collection.Indexes.CreateOneAsync(Builders<FDADebarPageSiteData>.IndexKeys.Ascending("DebarredPersons.NameOfPerson"));
 
-            await collection.Indexes.CreateOneAsync(Builders<FDADebarPageSiteData>.IndexKeys.Text("DebarredPersons.NameOfPerson"));
+            await collection.Indexes.CreateOneAsync(Builders<ComplianceForm>.IndexKeys.Ascending("SearchStartedOn"));
            
 
         }

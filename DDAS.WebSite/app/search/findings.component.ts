@@ -98,7 +98,6 @@ export class FindingsComponent implements OnInit {
         this.service.getComplianceForm(this.ComplianceFormId)
             .subscribe((item: any) => {
                 this.CompForm = item;
-                //console.log('comp form -> ', this.CompForm);
                 //this.IntiliazeRecords();
                 this.loading = false;
                 this.isQCVerifier = this.isReviewerOrQCVerifier;
@@ -219,7 +218,9 @@ export class FindingsComponent implements OnInit {
     setHighlighter(){
         let inv1 = this.Investigator;
         let str = inv1.Name.replace(/[^a-zA-Z ]/g, '');
-        this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
+        //below line did not work for investigator 'Li Li'. Could not highlight the name
+        // this.highlightFilter = str.replace(/(\b(\w{1,2})\b(\W|$))/g, ''); //.split(/\s+/);
+        this.highlightFilter = str;
     }
 
     private comps: string[];
@@ -270,15 +271,10 @@ export class FindingsComponent implements OnInit {
     }
 
     get FullMatchRecords() {
-
         return this.Findings.filter(x => x.Selected == false && x.IsMatchedRecord == true && x.MatchCount && x.IsFullMatch == true).sort(s => s.MatchCount).reverse();
     }
 
-
     get filteredFullMatchRecords() {
-        
-        
-        
         if (this.FullMatchRecords == null) {
             return null;
         }
@@ -292,7 +288,6 @@ export class FindingsComponent implements OnInit {
                 return this.FullMatchRecords;
             }
         }
-
     }
 
     get filteredFullMatchCount() {
@@ -443,7 +438,7 @@ export class FindingsComponent implements OnInit {
                 selectedFinding.Comments = new Array<Comment>();
                 let comment = new Comment();
                 // comment.ReviewId = review.RecId;
-                comment.CategoryEnum = CommentCategoryEnum.Minor;
+                comment.CategoryEnum = CommentCategoryEnum.Select;
                 comment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
                 // comments.push(comment);
                 // let emptyComment = new Comment();
@@ -547,7 +542,6 @@ export class FindingsComponent implements OnInit {
 
     }
 
-
     SaveAndClose() {
         //formId : string, siteEnum:number, InvestigatorId:number, ReviewCompleted : boolean,  Findings:Finding[]
 
@@ -616,11 +610,7 @@ export class FindingsComponent implements OnInit {
         else {
             return false;
         }
-    }
-
-
-
-    
+    }   
 
     setDeactivateValue() {
         this.canDeactivateValue = true;
@@ -631,12 +621,10 @@ export class FindingsComponent implements OnInit {
             return null;
         }
         var middleNames: string[] = RecordDetails.split("~");
-
         return middleNames;
     }
 
     goBack() {
-
         this.router.navigate(['investigator-summary', this.ComplianceFormId, this.InvestigatorId, { siteId: this.siteSourceId, rootPath: this.rootPath, hideReviewCompleted: this.hideReviewCompleted }], { relativeTo: this.route.parent });
         //this.router.navigate(['comp-form-edit', this.ComplianceFormId, this.InvestigatorId,  {siteEnum:this.SiteEnum, rootPath: this.rootPath}], { relativeTo: this.route.parent});
 

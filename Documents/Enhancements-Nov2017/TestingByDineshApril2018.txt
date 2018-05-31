@@ -1,0 +1,47 @@
+We have reviewed/tested the QC workflow and please find our points below for action/consideration.
+
+ 
+
+1.      While the QC workflow initiated and when the user uses the link provided in the email, the link takes us to the actual login credential page. But when entered the password, the webpage displays the actual tabs in left while the credential screen still remains on web page. Although, this doesn’t hamper the work, but raising as this could be a bug.
+
+2.      Along with the above point, the initial email have the link to access the tool, but the same is not in the second email back from QCer for the initial user to access the same (see attached) and requesting you to add that.
+
+3.      For QCer, the first screen have Comment A & B pre populated without even starting the QC review, find below screen shot and requesting to correct this so this doesn’t display any default comment prior added by QCer.
+
+ 
+
+	cid:image004.jpg@01D3AFF2.4D5FB260
+
+4.      Please rename the Comment A & B as Compliance form comments & Supporting Document Comments respectively.
+
+5.      The QC summary in email back to initial user is long listed (see attached) and could the same table be displayed as in the tool in email as well as it makes the review much easy & presentable as well.
+
+6.      Although, we had received the comment on the multiple upload of documents at the same time from you earlier as “Please note that uploading files with 'drag & drop' and 'select' option works for a single file only”. but just checking my understanding is correct on your statement that, we cannot select multiple files at once to upload, but we can added many one by one and if my understanding is correct, just wanted to see the other possibilities on our requirement.
+
+7.      While doing the testing by different users, few were able to download without any concern at all, but few couldn’t as they were not able to initiate the download too. So could this be checked once.
+
+8.      If there are no error noted on any matches by QC’er, tool doesn’t have a drop down to select as “No issues” for that particular findings and so that also doesn’t come under the summary as well. So in the below displayed screenshot, can the option as “No issues” be added and this doesn’t come in summary as well to resolve this.
+
+cid:image004.png@01D3AF24.D5CA3A40
+
+9.      We have a very unique scenario we notice within out work recently and if tried to implement in this QC workflow, we see an issue. So I have detailed the scenario for your better understanding and seeking your action or expertise on this too.
+
+a.       As this QC is imposed only on the new resources within team, we see sometimes the search could be run incorrectly on a different name and QCer may advise to rerun the search on the correct name again.
+
+b.      So right now outside QC workflow, this is being handled by adding a new PI to run the search and remove the incorrect one, which works without any flaw.
+
+c.       But within the QC workflow if the QCer requests the same, the initial user could add the new correct PI name for search, but then unable to complete the review as the option remains locked for any action on this new PI search, which lead to a gridlock in the process and requesting you to correct this lock.
+
+10.  Also for the initial reviewer, the “Reviewer Comment category” is getting pre populated as Accepted and I suppose, this shouldn’t be automatically chosen. So can you please look into this as well along with the similar point above.
+
+11.  We could have only “Accepted” & “Not Accepted” alone in this category and the “Correction Completed” doesn’t have any necessity. So please remove this.
+
+12.  Once the QCer & Initial reviewer actions are complete (1 QC cycle is complete), tool currently doesn’t displays these as Logs in both users which leads to no option for the users to go back to check on historical QC activities. So can this is checked for any possibilities or make this available, if possible.
+
+ 
+
+Kindly feel free to write back if any point is not clear or if more clarity is needed and also happy to resolve with a call too, if necessary.
+
+ 
+
+Hope I have included all points and if we may have any more, we may add later on this email.

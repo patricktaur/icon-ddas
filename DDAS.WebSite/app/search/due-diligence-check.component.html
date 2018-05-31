@@ -12,12 +12,13 @@
 						<span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  
 					  	Batch Upload
 					</button>
-					<button type="button" 
+					<!-- Do not remove - Required in future -->
+					<!-- <button type="button" 
 					class="btn-lg btn btn-primary" title="Reload" 
 					(click)="getUnAssignedComplianceForms(); PickComplianceFormModal.open()"
 					title="Select from unassigned list (iSprint and unassigned" >
 						Select from Unassigned (includes iSprint) 
-					</button>
+					</button> -->
 				</div>
 				<div class="col-md-3">
 					<div class="text-right vertical-center">
@@ -41,6 +42,7 @@
 		<thead>
 			<tr>
 				<th class="text-left">Principal Investigator </th>
+				<th class="text-left">Institute</th>
 				<th class="text-left">ICON Project Number</th>
 				<th class="text-left">Sponsor Protocol Number</th>
 				<th class="text-left">Country</th>
@@ -81,6 +83,9 @@
 							</div>
 						</div>
 					</div>
+				</td>
+				<td class="text-center">
+					{{item.Institute}}
 				</td>
 				<td class="text-center">
 					{{item.ProjectNumber}} {{item.ProjectNumber2}}

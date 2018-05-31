@@ -9,12 +9,15 @@ namespace DDAS.Models.Interfaces
 {
     public interface ISearchService
     {
-        
 
         ComplianceForm GetComplianceForm(Guid ComplianceFormId);
         List<PrincipalInvestigator> getAllPrincipalInvestigators();
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
         List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
+        List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, ReviewStatusEnum ReviewStatus);
+        List<PrincipalInvestigator> getPrincipalInvestigators(List<ComplianceForm> Forms);
+
+
 
         ComplianceForm GetNewComplianceForm(string UserName, string InputSource);
 
@@ -24,9 +27,9 @@ namespace DDAS.Models.Interfaces
 
         ComplianceForm UpdateComplianceForm(ComplianceForm form);
         bool UpdateComplianceFormNIgnoreIfNotFound(ComplianceForm form);
-        //void UpdateAssignedToData(string AssignedTo, string AssignedBy, bool Active, Guid? RecId);
         void UpdateAssignedTo(Guid? RecId, string  AssignedBy, string AssignedFrom, string AssignedTo);
-     
+        void UpdateAssignedTo(string AssignedBy, AssignComplianceFormsTo AssignComplianceFormsTo);
+
 
         void UpdateExtractionQuePosition(Guid formId, int Position, DateTime ExtractionStartedAt, DateTime ExtractionEstimatedCompletion);
 

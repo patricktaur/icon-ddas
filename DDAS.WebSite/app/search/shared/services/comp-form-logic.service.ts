@@ -377,7 +377,8 @@ export class CompFormLogicService {
         if(CompForm && 
             (CompForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
             CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
-            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted)){
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+            CompForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress)){
             return true;
         }
         else{
@@ -405,7 +406,8 @@ export class CompFormLogicService {
         if(compForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
             (compForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
             compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
-            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted))
+            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+            compForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress))
             return true;
         else if(this.isLoggedInUserQCVerifier(compForm) &&
             compForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress)
@@ -418,7 +420,8 @@ export class CompFormLogicService {
         if(compForm.AssignedTo.toLowerCase() == this.authService.userName.toLowerCase() &&
             (compForm.CurrentReviewStatus == ReviewStatusEnum.SearchCompleted ||
             compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewInProgress ||
-            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted))
+            compForm.CurrentReviewStatus == ReviewStatusEnum.ReviewCompleted ||
+            compForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress))
             return true;
         else
             return false;
@@ -436,7 +439,8 @@ export class CompFormLogicService {
     canShowQCResponse(complianceForm: ComplianceFormA){
         if(this.isLoggedInUserQCVerifier(complianceForm) &&
             (complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCInProgress ||
-            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted)) 
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCompleted ||
+            complianceForm.CurrentReviewStatus == ReviewStatusEnum.Completed))
             return true;
         else
             return false;
@@ -478,6 +482,7 @@ export class CompFormLogicService {
             case CommentCategoryEnum.CorrectionCompleted: return "Correction Completed";
             case CommentCategoryEnum.Accepted: return "Accepted";
             case CommentCategoryEnum.NotAccepted: return "Not Accepted";
+            case CommentCategoryEnum.NoIssues: return "No Issues";
             default: "";
         }
     }

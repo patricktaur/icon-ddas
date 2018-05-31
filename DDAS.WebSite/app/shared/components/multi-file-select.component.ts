@@ -34,7 +34,7 @@ import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@a
     template: `
         
         
-
+    
         <div draggable="true" ngClass="{{dragAreaClass}}">
             <div class="row">
                 <div class="col-md-12 text-center">
@@ -43,11 +43,13 @@ import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@a
                         Click to browse
                     </a> Or Drag & Drop to upload the Attachment
 
-                    <input type="file" #file  (change)="fileChange($event)" style="display:none" />
+                    <input type="file" #file  (change)="fileChange($event)" style="display:none" multiple/>
 
                 </div>
             </div>
 
+        </div>
+        <div class="row">
         </div>
         <div class="row error " *ngIf="errors.length> 0">
             <div class="col-md-12 text-center">
@@ -77,7 +79,13 @@ import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@a
             </button>
 
 				</td>
-			</tr>
+            </tr>
+            <tr>
+                <td colspan="2">
+                <span class="glyphicon glyphicon-warning-sign">  When files are uploaded the filenames longer than 50 characters will be shortened.</span>
+                </td>
+            </tr>
+
 		</tbody>
 	</table>
 
@@ -99,14 +107,15 @@ export class MultiFileSelectComponent implements OnInit {
 
     fileChange(event: any) {
         
-        let fileList: FileList = event.target.files;
-        if(fileList.length > 0) {
+        // let fileList: FileList = event.target.files;
+        // if(fileList.length > 0) {
             
-            let file: File = fileList[0];
-            console.log("Inside fileChange: " + file.name);
-            //this.formData.append('uploadFile', file, file.name);
-            this.Files.push(file);
-        }
+        //     let file: File = fileList[0];
+        //     this.Files.push(file);
+        // }
+        
+        let files = [].slice.call(event.target.files);
+        files.map((f : any) =>  this.Files.push(f));
     }
 
     Remove(file: any){
@@ -140,15 +149,16 @@ export class MultiFileSelectComponent implements OnInit {
         this.dragAreaClass = "dragarea";           
         event.preventDefault();
         event.stopPropagation();
-        var fileList = event.dataTransfer.files;
         
-        //let fileList: FileList = event.target.files;
-        if(fileList.length > 0) {
-            let file: File = fileList[0];
-            //this.formData.append('uploadFile', file, file.name);
-            this.Files.push(file);
-        }
-
+        // var fileList = event.dataTransfer.files;
+        // if(fileList.length > 0) {
+        //     let file: File = fileList[0];
+        //     //this.formData.append('uploadFile', file, file.name);
+        //     this.Files.push(file);
+        // }
+        
+        let files = [].slice.call(event.dataTransfer.files);
+        files.map((f : any) =>  this.Files.push(f));    
     }
     //get diagnostic() { return JSON.stringify(this.Files); }
 

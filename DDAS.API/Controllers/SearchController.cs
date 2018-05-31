@@ -264,7 +264,6 @@ namespace DDAS.API.Controllers
             }
         }
 
-
         //[Authorize(Roles ="user")]
         [Route("GetPrincipalInvestigators")]
         [HttpGet]
@@ -289,8 +288,12 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetMyReviewPendingPrincipalInvestigators()
         {
             var UserName = User.Identity.GetUserName();
+            //return Ok(
+            //    _SearchService.getPrincipalInvestigators(UserName, true, false));
+
             return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, true, false));
+                _SearchService.getPrincipalInvestigators(UserName, ReviewStatusEnum.ReviewInProgress));
+
         }
 
         [Route("GetMyClosedPrincipalInvestigators")]
@@ -495,10 +498,6 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAssginedToData(string AssignedTo, string AssignedFrom,
             string ComplianceFormId)
         {
-            //var AssignedBy = User.Identity.GetUserName();
-            //var RecId = Guid.Parse(ComplianceFormId);
-            //_SearchService.UpdateAssignedToData(AssignedTo, AssignedBy, Active, RecId);
-            //return Ok(true);
             try
             {
                 if (AssignedFrom == null)
@@ -511,11 +510,30 @@ namespace DDAS.API.Controllers
 
                 return Ok(true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Content(HttpStatusCode.BadRequest, "Error");
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+
+        [Route("AssignComplianceFormsTo")]
+        [HttpPost]
+        public IHttpActionResult AssignComplianceFormsTo(AssignComplianceFormsTo AssignComplianceFormsTo)
+        {
+           
+            try
+            {
+                var AssignedBy = User.Identity.GetUserName();
+                _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
+
+
 
         [Route("ClearAssignedTo")]
         [HttpGet]
@@ -528,6 +546,17 @@ namespace DDAS.API.Controllers
 
             return Ok(true);
         }
+
+        [Route("ClearAssignedTo")]
+        [HttpGet]
+        public IHttpActionResult ClearAssginedTo(AssignComplianceFormsTo AssignComplianceFormsTo)
+        {
+            var AssignedBy = User.Identity.GetUserName();
+            _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
+
+            return Ok(true);
+        }
+
 
         [Route("GetUploadsFolderPath")]
         [HttpGet]
@@ -902,10 +931,17 @@ namespace DDAS.API.Controllers
             var FormId = Guid.Parse(ComplianceFormId);
             var Form = _UOW.ComplianceFormRepository.FindById(FormId);
 
-            var Review = Form.Reviews.LastOrDefault();
+            var Review = Form.Reviews.FirstOrDefault();
 
             if (Review == null)
                 throw new Exception("Review collection cannot be empty!");
+
+            if(Review.Status != ReviewStatusEnum.ReviewCompleted)
+            {//Pradeep 26Apr2018
+                //No action required
+            }
+            else //Review is completed, look for 'QC' and 'Completed' Status
+                Review = Form.Reviews.LastOrDefault();
 
             var CurrentReviewStatus = new CurrentReviewStatusViewModel();
 

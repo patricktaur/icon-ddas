@@ -2,8 +2,6 @@
 using DDAS.Models.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace DDAS.API.Helpers
 {
@@ -30,35 +28,21 @@ namespace DDAS.API.Helpers
                 };
             }
 
-            //Patrick: 11Feb2018:
-            //if (CompForm.QCGeneralComment == null) {
-            //    var newComment = new Comment();
-            //    newComment.CategoryEnum = CommentCategoryEnum.Minor;
-            //    newComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionCompleted;
-            //    CompForm.QCGeneralComment = newComment;
-            //}
-            //if (CompForm.QCAttachmentComment == null) {
-            //    var newComment = new Comment();
-            //    newComment.CategoryEnum = CommentCategoryEnum.Minor;
-            //    newComment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionCompleted;
-            //    CompForm.QCAttachmentComment = newComment;
-            //}
-
             //Pradeep 22Feb2018
             if(CompForm.QCGeneralComments == null || 
                 CompForm.QCGeneralComments.Count == 0)
             {
                 var newComment = new Comment();
-                newComment.CategoryEnum = CommentCategoryEnum.Minor;
-                newComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                newComment.CategoryEnum = CommentCategoryEnum.Select;
+                newComment.ReviewerCategoryEnum = CommentCategoryEnum.NotAccepted;
                 CompForm.QCGeneralComments.Add(newComment);
             }
             if(CompForm.QCAttachmentComments == null ||
                 CompForm.QCAttachmentComments.Count == 0)
             {
                 var newComment = new Comment();
-                newComment.CategoryEnum = CommentCategoryEnum.Minor;
-                newComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                newComment.CategoryEnum = CommentCategoryEnum.Select;
+                newComment.ReviewerCategoryEnum = CommentCategoryEnum.NotAccepted;
                 CompForm.QCAttachmentComments.Add(newComment);
             }
         }

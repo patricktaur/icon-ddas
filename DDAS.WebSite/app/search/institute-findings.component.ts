@@ -58,16 +58,12 @@ export class InstituteFindingsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-
         this.route.params.forEach((params: Params) => {
             this.ComplianceFormId = params['formId'];
-
             this.SiteSourceId = +params['siteSourceId']
             this.rootPath = params['rootPath'];
             this.LoadOpenComplainceForm();
-
         });
-
     }
 
     LoadOpenComplainceForm() {
@@ -78,8 +74,7 @@ export class InstituteFindingsComponent implements OnInit {
                 //this.IntiliazeRecords();
                 this.loading = false;
                 this.isQCVerifier = this.isReviewerOrQCVerifier;
-                this.getCurrentReviewStatus();               
-
+                this.getCurrentReviewStatus();
             },
             error => {
                 this.loading = false;
@@ -183,16 +178,15 @@ export class InstituteFindingsComponent implements OnInit {
 
 
     Add() {
-        let finding = new Finding;
+        let finding = new Finding();
         finding.IsMatchedRecord = false;
         // finding.InvestigatorSearchedId = this.InvestigatorId;
         finding.SiteSourceId = this.SiteSourceId
 
         finding.SiteDisplayPosition = this.Site.DisplayPosition;
         finding.SiteId = this.Site.SiteId;
-        finding.SiteEnum = this.Site.SiteEnum; //this.SiteEnum;
+        finding.SiteEnum = this.Site.SiteEnum;
 
-        //finding.DateOfInspection = new Date() ;
         finding.Selected = true;
         finding.InvestigatorName = this.CompForm.Institute;
         finding.IsAnIssue = true;
@@ -214,7 +208,7 @@ export class InstituteFindingsComponent implements OnInit {
                 selectedFinding.Comments = new Array<Comment>();
                 let comment = new Comment();
                 // comment.ReviewId = review.RecId;
-                comment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                comment.CategoryEnum = CommentCategoryEnum.Select;
                 comment.ReviewerCategoryEnum = CommentCategoryEnum.CorrectionPending;
                 // comments.push(comment);
                 // let emptyComment = new Comment();

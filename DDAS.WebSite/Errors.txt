@@ -1,0 +1,6 @@
+Error:
+aot/app/qcworkflow/edit-qc/edit-qc.component.ngfactory.ts(2006,46): error TS2339: Property 'reviewerSubmitQC' does not exist on type 'EditQCComponent'.
+
+Solution:
+Delete aot/app/*.*
+Delete app/main-aot.ts

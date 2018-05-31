@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2013 rel. 2 sp2 (x64) (http://www.altova.com) by Rebecca Domarasky (ICON CLINICAL RESEARCH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="ddResult">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="project">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="projectNumber" type="xs:string"/>
+							<xs:element name="sponsorProtocolNumber" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="investigatorResults">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="investigatorResult" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="investigatorId" type="xs:string"/>
+										<xs:element name="memberId" type="xs:string" minOccurs="0"/>
+										<xs:element name="firstName" type="xs:string"/>
+										<xs:element name="middleName" type="xs:string" minOccurs="0"/>
+										<xs:element name="lastName" type="xs:string"/>
+										<xs:element name="ddStatus" type="xs:string"/>
+										<xs:element name="ddCompletedDate" type="xs:date" minOccurs="0"/>
+										<xs:element name="checksCompleted" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="check" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="name">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																			<xs:enumeration value="investigator world check"/>
+																			<xs:enumeration value="institution world check"/>
+																			<xs:enumeration value="foi"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:element name="date"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="instituteComplianceIssue" type="xs:boolean"/>
+										<xs:element name="dmc9002CheckDate" type="xs:date" minOccurs="0"/>
+										<xs:element name="dmc9002Exclusion" type="xs:string" minOccurs="0"/>
+										<xs:element name="ddFindings" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="finding" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="date" type="xs:date"/>
+																<xs:element name="type">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																			<xs:enumeration value="Regulatory"/>
+																			<xs:enumeration value="Worldcheck"/>
+																			<xs:enumeration value="Medical Licence"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:element name="regulatoryCode">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																			<xs:enumeration value="OAI"/>
+																			<xs:enumeration value="NAI"/>
+																			<xs:enumeration value="VAI"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:element name="regulatoryDeficiency" type="xs:string"/>
+																<xs:element name="worldCheckFinding" type="xs:string"/>
+																<xs:element name="comment" type="xs:string"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { PrincipalInvestigatorDetails, ComplianceFormManage, CompFormFilter } from './search.classes';
+import { PrincipalInvestigatorDetails, ComplianceFormManage, CompFormFilter, AssignComplianceFormsTo } from './search.classes';
 import { SearchService } from './search-service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
@@ -34,6 +34,7 @@ export class ManageICFsComponent implements OnInit {
     public ToDate: IMyDateModel;
     public pageNumber: number = 1;
     public loading: boolean;
+    public AllSelected: boolean;
     
     public myDatePickerOptions = {
         dateFormat: 'dd mmm yyyy',
@@ -49,7 +50,6 @@ export class ManageICFsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.loading = true;
         this.route.params.forEach((params: Params) => {
             let page = + params['page'];
             if (page != null) {
@@ -72,7 +72,7 @@ export class ManageICFsComponent implements OnInit {
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.AssignedTo = "-1";
         this.ComplianceFormFilter.Status = -1;
-
+        this.ComplianceFormFilter.InputSource = "All";
         var fromDay = new Date();
         fromDay.setDate(fromDay.getDate() - 10);
 
@@ -104,6 +104,7 @@ export class ManageICFsComponent implements OnInit {
     }
 
     LoadUsers() {
+        this.loading = true;
         this.service.getAllUsers()
             .subscribe((item: any[]) => {
                 this.Users = item;
@@ -124,7 +125,7 @@ export class ManageICFsComponent implements OnInit {
         if (this.ToDate != null) {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
-
+        this.AllSelected = false;
         this.loading = true;
         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
@@ -184,6 +185,11 @@ export class ManageICFsComponent implements OnInit {
         this.AssignedFrom = Investigator.AssignedTo + " ";
     }
 
+    setComplianceFormAssignSelected() {
+
+        
+    }
+
     assignToEnabled() {
 
         if (this.AssignedTo) {
@@ -213,10 +219,35 @@ export class ManageICFsComponent implements OnInit {
             });
     }
 
+    assignSelectedComplianceFormsTo() {
+
+        let assignComplianceFormsTo = new AssignComplianceFormsTo;
+        assignComplianceFormsTo.AssignedTo = this.AssignedTo;
+        assignComplianceFormsTo.PrincipalInvestigators = this.SelectedRecords;
+        this.service.AssignComplianceFormsTo(assignComplianceFormsTo)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+            });
+    }
 
 
     ClearAssignedTo() {
         this.service.ClearAssignedTo(this.SelectedComplianceFormId, this.AssignedFrom)
+            .subscribe((item: boolean) => {
+                this.LoadPrincipalInvestigators();
+            },
+            error => {
+            });
+    }
+
+    clearSelectedComplianceFormsAssignTo() {
+
+        let assignComplianceFormsTo = new AssignComplianceFormsTo;
+        assignComplianceFormsTo.AssignedTo = "";
+        assignComplianceFormsTo.PrincipalInvestigators = this.SelectedRecords;
+        this.service.AssignComplianceFormsTo(assignComplianceFormsTo)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },
@@ -236,5 +267,31 @@ export class ManageICFsComponent implements OnInit {
             });
     }
 
+    selectAll(){
+        //canReassignOrClearReassignment(item.CurrentReviewStatus)
+        this.filteredRecords
+        .filter((a) => this.canReassignOrClearReassignment(a.CurrentReviewStatus))
+        .forEach( x=> x.Selected = !this.AllSelected);
+    }
+
+    get SelectedCount(){
+        // if (this.filteredRecords == null){
+        //     return null;
+        // }
+        // return this.filteredRecords.filter((a) => a.Selected).length;
+    
+        if (this.SelectedRecords == null){
+            return null;
+        }
+        return this.SelectedRecords.length;
+    }
+    
+    get SelectedRecords(){
+        if (this.filteredRecords == null){
+            return null;
+        }
+        return this.filteredRecords.filter((a) => a.Selected);
+    }
+    
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 }

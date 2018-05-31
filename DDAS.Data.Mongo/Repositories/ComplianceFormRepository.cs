@@ -22,6 +22,7 @@ namespace DDAS.Data.Mongo.Repositories
             _db = db;
         }
 
+        //Not used:
         public ComplianceForm FindComplianceFormIdByNameToSearch(string NameToSearch)
         {
             var filter = Builders<ComplianceForm>.Filter.Eq("NameToSearch", NameToSearch);
@@ -35,6 +36,203 @@ namespace DDAS.Data.Mongo.Repositories
             var Filter = Builders<ComplianceForm>.Filter.Eq("Active", value);
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var entity = collection.Find(Filter).ToList();
+            return entity;
+        }
+
+
+        public List<ComplianceForm> FindComplianceForms(string AssignedTo, ReviewStatusEnum ReviewStatus)
+        {
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.Find(
+                x => x.AssignedTo == AssignedTo
+                && x.Reviews.Any(y => y.Status == ReviewStatus)).ToList();
+
+            return entity;
+        }
+
+        public List<ComplianceForm> FindComplianceForms(string AssignedTo)
+        {
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.Find(
+                x => x.AssignedTo == AssignedTo
+                ).ToList();
+
+            return entity;
+        }
+
+        public List<ComplianceForm> FindComplianceForms( ReviewStatusEnum ReviewStatus)
+        {
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.Find(
+                 x => x.Reviews.Any(y => y.Status == ReviewStatus)).ToList();
+            return entity;
+        }
+
+
+
+        public List<ComplianceForm> FindComplianceForms(ComplianceFormFilter CompFormFilter)
+        {
+
+            var builder = Builders<ComplianceForm>.Filter;
+            var filter = builder.Empty;
+            //-------------------
+
+
+            if (CompFormFilter.InvestigatorName != null &&
+                CompFormFilter.InvestigatorName != "")
+            {
+                //var filter = Builders<ComplianceForm>.Filter
+                //   .Where(x => x.InvestigatorDetails.Any(y => y.Name.ToLower().Contains(CompFormFilter.InvestigatorName.ToLower())));
+
+                filter = filter & builder.Where(x => x.InvestigatorDetails.Any(y => y.Name.ToLower().Contains(CompFormFilter.InvestigatorName.ToLower())));
+                //Filter1 = Filter1.FindAll(x =>
+                //x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
+                //.Contains(
+                //    CompFormFilter.InvestigatorName.ToLower()));
+            }
+
+
+
+            if (CompFormFilter.ProjectNumber != null &&
+                CompFormFilter.ProjectNumber != "")
+            {
+                filter = filter & builder.Where(
+                    x => x.ProjectNumber == CompFormFilter.ProjectNumber
+                    || x.ProjectNumber2 == CompFormFilter.ProjectNumber);
+
+                //Filter2 = Filter1.Where(x =>
+                //x.ProjectNumber == CompFormFilter.ProjectNumber ||
+                //x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+                //.ToList();
+            }
+
+
+            if (CompFormFilter.SponsorProtocolNumber != null &&
+                CompFormFilter.SponsorProtocolNumber != "")
+            {
+                filter = filter & builder.Where(
+                    x => x.SponsorProtocolNumber.ToLower() == CompFormFilter.SponsorProtocolNumber.ToLower()
+                    || x.SponsorProtocolNumber2.ToLower() == CompFormFilter.SponsorProtocolNumber.ToLower());
+
+                //Filter3 = Filter2.Where(x =>
+                //x.SponsorProtocolNumber.ToLower() ==
+                //CompFormFilter.SponsorProtocolNumber.ToLower() ||
+                //x.SponsorProtocolNumber2.ToLower() ==
+                //CompFormFilter.SponsorProtocolNumber.ToLower())
+                //.ToList();
+            }
+
+
+            if (CompFormFilter.SearchedOnFrom != null)
+            {
+                DateTime startDate;
+                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+
+                filter = filter & builder.Where(
+                    x => x.SearchStartedOn >= startDate);
+
+                // Filter4 = Filter3.Where(x =>
+                //x.SearchStartedOn >= startDate)
+                //.ToList();
+            }
+
+
+            if (CompFormFilter.SearchedOnTo != null)
+            {
+                DateTime endDate;
+                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+
+                filter = filter & builder.Where(x => x.SearchStartedOn < endDate);
+
+                //Filter5 = Filter4.Where(x =>
+                //x.SearchStartedOn <
+                //endDate)
+                //.ToList();
+            }
+
+
+            if (CompFormFilter.Country != null &&
+                CompFormFilter.Country != "")
+            {
+                filter = filter & builder.Where(x => x.Country.ToLower() == CompFormFilter.Country.ToLower());
+                //Filter6 = Filter5.Where(x =>
+                //x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
+            }
+
+
+            //if ((int)CompFormFilter.Status == -1)
+            //{
+
+            //    filter = filter & builder.Where(
+            //        x => x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+            //    x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified);
+
+            //    //Filter7 = Filter6.FindAll(x => x.StatusEnum ==
+            //    //ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+            //    //x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            //    //.ToList();
+            //}
+            //else if ((int)CompFormFilter.Status != -1)
+            //{
+            //    filter = filter & builder.Where(x => x.StatusEnum == CompFormFilter.Status);
+
+            //    //Filter7 = Filter6.Where(x =>
+            //    //x.StatusEnum == CompFormFilter.Status).ToList();
+            //}
+
+            if (CompFormFilter.AssignedTo != null &&
+                //CompFormFilter.AssignedTo != "" &&
+                CompFormFilter.AssignedTo != "-1")
+            {
+                filter = filter & builder.Where(x => x.AssignedTo.ToLower() == CompFormFilter.AssignedTo.ToLower());
+            }
+
+            if (CompFormFilter.InputSource != null && 
+                CompFormFilter.InputSource.ToLower() != "all")
+            {
+                filter = filter & builder.Where(x => x.InputSource.ToLower() == CompFormFilter.InputSource.ToLower());
+            }
+            //var Filter8 = Filter7.Where(x =>
+            //x.AssignedTo == AssignedTo).ToList();
+            //--------------------
+
+
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.Find(filter).ToList();
+            return entity;
+        }
+
+        public List<ComplianceForm> FindQCComplianceForms(DateTime? ReviewAssignedOn, DateTime? ReviewCompletedOn)
+        {
+            var builder = Builders<ComplianceForm>.Filter;
+            var filter = builder.Empty;
+
+            if (ReviewAssignedOn.HasValue)
+            {
+                var startDate = ReviewAssignedOn.Value;
+                filter = filter & builder.Where(x => x.Reviews.Any(y => y.AssignedOn >= startDate));
+            }
+
+            //if (ReviewCompletedOn.HasValue)
+            //{
+            //    var endDate = ReviewCompletedOn.Value.AddDays(1);
+            //    filter = filter & builder.Where(x => x.Reviews.Any(y => y.CompletedOn < endDate));
+            //}
+
+            filter = filter & builder.Where(x => x.Reviews.Any(
+                y =>
+                     y.Status == ReviewStatusEnum.QCRequested
+                     || y.Status == ReviewStatusEnum.QCInProgress
+                     || y.Status == ReviewStatusEnum.QCFailed
+                     || y.Status == ReviewStatusEnum.QCPassed
+                     || (y.Status == ReviewStatusEnum.QCCorrectionInProgress 
+                     && y.CompletedOn < ReviewCompletedOn.Value.AddDays(1))
+                     || (y.Status == ReviewStatusEnum.QCCorrectionInProgress
+                     && y.CompletedOn < ReviewCompletedOn.Value.AddDays(1))
+                     )
+                );
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var entity = collection.Find(filter).ToList();
             return entity;
         }
 

@@ -105,6 +105,7 @@ namespace DDAS.Services.Search
             string exePath = @"C:\Development\p926-ddas\DDAS.API\bin\DDAS.DataExtractor.exe";
 
             ProcessStartInfo processInfo = new ProcessStartInfo(exePath);
+            processInfo.Arguments = siteNumber.ToString();
             processInfo.CreateNoWindow = true;
             processInfo.UseShellExecute = false;
             processInfo.Arguments = siteNumber.ToString();

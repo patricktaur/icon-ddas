@@ -108,6 +108,7 @@ export class EditQCComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.pageNumber = 1;
         this.isSubmitted = false;
         this.route.params.forEach((params: Params) => {
             this.complianceFormId = params['complianceFormId'];
@@ -170,15 +171,8 @@ export class EditQCComponent implements OnInit {
 
     getAttachmentDownloadURL(fileName: string){
         return "Search/DownloadAttachmentFile?formId=" + this.complianceFormId + "&fileName=" + fileName;
-        // return "Search/DownloadAttachmentFile?formId=" + this.complianceFormId
-        // + "&fileName=" + fileName;
     }
-    // get QCVerifiedFindings(){
-    //     return this.complianceForm.Findings.find(
-    //         x => x.Comments[1].CategoryEnum == QCVer
-    //     )
-    // }
-
+    
     get principalInvestigatorName(){
         if(this.complianceForm){
             return this.complianceForm.InvestigatorDetails[0].Name;
@@ -279,6 +273,14 @@ export class EditQCComponent implements OnInit {
         }
     }
 
+    canDisplayComments(comment: Comment){
+        if(comment && comment.CategoryEnum == CommentCategoryEnum.Select){
+            return false;
+        }
+        else
+            return true;
+    }
+
     get QCGeneralComments(){
         if(this.complianceForm && this.complianceForm.QCGeneralComments && 
             this.complianceForm.QCGeneralComments.length > 0)
@@ -303,7 +305,7 @@ export class EditQCComponent implements OnInit {
     addGeneralComment(){
         let comment = new Comment();
         comment.CategoryEnum = CommentCategoryEnum.Minor;
-        comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+        comment.ReviewerCategoryEnum = CommentCategoryEnum.NotAccepted;
         this.complianceForm.QCGeneralComments.push(comment);
         this.pageChanged = true;
     }
@@ -311,7 +313,7 @@ export class EditQCComponent implements OnInit {
     addAttachmentComment(){
         let comment = new Comment();
         comment.CategoryEnum = CommentCategoryEnum.Minor;
-        comment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+        comment.ReviewerCategoryEnum = CommentCategoryEnum.NotAccepted;
         this.complianceForm.QCAttachmentComments.push(comment);
         this.pageChanged = true;
     }
@@ -383,7 +385,7 @@ export class EditQCComponent implements OnInit {
         this.FindingResponseModal.open();
     }
 
-    getcommentCategory(categoryEnum: CommentCategoryEnum){
+    getCommentCategory(categoryEnum: number){
         return CommentCategoryEnum[categoryEnum];
     }
     
@@ -475,7 +477,7 @@ export class EditQCComponent implements OnInit {
 
         if(this.complianceForm.QCStatus == QCCompletedStatusEnum.InProgress ||
            this.complianceForm.QCStatus == QCCompletedStatusEnum.NotApplicable){
-            alert('Please select whether \'Issues Noted\' or \'No Issues\' under the QC Response');
+            alert('Please select \'Issues Noted\' or \'No Issues\' under the QC Response');
             return;
            }
 
@@ -520,8 +522,7 @@ export class EditQCComponent implements OnInit {
         }
 
         let includeFindings = this.QCVerifiedFindings.filter(x =>
-            x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.Accepted ||
-            x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted);
+            x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.Accepted);
 
         if(includeFindings){
             includeFindings.forEach(record => {
@@ -545,7 +546,7 @@ export class EditQCComponent implements OnInit {
             });
     }
 
-    get reviewerSubmitQC(){
+    get canReviewerSubmitQC(){
         if(this.complianceForm && 
             this.complianceForm.CurrentReviewStatus == ReviewStatusEnum.QCCorrectionInProgress &&
             this.currentReviewStatus && 
@@ -564,7 +565,7 @@ export class EditQCComponent implements OnInit {
                 || x.Comments[0].ReviewerCategoryEnum == CommentCategoryEnum.CorrectionPending
             ).length;
             if (count > 0){
-                return true
+                return true;
             }
             else {
                 return false;
@@ -574,15 +575,6 @@ export class EditQCComponent implements OnInit {
             return false;
         }
     }
-
-    // get canReviewerSubmitQC(){
-    //     if (this.complianceForm){
-    //         return this.complianceForm.Findings.filter(x => x.Comments != undefined && 
-    //             x.Comments.length > 0 && 
-    //             x.Comments[0].CategoryEnum != CommentCategoryEnum.NotApplicable &&
-    //             x.Comments[0].ReviewerCategoryEnum != CommentCategoryEnum.NotApplicable);
-    //     }
-    // }
 
     setValues(actionType: string){
         switch(actionType){
@@ -655,7 +647,6 @@ export class EditQCComponent implements OnInit {
     }
 
     goBack() {
-        //this._location.back();
         this.router.navigate(["qc"]);
     }
 

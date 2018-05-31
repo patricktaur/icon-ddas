@@ -136,7 +136,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         this.ComplianceFormFilter.SearchedOnTo = null;
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.AssignedTo = "-1";
-        this.ComplianceFormFilter.Status = -1;
+        this.ComplianceFormFilter.Status = 1; //Review Completed
 
         var fromDay = new Date();
         fromDay.setDate(fromDay.getDate() - 10);
@@ -236,7 +236,6 @@ export class ReviewCompletedICSFComponent implements OnInit {
     OpenForEdit(DataItem: PrincipalInvestigatorDetails) {
         //this.router.navigate(['complianceform', DataItem.RecId], { relativeTo: this.route });
         this.router.navigate(['comp-form-edit', DataItem.RecId, { rootPath: 'review-completed-icsf', page: this.pageNumber }], { relativeTo: this.route });
-
     }
 
     UploadFile() {
@@ -348,6 +347,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
             return false;
         }
     }
+    
     requestQC(){
         
         // if(this.selectedQCVerifier == null || this.selectedQCVerifier.length == 0){

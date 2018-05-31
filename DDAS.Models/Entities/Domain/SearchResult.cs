@@ -225,9 +225,15 @@ namespace DDAS.Models.Entities.Domain
         public ReviewStatusEnum CurrentReviewStatus {
             get
             {
-                var Review = Reviews.LastOrDefault();
-                if (Review != null)
+                var Review = Reviews.FirstOrDefault();
+
+                if (Review != null && Review.Status != ReviewStatusEnum.ReviewCompleted)
                     return Review.Status;
+                else if (Review != null)
+                {
+                    Review = Reviews.LastOrDefault();
+                    return Review.Status;
+                }
                 else
                     return ReviewStatusEnum.SearchCompleted;
             }
@@ -501,6 +507,7 @@ namespace DDAS.Models.Entities.Domain
         public bool Active { get; set; }
         public string SponsorProtocolNumber { get; set; }
         public string SponsorProtocolNumber2 { get; set; }
+        public string Institute { get; set; }
         public string Country { get; set; }
         public string Address { get; set; }
         public string ProjectNumber { get; set; }
@@ -1168,6 +1175,7 @@ namespace DDAS.Models.Entities.Domain
         public string AssignedTo { get; set; }
         public string Country { get; set; }
         public ComplianceFormStatusEnum Status { get; set; }
+        public string InputSource { get; set; }
     }
 
     #endregion

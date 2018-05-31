@@ -59,7 +59,7 @@
 						<div class="row">
 							<div class="col-md-6 ">
 								<div class="form-group">
-									<label for="Date">Searched On (from):</label>
+									<label for="Date">Completed On (from):</label>
 
 									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
 
@@ -67,7 +67,7 @@
 							</div>
 							<div class="col-md-6 ">
 								<div class="form-group">
-									<label for="Date">Searched On (to):</label>
+									<label for="Date">Completed On (to):</label>
 									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate"></my-date-picker>
 								</div>
 							</div>
@@ -145,6 +145,10 @@
 								{{item.ExportedToiSprintOn | date: 'dd MMM yyyy:hh mm'}}
 							</td>
 							<td class="text-center">
+								<button type="button" class="btn btn-sm btn-primary" 
+								(click)="openICSF(item.RecId)" title="Open ICSF">
+									<span class="glyphicon glyphicon-folder-open"></span>
+								</button>
 								<button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
 								 	[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
 									<span class="glyphicon glyphicon-download-alt"></span>

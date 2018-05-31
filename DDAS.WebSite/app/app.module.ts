@@ -29,7 +29,8 @@ import { QCModule } from './qcworkflow/qc.module';
 import {CommonService} from './shared/common.service';
 import {FileService} from './shared/utils/file.service';
 import {DataExtractorModule} from "./data-extractor/data-extractor.module";
-import {LoginHistoryService} from "./Admin/all-loginhistory.service"
+import {LoginHistoryService} from "./Admin/all-loginhistory.service";
+
 
 @NgModule({
   imports:      [ 

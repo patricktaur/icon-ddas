@@ -36,18 +36,21 @@ const searchRoutes: Routes = [
   },
   {
     path: 'search',
-    component: SearchComponent, canActivate: [AuthGuard],
+    component: SearchComponent, 
+    canActivate: [AuthGuard],
     children: [
-
-      { path: '', component: DueDiligenceCheckComponent },
-
+      { 
+        path: '', 
+        component: DueDiligenceCheckComponent },
       {
         path: 'complianceform/:formId',
-        component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
+        component: ComplianceFormComponent, 
+        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'comp-form-edit/:formId',
-        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
+        component: CompFormEditComponent, 
+        canDeactivate: [CanDeactivateGuard]
       },
      
       {
@@ -57,7 +60,8 @@ const searchRoutes: Routes = [
       {
         //path: 'findings/:formId/:investigatorId/:siteEnum',
         path: 'findings/:formId/:investigatorId/:siteSourceId',
-        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+        component: FindingsComponent, 
+        canDeactivate: [CanDeactivateGuard]
       },
        {
         path: 'institute-findings-summary/:formId',
@@ -66,7 +70,7 @@ const searchRoutes: Routes = [
       {
         path: 'institute-findings/:formId/:siteSourceId',
         component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
-      },
+      }
     ]
   },
   {
@@ -77,16 +81,19 @@ const searchRoutes: Routes = [
     path: 'manage-compliance-forms', component: SearchComponent
     , canActivate: [AuthGuard],
     children: [
-
-      { path: '', component: ManageICFsComponent },
-
+      { 
+        path: '', 
+        component: ManageICFsComponent 
+      },
       {
         path: 'complianceform/:formId',
-        component: ComplianceFormComponent, canDeactivate: [CanDeactivateGuard]
+        component: ComplianceFormComponent, 
+        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'comp-form-edit/:formId',
-        component: CompFormEditComponent, canDeactivate: [CanDeactivateGuard]
+        component: CompFormEditComponent, 
+        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'investigator-summary/:formId/:investigatorId',
@@ -96,29 +103,77 @@ const searchRoutes: Routes = [
          //path: 'findings/:formId/:investigatorId/:siteEnum',
 
         path: 'findings/:formId/:investigatorId/:siteSourceId',
-        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+        component: FindingsComponent, 
+        canDeactivate: [CanDeactivateGuard]
         
         // path: 'findings/:formId/:investigatorId/:siteId',
         // component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'institute-findings/:formId/:siteSourceId',
-        component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
-      },
+        component: InstituteFindingsComponent, 
+        canDeactivate: [CanDeactivateGuard]
+      }
     ]
   },
 
-{
-  path: 'all-iscfs', component: AllISCFsComponent
-    , canActivate: [AuthGuard]
-},
+  {
+    path: 'all-iscfs', 
+    component: AllISCFsComponent, 
+    canActivate: [AuthGuard]
+  },
     
- {
-    path: 'review-completed-icsf', component: SearchComponent
-    , canActivate: [AuthGuard],
+  {
+    path: 'review-completed-icsf', 
+    component: SearchComponent,
+    canActivate: [AuthGuard],
     children: [
+      { 
+        path: '', 
+        component: ReviewCompletedICSFComponent 
+      },
+      {
+        path: 'complianceform/:formId',
+        component: ComplianceFormComponent, 
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'comp-form-edit/:formId',
+        component: CompFormEditComponent, 
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'investigator-summary/:formId/:investigatorId',
+        component: InvestigatorSummaryComponent,
+      },
+      {
+        //path: 'findings/:formId/:investigatorId/:siteEnum',
 
-      { path: '', component: ReviewCompletedICSFComponent },
+         path: 'findings/:formId/:investigatorId/:siteSourceId',
+        component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+        
+        // path: 'findings/:formId/:investigatorId/:siteId',
+        // component: FindingsComponent, canDeactivate: [CanDeactivateGuard]
+      },
+      {
+        path: 'institute-findings-summary/:formId',
+        component: InstituteFindingsSummaryComponent,
+      },
+      {
+        path: 'institute-findings/:formId/:siteSourceId',
+        component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
+      },
+    ]
+  }, 
+  {
+    path: 'output-excel', component: SearchComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'completed-icsf', 
+    component: SearchComponent, 
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: CompletedICSFComponent },
 
       {
         path: 'complianceform/:formId',
@@ -148,15 +203,8 @@ const searchRoutes: Routes = [
       {
         path: 'institute-findings/:formId/:siteSourceId',
         component: InstituteFindingsComponent, canDeactivate: [CanDeactivateGuard]
-      },
-      
-    ]
-  }, 
-  {
-    path: 'output-excel', component: SearchComponent, canActivate: [AuthGuard]
-  },
-  {
-    path: 'completed-icsf', component: CompletedICSFComponent, canActivate: [AuthGuard]
+      }
+    ]    
   }   
 ];
 

@@ -697,29 +697,7 @@ namespace DDAS.Services.Search
 
         //    return sRetval;
         //    //return dataStreamResponse;
-        //}
-
-        //public void UpdateAssignedToData(string AssignedTo, string AssignedBy,
-        //    bool Active, Guid? RecId)
-        //{
-        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
-        //    form.AssignedTo = AssignedTo;
-        //    form.Active = Active;
-        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-        //    AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
-
-        //}
-
-        //public void ClearAssignedTo(Guid? RecId, string AssignedBy)
-        //{
-        //    var form = _UOW.ComplianceFormRepository.FindById(RecId);
-        //    form.AssignedTo = "";
-        //    _UOW.ComplianceFormRepository.UpdateCollection(form);
-
-        //    AddToAssignementHistory(RecId.Value, AssignedBy, "");
-
-        //}
+        //} 
 
         public void UpdateAssignedTo(Guid? RecId, string AssignedBy, string AssignedFrom, string AssignedTo)
         {
@@ -730,6 +708,30 @@ namespace DDAS.Services.Search
             {
                 AddToAssignementHistory(RecId.Value, AssignedBy, AssignedTo);
             }
+        }
+
+        public void UpdateAssignedTo(string AssignedBy, AssignComplianceFormsTo AssignComplianceFormsTo)
+        {
+            string Errors="";
+            string Comma = "";
+            foreach (PrincipalInvestigator prInv in AssignComplianceFormsTo.PrincipalInvestigators)
+            {
+                try
+                {
+                    UpdateAssignedTo(prInv.RecId, AssignedBy, prInv.AssignedTo, AssignComplianceFormsTo.AssignedTo);
+                }
+                catch (Exception ex)
+                {
+                    //collect exceptions:
+                    Errors = Comma + prInv.Name + " - " + prInv.ProjectNumber +  ex.Message;
+                    Comma = ", ";
+                }
+            }
+            if (Errors.Length > 0)
+            {
+                throw new Exception(Errors);
+            }
+
         }
 
         //used by Excel File Upload method.
@@ -828,12 +830,8 @@ namespace DDAS.Services.Search
 
             RollUpSummary(frm);
 
-            //if (frm.ExtractionPendingInvestigatorCount == 0)
-            //{
-            //    frm.ExtractionEstimatedCompletion = null;
-            //}
 
-
+            //Patrick: 11May2018 - formWithMaxExtractionEstimatedDate is no longer required. Pending...
             //set frm.ExtractionEstimatedCompletion, will be overwritten when the form is added to the Queue
             if (frm.ExtractionPendingInvestigatorCount > 0 && frm.ExtractionEstimatedCompletion == null)
             {
@@ -896,15 +894,11 @@ namespace DDAS.Services.Search
             _UOW.ComplianceFormRepository.UpdateCollection(form);
         }
 
+        //Patrick - 11May2018 - redundant code ?
         private DateTime getEstimatedExtractionCompletion()
         {
             List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
 
-            //var sitesToScanCount = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
-            //    s => s.ExtractionMode == "Live"
-            //    && s.ExtractedOn == null
-            //    && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-            //    ))).ToList().OrderBy(o => o.SearchStartedOn).Count();
 
             var formsToScanCount = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
               s => s.ExtractionMode == "Live"
@@ -1074,12 +1068,12 @@ namespace DDAS.Services.Search
                     foreach (Comment comment in finding.Comments)
                     {
                         if (comment != null &&
-                            comment.CategoryEnum != CommentCategoryEnum.NotApplicable &&
+                            comment.CategoryEnum != CommentCategoryEnum.Select &&
                             comment.AddedOn == null)
                             comment.AddedOn = DateTime.Now;
                         if (comment != null &&
                             comment.CorrectedOn == null &&
-                            (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                            (/*comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||*/
                             comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                         {
                             comment.CorrectedOn = DateTime.Now;
@@ -1194,7 +1188,7 @@ namespace DDAS.Services.Search
                         comment.AddedOn = DateTime.Now;
                     if (comment != null &&
                         comment.CorrectedOn == null &&
-                        (comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||
+                        (/*comment.ReviewerCategoryEnum == CommentCategoryEnum.CorrectionCompleted ||*/
                         comment.ReviewerCategoryEnum == CommentCategoryEnum.Accepted))
                     {
                         comment.CorrectedOn = DateTime.Now;
@@ -1399,6 +1393,7 @@ namespace DDAS.Services.Search
             string[] Name = InvestigatorName.Split(' ');
             foreach (SiteDataItemBase item in items)
             {
+                string NameComponentSearched = null;
                 if (item.FullName != null)
                 {
                     //if (item.FullName.Trim().Length > 3)
@@ -1418,27 +1413,30 @@ namespace DDAS.Services.Search
                                 {
                                     FullNameDB[Counter] = RemoveExtraCharacters(FullNameDB[Counter]);
 
-                                    bool FullNameComponentIsEqualsToNameComponentAndIsNotNull =
+                                    bool FullNameComponentIsEqualToNameComponentAndIsNotNull =
                                     (FullNameDB[Counter] != null &&
-                                    FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower())
-                                    );
+                                    FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower()));
 
                                     bool FullNameComponentStartWith = (FullNameDB[Counter].ToLower().
                                     StartsWith(Name[Index].ToLower()));
 
-                                    if (FullNameComponentIsEqualsToNameComponentAndIsNotNull)
+                                    bool IsNameComponentRepeated = (NameComponentSearched != null &&
+                                        Name[Index].ToLower().Equals(NameComponentSearched.ToLower()));
+
+                                    if (FullNameComponentIsEqualToNameComponentAndIsNotNull &&
+                                        !IsNameComponentRepeated)
                                     {
                                         Count += 1;
+                                        NameComponentSearched = Name[Index];
                                         break;
                                     }
                                 }
+                                NameComponentSearched = Name[Index];
                             }
                         }
                     }
                     if (Count > MatchCount)
                         item.MatchCount = Count;
-                    //}
-
                 }
             }
         }
@@ -2402,18 +2400,20 @@ namespace DDAS.Services.Search
             return form;
         }
 
+
         public List<PrincipalInvestigator> getAllPrincipalInvestigators()
         {
             var retList = new List<PrincipalInvestigator>();
 
             var compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
+            return getPrincipalInvestigators(compForms);
 
-            foreach (ComplianceForm compForm in compForms)
-            {
-                var item = getPrincipalInvestigators(compForm);
-                retList.Add(item);
-            }
-            return retList;
+            //foreach (ComplianceForm compForm in compForms)
+            //{
+            //    var item = getPrincipalInvestigators(compForm);
+            //    retList.Add(item);
+            //}
+            //return retList;
         }
 
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active)
@@ -2422,80 +2422,105 @@ namespace DDAS.Services.Search
             List<ComplianceForm> compForms;
             if (AssignedTo != null && AssignedTo.Length > 0)
             {
-                compForms = _UOW.ComplianceFormRepository.GetAll().Where(x => x.AssignedTo == AssignedTo).OrderByDescending(x => x.SearchStartedOn).ToList();
+                //compForms = _UOW.ComplianceFormRepository.GetAll().Where(x => x.AssignedTo == AssignedTo).OrderByDescending(x => x.SearchStartedOn).ToList();
+                compForms = _UOW.ComplianceFormRepository.FindComplianceForms(AssignedTo).OrderByDescending(x => x.SearchStartedOn).ToList();
             }
             else
             {
                 compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
             }
 
-            foreach (ComplianceForm compForm in compForms.Where(x => x.Active == Active))
-            {
-                var item = getPrincipalInvestigators(compForm);
-                retList.Add(item);
-            }
-            return retList;
+            //foreach (ComplianceForm compForm in compForms.Where(x => x.Active == Active))
+            //{
+            //    var item = getPrincipalInvestigators(compForm);
+            //    retList.Add(item);
+            //}
+            //return retList;
+
+            return getPrincipalInvestigators(compForms);
         }
 
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = false)
         {
             var retList = new List<PrincipalInvestigator>();
 
-            //var UserFullName = GetUserFullName(AssignedTo);
-
             retList = getPrincipalInvestigators(AssignedTo, Active);
 
             return retList.Where(x => x.ReviewCompleted == ReviewCompleted).ToList();
+
+            
         }
 
-        public List<PrincipalInvestigator> getPrincipalInvestigatorsByFilters(string AssignedTo, string PricipalInvestigatorName = "")
+        public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, ReviewStatusEnum ReviewStatus)
         {
-            var retList = new List<PrincipalInvestigator>();
-
-            List<ComplianceForm> compForms;
-
-            if (AssignedTo.Length > 0)
-            {
-                compForms = _UOW.ComplianceFormRepository.GetAll().Where(x => x.AssignedTo == AssignedTo).ToList();
-            }
-            else
-            {
-                compForms = _UOW.ComplianceFormRepository.GetAll();
-            }
-
-            //Principal Investigator
-            List<ComplianceForm> compForms1;
-            compForms1 = compForms.OrderByDescending(x => x.SearchStartedOn).ToList();
-            if (PricipalInvestigatorName.Length > 0)
-            {
-                compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role == "PI"))).ToList();
-            }
-            else
-            {
-                compForms = compForms1;
-            }
-
-
-            foreach (ComplianceForm compForm in compForms1)
-            {
-                var item = getPrincipalInvestigators(compForm);
-                retList.Add(item);
-            }
-            return retList;
+            var forms = _UOW.ComplianceFormRepository.FindComplianceForms(AssignedTo, ReviewStatus);
+            return getPrincipalInvestigators(forms);
         }
+
+        //Patrick 11May2018 - Not used:
+        //public List<PrincipalInvestigator> getPrincipalInvestigatorsByFilters(string AssignedTo, string PricipalInvestigatorName = "")
+        //{
+        //    var retList = new List<PrincipalInvestigator>();
+
+        //    List<ComplianceForm> compForms;
+
+        //    if (AssignedTo.Length > 0)
+        //    {
+        //        compForms = _UOW.ComplianceFormRepository.GetAll().Where(x => x.AssignedTo == AssignedTo).ToList();
+        //    }
+        //    else
+        //    {
+        //        compForms = _UOW.ComplianceFormRepository.GetAll();
+        //    }
+
+        //    //Principal Investigator
+        //    List<ComplianceForm> compForms1;
+        //    compForms1 = compForms.OrderByDescending(x => x.SearchStartedOn).ToList();
+        //    if (PricipalInvestigatorName.Length > 0)
+        //    {
+        //        compForms1 = compForms.Where(x => x.InvestigatorDetails.Any(y => (y.Name.Contains(PricipalInvestigatorName) && y.Role == "PI"))).ToList();
+        //    }
+        //    else
+        //    {
+        //        compForms = compForms1;
+        //    }
+
+
+        //    foreach (ComplianceForm compForm in compForms1)
+        //    {
+        //        var item = getPrincipalInvestigators(compForm);
+        //        retList.Add(item);
+        //    }
+        //    return retList;
+        //}
 
         public List<PrincipalInvestigator> GetUnAssignedComplianceForms()
         {
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
+            //var Forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (Forms.Count == 0)
-                return null;
+            //if (Forms.Count == 0)
+            //    return null;
 
-            Forms = Forms.Where(x =>
-                x.AssignedTo == null ||
-                x.AssignedTo.Length == 0)
-                .ToList();
+            //Forms = Forms.Where(x =>
+            //    x.AssignedTo == null ||
+            //    x.AssignedTo.Length == 0)
+            //    .ToList();
 
+            var Forms = _UOW.ComplianceFormRepository.FindComplianceForms("");
+
+
+            var PIList = new List<PrincipalInvestigator>();
+
+            foreach (ComplianceForm Form in Forms)
+            {
+                var PI = getPrincipalInvestigators(Form);
+                PIList.Add(PI);
+            }
+            return PIList;
+        }
+
+        public List<PrincipalInvestigator> getPrincipalInvestigators(List<ComplianceForm> Forms)
+        {
             var PIList = new List<PrincipalInvestigator>();
 
             foreach (ComplianceForm Form in Forms)
@@ -2514,6 +2539,7 @@ namespace DDAS.Services.Search
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;
             item.ProjectNumber2 = compForm.ProjectNumber2;
+            item.Institute = compForm.Institute;
             item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
             item.SponsorProtocolNumber2 = compForm.SponsorProtocolNumber2;
             item.RecId = compForm.RecId;
@@ -2580,108 +2606,141 @@ namespace DDAS.Services.Search
             {
                 throw new Exception("Invalid CompFormFilter");
             }
+           
+            var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(CompFormFilter);
 
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
-
-            if (Forms.Count == 0)
-                return null;
-
-            var Filter1 = Forms.OrderByDescending(x => x.SearchStartedOn).ToList();
-
-            if (CompFormFilter.InvestigatorName != null &&
-                CompFormFilter.InvestigatorName != "")
+            if ((int)CompFormFilter.Status == -1)
             {
-                Filter1 = Filter1.FindAll(x =>
-                x.InvestigatorDetails.Count > 0 &&
-                x.InvestigatorDetails.FirstOrDefault().Name != null &&
-                x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
-                .Contains(
-                    CompFormFilter.InvestigatorName.ToLower()));
+                //Commented on 16May2018: Pradeep
+                //compForms = compForms.FindAll(x => x.StatusEnum ==
+                //ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                //x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                //.ToList();
             }
-
-            var Filter2 = Filter1;
-
-            if (CompFormFilter.ProjectNumber != null &&
-                CompFormFilter.ProjectNumber != "")
+            else if (CompFormFilter.Status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
             {
-                Filter2 = Filter1.Where(x =>
-                x.ProjectNumber == CompFormFilter.ProjectNumber ||
-                x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+                compForms = compForms.Where(x =>
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                .ToList();
+            }
+            else if (CompFormFilter.Status == ComplianceFormStatusEnum.FullMatchFoundReviewPending)
+            {
+                compForms = compForms.Where(x =>
+                x.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.NoMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.ManualSearchSiteReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors ||
+                x.StatusEnum == ComplianceFormStatusEnum.NotScanned)
                 .ToList();
             }
 
-            var Filter3 = Filter2;
+            return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
+            
+            //var Forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (CompFormFilter.SponsorProtocolNumber != null &&
-                CompFormFilter.SponsorProtocolNumber != "")
-            {
-                Filter3 = Filter2.Where(x =>
-                x.SponsorProtocolNumber.ToLower() ==
-                CompFormFilter.SponsorProtocolNumber.ToLower() ||
-                x.SponsorProtocolNumber2.ToLower() ==
-                CompFormFilter.SponsorProtocolNumber.ToLower())
-                .ToList();
-            }
+            //if (Forms.Count == 0)
+            //    return null;
 
-            var Filter4 = Filter3;
+            //var Filter1 = Forms.OrderByDescending(x => x.SearchStartedOn).ToList();
 
-            if (CompFormFilter.SearchedOnFrom != null)
-            {
-                DateTime startDate;
-                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
-                Filter4 = Filter3.Where(x =>
-               x.SearchStartedOn >= startDate)
-               .ToList();
-            }
+            //if (CompFormFilter.InvestigatorName != null &&
+            //    CompFormFilter.InvestigatorName != "")
+            //{
+            //    Filter1 = Filter1.FindAll(x =>
+            //    x.InvestigatorDetails.Count > 0 &&
+            //    x.InvestigatorDetails.FirstOrDefault().Name != null &&
+            //    x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
+            //    .Contains(
+            //        CompFormFilter.InvestigatorName.ToLower()));
+            //}
 
-            var Filter5 = Filter4;
+            //var Filter2 = Filter1;
 
-            if (CompFormFilter.SearchedOnTo != null)
-            {
+            //if (CompFormFilter.ProjectNumber != null &&
+            //    CompFormFilter.ProjectNumber != "")
+            //{
+            //    Filter2 = Filter1.Where(x =>
+            //    x.ProjectNumber == CompFormFilter.ProjectNumber ||
+            //    x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+            //    .ToList();
+            //}
 
-                DateTime endDate;
-                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
-                Filter5 = Filter4.Where(x =>
-                x.SearchStartedOn <
-                endDate)
-                .ToList();
-            }
+            //var Filter3 = Filter2;
 
-            var Filter6 = Filter5;
+            //if (CompFormFilter.SponsorProtocolNumber != null &&
+            //    CompFormFilter.SponsorProtocolNumber != "")
+            //{
+            //    Filter3 = Filter2.Where(x =>
+            //    x.SponsorProtocolNumber.ToLower() ==
+            //    CompFormFilter.SponsorProtocolNumber.ToLower() ||
+            //    x.SponsorProtocolNumber2.ToLower() ==
+            //    CompFormFilter.SponsorProtocolNumber.ToLower())
+            //    .ToList();
+            //}
 
-            if (CompFormFilter.Country != null &&
-                CompFormFilter.Country != "")
-            {
-                Filter6 = Filter5.Where(x =>
-                x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
-            }
+            //var Filter4 = Filter3;
 
-            var Filter7 = Filter6;
+            //if (CompFormFilter.SearchedOnFrom != null)
+            //{
+            //    DateTime startDate;
+            //    startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+            //    Filter4 = Filter3.Where(x =>
+            //   x.SearchStartedOn >= startDate)
+            //   .ToList();
+            //}
 
-            if ((int)CompFormFilter.Status != -1)
-            {
-                Filter7 = Filter6.Where(x =>
-                x.StatusEnum == CompFormFilter.Status).ToList();
-            }
+            //var Filter5 = Filter4;
 
-            var Filter8 = Filter7;
+            //if (CompFormFilter.SearchedOnTo != null)
+            //{
 
-            if (CompFormFilter.AssignedTo != null &&
-                //CompFormFilter.AssignedTo != "" &&
-                CompFormFilter.AssignedTo != "-1")
-            {
-                Filter8 = Filter7.Where(x =>
-                x.AssignedTo.ToLower() == CompFormFilter.AssignedTo.ToLower())
-                .ToList();
-            }
+            //    DateTime endDate;
+            //    endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+            //    Filter5 = Filter4.Where(x =>
+            //    x.SearchStartedOn <
+            //    endDate)
+            //    .ToList();
+            //}
 
-            var ReturnList = new List<PrincipalInvestigator>();
+            //var Filter6 = Filter5;
 
-            foreach (ComplianceForm form in Filter8)
-            {
-                ReturnList.Add(getPrincipalInvestigators(form));
-            }
-            return ReturnList;
+            //if (CompFormFilter.Country != null &&
+            //    CompFormFilter.Country != "")
+            //{
+            //    Filter6 = Filter5.Where(x =>
+            //    x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
+            //}
+
+            //var Filter7 = Filter6;
+
+            //if ((int)CompFormFilter.Status != -1)
+            //{
+            //    Filter7 = Filter6.Where(x =>
+            //    x.StatusEnum == CompFormFilter.Status).ToList();
+            //}
+
+            //var Filter8 = Filter7;
+
+            //if (CompFormFilter.AssignedTo != null &&
+            //    //CompFormFilter.AssignedTo != "" &&
+            //    CompFormFilter.AssignedTo != "-1")
+            //{
+            //    Filter8 = Filter7.Where(x =>
+            //    x.AssignedTo.ToLower() == CompFormFilter.AssignedTo.ToLower())
+            //    .ToList();
+            //}
+
+            //var ReturnList = new List<PrincipalInvestigator>();
+
+            //foreach (ComplianceForm form in Filter8)
+            //{
+            //    ReturnList.Add(getPrincipalInvestigators(form));
+            //}
+            //return ReturnList;
         }
 
         public List<PrincipalInvestigator> GetClosedComplianceFormsFromFilters(
@@ -2692,103 +2751,121 @@ namespace DDAS.Services.Search
                 throw new Exception("Invalid CompFormFilter");
             }
 
-            var Filter = _UOW.ComplianceFormRepository.GetAll();
+            CompFormFilter.AssignedTo = AssignedTo;
 
-            if (Filter.Count == 0)
-                return null;
+            var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(CompFormFilter);
 
-            var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
-
-            if (CompFormFilter.InvestigatorName != null &&
-                CompFormFilter.InvestigatorName != "")
+            if (CompFormFilter.Status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
             {
-                Filter1 = Filter1.FindAll(x =>
-                x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
-                .Contains(
-                    CompFormFilter.InvestigatorName.ToLower()));
-            }
-
-            var Filter2 = Filter1;
-
-            if (CompFormFilter.ProjectNumber != null &&
-                CompFormFilter.ProjectNumber != "")
-            {
-                Filter2 = Filter1.Where(x =>
-                x.ProjectNumber == CompFormFilter.ProjectNumber ||
-                x.ProjectNumber2 == CompFormFilter.ProjectNumber)
-                .ToList();
-            }
-
-            var Filter3 = Filter2;
-
-            if (CompFormFilter.SponsorProtocolNumber != null &&
-                CompFormFilter.SponsorProtocolNumber != "")
-            {
-                Filter3 = Filter2.Where(x =>
-                x.SponsorProtocolNumber.ToLower() ==
-                CompFormFilter.SponsorProtocolNumber.ToLower() ||
-                x.SponsorProtocolNumber2.ToLower() ==
-                CompFormFilter.SponsorProtocolNumber.ToLower())
-                .ToList();
-            }
-
-            var Filter4 = Filter3;
-
-            if (CompFormFilter.SearchedOnFrom != null)
-            {
-                DateTime startDate;
-                startDate = CompFormFilter.SearchedOnFrom.Value.Date;
-                Filter4 = Filter3.Where(x =>
-               x.SearchStartedOn >= startDate)
-               .ToList();
-            }
-
-            var Filter5 = Filter4;
-
-            if (CompFormFilter.SearchedOnTo != null)
-            {
-                DateTime endDate;
-                endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
-                Filter5 = Filter4.Where(x =>
-                x.SearchStartedOn <
-                endDate)
-                .ToList();
-            }
-
-            var Filter6 = Filter5;
-
-            if (CompFormFilter.Country != null &&
-                CompFormFilter.Country != "")
-            {
-                Filter6 = Filter5.Where(x =>
-                x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
-            }
-
-            var Filter7 = Filter6;
-
-            if ((int)CompFormFilter.Status == -1)
-            {
-                Filter7 = Filter6.FindAll(x => x.StatusEnum ==
-                ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                compForms = compForms.Where(x =>
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
                 x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                 .ToList();
             }
-            else if ((int)CompFormFilter.Status != -1)
-            {
-                Filter7 = Filter6.Where(x =>
-                x.StatusEnum == CompFormFilter.Status).ToList();
-            }
 
-            var Filter8 = Filter7.Where(x =>
-            x.AssignedTo == AssignedTo).ToList();
+            return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
+            
+            //var Filter = _UOW.ComplianceFormRepository.GetAll();
 
-            var ReturnList = new List<PrincipalInvestigator>();
+            //if (Filter.Count == 0)
+            //    return null;
 
-            foreach (ComplianceForm form in Filter8)
-            {
-                ReturnList.Add(getPrincipalInvestigators(form));
-            }
-            return ReturnList;
+            //var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
+
+            //if (CompFormFilter.InvestigatorName != null &&
+            //    CompFormFilter.InvestigatorName != "")
+            //{
+            //    Filter1 = Filter1.FindAll(x =>
+            //    x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
+            //    .Contains(
+            //        CompFormFilter.InvestigatorName.ToLower()));
+            //}
+
+            //var Filter2 = Filter1;
+
+            //if (CompFormFilter.ProjectNumber != null &&
+            //    CompFormFilter.ProjectNumber != "")
+            //{
+            //    Filter2 = Filter1.Where(x =>
+            //    x.ProjectNumber == CompFormFilter.ProjectNumber ||
+            //    x.ProjectNumber2 == CompFormFilter.ProjectNumber)
+            //    .ToList();
+            //}
+
+            //var Filter3 = Filter2;
+
+            //if (CompFormFilter.SponsorProtocolNumber != null &&
+            //    CompFormFilter.SponsorProtocolNumber != "")
+            //{
+            //    Filter3 = Filter2.Where(x =>
+            //    x.SponsorProtocolNumber.ToLower() ==
+            //    CompFormFilter.SponsorProtocolNumber.ToLower() ||
+            //    x.SponsorProtocolNumber2.ToLower() ==
+            //    CompFormFilter.SponsorProtocolNumber.ToLower())
+            //    .ToList();
+            //}
+
+            //var Filter4 = Filter3;
+
+            //if (CompFormFilter.SearchedOnFrom != null)
+            //{
+            //    DateTime startDate;
+            //    startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+            //    Filter4 = Filter3.Where(x =>
+            //   x.SearchStartedOn >= startDate)
+            //   .ToList();
+            //}
+
+            //var Filter5 = Filter4;
+
+            //if (CompFormFilter.SearchedOnTo != null)
+            //{
+            //    DateTime endDate;
+            //    endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+            //    Filter5 = Filter4.Where(x =>
+            //    x.SearchStartedOn <
+            //    endDate)
+            //    .ToList();
+            //}
+
+            //var Filter6 = Filter5;
+
+            //if (CompFormFilter.Country != null &&
+            //    CompFormFilter.Country != "")
+            //{
+            //    Filter6 = Filter5.Where(x =>
+            //    x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
+            //}
+
+            //var Filter7 = Filter6;
+
+            //if ((int)CompFormFilter.Status == -1)
+            //{
+            //    Filter7 = Filter6.FindAll(x => x.StatusEnum ==
+            //    ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+            //    x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            //    .ToList();
+            //}
+            //else if ((int)CompFormFilter.Status != -1)
+            //{
+            //    Filter7 = Filter6.Where(x =>
+            //    x.StatusEnum == CompFormFilter.Status).ToList();
+            //}
+
+            //var Filter8 = Filter7.Where(x =>
+            //x.AssignedTo == AssignedTo).ToList();
+
+            //var ReturnList = new List<PrincipalInvestigator>();
+
+            //foreach (ComplianceForm form in Filter8)
+            //{
+            //    ReturnList.Add(getPrincipalInvestigators(form));
+            //}
+            //return ReturnList;
+
+
+
+
         }
 
         public List<InstituteFindingsSummaryViewModel> getInstituteFindingsSummary(Guid CompFormId)
@@ -2819,9 +2896,7 @@ namespace DDAS.Services.Search
                 return null;
             }
 
-        }
-
-       
+        } 
 
         #endregion
 

@@ -106,7 +106,9 @@
         Accepted,
         NotApplicable,
         ExcludeFinding,
-        NotAccepted
+        NotAccepted,
+        NoIssues,
+        Select
     }
 
     public enum AdminDashboardReportType

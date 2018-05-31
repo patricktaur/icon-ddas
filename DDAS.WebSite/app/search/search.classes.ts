@@ -143,6 +143,7 @@ export class PrincipalInvestigatorDetails {
     Name: string = "";
     SponsorProtocolNumber: string = "";
     SponsorProtocolNumber2: string = "";
+    Institute: string = "";
     Country: string = "";
     Address: string = "";
     ProjectNumber: string = "";
@@ -167,6 +168,7 @@ export class PrincipalInvestigatorDetails {
     CurrentReviewStatus: ReviewStatusEnum;
     InputSource: string;
     ExportedToiSprintOn: Date;
+    Selected: boolean;
 }
 
 export class SubInvestigator {
@@ -417,7 +419,8 @@ export class CompFormFilter {
     SearchedOnTo: Date;
     AssignedTo: string;
     Country: string;
-    Status: ComplianceFormStatusEnum
+    Status: ComplianceFormStatusEnum;
+    InputSource: string;
 }
 
 export class CalenderDate {
@@ -479,7 +482,9 @@ export enum CommentCategoryEnum {
     Accepted,
     NotApplicable,
     ExcludeFinding,
-    NotAccepted
+    NotAccepted,
+    NoIssues,
+    Select
 }
 
 export enum UndoEnum {
@@ -533,3 +538,12 @@ export enum QCCompletedStatusEnum {
     NoIssues,
     IssuesNoted
 }
+
+
+
+export class AssignComplianceFormsTo
+{
+   AssignedTo  : string;
+   PrincipalInvestigators: PrincipalInvestigatorDetails[] = [];
+}
+    
