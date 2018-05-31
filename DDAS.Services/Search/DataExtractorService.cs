@@ -102,7 +102,9 @@ namespace DDAS.Services.Search
 
         public void ExtractThruShell(Int32 siteNumber)
         {
-            string exePath = @"C:\Development\p926-ddas\DDAS.API\bin\DDAS.DataExtractor.exe";
+            //string exePath = @"C:\Development\p926-ddas\DDAS.API\bin\DDAS.DataExtractor.exe";
+            //C:\Development\p926-ddas\DDAS.DataExtractor\bin\Debug
+            string exePath = @"C:\Development\p926-ddas\DDAS.DataExtractor\bin\Debug\DDAS.DataExtractor.exe";
 
             ProcessStartInfo processInfo = new ProcessStartInfo(exePath);
             processInfo.Arguments = siteNumber.ToString();
