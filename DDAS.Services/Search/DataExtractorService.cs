@@ -115,8 +115,8 @@ namespace DDAS.Services.Search
             {
                 Process process = Process.Start(processInfo);
                 process.WaitForExit();
-                var Output = process.StandardOutput.ReadToEnd();
-                var Error = process.StandardError.ReadToEnd();
+                //var Output = process.StandardOutput.ReadToEnd();
+                //var Error = process.StandardError.ReadToEnd();
                 if (process.ExitCode != 0)
                 { // success}
                     throw new Exception("Extractor did not complete the process");
