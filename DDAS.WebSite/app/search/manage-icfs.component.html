@@ -29,12 +29,14 @@
 							<label for="Status">Status:</label>
 							<select class="form-control" [(ngModel)]="ComplianceFormFilter.Status">
 								<option value="-1" selected="selected">All</option>
-								<option value="0">Data Not Extracted</option>
+								<!-- <option value="0">Data Not Extracted</option>
 								<option value="1">Review Completed, Issues Identified</option>
 								<option value="2">Review Completed, No Issues Identified</option>
 								<option value="3">Full Match Found, Review Pending</option>
 								<option value="4">Partial Match Found, Review Pending</option>
-								<option value="5">No Matches Found, Review Pending</option>
+								<option value="5">No Matches Found, Review Pending</option> -->
+								<option value="1">Review Completed</option>
+								<option value="3">Review Pending</option>
 							</select>
 						</div>
 					</div>
@@ -54,12 +56,21 @@
 					</div>
 				</div>
 				<div class="row">
+					<div class="col-md-6">
+						<label for="InputSource">Input Source:</label>
+						<select class="form-control" [(ngModel)]="ComplianceFormFilter.InputSource">
+							<option value="All" selected="selected">All</option>
+							<option value="Batch-Upload">Batch-Upload</option>
+							<option value="Manual">Manual</option>
+							<option value="iSprint">iSprint</option>
+						</select>						
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-md-6 ">
 						<div class="form-group">
 							<label for="Date">Searched On (from):</label>
-
 							<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
-
 						</div>
 					</div>
 					<div class="col-md-6 ">
@@ -117,7 +128,8 @@
 							</label>
 						</div>
 					</th>
-					<th class="">Principal Investigator </th>
+					<th class="text-left">Principal Investigator</th>
+					<th class="text-left">Institute</th>
 					<th class="text-left">ICON Project Number</th>
 					<th class="text-left col-md-1">Review Completed</th>
 					<th class="text-left">Assigned to</th>
@@ -156,6 +168,9 @@
 								</div>
 							</div>
 						</div>
+					</td>
+					<td class="text-left">
+						{{item.Institute}}
 					</td>
 					<td class="text-center">
 						{{item.ProjectNumber}} {{item.ProjectNumber2}}

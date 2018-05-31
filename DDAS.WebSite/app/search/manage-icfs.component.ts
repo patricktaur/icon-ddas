@@ -72,7 +72,7 @@ export class ManageICFsComponent implements OnInit {
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.AssignedTo = "-1";
         this.ComplianceFormFilter.Status = -1;
-
+        this.ComplianceFormFilter.InputSource = "All";
         var fromDay = new Date();
         fromDay.setDate(fromDay.getDate() - 10);
 

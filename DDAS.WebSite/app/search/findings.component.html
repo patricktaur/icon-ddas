@@ -296,7 +296,8 @@
 							<td style="align-left">
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span>  
+									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
+									 <!-- <span [innerHTML]="SplitItem | highlight: highlight"></span>   -->
 									<!-- ERROR ==> unable to highlight text -->
 									  <!-- {{SplitItem}} -->
 								</div>

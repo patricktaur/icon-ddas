@@ -38,9 +38,9 @@
 							<div class="form-group">
 								<label for="Status">Status:</label>
 								<select class="form-control" ng-disabled="disableSelect" [(ngModel)]="ComplianceFormFilter.Status">
-									<option value="-1" disabled>All</option>
-									<option value="1" selected="selected">Review Completed, Issues Identified</option>
-									<option value="2">Review Completed, No Issues Identified</option>
+									<!-- <option value="-1" disabled>All</option> -->
+									<option value="1" selected="selected">Review Completed</option>
+									<!-- <option value="2">Review Completed, No Issues Identified</option> -->
 									<!-- <option value="5">No Matched Found, Review Completed</option>         -->
 								</select>
 							</div>
@@ -59,15 +59,13 @@
 					<div class="row">
 						<div class="col-md-6 ">
 							<div class="form-group">
-								<label for="Date">Searched On (from):</label>
-
+								<label for="Date">Review Completed On (from):</label>
 								<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
-
 							</div>
 						</div>
 						<div class="col-md-6 ">
 							<div class="form-group">
-								<label for="Date">Searched On (to):</label>
+								<label for="Date">Review Completed On (to):</label>
 								<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate"></my-date-picker>
 							</div>
 						</div>

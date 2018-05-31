@@ -5,7 +5,7 @@ import { ComplianceFormA, SiteSource, Finding, CommentCategoryEnum } from '../..
 @Component({
     selector: '[finding-edit-base]',
     moduleId: module.id,
-    templateUrl: 'finding-edit-base.component.html',
+    templateUrl: 'finding-edit-base.component.html'
 })
 export class FindingEditBaseComponent implements OnInit {
     @Input() Finding: Finding;

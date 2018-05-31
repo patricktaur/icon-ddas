@@ -697,9 +697,7 @@ namespace DDAS.Services.Search
 
         //    return sRetval;
         //    //return dataStreamResponse;
-        //}
-
-        
+        //} 
 
         public void UpdateAssignedTo(Guid? RecId, string AssignedBy, string AssignedFrom, string AssignedTo)
         {
@@ -735,8 +733,6 @@ namespace DDAS.Services.Search
             }
 
         }
-
-
 
         //used by Excel File Upload method.
         public ComplianceForm ScanUpdateComplianceForm(ComplianceForm frm)
@@ -1397,6 +1393,7 @@ namespace DDAS.Services.Search
             string[] Name = InvestigatorName.Split(' ');
             foreach (SiteDataItemBase item in items)
             {
+                string NameComponentSearched = null;
                 if (item.FullName != null)
                 {
                     //if (item.FullName.Trim().Length > 3)
@@ -1416,27 +1413,30 @@ namespace DDAS.Services.Search
                                 {
                                     FullNameDB[Counter] = RemoveExtraCharacters(FullNameDB[Counter]);
 
-                                    bool FullNameComponentIsEqualsToNameComponentAndIsNotNull =
+                                    bool FullNameComponentIsEqualToNameComponentAndIsNotNull =
                                     (FullNameDB[Counter] != null &&
-                                    FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower())
-                                    );
+                                    FullNameDB[Counter].ToLower().Equals(Name[Index].ToLower()));
 
                                     bool FullNameComponentStartWith = (FullNameDB[Counter].ToLower().
                                     StartsWith(Name[Index].ToLower()));
 
-                                    if (FullNameComponentIsEqualsToNameComponentAndIsNotNull)
+                                    bool IsNameComponentRepeated = (NameComponentSearched != null &&
+                                        Name[Index].ToLower().Equals(NameComponentSearched.ToLower()));
+
+                                    if (FullNameComponentIsEqualToNameComponentAndIsNotNull &&
+                                        !IsNameComponentRepeated)
                                     {
                                         Count += 1;
+                                        NameComponentSearched = Name[Index];
                                         break;
                                     }
                                 }
+                                NameComponentSearched = Name[Index];
                             }
                         }
                     }
                     if (Count > MatchCount)
                         item.MatchCount = Count;
-                    //}
-
                 }
             }
         }
@@ -2539,6 +2539,7 @@ namespace DDAS.Services.Search
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;
             item.ProjectNumber2 = compForm.ProjectNumber2;
+            item.Institute = compForm.Institute;
             item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
             item.SponsorProtocolNumber2 = compForm.SponsorProtocolNumber2;
             item.RecId = compForm.RecId;
@@ -2610,20 +2611,35 @@ namespace DDAS.Services.Search
 
             if ((int)CompFormFilter.Status == -1)
             {
-
-                compForms = compForms.FindAll(x => x.StatusEnum ==
-                ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                //Commented on 16May2018: Pradeep
+                //compForms = compForms.FindAll(x => x.StatusEnum ==
+                //ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                //x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                //.ToList();
+            }
+            else if (CompFormFilter.Status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
+            {
+                compForms = compForms.Where(x =>
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
                 x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
                 .ToList();
             }
-            else if ((int)CompFormFilter.Status != -1)
+            else if (CompFormFilter.Status == ComplianceFormStatusEnum.FullMatchFoundReviewPending)
             {
                 compForms = compForms.Where(x =>
-                x.StatusEnum == CompFormFilter.Status).ToList();
+                x.StatusEnum == ComplianceFormStatusEnum.FullMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.PartialMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.NoMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.IssuesIdentifiedReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.SingleMatchFoundReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.ManualSearchSiteReviewPending ||
+                x.StatusEnum == ComplianceFormStatusEnum.HasExtractionErrors ||
+                x.StatusEnum == ComplianceFormStatusEnum.NotScanned)
+                .ToList();
             }
 
             return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
-
+            
             //var Forms = _UOW.ComplianceFormRepository.GetAll();
 
             //if (Forms.Count == 0)
@@ -2738,18 +2754,13 @@ namespace DDAS.Services.Search
             CompFormFilter.AssignedTo = AssignedTo;
 
             var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(CompFormFilter);
-            if ((int)CompFormFilter.Status == -1)
-            {
 
-                compForms = compForms.FindAll(x => x.StatusEnum ==
-                ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
-                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-                .ToList();
-            }
-            else if ((int)CompFormFilter.Status != -1)
+            if (CompFormFilter.Status == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified)
             {
                 compForms = compForms.Where(x =>
-                x.StatusEnum == CompFormFilter.Status).ToList();
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
+                x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+                .ToList();
             }
 
             return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
