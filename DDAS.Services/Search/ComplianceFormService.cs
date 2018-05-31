@@ -2539,6 +2539,7 @@ namespace DDAS.Services.Search
             item.Country = compForm.Country;
             item.ProjectNumber = compForm.ProjectNumber;
             item.ProjectNumber2 = compForm.ProjectNumber2;
+            item.Institute = compForm.Institute;
             item.SponsorProtocolNumber = compForm.SponsorProtocolNumber;
             item.SponsorProtocolNumber2 = compForm.SponsorProtocolNumber2;
             item.RecId = compForm.RecId;
