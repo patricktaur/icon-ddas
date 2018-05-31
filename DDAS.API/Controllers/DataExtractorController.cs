@@ -40,15 +40,16 @@ namespace DDAS.API.Controllers
             {
                 //var userName = User.Identity.GetUserName();
                 //_ExtractData.ExtractDataSingleSite(siteEnum, userName);
+                var ExtractorExePath = _RootPath + @"bin\DDAS.DataExtractor.exe";
 
                 int SiteNumber = (int)siteEnum;
-                _ExtractData.ExtractThruShell(SiteNumber);
+                _ExtractData.ExtractThruShell(SiteNumber, ExtractorExePath);
 
                 return Ok("Success");
             }
             catch (Exception ex)
             {
-                return Content(HttpStatusCode.BadRequest, "Error");
+                return Content(HttpStatusCode.BadRequest, "Error: " + ex.Message);
             }
             
         }
@@ -61,9 +62,7 @@ namespace DDAS.API.Controllers
         {
             return Ok(_ExtractData.GetLatestExtractionStatus());
         }
-
-
-       
+               
         [Authorize(Roles = "app-admin, admin, user")]
         [Route("GetDataExtractionErrorSiteCount")]
         [HttpGet]
