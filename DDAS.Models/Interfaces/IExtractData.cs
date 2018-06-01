@@ -14,7 +14,9 @@ namespace DDAS.Models.Interfaces
     {
         void ExtractDataSingleSite(SiteEnum siteEnum, string userName);
 
-        void ExtractThruShell(Int32 siteNumber);
+        void ExtractDataSingleSite(SiteEnum siteEnum, ILog log);
+
+        void ExtractThruShell(Int32 siteNumber, string ExePath);
 
         List<ExtractionStatus> GetLatestExtractionStatus();
         IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32);

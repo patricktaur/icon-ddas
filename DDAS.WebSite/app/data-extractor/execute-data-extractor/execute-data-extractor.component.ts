@@ -50,7 +50,7 @@ export class ExecuteDataExtractorComponent implements OnInit {
         error => {
             //var twoAsString = Numbers[myNumber]; // twoAsString == "two"
             this.extractionProgressMessage = "";
-            this.extractionSuccessError = "Extraction did not succeed for " + SiteEnum[siteEnum] + ".  The error is logged in Logs/Extraction Log"
+            this.extractionSuccessError = "Extraction did not succeed for " + SiteEnum[siteEnum] + ".  The error is logged in Logs/Extraction Log";
             this.extractionInProgress = false;
         });
     }

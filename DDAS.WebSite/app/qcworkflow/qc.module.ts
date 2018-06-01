@@ -27,7 +27,6 @@ import { QCVerifierGeneralCommentViewComponent } from
     FormsModule,
     reportRouting,
     Ng2Bs3ModalModule,
-    
     SharedModule,
     SearchModule
     //ModalModule
