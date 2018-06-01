@@ -14,6 +14,8 @@ namespace DDAS.Models.Interfaces
     {
         void ExtractDataSingleSite(SiteEnum siteEnum, string userName);
 
+        void ExtractDataSingleSite(SiteEnum siteEnum, ILog log);
+
         void ExtractThruShell(Int32 siteNumber, string ExePath);
 
         List<ExtractionStatus> GetLatestExtractionStatus();

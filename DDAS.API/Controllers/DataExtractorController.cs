@@ -11,6 +11,7 @@ using System.Web.Http;
 
 using Microsoft.AspNet.Identity;
 using System.Web;
+using DDAS.Data.Mongo;
 
 namespace DDAS.API.Controllers
 {
@@ -23,11 +24,14 @@ namespace DDAS.API.Controllers
         ISearchEngine _SearchEngine;
         private IUnitOfWork _UOW;
         private IDataExtractorService _ExtractData;
+        private ILog _log;
         private string _RootPath;
-        public DataExtractorController(IDataExtractorService ExtractData)
+        public DataExtractorController(IDataExtractorService ExtractData, IUnitOfWork UOW)
         {
+            _UOW = UOW;
             _ExtractData = ExtractData;
             _RootPath = HttpRuntime.AppDomainAppPath;
+            _log = new DBLog(_UOW, "DataExtractorController", true);
         }
 
         #region DataExtraction
@@ -43,7 +47,9 @@ namespace DDAS.API.Controllers
                 var ExtractorExePath = _RootPath + @"bin\DDAS.DataExtractor.exe";
 
                 int SiteNumber = (int)siteEnum;
-                _ExtractData.ExtractThruShell(SiteNumber, ExtractorExePath);
+
+                //_ExtractData.ExtractThruShell(SiteNumber, ExtractorExePath);
+                _ExtractData.ExtractDataSingleSite(siteEnum, _log);
 
                 return Ok("Success");
             }
