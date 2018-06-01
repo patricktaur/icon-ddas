@@ -100,19 +100,15 @@ namespace DDAS.Services.Search
             }
         }
 
-        public void ExtractThruShell(Int32 siteNumber)
+        public void ExtractThruShell(int siteNumber, string ExePath)
         {
-            //string exePath = @"C:\Development\p926-ddas\DDAS.API\bin\DDAS.DataExtractor.exe";
-            //C:\Development\p926-ddas\DDAS.DataExtractor\bin\Debug
-            string exePath = @"C:\Development\p926-ddas\DDAS.DataExtractor\bin\Debug\DDAS.DataExtractor.exe";
-
-            ProcessStartInfo processInfo = new ProcessStartInfo(exePath);
+            ProcessStartInfo processInfo = new ProcessStartInfo(ExePath);
             processInfo.Arguments = siteNumber.ToString();
             processInfo.CreateNoWindow = true;
             processInfo.UseShellExecute = false;
             processInfo.Arguments = siteNumber.ToString();
-            processInfo.RedirectStandardOutput = true;
-            processInfo.RedirectStandardError = true;
+            //processInfo.RedirectStandardOutput = true;
+            //processInfo.RedirectStandardError = true;
             try
             {
                 Process process = Process.Start(processInfo);
