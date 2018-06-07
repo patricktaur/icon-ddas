@@ -370,6 +370,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.Comment = this.requestorComment;
         //review.StartedOn = null;
         //review.CompletedOn = null;
+
         this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
@@ -378,7 +379,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
 
             });
     }
-    
+
     // requestQCXXX(qcVerifier: string, requestorComments:string) {
     //     if(qcVerifier == null || qcVerifier.length == 0){
     //         alert('please select a QC Verifier');
@@ -461,5 +462,5 @@ export class ReviewCompletedICSFComponent implements OnInit {
         });
     }
 
-    get diagnostic() { return JSON.stringify(this.reviewCategory); }
+    get diagnostic() { return JSON.stringify(this.files.forEach(file => file.name)); }
 }

@@ -181,16 +181,16 @@
 					<table class="table table-bordered table-hover table-striped">
 						<thead>
 							<tr>
-								<th align="left">File Name </th>
-								<th>Download</th>
+								<th class="text-center">File Name </th>
+								<th class="text-center">Download</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr *ngFor="let fileName of Attachments">
-								<td align="left">
+								<td class="text-left">
 									{{fileName}}
 								</td>
-								<td align="center">
+								<td class="text-center">
 									<div file-download [url]="getAttachmentDownloadURL(fileName)" class="pull-left"> </div>
 								</td>
 							</tr>

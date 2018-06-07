@@ -1029,9 +1029,6 @@ namespace DDAS.API.Controllers
             var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
             var fileNameWithPath = folder + "/" + fileName;
 
-            
-
-
             HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
             var stream = new FileStream(fileNameWithPath, FileMode.Open, FileAccess.Read);
             //stream.ReadTimeout = 25000;
@@ -1045,6 +1042,7 @@ namespace DDAS.API.Controllers
 
             var UserAgent = Request.Headers.UserAgent.ToString();
             var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+            fileName = fileName.Replace(' ', '_');
             var FileNameHeader = fileName + " " + Browser;
             result.Content.Headers.Add("Filename", FileNameHeader);
             result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");

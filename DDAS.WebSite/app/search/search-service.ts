@@ -445,14 +445,17 @@ export class SearchService {
             .catch(this.handleError);
     }
 
-    requestQC1(complianceFormId: string, review: Review, files: File[]){
-        
+    requestQC1(complianceFormId: string, review: Review, files: File[]){    
         let headers = new Headers();
         headers.append("Authorization", "Bearer " + this.authService.token);
         let options = new RequestOptions({ headers: headers });
 
         let formData = new FormData();
 
+        let maxFileLength = 10;
+        let fileNameWithoutExtension = "";
+        let  fileExtension = "";
+        let truncatedFileName = "";
         files.forEach((file: File) => {
             formData.append(file.name, file);
         });
@@ -465,8 +468,7 @@ export class SearchService {
                 return res.json();
             })
             .catch(this.handleError);
-    }
-    
+    }  
 
     undoQCRequest(complianceFormId: string){
         return this.http.get(this._baseUrl + 'QC/UndoQCRequest?ComplianceFormId=' + complianceFormId, this._options)

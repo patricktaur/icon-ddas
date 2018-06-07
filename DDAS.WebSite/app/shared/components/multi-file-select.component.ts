@@ -158,7 +158,7 @@ export class MultiFileSelectComponent implements OnInit {
         // }
         
         let files = [].slice.call(event.dataTransfer.files);
-        files.map((f : any) =>  this.Files.push(f));    
+        files.map((f : any) => this.Files.push(f));
     }
     //get diagnostic() { return JSON.stringify(this.Files); }
 
