@@ -384,7 +384,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     isMaxFileSizeExceeded():boolean {
-        let fileNames = [];
+        let fileNames : Array<string> = [];
         let maxFileSize = 5120;
         if(this.files.length == 0)
             return false;

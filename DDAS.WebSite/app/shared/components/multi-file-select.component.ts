@@ -80,15 +80,13 @@ import { Http, Response, Headers, RequestOptions, ResponseContentType } from '@a
 
 				</td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td colspan="2">
                 <span class="glyphicon glyphicon-warning-sign">  When files are uploaded the filenames longer than 50 characters will be shortened.</span>
                 </td>
-            </tr>
-
+            </tr>-->
 		</tbody>
 	</table>
-
     `,
 })
 export class MultiFileSelectComponent implements OnInit {
