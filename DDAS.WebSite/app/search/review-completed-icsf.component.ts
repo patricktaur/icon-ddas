@@ -370,6 +370,10 @@ export class ReviewCompletedICSFComponent implements OnInit {
         review.Comment = this.requestorComment;
         //review.StartedOn = null;
         //review.CompletedOn = null;
+
+        if(this.isMaxFileSizeExceeded())
+            return;
+
         this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
@@ -378,7 +382,30 @@ export class ReviewCompletedICSFComponent implements OnInit {
 
             });
     }
-    
+
+    isMaxFileSizeExceeded():boolean {
+        let fileNames : Array<string> = [];
+        let maxFileSize = 5120;
+        if(this.files.length == 0)
+            return false;
+        else{
+            this.files.forEach(file => {
+                let sizeInKB = Math.floor(file.size/1024);
+                console.log('size in KB: ', sizeInKB);
+                if(sizeInKB > maxFileSize){
+                    fileNames.push(file.name);
+                }
+            });
+        }
+        if(fileNames.length > 0){
+            alert("File size should not exceed 5MB. Cannot upload the file(s): " + 
+            fileNames);
+            return true;
+        }
+        else
+            return false;
+    }
+
     // requestQCXXX(qcVerifier: string, requestorComments:string) {
     //     if(qcVerifier == null || qcVerifier.length == 0){
     //         alert('please select a QC Verifier');
@@ -461,5 +488,5 @@ export class ReviewCompletedICSFComponent implements OnInit {
         });
     }
 
-    get diagnostic() { return JSON.stringify(this.reviewCategory); }
+    get diagnostic() { return JSON.stringify(this.files.forEach(file => file.name)); }
 }

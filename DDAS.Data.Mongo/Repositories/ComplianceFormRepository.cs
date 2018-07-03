@@ -225,6 +225,7 @@ namespace DDAS.Data.Mongo.Repositories
                      || y.Status == ReviewStatusEnum.QCInProgress
                      || y.Status == ReviewStatusEnum.QCFailed
                      || y.Status == ReviewStatusEnum.QCPassed
+                     || y.Status == ReviewStatusEnum.QCCompleted
                      || (y.Status == ReviewStatusEnum.QCCorrectionInProgress 
                      && y.CompletedOn < ReviewCompletedOn.Value.AddDays(1))
                      || (y.Status == ReviewStatusEnum.QCCorrectionInProgress

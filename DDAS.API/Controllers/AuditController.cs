@@ -55,7 +55,7 @@ namespace DDAS.API.Controllers
                 new CustomMultipartFormDataStreamProvider(tempFolder);
 
             var result = await Request.Content.ReadAsMultipartAsync(provider);
-            TruncateFileNames(tempFolder, 50);
+            //TruncateFileNames(tempFolder, 50);
 
             var compFormId = result.FormData["ComplianceFormId"];
             var strReview = result.FormData["Review"];

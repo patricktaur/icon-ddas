@@ -81,7 +81,8 @@ export class FileDownloadComponent implements OnInit {
     saveFile(res: Response){
         let file = {};
         file = new Blob([res.arrayBuffer()], {
-            type: 'application/ms-word'
+            // type: 'application/ms-word'
+            type: 'application/octet-stream'
         });
         // console.log("Inside Save File");
         // console.log("res.headers.get('Filename')" + res.headers.get('Filename'));
@@ -91,6 +92,7 @@ export class FileDownloadComponent implements OnInit {
         var browser = res.headers.get('Browser');
         var fileNameHeader = res.headers.get('Filename');
         var fileName = fileNameHeader.split(' ')[0].trim();
+        console.log('fileNameInHeader: ', fileNameHeader);
         // var browser = res.headers.get('Browser');
         var browser = fileNameHeader.split(' ')[1].trim();
         
@@ -113,11 +115,10 @@ export class FileDownloadComponent implements OnInit {
         if (browser.toLowerCase() == "unknown") {
             alert("could not identify the browser. File download failed");
         }
-        if (browser == null) {
-            //...
+        if(browser == undefined || browser == null || browser.toLowerCase() != "chrome"){
+            alert("could not identify the browser. File download failed");
         }
     }
-    
     
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

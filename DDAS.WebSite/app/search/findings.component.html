@@ -78,8 +78,7 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.FullMatchCount > 0">
-												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open();resetValues()" 
-													title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												<a style="text-decoration: underline;" (click)="FullMatchedRecordsModal.open();resetValues()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
 												&nbsp;{{SiteSearchStatus.FullMatchCount}}&nbsp;
 											</a>
 											</p>
@@ -94,8 +93,7 @@
 									<td>
 										<div *ngIf="!ExtractionModeIsManual">
 											<p *ngIf="SiteSearchStatus.PartialMatchCount > 0">
-												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open();resetValues()" 
-													title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
+												<a style="text-decoration: underline;" (click)="PartialMatchedRecordsModal.open();resetValues()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">
 												&nbsp;{{SiteSearchStatus.PartialMatchCount}}&nbsp;
 											</a>
 											</p>
@@ -141,9 +139,7 @@
 	<div class="row">
 		<div *ngFor="let matchedRecord of SelectedFindings; let indexVal = index">
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'findingEdit')" class="form-group col-md-6">
-				<div selected-finding-edit [Finding]="matchedRecord" 
-				(ValueChanged)="formValueChanged($event)"	
-				(Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
+				<div selected-finding-edit [Finding]="matchedRecord" (ValueChanged)="formValueChanged($event)" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()">
 				</div>
 			</div>
 
@@ -154,31 +150,23 @@
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierComments')" class="form-group col-md-6">
-				<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" 
-				[Finding]="matchedRecord"
-				(ValueChanged)="formValueChanged($event)">
+				<div qc-verifier-comments [QCVerifierRecId]="currentReviewStatus.QCVerifierRecId" [Finding]="matchedRecord" (ValueChanged)="formValueChanged($event)">
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'qcVerifierFinding')" class="form-group col-md-6">
-				<div qc-verifier-finding [ReviewerRecId]="currentReviewStatus.ReviewerRecId"
-				[Finding]="matchedRecord"
-				 (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"
+				<div qc-verifier-finding [ReviewerRecId]="currentReviewStatus.ReviewerRecId" [Finding]="matchedRecord" (Remove)="SetFindingToRemove(matchedRecord); RemoveConfirmModal.open()"
 				 (ValueChanged)="formValueChanged($event)">
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierFinding')" class="form-group col-md-6">
-				<div response-to-qc-verifier-finding 
-				[Finding]="matchedRecord"
-				(ValueChanged)="formValueChanged($event)">
+				<div response-to-qc-verifier-finding [Finding]="matchedRecord" (ValueChanged)="formValueChanged($event)">
 				</div>
 			</div>
 
 			<div *ngIf="selectFindingComponentToDisplay(matchedRecord, 'responseToQCVerifierComments')" class="form-group col-md-6">
-				<div response-to-qc-verifier-comment 
-				[Finding]="matchedRecord"
-				(ValueChanged)="formValueChanged($event)">
+				<div response-to-qc-verifier-comment [Finding]="matchedRecord" (ValueChanged)="formValueChanged($event)">
 				</div>
 			</div>
 
@@ -197,7 +185,7 @@
 		<p align="center">
 			<button type="button" class="btn btn-primary" (click)="Add()">Add Additional Findings</button>
 			<button type="button" class="btn btn-primary" *ngIf="!ExtractionModeIsManual" [disabled]="MatchedSiteRecords.length == 0"
-			(click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
+			 (click)="MatchedRecordsModal.open()" title="Available: {{MatchedSiteRecords.length}} / {{Findings.length}}">Review Matching Records</button>
 			<br/>
 		</p>
 	</div>
@@ -296,12 +284,10 @@
 							<td style="align-left">
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
-									 <!-- <span [innerHTML]="SplitItem | highlight: highlight"></span>   -->
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
 									<!-- ERROR ==> unable to highlight text -->
-									  <!-- {{SplitItem}} -->
+									<!-- {{SplitItem}} -->
 								</div>
-
 							</td>
 
 
@@ -349,10 +335,8 @@
 						<tr>
 							<th class="col-md-2">Select</th>
 							<th class="col-md-8">Record Details</th>
-
 						</tr>
 					</thead>
-
 					<tbody>
 						<!-- <tr *ngFor="let finding of PartialMatchRecords | paginate: {itemsPerPage: 5, currentPage: partialPageNumber, id:'partial'}"> -->
 						<tr *ngFor="let finding of filteredPartialMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: partialPageNumber, id:'partial'}">
@@ -360,11 +344,9 @@
 								<input type="checkbox" [(ngModel)]="finding.UISelected" />
 								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
 							</td>
-
 							<td style="align-left">
-
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span> 
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
 								</div>
 							</td>
 						</tr>
@@ -416,24 +398,18 @@
 						<div class="alert alert-info" *ngIf="singleMatchRecordsLoading">
 							<strong>Loading ...</strong>
 						</div>
-
 						<tr *ngFor="let finding of filteredSingleMatchRecords | paginate: {itemsPerPage: recordsPerPage, currentPage: pageNumber, id:'single'}">
 							<td>
 								<input type="checkbox" [(ngModel)]="finding.UISelected" />
 								<!--<button type="button" class="btn btn-default" (click)="MoveToSelected(matchedRecord)">Include</button>-->
 							</td>
-
 							<td style="align-left">
 
 								<div *ngFor="let SplitItem of Split(finding.RecordDetails)" align="left">
-									 <span [innerHTML]="SplitItem | highlight: highlightFilter"></span> 
+									<span [innerHTML]="SplitItem | highlight: highlightFilter"></span>
 								</div>
-
 							</td>
-
-
 						</tr>
-
 					</tbody>
 				</table>
 				<pagination-controls (pageChange)="pageNumber = $event" id="single"></pagination-controls>

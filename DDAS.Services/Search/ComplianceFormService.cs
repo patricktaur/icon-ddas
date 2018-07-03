@@ -2454,7 +2454,9 @@ namespace DDAS.Services.Search
         public List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, ReviewStatusEnum ReviewStatus)
         {
             var forms = _UOW.ComplianceFormRepository.FindComplianceForms(AssignedTo, ReviewStatus);
-            return getPrincipalInvestigators(forms);
+            return getPrincipalInvestigators(forms)
+                .OrderByDescending(x => x.SearchStartedOn)
+                .ToList();
         }
 
         //Patrick 11May2018 - Not used:
