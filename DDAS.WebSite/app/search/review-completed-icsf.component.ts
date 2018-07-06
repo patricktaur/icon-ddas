@@ -384,8 +384,9 @@ export class ReviewCompletedICSFComponent implements OnInit {
     }
 
     isMaxFileSizeExceeded():boolean {
+        //file length is in KBs, convert it to MBs and check
         let fileNames : Array<string> = [];
-        let maxFileSize = 5120;
+        let maxFileSize = 5120; //5MB
         if(this.files.length == 0)
             return false;
         else{
