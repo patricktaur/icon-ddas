@@ -386,12 +386,12 @@ export class ReviewCompletedICSFComponent implements OnInit {
     isMaxFileSizeExceeded():boolean {
         //file length is in KBs, convert it to MBs and check
         let fileNames : Array<string> = [];
-        let maxFileSize = 5120; //5MB
+        let maxFileSize = 10240; //10MB
         if(this.files.length == 0)
             return false;
         else{
             this.files.forEach(file => {
-                let sizeInKB = Math.floor(file.size/1024);
+                let sizeInKB = Math.ceil(file.size/1024);
                 console.log('size in KB: ', sizeInKB);
                 if(sizeInKB > maxFileSize){
                     fileNames.push(file.name);
@@ -399,7 +399,7 @@ export class ReviewCompletedICSFComponent implements OnInit {
             });
         }
         if(fileNames.length > 0){
-            alert("File size should not exceed 5MB. Cannot upload the file(s): " + 
+            alert("File size should not exceed 10MB. Cannot upload the file(s): " + 
             fileNames);
             return true;
         }
