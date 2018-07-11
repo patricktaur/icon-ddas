@@ -373,16 +373,15 @@ export class ReviewCompletedICSFComponent implements OnInit {
         //review.StartedOn = null;
         //review.CompletedOn = null;
 
-        // if(this.compFormLogic.isMaxFileSizeExceeded(this.files))
-        //     return;
-
-        this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
+        if(!this.compFormLogic.isMaxFileSizeExceeded(this.files)){
+            this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },
             error => {
 
             });
+        }
     }
 
     isMaxFileSizeExceeded():boolean {
