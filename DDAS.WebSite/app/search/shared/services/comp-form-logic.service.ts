@@ -495,18 +495,20 @@ export class CompFormLogicService {
         }        
     }
 
-    isMaxFileSizeExceeded(files: any):boolean {
+    isMaxFileSizeExceeded(files: File[]): boolean {
         //Total upload size is set to 100MB, Total files size should not exceed 100MB
         //file length is in KBs, convert it to MBs and check
         let fileNames : Array<string> = [];
-        let totalFileSize: number;
-        let maxFileSize = 10000; //10000KB = 10MB
+        let totalFileSize: number = 0; //all files
+        let maxFileSize = 10000; //10000KB = 10MB for individual file
         if(files.length == 0)
             return false;
         else {
+            console.log('files: ', files.length);
             files.forEach(file => {
-                totalFileSize += file.size;
                 let sizeInKB = Math.ceil(file.size/1024);
+                totalFileSize += sizeInKB;
+                console.log('file size: ', sizeInKB);
                 if(sizeInKB > maxFileSize){
                     fileNames.push(file.name);
                 }
