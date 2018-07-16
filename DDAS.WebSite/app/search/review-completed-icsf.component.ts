@@ -16,6 +16,7 @@ import { ConfigService } from '../shared/utils/config.service';
 import { ModalComponent } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../auth/auth.service';
 import { IMyDate, IMyDateModel } from '../shared/utils/my-date-picker/interfaces';
+import { CompFormLogicService } from './shared/services/comp-form-logic.service';
 //import { Http, Response, Headers , RequestOptions } from '@angular/http';
 
 @Component({
@@ -76,7 +77,8 @@ export class ReviewCompletedICSFComponent implements OnInit {
         private router: Router,
         private service: SearchService,
         private configService: ConfigService,
-        private authService: AuthService) { }
+        private authService: AuthService,
+        private compFormLogic: CompFormLogicService) { }
 
     ngOnInit() {
         this.reviewCategory = "Standard";
@@ -371,36 +373,41 @@ export class ReviewCompletedICSFComponent implements OnInit {
         //review.StartedOn = null;
         //review.CompletedOn = null;
 
-        if(this.isMaxFileSizeExceeded())
-            return;
-
-        this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
+        if(!this.compFormLogic.isMaxFileSizeExceeded(this.files)){
+            this.service.requestQC1(this.SelectedComplianceFormId, review, this.files)
             .subscribe((item: boolean) => {
                 this.LoadPrincipalInvestigators();
             },
             error => {
 
             });
+        }
     }
 
     isMaxFileSizeExceeded():boolean {
+        //Total upload size is set to 100MB, Total files size should not exceed 100MB
         //file length is in KBs, convert it to MBs and check
         let fileNames : Array<string> = [];
-        let maxFileSize = 5120; //5MB
+        let totalFileSize: number;
+        let maxFileSize = 10000; //10240KB = 10MB
         if(this.files.length == 0)
             return false;
         else{
             this.files.forEach(file => {
-                let sizeInKB = Math.floor(file.size/1024);
-                console.log('size in KB: ', sizeInKB);
+                totalFileSize += file.size;
+                let sizeInKB = Math.ceil(file.size/1024);
                 if(sizeInKB > maxFileSize){
                     fileNames.push(file.name);
                 }
             });
         }
         if(fileNames.length > 0){
-            alert("File size should not exceed 5MB. Cannot upload the file(s): " + 
+            alert("File size should not exceed 10MB. Cannot upload the file(s): " + 
             fileNames);
+            return true;
+        }
+        else if(totalFileSize >= 100000){
+            alert('Total file size should not exceed 100MB');
             return true;
         }
         else
