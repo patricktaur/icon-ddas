@@ -386,11 +386,21 @@ namespace WebScraping.Selenium.SearchEngine
                     PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
                     service.IgnoreSslErrors = true;
                     service.SslProtocol = "any";
+
+                    //PhantomJSOptions options = new PhantomJSOptions();
+                    //options.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
+                    ////IWebDriver driver = new PhantomJSDriver(options);
+
                     //service.LocalStoragePath = _config.AppDataDownloadsFolder;
                     _Driver = new PhantomJSDriver(service);
 
+                    //ChromeOptions options = new ChromeOptions();
+                    //options.AddArgument("--user-agent=Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
+                    //_Driver = new ChromeDriver(@"C:\Development\p926-ddas\Libraries1\ChromeDriver", options);
+
                     _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
                     _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+
                     //Patrick 16Feb2017
                     //_Driver.Manage().Window.Maximize();
                     //_Driver.Manage().Window.Size = new Size(1124, 850);
@@ -415,9 +425,7 @@ namespace WebScraping.Selenium.SearchEngine
             get {
                 return _searchPage.baseSiteData;
             }
-        }
-
-        
+        }    
 
         public enum DriverEnum
         {
@@ -502,8 +510,8 @@ namespace WebScraping.Selenium.SearchEngine
             var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
 
             var SiteData = _searchPage.baseSiteData;
-            SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
-            
+            //SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+
             if (ExtractionRequired)
             {
                 NewLog.SiteEnumString = siteEnum.ToString();

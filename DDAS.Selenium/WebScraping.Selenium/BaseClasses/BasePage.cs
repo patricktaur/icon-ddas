@@ -29,11 +29,12 @@ namespace WebScraping.Selenium.BaseClasses
                         //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
                         driver.Navigate().GoToUrl(string.Concat(Url, part));
                         IsPageLoaded = true;
+                        break;
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    //throw new Exception("Unable to load the page");
+                    throw new Exception("Unable to load the page: " + e.Message);
                 }
             }
             if(!IsPageLoaded)

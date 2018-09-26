@@ -36,11 +36,11 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             _config = Config;
             _log = Log;
-            Open();
+            //Open();
             _SAMSiteData = new SystemForAwardManagementPageSiteData();
             _SAMSiteData.RecId = Guid.NewGuid();
             _SAMSiteData.ReferenceId = _SAMSiteData.RecId;
-            _SAMSiteData.Source = driver.Url;
+            _SAMSiteData.Source = Url;
         }
 
         public override SiteEnum SiteName {
@@ -52,6 +52,7 @@ namespace WebScraping.Selenium.Pages
         public override string Url {
             get {
                 return @"https://www.sam.gov/portal/public/SAM";
+                //return @"http://www.fda.gov/ora/compliance_ref/debar/default.htm";
             }
         }
 
@@ -216,7 +217,9 @@ namespace WebScraping.Selenium.Pages
             string myStringWebResource = "https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_";
             string Year = DateTime.Now.ToString("yy");
 
-            string JulianDate = LatestExclusionExtractAnchorTag.Text.Split(' ')[1];
+            string JulianDate = DateTime.Now.DayOfYear.ToString("000");
+            //LatestExclusionExtractAnchorTag.Text.Split(' ')[1];
+
             myStringWebResource += Year + JulianDate + ".ZIP";
 
             fileName += Year + JulianDate + ".ZIP";
@@ -459,7 +462,8 @@ namespace WebScraping.Selenium.Pages
         //for DB search
         private void GetSiteLastUpdatedDate()
         {
-            DataAccessAnchorTag.SendKeys(Keys.Enter);
+            DataAccessAnchorTag.Click();
+            //DataAccessAnchorTag.SendKeys(Keys.Enter);
             var AnchorTitle = LatestExclusionExtractAnchorTag.GetAttribute("title");
             var Date = AnchorTitle.Replace("Active Exclusions Data File", "").Trim();
 
