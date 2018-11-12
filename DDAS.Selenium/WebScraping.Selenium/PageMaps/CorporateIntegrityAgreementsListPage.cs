@@ -14,6 +14,7 @@ namespace WebScraping.Selenium.Pages
             get {
                 IList<IWebElement> table = driver.FindElements(By.TagName("table"));
                 return table[1];
+                //return driver.FindElement(By.Id("cia_list"));
             }
         }
 
