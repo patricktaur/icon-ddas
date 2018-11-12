@@ -83,13 +83,13 @@ namespace WebScraping.Selenium.Pages
             int RowCount = 1;
             int NullRecords = 0;
 
-            for (int TableRow = 9; TableRow < TRs.Count; TableRow++)
+            for (int TableRow = 11; TableRow < TRs.Count; TableRow++)
             {
                 var CiaList = new CIAList();
 
                 IList<IWebElement> TDs = TRs[TableRow].FindElements(By.XPath("td"));
 
-                if(TDs.Count > 0)
+                if(TDs.Count == 4)
                 {
                     CiaList.RowNumber = RowCount;
                     CiaList.Provider = TDs[0].Text;
