@@ -214,6 +214,7 @@ namespace WebScraping.Selenium.Pages
             string UnZipPath = _config.SAMFolder;
 
             WebClient myWebClient = new WebClient();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             //SAM/extractfiledownload?role=WW&version=EPLSPUB&filename=SAM_Exclusions_Public_Extract_18316.ZIP
             //https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_
             string myStringWebResource = "https://www.sam.gov/SAM/extractfiledownload?role=WW&version=EPLSPUB&filename=SAM_Exclusions_Public_Extract_";
@@ -243,10 +244,9 @@ namespace WebScraping.Selenium.Pages
                 //URLDownloadToFile(0, myStringWebResource, fileName, 0, 0);
                 ZipFile.ExtractToDirectory(fileName, _config.SAMFolder);
             }
-            catch(WebException) //when using WebClient
+            catch(WebException ex) //when using WebClient
             {
-                throw new Exception("Could not download file. " +
-                    "Possible Http 404 File not found error on SAM site");
+                throw new Exception("Could not download file. " + ex.Message);
             }
             //When using URLDownloadToFile win32 API
             //ZipFile.ExtractToDirectory throws up this exception
