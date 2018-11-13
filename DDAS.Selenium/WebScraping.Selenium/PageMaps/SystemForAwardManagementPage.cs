@@ -195,13 +195,17 @@ namespace WebScraping.Selenium.Pages
                 Func<IWebDriver, IWebElement> waitForElement =
                     new Func<IWebDriver, IWebElement>((IWebDriver Web) =>
                     {
-                        IList<IWebElement> Anchors = driver.FindElements(By.XPath("//form/a"));
+                        //IList<IWebElement> Elements = driver.FindElements(By.XPath("//small"));
+                        //return Elements[0];
+                        IWebElement Anchor = driver.FindElement(
+                            By.XPath("//div[@id='nav']/ul/li[3]/form/a"));
 
-                        foreach (IWebElement Anchor in Anchors)
-                        {
-                            if (Anchor.GetAttribute("title").ToLower() == "data access")
-                                return Anchor;
-                        }
+                        return Anchor;
+                        //foreach (IWebElement Anchor in Anchor)
+                        //{
+                        //    if (Anchor.GetAttribute("title").ToLower().Trim() == "data access")
+                        //        return Anchor;
+                        //}
                         throw new Exception("Could not find SAMAchorTag");
                     });
                 IWebElement targetElement = wait.Until(waitForElement);
