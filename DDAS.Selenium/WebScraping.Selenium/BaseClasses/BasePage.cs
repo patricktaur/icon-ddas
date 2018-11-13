@@ -20,7 +20,7 @@ namespace WebScraping.Selenium.BaseClasses
         public virtual void Open(string part = "")
         {
             bool IsPageLoaded = false;
-            for (int Counter = 1; Counter <= 10; Counter++)
+            for (int Counter = 1; Counter <= 20; Counter++)
             {
                 try
                 {

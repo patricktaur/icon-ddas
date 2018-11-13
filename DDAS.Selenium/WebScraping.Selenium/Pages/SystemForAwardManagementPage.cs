@@ -51,7 +51,7 @@ namespace WebScraping.Selenium.Pages
 
         public override string Url {
             get {
-                return @"https://www.sam.gov/portal/public/SAM";
+                return @"https://www.sam.gov";
                 //return @"http://www.fda.gov/ora/compliance_ref/debar/default.htm";
             }
         }
@@ -214,7 +214,9 @@ namespace WebScraping.Selenium.Pages
             string UnZipPath = _config.SAMFolder;
 
             WebClient myWebClient = new WebClient();
-            string myStringWebResource = "https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_";
+            //SAM/extractfiledownload?role=WW&version=EPLSPUB&filename=SAM_Exclusions_Public_Extract_18316.ZIP
+            //https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_
+            string myStringWebResource = "https://www.sam.gov/SAM/extractfiledownload?role=WW&version=EPLSPUB&filename=SAM_Exclusions_Public_Extract_";
             string Year = DateTime.Now.ToString("yy");
 
             string JulianDate = DateTime.Now.DayOfYear.ToString("000");
