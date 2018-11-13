@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using DDAS.Models.Repository;
+using System.Net;
 
 namespace WebScraping.Selenium.SearchEngine
 {
