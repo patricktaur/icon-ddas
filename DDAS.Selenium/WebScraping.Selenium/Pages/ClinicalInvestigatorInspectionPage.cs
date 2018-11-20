@@ -93,7 +93,7 @@ namespace WebScraping.Selenium.Pages
             string UnZipPath = _config.CIILFolder;
             
             WebClient myWebClient = new WebClient();
-            
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             string myStringWebResource = ClinicalInvestigatorZipAnchor.GetAttribute("href");
 
             _log.WriteLog(
