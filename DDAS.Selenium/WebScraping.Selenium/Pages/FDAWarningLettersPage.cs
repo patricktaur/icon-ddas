@@ -355,7 +355,7 @@ namespace WebScraping.Selenium.Pages
             //    File.Delete(fileName);
 
             WebClient myWebClient = new WebClient();
-
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             // Concatenate the domain with the Web resource filename.
             string myStringWebResource = 
                 "https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";

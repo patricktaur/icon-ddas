@@ -143,7 +143,7 @@ namespace WebScraping.Selenium.Pages
 
             DateTime CurrentRowInspectionDate = new DateTime();
 
-            for (int Counter = 0; Counter < LinesFromTextFile.Length; Counter++)
+            for (int Counter = 0; Counter <= LinesFromTextFile.Length - 1; Counter++)
             {
                 string[] FieldData = LinesFromTextFile[Counter].Split('~');
 
@@ -156,7 +156,16 @@ namespace WebScraping.Selenium.Pages
                     if (FieldData[1].ToLower().Contains("last name"))
                         continue;
 
-                    string[] NextRowData = LinesFromTextFile[Counter + 1].Split('~');
+                    string[] NextRowData;
+
+                    if (Counter < LinesFromTextFile.Length - 1)
+                    {
+                        NextRowData = LinesFromTextFile[Counter + 1].Split('~');
+                    }
+                    else
+                    {
+                        NextRowData = LinesFromTextFile[Counter].Split('~');
+                    }
 
                     //CurrentRowInspectionDate = DateTime.ParseExact(
                     //    FieldData[9],
@@ -186,6 +195,10 @@ namespace WebScraping.Selenium.Pages
                                 DeficiencyCode += "," + NextRowData[12];
 
                             TempCounter += 1;
+
+                            if (TempCounter > LinesFromTextFile.Length - 1)
+                                break;
+
                             NextRowData = LinesFromTextFile[TempCounter].Split('~');
                         }
                         else

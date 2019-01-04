@@ -87,6 +87,7 @@ namespace WebScraping.Selenium.Pages
 
             // Create a new WebClient instance.
             WebClient myWebClient = new WebClient();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             // Concatenate the domain with the Web resource filename.
             string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
                 GetAttribute("href");

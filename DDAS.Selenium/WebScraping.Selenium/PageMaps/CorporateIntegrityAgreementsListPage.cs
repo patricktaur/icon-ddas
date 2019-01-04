@@ -24,13 +24,13 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    IWebElement Element = driver.FindElement(By.Id("updated-list"));
-                    return Element;
+                    IList<IWebElement> Elements = driver.FindElements(By.TagName("h3"));
+                    return Elements[1];
                 }
                 catch(Exception ex)
                 {
                     throw new Exception("Unable to find PageLastUpdatedElement. " +
-                        "Site may have been updated. Error Message: " +
+                        "Site(page source) might have been updated. Error Message: " +
                         ex.Message);
                 }
             }
