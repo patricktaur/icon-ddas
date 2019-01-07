@@ -43,7 +43,25 @@ namespace DDAS.Services.Search
 
         public void ExtractDataSingleSite(SiteEnum siteEnum, ILog log)
         {
-            _searchEngine.ExtractData(siteEnum, log);
+            try
+            {
+                _searchEngine.ExtractData(siteEnum, log);
+            }
+            catch(Exception e)
+            {
+                var NewLog = new Log();
+                NewLog.Step = "";
+                NewLog.SiteEnumString = siteEnum.ToString();
+                NewLog.Status = "Error";
+                NewLog.Message = "Unable to extract data. " +
+                    "Error Details: " + e.ToString();
+                NewLog.CreatedOn = DateTime.Now;
+                NewLog.CreatedBy = "DataExtractorService";
+
+                log.WriteLog(NewLog);
+
+                throw new Exception(e.ToString());
+            }
         }
 
         public void ExtractDataAllDBSites(List<SitesToSearch> Sites, ILog log)

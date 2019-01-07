@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using DDAS.Models.Repository;
-using System.Net;
 
 namespace WebScraping.Selenium.SearchEngine
 {
@@ -511,7 +510,19 @@ namespace WebScraping.Selenium.SearchEngine
             var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
 
             var SiteData = _searchPage.baseSiteData;
-            //SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+
+            if(siteEnum == SiteEnum.ClinicalInvestigatorInspectionPage ||
+                siteEnum == SiteEnum.FDAWarningLettersPage ||
+                siteEnum == SiteEnum.ExclusionDatabaseSearchPage ||
+                siteEnum == SiteEnum.SystemForAwardManagementPage ||
+                siteEnum == SiteEnum.SpeciallyDesignedNationalsListPage)
+            {
+                SiteData.SiteLastUpdatedOn = DateTime.Now;
+            }
+            else
+            {
+                SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+            }
 
             if (ExtractionRequired)
             {
