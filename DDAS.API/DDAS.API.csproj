@@ -245,6 +245,7 @@
     <Compile Include="Helpers\ConvertFormToCurrentVersion.cs" />
     <Compile Include="Helpers\CSVConvertor.cs" />
     <Compile Include="Helpers\CustomLogHandler.cs" />
+    <Compile Include="Helpers\ExecutionTimeFilter.cs" />
     <Compile Include="Helpers\FileDownloadResponse.cs" />
     <Compile Include="Helpers\FileReadWriteAsync.cs" />
     <Compile Include="Helpers\Formatters\CSVMediaTypeFormatter.cs" />

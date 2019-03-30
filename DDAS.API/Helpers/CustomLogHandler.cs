@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel.Channels;
 
-
+//Not used:
 namespace DDAS.API.Helpers
 {
     public class CustomLogHandler : DelegatingHandler
@@ -36,7 +36,12 @@ namespace DDAS.API.Helpers
         {
 
             var x = request.GetUserPrincipal();
+            var y = request.GetRequestContext();
             
+            var owin = request.GetOwinContext();
+            
+            var z = y.Principal;
+            var name = z.Identity.Name;
 
             LogMetaData log = new LogMetaData
             {
@@ -70,16 +75,10 @@ namespace DDAS.API.Helpers
             {
                 param = method.Substring(method.LastIndexOf('?') + 1);
             }
-            
+         
            
             int index = method.IndexOf("?");
             method = (index > 0 ? method.Substring(0, index) : method);
-
-            //if (method.Length > 0)
-            //{
-            //    method = method.Substring(0, method.IndexOf("?"));
-            //}
-
 
             var startTime = logMetadata.RequestTimestamp;
             var processTime = (logMetadata.ResponseTimestamp.Value - logMetadata.RequestTimestamp.Value).Milliseconds;
@@ -90,20 +89,6 @@ namespace DDAS.API.Helpers
            
         }
 
-        private string ConvertObjectToString(LogMetaData logMetadata)
-        {
-            //var o = new LogMetaData();
-            var text = string.Join
-            (
-                ",",
-                typeof(LogMetaData)
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Select
-                    (
-                        prop => prop.GetValue(logMetadata).ToString()
-                    )
-            );
-            return text;
-        }
+        
     }
 }

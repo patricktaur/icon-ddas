@@ -19,7 +19,9 @@ namespace DDAS.API
         {
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             var config = new HttpConfiguration();
-           
+            var logFile = HttpRuntime.AppDomainAppPath + "PerformanceMonitor.csv";
+            //config.MessageHandlers.Add(new CustomLogHandler(logFile));
+            config.Filters.Add(new ExecutionTimeFilterAttribute(logFile));
             //config.Routes.MapHttpRoute("DefaultAPI",
             //    "api/{controller}/{id}",
             //    new { id = RouteParameter.Optional });
@@ -34,10 +36,11 @@ namespace DDAS.API
 
             ConfigureAuth(app);
 
-            var logFile = HttpRuntime.AppDomainAppPath + "PerformanceMonitor.csv";
-            config.MessageHandlers.Add(new CustomLogHandler(logFile));
+           
+            
             app.UseWebApi(config);
             MongoMaps.Initialize();
+            
         }
     }
 }
