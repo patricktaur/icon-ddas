@@ -130,6 +130,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
       <Private>True</Private>
@@ -243,10 +244,13 @@
     <Compile Include="Controllers\DataExtractorController.cs" />
     <Compile Include="Helpers\ConvertFormToCurrentVersion.cs" />
     <Compile Include="Helpers\CSVConvertor.cs" />
+    <Compile Include="Helpers\CustomLogHandler.cs" />
     <Compile Include="Helpers\FileDownloadResponse.cs" />
+    <Compile Include="Helpers\FileReadWriteAsync.cs" />
     <Compile Include="Helpers\Formatters\CSVMediaTypeFormatter.cs" />
     <Compile Include="Helpers\Formatters\csvOutputFormatter.cs" />
     <Compile Include="Helpers\IdentifyBrowser.cs" />
+    <Compile Include="Helpers\LogMetaData.cs" />
     <Compile Include="ManageAppSettings\ManageAppSettings.cs" />
     <Compile Include="App_Start\SimpleInjectorWebApiInitializer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />

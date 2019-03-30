@@ -6,7 +6,9 @@ using Owin;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using AutoMapper;
+using DDAS.API.Helpers;
 using DDAS.Data.Mongo.Maps;
+using System.Web;
 [assembly: OwinStartupAttribute(typeof(DDAS.API.Startup))]
 [assembly: OwinStartup(typeof(DDAS.API.Startup))]
 namespace DDAS.API
@@ -17,7 +19,7 @@ namespace DDAS.API
         {
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             var config = new HttpConfiguration();
-
+           
             //config.Routes.MapHttpRoute("DefaultAPI",
             //    "api/{controller}/{id}",
             //    new { id = RouteParameter.Optional });
@@ -25,12 +27,15 @@ namespace DDAS.API
             SimpleInjectorWebApiInitializer.Initialize(config);
 
             WebApiConfig.Register(config);
-
+            
             //Enable CORS
             var cors = new EnableCorsAttribute("*", "*", "*");
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             ConfigureAuth(app);
+
+            var logFile = HttpRuntime.AppDomainAppPath + "PerformanceMonitor.csv";
+            config.MessageHandlers.Add(new CustomLogHandler(logFile));
             app.UseWebApi(config);
             MongoMaps.Initialize();
         }
