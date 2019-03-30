@@ -30,17 +30,16 @@ namespace DDAS.API.Helpers
             Stopwatch stopWatch = (Stopwatch)actionExecutedContext.Request.Properties[actionExecutedContext.ActionContext.ActionDescriptor.ActionName];
             var actionName = actionExecutedContext.ActionContext.ActionDescriptor.ActionName;
             var requestedUri = actionExecutedContext.Request.RequestUri;
-            var param = "";
             var elapsedTime = stopWatch.Elapsed.Milliseconds;
             string userName = "";
             if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
                 userName = HttpContext.Current.User.Identity.Name;
             }
-            //Trace.WriteLine(actionExecutedContext.ActionContext.ActionDescriptor.ActionName)
             var logText =  string.Format("{0}, {1}, {2}, {3}, {4}\r\n", DateTime.Now, actionName, userName, requestedUri, elapsedTime);
-
-            await FileReadWriteAsync.WriteTextAsync(_logFile, logText);
+            //with hr and min: String.Format("{0:yyyyMMddHHmm}"
+            var logFile = _logFile.Replace("$$DateTime", String.Format("{0:yyyyMMdd}", DateTime.Now));
+            await FileReadWriteAsync.WriteTextAsync(logFile, logText);
         }
 
         
