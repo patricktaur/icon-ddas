@@ -244,14 +244,12 @@
     <Compile Include="Controllers\DataExtractorController.cs" />
     <Compile Include="Helpers\ConvertFormToCurrentVersion.cs" />
     <Compile Include="Helpers\CSVConvertor.cs" />
-    <Compile Include="Helpers\CustomLogHandler.cs" />
-    <Compile Include="Helpers\ExecutionTimeFilter.cs" />
+    <Compile Include="Helpers\ExecutionTimeFilterAttribute.cs" />
     <Compile Include="Helpers\FileDownloadResponse.cs" />
     <Compile Include="Helpers\FileReadWriteAsync.cs" />
     <Compile Include="Helpers\Formatters\CSVMediaTypeFormatter.cs" />
     <Compile Include="Helpers\Formatters\csvOutputFormatter.cs" />
     <Compile Include="Helpers\IdentifyBrowser.cs" />
-    <Compile Include="Helpers\LogMetaData.cs" />
     <Compile Include="ManageAppSettings\ManageAppSettings.cs" />
     <Compile Include="App_Start\SimpleInjectorWebApiInitializer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
