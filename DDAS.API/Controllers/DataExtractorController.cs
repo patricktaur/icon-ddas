@@ -57,7 +57,6 @@ namespace DDAS.API.Controllers
             {
                 return Content(HttpStatusCode.BadRequest, "Error: " + ex.Message);
             }
-            
         }
 
         #endregion

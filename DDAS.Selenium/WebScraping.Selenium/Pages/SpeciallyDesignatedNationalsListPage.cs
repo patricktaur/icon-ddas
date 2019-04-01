@@ -91,7 +91,7 @@ namespace WebScraping.Selenium.Pages
                 ".txt";
 
             WebClient myWebClient = new WebClient();
-
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             // PDF file path --> https://www.treasury.gov/ofac/downloads/sdnlist.pdf
 
             string myStringWebResource = "https://www.treasury.gov/ofac/downloads/sdnlist.txt";
