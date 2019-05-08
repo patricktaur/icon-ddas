@@ -38,7 +38,11 @@ namespace DDAS.API.Helpers
             }
             var logText =  string.Format("{0}, {1}, {2}, {3}, {4}\r\n", DateTime.Now, actionName, userName, requestedUri, elapsedTime);
             //with hr and min: String.Format("{0:yyyyMMddHHmm}"
-            var logFile = _logFile.Replace("$$DateTime", String.Format("{0:yyyyMMdd}", DateTime.Now));
+            
+            var logFile1 = _logFile.Replace("$$DateTime", String.Format("{0:yyyyMMdd}", DateTime.Now));
+            var logFile = logFile1.Replace("$$UserName", userName);
+
+
             await FileReadWriteAsync.WriteTextAsync(logFile, logText);
         }
 
