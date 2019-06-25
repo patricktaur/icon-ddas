@@ -66,8 +66,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetFDADebarSiteScanDetails()
         {
-            var SiteData = _UOW.FDADebarPageRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.FDADebarPageRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.FDADebarPageRepository.GetLatestDocument();
 
             if(SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -88,8 +90,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetClinicalInvestigatorSiteScanDetails()
         {
-            var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.ClinicalInvestigatorInspectionListRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -110,8 +114,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetFDAWarningLettersSiteScanDetails()
         {
-            var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.FDAWarningLettersRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.FDAWarningLettersRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 return null;
@@ -130,8 +136,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetProposalToDebarSiteScanDetails()
         {
-            var SiteData = _UOW.ERRProposalToDebarRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.ERRProposalToDebarRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.ERRProposalToDebarRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -152,8 +160,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetAdequateAssuranceSiteScanDetails()
         {
-            var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.AdequateAssuranceListRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.AdequateAssuranceListRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 return null;
@@ -172,8 +182,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetClinicalInvestigatorDisqualificationSiteScanDetails()
         {
-            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 return null;
@@ -192,8 +204,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetCBERClinicalInvestigatorSiteScanDetails()
         {
-            var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -214,8 +228,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetPHSSiteScanDetails()
         {
-            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -236,8 +252,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetExclusionDatabaseSearchSiteScanDetails()
         {
-            var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.ExclusionDatabaseSearchRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -258,8 +276,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetCorporateIntegrityAgreementSiteScanDetails()
         {
-            var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016
@@ -280,8 +300,10 @@ namespace DDAS.Services.Search
 
         private SiteScan GetSystemForAwardManagementSiteScanDetails()
         {
-            var SiteData = _UOW.SystemForAwardManagementRepository.GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.SystemForAwardManagementRepository.GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.SystemForAwardManagementRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 return null;
@@ -300,9 +322,11 @@ namespace DDAS.Services.Search
 
         private SiteScan GetSpeciallyDesignatedNationsDetails()
         {
-            var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.
-                GetAll().
-                OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+            //var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.
+            //    GetAll().
+            //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
+
+            var SiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetLatestDocument();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 //Patrick 02Dec2016

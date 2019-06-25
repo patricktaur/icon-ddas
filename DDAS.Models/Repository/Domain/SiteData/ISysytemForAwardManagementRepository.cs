@@ -10,5 +10,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface ISystemForAwardManagementRepository :
         IRepository<SystemForAwardManagementPageSiteData>
     {
+        SystemForAwardManagementPageSiteData GetLatestDocument();
     }
 }

@@ -35,6 +35,47 @@ namespace DDAS.Data.Mongo.Repositories
             _db.GetCollection<TEntity>(typeof(TEntity).Name).InsertOne(entity);
         }
 
+        public List<TEntity> FilterRecordsByDate(TEntity Entity, DateTime FromDate, DateTime ToDate)
+        {
+            var filterBuilder = Builders<TEntity>.Filter;
+
+            var filter = filterBuilder.Gt("CreatedOn", FromDate) &
+                filterBuilder.Lt("CreatedOn", ToDate);
+
+            var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
+            var entity = collection.Find(filter).ToList();
+            return entity;
+        }
+
+        public List<TEntity> GetRecordsByDate(TEntity Entity, DateTime RecordsTillDate)
+        {
+            var filter = Builders<TEntity>.Filter.Lt("CreatedOn", RecordsTillDate);
+            var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
+            var entity = collection.Find(filter).ToList();
+            return entity;
+        }
+
+        public bool MoveCollection(TEntity Entity, string NewCollection)
+        {
+            var pipeLine = new BsonDocument[]
+            {
+                new BsonDocument { { "$match", new BsonDocument() } },
+                new BsonDocument { { "$out", NewCollection } }
+            };
+
+            var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
+            var ArchivedCollection = collection.Aggregate<BsonDocument>(pipeLine).ToList();
+            //Console.WriteLine(pipeLine.ToJson());
+            return true;
+        }
+
+        public bool CollectionExists(string CollectionName)
+        {
+            var filter = new BsonDocument("name", CollectionName);
+            var collectionCursor = _db.ListCollections(new ListCollectionsOptions { Filter = filter });
+            return collectionCursor.Any();
+        }
+
         public bool DropAll(TEntity Entity)
         {
             var collection = _db.GetCollection<TEntity>
@@ -125,6 +166,7 @@ namespace DDAS.Data.Mongo.Repositories
             var filter = Builders<TEntity>.Filter.Eq("_id", Id);
             var collection = _db.GetCollection<TEntity>(typeof(TEntity).Name);
             collection.DeleteOne(filter);
+            
         }
 
         public void Update(TEntity entity)

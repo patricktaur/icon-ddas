@@ -145,9 +145,11 @@ namespace DDAS.Services.Search
             }
         }
 
-        public List<ExtractionStatus> GetLatestExtractionStatus()
+        public List<ExtractionStatus> GetLatestExtractionStatus(DateTime fromDate, DateTime toDate)
         {
-            var FDADebarSiteData = _UOW.FDADebarPageRepository.GetAll();
+            var FDADebarSiteData = _UOW.FDADebarPageRepository.FilterRecordsByDate(new FDADebarPageSiteData(), fromDate, toDate);
+
+            //var FDADebarSiteData = _UOW.FDADebarPageRepository.GetAll();
 
             var ListOfExtractionHistory = new List<ExtractionStatus>();
 
@@ -167,7 +169,10 @@ namespace DDAS.Services.Search
             var ExtractionHistory2 = new ExtractionStatus();
 
             var ClinicalInvestigatorSiteData =
-                _UOW.ClinicalInvestigatorInspectionListRepository.GetAll();
+                _UOW.ClinicalInvestigatorInspectionListRepository.FilterRecordsByDate(new ClinicalInvestigatorInspectionSiteData(), fromDate, toDate);
+
+            //var ClinicalInvestigatorSiteData =
+            //    _UOW.ClinicalInvestigatorInspectionListRepository.GetAll();
 
             if (ClinicalInvestigatorSiteData.Count > 0)
             {
@@ -181,7 +186,11 @@ namespace DDAS.Services.Search
             }
 
             var ExtractionHistory3 = new ExtractionStatus();
-            var FDAWarningLetters = _UOW.FDAWarningLettersRepository.GetAll();
+
+            var FDAWarningLetters = _UOW.FDAWarningLettersRepository.FilterRecordsByDate(
+                new FDAWarningLettersSiteData(), fromDate, toDate);
+
+            //var FDAWarningLetters = _UOW.FDAWarningLettersRepository.GetAll();
 
             if (FDAWarningLetters.Count > 0)
             {
@@ -196,7 +205,10 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory4 = new ExtractionStatus();
 
-            var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll();
+            var ERRSiteData = _UOW.ERRProposalToDebarRepository.FilterRecordsByDate(
+                new ERRProposalToDebarPageSiteData(), fromDate, toDate);
+
+            //var ERRSiteData = _UOW.ERRProposalToDebarRepository.GetAll();
 
             if (ERRSiteData.Count > 0)
             {
@@ -211,7 +223,10 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory5 = new ExtractionStatus();
 
-            var AdequateAssuraceSiteData = _UOW.AdequateAssuranceListRepository.GetAll();
+            var AdequateAssuraceSiteData = _UOW.AdequateAssuranceListRepository.FilterRecordsByDate(
+                new AdequateAssuranceListSiteData(), fromDate, toDate);
+
+            //var AdequateAssuraceSiteData = _UOW.AdequateAssuranceListRepository.GetAll();
 
             if (AdequateAssuraceSiteData.Count > 0)
             {
@@ -227,7 +242,11 @@ namespace DDAS.Services.Search
             var ExtractionHistory6 = new ExtractionStatus();
 
             var ClinicalInvestigatorDisqualificationData =
-                _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll();
+                _UOW.ClinicalInvestigatorDisqualificationRepository.FilterRecordsByDate(
+                    new ClinicalInvestigatorDisqualificationSiteData(), fromDate, toDate);
+
+            //var ClinicalInvestigatorDisqualificationData =
+            //    _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll();
 
             if (ClinicalInvestigatorDisqualificationData.Count > 0)
             {
@@ -241,7 +260,10 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory7 = new ExtractionStatus();
 
-            var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll();
+            var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.FilterRecordsByDate(
+                new PHSAdministrativeActionListingSiteData(), fromDate, toDate);
+
+            //var PHSSiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll();
 
             if (PHSSiteData.Count > 0)
             {
@@ -255,7 +277,10 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory8 = new ExtractionStatus();
 
-            var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll();
+            var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.FilterRecordsByDate(
+                new CBERClinicalInvestigatorInspectionSiteData(), fromDate, toDate);
+
+            //var CBERSiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll();
 
             if (CBERSiteData.Count > 0)
             {
@@ -269,7 +294,9 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory9 = new ExtractionStatus();
 
-            var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll();
+            var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.FilterRecordsByDate(new ExclusionDatabaseSearchPageSiteData(), fromDate, toDate);
+
+            //var ExclusionSiteData = _UOW.ExclusionDatabaseSearchRepository.GetAll();
 
             if (ExclusionSiteData.Count > 0)
             {
@@ -283,7 +310,10 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory10 = new ExtractionStatus();
 
-            var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll();
+            var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.FilterRecordsByDate(
+                new CorporateIntegrityAgreementListSiteData(), fromDate, toDate);
+
+            //var CIASiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll();
 
             if (CIASiteData.Count > 0)
             {
@@ -297,7 +327,10 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory11 = new ExtractionStatus();
 
-            var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll();
+            var SamSiteData = _UOW.SystemForAwardManagementRepository.FilterRecordsByDate(
+                new SystemForAwardManagementPageSiteData(), fromDate, toDate);
+
+            //var SamSiteData = _UOW.SystemForAwardManagementRepository.GetAll();
 
             if (SamSiteData.Count > 0)
             {
@@ -311,7 +344,9 @@ namespace DDAS.Services.Search
 
             var ExtractionHistory12 = new ExtractionStatus();
 
-            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll();
+            var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.FilterRecordsByDate(new SpeciallyDesignatedNationalsListSiteData(), fromDate, toDate);
+
+            //var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.GetAll();
 
             if (SDNSiteData.Count > 0)
             {
@@ -355,9 +390,15 @@ namespace DDAS.Services.Search
 
         public IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32)
         {
-            return GetLatestExtractionStatus()
-                .Where(x => x.ExtractionDate < DateTime.Now.AddHours(-Hour))
+            var fromDate = DateTime.Now.AddHours(-Hour);
+            var toDate = DateTime.Now;
+
+            return GetLatestExtractionStatus(fromDate, toDate)
                 .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
+
+            //return GetLatestExtractionStatus()
+            //    .Where(x => x.ExtractionDate < DateTime.Now.AddHours(-Hour))
+            //    .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
         }
 
 

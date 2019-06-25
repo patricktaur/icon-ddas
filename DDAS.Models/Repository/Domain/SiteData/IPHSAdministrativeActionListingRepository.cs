@@ -9,6 +9,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface IPHSAdministrativeActionListingRepository : IRepository<PHSAdministrativeActionListingSiteData>
     {
-
+        PHSAdministrativeActionListingSiteData GetLatestDocument();
     }
 }
