@@ -521,7 +521,8 @@ namespace WebScraping.Selenium.SearchEngine
             }
             else
             {
-                SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+                //SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+                SiteData.SiteLastUpdatedOn = DateTime.Now;
             }
 
             if (ExtractionRequired)

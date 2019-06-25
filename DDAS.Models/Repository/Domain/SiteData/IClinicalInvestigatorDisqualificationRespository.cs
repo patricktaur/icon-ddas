@@ -10,5 +10,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface IClinicalInvestigatorDisqualificationRepository : 
         IRepository<ClinicalInvestigatorDisqualificationSiteData>
     {
+        ClinicalInvestigatorDisqualificationSiteData GetLatestDocument();
     }
 }

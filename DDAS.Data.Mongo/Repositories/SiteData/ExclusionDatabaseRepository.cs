@@ -16,7 +16,6 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         public ExclusionDatabaseRepository(IMongoDatabase db) :
             base(db)
         {
-
         }
     }
 }

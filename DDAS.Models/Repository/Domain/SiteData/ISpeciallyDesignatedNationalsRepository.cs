@@ -11,6 +11,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface ISpeciallyDesignatedNationalsRepository : 
         IRepository<SpeciallyDesignatedNationalsListSiteData>
     {
-       
+       SpeciallyDesignatedNationalsListSiteData GetLatestDocument();
     }
 }

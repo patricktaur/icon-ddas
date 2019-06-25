@@ -22,7 +22,7 @@ using static DDAS.Models.ViewModels.RequestPayloadforiSprint;
 
 namespace DDAS.Services.Search
 {
-    public class ComplianceFormService : ISearchService
+    public class ComplianceFormService : ISearchService, IDisposable
     {
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
@@ -109,88 +109,90 @@ namespace DDAS.Services.Search
         public ExcelInput ReadDataFromExcelFile(string FilePathWithGUID)
         {
             var readExcelData = new ReadUploadedExcelFile();
-
+            //using (var readExcelData = new ReadUploadedExcelFile())
+            //{
             var Validations = new List<List<string>>();
-            var ValidationMessages = new List<string>();
-            var ComplianceFormDetails = new List<List<string>>();
+                var ValidationMessages = new List<string>();
+                var ComplianceFormDetails = new List<List<string>>();
 
-            var excelInput = new ExcelInput();
+                var excelInput = new ExcelInput();
 
-            int RowIndex = 2;
+                int RowIndex = 2;
 
-            while (true)
-            {
-                var RowData = new ExcelInputRow();
-
-                //reading headers and first row
-                var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
-
-                if (_UOW.DefaultSiteRepository.GetAll().Count() == 0)
-                    ExcelRow.Add("cannot find default sites. Add default sites before uploading");
-                //if headers are missing
-                if (ExcelRow.Where(x => x.Contains("cannot find")).Count() > 0)
+                while (true)
                 {
-                    ExcelRow.ForEach(row =>
+                    var RowData = new ExcelInputRow();
+
+                    //reading headers and first row
+                    var ExcelRow = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
+
+                    if (_UOW.DefaultSiteRepository.GetAll().Count() == 0)
+                        ExcelRow.Add("cannot find default sites. Add default sites before uploading");
+                    //if headers are missing
+                    if (ExcelRow.Where(x => x.Contains("cannot find")).Count() > 0)
                     {
-                        RowData.ErrorMessages.Add(row);
-                    });
-                    RowData.ErrorMessages.Add("errors found");
-                    excelInput.ExcelInputRows.Add(RowData);
-                    //Validations.Add(ExcelRow);
-                    break;
-                }
-
-                if (ExcelRow[0] == null || ExcelRow[0] == "") //empty file
-                    break;
-
-                FillUpExcelInputRowObject(RowData, ExcelRow);
-
-                ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
-
-                if (ValidationMessages.Count > 0)
-                {
-                    ValidationMessages.ForEach(message =>
-                    {
-                        RowData.ErrorMessages.Add(message);
-                    });
-                    RowData.ErrorMessages.Add("errors found");
-                    excelInput.ExcelInputRows.Add(RowData);
-                    //Validations.Add(ValidationMessages);
-                    break;
-                }
-
-                excelInput.ExcelInputRows.Add(RowData);
-
-                if (RowData.Role.ToLower() == "pi")
-                {
-                    RowIndex += 1;
-                    var SubInvestigator =
-                        readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
-
-                    while (SubInvestigator[0].ToLower() == "sub i")
-                    {
-                        var SubInvRowData = new ExcelInputRow();
-
-                        FillUpExcelInputRowObject(SubInvRowData, SubInvestigator);
-
-                        ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
-
-                        if (ValidationMessages.Count > 0)
+                        ExcelRow.ForEach(row =>
                         {
-                            ExcelRow.ForEach(row =>
-                            {
-                                RowData.ErrorMessages.Add(row);
-                            });
-                            RowData.ErrorMessages.Add("errors found");
-                            //Validations.Add(ValidationMessages);
-                            //break;
-                        }
-                        excelInput.ExcelInputRows.Add(SubInvRowData);
+                            RowData.ErrorMessages.Add(row);
+                        });
+                        RowData.ErrorMessages.Add("errors found");
+                        excelInput.ExcelInputRows.Add(RowData);
+                        //Validations.Add(ExcelRow);
+                        break;
+                    }
+
+                    if (ExcelRow[0] == null || ExcelRow[0] == "") //empty file
+                        break;
+
+                    FillUpExcelInputRowObject(RowData, ExcelRow);
+
+                    ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
+
+                    if (ValidationMessages.Count > 0)
+                    {
+                        ValidationMessages.ForEach(message =>
+                        {
+                            RowData.ErrorMessages.Add(message);
+                        });
+                        RowData.ErrorMessages.Add("errors found");
+                        excelInput.ExcelInputRows.Add(RowData);
+                        //Validations.Add(ValidationMessages);
+                        break;
+                    }
+
+                    excelInput.ExcelInputRows.Add(RowData);
+
+                    if (RowData.Role.ToLower() == "pi")
+                    {
                         RowIndex += 1;
-                        SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
+                        var SubInvestigator =
+                            readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
+
+                        while (SubInvestigator[0].ToLower() == "sub i")
+                        {
+                            var SubInvRowData = new ExcelInputRow();
+
+                            FillUpExcelInputRowObject(SubInvRowData, SubInvestigator);
+
+                            ValidationMessages = ValidateExcelInputs(RowData, RowIndex);
+
+                            if (ValidationMessages.Count > 0)
+                            {
+                                ExcelRow.ForEach(row =>
+                                {
+                                    RowData.ErrorMessages.Add(row);
+                                });
+                                RowData.ErrorMessages.Add("errors found");
+                                //Validations.Add(ValidationMessages);
+                                //break;
+                            }
+                            excelInput.ExcelInputRows.Add(SubInvRowData);
+                            RowIndex += 1;
+                            SubInvestigator = readExcelData.ReadDataFromExcel(FilePathWithGUID, RowIndex);
+                        }
                     }
                 }
-            }
+            //}
             return excelInput;
         }
 
@@ -2641,108 +2643,6 @@ namespace DDAS.Services.Search
             }
 
             return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
-            
-            //var Forms = _UOW.ComplianceFormRepository.GetAll();
-
-            //if (Forms.Count == 0)
-            //    return null;
-
-            //var Filter1 = Forms.OrderByDescending(x => x.SearchStartedOn).ToList();
-
-            //if (CompFormFilter.InvestigatorName != null &&
-            //    CompFormFilter.InvestigatorName != "")
-            //{
-            //    Filter1 = Filter1.FindAll(x =>
-            //    x.InvestigatorDetails.Count > 0 &&
-            //    x.InvestigatorDetails.FirstOrDefault().Name != null &&
-            //    x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
-            //    .Contains(
-            //        CompFormFilter.InvestigatorName.ToLower()));
-            //}
-
-            //var Filter2 = Filter1;
-
-            //if (CompFormFilter.ProjectNumber != null &&
-            //    CompFormFilter.ProjectNumber != "")
-            //{
-            //    Filter2 = Filter1.Where(x =>
-            //    x.ProjectNumber == CompFormFilter.ProjectNumber ||
-            //    x.ProjectNumber2 == CompFormFilter.ProjectNumber)
-            //    .ToList();
-            //}
-
-            //var Filter3 = Filter2;
-
-            //if (CompFormFilter.SponsorProtocolNumber != null &&
-            //    CompFormFilter.SponsorProtocolNumber != "")
-            //{
-            //    Filter3 = Filter2.Where(x =>
-            //    x.SponsorProtocolNumber.ToLower() ==
-            //    CompFormFilter.SponsorProtocolNumber.ToLower() ||
-            //    x.SponsorProtocolNumber2.ToLower() ==
-            //    CompFormFilter.SponsorProtocolNumber.ToLower())
-            //    .ToList();
-            //}
-
-            //var Filter4 = Filter3;
-
-            //if (CompFormFilter.SearchedOnFrom != null)
-            //{
-            //    DateTime startDate;
-            //    startDate = CompFormFilter.SearchedOnFrom.Value.Date;
-            //    Filter4 = Filter3.Where(x =>
-            //   x.SearchStartedOn >= startDate)
-            //   .ToList();
-            //}
-
-            //var Filter5 = Filter4;
-
-            //if (CompFormFilter.SearchedOnTo != null)
-            //{
-
-            //    DateTime endDate;
-            //    endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
-            //    Filter5 = Filter4.Where(x =>
-            //    x.SearchStartedOn <
-            //    endDate)
-            //    .ToList();
-            //}
-
-            //var Filter6 = Filter5;
-
-            //if (CompFormFilter.Country != null &&
-            //    CompFormFilter.Country != "")
-            //{
-            //    Filter6 = Filter5.Where(x =>
-            //    x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
-            //}
-
-            //var Filter7 = Filter6;
-
-            //if ((int)CompFormFilter.Status != -1)
-            //{
-            //    Filter7 = Filter6.Where(x =>
-            //    x.StatusEnum == CompFormFilter.Status).ToList();
-            //}
-
-            //var Filter8 = Filter7;
-
-            //if (CompFormFilter.AssignedTo != null &&
-            //    //CompFormFilter.AssignedTo != "" &&
-            //    CompFormFilter.AssignedTo != "-1")
-            //{
-            //    Filter8 = Filter7.Where(x =>
-            //    x.AssignedTo.ToLower() == CompFormFilter.AssignedTo.ToLower())
-            //    .ToList();
-            //}
-
-            //var ReturnList = new List<PrincipalInvestigator>();
-
-            //foreach (ComplianceForm form in Filter8)
-            //{
-            //    ReturnList.Add(getPrincipalInvestigators(form));
-            //}
-            //return ReturnList;
         }
 
         public List<PrincipalInvestigator> GetClosedComplianceFormsFromFilters(
@@ -2766,108 +2666,6 @@ namespace DDAS.Services.Search
             }
 
             return getPrincipalInvestigators(compForms).OrderByDescending(x => x.SearchStartedOn).ToList();
-            
-            //var Filter = _UOW.ComplianceFormRepository.GetAll();
-
-            //if (Filter.Count == 0)
-            //    return null;
-
-            //var Filter1 = Filter.OrderByDescending(x => x.SearchStartedOn).ToList();
-
-            //if (CompFormFilter.InvestigatorName != null &&
-            //    CompFormFilter.InvestigatorName != "")
-            //{
-            //    Filter1 = Filter1.FindAll(x =>
-            //    x.InvestigatorDetails.FirstOrDefault().Name.ToLower()
-            //    .Contains(
-            //        CompFormFilter.InvestigatorName.ToLower()));
-            //}
-
-            //var Filter2 = Filter1;
-
-            //if (CompFormFilter.ProjectNumber != null &&
-            //    CompFormFilter.ProjectNumber != "")
-            //{
-            //    Filter2 = Filter1.Where(x =>
-            //    x.ProjectNumber == CompFormFilter.ProjectNumber ||
-            //    x.ProjectNumber2 == CompFormFilter.ProjectNumber)
-            //    .ToList();
-            //}
-
-            //var Filter3 = Filter2;
-
-            //if (CompFormFilter.SponsorProtocolNumber != null &&
-            //    CompFormFilter.SponsorProtocolNumber != "")
-            //{
-            //    Filter3 = Filter2.Where(x =>
-            //    x.SponsorProtocolNumber.ToLower() ==
-            //    CompFormFilter.SponsorProtocolNumber.ToLower() ||
-            //    x.SponsorProtocolNumber2.ToLower() ==
-            //    CompFormFilter.SponsorProtocolNumber.ToLower())
-            //    .ToList();
-            //}
-
-            //var Filter4 = Filter3;
-
-            //if (CompFormFilter.SearchedOnFrom != null)
-            //{
-            //    DateTime startDate;
-            //    startDate = CompFormFilter.SearchedOnFrom.Value.Date;
-            //    Filter4 = Filter3.Where(x =>
-            //   x.SearchStartedOn >= startDate)
-            //   .ToList();
-            //}
-
-            //var Filter5 = Filter4;
-
-            //if (CompFormFilter.SearchedOnTo != null)
-            //{
-            //    DateTime endDate;
-            //    endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
-            //    Filter5 = Filter4.Where(x =>
-            //    x.SearchStartedOn <
-            //    endDate)
-            //    .ToList();
-            //}
-
-            //var Filter6 = Filter5;
-
-            //if (CompFormFilter.Country != null &&
-            //    CompFormFilter.Country != "")
-            //{
-            //    Filter6 = Filter5.Where(x =>
-            //    x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
-            //}
-
-            //var Filter7 = Filter6;
-
-            //if ((int)CompFormFilter.Status == -1)
-            //{
-            //    Filter7 = Filter6.FindAll(x => x.StatusEnum ==
-            //    ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified ||
-            //    x.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-            //    .ToList();
-            //}
-            //else if ((int)CompFormFilter.Status != -1)
-            //{
-            //    Filter7 = Filter6.Where(x =>
-            //    x.StatusEnum == CompFormFilter.Status).ToList();
-            //}
-
-            //var Filter8 = Filter7.Where(x =>
-            //x.AssignedTo == AssignedTo).ToList();
-
-            //var ReturnList = new List<PrincipalInvestigator>();
-
-            //foreach (ComplianceForm form in Filter8)
-            //{
-            //    ReturnList.Add(getPrincipalInvestigators(form));
-            //}
-            //return ReturnList;
-
-
-
-
         }
 
         public List<InstituteFindingsSummaryViewModel> getInstituteFindingsSummary(Guid CompFormId)
@@ -5077,5 +4875,11 @@ namespace DDAS.Services.Search
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }

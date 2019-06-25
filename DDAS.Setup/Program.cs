@@ -1,8 +1,8 @@
 ﻿using DDAS.API.Identity;
 using DDAS.Data.Mongo;
 using DDAS.Data.Mongo.Indexes;
-using DDAS.Data.Mongo.Maps;
 using DDAS.Models.Entities.Domain;
+using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using DDAS.Services.AppAdminService;
@@ -15,6 +15,8 @@ using System.Linq;
 using Utilities;
 using MongoDB.Driver;
 using System.Threading.Tasks;
+using DDAS.Data.Mongo.Maps;
+
 namespace DDAS.Setup
 {
     class Program
@@ -29,11 +31,11 @@ namespace DDAS.Setup
             try
             {
                 string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                _WriteLog = new LogText(exePath + @"\setup.log", true);
+                _WriteLog = new LogText(exePath + @"\archive.log", true);
                 _WriteLog.LogStart();
                 _WriteLog.WriteLog("DDAS Setup Utility");
                 _WriteLog.WriteLog("========================================================================");
-                _WriteLog.WriteLog(DateTime.Now.ToString(), "Start set up at " + exePath);
+                _WriteLog.WriteLog(DateTime.Now.ToString(), "Start Archive at " + exePath);
                 string configFile = ConfigurationManager.AppSettings["APIWebConfigFile"];
                 if (configFile != null)
                 {
@@ -46,6 +48,7 @@ namespace DDAS.Setup
                     MongoMaps.Initialize();
                     _UOW = new UnitOfWork(connString, DBName);
 
+                    _WriteLog.WriteLog(DateTime.Now.ToString(), "Initialized");
                     //CreateRoles();
                     //CreateUsers();
 
@@ -91,7 +94,25 @@ namespace DDAS.Setup
                     //DeleteOrphanedRecordsInDefaultSiteRepository();
                     //DeleteOrphanedRecordsInCountryRepository();
                     //DeleteOrphanedRecordsInSponsorProtocolRepository();
-                    CreateIndexes(DBName, connString);
+                    //CreateIndexes(DBName, connString);
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Start of GetCollectionCount");
+                    //GetCollectionCount();
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "End of GetCollectionCount");
+
+                    var Doc = _UOW.FDADebarPageRepository.GetLatestDocument();
+
+                    //if (canArchiveData())
+                    //{
+                        //ArchiveSiteData();
+                        //_WriteLog.WriteLog(DateTime.Now.ToString(), "Delete Documents Begins====");
+                        //_WriteLog.WriteLog("Deleting documents till date: " + new DateTime(2018, 11, 1).Date);
+                        //deleteDocumentsByDate(new DateTime(2018, 11, 1));
+                        //_WriteLog.WriteLog(DateTime.Now.ToString(), "Delete Documents Ends====");
+                    //}
+                    //else
+                    //{
+                    //    _WriteLog.WriteLog("Could not archive data");
+                    //}
 
                     string firstArg = "";
                     if (args.Length != 0)
@@ -103,6 +124,10 @@ namespace DDAS.Setup
                         case "cleardb":
                             break;
                         case "complianceFormIndex":
+                            ListComplianceFormIndexes(DBName, connString);
+                            break;
+                        case "indexing":
+                            CreateIndexes(DBName, connString);
                             ListComplianceFormIndexes(DBName, connString);
                             break;
                         default:
@@ -120,7 +145,7 @@ namespace DDAS.Setup
             }
             finally
             {
-                _WriteLog.WriteLog(DateTime.Now.ToString(), "End setup");
+                _WriteLog.WriteLog(DateTime.Now.ToString(), "End archive");
                 _WriteLog.LogEnd();
                 _WriteLog.Dispose();
                 Console.ReadKey();
@@ -551,5 +576,834 @@ namespace DDAS.Setup
         {
 
         }
+
+        static void GetCollectionCount()
+        {
+            _WriteLog.WriteLog("Compliance Forms till date: " + _UOW.ComplianceFormRepository.GetAll().Count());//42961
+            _WriteLog.WriteLog("Total records per site source:");
+            _WriteLog.WriteLog("FDADebarPage " + _UOW.FDADebarPageRepository.GetAll().Count());//512
+            _WriteLog.WriteLog("FDADebarPage " + _UOW.FDADebarPageRepository.GetAll().Count());//512
+            _WriteLog.WriteLog("ClinicalInvestigatorInspectionList " + _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().Count());//543
+            _WriteLog.WriteLog("FDAWarningLetters " + _UOW.FDAWarningLettersRepository.GetAll().Count());//312
+            _WriteLog.WriteLog("ERRProposalToDebar " + _UOW.ERRProposalToDebarRepository.GetAll().Count());//500
+            _WriteLog.WriteLog("AdequateAssuranceList {0}" + _UOW.AdequateAssuranceListRepository.GetAll().Count());//52
+            _WriteLog.WriteLog("ClinicalInvestigatorDisqualification " + _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().Count());//541
+            _WriteLog.WriteLog("PHSAdministrativeActionListing " + _UOW.PHSAdministrativeActionListingRepository.GetAll().Count());//564
+            _WriteLog.WriteLog("CBERClinicalInvestigator " + _UOW.CBERClinicalInvestigatorRepository.GetAll().Count());//506
+            _WriteLog.WriteLog("ExclusionDatabase " + _UOW.ExclusionDatabaseRepository.GetAll().Count());//68886
+            _WriteLog.WriteLog("CorporateIntegrityAgreement " + _UOW.CorporateIntegrityAgreementRepository.GetAll().Count());//513
+            _WriteLog.WriteLog("SystemForAwardManagement " + _UOW.SystemForAwardManagementRepository.GetAll().Count());//260
+            _WriteLog.WriteLog("SpeciallyDesignatedNationals " + _UOW.SpeciallyDesignatedNationalsRepository.GetAll().Count());//555
+        }
+
+        #region canArchiveData
+
+        static bool canArchiveData()
+        {
+            var archiveComplianceForm = false;
+            var archiveFDADebar = false;
+            var archiveCIIL = false;
+            var archiveFDAWarning = false;
+            var archiveErrProposalToDebar = false;
+            var archiveAdequateAssuranceList = false;
+            var archiveClinicalInvestigatorDisqualification = false;
+            var archivePHSAdministrativeAction = false;
+            var archiveCBERClinicalInvestigator = false;
+            var archiveExclusionDatabase = false;
+            var archiveCorporateIntegrityAgreementList = false;
+            var archiveSAM = false;
+            var archiveSDN = false;
+
+            if (canArchiveComplianceForm("ArchiveComplianceForm"))
+            {
+                archiveComplianceForm = true;
+            }
+
+            if (canArchiveFDADebarSiteData("ArchiveFDADebarSiteData"))
+            {
+                archiveFDADebar = true;
+            }
+
+            if (canArchiveCIILSiteData("ArchiveClinicalInvestigatorInspectionListSiteData"))
+            {
+                archiveCIIL = true;
+            }
+
+            if (canArchiveFDAWarningLettersSiteData("ArchiveFDAWarningLettersSiteData"))
+            {
+                archiveFDAWarning = true;
+            }
+
+            if (canArchiveERRProposalToDebarSiteData("ArchiveERRProposalToDebarPageSiteData"))
+            {
+                archiveErrProposalToDebar = true;
+            }
+
+            if (canArchiveAdequateAssuranceListSiteData("ArchiveAdequateAssuranceListSiteData"))
+            {
+                archiveAdequateAssuranceList = true;
+            }
+
+            if (canArchiveClinicalInvestigatorDisqualificationSiteData("ArchiveClinicalInvestigatorDisqualificationSiteData"))
+            {
+                archiveClinicalInvestigatorDisqualification = true;
+            }
+
+            if (canArchivePHSAdministrativeActionListingSiteData("ArchivePHSAdministrativeActionListingSiteData"))
+            {
+                archivePHSAdministrativeAction = true;
+            }
+
+            if (canArchiveCBERClinicalInvestigatorInspectionSiteData("ArchiveCBERClinicalInvestigatorInspectionSiteData"))
+            {
+                archiveCBERClinicalInvestigator = true;
+            }
+
+            if (canArchiveExclusionDatabaseSearchPageSiteData("ArchiveExclusionDatabaseSearchPageSiteData"))
+            {
+                archiveExclusionDatabase = true;
+            }
+
+            if (canArchiveCorporateIntegrityAgreementListSiteData("ArchiveCorporateIntegrityAgreementListSiteData"))
+            {
+                archiveCorporateIntegrityAgreementList = true;
+            }
+
+            if (canArchiveSystemForAwardManagementPageSiteData("ArchiveSystemForAwardManagementPageSiteData"))
+            {
+                archiveSAM = true;
+            }
+
+            if (canArchiveSpeciallyDesignatedNationalsListSiteData("ArchiveSpeciallyDesignatedNationalsListSiteData"))
+            {
+                archiveSDN = true;
+            }
+
+            if(archiveComplianceForm &&
+                archiveFDADebar &&
+                archiveCIIL &&
+                archiveFDAWarning &&
+                archiveErrProposalToDebar &&
+                archiveAdequateAssuranceList &&
+                archiveClinicalInvestigatorDisqualification &&
+                archivePHSAdministrativeAction &&
+                archiveCBERClinicalInvestigator &&
+                archiveExclusionDatabase &&
+                archiveCorporateIntegrityAgreementList &&
+                archiveSAM &&
+                archiveSDN)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        static bool canArchiveComplianceForm(string moveToCollection)
+        {
+            if (_UOW.ComplianceFormRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveFDADebarSiteData(string moveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveCIILSiteData(string moveToCollection)
+        {
+            if (_UOW.ClinicalInvestigatorInspectionListRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveFDAWarningLettersSiteData(string moveToCollection)
+        {
+            if (_UOW.FDAWarningLettersRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveERRProposalToDebarSiteData(string moveToCollection)
+        {
+            if (_UOW.ERRProposalToDebarRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveAdequateAssuranceListSiteData(string moveToCollection)
+        {
+            if (_UOW.AdequateAssuranceListRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveClinicalInvestigatorDisqualificationSiteData(string moveToCollection)
+        {
+            if (_UOW.ClinicalInvestigatorDisqualificationRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchivePHSAdministrativeActionListingSiteData(string moveToCollection)
+        {
+            if (_UOW.PHSAdministrativeActionListingRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveCBERClinicalInvestigatorInspectionSiteData(string moveToCollection)
+        {
+            if (_UOW.CBERClinicalInvestigatorRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveExclusionDatabaseSearchPageSiteData(string moveToCollection)
+        {
+            if (_UOW.ExclusionDatabaseSearchRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveCorporateIntegrityAgreementListSiteData(string moveToCollection)
+        {
+            if (_UOW.CorporateIntegrityAgreementRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveSystemForAwardManagementPageSiteData(string moveToCollection)
+        {
+            if (_UOW.SystemForAwardManagementRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        static bool canArchiveSpeciallyDesignatedNationalsListSiteData(string moveToCollection)
+        {
+            if (_UOW.SpeciallyDesignatedNationalsRepository.CollectionExists(moveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + moveToCollection + " already exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region MoveCollections
+
+        static void ArchiveSiteData()
+        {
+            //_WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving ComplianceForm Collection as ArchiveComplianceForm");
+            //MoveComplianceForms("ArchiveComplianceForm");
+            //_WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving FDADebarSiteData Collection as ArchiveFDADebarSiteData");
+            MoveFDADebarSiteData("ArchiveFDADebarSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving ClinicalInvestigatorInspectionListSiteData Collection as ClinicalInvestigatorInspectionListSiteData");
+            MoveCIILSiteData("ArchiveClinicalInvestigatorInspectionListSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving FDAWarningLettersSiteData Collection as FDAWarningLettersSiteData");
+            MoveFDAWarningLettersSiteData("ArchiveFDAWarningLettersSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving ERRProposalToDebarPageSiteData Collection as ERRProposalToDebarPageSiteData");
+            MoveERRProposalToDebarSiteData("ArchiveERRProposalToDebarPageSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving AdequateAssuranceListSiteData Collection as AdequateAssuranceListSiteData");
+            MoveAdequateAssuranceListSiteData("ArchiveAdequateAssuranceListSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving ClinicalInvestigatorDisqualificationSiteData Collection as ClinicalInvestigatorDisqualificationSiteData");
+            MoveClinicalInvestigatorDisqualificationSiteData("ArchiveClinicalInvestigatorDisqualificationSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving PHSAdministrativeActionListingSiteData Collection as PHSAdministrativeActionListingSiteData");
+            MovePHSAdministrativeActionListingSiteData("ArchivePHSAdministrativeActionListingSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving CBERClinicalInvestigatorInspectionSiteData Collection");
+            MoveCBERClinicalInvestigatorInspectionSiteData("ArchiveCBERClinicalInvestigatorInspectionSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving ExclusionDatabaseSearchPageSiteData Collection as ArchiveExclusionDatabaseSearchPageSiteData");
+            MoveExclusionDatabaseSearchPageSiteData("ArchiveExclusionDatabaseSearchPageSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving CorporateIntegrityAgreementListSiteData Collection as ArchiveCorporateIntegrityAgreementListSiteData");
+            MoveCorporateIntegrityAgreementListSiteData("ArchiveCorporateIntegrityAgreementListSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving SystemForAwardManagementPageSiteData Collection as ArchiveSystemForAwardManagementPageSiteData");
+            MoveSystemForAwardManagementPageSiteData("ArchiveSystemForAwardManagementPageSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "Archiving SpeciallyDesignatedNationalsListSiteData Collection as ArchiveSpeciallyDesignatedNationalsListSiteData");
+            MoveSpeciallyDesignatedNationalsListSiteData("ArchiveSpeciallyDesignatedNationalsListSiteData");
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Archiving Completed");
+        }
+
+        static void MoveComplianceForms(string MoveToCollection)
+        {
+            if (_UOW.ComplianceFormRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.ComplianceFormRepository.GetAll().Count);
+                _UOW.ComplianceFormRepository.MoveCollection(new ComplianceForm(), MoveToCollection);
+            }
+        }
+
+        static void MoveFDADebarSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.FDADebarPageRepository.GetAll().Count);
+                _UOW.FDADebarPageRepository.MoveCollection(new FDADebarPageSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveCIILSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().Count);
+                _UOW.ClinicalInvestigatorInspectionListRepository.MoveCollection(new ClinicalInvestigatorInspectionSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveFDAWarningLettersSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.FDAWarningLettersRepository.GetAll().Count);
+                _UOW.FDAWarningLettersRepository.MoveCollection(new FDAWarningLettersSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveERRProposalToDebarSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.ERRProposalToDebarRepository.GetAll().Count);
+                _UOW.ERRProposalToDebarRepository.MoveCollection(new ERRProposalToDebarPageSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveAdequateAssuranceListSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.AdequateAssuranceListRepository.GetAll().Count);
+                _UOW.AdequateAssuranceListRepository.MoveCollection(new AdequateAssuranceListSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveClinicalInvestigatorDisqualificationSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().Count);
+                _UOW.ClinicalInvestigatorDisqualificationRepository.MoveCollection(new ClinicalInvestigatorDisqualificationSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MovePHSAdministrativeActionListingSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.PHSAdministrativeActionListingRepository.GetAll().Count);
+                _UOW.PHSAdministrativeActionListingRepository.MoveCollection(new PHSAdministrativeActionListingSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveCBERClinicalInvestigatorInspectionSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.CBERClinicalInvestigatorRepository.GetAll().Count);
+                _UOW.CBERClinicalInvestigatorRepository.MoveCollection(new CBERClinicalInvestigatorInspectionSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveExclusionDatabaseSearchPageSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.ExclusionDatabaseSearchRepository.GetAll().Count);
+                _UOW.ExclusionDatabaseSearchRepository.MoveCollection(new ExclusionDatabaseSearchPageSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveCorporateIntegrityAgreementListSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.CorporateIntegrityAgreementRepository.GetAll().Count);
+                _UOW.CorporateIntegrityAgreementRepository.MoveCollection(new CorporateIntegrityAgreementListSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveSystemForAwardManagementPageSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.SystemForAwardManagementRepository.GetAll().Count);
+                _UOW.SystemForAwardManagementRepository.MoveCollection(new SystemForAwardManagementPageSiteData(), MoveToCollection);
+            }
+        }
+
+        static void MoveSpeciallyDesignatedNationalsListSiteData(string MoveToCollection)
+        {
+            if (_UOW.FDADebarPageRepository.CollectionExists(MoveToCollection))
+            {
+                _WriteLog.WriteLog("Collection: " + MoveToCollection + " already exists. Moving will overwrite existing collection. Data not moved");
+            }
+            else
+            {
+                _WriteLog.WriteLog("Total Records to archive: " + _UOW.SpeciallyDesignatedNationalsRepository.GetAll().Count);
+                _UOW.SpeciallyDesignatedNationalsRepository.MoveCollection(new SpeciallyDesignatedNationalsListSiteData(), MoveToCollection);
+            }
+        }
+
+        #endregion
+
+        #region DeleteDocumentsByDate
+
+        static void deleteDocumentsByDate(DateTime deleteDocumentsTillThisDate)
+        {
+            //_WriteLog.WriteLog(DateTime.Now.ToString(), "deleting ComplianceForm documents...");
+            //deleteComplianceForms(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting FDADebarSiteData documents...");
+            DeleteFDADebarSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting CIILSiteData documents...");
+            deleteCIILSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting FDAWarningLetterSiteData documents...");
+            deleteFDAWarningLetterSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting ERRProposalToDebarSiteData documents...");
+            deleteERRProposalToDebarSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting AdequateAssuranceListSiteData documents...");
+            deleteAdequateAssuranceListSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting ClinicalInvestigatorDisqualificationSiteData documents...");
+            deleteClinicalInvestigatorDisqualificationSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting PHSAdministrativeActionListingSiteData documents...");
+            deletePHSAdministrativeActionListingSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting CBERClinicalInvestigatorInspectionSiteData documents...");
+            deleteCBERClinicalInvestigatorInspectionSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting ExclusionDatabaseSearchPageSiteData documents...");
+            deleteExclusionDatabaseSearchPageSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting CorporateIntegrityAgreementListSiteData documents...");
+            deleteCorporateIntegrityAgreementListSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting SystemForAwardManagementPageSiteData documents...");
+            deleteSystemForAwardManagementPageSiteData(deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "deleting SpeciallyDesignatedNationalsListSiteData documents...");
+            deleteSpeciallyDesignatedNationalsListSiteData(deleteDocumentsTillThisDate);
+        }
+
+        static void deleteComplianceForms(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, ComplianceFormRepository Count: " + _UOW.ComplianceFormRepository.GetAll().Count);
+            var Documents = _UOW.ComplianceFormRepository.GetRecordsByDate(
+                new ComplianceForm(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.ComplianceFormRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "After Delete, ComplianceFormRepository Count: " + _UOW.ComplianceFormRepository.GetAll().Count);
+        }
+
+        static void DeleteFDADebarSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, FDADebarPageRepository Count: " + _UOW.FDADebarPageRepository.GetAll().Count);
+            var Documents = _UOW.FDADebarPageRepository.GetRecordsByDate(
+                new FDADebarPageSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.FDADebarPageRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "After Delete, FDADebarPageRepository Count: " + _UOW.FDADebarPageRepository.GetAll().Count);
+        }
+
+        static void deleteCIILSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, ClinicalInvestigatorInspectionListRepository Count: " + 
+                _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().Count);
+
+            var Documents = _UOW.ClinicalInvestigatorInspectionListRepository.GetRecordsByDate(
+                new ClinicalInvestigatorInspectionSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.ClinicalInvestigatorInspectionListRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), 
+                "After Delete, ClinicalInvestigatorInspectionListRepository Count: " + _UOW.ClinicalInvestigatorInspectionListRepository.GetAll().Count);
+        }
+
+        static void deleteFDAWarningLetterSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, FDAWarningLettersRepository Count: " +
+                _UOW.FDAWarningLettersRepository.GetAll().Count);
+
+            var Documents = _UOW.FDAWarningLettersRepository.GetRecordsByDate(
+                new FDAWarningLettersSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.FDAWarningLettersRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, FDAWarningLettersRepository Count: " + _UOW.FDAWarningLettersRepository.GetAll().Count);
+        }
+
+        static void deleteERRProposalToDebarSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, ERRProposalToDebarRepository Count: " +
+                _UOW.ERRProposalToDebarRepository.GetAll().Count);
+
+            var Documents = _UOW.ERRProposalToDebarRepository.GetRecordsByDate(
+                new ERRProposalToDebarPageSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.ERRProposalToDebarRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, ERRProposalToDebarRepository Count: " + _UOW.ERRProposalToDebarRepository.GetAll().Count);
+        }
+
+        static void deleteAdequateAssuranceListSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, AdequateAssuranceListRepository Count: " +
+                _UOW.AdequateAssuranceListRepository.GetAll().Count);
+
+            var Documents = _UOW.AdequateAssuranceListRepository.GetRecordsByDate(
+                new AdequateAssuranceListSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.AdequateAssuranceListRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, AdequateAssuranceListRepository Count: " + _UOW.AdequateAssuranceListRepository.GetAll().Count);
+        }
+
+        static void deleteClinicalInvestigatorDisqualificationSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, ClinicalInvestigatorDisqualificationRepository Count: " +
+                _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().Count);
+
+            var Documents = _UOW.ClinicalInvestigatorDisqualificationRepository.GetRecordsByDate(
+                new ClinicalInvestigatorDisqualificationSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.ClinicalInvestigatorDisqualificationRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, ClinicalInvestigatorDisqualificationRepository Count: " + _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll().Count);
+        }
+
+        static void deletePHSAdministrativeActionListingSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, PHSAdministrativeActionListingRepository Count: " +
+                _UOW.PHSAdministrativeActionListingRepository.GetAll().Count);
+
+            var Documents = _UOW.PHSAdministrativeActionListingRepository.GetRecordsByDate(
+                new PHSAdministrativeActionListingSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.PHSAdministrativeActionListingRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, PHSAdministrativeActionListingRepository Count: " + _UOW.PHSAdministrativeActionListingRepository.GetAll().Count);
+        }
+
+        static void deleteCBERClinicalInvestigatorInspectionSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, CBERClinicalInvestigatorRepository Count: " +
+                _UOW.CBERClinicalInvestigatorRepository.GetAll().Count);
+
+            var Documents = _UOW.CBERClinicalInvestigatorRepository.GetRecordsByDate(
+                new CBERClinicalInvestigatorInspectionSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.CBERClinicalInvestigatorRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, CBERClinicalInvestigatorRepository Count: " + _UOW.CBERClinicalInvestigatorRepository.GetAll().Count);
+        }
+
+        static void deleteExclusionDatabaseSearchPageSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, ExclusionDatabaseSearchRepository Count: " +
+                _UOW.ExclusionDatabaseSearchRepository.GetAll().Count);
+
+            var Documents = _UOW.ExclusionDatabaseSearchRepository.GetRecordsByDate(
+                new ExclusionDatabaseSearchPageSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.ExclusionDatabaseSearchRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, ExclusionDatabaseSearchRepository Count: " + _UOW.ExclusionDatabaseSearchRepository.GetAll().Count);
+        }
+
+        static void deleteCorporateIntegrityAgreementListSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, CorporateIntegrityAgreementRepository Count: " +
+                _UOW.CorporateIntegrityAgreementRepository.GetAll().Count);
+
+            var Documents = _UOW.CorporateIntegrityAgreementRepository.GetRecordsByDate(
+                new CorporateIntegrityAgreementListSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.CorporateIntegrityAgreementRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, CorporateIntegrityAgreementRepository Count: " + _UOW.CorporateIntegrityAgreementRepository.GetAll().Count);
+        }
+
+        static void deleteSystemForAwardManagementPageSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, SystemForAwardManagementRepository Count: " +
+                _UOW.SystemForAwardManagementRepository.GetAll().Count);
+
+            var Documents = _UOW.SystemForAwardManagementRepository.GetRecordsByDate(
+                new SystemForAwardManagementPageSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.SystemForAwardManagementRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, SystemForAwardManagementRepository Count: " + _UOW.SystemForAwardManagementRepository.GetAll().Count);
+        }
+
+        static void deleteSpeciallyDesignatedNationalsListSiteData(DateTime deleteDocumentsTillThisDate)
+        {
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Before Delete, SpeciallyDesignatedNationalsRepository Count: " +
+                _UOW.SpeciallyDesignatedNationalsRepository.GetAll().Count);
+
+            var Documents = _UOW.SpeciallyDesignatedNationalsRepository.GetRecordsByDate(
+                new SpeciallyDesignatedNationalsListSiteData(),
+                deleteDocumentsTillThisDate);
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(), "Documents to delete: " + Documents.Count);
+
+            foreach (var document in Documents)
+            {
+                _UOW.SpeciallyDesignatedNationalsRepository.RemoveById(document.RecId);
+            }
+
+            _WriteLog.WriteLog(DateTime.Now.ToString(),
+                "After Delete, SpeciallyDesignatedNationalsRepository Count: " + _UOW.SpeciallyDesignatedNationalsRepository.GetAll().Count);
+        }
+        #endregion
     }
 }
