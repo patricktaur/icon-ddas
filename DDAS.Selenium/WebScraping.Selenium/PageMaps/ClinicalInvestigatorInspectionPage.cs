@@ -126,9 +126,12 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    IList<IWebElement> Elements = 
-                        driver.FindElements(By.XPath("//div/ul/li"));
-                    return Elements[28];
+                    IList<IWebElement> Elements =
+                        driver.FindElements(By.XPath("//aside/ul/li/div/p"));
+
+                    //IList<IWebElement> Elements = 
+                    //    driver.FindElements(By.XPath("//div/ul/li"));
+                    return Elements[0]; //Elements[28]
                 }
                 catch (Exception ex)
                 {

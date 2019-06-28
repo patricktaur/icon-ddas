@@ -65,7 +65,6 @@ namespace WebScraping.Selenium.Pages
             }
         }
 
-
         public override BaseSiteData baseSiteData
         {
             get
@@ -235,11 +234,7 @@ namespace WebScraping.Selenium.Pages
 
         public  void ReadSiteLastUpdatedDateFromPage()
         {
-            string[] DataInPageLastUpdatedElement = 
-                PageLastUpdatedTextElement.Text.Split(':');
-
-            string PageLastUpdated =
-                DataInPageLastUpdatedElement[1].Replace("\r\nNote", "").Trim();
+            string PageLastUpdated = PageLastUpdatedTextElement.Text.Trim();
 
             DateTime RecentLastUpdatedDate;
 

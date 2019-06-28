@@ -21,7 +21,8 @@ namespace WebScraping.Selenium.Pages
             get {
                 try
                 {
-                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//small"));
+                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//aside/ul/li/div/p"));
+                    //IList<IWebElement> Elements = driver.FindElements(By.XPath("//small"));
                     return Elements[0];
                 }
                 catch(Exception ex)

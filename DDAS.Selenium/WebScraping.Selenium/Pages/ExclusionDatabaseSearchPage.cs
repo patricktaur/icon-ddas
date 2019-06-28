@@ -203,8 +203,7 @@ namespace WebScraping.Selenium.Pages
             if (PageLastUpdated == null || PageLastUpdated == "")
                 throw new Exception("PageLastUpdated is null");
             else
-                PageLastUpdated = PageLastUpdated.Replace("UPDATED ", "").
-                Replace("-", "/").Trim();
+                PageLastUpdated = PageLastUpdated.Replace("-", "/").Trim();
 
             DateTime RecentLastUpdatedDate;
 
