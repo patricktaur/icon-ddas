@@ -28,7 +28,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
 
         public CBERClinicalInvestigatorInspectionSiteData GetLatestDocumentCached()
         {
-            
+            return null;
         }
 
     }
