@@ -5,15 +5,18 @@ using MongoDB.Driver;
 
 namespace DDAS.Data.Mongo.Repositories.SiteData
 {
+    
     internal class AdequateAssuranceListRepository : 
         Repository<AdequateAssuranceListSiteData>, 
         IAdequateAssuranceListRepository
     {
         private IMongoDatabase _db;
+        
         internal AdequateAssuranceListRepository(IMongoDatabase db)
             : base(db)
         {
             _db = db;
+            
         }
 
         public AdequateAssuranceListSiteData GetLatestDocument()
@@ -22,6 +25,8 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
             return entity;
         }
+
+        
     }
 
 

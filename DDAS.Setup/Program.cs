@@ -16,6 +16,8 @@ using Utilities;
 using MongoDB.Driver;
 using System.Threading.Tasks;
 using DDAS.Data.Mongo.Maps;
+using System.Diagnostics;
+using DDAS.Services.Search;
 
 namespace DDAS.Setup
 {
@@ -99,20 +101,22 @@ namespace DDAS.Setup
                     //GetCollectionCount();
                     //_WriteLog.WriteLog(DateTime.Now.ToString(), "End of GetCollectionCount");
 
-                    var Doc = _UOW.FDADebarPageRepository.GetLatestDocument();
+                    //var Doc = _UOW.FDADebarPageRepository.GetLatestDocument();
 
                     //if (canArchiveData())
                     //{
-                        //ArchiveSiteData();
-                        //_WriteLog.WriteLog(DateTime.Now.ToString(), "Delete Documents Begins====");
-                        //_WriteLog.WriteLog("Deleting documents till date: " + new DateTime(2018, 11, 1).Date);
-                        //deleteDocumentsByDate(new DateTime(2018, 11, 1));
-                        //_WriteLog.WriteLog(DateTime.Now.ToString(), "Delete Documents Ends====");
+                    //ArchiveSiteData();
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Delete Documents Begins====");
+                    //_WriteLog.WriteLog("Deleting documents till date: " + new DateTime(2018, 11, 1).Date);
+                    //deleteDocumentsByDate(new DateTime(2018, 11, 1));
+                    //_WriteLog.WriteLog(DateTime.Now.ToString(), "Delete Documents Ends====");
                     //}
                     //else
                     //{
                     //    _WriteLog.WriteLog("Could not archive data");
                     //}
+
+                    TestCache(_UOW);
 
                     string firstArg = "";
                     if (args.Length != 0)
@@ -1405,5 +1409,30 @@ namespace DDAS.Setup
                 "After Delete, SpeciallyDesignatedNationalsRepository Count: " + _UOW.SpeciallyDesignatedNationalsRepository.GetAll().Count);
         }
         #endregion
+
+        public static void TestCache(
+            UnitOfWork uow
+            //SearchEngine searchEngine,
+            //IConfig configFile,
+            //CachedSiteScanData cachedData
+            )
+        {
+            var cacheObj = new CachedSiteScanData(uow);
+            //var compFormServ = new ComplianceFormService(uow, searchEngine, configFile, cachedData);
+            var LastRecord = uow.CBERClinicalInvestigatorRepository.GetAll()
+                .OrderByDescending(s => s.CreatedOn).FirstOrDefault();
+            var SiteDataId = LastRecord.RecId;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var result1 = cacheObj.GetCBERClinicalInvestigatorLatestCache();
+            sw.Start();
+            var step1ElapsedTime = sw.Elapsed;
+
+            sw.Reset();
+            sw.Start();
+            var result2 = cacheObj.GetCBERClinicalInvestigatorLatestCache();
+            sw.Stop();
+            var step2ElapsedTime = sw.Elapsed;
+        }
     }
 }

@@ -25,5 +25,11 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
             return entity;
         }
+
+        public CBERClinicalInvestigatorInspectionSiteData GetLatestDocumentCached()
+        {
+            return null;
+        }
+
     }
 }

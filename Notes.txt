@@ -1,3 +1,7 @@
+28June2019:
+DDAS.Service: System.Runtime.Caching added to References
+DDAS.Data.MongoDB: System.Runtime.Caching added to References
+
 11Feb2018
 Testing on ICON Test Server:
 Due Diligence Search Page
