@@ -11,10 +11,12 @@ namespace DDAS.Services.Search
     public class SiteScanData
     {
         private IUnitOfWork _UOW;
+        private CachedSiteScanData _cachedData;
 
         public SiteScanData( IUnitOfWork uow)
         {
             _UOW = uow;
+            _cachedData = new CachedSiteScanData(_UOW);
         }
         
         public SiteScan GetSiteScanData(SiteEnum Enum)
@@ -164,6 +166,8 @@ namespace DDAS.Services.Search
             //    OrderByDescending(t => t.CreatedOn).FirstOrDefault();
 
             var SiteData = _UOW.AdequateAssuranceListRepository.GetLatestDocument();
+            //Test:
+            var x = _cachedData.GetAdequateAssuranceListLatestCache();
 
             if (SiteData == null || SiteData.ReferenceId == null)
                 return null;

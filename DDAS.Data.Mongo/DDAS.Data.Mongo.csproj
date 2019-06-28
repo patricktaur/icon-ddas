@@ -63,7 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedData.cs" />
     <Compile Include="Indexes\Indexes.cs" />
     <Compile Include="Maps\MongoMap.cs" />
     <Compile Include="Repositories\AuditRepository.cs" />

@@ -17,6 +17,7 @@ using MongoDB.Driver;
 using System.Threading.Tasks;
 using DDAS.Data.Mongo.Maps;
 using System.Diagnostics;
+using DDAS.Services.Search;
 
 namespace DDAS.Setup
 {
@@ -1416,20 +1417,20 @@ namespace DDAS.Setup
             //CachedSiteScanData cachedData
             )
         {
-            var cacheObj = new CachedData();
+            var cacheObj = new CachedSiteScanData(uow);
             //var compFormServ = new ComplianceFormService(uow, searchEngine, configFile, cachedData);
-            var LastRecord = uow.AdequateAssuranceListRepository.GetAll()
+            var LastRecord = uow.CBERClinicalInvestigatorRepository.GetAll()
                 .OrderByDescending(s => s.CreatedOn).FirstOrDefault();
             var SiteDataId = LastRecord.RecId;
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var FDASearchResult = cacheObj.AdequateAssuranceListSiteDataFromCache();
+            var result1 = cacheObj.GetCBERClinicalInvestigatorLatestCache();
             sw.Start();
             var step1ElapsedTime = sw.Elapsed;
 
             sw.Reset();
             sw.Start();
-            var FDASearchResult1 = cacheObj.GetFDADebarPageRepositoryCache(SiteDataId);
+            var result2 = cacheObj.GetCBERClinicalInvestigatorLatestCache();
             sw.Stop();
             var step2ElapsedTime = sw.Elapsed;
         }

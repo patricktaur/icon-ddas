@@ -11,12 +11,12 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         IAdequateAssuranceListRepository
     {
         private IMongoDatabase _db;
-        private CachedData _cachedData;
+        
         internal AdequateAssuranceListRepository(IMongoDatabase db)
             : base(db)
         {
             _db = db;
-            _cachedData = new CachedData();
+            
         }
 
         public AdequateAssuranceListSiteData GetLatestDocument()
@@ -26,10 +26,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             return entity;
         }
 
-        public AdequateAssuranceListSiteData GetLatestDocumentCached()
-        {
-            return _cachedData.AdequateAssuranceListSiteDataFromCache();
-        }
+        
     }
 
 
