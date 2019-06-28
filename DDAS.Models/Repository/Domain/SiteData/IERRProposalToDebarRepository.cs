@@ -10,6 +10,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface IERRProposalToDebarRepository : 
         IRepository<ERRProposalToDebarPageSiteData>
     {
-
+        ERRProposalToDebarPageSiteData GetLatestDocument();
     }
 }

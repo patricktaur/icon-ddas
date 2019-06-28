@@ -13,9 +13,17 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         Repository<ExclusionDatabaseSearchPageSiteData>,
         IExclusionDatabaseSearchRepository
     {
+        private IMongoDatabase _db;
         public ExclusionDatabaseSearchRepository(IMongoDatabase db): base(db)
         {
+            _db = db;
+        }
 
+        public ExclusionDatabaseSearchPageSiteData GetLatestDocument()
+        {
+            var collection = _db.GetCollection<ExclusionDatabaseSearchPageSiteData>(typeof(ExclusionDatabaseSearchPageSiteData).Name);
+            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            return entity;
         }
     }
 }

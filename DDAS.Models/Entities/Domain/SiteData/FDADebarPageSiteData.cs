@@ -13,7 +13,6 @@ namespace DDAS.Models.Entities.Domain.SiteData
         public FDADebarPageSiteData()
         {
             DebarredPersons = new List<DebarredPerson>();
-            
         }
         public Guid? RecId { get; set; }
         //BaseClass properties do not get serialized, hence two ready only properties are added:

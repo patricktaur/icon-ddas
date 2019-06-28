@@ -9,5 +9,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface IFDAWarningLettersRepository : IRepository<FDAWarningLettersSiteData>
     {
+        FDAWarningLettersSiteData GetLatestDocument();
     }
 }
