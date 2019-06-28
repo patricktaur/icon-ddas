@@ -177,8 +177,9 @@ namespace WebScraping.Selenium.Pages
         public void ReadSiteLastUpdatedDateFromPage()
         {
             string PageLastUpdated =
-                PageLastUpdatedElement.Text.Replace("Updated ", "").
-                Replace("-", "/").Trim();
+                PageLastUpdatedElement.Text;
+
+            PageLastUpdated = PageLastUpdated.Replace("-", "/").Trim();
 
             DateTime RecentLastUpdatedDate;
 

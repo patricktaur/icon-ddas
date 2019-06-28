@@ -129,10 +129,12 @@ namespace WebScraping.Selenium.Pages
 
         private void ReadSiteLastUpdatedDateFromPage()
         {
-            string[] DataInPageLastUpdatedElement = PageLastUpdatedTextElement.Text.Split(':');
+            //string[] DataInPageLastUpdatedElement = PageLastUpdatedTextElement.Text.Split(':');
 
-            string PageLastUpdated = 
-                DataInPageLastUpdatedElement[1].Replace("\r\nNote", "").Trim();
+            //string PageLastUpdated = 
+            //    DataInPageLastUpdatedElement[1].Replace("\r\nNote", "").Trim();
+
+            string PageLastUpdated = PageLastUpdatedTextElement.Text.Trim();
 
             DateTime RecentLastUpdatedDate;
 
