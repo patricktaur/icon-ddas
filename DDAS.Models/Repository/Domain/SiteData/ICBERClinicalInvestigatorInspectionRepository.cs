@@ -11,5 +11,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
         IRepository<CBERClinicalInvestigatorInspectionSiteData>
     {
         CBERClinicalInvestigatorInspectionSiteData GetLatestDocument();
+        CBERClinicalInvestigatorInspectionSiteData GetLatestDocumentCached();
+
     }
 }
