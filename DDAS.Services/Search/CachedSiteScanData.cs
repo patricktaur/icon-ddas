@@ -24,6 +24,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.FDADebarPageRepository.GetLatestDocument();
+
+                if(Data == null)
+                {
+                    Data = new FDADebarPageSiteData()
+                    {
+                        DebarredPersons = new List<DebarredPerson>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (FDADebarPageSiteData)_cache.Get(cacheKey);
@@ -36,6 +45,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.ClinicalInvestigatorInspectionListRepository.GetLatestDocument();
+
+                if(Data == null)
+                {
+                    Data = new ClinicalInvestigatorInspectionSiteData()
+                    {
+                        ClinicalInvestigatorInspectionList = new List<ClinicalInvestigator>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (ClinicalInvestigatorInspectionSiteData)_cache.Get(cacheKey);
@@ -48,6 +66,12 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+
+                if (Data == null)
+                {
+                    Data = new List<ClinicalInvestigator>();
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (List<ClinicalInvestigator>)_cache.Get(cacheKey);
@@ -60,6 +84,13 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.FDAWarningLettersRepository.GetLatestDocument();
+
+                if(Data == null)
+                {
+                    Data = new FDAWarningLettersSiteData();
+                    Data.FDAWarningLetterList = new List<FDAWarningLetter>();
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (FDAWarningLettersSiteData)_cache.Get(cacheKey);
@@ -72,6 +103,12 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.FDAWarningRepository.GetAll();
+
+                if(Data == null)
+                {
+                    Data = new List<FDAWarningLetter>();
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (List<FDAWarningLetter>)_cache.Get(cacheKey);
@@ -84,6 +121,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.ERRProposalToDebarRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new ERRProposalToDebarPageSiteData()
+                    {
+                        ProposalToDebar = new List<ProposalToDebar>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (ERRProposalToDebarPageSiteData)_cache.Get(cacheKey);
@@ -96,6 +142,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.AdequateAssuranceListRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new AdequateAssuranceListSiteData()
+                    {
+                        AdequateAssurances = new List<AdequateAssuranceList>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (AdequateAssuranceListSiteData)_cache.Get(cacheKey);
@@ -108,6 +163,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.ClinicalInvestigatorDisqualificationRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new ClinicalInvestigatorDisqualificationSiteData()
+                    {
+                        DisqualifiedInvestigatorList = new List<DisqualifiedInvestigator>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (ClinicalInvestigatorDisqualificationSiteData)_cache.Get(cacheKey);
@@ -120,6 +184,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.CBERClinicalInvestigatorRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new CBERClinicalInvestigatorInspectionSiteData()
+                    {
+                        ClinicalInvestigator = new List<CBERClinicalInvestigator>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (CBERClinicalInvestigatorInspectionSiteData)_cache.Get(cacheKey);
@@ -132,6 +205,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.PHSAdministrativeActionListingRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new PHSAdministrativeActionListingSiteData()
+                    {
+                        PHSAdministrativeSiteData = new List<PHSAdministrativeAction>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (PHSAdministrativeActionListingSiteData)_cache.Get(cacheKey);
@@ -144,6 +226,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.ExclusionDatabaseSearchRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new ExclusionDatabaseSearchPageSiteData()
+                    {
+                        ExclusionSearchList = new List<ExclusionDatabaseSearchList>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (ExclusionDatabaseSearchPageSiteData)_cache.Get(cacheKey);
@@ -156,6 +247,12 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.ExclusionDatabaseRepository.GetAll();
+
+                if (Data == null)
+                {
+                    Data = new List<ExclusionDatabaseSearchList>();
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (List<ExclusionDatabaseSearchList>)_cache.Get(cacheKey);
@@ -168,6 +265,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.CorporateIntegrityAgreementRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new CorporateIntegrityAgreementListSiteData()
+                    {
+                        CIAListSiteData = new List<CIAList>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (CorporateIntegrityAgreementListSiteData)_cache.Get(cacheKey);
@@ -180,6 +286,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.SystemForAwardManagementRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new SystemForAwardManagementPageSiteData()
+                    {
+                        SAMSiteData = new List<SystemForAwardManagement>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (SystemForAwardManagementPageSiteData)_cache.Get(cacheKey);
@@ -191,7 +306,13 @@ namespace DDAS.Services.Search
             if (!_cache.Contains(cacheKey))
             {
                 var Data =
-               _UOW.SystemForAwardManagementRepository.GetAll();
+               _UOW.SAMSiteDataRepository.GetAll();
+
+                if (Data == null)
+                {
+                    Data = new List<SystemForAwardManagement>();
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (List<SystemForAwardManagement>)_cache.Get(cacheKey);
@@ -204,6 +325,15 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.SpeciallyDesignatedNationalsRepository.GetLatestDocument();
+
+                if (Data == null)
+                {
+                    Data = new SpeciallyDesignatedNationalsListSiteData()
+                    {
+                        SDNListSiteData = new List<SDNList>()
+                    };
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (SpeciallyDesignatedNationalsListSiteData)_cache.Get(cacheKey);
@@ -216,6 +346,12 @@ namespace DDAS.Services.Search
             {
                 var Data =
                _UOW.SDNSiteDataRepository.GetAll();
+
+                if (Data == null)
+                {
+                    Data = new List<SDNList>();
+                }
+
                 AddToCache(cacheKey, Data);
             }
             return (List<SDNList>)_cache.Get(cacheKey);
