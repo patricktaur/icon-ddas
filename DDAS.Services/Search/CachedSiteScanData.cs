@@ -2,14 +2,15 @@
 using DDAS.Models;
 using System.Runtime.Caching;
 using DDAS.Models.Entities.Domain.SiteData;
+using System.Collections.Generic;
 
 namespace DDAS.Services.Search
 {
     public class CachedSiteScanData
     {
-        
         private IUnitOfWork _UOW;
         private MemoryCache _cache;
+
         public CachedSiteScanData(IUnitOfWork uow)
         {
             _cache = MemoryCache.Default;
@@ -28,16 +29,28 @@ namespace DDAS.Services.Search
             return (FDADebarPageSiteData)_cache.Get(cacheKey);
         }
 
-        public ClinicalInvestigatorDisqualificationSiteData GetClinicalInvestigatorInspectionListLatestCache()
+        public ClinicalInvestigatorInspectionSiteData GetClinicalInvestigatorInspectionListLatestCache()
         {
             string cacheKey = nameof(GetClinicalInvestigatorInspectionListLatestCache);
             if (!_cache.Contains(cacheKey))
             {
                 var Data =
-               _UOW.ClinicalInvestigatorDisqualificationRepository.GetLatestDocument();
+               _UOW.ClinicalInvestigatorInspectionListRepository.GetLatestDocument();
                 AddToCache(cacheKey, Data);
             }
-            return (ClinicalInvestigatorDisqualificationSiteData)_cache.Get(cacheKey);
+            return (ClinicalInvestigatorInspectionSiteData)_cache.Get(cacheKey);
+        }
+
+        public List<ClinicalInvestigator> GetClinicalInvestigatorRecordsCache()
+        {
+            string cacheKey = nameof(GetClinicalInvestigatorRecordsCache);
+            if (!_cache.Contains(cacheKey))
+            {
+                var Data =
+               _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+                AddToCache(cacheKey, Data);
+            }
+            return (List<ClinicalInvestigator>)_cache.Get(cacheKey);
         }
 
         public FDAWarningLettersSiteData GetFDAWarningLettersLatestCache()
@@ -52,6 +65,18 @@ namespace DDAS.Services.Search
             return (FDAWarningLettersSiteData)_cache.Get(cacheKey);
         }
 
+        public List<FDAWarningLetter> GetFDAWarningRecordsCache()
+        {
+            string cacheKey = nameof(GetFDAWarningRecordsCache);
+            if (!_cache.Contains(cacheKey))
+            {
+                var Data =
+               _UOW.FDAWarningRepository.GetAll();
+                AddToCache(cacheKey, Data);
+            }
+            return (List<FDAWarningLetter>)_cache.Get(cacheKey);
+        }
+
         public ERRProposalToDebarPageSiteData GetProposalToDebarSiteScanDetailsLatestCache()
         {
             string cacheKey = nameof(GetProposalToDebarSiteScanDetailsLatestCache);
@@ -63,8 +88,6 @@ namespace DDAS.Services.Search
             }
             return (ERRProposalToDebarPageSiteData)_cache.Get(cacheKey);
         }
-
-    
 
         public AdequateAssuranceListSiteData GetAdequateAssuranceListLatestCache()
         {
@@ -126,6 +149,17 @@ namespace DDAS.Services.Search
             return (ExclusionDatabaseSearchPageSiteData)_cache.Get(cacheKey);
         }
 
+        public List<ExclusionDatabaseSearchList> GetExclusionDatabaseRecordsCache()
+        {
+            string cacheKey = nameof(GetExclusionDatabaseRecordsCache);
+            if (!_cache.Contains(cacheKey))
+            {
+                var Data =
+               _UOW.ExclusionDatabaseRepository.GetAll();
+                AddToCache(cacheKey, Data);
+            }
+            return (List<ExclusionDatabaseSearchList>)_cache.Get(cacheKey);
+        }
 
         public CorporateIntegrityAgreementListSiteData GetCorporateIntegrityAgreementLatestCache()
         {
@@ -151,6 +185,18 @@ namespace DDAS.Services.Search
             return (SystemForAwardManagementPageSiteData)_cache.Get(cacheKey);
         }
 
+        public List<SystemForAwardManagement> GetSystemForAwardManagementRecordsCache()
+        {
+            string cacheKey = nameof(GetSystemForAwardManagementRecordsCache);
+            if (!_cache.Contains(cacheKey))
+            {
+                var Data =
+               _UOW.SystemForAwardManagementRepository.GetAll();
+                AddToCache(cacheKey, Data);
+            }
+            return (List<SystemForAwardManagement>)_cache.Get(cacheKey);
+        }
+
         public SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationalsLatestCache()
         {
             string cacheKey = nameof(GetSpeciallyDesignatedNationalsLatestCache);
@@ -163,13 +209,20 @@ namespace DDAS.Services.Search
             return (SpeciallyDesignatedNationalsListSiteData)_cache.Get(cacheKey);
         }
 
-       
-
-
+        public List<SDNList> GetSpeciallyDesignatedNationalsRecordsCache()
+        {
+            string cacheKey = nameof(GetSpeciallyDesignatedNationalsRecordsCache);
+            if (!_cache.Contains(cacheKey))
+            {
+                var Data =
+               _UOW.SDNSiteDataRepository.GetAll();
+                AddToCache(cacheKey, Data);
+            }
+            return (List<SDNList>)_cache.Get(cacheKey);
+        }
 
         private void AddToCache(string cacheKey, object data)
         {
-            
             CacheItemPolicy cacheItemPolicy = new CacheItemPolicy();
             DateTime expiryDate = DateTime.Now.Date.AddHours(24);
             cacheItemPolicy.AbsoluteExpiration = expiryDate;
