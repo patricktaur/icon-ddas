@@ -10,5 +10,8 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface ICBERClinicalInvestigatorInspectionRepository : 
         IRepository<CBERClinicalInvestigatorInspectionSiteData>
     {
+        CBERClinicalInvestigatorInspectionSiteData GetLatestDocument();
+        CBERClinicalInvestigatorInspectionSiteData GetLatestDocumentCached();
+
     }
 }

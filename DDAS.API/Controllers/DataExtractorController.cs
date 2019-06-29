@@ -65,9 +65,11 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetLatestExtractionStatus()
         {
-            return Ok(_ExtractData.GetLatestExtractionStatus());
+            var fromDate = DateTime.Now.AddMonths(-3).Date;
+            var toDate = DateTime.Now.AddDays(1).Date;
+            return Ok(_ExtractData.GetLatestExtractionStatus(fromDate, toDate));
         }
-               
+
         [Authorize(Roles = "app-admin, admin, user")]
         [Route("GetDataExtractionErrorSiteCount")]
         [HttpGet]

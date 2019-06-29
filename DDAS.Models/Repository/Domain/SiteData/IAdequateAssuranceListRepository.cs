@@ -9,5 +9,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
 {
     public interface IAdequateAssuranceListRepository : IRepository<AdequateAssuranceListSiteData>
     {
+        AdequateAssuranceListSiteData GetLatestDocument();
+        
     }
 }

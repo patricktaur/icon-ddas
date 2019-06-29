@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace DDAS.Models.Repository
 {
@@ -18,7 +19,6 @@ namespace DDAS.Models.Repository
         Task<TEntity> FindByIdAsync(object id);
         Task<TEntity> FindByIdAsync(CancellationToken cancellationToken, object id);
 
-
         void Add(TEntity entity);
         void Update(TEntity entity);
         void Remove(TEntity entity);
@@ -26,5 +26,10 @@ namespace DDAS.Models.Repository
 
         bool DropRecord(TEntity Entity);
         bool DropAll(TEntity Entity);
+
+        List<TEntity> GetRecordsByDate(TEntity Entity, DateTime RecordsTillDate);
+        List<TEntity> FilterRecordsByDate(TEntity Entity, DateTime FromDate, DateTime ToDate);
+        bool MoveCollection(TEntity Entity, string NewCollection);
+        bool CollectionExists(string CollectionName);
     }
 }

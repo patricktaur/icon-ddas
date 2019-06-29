@@ -1,13 +1,35 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using SpreadsheetLight;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Utilities
 {
-    public class ReadUploadedExcelFile
+    public class ReadUploadedExcelFile //: IDisposable
     {
+        //public void Dispose()
+        //{
+        //    Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
+
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (!m_Disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            m_Stream.Dispose();
+        //        }
+
+        //        // Unmanaged resources are released here.
+
+        //        m_Disposed = true;
+        //    }
+        //}
+
         #region OldFormat
         public List<List<string>> ReadData(string FilePath)
         {
@@ -179,6 +201,8 @@ namespace Utilities
             ComplianceForm.Add(doc.GetCellValueAsString("Q" + (RowIndex)));
             ComplianceForm.Add(doc.GetCellValueAsString("R" + (RowIndex)));
             ComplianceForm.Add(doc.GetCellValueAsString("S" + (RowIndex)));
+
+            doc = null;
             return ComplianceForm;
         }
     }

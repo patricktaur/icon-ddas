@@ -10,6 +10,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface IClinicalInvestigatorInspectionListRepository :
         IRepository<ClinicalInvestigatorInspectionSiteData>
     {
-
+        ClinicalInvestigatorInspectionSiteData GetLatestDocument();
     }
 }

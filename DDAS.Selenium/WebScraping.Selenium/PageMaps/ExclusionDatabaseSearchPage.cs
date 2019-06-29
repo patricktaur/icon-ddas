@@ -80,8 +80,8 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//h2"));
-                    return Elements[1];
+                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//h3"));
+                    return Elements[0];
                 }
                 catch (Exception ex)
                 {

@@ -10,5 +10,6 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface IExclusionDatabaseSearchRepository :
         IRepository<ExclusionDatabaseSearchPageSiteData>
     {
+        ExclusionDatabaseSearchPageSiteData GetLatestDocument();
     }
 }

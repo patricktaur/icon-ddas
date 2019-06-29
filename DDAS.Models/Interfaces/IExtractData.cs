@@ -18,7 +18,7 @@ namespace DDAS.Models.Interfaces
 
         void ExtractThruShell(Int32 siteNumber, string ExePath);
 
-        List<ExtractionStatus> GetLatestExtractionStatus();
+        List<ExtractionStatus> GetLatestExtractionStatus(DateTime fromDate, DateTime toDate);
         IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32);
         List<DownloadDataFilesViewModel> GetDataFiles(int Enum);
 

@@ -12,9 +12,17 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
     class FDAWarningLettersRepository : Repository<FDAWarningLettersSiteData>,
         IFDAWarningLettersRepository
     {
+        private IMongoDatabase _db;
         public FDAWarningLettersRepository(IMongoDatabase db) : base(db)
         {
+            _db = db;
+        }
 
+        public FDAWarningLettersSiteData GetLatestDocument()
+        {
+            var collection = _db.GetCollection<FDAWarningLettersSiteData>(typeof(FDAWarningLettersSiteData).Name);
+            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            return entity;
         }
     }
 }

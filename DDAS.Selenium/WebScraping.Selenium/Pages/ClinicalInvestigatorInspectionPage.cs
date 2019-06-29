@@ -247,10 +247,12 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadSiteLastUpdatedDateFromPage()
         {
-            string[] DatabaseLastUpdated = DatabaseLastUpdatedElement.Text.Split(' ');
+            //string[] DatabaseLastUpdated = DatabaseLastUpdatedElement.Text.Split(' ');
 
-            string LastUpdatedDate = 
-                DatabaseLastUpdated[DatabaseLastUpdated.Length - 1];
+            //string LastUpdatedDate = 
+            //    DatabaseLastUpdated[DatabaseLastUpdated.Length - 1];
+
+            string LastUpdatedDate = DatabaseLastUpdatedElement.Text.Trim();
 
             DateTime RecentLastUpdatedDate;
 

@@ -68,8 +68,6 @@ namespace DDAS.Data.Mongo.Repositories
             return entity;
         }
 
-
-
         public List<ComplianceForm> FindComplianceForms(ComplianceFormFilter CompFormFilter)
         {
 

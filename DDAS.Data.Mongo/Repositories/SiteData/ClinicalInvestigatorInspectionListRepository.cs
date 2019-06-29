@@ -13,10 +13,18 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         Repository<ClinicalInvestigatorInspectionSiteData>, 
         IClinicalInvestigatorInspectionListRepository
     {
+        private IMongoDatabase _db;
         public ClinicalInvestigatorInspectionListRepository(IMongoDatabase db) :
             base(db)
         {
+            _db = db;
+        }
 
+        public ClinicalInvestigatorInspectionSiteData GetLatestDocument()
+        {
+            var collection = _db.GetCollection<ClinicalInvestigatorInspectionSiteData>(typeof(ClinicalInvestigatorInspectionSiteData).Name);
+            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            return entity;
         }
     }
 }

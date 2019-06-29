@@ -128,14 +128,12 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadSiteLastUpdatedDateFromPage()
         {
-            string[] PageLastUpdated = PageLastUdpatedElement.Text.Split(':');
-
-            var SiteLastUpdated = PageLastUpdated[1].Replace("\r\nNote", "").Trim();
+            var PageLastUpdated = PageLastUdpatedElement.Text.Trim();
 
             DateTime RecentLastUpdatedDate;
 
             var IsDateParsed = DateTime.TryParseExact(
-                SiteLastUpdated, 
+                PageLastUpdated,
                 "M/d/yyyy", 
                 null,
                 System.Globalization.DateTimeStyles.None, 
@@ -146,7 +144,7 @@ namespace WebScraping.Selenium.Pages
             else
                 throw new Exception(
                     "Could not parse Page last updated string - '" +
-                    SiteLastUpdated +
+                    PageLastUpdated +
                     "' to DateTime.");
         }
 

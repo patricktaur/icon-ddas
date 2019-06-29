@@ -1,5 +1,6 @@
 ﻿using DDAS.Models.Entities.Domain.SiteData;
 using DDAS.Models.Repository.Domain.SiteData;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,11 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
             : base(db)
         { _db = db; }
 
+        public FDADebarPageSiteData GetLatestDocument()
+        {
+            var collection = _db.GetCollection<FDADebarPageSiteData>(typeof(FDADebarPageSiteData).Name);
+            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            return entity;
+        }
     }
 }
