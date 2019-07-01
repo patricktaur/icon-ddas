@@ -1403,7 +1403,8 @@ namespace DDAS.Services.Search
             var filteredItems = new List<SiteDataItemBase>();
             foreach (var namePart in Name)
             {
-                var selectedItems = items.Where(p => Name.Any(l => p.FullName.Contains(namePart))).ToList();
+                var selectedItems = items.Where(p => p.FullName.Contains(namePart)).ToList();
+                
                 filteredItems.AddRange(selectedItems);
             }
 
