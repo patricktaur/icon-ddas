@@ -754,7 +754,7 @@ namespace DDAS.Services.Search
 
             RollUpSummary(frm);
             //UpdateRollUpSummary(frm.RecId.Value);
-            frm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
+            //frm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
 
             if (frm.RecId != null)
                 _UOW.ComplianceFormRepository.UpdateCollection(frm); //Update
@@ -1015,7 +1015,7 @@ namespace DDAS.Services.Search
                     //Check and Search if required:
                     if (dbForm.ExtractionPendingInvestigatorCount > 0)
                     {
-                        dbForm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
+                        //dbForm.ExtractionEstimatedCompletion = getEstimatedExtractionCompletion();
                     }
                     AddMatchingRecords(dbForm);
 
