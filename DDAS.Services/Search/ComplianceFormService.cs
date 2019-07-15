@@ -1393,12 +1393,9 @@ namespace DDAS.Services.Search
             string InvestigatorName,
             int MatchCount = 1)
         {
-
             InvestigatorName = RemoveExtraCharacters(InvestigatorName);
             string[] Name = InvestigatorName.Split(' ');
-
-            //var products = shopProducts.Where(p => listOfProducts.Any(l => p.Name == l.Name))
-            //               .ToList();
+            
             //Filter:
             var filteredItems = new List<SiteDataItemBase>();
             foreach (var namePart in Name)
@@ -1409,7 +1406,6 @@ namespace DDAS.Services.Search
 
             var distinctItems = filteredItems.GroupBy(x => x.FullName).Select(y => y.First()).ToList();
 
-            
             //foreach (SiteDataItemBase item in items)
             foreach (SiteDataItemBase item in distinctItems)
             {
