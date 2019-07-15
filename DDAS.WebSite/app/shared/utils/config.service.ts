@@ -7,6 +7,7 @@ export class ConfigService {
     _downloadURI: string;
 
     constructor() {
+       
         //this._apiURI = 'http://localhost:3943/api/'; //dot net core
         
         //server - all servers:  // do not use - does not work for filedownload path correctly
@@ -15,11 +16,16 @@ export class ConfigService {
         //this._apiURI = 'http://ddas.claritytechnologies.com/api'; //from server
         //this._apiURI = 'http://ddasuat.claritytechnologies.com/api/'; //
 
+
         //development:
         this._apiURI = 'http://localhost:56846/api/'; //
         
+       
+        
         //for  demo version on Clarity Server:
-        //this._apiURI = 'api/';        
+        //this._apiURI = 'api/';
+        
+        
     }
 
      getApiURI() {
