@@ -1395,7 +1395,7 @@ namespace DDAS.Services.Search
         {
             InvestigatorName = RemoveExtraCharacters(InvestigatorName);
             string[] Name = InvestigatorName.Split(' ');
-            
+
             //Filter:
             var filteredItems = new List<SiteDataItemBase>();
             foreach (var namePart in Name)
@@ -1812,8 +1812,8 @@ namespace DDAS.Services.Search
                     //10Feb2017-todo: siteSource.ExtractionMode.ToLower() = "db") //get db Sites only, live sites are extracted through windows service
                     if (searchRequired == true)
                     {
-                        //try
-                        //{
+                        try
+                        {
                             inv.AddedOn = DateTime.Now;
                             //clear previously added matching records.
                             //frm.Findings.RemoveAll(x => (x.InvestigatorSearchedId == inv.Id) && (x.SiteEnum == searchStatus.siteEnum) && x.IsMatchedRecord == true);
@@ -1897,20 +1897,20 @@ namespace DDAS.Services.Search
                             }
                             inv.SearchCompletedOn = DateTime.Now;
                             //ListOfSiteSearchStatus.Add(searchStatus);
-                        //}
-                        //catch (Exception ex)
-                        //{
-                        //    HasExtractionError = true;  //for rollup to investigator
-                        //    ExtractionErrorSiteCount += 1;
-                        //    searchStatus.HasExtractionError = true;
-                        //    searchStatus.ExtractionErrorMessage =
-                        //        "search not successful - " + ex.Message;
-                        //    // Log -- ex.Message + ex.InnerException.Message
-                        //}
-                        //finally
-                        //{
-                        //    frm.UpdatedOn = DateTime.Now;
-                        //}
+                        }
+                        catch (Exception ex)
+                        {
+                            HasExtractionError = true;  //for rollup to investigator
+                            ExtractionErrorSiteCount += 1;
+                            searchStatus.HasExtractionError = true;
+                            searchStatus.ExtractionErrorMessage =
+                                "search not successful - " + ex.Message;
+                            // Log -- ex.Message + ex.InnerException.Message
+                        }
+                        finally
+                        {
+                            frm.UpdatedOn = DateTime.Now;
+                        }
                     }
                 }
                 inv.ExtractionErrorSiteCount = ExtractionErrorSiteCount;
@@ -2907,8 +2907,7 @@ namespace DDAS.Services.Search
 
             writer.SaveChanges();
 
-            //as per ICON requirement commenting this line
-            //writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
+            writer.AddFooterPart(form.ProjectNumber + "_" + PISearchName + "_" + DateTime.Now.ToString("dd_MMM_yy"));
 
             writer.CloseDocument();
 
