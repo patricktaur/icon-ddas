@@ -67,8 +67,8 @@ namespace DDAS.API.Controllers
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
-            //try
-            //{   
+            try
+            {
                 var userName = User.Identity.GetUserName();
 
                 //to retain name of the file-to-be-saved/uploaded, 
@@ -137,16 +137,16 @@ namespace DDAS.API.Controllers
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
                 
                 return Request.CreateResponse(HttpStatusCode.OK, "ok");
-            //}
-            //catch (Exception e)
-            //{
-            //    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
-            //        "Error Details: " + e.Message);
-            //}
-            //finally
-            //{
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+                    "Error Details: " + e.Message);
+            }
+            finally
+            {
 
-            //}
+            }
         }
  
         private class CustomMultipartFormDataStreamProvider : MultipartFormDataStreamProvider
