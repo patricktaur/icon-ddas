@@ -30,10 +30,16 @@ namespace WebScraping
 
         static void TestDateFormats()
         {
-            Console.WriteLine("M/d/yy - 10/4/17");
-            Console.WriteLine(DateTime.ParseExact("1/4/17","M/d/yy",null, System.Globalization.DateTimeStyles.None));
-            Console.WriteLine("MM/dd/yyyy - 1/4/17");
-            Console.WriteLine(DateTime.ParseExact("10/14/2017", "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None));
+            //Console.WriteLine("M/d/yy - 10/4/17");
+            //Console.WriteLine(DateTime.ParseExact("1/4/17","M/d/yy",null, System.Globalization.DateTimeStyles.None));
+            //Console.WriteLine("MM/dd/yyyy - 1/4/17");
+            //Console.WriteLine(DateTime.ParseExact("10/14/2017", "MM/dd/yyyy", null, System.Globalization.DateTimeStyles.None));
+
+            var collection1 = new List<string>();
+
+            var newcoll = collection1.Where(x => x == "pi").ToList();
+
+            Console.WriteLine(newcoll);
         }
     }
 }
