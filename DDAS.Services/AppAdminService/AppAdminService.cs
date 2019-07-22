@@ -1373,7 +1373,7 @@ namespace DDAS.Services.AppAdminService
                 _UOW.CountryRepository.UpdateCountry(country);
                 var siteSourceToUpdate = _UOW.SiteSourceRepository.FindById(country.SiteId);
                 siteSourceToUpdate.SiteName = country.Name;
-
+                _UOW.SiteSourceRepository.UpdateSiteSource(siteSourceToUpdate);
                 return true;
             }
         }

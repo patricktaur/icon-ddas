@@ -2907,7 +2907,7 @@ namespace DDAS.Services.Search
 
             writer.SaveChanges();
 
-            writer.AddFooterPart(form.ProjectNumber + "_" + PISearchName + "_" + DateTime.Now.ToString("dd_MMM_yy"));
+            writer.AddFooterPart(form.ProjectNumber + "_" + form.InvestigatorDetails.FirstOrDefault().Name + "_" + DateTime.Now.ToString("ddMMMyy"));
 
             writer.CloseDocument();
 
