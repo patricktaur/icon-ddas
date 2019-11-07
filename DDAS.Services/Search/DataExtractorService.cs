@@ -393,12 +393,12 @@ namespace DDAS.Services.Search
             var fromDate = DateTime.Now.AddHours(-Hour);
             var toDate = DateTime.Now;
 
-            return GetLatestExtractionStatus(fromDate, toDate)
-                .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
-
-            //return GetLatestExtractionStatus()
-            //    .Where(x => x.ExtractionDate < DateTime.Now.AddHours(-Hour))
+            //return GetLatestExtractionStatus(fromDate, toDate)
             //    .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
+
+            return GetLatestExtractionStatus(fromDate, toDate)
+                .Where(x => x.ExtractionDate < DateTime.Now.AddHours(-Hour))
+                .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
         }
 
 

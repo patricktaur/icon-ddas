@@ -65,7 +65,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetLatestExtractionStatus()
         {
-            var fromDate = DateTime.Now.AddMonths(-3).Date;
+            var fromDate = DateTime.Now.AddMonths(-9).Date;
             var toDate = DateTime.Now.AddDays(1).Date;
             return Ok(_ExtractData.GetLatestExtractionStatus(fromDate, toDate));
         }

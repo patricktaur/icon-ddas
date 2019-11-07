@@ -1393,19 +1393,24 @@ namespace DDAS.Services.Search
             string InvestigatorName,
             int MatchCount = 1)
         {
+
             InvestigatorName = RemoveExtraCharacters(InvestigatorName);
             string[] Name = InvestigatorName.Split(' ');
 
+            //var products = shopProducts.Where(p => listOfProducts.Any(l => p.Name == l.Name))
+            //               .ToList();
             //Filter:
             var filteredItems = new List<SiteDataItemBase>();
             foreach (var namePart in Name)
             {
-                var selectedItems = items.ToList().Where(p => p.FullName.Contains(namePart)).ToList();
+                var selectedItems = items.Where(p => p.FullName.Contains(namePart)).ToList();
+                
                 filteredItems.AddRange(selectedItems);
             }
 
             var distinctItems = filteredItems.GroupBy(x => x.FullName).Select(y => y.First()).ToList();
 
+            
             //foreach (SiteDataItemBase item in items)
             foreach (SiteDataItemBase item in distinctItems)
             {
