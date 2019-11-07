@@ -20,13 +20,6 @@ namespace DDAS.API
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             var config = new HttpConfiguration();
             //To generate day-wise log file : PerfLog$$DateTime - $$DateTime replaced by current Date
-
-            string GeneratePerformanceLog = System.Configuration.ConfigurationManager.AppSettings["GeneratePerformanceLog"] + "";
-            if (GeneratePerformanceLog.ToLower().Contains("true")){
-                var logFile = HttpRuntime.AppDomainAppPath + "Logs\\PerfLog-$$UserName$$DateTime.csv";
-                config.Filters.Add(new ExecutionTimeFilterAttribute(logFile));
-            }
-           
             
             //config.Routes.MapHttpRoute("DefaultAPI",
             //    "api/{controller}/{id}",
@@ -41,8 +34,6 @@ namespace DDAS.API
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
             ConfigureAuth(app);
-
-           
             
             app.UseWebApi(config);
             MongoMaps.Initialize();

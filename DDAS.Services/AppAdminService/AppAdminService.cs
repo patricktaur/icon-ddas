@@ -1371,9 +1371,6 @@ namespace DDAS.Services.AppAdminService
             else
             {
                 _UOW.CountryRepository.UpdateCountry(country);
-                var siteSourceToUpdate = _UOW.SiteSourceRepository.FindById(country.SiteId);
-                siteSourceToUpdate.SiteName = country.Name;
-
                 return true;
             }
         }
