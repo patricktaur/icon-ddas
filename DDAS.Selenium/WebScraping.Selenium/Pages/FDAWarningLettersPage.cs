@@ -18,6 +18,8 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Xml;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WebScraping.Selenium.Pages
 {
@@ -349,7 +351,7 @@ namespace WebScraping.Selenium.Pages
             string fileName = _config.FDAWarningLettersFolder + 
                 SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
-                ".xls";
+                ".json";
 
             //if (File.Exists(fileName))
             //    File.Delete(fileName);
@@ -357,8 +359,8 @@ namespace WebScraping.Selenium.Pages
             WebClient myWebClient = new WebClient();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             // Concatenate the domain with the Web resource filename.
-            string myStringWebResource = 
-                "https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";
+            string myStringWebResource = "https://www.fda.gov/files/api/datatables/static/warning-letters.json";
+            //"https://www.accessdata.fda.gov/scripts/warningletters/wlSearchResultExcel.cfm?qryStr=";
 
             _log.WriteLog(string.Format(
                 "Downloading File \"{0}\" from \"{1}\" .......\n\n", 
@@ -395,76 +397,30 @@ namespace WebScraping.Selenium.Pages
 
         public void ReadFDAWarningLetters(string DownloadFolder)
         {
+            if (DownloadFolder == null || DownloadFolder.Trim().Length == 0)
+                throw new Exception("DownloadFolder file path is empty. Cannot read data");
+
             _log.WriteLog("Reading records from the file - " +
                 Path.GetFileName(DownloadFolder));
 
-            TextFieldParser parser = new TextFieldParser(DownloadFolder);
+            var records = JsonConvert.DeserializeObject<List<FDAWarningLetterFile>>(File.ReadAllText(DownloadFolder));
             
-            parser.HasFieldsEnclosedInQuotes = false;
-            parser.SetDelimiters("</tr>");
-
-            string[] rows;
-
-            //int RowNumber = 1;
-            while (!parser.EndOfData)
+            foreach (var record in records)
             {
-                rows = parser.ReadFields();
-                foreach (string row in rows)
-                {
-                    if (row.ToLower().Contains("warning letters search results") ||
-                        row.Contains("<table>") || row.ToLower().Contains("Letter Issued"))
-                        continue;
+                var FDAWarningLetterRecord = new FDAWarningLetter();
+                FDAWarningLetterRecord.RecId = Guid.NewGuid();
+                FDAWarningLetterRecord.ParentId = _FDAWarningSiteData.RecId;
 
-                    var Value = row.Replace("<tr>", string.Empty);
-                    Stream stream = GenerateStreamFromString(Value);
-                    TextFieldParser rowParser = new TextFieldParser(stream);
-                    rowParser.HasFieldsEnclosedInQuotes = false;
-                    rowParser.SetDelimiters("</td>");
-                    while (!rowParser.EndOfData)
-                    {
-                        string[] cols;
-                        cols = rowParser.ReadFields();
+                FDAWarningLetterRecord.Company = record.field_company_name_warning_lette;
+                FDAWarningLetterRecord.LetterIssued = record.field_letter_issue_datetime;
+                FDAWarningLetterRecord.IssuingOffice = record.field_building;
+                FDAWarningLetterRecord.Subject = record.field_detailed_description_2;
+                FDAWarningLetterRecord.ResponseLetterPosted = record.field_associated_for_response_le;
+                FDAWarningLetterRecord.CloseoutDate = record.field_associated_for_closeout_le;
 
-                        if (cols.Count() < 7)
-                            break;
-
-                        if (cols[0].ToLower().Contains("company") && 
-                            cols[1].ToLower().Contains("letter issued"))
-                            break;
-
-                        for(int Index = 0; Index < cols.Count(); Index++)
-                        {
-                            var sb = new StringBuilder(cols[Index]);
-                            cols[Index] = sb
-                                .Replace("<td align=\"left\">", string.Empty)
-                                .Replace("<td>", string.Empty)
-                                .Replace("&nbsp;", string.Empty)
-                                .ToString();
-                        }
-
-                        var FDAWarningLetterRecord = new FDAWarningLetter();
-                        FDAWarningLetterRecord.RecId = Guid.NewGuid();
-                        FDAWarningLetterRecord.ParentId = _FDAWarningSiteData.RecId;
-
-                        FDAWarningLetterRecord.Company = cols[0];
-                        FDAWarningLetterRecord.LetterIssued = cols[1];
-                        FDAWarningLetterRecord.IssuingOffice = cols[2];
-                        FDAWarningLetterRecord.Subject = cols[3];
-                        FDAWarningLetterRecord.ResponseLetterPosted = cols[4];
-                        FDAWarningLetterRecord.CloseoutDate = cols[5];
-
-                        var link = new Link();
-                        link.Title = "Company";
-                        link.url = cols[6];
-                        FDAWarningLetterRecord.Links.Add(link);
-                        //_FDAWarningSiteData.FDAWarningLetterList.Add(
-                        //    FDAWarningLetterRecord);
-                        _UOW.FDAWarningRepository.Add(FDAWarningLetterRecord);
-                    }
-                }
+                _UOW.FDAWarningRepository.Add(FDAWarningLetterRecord);
             }
-            //_log.WriteLog("Total records inserted - " +
-            //    (_FDAWarningSiteData.FDAWarningLetterList.Count() + 1));
+
             _log.WriteLog("Total records inserted - " +
                 (_UOW.FDAWarningRepository.GetAll().Count() + 1));
         }

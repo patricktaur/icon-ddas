@@ -72,4 +72,16 @@ namespace DDAS.Models.Entities.Domain.SiteData
             }
         }
     }
+
+    public class FDAWarningLetterFile
+    {
+        public string path { get; set; }
+        public string field_change_date_2 { get; set; } // Posted Date
+        public string field_letter_issue_datetime { get; set; } // Letter Issue Date
+        public string field_company_name_warning_lette { get; set; } //Company
+        public string field_building { get; set; } // Issuing Office
+        public string field_detailed_description_2 { get; set; } // Subject
+        public string field_associated_for_response_le { get; set; } // Response Letter
+        public string field_associated_for_closeout_le { get; set; } // Closeout Letter
+    }
 }

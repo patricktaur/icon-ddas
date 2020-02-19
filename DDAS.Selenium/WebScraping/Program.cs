@@ -4,6 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using DDAS.Models.Entities.Domain.SiteData;
 
 namespace WebScraping
 {
@@ -11,8 +15,6 @@ namespace WebScraping
     {
         static void Main(string[] args)
         {
-            TestDateFormats();
-            
             //foreach (string arg in args)
             //{
             //    Console.WriteLine(arg);
@@ -26,6 +28,17 @@ namespace WebScraping
             //Console.WriteLine("file is embedded successfully");
 
             Console.ReadKey();
+        }
+
+        static void ReadJSONFile()
+        {
+            var filePath = @"C:\Development\p926-ddas\DDAS.API\DataFiles\Downloads\FDAWarningLetters\FDAWarningLettersPage_17_Feb_2020_12_05.json";
+            using (var file = File.OpenText(filePath))
+            using (var reader = new JsonTextReader(file))
+            {
+                var jsonData = (JArray)JToken.ReadFrom(reader);
+                var myObject = JsonConvert.DeserializeObject<List<FDAWarningLetterFile>>(File.ReadAllText(filePath));
+            }
         }
 
         static void TestDateFormats()
