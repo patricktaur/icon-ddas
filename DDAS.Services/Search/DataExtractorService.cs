@@ -391,13 +391,20 @@ namespace DDAS.Services.Search
         public IEnumerable<string> GetSitesWhereDataExtractionEarlierThan(int Hour = 32)
         {
             var fromDate = DateTime.Now.AddMonths(-6);
-            var toDate = DateTime.Now.AddHours(-Hour);
+            var toDate = DateTime.Now.AddDays(1).Date;
 
+            var sites = GetLatestExtractionStatus(fromDate, toDate);
+
+            var dataExtractedInLast32Hours =
+                sites.Where(x => x.ExtractionDate > DateTime.Now.AddHours(-Hour)).ToList();
+
+            var sitesWithNoDataExtractedIn32Hours =
+                sites.Except(dataExtractedInLast32Hours)
+                .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
+
+            return sitesWithNoDataExtractedIn32Hours;
             //return GetLatestExtractionStatus(fromDate, toDate)
             //    .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
-
-            return GetLatestExtractionStatus(fromDate, toDate)
-                .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
         }
 
 
