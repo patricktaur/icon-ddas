@@ -57,8 +57,6 @@ export class DataExtractionIndicatorComponent implements OnInit {
     }
 
     LoadSiteExtractionErrorCount(){
-
-
         this.service.getDataExtractionErrorSiteCount()
             .subscribe((item: number) => {
                 this.SiteExtractionErrorCount = item;
