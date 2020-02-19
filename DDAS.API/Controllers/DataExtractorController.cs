@@ -75,7 +75,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDataExtractionErrorSiteCount()
         {
-            return Ok(_ExtractData.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count);
+            var count = _ExtractData.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count;
+            return Ok(count);
         }
 
         #region Download Data Files
