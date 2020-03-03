@@ -2912,8 +2912,7 @@ namespace DDAS.Services.Search
 
             writer.SaveChanges();
 
-            //as per ICON requirement commenting this line
-            //writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
+            writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
 
             writer.CloseDocument();
 
