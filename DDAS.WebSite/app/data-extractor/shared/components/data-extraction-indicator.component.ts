@@ -57,11 +57,10 @@ export class DataExtractionIndicatorComponent implements OnInit {
     }
 
     LoadSiteExtractionErrorCount(){
-
-
         this.service.getDataExtractionErrorSiteCount()
             .subscribe((item: number) => {
                 this.SiteExtractionErrorCount = item;
+                console.log(item);
                 if (item === 0){
                     this.color = "green";
                     this.message = "No Data Extraction error."

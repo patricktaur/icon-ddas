@@ -1313,6 +1313,7 @@ namespace DDAS.Models.Entities.Domain
     {
         public Guid? RecId { get; set; }
         public string CountryName { get; set; }
+
         //public Guid? SiteId { get; set; }
 
         //---
@@ -1321,7 +1322,7 @@ namespace DDAS.Models.Entities.Domain
         //public bool IsMandatory { get; set; }
         //public string SiteName { get; set; }
         //public string ExtractionMode { get; set; }
-        
+
         //public SearchAppliesToEnum SearchAppliesTo { get; set; }
     }
     #endregion
