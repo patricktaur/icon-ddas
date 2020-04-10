@@ -27,7 +27,7 @@ namespace DDAS.Services.Search
         private IUnitOfWork _UOW;
         private ISearchEngine _SearchEngine;
         private IConfig _config;
-        private CachedSiteScanData _cachedData;
+        //private CachedSiteScanData _cachedData;
 
         private const int _MatchCountLowerLimit = 2;
         private int _NumberOfRunningExtractionProcesses = 4;
@@ -39,7 +39,7 @@ namespace DDAS.Services.Search
             _UOW = uow;
             _SearchEngine = SearchEngine;
             _config = Config;
-            _cachedData = new CachedSiteScanData(_UOW);
+            //_cachedData = new CachedSiteScanData(_UOW);
         }
 
          //Patrick: 7Jan2018 For use in ExtractDataService
@@ -3085,10 +3085,10 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var FDASearchResult =
-            //    _UOW.FDADebarPageRepository.FindById(SiteDataId);
+            var FDASearchResult =
+                _UOW.FDADebarPageRepository.FindById(SiteDataId);
 
-            var FDASearchResult = _cachedData.GetFDADebarPageLatestCache();
+            //var FDASearchResult = _cachedData.GetFDADebarPageLatestCache();
 
             if (FDASearchResult == null)
                 throw new Exception(
@@ -3117,11 +3117,11 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var CIILSearchResult =
-            //    _UOW.ClinicalInvestigatorInspectionListRepository
-            //    .FindById(SiteDataId);
+            var CIILSearchResult =
+                _UOW.ClinicalInvestigatorInspectionListRepository
+                .FindById(SiteDataId);
 
-            var CIILSearchResult = _cachedData.GetClinicalInvestigatorInspectionListLatestCache();
+            //var CIILSearchResult = _cachedData.GetClinicalInvestigatorInspectionListLatestCache();
 
             if (CIILSearchResult == null)
                 throw new Exception(
@@ -3129,8 +3129,8 @@ namespace DDAS.Services.Search
                     + SiteDataId +
                     " does not contain any records");
 
-            //var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
-            var CIILRecords = _cachedData.GetClinicalInvestigatorRecordsCache();
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+            //var CIILRecords = _cachedData.GetClinicalInvestigatorRecordsCache();
 
             AddRecordsToCIILSiteData(CIILSearchResult, CIILRecords);
 
@@ -3182,8 +3182,8 @@ namespace DDAS.Services.Search
             string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            //var FDAWarningSiteData = _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
-            var FDAWarningSiteData = _cachedData.GetFDAWarningLettersLatestCache();
+            var FDAWarningSiteData = _UOW.FDAWarningLettersRepository.FindById(SiteDataId);
+            //var FDAWarningSiteData = _cachedData.GetFDAWarningLettersLatestCache();
 
             if (FDAWarningSiteData == null)
                 throw new Exception(
@@ -3191,8 +3191,8 @@ namespace DDAS.Services.Search
                     + SiteDataId +
                     " does not contain any records");
 
-            //var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
-            var FDAWarningRecords = _cachedData.GetFDAWarningRecordsCache();
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+            //var FDAWarningRecords = _cachedData.GetFDAWarningRecordsCache();
 
             AddRecordsToWarningLettersSiteData(FDAWarningSiteData, FDAWarningRecords);
 
@@ -3265,9 +3265,9 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var ERRSearchResult =
-            //    _UOW.ERRProposalToDebarRepository.FindById(SiteDataId);
-            var ERRSearchResult = _cachedData.GetProposalToDebarSiteScanDetailsLatestCache();
+            var ERRSearchResult =
+                _UOW.ERRProposalToDebarRepository.FindById(SiteDataId);
+            //var ERRSearchResult = _cachedData.GetProposalToDebarSiteScanDetailsLatestCache();
 
             if (ERRSearchResult == null)
                 throw new Exception(
@@ -3294,10 +3294,10 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var AdequateAssuranceSearchResult =
-            //    _UOW.AdequateAssuranceListRepository.FindById(SiteDataId);
+            var AdequateAssuranceSearchResult =
+                _UOW.AdequateAssuranceListRepository.FindById(SiteDataId);
 
-            var AdequateAssuranceSearchResult = _cachedData.GetAdequateAssuranceListLatestCache();
+            //var AdequateAssuranceSearchResult = _cachedData.GetAdequateAssuranceListLatestCache();
 
             if (AdequateAssuranceSearchResult == null)
                 throw new Exception(
@@ -3325,9 +3325,9 @@ namespace DDAS.Services.Search
             Guid? SiteDataId, string NameToSearch,
             int ComponentsInInvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            //var DisqualificationSiteData =
-            //    _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteDataId);
-            var DisqualificationSiteData = _cachedData.GetClinicalInvestigatorDisqualificationLatestCache();
+            var DisqualificationSiteData =
+                _UOW.ClinicalInvestigatorDisqualificationRepository.FindById(SiteDataId);
+            //var DisqualificationSiteData = _cachedData.GetClinicalInvestigatorDisqualificationLatestCache();
 
             if (DisqualificationSiteData == null)
                 throw new Exception(
@@ -3368,9 +3368,9 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var CBERSearchResult =
-            //    _UOW.CBERClinicalInvestigatorRepository.FindById(SiteDataId);
-            var CBERSearchResult = _cachedData.GetCBERClinicalInvestigatorLatestCache();
+            var CBERSearchResult =
+                _UOW.CBERClinicalInvestigatorRepository.FindById(SiteDataId);
+            //var CBERSearchResult = _cachedData.GetCBERClinicalInvestigatorLatestCache();
 
             if (CBERSearchResult == null)
                 throw new Exception(
@@ -3397,9 +3397,9 @@ namespace DDAS.Services.Search
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var ExclusionSearchResult =
-            //    _UOW.ExclusionDatabaseSearchRepository.FindById(SiteDataId);
-            var ExclusionSearchResult = _cachedData.GetExclusionDatabaseSearchLatestCache();
+            var ExclusionSearchResult =
+                _UOW.ExclusionDatabaseSearchRepository.FindById(SiteDataId);
+            //var ExclusionSearchResult = _cachedData.GetExclusionDatabaseSearchLatestCache();
 
             if (ExclusionSearchResult == null)
                 throw new Exception(
@@ -3407,8 +3407,8 @@ namespace DDAS.Services.Search
                     + SiteDataId +
                     " does not contain any records");
 
-            //var ExclusionRecords = _UOW.ExclusionDatabaseRepository.GetAll();
-            var ExclusionRecords = _cachedData.GetExclusionDatabaseRecordsCache();
+            var ExclusionRecords = _UOW.ExclusionDatabaseRepository.GetAll();
+            //var ExclusionRecords = _cachedData.GetExclusionDatabaseRecordsCache();
 
             AddRecordsToExclusionSiteData(ExclusionSearchResult, ExclusionRecords);
 
@@ -3460,9 +3460,9 @@ namespace DDAS.Services.Search
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var PHSSearchResult =
-            //    _UOW.PHSAdministrativeActionListingRepository.FindById(SiteDataId);
-            var PHSSearchResult = _cachedData.GetPHSAdministrativeActionListingLatestCache();
+            var PHSSearchResult =
+                _UOW.PHSAdministrativeActionListingRepository.FindById(SiteDataId);
+            //var PHSSearchResult = _cachedData.GetPHSAdministrativeActionListingLatestCache();
 
             if (PHSSearchResult == null)
                 throw new Exception(
@@ -3490,9 +3490,9 @@ namespace DDAS.Services.Search
             int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var CIASearchResult =
-            //    _UOW.CorporateIntegrityAgreementRepository.FindById(SiteDataId);
-            var CIASearchResult = _cachedData.GetCorporateIntegrityAgreementLatestCache();
+            var CIASearchResult =
+                _UOW.CorporateIntegrityAgreementRepository.FindById(SiteDataId);
+            //var CIASearchResult = _cachedData.GetCorporateIntegrityAgreementLatestCache();
 
             if (CIASearchResult == null)
                 throw new Exception(
@@ -3519,10 +3519,10 @@ namespace DDAS.Services.Search
             string NameToSearch,
             int ComponentsInIvestigatorName, out DateTime? SiteLastUpdatedOn)
         {
-            //var siteData =
-            //    _UOW.SystemForAwardManagementRepository.FindById(SiteDataId);
+            var siteData =
+                _UOW.SystemForAwardManagementRepository.FindById(SiteDataId);
 
-            var siteData = _cachedData.GetSystemForAwardManagementLatestCache();
+            //var siteData = _cachedData.GetSystemForAwardManagementLatestCache();
 
             if (siteData == null)
                 throw new Exception(
@@ -3530,8 +3530,8 @@ namespace DDAS.Services.Search
                     + SiteDataId +
                     " does not contain any records");
 
-            //var tempData = _UOW.SAMSiteDataRepository.GetAll();
-            var tempData = _cachedData.GetSystemForAwardManagementRecordsCache();
+            var tempData = _UOW.SAMSiteDataRepository.GetAll();
+            //var tempData = _cachedData.GetSystemForAwardManagementRecordsCache();
 
             //siteData.SAMSiteData.Concat(tempData);
             AddRecordsToSAMSiteData(siteData, tempData);
@@ -3583,9 +3583,9 @@ namespace DDAS.Services.Search
             string InvestigatorName, int ComponentsInInvestigatorName,
             out DateTime? SiteLastUpdatedOn)
         {
-            //var SDNSearchResult =
-            //    _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
-            var SDNSearchResult = _cachedData.GetSpeciallyDesignatedNationalsLatestCache();        
+            var SDNSearchResult =
+                _UOW.SpeciallyDesignatedNationalsRepository.FindById(SiteDataId);
+            //var SDNSearchResult = _cachedData.GetSpeciallyDesignatedNationalsLatestCache();        
 
             if (SDNSearchResult == null)
                 throw new Exception(
@@ -3593,8 +3593,8 @@ namespace DDAS.Services.Search
                     + SiteDataId +
                     " does not contain any records");
 
-            //var SDNRecords = _UOW.SDNSiteDataRepository.GetAll();
-            var SDNRecords = _cachedData.GetSpeciallyDesignatedNationalsRecordsCache();
+            var SDNRecords = _UOW.SDNSiteDataRepository.GetAll();
+            //var SDNRecords = _cachedData.GetSpeciallyDesignatedNationalsRecordsCache();
 
             AddRecordsToSDNSiteData(SDNSearchResult, SDNRecords);
 
@@ -3683,8 +3683,8 @@ namespace DDAS.Services.Search
 
         private int GetFDADebarSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            var SiteData = _cachedData.GetFDADebarPageLatestCache();
-            //var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
+            //var SiteData = _cachedData.GetFDADebarPageLatestCache();
+            var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3709,14 +3709,14 @@ namespace DDAS.Services.Search
 
         private int GetCIILSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.ClinicalInvestigatorInspectionListRepository
-            //    .FindById(SiteDataId);
+            var SiteData =
+                _UOW.ClinicalInvestigatorInspectionListRepository
+                .FindById(SiteDataId);
 
-            var SiteData = _cachedData.GetClinicalInvestigatorInspectionListLatestCache();
+            //var SiteData = _cachedData.GetClinicalInvestigatorInspectionListLatestCache();
 
-            //var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
-            var CIILRecords = _cachedData.GetClinicalInvestigatorRecordsCache();
+            var CIILRecords = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+            //var CIILRecords = _cachedData.GetClinicalInvestigatorRecordsCache();
 
             AddRecordsToCIILSiteData(SiteData, CIILRecords);
 
@@ -3741,13 +3741,13 @@ namespace DDAS.Services.Search
 
         private int GetFDAWarningSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.FDAWarningLettersRepository
-            //    .FindById(SiteDataId);
-            var SiteData = _cachedData.GetFDAWarningLettersLatestCache();
+            var SiteData =
+                _UOW.FDAWarningLettersRepository
+                .FindById(SiteDataId);
+            //var SiteData = _cachedData.GetFDAWarningLettersLatestCache();
 
-            //var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
-            var FDAWarningRecords =  _cachedData.GetFDAWarningRecordsCache();
+            var FDAWarningRecords = _UOW.FDAWarningRepository.GetAll();
+            //var FDAWarningRecords =  _cachedData.GetFDAWarningRecordsCache();
 
             AddRecordsToWarningLettersSiteData(SiteData, FDAWarningRecords);
 
@@ -3772,11 +3772,11 @@ namespace DDAS.Services.Search
 
         private int GetERRSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.ERRProposalToDebarRepository
-            //    .FindById(SiteDataId);
+            var SiteData =
+                _UOW.ERRProposalToDebarRepository
+                .FindById(SiteDataId);
 
-            var SiteData = _cachedData.GetProposalToDebarSiteScanDetailsLatestCache();
+            //var SiteData = _cachedData.GetProposalToDebarSiteScanDetailsLatestCache();
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3799,10 +3799,10 @@ namespace DDAS.Services.Search
 
         private int GetAdequateAssuranceSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.AdequateAssuranceListRepository
-            //    .FindById(SiteDataId);
-            var SiteData = _cachedData.GetAdequateAssuranceListLatestCache();
+            var SiteData =
+                _UOW.AdequateAssuranceListRepository
+                .FindById(SiteDataId);
+            //var SiteData = _cachedData.GetAdequateAssuranceListLatestCache();
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3825,10 +3825,10 @@ namespace DDAS.Services.Search
 
         private int GetDisqualificationSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.ClinicalInvestigatorDisqualificationRepository
-            //    .FindById(SiteDataId);
-            var SiteData = _cachedData.GetClinicalInvestigatorDisqualificationLatestCache();
+            var SiteData =
+                _UOW.ClinicalInvestigatorDisqualificationRepository
+                .FindById(SiteDataId);
+            //var SiteData = _cachedData.GetClinicalInvestigatorDisqualificationLatestCache();
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3851,10 +3851,10 @@ namespace DDAS.Services.Search
 
         private int GetPHSSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.PHSAdministrativeActionListingRepository
-            //    .FindById(SiteDataId);
-            var SiteData = _cachedData.GetPHSAdministrativeActionListingLatestCache();
+            var SiteData =
+                _UOW.PHSAdministrativeActionListingRepository
+                .FindById(SiteDataId);
+            //var SiteData = _cachedData.GetPHSAdministrativeActionListingLatestCache();
 
             string FullName = null;
             foreach (string Name in NameComponents)
@@ -3895,10 +3895,10 @@ namespace DDAS.Services.Search
 
         private int GetCBERSingleComponent(Guid? SiteDataId, string[] NameComponents)
         {
-            //var SiteData =
-            //    _UOW.CBERClinicalInvestigatorRepository
-            //    .FindById(SiteDataId);
-            var SiteData = _cachedData.GetCBERClinicalInvestigatorLatestCache();
+            var SiteData =
+                _UOW.CBERClinicalInvestigatorRepository
+                .FindById(SiteDataId);
+            //var SiteData = _cachedData.GetCBERClinicalInvestigatorLatestCache();
 
             string FullName = null;
             foreach (string Name in NameComponents)
