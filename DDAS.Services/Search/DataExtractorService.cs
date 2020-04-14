@@ -395,10 +395,10 @@ namespace DDAS.Services.Search
 
             var sites = GetLatestExtractionStatus(fromDate, toDate);
 
-            var dataExtractedInLast32Hours =
+            var dataExtractedInLast32Hours = 
                 sites.Where(x => x.ExtractionDate > DateTime.Now.AddHours(-Hour)).ToList();
 
-            var sitesWithNoDataExtractedIn32Hours =
+            var sitesWithNoDataExtractedIn32Hours = 
                 sites.Except(dataExtractedInLast32Hours)
                 .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
 
@@ -425,7 +425,8 @@ namespace DDAS.Services.Search
             };
 
             var FileTypes = new string[] {
-                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
+                "*.zip", "*.json",  "*.csv", "*.zip", "*.txt"
+                //"*.zip", "*.json", "*.xls", "*.csv", "*.zip", "*.txt"
             };
 
             int Index = 0;
@@ -490,6 +491,15 @@ namespace DDAS.Services.Search
                 GetAll()
                 .OrderByDescending(x => x.CreatedOn).First();
             var Data = FDADebarredPage;
+            return Data;
+        }
+
+        //Site No: 1
+        public List<FDAWarningLetter> GetFDAWarningLetterSiteData()
+        {
+            var FDAWarningLetterPage = _UOW.FDAWarningRepository.
+                GetAll();
+            var Data = FDAWarningLetterPage;
             return Data;
         }
 

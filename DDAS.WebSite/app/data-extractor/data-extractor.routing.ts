@@ -15,7 +15,7 @@ import {ClinicalInvestigatorDisqualificationSiteDataComponent} from "./reports/e
 import {PHSAdministrativeActionListingSiteDataComponent} from "./reports/extracted-data/phs-administrative-action-listing-site-data/phs-administrative-action-listing-site-data.component"
 import  {CBERClinicalInvestigatorInspectionSiteDataComponent}  from './reports/extracted-data/cber-clinical-investigator-inspection-site-data/cber-clinical-investigator-inspection-site-data.component'
 import  {CorporateIntegrityAgreementListSiteDataComponent}  from './reports/extracted-data/corporate-integrity-agreement-list-site-data/corporate-integrity-agreement-list-site-data.component'
-
+import {FDAWarningLetterSiteDataComponent} from "./reports/extracted-data/fda-warning-letter-site-data/fda-warning-letter-site-data.component";
 
 
 const dataExtractorRoutes: Routes = [
@@ -37,6 +37,8 @@ const dataExtractorRoutes: Routes = [
   { path: 'phs-administrative-action-listing-site-data', component: PHSAdministrativeActionListingSiteDataComponent},
   { path: 'cber-clinical-investigator-inspection-site-data', component: CBERClinicalInvestigatorInspectionSiteDataComponent},
   { path: 'corporate-integrity-agreement-list-site-data', component: CorporateIntegrityAgreementListSiteDataComponent},
+  { path: 'corporate-integrity-agreement-list-site-data', component: CorporateIntegrityAgreementListSiteDataComponent},
+  { path: 'fda-warning-letter-site-data', component: FDAWarningLetterSiteDataComponent},
 
 ];
 

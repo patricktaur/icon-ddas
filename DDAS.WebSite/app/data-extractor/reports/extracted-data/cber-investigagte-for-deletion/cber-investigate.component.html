@@ -23,8 +23,8 @@ Data Extracted On: {{CBERInvestigator?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
 		</thead>
 
 		<tbody>
-			<!--<tr *ngFor="let item of cberRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">-->
-			<tr *ngFor="let item of CBERInvestigator?.ClinicalInvestigator | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">	
+			<!-- <tr *ngFor="let item of CBERInvestigator?.ClinicalInvestigator | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">	 -->
+				<tr *ngFor="let item of CBERInvestigator?.ClinicalInvestigator " class="active">	
 				<td class="text-left">
                     {{item.Name}}
 				</td>
@@ -44,5 +44,5 @@ Data Extracted On: {{CBERInvestigator?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
 		</tbody>
 	</table>
 	<button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
-	<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+	<!-- <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls> -->
 </div>

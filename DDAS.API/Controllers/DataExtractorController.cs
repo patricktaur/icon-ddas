@@ -75,7 +75,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDataExtractionErrorSiteCount()
         {
-            return Ok(_ExtractData.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count);
+            var count = _ExtractData.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count;
+            return Ok(count);
         }
 
         #region Download Data Files
@@ -95,6 +96,14 @@ namespace DDAS.API.Controllers
         #endregion
 
         #region getExtractedData
+
+        [Route("GetFDAWarningLetterSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetFDAWarningLetterSiteData()
+        {
+            return Ok(_ExtractData.GetFDAWarningLetterSiteData());
+        }
+
 
         [Route("GetFDADebarPageSiteData")]
         [HttpGet]

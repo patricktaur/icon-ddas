@@ -45,8 +45,6 @@ namespace DDAS.API.Controllers
         //    return Ok(_AppAdminService.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count);
         //}
 
-
-
         [Route("GetExtractionLog")]
         [HttpGet]
         public IHttpActionResult GetExtractionLog()
@@ -63,12 +61,12 @@ namespace DDAS.API.Controllers
             _AppAdminService.AddSitesInDbCollection(Site);
             return Ok();
         }
+
         [Route("GetSiteSources")]
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
             return Ok(_AppAdminService.GetAllSiteSources());
-
         }
 
         [Route("GetSiteSource")]
@@ -100,11 +98,7 @@ namespace DDAS.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
-           
-            
         }
-
         #endregion
 
         #region Add/Delete/Get Country
