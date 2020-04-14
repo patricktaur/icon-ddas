@@ -494,6 +494,15 @@ namespace DDAS.Services.Search
             return Data;
         }
 
+        //Site No: 1
+        public List<FDAWarningLetter> GetFDAWarningLetterSiteData()
+        {
+            var FDAWarningLetterPage = _UOW.FDAWarningRepository.
+                GetAll();
+            var Data = FDAWarningLetterPage;
+            return Data;
+        }
+
 
 
         //Site No: 4

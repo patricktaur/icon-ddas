@@ -26,9 +26,9 @@ Data Extracted On: {{SiteData?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
         </thead>
 
         <tbody>
-            <!--<tr *ngFor="let item of cberRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">-->
-            <tr *ngFor="let item of SiteDataList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">
-                <td class="text-left">
+            <!-- <tr *ngFor="let item of SiteDataList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
+                <tr *ngFor="let item of SiteDataList " class="active">
+                    <td class="text-left">
                     {{item.FullName}}
                 </td>
                 <td class="text-center">
@@ -50,6 +50,6 @@ Data Extracted On: {{SiteData?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
             </tr>
         </tbody>
     </table>
-    <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+    <!-- <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls> -->
     <button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
 </div>

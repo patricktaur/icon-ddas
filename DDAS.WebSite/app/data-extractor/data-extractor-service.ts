@@ -79,6 +79,16 @@ export class DataExtractorService {
     // }
 
 /////
+
+    getFDAWarningLetterSiteData(){
+        return this.http.get(this._baseUrl + 'GetFDAWarningLetterSiteData',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+    
     getFDADebarPageSiteData(){
         return this.http.get(this._baseUrl + 'GetFDADebarPageSiteData',
         this._options)

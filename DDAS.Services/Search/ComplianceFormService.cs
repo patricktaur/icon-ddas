@@ -2912,7 +2912,7 @@ namespace DDAS.Services.Search
 
             writer.SaveChanges();
 
-            writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
+            //writer.AddFooterPart("Updated On: " + form.UpdatedOn.ToString("dd MMM yyyy"));
             //writer.AddFooterPart(form.ProjectNumber + "_" + form.InvestigatorDetails.FirstOrDefault().Name + "_" + DateTime.Now.ToString("ddMMMyy"));
 
             writer.CloseDocument();
@@ -3195,7 +3195,7 @@ namespace DDAS.Services.Search
             //var FDAWarningRecords = _cachedData.GetFDAWarningRecordsCache();
 
             AddRecordsToWarningLettersSiteData(FDAWarningSiteData, FDAWarningRecords);
-
+            
             UpdateMatchStatus(FDAWarningSiteData.FDAWarningLetterList, NameToSearch);
 
             var FDAWarningLetterList =
@@ -3244,7 +3244,9 @@ namespace DDAS.Services.Search
             foreach (FDAWarningLetter Record in Records)
             {
                 var RecordToAdd = new FDAWarningLetter();
-                RecordToAdd.Company = Record.Company;
+                //RecordToAdd.Company = Record.Company;
+                RecordToAdd.Company = GetInnerTextFromAnchorTag( Record.Company);
+
                 RecordToAdd.IssuingOffice = Record.IssuingOffice;
                 RecordToAdd.LetterIssued = Record.LetterIssued;
                 RecordToAdd.Links = Record.Links;
@@ -4488,11 +4490,19 @@ namespace DDAS.Services.Search
 
         private string RemoveExtraCharacters(string Value)
         {
-            //string CharactersToRemove = ".,/:";
-            //return Name.Replace(CharactersToRemove, "");
-            //string TempValue = Regex.Unescape(Value);
             return Regex.Replace(Value, "[,.'/;]", " ");
         }
+
+        private string GetInnerTextFromAnchorTag(string value)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(value);
+            //Selecting Single Anchor Tag From Html
+            XmlNode node = xmlDoc.SelectSingleNode(@"//a");
+            return node.InnerText;
+        }
+
+
 
         private static string RemoveSpecialCharacters(string str)
         {

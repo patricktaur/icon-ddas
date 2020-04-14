@@ -97,6 +97,14 @@ namespace DDAS.API.Controllers
 
         #region getExtractedData
 
+        [Route("GetFDAWarningLetterSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetFDAWarningLetterSiteData()
+        {
+            return Ok(_ExtractData.GetFDAWarningLetterSiteData());
+        }
+
+
         [Route("GetFDADebarPageSiteData")]
         [HttpGet]
         public IHttpActionResult GetFDADebarPageSiteData()
