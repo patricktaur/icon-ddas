@@ -425,7 +425,8 @@ namespace DDAS.Services.Search
             };
 
             var FileTypes = new string[] {
-                "*.zip", "*.xls", "*.csv", "*.zip", "*.txt"
+                "*.zip", "*.json",  "*.csv", "*.zip", "*.txt"
+                //"*.zip", "*.json", "*.xls", "*.csv", "*.zip", "*.txt"
             };
 
             int Index = 0;
