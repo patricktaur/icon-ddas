@@ -3244,9 +3244,8 @@ namespace DDAS.Services.Search
             foreach (FDAWarningLetter Record in Records)
             {
                 var RecordToAdd = new FDAWarningLetter();
-                //RecordToAdd.Company = Record.Company;
-                RecordToAdd.Company = GetInnerTextFromAnchorTag( Record.Company);
-
+                RecordToAdd.Company = Record.Company;
+                RecordToAdd.PostedDate = Record.PostedDate;
                 RecordToAdd.IssuingOffice = Record.IssuingOffice;
                 RecordToAdd.LetterIssued = Record.LetterIssued;
                 RecordToAdd.Links = Record.Links;
@@ -3257,6 +3256,15 @@ namespace DDAS.Services.Search
                 RecordToAdd.RowNumber = Record.RowNumber;
                 RecordToAdd.Status = Record.Status;
                 RecordToAdd.Subject = Record.Subject;
+
+                //return
+                //    "Posted: " + PostedDate + "~" +
+                //    "Letter Issued: " + LetterIssued + "~" +
+                //    "Company: " + CompanyText + "~" +
+                //    "Issuing Office: " + IssuingOffice + "~" +
+                //    "Subject: " + Subject + "~" +
+                //    "Response Letter Posted: " + ResponseLetterPostedText + "~" +
+                //    "Closeout Date: " + CloseoutDateText;
 
                 SiteData.FDAWarningLetterList.Add(RecordToAdd);
             }
@@ -4492,16 +4500,6 @@ namespace DDAS.Services.Search
         {
             return Regex.Replace(Value, "[,.'/;]", " ");
         }
-
-        private string GetInnerTextFromAnchorTag(string value)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(value);
-            //Selecting Single Anchor Tag From Html
-            XmlNode node = xmlDoc.SelectSingleNode(@"//a");
-            return node.InnerText;
-        }
-
 
 
         private static string RemoveSpecialCharacters(string str)

@@ -17,10 +17,13 @@ Data Extracted On: {{SiteData?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
     <table class="table table-bordered table-hover table-striped">
         <thead>
             <tr>
-                
-                <th class="col-md-2 text-left">Letter Issued Date</th>
-                <th class="text-left">Company Name</th>
-                
+                <th class="col-md-1 text-left">Posted Date</th>
+                <th class="col-md-1 text-left">Letter Issued Date</th>
+                <th class="col-md-4 text-left">Company Name</th>
+                <th class="col-md-2 text-left">Issuing Office</th>
+                <th class="col-md-2 text-left">Subject</th>
+                <th class="col-md-1 text-left">Response Letter</th>
+                <th class="col-md-1 text-left">Closeout Letter</th>
             </tr>
         </thead>
 
@@ -28,11 +31,29 @@ Data Extracted On: {{SiteData?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
             <!--<tr *ngFor="let item of cberRecords | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active">-->
             <tr *ngFor="let item of SiteData " class="active">
                 <td class="text-center">
+                    {{item.PostedDate}}
+                </td>
+
+                <td class="text-center">
                     {{item.LetterIssued}}
                 </td>
-                <td>
-                    {{item.Company}}
+                <td class="text-left">
+                    {{item.CompanyText}}
                 </td>
+                <td  class="text-left">
+                    {{item.IssuingOffice}}
+                </td>
+
+                <td  class="text-left">
+                    {{item.Subject}}
+                </td>
+                <td>
+                    {{item.ResponseLetterPostedText}}
+                </td>
+                <td>
+                    {{item.CloseoutDateText}}
+                </td>
+
                 
             </tr>
         </tbody>

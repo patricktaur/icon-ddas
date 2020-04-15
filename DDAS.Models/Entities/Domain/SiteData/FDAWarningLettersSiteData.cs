@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace DDAS.Models.Entities.Domain.SiteData
 {
@@ -32,15 +33,19 @@ namespace DDAS.Models.Entities.Domain.SiteData
         //public int RowNumber { get; set; }
         public string Status { get; set; }
         public string Company { get; set; }
+        public string CompanyText { get { return GetInnerTextFromAnchorTag(this.Company); } }
+        public string PostedDate { get; set; }
         public string LetterIssued { get; set; }
         public string IssuingOffice { get; set; }
         public string Subject { get; set; }
         public string ResponseLetterPosted { get; set; }
+        public string ResponseLetterPostedText { get { return GetInnerTextFromAnchorTag(this.ResponseLetterPosted); } }
         public string CloseoutDate { get; set; }
+        public string CloseoutDateText { get { return GetInnerTextFromAnchorTag(this.CloseoutDate); } }
 
         public override string FullName {
             get {
-                return Company;
+                return CompanyText;
             }
         }
 
@@ -49,12 +54,13 @@ namespace DDAS.Models.Entities.Domain.SiteData
             get
             {
                 return
-                    "Company: " + Company + "~" +
+                    "Posted: " + PostedDate + "~" +
                     "Letter Issued: " + LetterIssued + "~" +
+                    "Company: " + CompanyText + "~" +
                     "Issuing Office: " + IssuingOffice + "~" +
                     "Subject: " + Subject + "~" +
-                    "Response Letter Posted: " + ResponseLetterPosted + "~" +
-                    "Closeout Date: " + CloseoutDate;
+                    "Response Letter Posted: " + ResponseLetterPostedText + "~" +
+                    "Closeout Date: " + CloseoutDateText;
             }
         }
 
@@ -70,6 +76,19 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     LetterIssued.Trim(), Formats, null,
                     System.Globalization.DateTimeStyles.None);
             }
+        }
+
+        private string GetInnerTextFromAnchorTag(string value)
+        {
+            if (value == null || value.Length == 0)
+            {
+                return "";
+            }
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(value);
+            //Selecting Single Anchor Tag From Html
+            XmlNode node = xmlDoc.SelectSingleNode(@"//a");
+            return node.InnerText;
         }
     }
 
