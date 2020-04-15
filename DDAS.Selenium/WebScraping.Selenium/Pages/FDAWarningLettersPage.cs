@@ -411,12 +411,13 @@ namespace WebScraping.Selenium.Pages
                 FDAWarningLetterRecord.RecId = Guid.NewGuid();
                 FDAWarningLetterRecord.ParentId = _FDAWarningSiteData.RecId;
 
-                FDAWarningLetterRecord.Company = record.field_company_name_warning_lette;
-                FDAWarningLetterRecord.LetterIssued = record.field_letter_issue_datetime;
-                FDAWarningLetterRecord.IssuingOffice = record.field_building;
-                FDAWarningLetterRecord.Subject = record.field_detailed_description_2;
-                FDAWarningLetterRecord.ResponseLetterPosted = record.field_associated_for_response_le;
-                FDAWarningLetterRecord.CloseoutDate = record.field_associated_for_closeout_le;
+                FDAWarningLetterRecord.Company = record.field_company_name_warning_lette; //Company Name Anchor tag in web page
+                FDAWarningLetterRecord.PostedDate = record.field_change_date_2; //Posted Date in web page
+                FDAWarningLetterRecord.LetterIssued = record.field_letter_issue_datetime; //Letter Issue Date in web page
+                FDAWarningLetterRecord.IssuingOffice = record.field_building;  //Issuing Office in Web Page
+                FDAWarningLetterRecord.Subject = record.field_detailed_description_2; //Subject in Web Page
+                FDAWarningLetterRecord.ResponseLetterPosted = record.field_associated_for_response_le;  //Response Letter Anchor tag in web page
+                FDAWarningLetterRecord.CloseoutDate = record.field_associated_for_closeout_le; //Close Out Letter Anchor tag in web page
 
                 _UOW.FDAWarningRepository.Add(FDAWarningLetterRecord);
             }
