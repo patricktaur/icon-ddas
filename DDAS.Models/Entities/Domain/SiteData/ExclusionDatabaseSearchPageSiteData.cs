@@ -70,7 +70,7 @@ namespace DDAS.Models.Entities.Domain.SiteData
                     "Middle Name: " + MiddleName + "~" +
                     "Business Name: " + BusinessName + "~" +
                     "General: " + General + "~" +
-                    "Specialty: " + Specialty + "~" +
+                    "Speciality: " + Specialty + "~" +
                     "Address: " + Address + "~" +
                     "City: " + City + "~" +
                     "State: " + State + "~" +

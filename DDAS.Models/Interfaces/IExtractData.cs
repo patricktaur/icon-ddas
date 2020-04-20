@@ -29,9 +29,13 @@ namespace DDAS.Models.Interfaces
         ERRProposalToDebarPageSiteData GetERRProposalToDebarPageSiteData();
         AdequateAssuranceListSiteData GetAdequateAssuranceListSiteData();
         ClinicalInvestigatorDisqualificationSiteData GetClinicalInvestigatorDisqualificationSiteData();
+        ClinicalInvestigatorInspectionSiteData GetClinicalInvestigatorInspectionSiteData();
         PHSAdministrativeActionListingSiteData GetPHSAdministrativeActionListingSiteData();
         CBERClinicalInvestigatorInspectionSiteData GetCBERClinicalInvestigatorInspectionSiteData();
         CorporateIntegrityAgreementListSiteData GetCorporateIntegrityAgreementListSiteData();
+        ExclusionDatabaseSearchPageSiteData GetExclusionDatabaseSearchPageSiteData();
+        SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationalsSiteData();
+        SystemForAwardManagementPageSiteData GetSystemForAwardManagementPageSiteData();
         #endregion
     }
 }

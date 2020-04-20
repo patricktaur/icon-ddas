@@ -156,6 +156,34 @@ namespace DDAS.API.Controllers
         }
 
 
+        [Route("GetClinicalInvestigatorInspectionCDERSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetClinicalInvestigatorInspectionCDERSiteData()
+        {
+            return Ok(_ExtractData.GetClinicalInvestigatorInspectionSiteData());
+        }
+
+        [Route("GetExclusionDatabaseSearchPageSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetExclusionDatabaseSearchPageSiteData()
+        {
+            return Ok(_ExtractData.GetExclusionDatabaseSearchPageSiteData());
+        }
+        [Route("GetSpeciallyDesignatedNationalsSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetSpeciallyDesignatedNationalsSiteData()
+        {
+            return Ok(_ExtractData.GetSpeciallyDesignatedNationalsSiteData());
+        }
+
+        [Route("GetSystemForAwardManagementPageSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetSystemForAwardManagementPageSiteData()
+        {
+            return Ok(_ExtractData.GetSystemForAwardManagementPageSiteData());
+        }
+
+
         #endregion
     }
 }

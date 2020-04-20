@@ -529,6 +529,8 @@ namespace DDAS.Services.Search
                 .OrderByDescending(x => x.CreatedOn).First();
         }
 
+        
+        
 
         //Site No: 7
         public PHSAdministrativeActionListingSiteData GetPHSAdministrativeActionListingSiteData()
@@ -555,6 +557,42 @@ namespace DDAS.Services.Search
                 GetAll()
                 .OrderByDescending(x => x.CreatedOn).First();
         }
+
+
+        //Site No: ? added on 20Apr2020 - Patrick
+        public ClinicalInvestigatorInspectionSiteData GetClinicalInvestigatorInspectionSiteData()
+        {
+            var doc = _UOW.ClinicalInvestigatorInspectionListRepository.GetLatestDocument();
+            doc.ClinicalInvestigatorInspectionList = _UOW.ClinicalInvestigatorInspectionRepository.GetAll();
+            return doc;
+        }
+
+        //Site No: ? added on 20Apr2020 - Patrick
+        public ExclusionDatabaseSearchPageSiteData GetExclusionDatabaseSearchPageSiteData()
+        {
+            var doc = _UOW.ExclusionDatabaseSearchRepository.GetLatestDocument();
+            doc.ExclusionSearchList= _UOW.ExclusionDatabaseRepository.GetAll();
+            //doc.ExclusionSearchList = _UOW.ExclusionDatabaseRepository.GetAll().Take(10).ToList();
+            return doc;
+        }
+
+        
+        //Site No: ? added on 20Apr2020 - Patrick
+        public SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationalsSiteData()
+        {
+            var doc = _UOW.SpeciallyDesignatedNationalsRepository.GetLatestDocument();
+            doc.SDNListSiteData = _UOW.SDNSiteDataRepository.GetAll();
+            return doc;
+        }
+
+        //Site No: ? added on 20Apr2020 - Patrick
+        public SystemForAwardManagementPageSiteData GetSystemForAwardManagementPageSiteData()
+        {
+            var doc = _UOW.SystemForAwardManagementRepository.GetLatestDocument();
+            doc.SAMSiteData = _UOW.SAMSiteDataRepository.GetAll();
+            return doc;
+        }
+        
 
         #endregion
     }

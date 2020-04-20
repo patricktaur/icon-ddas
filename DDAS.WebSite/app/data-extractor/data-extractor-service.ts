@@ -125,6 +125,42 @@ export class DataExtractorService {
         .catch(this.handleError);
     }
 
+    getClinicalInvestigatorInspectionCDERSiteData(){
+        return this.http.get(this._baseUrl + 'GetClinicalInvestigatorInspectionCDERSiteData',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getExclusionDatabaseSearchSiteData(){
+        return this.http.get(this._baseUrl + 'GetExclusionDatabaseSearchPageSiteData',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getSpeciallyDesignatedNationalsSiteData(){
+        return this.http.get(this._baseUrl + 'GetSpeciallyDesignatedNationalsSiteData',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
+    getSystemForAwardManagementPageSiteData(){
+        return this.http.get(this._baseUrl + 'GetSystemForAwardManagementPageSiteData',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+    }
+
     getPHSAdministrativeActionListingSiteData(){
         return this.http.get(this._baseUrl + 'GetPHSAdministrativeActionListingSiteData',
         this._options)
