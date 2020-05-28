@@ -23,14 +23,19 @@ namespace DDAS.Models.Interfaces
         List<DownloadDataFilesViewModel> GetDataFiles(int Enum);
 
         #region getExtractedData
-
+        //FDAWarningLettersSiteData GetFDAWarningLetterSiteData();
+        List<FDAWarningLetter> GetFDAWarningLetterSiteData();
         FDADebarPageSiteData GetFDADebarPageSiteData();
         ERRProposalToDebarPageSiteData GetERRProposalToDebarPageSiteData();
         AdequateAssuranceListSiteData GetAdequateAssuranceListSiteData();
         ClinicalInvestigatorDisqualificationSiteData GetClinicalInvestigatorDisqualificationSiteData();
+        ClinicalInvestigatorInspectionSiteData GetClinicalInvestigatorInspectionSiteData();
         PHSAdministrativeActionListingSiteData GetPHSAdministrativeActionListingSiteData();
         CBERClinicalInvestigatorInspectionSiteData GetCBERClinicalInvestigatorInspectionSiteData();
         CorporateIntegrityAgreementListSiteData GetCorporateIntegrityAgreementListSiteData();
+        ExclusionDatabaseSearchPageSiteData GetExclusionDatabaseSearchPageSiteData();
+        SpeciallyDesignatedNationalsListSiteData GetSpeciallyDesignatedNationalsSiteData();
+        SystemForAwardManagementPageSiteData GetSystemForAwardManagementPageSiteData();
         #endregion
     }
 }

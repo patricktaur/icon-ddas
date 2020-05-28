@@ -12,12 +12,14 @@ import {FDADebarPageSiteDataComponent} from "./reports/extracted-data/fda-debar-
 import {ERRProposalToDebarPageSiteDataComponent} from "./reports/extracted-data/err-proposal-to-debar-page-site-data/err-proposal-to-debar-page-site-data.component"
 import {AdequateAssuranceListsiteDataComponent} from "./reports/extracted-data/adequate-assurance-list-site-data/adequate-assurance-list-site-data.component"
 import {ClinicalInvestigatorDisqualificationSiteDataComponent} from "./reports/extracted-data/clinical-investigator-disqualification-site-data/clinical-investigator-disqualification-site-data.component"
+import {ClinicalInvestigatorInspectionCDERSiteDataComponent} from "./reports/extracted-data/clinical-investigator-inspection-site-data/clinical-investigator-inspection-site-data.component"
 import {PHSAdministrativeActionListingSiteDataComponent} from "./reports/extracted-data/phs-administrative-action-listing-site-data/phs-administrative-action-listing-site-data.component"
 import  {CBERClinicalInvestigatorInspectionSiteDataComponent}  from './reports/extracted-data/cber-clinical-investigator-inspection-site-data/cber-clinical-investigator-inspection-site-data.component'
 import  {CorporateIntegrityAgreementListSiteDataComponent}  from './reports/extracted-data/corporate-integrity-agreement-list-site-data/corporate-integrity-agreement-list-site-data.component'
-
-
-
+import {FDAWarningLetterSiteDataComponent} from "./reports/extracted-data/fda-warning-letter-site-data/fda-warning-letter-site-data.component";
+import {ExclusionDatabaseSearchSiteDataComponent} from "./reports/extracted-data/exclusion-database-search-site-data/exclusion-database-search-site-data.component"
+import {SpeciallyDesignatedNationalsSiteDataComponent} from "./reports/extracted-data/specially-designated-nationals-site-data/specially-designated-nationals-site-data.component"
+import {SystemForAwardManagementSiteDataComponent} from "./reports/extracted-data/system-for-award-management-site-data/system-for-award-management-site-data.component"
 const dataExtractorRoutes: Routes = [
   {
     path: 'data-extractor',
@@ -34,10 +36,19 @@ const dataExtractorRoutes: Routes = [
   { path: 'err-proposal-to-debar-page-site-data', component: ERRProposalToDebarPageSiteDataComponent},
   { path: 'adequate-assurance-list-site-data', component: AdequateAssuranceListsiteDataComponent},
   { path: 'clinical-investigator-disqualification-site-data', component: ClinicalInvestigatorDisqualificationSiteDataComponent},
+  
+  { path: 'clinical-investigator-inspection-cder-site-data', component: ClinicalInvestigatorInspectionCDERSiteDataComponent},
+  
   { path: 'phs-administrative-action-listing-site-data', component: PHSAdministrativeActionListingSiteDataComponent},
   { path: 'cber-clinical-investigator-inspection-site-data', component: CBERClinicalInvestigatorInspectionSiteDataComponent},
   { path: 'corporate-integrity-agreement-list-site-data', component: CorporateIntegrityAgreementListSiteDataComponent},
-
+  { path: 'corporate-integrity-agreement-list-site-data', component: CorporateIntegrityAgreementListSiteDataComponent},
+  { path: 'fda-warning-letter-site-data', component: FDAWarningLetterSiteDataComponent},
+  { path: 'exclusion-database-search-site-data', component: ExclusionDatabaseSearchSiteDataComponent},
+  { path: 'specially-designated-nationals-site-data', component:   SpeciallyDesignatedNationalsSiteDataComponent},
+  { path: 'system-for-award-management-site-data', component:   SystemForAwardManagementSiteDataComponent
+},
+  
 ];
 
 export const dataExtractorRouting: ModuleWithProviders = RouterModule.forChild(dataExtractorRoutes);

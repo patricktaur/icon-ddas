@@ -1,0 +1,90 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="well">
+            <h3 class="no-margin-top">System for Award Management Site Data</h3>
+
+           
+        </div>
+    </div>
+</div>
+<div class="alert alert-info" *ngIf="loading">
+    <strong>Loading ...</strong>
+</div>
+<!-- {{SiteData | json}} -->
+
+Data Extracted On: {{SiteData?.ExtractedOn | date: 'dd MMM yyyy HH:mm'}}
+<br>Records: {{SiteDataList?.length}}
+<!-- <br> Site Last Updated On: {{SiteData?.SiteLastUpdatedOn | date: 'dd MMM yyyy HH:mm' }} -->
+<!-- {{diagnostic}} -->
+<div class="table-responsive">
+    <div statusCircle-Legend-Horizontal></div>
+
+   
+
+
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th class="col-md-3 text-left">First</th>
+                <th class="col-md-3 text-left">Middle</th>
+                <th class="col-md-2 text-left">Last</th>
+                <th class="text-left">City</th>
+                <th class="text-center">State</th>
+                <th class="text-left">Country</th>
+                <th class="text-left">Excluding Agency</th>
+                <th class="text-left">Exclusion Type</th>
+               
+                <th class="text-left">Additional Comments</th>
+                <th class="text-left">Active Date</th>
+                <th class="text-left">Record Status</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            <!-- <tr *ngFor="let item of SiteDataList | paginate: { itemsPerPage: 10, currentPage: pageNumber}" class="active"> -->
+                <tr *ngFor="let item of SiteDataList" class="active">
+                    <td class="text-left">
+                        {{item.First}}
+                    </td>
+                    <td class="text-center">
+                        {{item.Middle}}
+                    </td>
+                    <td>
+                        {{item.Last}}
+                    </td>
+                    <td>
+                            {{item.City}}
+                    </td>
+                        
+                    <td class="text-left">
+                        {{item.State }}
+                    </td>
+                    <td class="text-left">
+                        {{item.Country }}
+                    </td>
+                    <td class="text-left">
+                        {{item.ExcludingAgency}}
+                    </td>
+                    <td class="text-left">
+                        {{item.ExclusionType}}
+                    </td>
+    
+                    <td class="text-left">
+                        {{item.AdditionalComments}}
+                    </td>
+                    <td class="text-left">
+                        {{item.ActiveDate}}
+                    </td>
+                    <td class="text-left">
+                        {{item.RecordStatus}}
+                    </td>
+
+            </tr>
+        </tbody>
+
+    </table>
+    <!-- <pagination-controls (pageChange)="pageNumber = $event"></pagination-controls> -->
+    <button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+</div>

@@ -97,6 +97,14 @@ namespace DDAS.API.Controllers
 
         #region getExtractedData
 
+        [Route("GetFDAWarningLetterSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetFDAWarningLetterSiteData()
+        {
+            return Ok(_ExtractData.GetFDAWarningLetterSiteData());
+        }
+
+
         [Route("GetFDADebarPageSiteData")]
         [HttpGet]
         public IHttpActionResult GetFDADebarPageSiteData()
@@ -145,6 +153,34 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetCorporateIntegrityAgreementListSiteData()
         {
             return Ok(_ExtractData.GetCorporateIntegrityAgreementListSiteData());
+        }
+
+
+        [Route("GetClinicalInvestigatorInspectionCDERSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetClinicalInvestigatorInspectionCDERSiteData()
+        {
+            return Ok(_ExtractData.GetClinicalInvestigatorInspectionSiteData());
+        }
+
+        [Route("GetExclusionDatabaseSearchPageSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetExclusionDatabaseSearchPageSiteData()
+        {
+            return Ok(_ExtractData.GetExclusionDatabaseSearchPageSiteData());
+        }
+        [Route("GetSpeciallyDesignatedNationalsSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetSpeciallyDesignatedNationalsSiteData()
+        {
+            return Ok(_ExtractData.GetSpeciallyDesignatedNationalsSiteData());
+        }
+
+        [Route("GetSystemForAwardManagementPageSiteData")]
+        [HttpGet]
+        public IHttpActionResult GetSystemForAwardManagementPageSiteData()
+        {
+            return Ok(_ExtractData.GetSystemForAwardManagementPageSiteData());
         }
 
 
