@@ -1,0 +1,63 @@
+
+Subject:
+New ICSF Version released
+From:
+"Rajamanickam, Dinesh" <Dinesh.Rajamanickam@iconplc.com>
+Date:
+5/27/2020, 3:03 PM
+To:
+"Patrick Taur (patrick.taur@claritytechnologies.com)" <patrick.taur@claritytechnologies.com>
+CC:
+"Agrawal, Devendra" <Devendra.Agrawal@iconplc.com>, "Anandhan, Yuvaraj" <Yuvaraj.Anandhan@iconplc.com>
+
+Hi Patrick,
+
+ 
+
+Please note that on 22May20, new version of our ICSF released with few alteration and hence, could you please replace the attached new ICSF template into our DDAS application as soon as possible so our team could work without hassle.
+
+ 
+
+Note, the fourth weblink (Adequate Assurance List) stopped working a while ago and hence, the website database extract was retained in the DDAS application to perform the search so far. However, we have now remove this weblink from our new ICSF and hence, we are no longer required to have the application perform the search on this web link too. So please do the required.
+
+ 
+
+Hope this is clear and if not or if assistance required from us, please let us know.
+
+ 
+
+Thanks & Kind Regards,
+
+Dinesh R
+
+ 
+
+Dinesh Rajamanickam
+Due Diligence Lead
+Clinical Research Service
+
+Tel: +91 80 4039 4071
+Dinesh.Rajamanickam@iconplc.com
+www.ICONplc.com
+
+ICON_Corporate
+
+ 
+
+
+ICON plc made the following annotations.
+------------------------------------------------------------------------------
+This e-mail transmission may contain confidential or legally privileged information that is intended only for the individual or entity named in the e-mail address. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution, or reliance upon the contents of this e-mail is strictly prohibited. If you have received this e-mail transmission in error, please reply to the sender, so that ICON plc can arrange for proper delivery, and then please delete the message.
+
+Thank You,
+
+ICON plc
+South County Business Park
+Leopardstown
+Dublin 18
+Ireland
+Registered number: 145835
+
+
+Attachments:
+Investigator Compliance Search Form_New Template.docx	41.5 kB

@@ -915,3 +915,23 @@ Entry on 26 Dec 2016
 -----------------------------------------------------------------------------------------------------------
 Entry on 27 Dec 2016
 1. Changed the filepaths - Downloads, uploads and templates
+
+
+Starting Development
+1. Start MongoDB
+	StartMongoDB.bat
+2. Launch VS Community 2015
+	by clicking on: DDAS.sln
+	F5 to run application
+3. Launch VS Code and open folder:
+	DDAS.WebSite
+	npm start in vscode terminal
+
+Publish:
+
+angular build:
+DDAS.WebSite
+run AOTCompile.bat
+	opens two window terminals
+	will take approx 5 mins to compile
+	type EXIT to close the second window to return to execute the next 

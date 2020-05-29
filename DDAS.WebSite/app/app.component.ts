@@ -38,7 +38,7 @@ export class AppComponent {
     this.authService.logout()
             .subscribe(
                 data => {
- 
+                    console.log("inside logout");
                     this.router.navigate(['/login']);
                     window.location.reload();
     
