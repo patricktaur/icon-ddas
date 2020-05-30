@@ -16,13 +16,17 @@
 					<div class="col-lg-12">
 						<div class="form-group">
 							<label for="SiteName">Site Name:</label>
-
-							<div *ngIf="(SiteSource.ExtractionMode | lowercase) == 'manual'">
+							<!-- 20May2020 Patrick -->
+							<!-- version 1.1.5 -->
+							<!-- provision to modify site source -->
+							<input type="text" class="form-control" name="SiteName" [(ngModel)]="SiteSource.SiteName">	
+							
+							<!-- <div *ngIf="(SiteSource.ExtractionMode | lowercase) == 'manual'">
 								<input type="text" class="form-control" name="SiteName" [(ngModel)]="SiteSource.SiteName">
 							</div>
 							<div *ngIf="(SiteSource.ExtractionMode | lowercase) != 'manual'">
 								{{SiteSource.SiteName}}
-							</div>
+							</div> -->
 						</div>
 					</div>
 
@@ -31,13 +35,17 @@
 					<div class="col-lg-8">
 						<div class="form-group">
 							<label for="shortname">Short Name:</label>
+							<input type="text" class="form-control" name="shortname" [(ngModel)]="SiteSource.SiteShortName">
+							<!-- 20May2020 Patrick -->
+							<!-- version 1.1.5 -->
+							<!-- provision to modify site source -->
 							
-							<div *ngIf="(SiteSource.ExtractionMode | lowercase) == 'manual'">
+							<!-- <div *ngIf="(SiteSource.ExtractionMode | lowercase) == 'manual'">
 								<input type="text" class="form-control" name="shortname" [(ngModel)]="SiteSource.SiteShortName">
 							</div>
 							<div *ngIf="(SiteSource.ExtractionMode | lowercase) != 'manual'">
 								{{SiteSource.SiteShortName}}
-							</div>
+							</div> -->
 
 						</div>
 					</div>
@@ -50,12 +58,16 @@
 					<div class="col-lg-12">
 						<div class="form-group">
 							<label for="SiteUrl">URL:</label>
-							<div *ngIf="(SiteSource.ExtractionMode | lowercase) == 'manual'">
+							<input type="text" class="form-control" name="SiteUrl" [(ngModel)]="SiteSource.SiteUrl">
+							<!-- 20May2020 Patrick -->
+							<!-- version 1.1.5 -->
+							<!-- provision to modify site source -->
+							<!-- <div *ngIf="(SiteSource.ExtractionMode | lowercase) == 'manual'">
 								<input type="text" class="form-control" name="SiteUrl" [(ngModel)]="SiteSource.SiteUrl">
 							</div>
 							<div *ngIf="(SiteSource.ExtractionMode | lowercase) != 'manual'">
 								{{SiteSource.SiteUrl}}
-							</div>
+							</div> -->
 
 						</div>
 					</div>
@@ -66,7 +78,7 @@
 						<div class="form-group">
 							<label for="extractionMode">Extraction Mode:</label>
 							<label name="extractionMode">{{SiteSource.ExtractionMode}} </label>
-							<!--<input type="text" name="ExtractionMode" class="form-control" [(ngModel)]="SiteSource.ExtractionMode">-->
+							<!-- <input type="text" name="ExtractionMode" class="form-control" [(ngModel)]="SiteSource.ExtractionMode"> -->
 						</div>
 					</div>
 					<div class="col-lg-4">
