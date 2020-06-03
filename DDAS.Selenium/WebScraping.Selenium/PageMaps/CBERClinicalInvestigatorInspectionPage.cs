@@ -38,8 +38,13 @@ namespace WebScraping.Selenium.Pages
             {
                 try
                 {
-                    IList<IWebElement> Elements = driver.FindElements(By.XPath("//aside/ul/li/div/p"));
-                    return Elements[0];
+
+                    //IList<IWebElement> Elements = driver.FindElements(By.XPath("//aside/ul/li/div/p"));
+                    //return Elements[0];
+                    //WebSite layout changes
+                    //corrected on: 03June2020
+                    IWebElement Elem = driver.FindElement(By.XPath("//aside/section/div/aside/ul/div/li/div/p"));
+                    return Elem;
                 }
                 catch(Exception ex)
                 {

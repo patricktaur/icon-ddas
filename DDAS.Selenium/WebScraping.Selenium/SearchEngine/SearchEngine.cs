@@ -506,9 +506,17 @@ namespace WebScraping.Selenium.SearchEngine
         public void ExtractData(SiteEnum siteEnum, ILog log)
         {
             var NewLog = new Log();
+            bool ExtractionRequired = false;
+            if (siteEnum == SiteEnum.AdequateAssuranceListPage)
+            {
+                //Extraction of AddequateAssuranceList Page is not required.
+                //Email from Dinesh 27May2020
+                ExtractionRequired = false;
+            }else
+            {
+                ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
 
-            var ExtractionRequired = IsDataExtractionRequired(siteEnum, log);
-
+            }
             var SiteData = _searchPage.baseSiteData;
 
             if(siteEnum == SiteEnum.ClinicalInvestigatorInspectionPage ||
@@ -521,8 +529,8 @@ namespace WebScraping.Selenium.SearchEngine
             }
             else
             {
-                //SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
-                SiteData.SiteLastUpdatedOn = DateTime.Now;
+                SiteData.SiteLastUpdatedOn = _searchPage.SiteLastUpdatedDateFromPage;
+                //SiteData.SiteLastUpdatedOn = DateTime.Now;
             }
 
             if (ExtractionRequired)
