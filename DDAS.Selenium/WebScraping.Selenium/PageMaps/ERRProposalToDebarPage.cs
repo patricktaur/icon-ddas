@@ -26,7 +26,11 @@ namespace WebScraping.Selenium.Pages
                 try
                 {
                     //string XPathValue = "//div[@class='col-lg-12 pagetools-bottom']";
-                    IWebElement Elem = driver.FindElement(By.XPath("//aside/ul/li/div/p"));
+                    //WebSite layout changes
+                    //corrected on: 03June2020
+                    //IWebElement Elem = driver.FindElement(By.XPath("//aside/ul/li/div/p"));
+                    IWebElement Elem = driver.FindElement(By.XPath("//aside/section/div/aside/ul/div/li/div/p"));
+
                     return Elem;
                 }
                 catch (Exception ex)
