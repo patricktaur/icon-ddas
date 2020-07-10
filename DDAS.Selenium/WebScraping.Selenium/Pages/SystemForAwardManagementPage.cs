@@ -218,9 +218,20 @@ namespace WebScraping.Selenium.Pages
             //SAM/extractfiledownload?role=WW&version=EPLSPUB&filename=SAM_Exclusions_Public_Extract_18316.ZIP
             //https://www.sam.gov/public-extracts/SAM-Public/SAM_Exclusions_Public_Extract_
             string myStringWebResource = "https://www.sam.gov/SAM/extractfiledownload?role=WW&version=EPLSPUB&filename=SAM_Exclusions_Public_Extract_";
-            string Year = DateTime.Now.ToString("yy");
+            //06June2020
+            //The file SAM_Exclusions_Public_Extract_XXXXX.ZIP
+            //is available for download after ~12:00noon IST even when the link is displayed on the web site
+            //The extraction fails because the extraction program is executed around 12:00 midnight.
+            //Hence the file of the previous day is extracted.
 
-            string JulianDate = DateTime.Now.DayOfYear.ToString("000");
+            //current day:
+            //string Year = DateTime.Now.ToString("yy");
+            //string JulianDate = DateTime.Now.DayOfYear.ToString("000");
+            //prev day:
+            var fileDate = DateTime.Now.AddDays(-1);
+            string Year = fileDate.ToString("yy");
+            string JulianDate = fileDate.DayOfYear.ToString("000");
+
             //LatestExclusionExtractAnchorTag.Text.Split(' ')[1];
 
             myStringWebResource += Year + JulianDate + ".ZIP";
