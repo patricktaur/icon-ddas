@@ -91,23 +91,20 @@ namespace WebScraping.Selenium.Pages
                 ".zip";
 
             string UnZipPath = _config.CIILFolder;
-            
+
             WebClient myWebClient = new WebClient();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             string myStringWebResource = ClinicalInvestigatorZipAnchor.GetAttribute("href");
 
             _log.WriteLog(
-                string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n", 
+                string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
                 Path.GetFileName(fileName), myStringWebResource));
-            
-            //myWebClient.Headers.Add(HttpRequestHeader.UserAgent, "My app.");
-            //myWebClient.Headers.Add("User-Agent: Other");   //that is the simple line!
+
 
             Uri uriWebClient = new Uri(myStringWebResource);
             myWebClient.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
             myWebClient.Headers.Add("Content-Type", "application / zip, application / octet - stream");
             myWebClient.Headers.Add("Accept-Encoding", "gzip,deflate,sdch");
-            //objWebClient.Headers.Add("Referer", "http://Something");
             myWebClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
 
             try
@@ -145,7 +142,9 @@ namespace WebScraping.Selenium.Pages
 
             for (int Counter = 0; Counter <= LinesFromTextFile.Length - 1; Counter++)
             {
-                string[] FieldData = LinesFromTextFile[Counter].Split('~');
+                
+                //string[] FieldData = LinesFromTextFile[Counter].Split('~');
+                string[] FieldData = LinesFromTextFile[Counter].Split('\t');
 
                 var InvestigatorList = new ClinicalInvestigator();
                 InvestigatorList.RecId = Guid.NewGuid();
@@ -160,16 +159,14 @@ namespace WebScraping.Selenium.Pages
 
                     if (Counter < LinesFromTextFile.Length - 1)
                     {
-                        NextRowData = LinesFromTextFile[Counter + 1].Split('~');
+                        //NextRowData = LinesFromTextFile[Counter + 1].Split('~');
+                        NextRowData = LinesFromTextFile[Counter + 1].Split('\t');
                     }
                     else
                     {
-                        NextRowData = LinesFromTextFile[Counter].Split('~');
+                        //NextRowData = LinesFromTextFile[Counter].Split('~');
+                        NextRowData = LinesFromTextFile[Counter].Split('\t');
                     }
-
-                    //CurrentRowInspectionDate = DateTime.ParseExact(
-                    //    FieldData[9],
-                    //    "MM/dd/yyyy", null);
 
                     DateTime.TryParseExact(
                         FieldData[9], "MM/dd/yyyy", null, 

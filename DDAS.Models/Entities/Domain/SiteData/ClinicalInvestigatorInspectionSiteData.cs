@@ -74,9 +74,22 @@ namespace DDAS.Models.Entities.Domain.SiteData
                 string[] Formats =
                     { "M/d/yy", "M-d-yyyy", "M/d/yyyy"};
 
-                return DateTime.ParseExact(InspectionDate.Trim(),
-                    Formats, null,
-                    System.Globalization.DateTimeStyles.None);
+                //10Jul2020 Patrick
+                //return DateTime.ParseExact(InspectionDate.Trim(),
+                //    Formats, null,
+                //    System.Globalization.DateTimeStyles.None);
+
+                DateTime dateTime;
+                if (DateTime.TryParseExact(InspectionDate.Trim(), Formats, 
+                    null, System.Globalization.DateTimeStyles.None, out dateTime))
+                {
+                    return dateTime;
+                }
+                return null;
+
+
+                
+
             }
         }
         

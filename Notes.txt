@@ -935,3 +935,8 @@ run AOTCompile.bat
 	opens two window terminals
 	will take approx 5 mins to compile
 	type EXIT to close the second window to return to execute the next 
+
+
+Passwords:
+admin1 / Pass!234
+user1 / Pass!234
