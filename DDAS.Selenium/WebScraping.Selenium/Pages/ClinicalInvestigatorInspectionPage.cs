@@ -130,7 +130,7 @@ namespace WebScraping.Selenium.Pages
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
 
-        private void LoadClinicalInvestigatorList(string FilePath)
+        private int LoadClinicalInvestigatorList(string FilePath)
         {
             int RowNumber = 1;
 
@@ -230,10 +230,20 @@ namespace WebScraping.Selenium.Pages
             }
             //_log.WriteLog("Total records inserted - " +
             //    _clinicalSiteData.ClinicalInvestigatorInspectionList.Count());
+
+            var recsInserted = _UOW.ClinicalInvestigatorInspectionRepository.GetAll().Count();
             _log.WriteLog("Total records inserted - " +
-                _UOW.ClinicalInvestigatorInspectionRepository.GetAll().Count());
+                recsInserted);
+
+            if (LinesFromTextFile.Length > 0 && recsInserted == 0)
+            {
+                _log.WriteLog(string.Format("Warning. Likely error in reading data, No of Rows found: {0}, Records Inserted: {1} ", LinesFromTextFile.Length, recsInserted) 
+                    );
+
+            }
 
             File.Delete(FilePath); //delete txt file, retain zipped file
+            return recsInserted;
         }
 
         public override void LoadContent(string NameToSearch,
@@ -315,8 +325,14 @@ namespace WebScraping.Selenium.Pages
                 _clinicalSiteData.DataExtractionRequired = true;
                 var FilePath = DownloadCIIList();
                 DeleteAllClinicalInvestigatorInspectionRecords();
-                LoadClinicalInvestigatorList(FilePath);
-                _clinicalSiteData.DataExtractionSucceeded = true;
+                var recsInserted = LoadClinicalInvestigatorList(FilePath);
+                if (recsInserted > 0)
+                {
+                    _clinicalSiteData.DataExtractionSucceeded = true;
+                }else
+                {
+                    _clinicalSiteData.DataExtractionSucceeded = false;
+                }
             }
             catch (Exception e)
             {
