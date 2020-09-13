@@ -45,6 +45,8 @@ namespace DDAS.API.Controllers
 
         private string _RootPath;
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public SearchController(
             IUnitOfWork UOW,
             ISearchService SearchSummary, 
@@ -55,6 +57,7 @@ namespace DDAS.API.Controllers
             _config = Config;
             _SearchService = SearchSummary;
             _fileDownloadResponse = new FileDownloadResponse();
+            Logger.Info("Hello world");
         }
 
         [Route("Upload")]
