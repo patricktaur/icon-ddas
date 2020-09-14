@@ -21,6 +21,7 @@ using DDAS.Models.Enums;
 using DDAS.API.Helpers;
 using DDAS.Models.ViewModels;
 using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace DDAS.API.Controllers
 {
@@ -46,7 +47,8 @@ namespace DDAS.API.Controllers
         private string _RootPath;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
+        private Stopwatch _stopWatch;
+        private string _logGUID;
         public SearchController(
             IUnitOfWork UOW,
             ISearchService SearchSummary, 
@@ -57,18 +59,23 @@ namespace DDAS.API.Controllers
             _config = Config;
             _SearchService = SearchSummary;
             _fileDownloadResponse = new FileDownloadResponse();
-            Logger.Info("Hello world");
+            _stopWatch = new Stopwatch();
+            
         }
 
         [Route("Upload")]
         [HttpPost]
         public async Task<HttpResponseMessage> PostFormData()
-        {   
+        {
+                
             // Check if the request contains multipart/form-data.
             if (!Request.Content.IsMimeMultipartContent())
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
+            
+           
+            LogStart(GetCallerName());
 
             try
             {   
@@ -138,11 +145,16 @@ namespace DDAS.API.Controllers
                     }
                 }
                 //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
-                
+
+                _stopWatch.Stop();
+                var elapsedTime = _stopWatch.ElapsedMilliseconds;
+
                 return Request.CreateResponse(HttpStatusCode.OK, "ok");
             }
             catch (Exception e)
             {
+                _stopWatch.Stop();
+
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
                     "Error Details: " + e.Message);
             }
@@ -171,6 +183,8 @@ namespace DDAS.API.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
+
+            LogStart(GetCallerName());
 
             try
             {
@@ -224,6 +238,7 @@ namespace DDAS.API.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
+            LogStart(GetCallerName());
 
             try
             {
@@ -272,6 +287,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetPrincipalInvestigators()
         {
+            LogStart(GetCallerName());
+
             return Ok(
                 _SearchService.
                 getAllPrincipalInvestigators());
@@ -281,7 +298,9 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetMyActivePrincipalInvestigators()
         {
-             var UserName = User.Identity.GetUserName();
+            LogStart(GetCallerName());
+
+            var UserName = User.Identity.GetUserName();
             return Ok(
                 _SearchService.getPrincipalInvestigators(UserName, true));
          }
@@ -290,6 +309,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetMyReviewPendingPrincipalInvestigators()
         {
+            LogStart(GetCallerName());
+
             var UserName = User.Identity.GetUserName();
             //return Ok(
             //    _SearchService.getPrincipalInvestigators(UserName, true, false));
@@ -303,6 +324,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetMyClosedPrincipalInvestigators()
         {
+            LogStart(GetCallerName());
             var UserName = User.Identity.GetUserName();
             return Ok(
                 _SearchService.getPrincipalInvestigators(UserName, false));
@@ -312,6 +334,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetMyReviewCompletedPrincipalInvestigators()
         {
+            LogStart(GetCallerName());
             var UserName = User.Identity.GetUserName();
             return Ok(
                 _SearchService.getPrincipalInvestigators(UserName,  true, true));
@@ -321,6 +344,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetInvestigatorSiteSummary(string formId, int investigatorId)
         {
+            LogStart(GetCallerName());
             return Ok(
                 _SearchService.
                     getInvestigatorSiteSummary(formId, investigatorId));
@@ -331,6 +355,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult getInstituteFindingsSummary(string formId)
         {
+            LogStart(GetCallerName());
             Guid gCompFormId = Guid.Parse(formId);
             return Ok(
                 _SearchService.
@@ -352,6 +377,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetSingleComponentMatchRecords(
             string SiteDataId, SiteEnum SiteEnum, string FullName)
         {
+            LogStart(GetCallerName());
             try
             {
                 var Id = Guid.Parse(SiteDataId);
@@ -372,6 +398,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetUserFullName(
            string userName)
         {
+            LogStart(GetCallerName());
             return Ok(_SearchService.GetUserFullName(userName));
         }
 
@@ -379,12 +406,16 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
         {
+            LogStart(GetCallerName());
             try
             {
-                return Ok(_SearchService.GetComplianceFormsFromFilters(CompFormFilter));
+                var result = _SearchService.GetComplianceFormsFromFilters(CompFormFilter);
+                LogEnd(GetCallerName());
+                return Ok(result);
             }
             catch (Exception Ex)
             {
+                LogDebug(GetCallerName(), Ex.Message);
                 return Ok(Ex.ToString());
             }
         }
@@ -394,6 +425,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetClosedComplianceFormFilters(
             ComplianceFormFilter CompFormFilter)
         {
+            LogStart(GetCallerName());
             try
             {
                 var AssignedTo = User.Identity.GetUserName();
@@ -411,6 +443,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUnAssignedComplianceForms()
         {
+            LogStart(GetCallerName());
             return Ok(_SearchService.GetUnAssignedComplianceForms());
         }
 
@@ -420,6 +453,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
+            LogStart(GetCallerName());
             var UserName = User.Identity.GetUserName();
             if (formId == null)
             {
@@ -473,6 +507,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateQCEditComplianceForm(ComplianceForm form)
         {
+            LogStart(GetCallerName());
             return Ok(_SearchService.UpdateQC(form));
         }
 
@@ -480,6 +515,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateComplianceForm(ComplianceForm form)
         {
+            LogStart(GetCallerName());
             return Ok(_SearchService.UpdateComplianceForm(form));
         }
 
@@ -487,6 +523,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
+            LogStart(GetCallerName());
             if (form.InvestigatorDetails.First().Name == "" ||
                 form.InvestigatorDetails.First().Name == null)
                 return Ok("PI name cannot be empty");
@@ -501,6 +538,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAssginedToData(string AssignedTo, string AssignedFrom,
             string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             try
             {
                 if (AssignedFrom == null)
@@ -523,7 +561,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AssignComplianceFormsTo(AssignComplianceFormsTo AssignComplianceFormsTo)
         {
-           
+            LogStart(GetCallerName());
             try
             {
                 var AssignedBy = User.Identity.GetUserName();
@@ -543,6 +581,7 @@ namespace DDAS.API.Controllers
                                                                                  
         public IHttpActionResult ClearAssginedTo(string ComplianceFormId, string AssignedFrom)
         {
+            LogStart(GetCallerName());
             var AssignedBy = User.Identity.GetUserName();
             var RecId = Guid.Parse(ComplianceFormId);
             _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, "");
@@ -554,6 +593,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ClearAssginedTo(AssignComplianceFormsTo AssignComplianceFormsTo)
         {
+            LogStart(GetCallerName());
             var AssignedBy = User.Identity.GetUserName();
             _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
 
@@ -565,6 +605,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUploadsFolderPath()
         {
+            LogStart(GetCallerName());
             string FilePath = _config.UploadsFolder;
             string path = FilePath.Replace(_RootPath, "");
             return Ok(path);
@@ -574,6 +615,8 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage DownloadUploadedFile(string GeneratedFileName)
         {
+
+            LogStart(GetCallerName());
             HttpResponseMessage Response = null;
 
             if (!File.Exists(_config.UploadsFolder + GeneratedFileName))
@@ -608,6 +651,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
+            LogStart(GetCallerName());
             return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form));   
         }
 
@@ -615,6 +659,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateFindings(UpdateFindigs updateFindings)
         {
+            LogStart(GetCallerName());
             return Ok(_SearchService.UpdateFindings(updateFindings));
             //return Ok( _UOW.ComplianceFormRepository.UpdateFindings(updateFindings));
         }
@@ -623,7 +668,8 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateInstituteFindings(UpdateInstituteFindings FindingsModel)
         {
-               return Ok(_SearchService.UpdateInstituteFindings(FindingsModel));
+            LogStart(GetCallerName());
+            return Ok(_SearchService.UpdateInstituteFindings(FindingsModel));
         }
 
         #endregion
@@ -632,6 +678,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage GenerateComplianceForm(string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             HttpResponseMessage response = null;
 
             var localFilePath = 
@@ -697,6 +744,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage GenerateComplianceFormPDF(string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             HttpResponseMessage response = null;
 
             var localFilePath = 
@@ -754,62 +802,7 @@ namespace DDAS.API.Controllers
             return response;
         }
 
-        //[Route("GenerateOutputFile")]
-        //[HttpGet]
-        //public HttpResponseMessage GenerateOutputFile()
-        //{
-        //    HttpResponseMessage response = null;
-
-        //    if(!File.Exists(
-        //        _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
-        //    {
-        //        response = Request.CreateResponse(HttpStatusCode.Gone);
-        //    }
-        //    else
-        //    {
-        //        var UserAgent = Request.Headers.UserAgent.ToString();
-        //        var Browser = GetBrowserType(UserAgent);
-
-        //        response = Request.CreateResponse(HttpStatusCode.OK);
-
-        //        var GenerateOutputFile =
-        //            new GenerateOutputFile(
-        //                _config.ExcelTempateFolder + "Output_File_Template.xlsx");
-
-        //        var forms = _UOW.ComplianceFormRepository.GetAll();
-
-        //        //var FilePath = _SearchService.GenerateOutputFile(
-        //        //    GenerateOutputFile,
-        //        //    forms);
-
-        //        //var Path = FilePath.Replace(RootPath, "");
-
-        //        var memoryStream =
-        //            _SearchService.GenerateOutputFile(GenerateOutputFile, forms);
-                
-        //        response.Content = new ByteArrayContent(memoryStream.ToArray());
-
-        //        response.Content.Headers.ContentDisposition =
-        //            new ContentDispositionHeaderValue("attachment");
-
-        //        response.Content.Headers.ContentType =
-        //            new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
-        //        var OutputFileName = "OutputFile_" +
-        //            DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-        //            ".xlsx";
-
-        //        response.Content.Headers.ContentDisposition.FileName = OutputFileName;
-
-        //        //add custom headers to the response
-        //        //easy for angular2 to read this header
-        //        response.Content.Headers.Add("Filename", OutputFileName);
-        //        response.Content.Headers.Add("Browser", Browser);
-        //        response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
-        //        response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
-        //    }
-        //    return response;
-        //}
+        
 
         //3Dec2016
 
@@ -817,6 +810,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage DownloadForm(string ComplianceFormId = null)
         {
+            LogStart(GetCallerName());
             HttpResponseMessage result = null;
 
             if (ComplianceFormId == null)
@@ -847,6 +841,8 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public HttpResponseMessage DownloadComplianceForm()
         {
+            LogStart(GetCallerName());
+
             HttpResponseMessage result = null;
             //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
             var localFilePath = _config.ExcelTempateFolder + "Output_File_Template.xlsx";
@@ -881,6 +877,7 @@ namespace DDAS.API.Controllers
         [HttpPut]
         public IHttpActionResult CloseComplianceForm(Guid ComplianceFormId)
         {
+            LogStart(GetCallerName());
             ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
             form.Active = false;
@@ -893,7 +890,7 @@ namespace DDAS.API.Controllers
         [HttpPut]
         public IHttpActionResult OpenComplianceForm(Guid ComplianceFormId)
         {
-           
+            LogStart(GetCallerName());
             ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
             form.Active = true;
             _UOW.ComplianceFormRepository.UpdateCollection(form);
@@ -905,6 +902,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteComplianceForm(string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             Guid? RecId = Guid.Parse(ComplianceFormId);
             _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
             return Ok(true);
@@ -914,6 +912,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAllCountries()
         {
+            LogStart(GetCallerName());
             var Countries = new CountryList();
             return Ok(Countries.GetCountries);
         }
@@ -922,7 +921,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            //return Ok(SearchSites.GetNewSearchQuery());
+            LogStart(GetCallerName());
             var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
             return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
         }
@@ -931,6 +930,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetCurrentReviewStatus(string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             var FormId = Guid.Parse(ComplianceFormId);
             var Form = _UOW.ComplianceFormRepository.FindById(FormId);
 
@@ -1009,6 +1009,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAttachmentsList(string formId)
         {
+            LogStart(GetCallerName());
             var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
 
             string[] FileList = new string[0];
@@ -1028,7 +1029,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage DownloadAttachmentFile(string formId, string fileName)
         {
-
+            LogStart(GetCallerName());
             var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
             var fileNameWithPath = folder + "/" + fileName;
 
@@ -1053,27 +1054,13 @@ namespace DDAS.API.Controllers
             return result;
         }
 
-        //[Route("GetSessionId")]
-        //[HttpGet]
-        //public string GetSessionId()
-        //{
-        //    var retValue = Guid.NewGuid().ToString().Replace("-", "A");
-
-        //    return retValue;
-        //}
-
-
-        //[Route("GetSessionId")]
-        //[HttpGet]
-        //public IHttpActionResult GetSessionId()
-        //{
-        //    return Ok("abc");
-        //}   
+        
 
         [Route("MoveReviewCompletedToCompleted")]
         [HttpGet]
         public IHttpActionResult MoveToCompletedICSF(string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             var Id = Guid.Parse(ComplianceFormId);
             var Form = _UOW.ComplianceFormRepository.FindById(Id);
             var Review = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.ReviewCompleted);
@@ -1089,6 +1076,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ExportToiSprint(string ComplianceFormId)
         {
+            LogStart(GetCallerName());
             var RecId = Guid.Parse(ComplianceFormId);
             var Form = _UOW.ComplianceFormRepository.FindById(RecId);
             var ExportResponse = _SearchService.ExportDataToIsprint(Form);
@@ -1134,6 +1122,53 @@ namespace DDAS.API.Controllers
             }
             return retValue;
         }
+
+        private void LogStart(string callerName)
+        {
+            _stopWatch.Start();
+            _logGUID = shortGUID();
+            Logger.Info(String.Format("{0} | {1} | {2} Start ", callerName, _logGUID, CurrentUser()));
+
+        }
+
+        private void LogEnd(string callerName)
+        {
+            _stopWatch.Stop();
+            Logger.Info(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds));
+
+        }
+
+        private void LogDebug(string callerName, string exceptionMessage)
+        {
+            _stopWatch.Stop();
+            Logger.Debug(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3} | ERROR: {4}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds, exceptionMessage));
+
+        }
+
+
+        private string shortGUID()
+        {
+            var guid = Guid.NewGuid();
+            var base64Guid = Convert.ToBase64String(guid.ToByteArray());
+
+            // Replace URL unfriendly characters with better ones
+            base64Guid = base64Guid.Replace('+', '-').Replace('/', '_');
+
+            // Remove the trailing ==
+            return base64Guid.Substring(0, base64Guid.Length - 2);
+        }
+
+        private string CurrentUser()
+        {
+            //return HttpContext.Current.Request.LogonUserIdentity.Name;
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 
     public class UserDetails
