@@ -31,6 +31,8 @@ import {FileService} from './shared/utils/file.service';
 import {DataExtractorModule} from "./data-extractor/data-extractor.module";
 import {LoginHistoryService} from "./Admin/all-loginhistory.service";
 
+import {LogsModule} from "./logs/logs.module";
+
 
 @NgModule({
   imports:      [ 
@@ -46,7 +48,8 @@ import {LoginHistoryService} from "./Admin/all-loginhistory.service";
     AppAdminModule,
     HelpModule,
     QCModule,
-    DataExtractorModule
+    DataExtractorModule,
+    LogsModule
   ],
   declarations: [ 
     AppComponent,

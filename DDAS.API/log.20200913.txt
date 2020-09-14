@@ -1,0 +1,7 @@
+2020-09-13 12:40:29.3146|INFO|DDAS.API.Controllers.SearchController|Hello world
+2020-09-13 19:03:46.7595|INFO|DDAS.API.Controllers.SearchController||veNRD9Xc-UC1ZA6dUlycRw | admin1 | Start 
+2020-09-13 19:03:52.1033|INFO|DDAS.API.Controllers.SearchController||O7ZeiQUkNEanbMyCt1GURQ | admin1 | Start 
+2020-09-13 19:10:34.1679|INFO|DDAS.API.Controllers.SearchController|DDAS.API.Controllers.SearchController.LogStart|R-l03759DE6Mr11gCpS5Yg | admin1 | Start 
+2020-09-13 19:23:45.2737|INFO|DDAS.API.Controllers.SearchController|GetComplianceFormFilterResults | 85LUJ-ybqUKLaBbEguOrPA | admin1 Start 
+2020-09-13 19:31:18.2786|INFO|DDAS.API.Controllers.SearchController|GetComplianceFormFilterResults | yGtwwCC36E67OkNtR9As0w | admin1 Start 
+2020-09-13 19:31:18.3406|INFO|DDAS.API.Controllers.SearchController|GetComplianceFormFilterResults | yGtwwCC36E67OkNtR9As0w | Stop | admin1 | Elapsed ms: 63
