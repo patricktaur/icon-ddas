@@ -252,6 +252,7 @@
     <Compile Include="Controllers\AuditController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\DataExtractorController.cs" />
+    <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Helpers\ConvertFormToCurrentVersion.cs" />
     <Compile Include="Helpers\CSVConvertor.cs" />
     <Compile Include="Helpers\ExecutionTimeFilterAttribute.cs" />

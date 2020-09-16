@@ -10,6 +10,12 @@
 			<h3>Application Logs
 			</h3>
 
+		
 		</div>
+		<button type="button" class="btn btn-primary" (click)="logStop()">Log - Stop</button>
+		<button type="button" class="btn btn-primary" (click)="logResume()">Log - Resume</button>
+		<button type="button" class="btn btn-primary" (click)="getLogStatus()">Log - Status</button>
+		Log Status: {{logStatus}}
+	
 	</div>
 </div>

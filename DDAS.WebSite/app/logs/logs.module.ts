@@ -9,7 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import {SearchModule} from '../search/search.module';
 //import {ModalModule} from "ng2-modal";
 import {LogsMainComponent} from './logs-main/logs-main.component';
-
+import {LogsService} from './logs-service';
 
 
 @NgModule({
@@ -28,7 +28,7 @@ import {LogsMainComponent} from './logs-main/logs-main.component';
     
   ],
   providers: [
-    
+    LogsService
   ]
 })
 export class LogsModule { }
