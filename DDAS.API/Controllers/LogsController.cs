@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.IO;
 using System.Web.Http;
 using AutoMapper;
 using DDAS.Models;
@@ -93,6 +94,7 @@ namespace DDAS.API.Controllers
         {
             bool enabled = false;
             var config = Logger.Factory.Configuration;
+            
             if (Logger.IsInfoEnabled)
             {
                 enabled = true;
@@ -101,6 +103,39 @@ namespace DDAS.API.Controllers
             return Ok(enabled);
         }
 
+        [Route("archived-logs")]
+        [HttpGet]
+        public IHttpActionResult ArchivedLogs()
+        {
+            FileInfo[] files = null;
+            DirectoryInfo dir = new DirectoryInfo("Logs/xyz");
+            files = dir.GetFiles("*.*");
+            foreach (var file in files)
+            {
+                var x = file.Name;
+            }
+            return Ok();
+        }
+
+        [Route("delete-archive")]
+        [HttpGet]
+        public IHttpActionResult DeleteArchive(int olderThan)
+        {
+            FileInfo[] files = null;
+            DirectoryInfo dir = new DirectoryInfo("Logs/xyz");
+            files = dir.GetFiles("*.*");
+            var deletedCount = 0;
+            foreach (var file in files)
+            {
+                if (DateTime.UtcNow - file.CreationTimeUtc > TimeSpan.FromDays(olderThan))
+                {
+                    File.Delete(file.FullName);
+                    deletedCount += 1;
+                }
+            }
+
+            return Ok("Deleted: " + deletedCount);
+        }
 
 
     }

@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {LogsService} from '../logs-service';
+import {ConfigService} from '../../shared/utils/config.service'
 
 @Component({
     moduleId: module.id,
@@ -12,14 +13,22 @@ export class LogsMainComponent implements OnInit {
     public loading: boolean = false;
     public error: any;
     public logStatus: boolean;
+    _baseUrl: string = '';
+    _downloadUrl : string = '';
     
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private logsService : LogsService
+        private logsService : LogsService,
+        private configService: ConfigService,
         
-    ) { }
+        
+    ) { 
+        this._baseUrl = configService.getApiURI() ;
+        //remove api/
+        this._downloadUrl = this._baseUrl.replace("api/", "");
+    }
 
     ngOnInit() {
         
