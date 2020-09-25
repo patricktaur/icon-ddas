@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using NLog.Config;
 using NLog.Targets;
 using NLog;
+using System.Web;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+using DDAS.API.Helpers;
 
 namespace DDAS.API.Controllers
 {
@@ -23,6 +27,7 @@ namespace DDAS.API.Controllers
         private readonly IMapper _Mapper;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _RootPath;
 
         /*
          Trace
@@ -37,6 +42,7 @@ namespace DDAS.API.Controllers
         {
             _UOW = uow;
             _Mapper = mapper;
+            _RootPath = HttpRuntime.AppDomainAppPath;
         }
 
        
@@ -107,14 +113,16 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ArchivedLogs()
         {
-            FileInfo[] files = null;
-            DirectoryInfo dir = new DirectoryInfo("Logs/xyz");
-            files = dir.GetFiles("*.*");
-            foreach (var file in files)
+             var retList = new List<FileInfo>();
+            DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
+            var logFiles = dir.GetFiles("*.*").OrderBy(p => p.CreationTimeUtc).ToList();
+
+            foreach (FileInfo fileInfo in logFiles)
             {
-                var x = file.Name;
+                retList.Add(fileInfo);
             }
-            return Ok();
+
+            return Ok(retList);
         }
 
         [Route("delete-archive")]
@@ -122,7 +130,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult DeleteArchive(int olderThan)
         {
             FileInfo[] files = null;
-            DirectoryInfo dir = new DirectoryInfo("Logs/xyz");
+            DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
             files = dir.GetFiles("*.*");
             var deletedCount = 0;
             foreach (var file in files)
@@ -137,6 +145,15 @@ namespace DDAS.API.Controllers
             return Ok("Deleted: " + deletedCount);
         }
 
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
 
     }
 }

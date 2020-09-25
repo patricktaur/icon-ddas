@@ -47,8 +47,8 @@ namespace DDAS.API.Controllers
         private string _RootPath;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        private Stopwatch _stopWatch;
-        private string _logGUID;
+        //private Stopwatch _stopWatch;
+        
         public SearchController(
             IUnitOfWork UOW,
             ISearchService SearchSummary, 
@@ -59,7 +59,7 @@ namespace DDAS.API.Controllers
             _config = Config;
             _SearchService = SearchSummary;
             _fileDownloadResponse = new FileDownloadResponse();
-            _stopWatch = new Stopwatch();
+            
             
         }
 
@@ -73,87 +73,85 @@ namespace DDAS.API.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
-            
-           
-            LogStart(GetCallerName());
 
             try
-            {   
-                var userName = User.Identity.GetUserName();
-
-                //to retain name of the file-to-be-saved/uploaded, 
-                //by default a guid is generated as filename for security reasons
-                //CustomMultipartFormDataStreamProvider provider = 
-                //    new CustomMultipartFormDataStreamProvider(UploadsFolder); 
-
-                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
-
-                await Request.Content.ReadAsMultipartAsync(provider);
-
-                var complianceForms = new List<ComplianceForm>();
-
-                List<string> ValidationMessages = new List<string>();
-
-                foreach (MultipartFileData file in provider.FileData)
+            {
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
                 {
-                    string FilePathWithGUID = file.LocalFileName;
-                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
 
-                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
-                        UploadedFileName = UploadedFileName.Trim('"');
-                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
-                        UploadedFileName = Path.GetFileName(UploadedFileName);
+                    var userName = User.Identity.GetUserName();
 
-                    var excelInput =
-                            _SearchService.ReadDataFromExcelFile(FilePathWithGUID);
+                    //to retain name of the file-to-be-saved/uploaded, 
+                    //by default a guid is generated as filename for security reasons
+                    //CustomMultipartFormDataStreamProvider provider = 
+                    //    new CustomMultipartFormDataStreamProvider(UploadsFolder); 
 
-                    if (excelInput.ExcelInputRows.Count >= 0)
+                    var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
+
+                    await Request.Content.ReadAsMultipartAsync(provider);
+
+                    var complianceForms = new List<ComplianceForm>();
+
+                    List<string> ValidationMessages = new List<string>();
+
+                    foreach (MultipartFileData file in provider.FileData)
                     {
-                        if (excelInput.ExcelInputRows.Count == 0)
-                            return Request.CreateResponse(HttpStatusCode.OK,
-                                "No records found");
+                        string FilePathWithGUID = file.LocalFileName;
+                        string UploadedFileName = file.Headers.ContentDisposition.FileName;
 
-                        if(excelInput.ExcelInputRows.SelectMany(
-                            x => x.ErrorMessages.Where(
-                                y => y.ToLower()
-                                .Contains("errors found"))).Count() > 0)
+                        if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                            UploadedFileName = UploadedFileName.Trim('"');
+                        if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                            UploadedFileName = Path.GetFileName(UploadedFileName);
+
+                        var excelInput =
+                                _SearchService.ReadDataFromExcelFile(FilePathWithGUID);
+
+                        if (excelInput.ExcelInputRows.Count >= 0)
                         {
-                            //unable to make the uploader handle list of strings, 
-                            //therefore this ListToString workaround:
-                            return
-                                Request.CreateResponse(HttpStatusCode.OK,
-                                ListToString(excelInput));
+                            if (excelInput.ExcelInputRows.Count == 0)
+                                return Request.CreateResponse(HttpStatusCode.OK,
+                                    "No records found");
+
+                            if (excelInput.ExcelInputRows.SelectMany(
+                                x => x.ErrorMessages.Where(
+                                    y => y.ToLower()
+                                    .Contains("errors found"))).Count() > 0)
+                            {
+                                //unable to make the uploader handle list of strings, 
+                                //therefore this ListToString workaround:
+                                return
+                                    Request.CreateResponse(HttpStatusCode.OK,
+                                    ListToString(excelInput));
+                            }
+                        }
+
+                        var forms = _SearchService.ReadUploadedFileData(
+                            excelInput,
+                            userName,
+                            FilePathWithGUID,
+                            UploadedFileName);
+
+                        //var extQuery = new Services.LiveScan.ExtractionQueries(_UOW, 2);
+                        //DateTime nextEstimatedLiveScanCompletion = extQuery.getNextExtractionCompletion();
+
+                        foreach (ComplianceForm form in forms)
+                        {
+                            //form.ExtractionEstimatedCompletion = nextEstimatedLiveScanCompletion;
+                            complianceForms.Add(
+                                _SearchService.ScanUpdateComplianceForm(
+                                    form));
+                            //nextEstimatedLiveScanCompletion = nextEstimatedLiveScanCompletion.AddSeconds(extQuery.AverageExtractionTimeInSecs * 3);
                         }
                     }
+                    //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
 
-                    var forms = _SearchService.ReadUploadedFileData(
-                        excelInput,
-                        userName, 
-                        FilePathWithGUID, 
-                        UploadedFileName);
-
-                    //var extQuery = new Services.LiveScan.ExtractionQueries(_UOW, 2);
-                    //DateTime nextEstimatedLiveScanCompletion = extQuery.getNextExtractionCompletion();
-
-                    foreach (ComplianceForm form in forms)
-                    {
-                        //form.ExtractionEstimatedCompletion = nextEstimatedLiveScanCompletion;
-                        complianceForms.Add(
-                            _SearchService.ScanUpdateComplianceForm(
-                                form));
-                        //nextEstimatedLiveScanCompletion = nextEstimatedLiveScanCompletion.AddSeconds(extQuery.AverageExtractionTimeInSecs * 3);
-                    }
+                    return Request.CreateResponse(HttpStatusCode.OK, "ok");
                 }
-                //return Request.CreateResponse(HttpStatusCode.OK, complianceForms);
-
-                _stopWatch.Stop();
-                var elapsedTime = _stopWatch.ElapsedMilliseconds;
-
-                return Request.CreateResponse(HttpStatusCode.OK, "ok");
             }
             catch (Exception e)
             {
-                _stopWatch.Stop();
+                
 
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
                     "Error Details: " + e.Message);
@@ -184,43 +182,48 @@ namespace DDAS.API.Controllers
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
-            LogStart(GetCallerName());
+            
 
             try
             {
-                var userName = User.Identity.GetUserName();
-                //CustomMultipartFormDataStreamProvider provider = 
-                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
-
-                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
-
-                await Request.Content.ReadAsMultipartAsync(provider);
-
-                var Attachments = new List<Attachment>();
-
-                List<string> ValidationMessages = new List<string>();
-
-                foreach (MultipartFileData file in provider.FileData)
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
                 {
-                    string FilePathWithGUID = file.LocalFileName;
-                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
-                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
-                    {
-                        UploadedFileName = UploadedFileName.Trim('"');
-                    }
-                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
-                    {
-                        UploadedFileName = Path.GetFileName(UploadedFileName);
-                    }
 
-                    //File.Move(file.LocalFileName, Path.Combine(StoragePath, fileName));
-                    var Attachment = new Attachment();
-                    Attachment.Title = "";
-                    Attachment.FileName = UploadedFileName;
-                    Attachment.GeneratedFileName = FilePathWithGUID;
+
+                    var userName = User.Identity.GetUserName();
+                    //CustomMultipartFormDataStreamProvider provider = 
+                    //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
+
+                    var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
+
+                    await Request.Content.ReadAsMultipartAsync(provider);
+
+                    var Attachments = new List<Attachment>();
+
+                    List<string> ValidationMessages = new List<string>();
+
+                    foreach (MultipartFileData file in provider.FileData)
+                    {
+                        string FilePathWithGUID = file.LocalFileName;
+                        string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                        if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                        {
+                            UploadedFileName = UploadedFileName.Trim('"');
+                        }
+                        if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                        {
+                            UploadedFileName = Path.GetFileName(UploadedFileName);
+                        }
+
+                        //File.Move(file.LocalFileName, Path.Combine(StoragePath, fileName));
+                        var Attachment = new Attachment();
+                        Attachment.Title = "";
+                        Attachment.FileName = UploadedFileName;
+                        Attachment.GeneratedFileName = FilePathWithGUID;
+                    }
+                    //_SearchService.AddAttachmentsToFindings(form);
+                    return Request.CreateResponse(HttpStatusCode.OK);
                 }
-                //_SearchService.AddAttachmentsToFindings(form);
-                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
@@ -238,42 +241,45 @@ namespace DDAS.API.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
-            LogStart(GetCallerName());
+            
 
             try
             {
-                var userName = User.Identity.GetUserName();
-                //CustomMultipartFormDataStreamProvider provider = 
-                //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
-
-                var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
-
-                await Request.Content.ReadAsMultipartAsync(provider);
-
-                var Attachments = new List<Attachment>();
-
-                List<string> ValidationMessages = new List<string>();
-
-                foreach (MultipartFileData file in provider.FileData)
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
                 {
-                    string FilePathWithGUID = file.LocalFileName;
-                    string UploadedFileName = file.Headers.ContentDisposition.FileName;
-                    if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
-                    {
-                        UploadedFileName = UploadedFileName.Trim('"');
-                    }
-                    if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
-                    {
-                        UploadedFileName = Path.GetFileName(UploadedFileName);
-                    }
+                    var userName = User.Identity.GetUserName();
+                    //CustomMultipartFormDataStreamProvider provider = 
+                    //    new CustomMultipartFormDataStreamProvider(UploadsFolder);
 
-                    var Attachment = new Attachment();
-                    Attachment.Title = "";
-                    Attachment.FileName = UploadedFileName;
-                    Attachment.GeneratedFileName = FilePathWithGUID;
+                    var provider = new MultipartFormDataStreamProvider(_config.UploadsFolder);
+
+                    await Request.Content.ReadAsMultipartAsync(provider);
+
+                    var Attachments = new List<Attachment>();
+
+                    List<string> ValidationMessages = new List<string>();
+
+                    foreach (MultipartFileData file in provider.FileData)
+                    {
+                        string FilePathWithGUID = file.LocalFileName;
+                        string UploadedFileName = file.Headers.ContentDisposition.FileName;
+                        if (UploadedFileName.StartsWith("\"") && UploadedFileName.EndsWith("\""))
+                        {
+                            UploadedFileName = UploadedFileName.Trim('"');
+                        }
+                        if (UploadedFileName.Contains(@"/") || UploadedFileName.Contains(@"\"))
+                        {
+                            UploadedFileName = Path.GetFileName(UploadedFileName);
+                        }
+
+                        var Attachment = new Attachment();
+                        Attachment.Title = "";
+                        Attachment.FileName = UploadedFileName;
+                        Attachment.GeneratedFileName = FilePathWithGUID;
+                    }
+                    //_SearchService.AddAttachmentsToFindings(form);
+                    return Request.CreateResponse(HttpStatusCode.OK);
                 }
-                //_SearchService.AddAttachmentsToFindings(form);
-                return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
             {
@@ -287,67 +293,76 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetPrincipalInvestigators()
         {
-            LogStart(GetCallerName());
-
-            return Ok(
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(
                 _SearchService.
                 getAllPrincipalInvestigators());
+            }
         }
 
         [Route("GetMyActivePrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyActivePrincipalInvestigators()
         {
-            LogStart(GetCallerName());
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
 
-            var UserName = User.Identity.GetUserName();
-            return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, true));
-         }
+                var UserName = User.Identity.GetUserName();
+                return Ok(
+                    _SearchService.getPrincipalInvestigators(UserName, true));
+            }
+        }
 
         [Route("GetMyReviewPendingPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyReviewPendingPrincipalInvestigators()
         {
-            LogStart(GetCallerName());
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var UserName = User.Identity.GetUserName();
+                //return Ok(
+                //    _SearchService.getPrincipalInvestigators(UserName, true, false));
 
-            var UserName = User.Identity.GetUserName();
-            //return Ok(
-            //    _SearchService.getPrincipalInvestigators(UserName, true, false));
-
-            return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, ReviewStatusEnum.ReviewInProgress));
-
+                return Ok(
+                    _SearchService.getPrincipalInvestigators(UserName, ReviewStatusEnum.ReviewInProgress));
+            }
         }
 
         [Route("GetMyClosedPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyClosedPrincipalInvestigators()
         {
-            LogStart(GetCallerName());
-            var UserName = User.Identity.GetUserName();
-            return Ok(
-                _SearchService.getPrincipalInvestigators(UserName, false));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var UserName = User.Identity.GetUserName();
+                return Ok(
+                    _SearchService.getPrincipalInvestigators(UserName, false));
+            }
         }
 
         [Route("GetMyReviewCompletedPrincipalInvestigators")]
         [HttpGet]
         public IHttpActionResult GetMyReviewCompletedPrincipalInvestigators()
         {
-            LogStart(GetCallerName());
-            var UserName = User.Identity.GetUserName();
-            return Ok(
-                _SearchService.getPrincipalInvestigators(UserName,  true, true));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var UserName = User.Identity.GetUserName();
+                return Ok(
+                    _SearchService.getPrincipalInvestigators(UserName, true, true));
+            }
         }
 
         [Route("GetInvestigatorSiteSummary")]
         [HttpGet]
         public IHttpActionResult GetInvestigatorSiteSummary(string formId, int investigatorId)
         {
-            LogStart(GetCallerName());
-            return Ok(
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(
                 _SearchService.
                     getInvestigatorSiteSummary(formId, investigatorId));
+            }
         }
 
         //getInstituteFindingsSummary
@@ -355,11 +370,13 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult getInstituteFindingsSummary(string formId)
         {
-            LogStart(GetCallerName());
-            Guid gCompFormId = Guid.Parse(formId);
-            return Ok(
-                _SearchService.
-                    getInstituteFindingsSummary(gCompFormId));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                Guid gCompFormId = Guid.Parse(formId);
+                return Ok(
+                    _SearchService.
+                        getInstituteFindingsSummary(gCompFormId));
+            }
         }
 
         [Route("GetSingleComponentMatches")]
@@ -377,15 +394,17 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetSingleComponentMatchRecords(
             string SiteDataId, SiteEnum SiteEnum, string FullName)
         {
-            LogStart(GetCallerName());
             try
             {
-                var Id = Guid.Parse(SiteDataId);
-       
-                //SiteEnum siteEnum = (SiteEnum)Enum;
-                return Ok(
-                    _SearchService.GetSingleComponentMatchedRecords(
-                        Id, SiteEnum, FullName));
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                {
+                    var Id = Guid.Parse(SiteDataId);
+
+                    //SiteEnum siteEnum = (SiteEnum)Enum;
+                    return Ok(
+                        _SearchService.GetSingleComponentMatchedRecords(
+                            Id, SiteEnum, FullName));
+                }
             }
             catch(Exception e)
             {
@@ -398,24 +417,27 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetUserFullName(
            string userName)
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.GetUserFullName(userName));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.GetUserFullName(userName));
+            }
         }
 
         [Route("ComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetComplianceFormFilterResults(ComplianceFormFilter CompFormFilter)
         {
-            LogStart(GetCallerName());
             try
             {
-                var result = _SearchService.GetComplianceFormsFromFilters(CompFormFilter);
-                LogEnd(GetCallerName());
-                return Ok(result);
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                {
+                    var result = _SearchService.GetComplianceFormsFromFilters(CompFormFilter);
+                    return Ok(result);
+                }
             }
             catch (Exception Ex)
             {
-                LogDebug(GetCallerName(), Ex.Message);
+                
                 return Ok(Ex.ToString());
             }
         }
@@ -425,13 +447,15 @@ namespace DDAS.API.Controllers
         public IHttpActionResult GetClosedComplianceFormFilters(
             ComplianceFormFilter CompFormFilter)
         {
-            LogStart(GetCallerName());
             try
             {
-                var AssignedTo = User.Identity.GetUserName();
-                return Ok(
-                    _SearchService.GetClosedComplianceFormsFromFilters(
-                        CompFormFilter, AssignedTo));
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                {
+                    var AssignedTo = User.Identity.GetUserName();
+                    return Ok(
+                        _SearchService.GetClosedComplianceFormsFromFilters(
+                            CompFormFilter, AssignedTo));
+                }
             }
             catch (Exception Ex)
             {
@@ -443,8 +467,10 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUnAssignedComplianceForms()
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.GetUnAssignedComplianceForms());
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.GetUnAssignedComplianceForms());
+            }
         }
 
         #region Patrick
@@ -453,51 +479,53 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetComplianceForm(string formId = "")  //returns previously generated form or empty form  
         {
-            LogStart(GetCallerName());
-            var UserName = User.Identity.GetUserName();
-            if (formId == null)
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                return Ok(_SearchService.GetNewComplianceForm(UserName, "Manual"));
-            }
-            else
-            {
-                Guid? gFormId = Guid.Parse(formId);
-                var compForm = _UOW.ComplianceFormRepository.FindById(gFormId);
-                if (compForm == null)
+                var UserName = User.Identity.GetUserName();
+                if (formId == null)
                 {
-                    return NotFound();
+                    return Ok(_SearchService.GetNewComplianceForm(UserName, "Manual"));
                 }
                 else
                 {
-                    UpdateFormToCurrentVersion.
-                        UpdateComplianceFormToCurrentVersion(compForm);
-
-                    //if (compForm.QCGeneralComment != null &&
-                    //    compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
-                    //{
-                    //    compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
-                    //    //compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                    //}
-
-                    //if (compForm.QCAttachmentComment != null &&
-                    //    compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
-                    //{
-                    //    compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
-                    //    //compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
-                    //}
-
-                    var Review = compForm.Reviews.FirstOrDefault();
-                    if (Review != null &&
-                        Review.Status == ReviewStatusEnum.SearchCompleted &&
-                        compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
+                    Guid? gFormId = Guid.Parse(formId);
+                    var compForm = _UOW.ComplianceFormRepository.FindById(gFormId);
+                    if (compForm == null)
                     {
-                        Review.StartedOn = DateTime.Now;
-                        Review.Status = ReviewStatusEnum.ReviewInProgress;
-                        //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                        return NotFound();
                     }
-                    _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    else
+                    {
+                        UpdateFormToCurrentVersion.
+                            UpdateComplianceFormToCurrentVersion(compForm);
+
+                        //if (compForm.QCGeneralComment != null &&
+                        //    compForm.QCGeneralComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                        //{
+                        //    compForm.QCGeneralComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        //    //compForm.QCGeneralComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                        //}
+
+                        //if (compForm.QCAttachmentComment != null &&
+                        //    compForm.QCAttachmentComment.ReviewerCategoryEnum == CommentCategoryEnum.Minor)
+                        //{
+                        //    compForm.QCAttachmentComment.ReviewerCategoryEnum = CommentCategoryEnum.Accepted;
+                        //    //compForm.QCAttachmentComment.CategoryEnum = CommentCategoryEnum.NotApplicable;
+                        //}
+
+                        var Review = compForm.Reviews.FirstOrDefault();
+                        if (Review != null &&
+                            Review.Status == ReviewStatusEnum.SearchCompleted &&
+                            compForm.AssignedTo.ToLower() == User.Identity.GetUserName().ToLower())
+                        {
+                            Review.StartedOn = DateTime.Now;
+                            Review.Status = ReviewStatusEnum.ReviewInProgress;
+                            //_UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                        }
+                        _UOW.ComplianceFormRepository.UpdateCollection(compForm);
+                    }
+                    return Ok(compForm);
                 }
-                return Ok(compForm);
             }
         }
 
@@ -507,29 +535,35 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateQCEditComplianceForm(ComplianceForm form)
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.UpdateQC(form));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.UpdateQC(form));
+            }
         }
 
         [Route("SaveComplianceForm")]
         [HttpPost]
         public IHttpActionResult UpdateComplianceForm(ComplianceForm form)
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.UpdateComplianceForm(form));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.UpdateComplianceForm(form));
+            }
         }
 
         [Route("ScanSaveComplianceForm")]
         [HttpPost]
         public IHttpActionResult ScanUpdateComplianceForm(ComplianceForm form)
         {
-            LogStart(GetCallerName());
-            if (form.InvestigatorDetails.First().Name == "" ||
-                form.InvestigatorDetails.First().Name == null)
-                return Ok("PI name cannot be empty");
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                if (form.InvestigatorDetails.First().Name == "" ||
+                    form.InvestigatorDetails.First().Name == null)
+                    return Ok("PI name cannot be empty");
 
-            var result = _SearchService.ScanUpdateComplianceForm(form);
-            return Ok(result);
+                var result = _SearchService.ScanUpdateComplianceForm(form);
+                return Ok(result);
+            }
         }
         #endregion
 
@@ -538,7 +572,6 @@ namespace DDAS.API.Controllers
         public IHttpActionResult SaveAssginedToData(string AssignedTo, string AssignedFrom,
             string ComplianceFormId)
         {
-            LogStart(GetCallerName());
             try
             {
                 if (AssignedFrom == null)
@@ -561,12 +594,14 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AssignComplianceFormsTo(AssignComplianceFormsTo AssignComplianceFormsTo)
         {
-            LogStart(GetCallerName());
             try
             {
-                var AssignedBy = User.Identity.GetUserName();
-                _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
-                return Ok(true);
+                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                {
+                    var AssignedBy = User.Identity.GetUserName();
+                    _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
+                    return Ok(true);
+                }
             }
             catch (Exception ex)
             {
@@ -581,23 +616,27 @@ namespace DDAS.API.Controllers
                                                                                  
         public IHttpActionResult ClearAssginedTo(string ComplianceFormId, string AssignedFrom)
         {
-            LogStart(GetCallerName());
-            var AssignedBy = User.Identity.GetUserName();
-            var RecId = Guid.Parse(ComplianceFormId);
-            _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, "");
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var AssignedBy = User.Identity.GetUserName();
+                var RecId = Guid.Parse(ComplianceFormId);
+                _SearchService.UpdateAssignedTo(RecId, AssignedBy, AssignedFrom, "");
 
-            return Ok(true);
+                return Ok(true);
+            }
         }
 
         [Route("ClearAssignedTo")]
         [HttpGet]
         public IHttpActionResult ClearAssginedTo(AssignComplianceFormsTo AssignComplianceFormsTo)
         {
-            LogStart(GetCallerName());
-            var AssignedBy = User.Identity.GetUserName();
-            _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var AssignedBy = User.Identity.GetUserName();
+                _SearchService.UpdateAssignedTo(AssignedBy, AssignComplianceFormsTo);
 
-            return Ok(true);
+                return Ok(true);
+            }
         }
 
 
@@ -605,44 +644,47 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUploadsFolderPath()
         {
-            LogStart(GetCallerName());
-            string FilePath = _config.UploadsFolder;
-            string path = FilePath.Replace(_RootPath, "");
-            return Ok(path);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                string FilePath = _config.UploadsFolder;
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
+            }
         }
 
         [Route("DownloadUploadedFile")]
         [HttpGet]
         public HttpResponseMessage DownloadUploadedFile(string GeneratedFileName)
         {
-
-            LogStart(GetCallerName());
-            HttpResponseMessage Response = null;
-
-            if (!File.Exists(_config.UploadsFolder + GeneratedFileName))
-                Response = Request.CreateResponse(HttpStatusCode.Gone);
-            else
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                Response = Request.CreateResponse(HttpStatusCode.OK);
+                HttpResponseMessage Response = null;
 
-                var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+                if (!File.Exists(_config.UploadsFolder + GeneratedFileName))
+                    Response = Request.CreateResponse(HttpStatusCode.Gone);
+                else
+                {
+                    Response = Request.CreateResponse(HttpStatusCode.OK);
 
-                byte[] ByteArray = 
-                    File.ReadAllBytes(_config.UploadsFolder + GeneratedFileName);
+                    var UserAgent = Request.Headers.UserAgent.ToString();
+                    var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
 
-                Response.Content = new ByteArrayContent(ByteArray);
+                    byte[] ByteArray =
+                        File.ReadAllBytes(_config.UploadsFolder + GeneratedFileName);
 
-                Response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
+                    Response.Content = new ByteArrayContent(ByteArray);
 
-                Response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                    Response.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment");
 
-                Response.Content.Headers.Add("Browser", Browser);
-                Response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+                    Response.Content.Headers.ContentType =
+                        new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                    Response.Content.Headers.Add("Browser", Browser);
+                    Response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+                }
+                return Response;
             }
-            return Response;
         }
 
         #region Updates from Client
@@ -651,25 +693,31 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateCompFormGeneralNInvestigatorsNOptionalSites(ComplianceForm form)
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form));   
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.UpdateCompFormGeneralNInvestigatorsNOptionalSites(form));
+            }
         }
 
         [Route("UpdateFindings")]
         [HttpPost]
         public IHttpActionResult UpdateFindings(UpdateFindigs updateFindings)
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.UpdateFindings(updateFindings));
-            //return Ok( _UOW.ComplianceFormRepository.UpdateFindings(updateFindings));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.UpdateFindings(updateFindings));
+                //return Ok( _UOW.ComplianceFormRepository.UpdateFindings(updateFindings));
+            }
         }
 
         [Route("UpdateInstituteFindings")]
         [HttpPost]
         public IHttpActionResult UpdateInstituteFindings(UpdateInstituteFindings FindingsModel)
         {
-            LogStart(GetCallerName());
-            return Ok(_SearchService.UpdateInstituteFindings(FindingsModel));
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_SearchService.UpdateInstituteFindings(FindingsModel));
+            }
         }
 
         #endregion
@@ -678,128 +726,132 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage GenerateComplianceForm(string ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            HttpResponseMessage response = null;
-
-            var localFilePath = 
-                _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
-
-            if (!File.Exists(localFilePath))
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-               //return Ok("Could not find Compliance form template");
-               response = Request.CreateResponse(HttpStatusCode.Gone);
+                HttpResponseMessage response = null;
+
+                var localFilePath =
+                    _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
+
+                if (!File.Exists(localFilePath))
+                {
+                    //return Ok("Could not find Compliance form template");
+                    response = Request.CreateResponse(HttpStatusCode.Gone);
+                }
+                else
+                {
+                    var UserAgent = Request.Headers.UserAgent.ToString();
+                    var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+
+                    response = Request.CreateResponse(HttpStatusCode.OK);
+
+                    Guid? RecId = Guid.Parse(ComplianceFormId);
+
+                    IWriter writer = new CreateComplianceFormWord();
+
+                    string FileName = null;
+
+                    //var FilePath = _SearchService.GenerateComplianceForm(
+                    //    RecId, 
+                    //    writer, 
+                    //    ".docx", 
+                    //    out FileName);
+
+                    //string path = FilePath.Replace(_RootPath, "");
+                    //return Ok(path);
+
+                    //'out FileName' is retained in case the code needs to be rolled back
+                    //to return file path to the client
+                    var memoryStream = _SearchService.GenerateComplianceForm(
+                        RecId,
+                        writer,
+                        ".docx",
+                        out FileName);
+
+                    response.Content = new ByteArrayContent(memoryStream.ToArray());
+
+                    response.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment");
+
+                    response.Content.Headers.ContentType =
+                        new MediaTypeHeaderValue("application/ms-word");
+
+                    response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                    var FileNameHeader = FileName + " " + Browser;
+                    //add custom headers to the response
+                    //easy for angular2 to read this header
+                    response.Content.Headers.Add("Filename", FileNameHeader);
+                    //response.Content.Headers.Add("Browser", Browser);
+                    response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                    //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+                }
+                return response;
             }
-            else
-            {
-                var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
-
-                response = Request.CreateResponse(HttpStatusCode.OK);
-
-                Guid? RecId = Guid.Parse(ComplianceFormId);
-
-                IWriter writer = new CreateComplianceFormWord();
-
-                string FileName = null;
-
-                //var FilePath = _SearchService.GenerateComplianceForm(
-                //    RecId, 
-                //    writer, 
-                //    ".docx", 
-                //    out FileName);
-
-                //string path = FilePath.Replace(_RootPath, "");
-                //return Ok(path);
-
-                //'out FileName' is retained in case the code needs to be rolled back
-                //to return file path to the client
-                var memoryStream = _SearchService.GenerateComplianceForm(
-                    RecId,
-                    writer,
-                    ".docx",
-                    out FileName);
-
-                response.Content = new ByteArrayContent(memoryStream.ToArray());
-
-                response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
-
-                response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/ms-word");
-
-                response.Content.Headers.ContentDisposition.FileName = FileName;
-
-                var FileNameHeader = FileName + " " + Browser;
-                //add custom headers to the response
-                //easy for angular2 to read this header
-                response.Content.Headers.Add("Filename", FileNameHeader);
-                //response.Content.Headers.Add("Browser", Browser);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
-                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
-            }
-            return response;
         }
 
         [Route("GenerateComplianceFormPDF")]
         [HttpGet]
         public HttpResponseMessage GenerateComplianceFormPDF(string ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            HttpResponseMessage response = null;
-
-            var localFilePath = 
-                _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
-
-            if (!File.Exists(localFilePath))
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                //return Ok("Could not find Compliance form template");
-                response = Request.CreateResponse(HttpStatusCode.Gone);
+                HttpResponseMessage response = null;
+
+                var localFilePath =
+                    _config.WordTemplateFolder + "ComplianceFormTemplate.docx";
+
+                if (!File.Exists(localFilePath))
+                {
+                    //return Ok("Could not find Compliance form template");
+                    response = Request.CreateResponse(HttpStatusCode.Gone);
+                }
+                else
+                {
+                    var UserAgent = Request.Headers.UserAgent.ToString();
+                    var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+
+                    Guid? RecId = Guid.Parse(ComplianceFormId);
+
+                    IWriter writer = new CreateComplianceFormPDF();
+
+                    string FileName = null;
+
+                    //var FilePath = _SearchService.GenerateComplianceForm(
+                    //    RecId,
+                    //    writer,
+                    //    ".pdf",
+                    //    out FileName);
+
+                    //string path = FilePath.Replace(_RootPath, "");
+                    //return Ok();
+
+                    var memoryStream = _SearchService.GenerateComplianceForm(
+                        RecId,
+                        writer,
+                        ".pdf",
+                        out FileName);
+
+                    response.Content = new ByteArrayContent(memoryStream.ToArray());
+
+                    response.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment");
+
+                    response.Content.Headers.ContentType =
+                        new MediaTypeHeaderValue("application/pdf");
+
+                    response.Content.Headers.ContentDisposition.FileName = FileName;
+
+                    var FileNameHeader = FileName + " " + Browser;
+                    //add custom headers to the response
+                    //easy for angular2 to read this header
+                    response.Content.Headers.Add("Filename", FileNameHeader);
+                    //response.Content.Headers.Add("Browser", Browser);
+                    response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                    //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+                }
+                return response;
             }
-            else
-            {
-                var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
-
-                Guid? RecId = Guid.Parse(ComplianceFormId);
-
-                IWriter writer = new CreateComplianceFormPDF();
-
-                string FileName = null;
-
-                //var FilePath = _SearchService.GenerateComplianceForm(
-                //    RecId,
-                //    writer,
-                //    ".pdf",
-                //    out FileName);
-
-                //string path = FilePath.Replace(_RootPath, "");
-                //return Ok();
-
-                var memoryStream = _SearchService.GenerateComplianceForm(
-                    RecId,
-                    writer,
-                    ".pdf",
-                    out FileName);
-
-                response.Content = new ByteArrayContent(memoryStream.ToArray());
-
-                response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
-
-                response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/pdf");
-
-                response.Content.Headers.ContentDisposition.FileName = FileName;
-
-                var FileNameHeader = FileName + " " + Browser;
-                //add custom headers to the response
-                //easy for angular2 to read this header
-                response.Content.Headers.Add("Filename", FileNameHeader);
-                //response.Content.Headers.Add("Browser", Browser);
-                response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
-                //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
-            }
-            return response;
         }
 
         
@@ -810,30 +862,32 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage DownloadForm(string ComplianceFormId = null)
         {
-            LogStart(GetCallerName());
-            HttpResponseMessage result = null;
-
-            if (ComplianceFormId == null)
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                result = Request.CreateResponse(HttpStatusCode.NotFound);
+                HttpResponseMessage result = null;
+
+                if (ComplianceFormId == null)
+                {
+                    result = Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+                else
+                {
+                    // Serve the file to the client
+                    result = Request.CreateResponse(HttpStatusCode.OK);
+                    var form = _SearchService.GenerateComplianceForm(Guid.Parse(ComplianceFormId));
+
+                    result.Content = new ByteArrayContent(form.ToArray());
+
+                    result.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment");
+
+                    result.Content.Headers.ContentType = new MediaTypeHeaderValue(
+                        "application/vnd.ms-word");
+
+                    result.Content.Headers.ContentDisposition.FileName = "Compliance Form.docx";
+                }
+                return result;
             }
-            else
-            {
-                // Serve the file to the client
-                result = Request.CreateResponse(HttpStatusCode.OK);
-                var form = _SearchService.GenerateComplianceForm(Guid.Parse(ComplianceFormId));
-
-                result.Content = new ByteArrayContent(form.ToArray());
-
-                result.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
-
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(
-                    "application/vnd.ms-word");
-                    
-                result.Content.Headers.ContentDisposition.FileName = "Compliance Form.docx";
-            }
-            return result;
         }
 
         //Not required
@@ -841,256 +895,278 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public HttpResponseMessage DownloadComplianceForm()
         {
-            LogStart(GetCallerName());
-
-            HttpResponseMessage result = null;
-            //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
-            var localFilePath = _config.ExcelTempateFolder + "Output_File_Template.xlsx";
-            if (!File.Exists(localFilePath))
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                result = Request.CreateResponse(HttpStatusCode.Gone);
+                HttpResponseMessage result = null;
+                //var localFilePath = HttpContext.Current.Server.MapPath("~/timetable.jpg");
+                var localFilePath = _config.ExcelTempateFolder + "Output_File_Template.xlsx";
+                if (!File.Exists(localFilePath))
+                {
+                    result = Request.CreateResponse(HttpStatusCode.Gone);
+                }
+                else
+                {
+                    // Serve the file to the client
+                    result = Request.CreateResponse(HttpStatusCode.OK);
+
+                    result.Content = new StreamContent(
+                        new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
+
+                    result.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment");
+
+                    result.Content.Headers.ContentType =
+                        new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                    result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
+
+                    //add custom headers to the response
+                    result.Content.Headers.Add("Filename", "OutputFile_Test");
+                    result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                }
+                return result;
             }
-            else
-            {
-                // Serve the file to the client
-                result = Request.CreateResponse(HttpStatusCode.OK);
-
-                result.Content = new StreamContent(
-                    new FileStream(localFilePath, FileMode.Open, FileAccess.Read));
-
-                result.Content.Headers.ContentDisposition = 
-                    new ContentDispositionHeaderValue("attachment");
-
-                result.Content.Headers.ContentType = 
-                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
-                result.Content.Headers.ContentDisposition.FileName = "Compliance Form";
-
-                //add custom headers to the response
-                result.Content.Headers.Add("Filename", "OutputFile_Test");
-                result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
-            }
-            return result;
         }
      
         [Route("CloseComplianceForm")]
         [HttpPut]
         public IHttpActionResult CloseComplianceForm(Guid ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
 
-            form.Active = false;
-            _UOW.ComplianceFormRepository.UpdateCollection(form);
+                form.Active = false;
+                _UOW.ComplianceFormRepository.UpdateCollection(form);
 
-            return Ok(true);
+                return Ok(true);
+            }
         }
+
 
         [Route("OpenComplianceForm")]
         [HttpPut]
         public IHttpActionResult OpenComplianceForm(Guid ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
-            form.Active = true;
-            _UOW.ComplianceFormRepository.UpdateCollection(form);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                ComplianceForm form = _UOW.ComplianceFormRepository.FindById(ComplianceFormId);
+                form.Active = true;
+                _UOW.ComplianceFormRepository.UpdateCollection(form);
 
-            return Ok(true);
+                return Ok(true);
+            }
         }
 
         [Route("DeleteComplianceForm")]
         [HttpGet]
         public IHttpActionResult DeleteComplianceForm(string ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            Guid? RecId = Guid.Parse(ComplianceFormId);
-            _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
-            return Ok(true);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                Guid? RecId = Guid.Parse(ComplianceFormId);
+                _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
+                return Ok(true);
+            }
         }
 
         [Route("GetAllCountries")]
         [HttpGet]
         public IHttpActionResult GetAllCountries()
         {
-            LogStart(GetCallerName());
-            var Countries = new CountryList();
-            return Ok(Countries.GetCountries);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var Countries = new CountryList();
+                return Ok(Countries.GetCountries);
+            }
         }
 
         [Route("GetSiteSources")]
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            LogStart(GetCallerName());
-            var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
-            return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());           
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var test = _UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName);
+                return Ok(_UOW.SiteSourceRepository.GetAll().OrderBy(x => x.SiteName).ToList());
+            }
         }
 
         [Route("CurrentReviewStatus")]
         [HttpGet]
         public IHttpActionResult GetCurrentReviewStatus(string ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            var FormId = Guid.Parse(ComplianceFormId);
-            var Form = _UOW.ComplianceFormRepository.FindById(FormId);
-
-            var Review = Form.Reviews.FirstOrDefault();
-
-            if (Review == null)
-                throw new Exception("Review collection cannot be empty!");
-
-            if(Review.Status != ReviewStatusEnum.ReviewCompleted)
-            {//Pradeep 26Apr2018
-                //No action required
-            }
-            else //Review is completed, look for 'QC' and 'Completed' Status
-                Review = Form.Reviews.LastOrDefault();
-
-            var CurrentReviewStatus = new CurrentReviewStatusViewModel();
-
-            if (Review.Status == ReviewStatusEnum.SearchCompleted ||
-                Review.Status == ReviewStatusEnum.ReviewInProgress ||
-                Review.Status == ReviewStatusEnum.ReviewCompleted)
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                CurrentReviewStatus.ReviewerRecId = Review.RecId.Value;
-                CurrentReviewStatus.QCVerifierRecId = null;
-                CurrentReviewStatus.CurrentReview = Review;
-            }
-            else if(Review.Status == ReviewStatusEnum.QCRequested ||
-                Review.Status == ReviewStatusEnum.QCInProgress ||
-                Review.Status == ReviewStatusEnum.QCCompleted)
-            {
-                CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
-                CurrentReviewStatus.CurrentReview = Review;
-                var ReviewCompleted = Form.Reviews.Find(x => 
-                    x.Status == ReviewStatusEnum.ReviewCompleted);
-                if(ReviewCompleted != null)
-                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
-                else
-                    CurrentReviewStatus.ReviewerRecId = null;
-            }
-            else if(Review.Status == ReviewStatusEnum.QCCorrectionInProgress)
-            {
-                var QCReview = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.QCCompleted);
-                if (QCReview != null)
-                    CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
-                else
+                var FormId = Guid.Parse(ComplianceFormId);
+                var Form = _UOW.ComplianceFormRepository.FindById(FormId);
+
+                var Review = Form.Reviews.FirstOrDefault();
+
+                if (Review == null)
+                    throw new Exception("Review collection cannot be empty!");
+
+                if (Review.Status != ReviewStatusEnum.ReviewCompleted)
+                {//Pradeep 26Apr2018
+                 //No action required
+                }
+                else //Review is completed, look for 'QC' and 'Completed' Status
+                    Review = Form.Reviews.LastOrDefault();
+
+                var CurrentReviewStatus = new CurrentReviewStatusViewModel();
+
+                if (Review.Status == ReviewStatusEnum.SearchCompleted ||
+                    Review.Status == ReviewStatusEnum.ReviewInProgress ||
+                    Review.Status == ReviewStatusEnum.ReviewCompleted)
+                {
+                    CurrentReviewStatus.ReviewerRecId = Review.RecId.Value;
                     CurrentReviewStatus.QCVerifierRecId = null;
-                var ReviewCompleted = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.ReviewCompleted);
-                if (ReviewCompleted != null)
-                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
-                else
-                    CurrentReviewStatus.ReviewerRecId = null;
-                CurrentReviewStatus.CurrentReview = Review;
-            }
-            else if (Review.Status == ReviewStatusEnum.Completed)
-            {
-                var QCReview = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.QCCompleted);
-                if (QCReview != null)
-                    CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
-                else
-                    CurrentReviewStatus.QCVerifierRecId = null;
+                    CurrentReviewStatus.CurrentReview = Review;
+                }
+                else if (Review.Status == ReviewStatusEnum.QCRequested ||
+                    Review.Status == ReviewStatusEnum.QCInProgress ||
+                    Review.Status == ReviewStatusEnum.QCCompleted)
+                {
+                    CurrentReviewStatus.QCVerifierRecId = Review.RecId.Value;
+                    CurrentReviewStatus.CurrentReview = Review;
+                    var ReviewCompleted = Form.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.ReviewCompleted);
+                    if (ReviewCompleted != null)
+                        CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                    else
+                        CurrentReviewStatus.ReviewerRecId = null;
+                }
+                else if (Review.Status == ReviewStatusEnum.QCCorrectionInProgress)
+                {
+                    var QCReview = Form.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.QCCompleted);
+                    if (QCReview != null)
+                        CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
+                    else
+                        CurrentReviewStatus.QCVerifierRecId = null;
+                    var ReviewCompleted = Form.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.ReviewCompleted);
+                    if (ReviewCompleted != null)
+                        CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                    else
+                        CurrentReviewStatus.ReviewerRecId = null;
+                    CurrentReviewStatus.CurrentReview = Review;
+                }
+                else if (Review.Status == ReviewStatusEnum.Completed)
+                {
+                    var QCReview = Form.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.QCCompleted);
+                    if (QCReview != null)
+                        CurrentReviewStatus.QCVerifierRecId = QCReview.RecId;
+                    else
+                        CurrentReviewStatus.QCVerifierRecId = null;
 
-                var ReviewCompleted = Form.Reviews.Find(x =>
-                    x.Status == ReviewStatusEnum.ReviewCompleted);
-                if (ReviewCompleted != null)
-                    CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
-                else
-                    CurrentReviewStatus.ReviewerRecId = null;
-                CurrentReviewStatus.CurrentReview = Review;
+                    var ReviewCompleted = Form.Reviews.Find(x =>
+                        x.Status == ReviewStatusEnum.ReviewCompleted);
+                    if (ReviewCompleted != null)
+                        CurrentReviewStatus.ReviewerRecId = ReviewCompleted.RecId;
+                    else
+                        CurrentReviewStatus.ReviewerRecId = null;
+                    CurrentReviewStatus.CurrentReview = Review;
+                }
+                return Ok(CurrentReviewStatus);
             }
-            return Ok(CurrentReviewStatus);
         }
 
         [Route("GetAttachmentsList")]
         [HttpGet]
         public IHttpActionResult GetAttachmentsList(string formId)
         {
-            LogStart(GetCallerName());
-            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
-
-            string[] FileList = new string[0];
-
-            if (Directory.Exists(folder))
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
+                var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
 
-                return Ok(FileList);
+                string[] FileList = new string[0];
+
+                if (Directory.Exists(folder))
+                {
+                    FileList = Directory.GetFiles(folder).Select(file => Path.GetFileName(file)).ToArray();
+
+                    return Ok(FileList);
+                }
+                else
+                    return Ok(FileList);
+                //string[] files = Directory.GetFiles(dir).Select(file => Path.GetFileName(file)).ToArray(); – 
             }
-            else
-                return Ok(FileList);
-            //string[] files = Directory.GetFiles(dir).Select(file => Path.GetFileName(file)).ToArray(); – 
         }
 
         [Route("DownloadAttachmentFile")]
         [HttpGet]
         public HttpResponseMessage DownloadAttachmentFile(string formId, string fileName)
         {
-            LogStart(GetCallerName());
-            var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
-            var fileNameWithPath = folder + "/" + fileName;
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var folder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/" + formId);
+                var fileNameWithPath = folder + "/" + fileName;
 
-            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-            var stream = new FileStream(fileNameWithPath, FileMode.Open, FileAccess.Read);
-            //stream.ReadTimeout = 25000;
-            //stream.WriteTimeout = 25000;
-            result.Content = new StreamContent(stream);
-            result.Content.Headers.ContentType =
-                new MediaTypeHeaderValue("application/octet-stream");
-            result.Content.Headers.ContentDisposition =
-                new ContentDispositionHeaderValue("Filename");
-            result.Content.Headers.ContentDisposition.FileName = fileName;
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                var stream = new FileStream(fileNameWithPath, FileMode.Open, FileAccess.Read);
+                //stream.ReadTimeout = 25000;
+                //stream.WriteTimeout = 25000;
+                result.Content = new StreamContent(stream);
+                result.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/octet-stream");
+                result.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("Filename");
+                result.Content.Headers.ContentDisposition.FileName = fileName;
 
-            var UserAgent = Request.Headers.UserAgent.ToString();
-            var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
-            fileName = fileName.Replace(' ', '_');
-            var FileNameHeader = fileName + " " + Browser;
-            result.Content.Headers.Add("Filename", FileNameHeader);
-            result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+                var UserAgent = Request.Headers.UserAgent.ToString();
+                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+                fileName = fileName.Replace(' ', '_');
+                var FileNameHeader = fileName + " " + Browser;
+                result.Content.Headers.Add("Filename", FileNameHeader);
+                result.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
 
-            return result;
+                return result;
+            }
         }
 
-        
+
 
         [Route("MoveReviewCompletedToCompleted")]
         [HttpGet]
         public IHttpActionResult MoveToCompletedICSF(string ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            var Id = Guid.Parse(ComplianceFormId);
-            var Form = _UOW.ComplianceFormRepository.FindById(Id);
-            var Review = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.ReviewCompleted);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(ComplianceFormId);
+                var Form = _UOW.ComplianceFormRepository.FindById(Id);
+                var Review = Form.Reviews.Find(x => x.Status == ReviewStatusEnum.ReviewCompleted);
 
-            if (Review != null)
-                Review.Status = ReviewStatusEnum.Completed;
+                if (Review != null)
+                    Review.Status = ReviewStatusEnum.Completed;
 
-            _UOW.ComplianceFormRepository.UpdateCollection(Form);
-            return Ok(true);
+                _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                return Ok(true);
+            }
         }
 
         [Route("ExportToiSprint")]
         [HttpGet]
         public IHttpActionResult ExportToiSprint(string ComplianceFormId)
         {
-            LogStart(GetCallerName());
-            var RecId = Guid.Parse(ComplianceFormId);
-            var Form = _UOW.ComplianceFormRepository.FindById(RecId);
-            var ExportResponse = _SearchService.ExportDataToIsprint(Form);
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                var RecId = Guid.Parse(ComplianceFormId);
+                var Form = _UOW.ComplianceFormRepository.FindById(RecId);
+                var ExportResponse = _SearchService.ExportDataToIsprint(Form);
 
-            if (ExportResponse.Success)
-            {
-                Form.ExportedToiSprintOn = DateTime.Now;
-                _UOW.ComplianceFormRepository.UpdateCollection(Form);
-                return Ok("Data exported to iSprint");
-            }
-            else
-            {
-                return Ok("Failed to export data to iSprint");
-                //return Ok(ExportResponse.Message);
+                if (ExportResponse.Success)
+                {
+                    Form.ExportedToiSprintOn = DateTime.Now;
+                    _UOW.ComplianceFormRepository.UpdateCollection(Form);
+                    return Ok("Data exported to iSprint");
+                }
+                else
+                {
+                    return Ok("Failed to export data to iSprint");
+                    //return Ok(ExportResponse.Message);
+                }
             }
         }
 
@@ -1123,44 +1199,43 @@ namespace DDAS.API.Controllers
             return retValue;
         }
 
-        private void LogStart(string callerName)
-        {
-            _stopWatch.Start();
-            _logGUID = shortGUID();
-            Logger.Info(String.Format("{0} | {1} | {2} Start ", callerName, _logGUID, CurrentUser()));
+        //private void LogStart(string callerName)
+        //{
+        //    _stopWatch.Start();
+        //    _logGUID = shortGUID();
+        //    Logger.Info(String.Format("{0} | {1} | {2} Start ", callerName, _logGUID, CurrentUser()));
 
-        }
+        //}
 
-        private void LogEnd(string callerName)
-        {
-            _stopWatch.Stop();
-            Logger.Info(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds));
+        //private void LogEnd(string callerName)
+        //{
+        //    _stopWatch.Stop();
+        //    Logger.Info(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds));
 
-        }
+        //}
 
-        private void LogDebug(string callerName, string exceptionMessage)
-        {
-            _stopWatch.Stop();
-            Logger.Debug(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3} | ERROR: {4}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds, exceptionMessage));
+        //private void LogDebug(string callerName, string exceptionMessage)
+        //{
+        //    _stopWatch.Stop();
+        //    Logger.Debug(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3} | ERROR: {4}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds, exceptionMessage));
 
-        }
+        //}
 
 
-        private string shortGUID()
-        {
-            var guid = Guid.NewGuid();
-            var base64Guid = Convert.ToBase64String(guid.ToByteArray());
+        //private string shortGUID()
+        //{
+        //    var guid = Guid.NewGuid();
+        //    var base64Guid = Convert.ToBase64String(guid.ToByteArray());
 
-            // Replace URL unfriendly characters with better ones
-            base64Guid = base64Guid.Replace('+', '-').Replace('/', '_');
+        //    // Replace URL unfriendly characters with better ones
+        //    base64Guid = base64Guid.Replace('+', '-').Replace('/', '_');
 
-            // Remove the trailing ==
-            return base64Guid.Substring(0, base64Guid.Length - 2);
-        }
+        //    // Remove the trailing ==
+        //    return base64Guid.Substring(0, base64Guid.Length - 2);
+        //}
 
         private string CurrentUser()
         {
-            //return HttpContext.Current.Request.LogonUserIdentity.Name;
             return User.Identity.GetUserName();
         }
 

@@ -14,6 +14,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
+using System.Runtime.CompilerServices;
+
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "user, admin")]
@@ -21,6 +23,8 @@ namespace DDAS.API.Controllers
     public class AuditController : ApiController
     {
         private IAudit _Audit;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public AuditController(IAudit Audit)
         {
             _Audit = Audit;
@@ -182,5 +186,16 @@ namespace DDAS.API.Controllers
                 return headers.ContentDisposition.FileName.Replace("\"", string.Empty);
             }
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

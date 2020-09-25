@@ -11,6 +11,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+
 
 namespace DDAS.API.Controllers
 {
@@ -23,6 +26,8 @@ namespace DDAS.API.Controllers
         private string _UploadsFolder;
         private string _RootPath;
         private string _OutputFilePath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
 
         public AppAdminController(IAppAdminService AppAdmin)
         {
@@ -246,6 +251,17 @@ namespace DDAS.API.Controllers
             return Ok(result);
         }
 
-        #endregion     
+        #endregion
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

@@ -10,7 +10,7 @@
 			<h3>Application Logs
 			</h3>
 
-		
+
 		</div>
 		<button type="button" class="btn btn-primary" (click)="logStop()">Log - Stop</button>
 		<button type="button" class="btn btn-primary" (click)="logResume()">Log - Resume</button>
@@ -18,6 +18,30 @@
 		Log Status: {{logStatus}}
 
 		<a href="{{_downloadUrl}}Logs/Log.txt" target="_blank">Today's Log</a>
-	
+		{{archivedLogs | json}}
+		<table class="table table-bordered table-hover table-striped">
+			<thead>
+				<tr>
+					<th class="text-left">Log</th>
+					<!-- <th class="text-center">Archived On</th> -->
+					
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let log of archivedLogs | paginate: { itemsPerPage: 10, currentPage: pageNumber}; let idx=index"
+					class="active">
+					<td class="text-left">
+						{{log.OriginalPath}}
+					</td>
+
+					<td class="text-center">
+						<!-- <a href="{{ApiHost}}{{log.FullPath}}" target="_blank">{{log.FileName}}</a> -->
+					</td>
+					
+				</tr>
+			</tbody>
+		</table>
+		<pagination-controls (pageChange)="pageNumber = $event"></pagination-controls>
+
 	</div>
 </div>

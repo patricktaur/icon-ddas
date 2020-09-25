@@ -261,6 +261,7 @@
     <Compile Include="Helpers\Formatters\CSVMediaTypeFormatter.cs" />
     <Compile Include="Helpers\Formatters\csvOutputFormatter.cs" />
     <Compile Include="Helpers\IdentifyBrowser.cs" />
+    <Compile Include="Helpers\TimeMeasurementBlock.cs" />
     <Compile Include="ManageAppSettings\ManageAppSettings.cs" />
     <Compile Include="App_Start\SimpleInjectorWebApiInitializer.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />

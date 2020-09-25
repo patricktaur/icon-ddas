@@ -6,6 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+using DDAS.API.Helpers;
 
 namespace DDAS.API.Controllers
 {
@@ -15,6 +18,8 @@ namespace DDAS.API.Controllers
     {
         private IAppAdminService _AppAdminService;
         private string _RootPath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public CommonController(IAppAdminService AppAdmin)
         {
             _AppAdminService = AppAdmin;
@@ -28,5 +33,16 @@ namespace DDAS.API.Controllers
         {
             return Ok(_AppAdminService.GetAllSiteSources());
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

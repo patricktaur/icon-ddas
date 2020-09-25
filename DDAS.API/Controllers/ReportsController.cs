@@ -18,6 +18,8 @@ using System.Web.Http;
 using Utilities;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Runtime.CompilerServices;
+
 
 namespace DDAS.API.Controllers
 {
@@ -32,6 +34,7 @@ namespace DDAS.API.Controllers
         private IReport _Report;
         private FileDownloadResponse _fileDownloadResponse;
         private CSVConvertor _csvConvertor;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ReportsController(ISearchService SearchSummary,
             IUnitOfWork UOW,
@@ -533,5 +536,16 @@ namespace DDAS.API.Controllers
                     return Ok(list);
             }
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

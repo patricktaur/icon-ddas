@@ -12,7 +12,8 @@ using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using System.Web;
 using DDAS.Data.Mongo;
-
+using System.Runtime.CompilerServices;
+using DDAS.API.Helpers;
 namespace DDAS.API.Controllers
 {
 
@@ -26,6 +27,8 @@ namespace DDAS.API.Controllers
         private IDataExtractorService _ExtractData;
         private ILog _log;
         private string _RootPath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public DataExtractorController(IDataExtractorService ExtractData, IUnitOfWork UOW)
         {
             _UOW = UOW;
@@ -185,5 +188,16 @@ namespace DDAS.API.Controllers
 
 
         #endregion
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

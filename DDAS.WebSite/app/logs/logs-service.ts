@@ -26,6 +26,15 @@ export class LogsService {
     }
 
 
+    getArchivedLogs(){
+        return this.http.get(this._baseUrl + 'archived-logs' , this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
+
     stopLog(){
         return this.http.get(this._baseUrl + 'log-stop' , this._options)
         .map((res: Response) => {

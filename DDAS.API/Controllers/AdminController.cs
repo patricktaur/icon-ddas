@@ -8,7 +8,9 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+using DDAS.API.Helpers;
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "admin")]
@@ -18,6 +20,8 @@ namespace DDAS.API.Controllers
         private IAppAdminService _AppAdminService;
         private string ErrorScreenCaptureFolder;
         private string _RootPath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public AdminController(IAppAdminService AppAdmin)
         {
             _AppAdminService = AppAdmin;
@@ -251,5 +255,16 @@ namespace DDAS.API.Controllers
         {
             return Ok(_AppAdminService.GetDDtoiSprintLog());
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }
