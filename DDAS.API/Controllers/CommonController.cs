@@ -31,7 +31,10 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            return Ok(_AppAdminService.GetAllSiteSources());
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetAllSiteSources());
+            }
         }
 
         private string CurrentUser()

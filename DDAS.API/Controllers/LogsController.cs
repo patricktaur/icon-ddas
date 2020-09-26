@@ -45,7 +45,7 @@ namespace DDAS.API.Controllers
             _RootPath = HttpRuntime.AppDomainAppPath;
         }
 
-       
+
 
 
         [Route("log-resume")]
@@ -69,80 +69,93 @@ namespace DDAS.API.Controllers
             //config.AddTarget(target);
             ////config.LoggingRules.Add(loggingRule);
             //config.Reload();
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {
+                NLog.LogManager.ReconfigExistingLoggers();
 
-            NLog.LogManager.ReconfigExistingLoggers();
-
-            return Ok();
+                return Ok();
+            }
         }
 
-    
+
         [Route("log-stop")]
         [HttpGet]
         public IHttpActionResult LogStop()
         {
-            //var config = Logger.Factory.Configuration;
-            ////var target = (FileTarget)config.FindTargetByName("file");
-            ////var loggingRule = new LoggingRule("*", target);
-            //config.RemoveTarget("file");
-            ////config.LoggingRules.Remove(loggingRule);
-            //config.Reload();
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            {   //var config = Logger.Factory.Configuration;
+                ////var target = (FileTarget)config.FindTargetByName("file");
+                ////var loggingRule = new LoggingRule("*", target);
+                //config.RemoveTarget("file");
+                ////config.LoggingRules.Remove(loggingRule);
+                //config.Reload();
 
-            //var target = NLog.LogManager.Configuration?.FindTargetByName<BlobStorageTarget>("blob");
-            var target = NLog.LogManager.Configuration?.FindTargetByName("file");
-            target?.Dispose();   // Closes the target so it is uninitialized
+                //var target = NLog.LogManager.Configuration?.FindTargetByName<BlobStorageTarget>("blob");
+                var target = NLog.LogManager.Configuration?.FindTargetByName("file");
+                target?.Dispose();   // Closes the target so it is uninitialized
 
-            return Ok();
+                return Ok();
+            }
         }
 
         [Route("log-status")]
         [HttpGet]
         public IHttpActionResult LogStatus()
         {
-            bool enabled = false;
-            var config = Logger.Factory.Configuration;
-            
-            if (Logger.IsInfoEnabled)
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                enabled = true;
+                bool enabled = false;
+                var config = Logger.Factory.Configuration;
+
+                if (Logger.IsInfoEnabled)
+                {
+                    enabled = true;
+                }
+
+                return Ok(enabled);
             }
-            
-            return Ok(enabled);
         }
 
         [Route("archived-logs")]
         [HttpGet]
         public IHttpActionResult ArchivedLogs()
         {
-             var retList = new List<FileInfo>();
-            DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
-            var logFiles = dir.GetFiles("*.*").OrderBy(p => p.CreationTimeUtc).ToList();
-
-            foreach (FileInfo fileInfo in logFiles)
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                retList.Add(fileInfo);
-            }
+                var retList = new List<FileInfo>();
+                DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
+                var logFiles = dir.GetFiles("*.*").OrderBy(p => p.CreationTimeUtc).ToList();
 
-            return Ok(retList);
+                foreach (FileInfo fileInfo in logFiles)
+                {
+                    retList.Add(fileInfo);
+                }
+
+                return Ok(retList);
+            }
         }
 
         [Route("delete-archive")]
         [HttpGet]
         public IHttpActionResult DeleteArchive(int olderThan)
         {
-            FileInfo[] files = null;
-            DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
-            files = dir.GetFiles("*.*");
-            var deletedCount = 0;
-            foreach (var file in files)
+            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
             {
-                if (DateTime.UtcNow - file.CreationTimeUtc > TimeSpan.FromDays(olderThan))
+                FileInfo[] files = null;
+                DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
+                files = dir.GetFiles("*.*");
+                var deletedCount = 0;
+                foreach (var file in files)
                 {
-                    File.Delete(file.FullName);
-                    deletedCount += 1;
+                    if (DateTime.UtcNow - file.CreationTimeUtc > TimeSpan.FromDays(olderThan))
+                    {
+                        File.Delete(file.FullName);
+                        deletedCount += 1;
+                    }
                 }
-            }
 
-            return Ok("Deleted: " + deletedCount);
+                return Ok("Deleted: " + deletedCount);
+            }
         }
 
         private string CurrentUser()
