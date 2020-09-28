@@ -19,19 +19,22 @@ namespace DDAS.API.Controllers
         private IAppAdminService _AppAdminService;
         private string _RootPath;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
         public CommonController(IAppAdminService AppAdmin)
         {
             _AppAdminService = AppAdmin;
 
             _RootPath = HttpRuntime.AppDomainAppPath;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         [Route("GetSiteSources")]
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetAllSiteSources());
             }

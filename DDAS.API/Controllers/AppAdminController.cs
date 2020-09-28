@@ -27,6 +27,7 @@ namespace DDAS.API.Controllers
         private string _RootPath;
         private string _OutputFilePath;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
 
         public AppAdminController(IAppAdminService AppAdmin)
@@ -43,6 +44,8 @@ namespace DDAS.API.Controllers
 
             _OutputFilePath = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"];
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         //[Route("GetCBERRecords")]
@@ -57,7 +60,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public List<ErrorScreenCapture> GetAllErrorImages()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var ListOfErrorImages = new List<ErrorScreenCapture>();
 
@@ -82,7 +85,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteAllErrorImages()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var ErrorImages = Directory.GetFiles(_ErrorScreenCaptureFolder);
 
@@ -98,7 +101,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteErrorImage(string FileName)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 if (File.Exists(_ErrorScreenCaptureFolder + FileName))
                     File.Delete(_ErrorScreenCaptureFolder + FileName);
@@ -110,7 +113,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DownloadErrorImage()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 string FilePath = _ErrorScreenCaptureFolder;
                 string path = FilePath.Replace(_RootPath, "");
@@ -127,7 +130,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDataExtractionPerSite(SiteEnum Enum)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var ExtractionDataPerSite = _AppAdminService.GetDataExtractionPerSite(Enum);
                 return Ok(ExtractionDataPerSite);
@@ -138,7 +141,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteExtractionEntryAAA(string RecId, SiteEnum Enum)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 _AppAdminService.DeleteExtractionEntry(Enum, Id);
@@ -154,7 +157,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUploadsFolderPath()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 string FilePath = _UploadsFolder;
                 string path = FilePath.Replace(_RootPath, "");
@@ -166,7 +169,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUploadedFiles()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var UploadedFiles = _AppAdminService.GetUploadedFiles();
                 return Ok(UploadedFiles);
@@ -177,7 +180,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage GetUploadedFile(string GeneratedFileName)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 HttpResponseMessage Response = null;
 
@@ -212,7 +215,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteUploadedFile(string GeneratedFileName)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.DeleteUploadedFile(GeneratedFileName));
             }
@@ -222,7 +225,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteAllUploadedFiles()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.DeleteAllUploadedFiles());
             }
@@ -236,7 +239,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetOutputFilePath()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 string FilePath = _OutputFilePath;
                 string path = FilePath.Replace(_RootPath, "");
@@ -266,7 +269,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult LaunchLiveScanner()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var result = _AppAdminService.LaunchLiveScanner(_RootPath + "bin");
                 return Ok(result);
@@ -277,7 +280,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult LiveScannerCount()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var result = _AppAdminService.getLiveScannerProcessorsInfo();
                 return Ok(result);
@@ -288,7 +291,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult KillLiveScanner()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var result = _AppAdminService.KillLiveSiteScanner();
                 return Ok(result);

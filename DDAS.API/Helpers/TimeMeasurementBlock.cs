@@ -14,8 +14,15 @@ namespace DDAS.API.Helpers
         private string _logGUID;
         private string _currentUser;
         private string _callerName;
-        public TimeMeasurementBlock(NLog.Logger Logger, string CurrentUser, string CallerName)
+        private bool _logIsOn = false;
+        public TimeMeasurementBlock(NLog.Logger Logger, string logMode, string CurrentUser, string CallerName)
         {
+            //logMode values on / off
+            if (logMode.ToLower() == "on")
+            {
+                _logIsOn = true;
+            }
+            
             _Logger = Logger;
             _stopWatch = new Stopwatch();
             _callerName = CallerName;
@@ -33,6 +40,7 @@ namespace DDAS.API.Helpers
 
         private void LogStart()
         {
+            if (!_logIsOn) return;
             _stopWatch.Start();
             _logGUID = shortGUID();
             _Logger.Info(String.Format("{0} | {1} | Start | {2}  ", _callerName, _logGUID, _currentUser));
@@ -41,6 +49,7 @@ namespace DDAS.API.Helpers
 
         private void LogEnd()
         {
+            if (!_logIsOn) return;
             _stopWatch.Stop();
             _Logger.Info(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3}", _callerName, _logGUID, _currentUser, _stopWatch.ElapsedMilliseconds));
 

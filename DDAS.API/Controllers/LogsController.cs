@@ -17,6 +17,7 @@ using System.Web;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNet.Identity;
 using DDAS.API.Helpers;
+using DDAS.Models.ViewModels;
 
 namespace DDAS.API.Controllers
 {
@@ -28,6 +29,7 @@ namespace DDAS.API.Controllers
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private string _RootPath;
+        private string _logMode;
 
         /*
          Trace
@@ -43,103 +45,113 @@ namespace DDAS.API.Controllers
             _UOW = uow;
             _Mapper = mapper;
             _RootPath = HttpRuntime.AppDomainAppPath;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
+        //For later use:
+        //Unable to read NLog Status, hence log-start, resume not used 
+        //[Route("log-resume")]
+        //[HttpGet]
+        //public IHttpActionResult LogResume()
+        //{
+        //    using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+        //    {
+        //        NLog.LogManager.ReconfigExistingLoggers();
 
+        //        return Ok();
+        //    }
+        //}
 
+        //For later use:
+        //Unable to read NLog Status, hence log-start, resume not used 
+        //[Route("log-stop")]
+        //[HttpGet]
+        //public IHttpActionResult LogStop()
+        //{
+        //    using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+        //    {   //var config = Logger.Factory.Configuration;
+        //        ////var target = (FileTarget)config.FindTargetByName("file");
+        //        ////var loggingRule = new LoggingRule("*", target);
+        //        //config.RemoveTarget("file");
+        //        ////config.LoggingRules.Remove(loggingRule);
+        //        //config.Reload();
 
-        [Route("log-resume")]
-        [HttpGet]
-        public IHttpActionResult LogResume()
-        {
-            //var config = Logger.Factory.Configuration;
-            ////var target = (FileTarget)config.FindTargetByName("file");
-            //var target = new FileTarget();
-            //target.FileName = "Logs / log.txt";
-            //target.FileNameKind = FilePathKind.Relative;
-            //target.ArchiveFileName = "Logs/Archive/log.{#}.txt";
-            //target.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Date; //"Date";
-            //target.ArchiveEvery = NLog.Targets.FileArchivePeriod.Day; //"Day"
-            //target.ArchiveDateFormat = "yyyyMMdd";
-            //target.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}";
+        //        //var target = NLog.LogManager.Configuration?.FindTargetByName<BlobStorageTarget>("blob");
+        //        var target = NLog.LogManager.Configuration?.FindTargetByName("file");
+        //        target?.Dispose();   // Closes the target so it is uninitialized
 
-            //var loggingRule = new LoggingRule("*", LogLevel.Debug, target);
-            //config.LoggingRules.Add(loggingRule);
-
-            //config.AddTarget(target);
-            ////config.LoggingRules.Add(loggingRule);
-            //config.Reload();
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
-            {
-                NLog.LogManager.ReconfigExistingLoggers();
-
-                return Ok();
-            }
-        }
-
-
-        [Route("log-stop")]
-        [HttpGet]
-        public IHttpActionResult LogStop()
-        {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
-            {   //var config = Logger.Factory.Configuration;
-                ////var target = (FileTarget)config.FindTargetByName("file");
-                ////var loggingRule = new LoggingRule("*", target);
-                //config.RemoveTarget("file");
-                ////config.LoggingRules.Remove(loggingRule);
-                //config.Reload();
-
-                //var target = NLog.LogManager.Configuration?.FindTargetByName<BlobStorageTarget>("blob");
-                var target = NLog.LogManager.Configuration?.FindTargetByName("file");
-                target?.Dispose();   // Closes the target so it is uninitialized
-
-                return Ok();
-            }
-        }
+        //        return Ok();
+        //    }
+        //}
 
         [Route("log-status")]
         [HttpGet]
         public IHttpActionResult LogStatus()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
-            {
-                bool enabled = false;
-                var config = Logger.Factory.Configuration;
+            return Ok(_logMode);
+            
+            //using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            //{
+            //    bool enabled = false;
+            //    var config = Logger.Factory.Configuration;
 
-                if (Logger.IsInfoEnabled)
-                {
-                    enabled = true;
-                }
+            //does not display correct value, always displays enabled = true even Logging is stopeed through a call to LogStop.
+            //    if (Logger.IsInfoEnabled)
+            //    {
+            //        enabled = true;
+            //    }
 
-                return Ok(enabled);
-            }
+            //    return Ok(enabled);
+            //}
         }
 
         [Route("archived-logs")]
         [HttpGet]
         public IHttpActionResult ArchivedLogs()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                var retList = new List<FileInfo>();
+                var retList = new List<FileViewModel>();
                 DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
-                var logFiles = dir.GetFiles("*.*").OrderBy(p => p.CreationTimeUtc).ToList();
-
+                var logFiles = dir.GetFiles("*.*")
+                    .OrderByDescending(p => p.CreationTimeUtc)
+                    .Take(100)
+                    .ToList();
+                //return Ok(logFiles);
                 foreach (FileInfo fileInfo in logFiles)
                 {
-                    retList.Add(fileInfo);
+                    var fileVM = new FileViewModel();
+                    fileVM.CreatedOn = fileInfo.CreationTimeUtc;
+                    fileVM.FileName = fileInfo.Name;
+                    fileVM.FileSize = fileInfo.Length;
+                    fileVM.Path = fileInfo.FullName.Replace(_RootPath, "");
+                    retList.Add(fileVM);
                 }
 
                 return Ok(retList);
             }
         }
 
+        [Route("archived-file-count")]
+        [HttpGet]
+        public IHttpActionResult ArchivedFileCount()
+        {
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                
+                DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");
+                var fileCount = dir.EnumerateFiles().Count();
+                return Ok(fileCount);
+            }
+        }
+
+
         [Route("delete-archive")]
         [HttpGet]
         public IHttpActionResult DeleteArchive(int olderThan)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 FileInfo[] files = null;
                 DirectoryInfo dir = new DirectoryInfo(_RootPath + @"Logs\Archive");

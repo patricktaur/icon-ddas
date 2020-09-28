@@ -59,6 +59,22 @@ export class LogsService {
         .catch(this.handleError);        
     }
     
+    archivedFileCount(){
+        return this.http.get(this._baseUrl + 'archived-file-count' , this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
+    deleteOlderThan(olderThan : number){
+        return this.http.get(this._baseUrl + 'delete-archive?olderThan=' + olderThan  , this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+
 
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

@@ -21,6 +21,7 @@ namespace DDAS.API.Controllers
         private string ErrorScreenCaptureFolder;
         private string _RootPath;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
         public AdminController(IAppAdminService AppAdmin)
         {
@@ -31,6 +32,8 @@ namespace DDAS.API.Controllers
             ErrorScreenCaptureFolder = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
 
@@ -53,7 +56,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetExtractionLog()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetExtractionLog());
             }
@@ -65,7 +68,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AddSite(SitesToSearch Site)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 _AppAdminService.AddSitesInDbCollection(Site);
                 return Ok();
@@ -76,7 +79,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetAllSiteSources());
             }
@@ -86,7 +89,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSiteSource(string RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 return Ok(_AppAdminService.GetSingleSiteSource(Id));
@@ -97,7 +100,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult UpdateSiteSource(SitesToSearch SiteSource)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.UpdateSiteSource(SiteSource));
             }
@@ -109,7 +112,7 @@ namespace DDAS.API.Controllers
         {
             try
             {
-                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
                 {
                     var Id = Guid.Parse(RecId);
                     _AppAdminService.DeleteSiteSource(Id);
@@ -129,7 +132,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AddCountry(Country country)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var result = _AppAdminService.AddCountry(country);
                 if (result)
@@ -144,7 +147,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetCountries()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Countries = _AppAdminService.GetCountries();
                 return Ok(Countries);
@@ -155,7 +158,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetCountry(Guid? RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Country = _AppAdminService.GetCountry(RecId);
                 return Ok(Country);
@@ -166,7 +169,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteCountry(string RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 _AppAdminService.DeleteCountry(Id);
@@ -181,7 +184,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AddSponsor(SponsorProtocol sponsor)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var result = _AppAdminService.AddSponsor(sponsor);
                 return Ok(result);
@@ -197,7 +200,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSponsorProtocols()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetSponsorProtocols());
             }
@@ -207,7 +210,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSponsorProtocol(string RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 return Ok(_AppAdminService.GetSponsorProtocol(Id));
@@ -218,7 +221,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteSponsorProtocol(string RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 _AppAdminService.DeleteSponsor(Id);
@@ -240,7 +243,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDefaultSites()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetDefaultSites());
             }
@@ -250,7 +253,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDefaultSite(string RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 var site = _AppAdminService.GetSingleDefaultSite(Id);
@@ -262,7 +265,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SaveOrUpdateDefaultSource(DefaultSite DefaultSite)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Status = _AppAdminService.UpdateDefaultSite(DefaultSite);
                 return Ok(Status);
@@ -273,7 +276,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteDefaultSite(string RecId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(RecId);
                 _AppAdminService.DeleteDefaultSite(Id);
@@ -288,7 +291,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetExceptionLogs()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetExceptionLogs());
             }
@@ -302,7 +305,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetiSprintToDDASLog()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetiSprintToDDASLog());
             }
@@ -313,7 +316,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDDAStoiSprintLog()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_AppAdminService.GetDDtoiSprintLog());
             }

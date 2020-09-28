@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import {LogsService} from '../logs-service';
 import {ConfigService} from '../../shared/utils/config.service'
 
-import {DownloadDataFilesViewModel} from '../../data-extractor/data-extractor.classes';
+// import {DownloadDataFilesViewModel} from '../../data-extractor/data-extractor.classes';
 
 @Component({
     moduleId: module.id,
@@ -18,8 +18,12 @@ export class LogsMainComponent implements OnInit {
     _baseUrl: string = '';
     _downloadUrl : string = '';
     public pageNumber: number = 1;
+    public ApiHost: string;
     // public archivedLogs : any;
-    public archivedLogs: DownloadDataFilesViewModel[] = [];
+    public archivedLogs: any; //DownloadDataFilesViewModel[] = [];
+    public archivedFileCount: any;
+    public deleteFilesOlderThan : number = 30;
+    public deletedResponse : string = "";
 
     constructor(
         private route: ActivatedRoute,
@@ -32,15 +36,22 @@ export class LogsMainComponent implements OnInit {
         this._baseUrl = configService.getApiURI() ;
         //remove api/
         this._downloadUrl = this._baseUrl.replace("api/", "");
+        this.ApiHost = this.configService.getApiHost();
     }
 
     ngOnInit() {
-        this.logArchivedFiles();
+        this.refreshStatus();
     }
 
+    refreshStatus(){
+        this.logArchivedFiles();
+        this.getLogStatus();
+        this.getArchivedFileCount();
+    }
+    
     logArchivedFiles(){
         this.logsService.getArchivedLogs()
-        .subscribe((res : DownloadDataFilesViewModel[]) => {
+        .subscribe((res : any) => {
             this.loading = false;
             this.archivedLogs = res;
         },
@@ -49,6 +60,7 @@ export class LogsMainComponent implements OnInit {
             this.loading = false;
         });
     }
+
 
     logStop(){
         this.logsService.stopLog()
@@ -83,5 +95,31 @@ export class LogsMainComponent implements OnInit {
             this.loading = false;
         });
     }    
+
+    getArchivedFileCount(){
+        this.logsService.archivedFileCount()
+        .subscribe((res : any) => {
+            this.loading = false;
+            this.archivedFileCount = res;
+        },
+        error => {
+            console.log(JSON.stringify(error));
+            this.loading = false;
+        });
+    }
+
+    deleteArchivedFilesOlderThan(){
+        this.deletedResponse = "";
+        this.logsService.deleteOlderThan(this.deleteFilesOlderThan)
+        .subscribe((res : any) => {
+            this.loading = false;
+            this.deletedResponse = res;
+            this.refreshStatus();
+        },
+        error => {
+            console.log(JSON.stringify(error));
+            this.loading = false;
+        });
+    }
 
 }

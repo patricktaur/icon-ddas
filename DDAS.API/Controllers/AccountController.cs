@@ -27,12 +27,15 @@ namespace DDAS.API.Controllers
         private IUserService _userService;
         private IEMailService _EMailService;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
         public AccountController(IUnitOfWork uow, IUserService userService, IEMailService email)
         {
             _UOW = uow;
             _userService = userService;
             _EMailService = email;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         #region WorkingCode
@@ -43,7 +46,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUsers()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Users = _userService.GetUsers();
                 return Ok(Users);
@@ -59,7 +62,7 @@ namespace DDAS.API.Controllers
 
             //var AdminList = Users.Where(x =>
             //x.ActiveRoles.ToLower().Contains("admin")).ToList();
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 var AdminList = _userService.GetAdmins();
@@ -73,7 +76,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUser(string UserId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 bool IncludeAppAdminRole = false;
@@ -101,7 +104,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SaveUser(UserViewModel user)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 return Ok(_userService.SaveUser(user));
@@ -114,7 +117,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult DeleteUser(Guid userId)
         {
 
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_userService.DeleteUser(userId));
             }
@@ -126,7 +129,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SetPassword(SetPasswordBindingModel model)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 if (!ModelState.IsValid)
@@ -164,7 +167,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ResetPassword(Guid userId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 UserStore userStore = new UserStore(_UOW);
@@ -203,7 +206,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAllLoginHistory(string DateFrom, string DateTo)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 DateTime from;
@@ -230,7 +233,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetMyLoginHistory(string UserName, string DateFrom, string DateTo)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 DateTime from;
@@ -296,7 +299,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult Logout()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
 
                 Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);

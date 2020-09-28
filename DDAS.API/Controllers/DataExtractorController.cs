@@ -28,6 +28,7 @@ namespace DDAS.API.Controllers
         private ILog _log;
         private string _RootPath;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
         public DataExtractorController(IDataExtractorService ExtractData, IUnitOfWork UOW)
         {
@@ -35,6 +36,8 @@ namespace DDAS.API.Controllers
             _ExtractData = ExtractData;
             _RootPath = HttpRuntime.AppDomainAppPath;
             _log = new DBLog(_UOW, "DataExtractorController", true);
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         #region DataExtraction
@@ -45,7 +48,7 @@ namespace DDAS.API.Controllers
         {
             try
             {
-                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
                 {//var userName = User.Identity.GetUserName();
                  //_ExtractData.ExtractDataSingleSite(siteEnum, userName);
                     var ExtractorExePath = _RootPath + @"bin\DDAS.DataExtractor.exe";
@@ -70,7 +73,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetLatestExtractionStatus()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var fromDate = DateTime.Now.AddMonths(-9).Date;
                 var toDate = DateTime.Now.AddDays(1).Date;
@@ -83,7 +86,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDataExtractionErrorSiteCount()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var count = _ExtractData.GetSitesWhereDataExtractionEarlierThan(32).ToList().Count;
                 return Ok(count);
@@ -95,7 +98,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDownloadedDataFiles(int SiteEnum)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var DataFiles = _ExtractData.GetDataFiles(SiteEnum);
 
@@ -115,7 +118,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetFDAWarningLetterSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetFDAWarningLetterSiteData());
             }
@@ -126,7 +129,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetFDADebarPageSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetFDADebarPageSiteData());
             }
@@ -136,7 +139,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetERRProposalToDebarPageSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetERRProposalToDebarPageSiteData());
             }
@@ -147,7 +150,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAdequateAssuranceListSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetAdequateAssuranceListSiteData());
             }
@@ -157,7 +160,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetClinicalInvestigatorDisqualificationSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetClinicalInvestigatorDisqualificationSiteData());
             }
@@ -167,7 +170,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetPHSAdministrativeActionListingSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetPHSAdministrativeActionListingSiteData());
             }
@@ -177,7 +180,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetCBERClinicalInvestigatorInspectionSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetCBERClinicalInvestigatorInspectionSiteData());
             }
@@ -187,7 +190,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetCorporateIntegrityAgreementListSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetCorporateIntegrityAgreementListSiteData());
             }
@@ -198,7 +201,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetClinicalInvestigatorInspectionCDERSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetClinicalInvestigatorInspectionSiteData());
             }
@@ -208,7 +211,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetExclusionDatabaseSearchPageSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetExclusionDatabaseSearchPageSiteData());
             }
@@ -217,7 +220,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSpeciallyDesignatedNationalsSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetSpeciallyDesignatedNationalsSiteData());
             }
@@ -227,7 +230,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetSystemForAwardManagementPageSiteData()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_ExtractData.GetSystemForAwardManagementPageSiteData());
             }

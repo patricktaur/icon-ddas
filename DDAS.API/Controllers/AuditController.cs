@@ -24,17 +24,20 @@ namespace DDAS.API.Controllers
     {
         private IAudit _Audit;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
         public AuditController(IAudit Audit)
         {
             _Audit = Audit;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         [Route("RequestQC")]
         [HttpPost]
         public IHttpActionResult RequestQC(ComplianceForm Form)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_Audit.RequestQC(Form));
             }
@@ -45,7 +48,7 @@ namespace DDAS.API.Controllers
         // public async Task<HttpResponseMessage> PostFormData()
         public async Task<HttpResponseMessage> RequestQC1()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 if (!Request.Content.IsMimeMultipartContent())
                 {
@@ -97,7 +100,7 @@ namespace DDAS.API.Controllers
         {
             try
             {
-                using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
                 {
                     var RecId = Guid.Parse(Id);
                     var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
@@ -118,7 +121,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ListQCs(ComplianceFormFilter Filter)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_Audit.ListQCs(Filter));
             }
@@ -128,7 +131,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
                 URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
@@ -140,7 +143,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ListQCSummary(string FormId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(FormId);
                 return Ok(_Audit.ListQCSummary(Id));
@@ -152,7 +155,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult Undo(
             string ComplianceFormId, UndoEnum undoEnum, string UndoComment)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var Id = Guid.Parse(ComplianceFormId);
                 var Result = _Audit.Undo(Id, undoEnum, UndoComment);

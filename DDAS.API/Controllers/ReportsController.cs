@@ -35,6 +35,7 @@ namespace DDAS.API.Controllers
         private FileDownloadResponse _fileDownloadResponse;
         private CSVConvertor _csvConvertor;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
 
         public ReportsController(ISearchService SearchSummary,
             IUnitOfWork UOW,
@@ -48,13 +49,15 @@ namespace DDAS.API.Controllers
             _Report = Report;
             _fileDownloadResponse = new FileDownloadResponse();
             _csvConvertor = new CSVConvertor();
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         [Route("GetNamesFromClosedComplianceForms")]
         [HttpGet]
         public List<ComplianceForm> GetNamesFromClosedComplianceForm()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 var ComplianceForms =
                 _UOW.ComplianceFormRepository.FindActiveComplianceForms(false);
@@ -73,7 +76,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult CloseComplianceForm(string ComplianceFormId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 Guid? RecId = Guid.Parse(ComplianceFormId);
                 ComplianceForm form = _UOW.ComplianceFormRepository.FindById(RecId);
@@ -89,7 +92,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult DeleteComplianceForm(string ComplianceFormId)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 Guid? RecId = Guid.Parse(ComplianceFormId);
                 _UOW.ComplianceFormRepository.DropComplianceForm(RecId);
@@ -102,7 +105,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GenerateOutputFile(ComplianceFormFilter CompFormFilter)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {   //HttpResponseMessage response = null;
 
                 if (!File.Exists(
@@ -193,7 +196,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public HttpResponseMessage GenerateOutputFileXXX(ComplianceFormFilter CompFormFilter)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 HttpResponseMessage response = null;
 
@@ -287,7 +290,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public HttpResponseMessage DownloadUserManual()
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 HttpResponseMessage response = null;
                 var FilePath =
@@ -338,7 +341,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetInvestigationCompletedReport(ReportFilters Filters, string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 //var Report = _Report.GetInvestigationsReport(Filters);
                 //return Ok(Report);
@@ -384,7 +387,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetOpenInvestigations(string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {   //var OpenInvestigations = _Report.GetOpenInvestigations();
                 //return Ok(OpenInvestigations);
 
@@ -408,7 +411,7 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAdminDashboard(string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {   //return Ok(_Report.GetAdminDashboard());
                 Thread.Sleep(1000);
                 var list = _Report.GetAdminDashboard();
@@ -433,7 +436,7 @@ namespace DDAS.API.Controllers
             string AssignedTo,
             AdminDashboardReportType ReportType)
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 return Ok(_Report.GetAdminDashboardDrillDownDetails(AssignedTo, ReportType));
             }
@@ -443,7 +446,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetAssignmentHistory(ReportFilterViewModel ReportFilter, string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 if (ReportFilter.ToDate != null)
                 {
@@ -476,7 +479,7 @@ namespace DDAS.API.Controllers
         public IHttpActionResult
             GetInvestigatorReviewCompletedTime(ReportFilterViewModel ReportFilter, string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 if (ReportFilter.ToDate != null)
                 {
@@ -513,7 +516,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetInvestigatorsByFinding(ReportFilterViewModel ReportFilter, string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 if (ReportFilter.ToDate != null)
                 {
@@ -544,7 +547,7 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter, string mode = "view")
         {
-            using (new TimeMeasurementBlock(Logger, CurrentUser(), GetCallerName()))
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 if (ReportFilter.ToDate != null)
                 {
