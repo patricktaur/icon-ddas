@@ -148,23 +148,7 @@ namespace DDAS.Data.Mongo.Repositories
                 //.ToList();
             }
 
-            if (CompFormFilter.ReviewCompletedOnFrom != null)
-            {
-                DateTime startDate;
-                startDate = CompFormFilter.ReviewCompletedOnFrom.Value.Date;
-
-                filter = filter & builder.Where(
-                    x => x.ReviewCompletedOn >= startDate);
-            }
-
-            if (CompFormFilter.ReviewCompletedOnTo != null)
-            {
-                DateTime endDate;
-                endDate = CompFormFilter.ReviewCompletedOnTo.Value.Date.AddDays(1);
-
-                filter = filter & builder.Where(x => x.ReviewCompletedOn < endDate);
-
-            }
+            
 
 
 
@@ -216,6 +200,20 @@ namespace DDAS.Data.Mongo.Repositories
 
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var entity = collection.Find(filter).ToList();
+
+            
+
+            return entity;
+        }
+
+        public List<ComplianceForm> FindComplianceForms(int searchDaysGreaterThan, int limit)
+        {
+            var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
+            var dt = DateTime.Now.AddDays(-searchDaysGreaterThan);
+            var entity = collection.Find(
+                x => x.SearchStartedOn < dt
+                ).Limit(limit).ToList();
+
             return entity;
         }
 

@@ -417,6 +417,8 @@ export class CompFormFilter {
     SponsorProtocolNumber: string;
     SearchedOnFrom: Date;
     SearchedOnTo: Date;
+    ReviewCompletedOnFrom : Date;
+    ReviewCompletedOnTo : Date;
     AssignedTo: string;
     Country: string;
     Status: ComplianceFormStatusEnum;

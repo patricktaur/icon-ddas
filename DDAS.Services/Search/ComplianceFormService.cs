@@ -2573,7 +2573,7 @@ namespace DDAS.Services.Search
             item.Reviewer = compForm.Reviewer;
             item.QCVerifier = compForm.QCVerifier;
             item.ExportedToiSprintOn = compForm.ExportedToiSprintOn;
-
+            item.ReviewCompletedOn = compForm.ReviewCompletedOn;
             if (compForm.InvestigatorDetails.Count > 0)
             {
                 item.Name = compForm.InvestigatorDetails.FirstOrDefault().Name;
@@ -2623,6 +2623,30 @@ namespace DDAS.Services.Search
                 Investigator.UndoCompleted = true; //For reviewer, to undo completed to review completed
         }
 
+        public List<PrincipalInvestigator> GetComplianceFormsFromFiltersWithReviewDates(
+            ComplianceFormFilter CompFormFilter)
+        {
+
+            var compForms = GetComplianceFormsFromFilters(CompFormFilter);
+            //ReviewCompletedOnFrom is a computed value
+            var compForms1 = compForms;
+            if (CompFormFilter.ReviewCompletedOnFrom != null)
+            {
+                DateTime startDate;
+                startDate = CompFormFilter.ReviewCompletedOnFrom.Value.Date;
+                compForms1 = compForms.Where(x => x.ReviewCompletedOn >= startDate).ToList();
+            }
+            var compForms2 = compForms1;
+            if (CompFormFilter.ReviewCompletedOnTo != null)
+            {
+                DateTime endDate;
+                endDate = CompFormFilter.ReviewCompletedOnTo.Value.Date.AddDays(1);
+                compForms2 = compForms1.Where(x => x.ReviewCompletedOn < endDate).ToList();
+            }
+            return compForms2;
+
+            
+        }
         public List<PrincipalInvestigator> GetComplianceFormsFromFilters(
             ComplianceFormFilter CompFormFilter)
         {

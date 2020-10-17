@@ -35,7 +35,7 @@ import { ConfigService } from '../shared/utils/config.service';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
-export class ArchvService {
+export class ArchvServiceXXX {
     _baseUrl: string = '';
     //_controller: string = 'search/'; 
     _controller: string = '';
@@ -614,6 +614,15 @@ export class ArchvService {
         .catch(this.handleError);
     }
 
+    //Archive:
+    ArchiveCompFormsWithSearchOlderThan(days: number): Observable<string> {
+        return this.http.get(this._baseUrl + 'archive/GetPrincipalInvestigators')
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+    
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

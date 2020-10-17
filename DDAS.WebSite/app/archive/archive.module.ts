@@ -9,7 +9,7 @@ import { FormsModule }    from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
-import {ArchvService} from './archv-service';
+// import {ArchvService} from './archv-service';
 import {ComplianceFormArchiveService} from './comp-form-archive-service';
 import {CompFormArchiveComponent} from './compliance-form/comp-form-archv.component'
 import {CompFormActiveComponent} from './compliance-form-active/comp-form-active.component';
@@ -32,7 +32,7 @@ import {CompFormActiveComponent} from './compliance-form-active/comp-form-active
 
   ],
   providers: [      
-    ArchvService,
+    // ArchvService,
     ComplianceFormArchiveService
 ]
 })

@@ -602,6 +602,17 @@ export class ComplianceFormArchiveService {
         .catch(this.handleError);
     }
 
+    archiveComplianceFormWithSearchedOnGreaterthan(days: number) {
+            
+            return this.http.get(this._baseUrl + 'archive/ArchiveCompFormsWithSearchDaysGreaterThan?days=' + days, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    
+
+        }   
+    
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

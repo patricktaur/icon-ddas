@@ -11,7 +11,7 @@ import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 import { AuthService } from '../../auth/auth.service';
 import { IMyDate, IMyDateModel } from '../../shared/utils/my-date-picker/interfaces';
 import { CompFormLogicService } from '../../search/shared/services/comp-form-logic.service';
-// import {ArchvService} from '../archv-service';
+
 import {ComplianceFormArchiveService} from '../comp-form-archive-service';
 
 @Component({
@@ -32,7 +32,8 @@ export class CompFormActiveComponent implements OnInit {
     public ToSelDate: string;//default calendar start dates
     public FromDate: IMyDateModel;// Object = { date: { year: 2018, month: 10, day: 9 } };
     public ToDate: IMyDateModel;  // Object = { date: { year: 2018, month: 10, day: 9 } };
-
+    public ReviewCompletedOnFromDate :  IMyDateModel;
+    public ReviewCompletedOnToDate : IMyDateModel;
     public formLoading: boolean;
     public currentReviewStatus: CurrentReviewStatusViewModel;
     public undoQCSubmit: boolean;
@@ -43,7 +44,10 @@ export class CompFormActiveComponent implements OnInit {
     public undoComment: string = "";
     public exportToiSprintResult: string = "";
 
-    public archivedForms : any[];
+    // public archivedForms : any[];
+
+    public archiveSearchOlderThan: number = 365;
+    public archiveResult: string;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -52,7 +56,7 @@ export class CompFormActiveComponent implements OnInit {
         private authService: AuthService,
         private compFormLogic: CompFormLogicService,
         // private archvService: ArchvService,
-        // private compFormArchService : ComplianceFormArchiveService
+        private compFormArchService : ComplianceFormArchiveService
         ) {
     }
 
@@ -60,7 +64,7 @@ export class CompFormActiveComponent implements OnInit {
         this.exportToiSprintResult = "";
         this.ComplianceFormFilter = new CompFormFilter;
         this.SetDefaultFilterValues();
-         this.LoadPrincipalInvestigators();
+        this.LoadPrincipalInvestigators();
         // this.LoadRecords();
         this.LoadUsers();
     }
@@ -103,6 +107,26 @@ export class CompFormActiveComponent implements OnInit {
             formatted: '',
             epoc: null
         }
+
+        this.ReviewCompletedOnFromDate = {
+            date: {
+                year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+
+        
+        this.ReviewCompletedOnToDate = {
+            date: {
+                year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.Status = -1;
     }
@@ -117,18 +141,33 @@ export class CompFormActiveComponent implements OnInit {
     }
     
     LoadPrincipalInvestigators() {
-        if (this.FromDate != null) {
+        this.ComplianceFormFilter.SearchedOnFrom = null;
+        if (this.FromDate.date) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
             this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
         }
-
-        if (this.ToDate != null) {
+        this.ComplianceFormFilter.SearchedOnTo = null;
+        if (this.ToDate.date) {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
-         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
-        // this.service.getPrincipalInvestigators()
+        this.ComplianceFormFilter.ReviewCompletedOnFrom = null;
+        if (this.ReviewCompletedOnFromDate.date) {
+            //minus one month, plus one day is made so that the value is correctly converted on the server side.  
+            //Otherwise incorrect values are produced when the property is read on API end point.
+            this.ComplianceFormFilter.ReviewCompletedOnFrom = new Date(this.ReviewCompletedOnFromDate.date.year, this.ReviewCompletedOnFromDate.date.month - 1, this.ReviewCompletedOnFromDate.date.day + 1);
+        }
+        this.ComplianceFormFilter.ReviewCompletedOnTo = null;
+        if (this.ReviewCompletedOnToDate.date) {
+            this.ComplianceFormFilter.ReviewCompletedOnTo = new Date(this.ReviewCompletedOnToDate.date.year, this.ReviewCompletedOnToDate.date.month - 1, this.ReviewCompletedOnToDate.date.day + 1);
+        }
+         
+    // getPrincipalInvestigatorsWithReviewDateFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]> {
+        //
+        this.service.getPrincipalInvestigatorsWithReviewDateFilters(this.ComplianceFormFilter)
+
+        // this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
             });
@@ -160,26 +199,26 @@ export class CompFormActiveComponent implements OnInit {
         this.router.navigate(['comp-form-edit', compFormId, { rootPath: 'completed-icsf', page: this.pageNumber }], { relativeTo: this.route });
     }
 
-    canUndoQC(item: PrincipalInvestigatorDetails){
-        if(item.QCVerifier && item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
-            item.UndoQCSubmit)
-            return true;
-        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
-            item.UndoQCResponse)
-            return true;
-        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
-            item.UndoCompleted)
-            return true;
-        else
-            return false;
-    }
+    // canUndoQC(item: PrincipalInvestigatorDetails){
+    //     if(item.QCVerifier && item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
+    //         item.UndoQCSubmit)
+    //         return true;
+    //     else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
+    //         item.UndoQCResponse)
+    //         return true;
+    //     else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
+    //         item.UndoCompleted)
+    //         return true;
+    //     else
+    //         return false;
+    // }
 
-    getUndoAction(){
-        if(this.undoQCSubmit)
-            return "QC Submit";
-        else if(this.undoQCResponse)
-            return "QC Corrections";
-    }
+    // getUndoAction(){
+    //     if(this.undoQCSubmit)
+    //         return "QC Submit";
+    //     else if(this.undoQCResponse)
+    //         return "QC Corrections";
+    // }
 
     setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, UndoCompleted: boolean, RecId: string){
         this.undoQCSubmit = UndoQCSubmit;
@@ -188,43 +227,51 @@ export class CompFormActiveComponent implements OnInit {
         this.recId = RecId;
     }
 
-    undoQC() {
-        let undoEnum = 0;
-
-        if(this.undoQCSubmit)
-            undoEnum = UndoEnum.UndoQCSubmit;
-        else if(this.undoQCResponse)
-            undoEnum = UndoEnum.UndoQCResponse;
-        else if(this.undoCompleted)
-            undoEnum = UndoEnum.UndoCompleted;
-
-        if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse ||
-            undoEnum == UndoEnum.UndoCompleted) {
-            this.service.undo(this.recId, undoEnum, this.undoComment)
-            .subscribe((item: boolean) => {
-                this.LoadPrincipalInvestigators();
-            },
-            error => {
-
-            });
-        }
-        else
-            alert('undo request not sent');
-    }
-
-    exportToiSprint(complianceFormId: string){
-            this.service.exportToiSprint(complianceFormId)
-            .subscribe((item: string) => {
-                if(item.indexOf("Failed") > -1){
-                    alert(item);
-                }
-                this.exportToiSprintResult = item;
-                this.LoadPrincipalInvestigators();
-            },
-            error => {
-                this.exportToiSprintResult = "failed to export data to iSprint";
+    ArchiveSearchOnIsOlderThan(){
+        this.archiveResult = "Processing ....";
+        this.compFormArchService.archiveComplianceFormWithSearchedOnGreaterthan(this.archiveSearchOlderThan)
+            .subscribe((result: any) => {
+                this.archiveResult = result;
             });
     }
+
+    // undoQC() {
+    //     let undoEnum = 0;
+
+    //     if(this.undoQCSubmit)
+    //         undoEnum = UndoEnum.UndoQCSubmit;
+    //     else if(this.undoQCResponse)
+    //         undoEnum = UndoEnum.UndoQCResponse;
+    //     else if(this.undoCompleted)
+    //         undoEnum = UndoEnum.UndoCompleted;
+
+    //     if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse ||
+    //         undoEnum == UndoEnum.UndoCompleted) {
+    //         this.service.undo(this.recId, undoEnum, this.undoComment)
+    //         .subscribe((item: boolean) => {
+    //             this.LoadPrincipalInvestigators();
+    //         },
+    //         error => {
+
+    //         });
+    //     }
+    //     else
+    //         alert('undo request not sent');
+    // }
+
+    // exportToiSprint(complianceFormId: string){
+    //         this.service.exportToiSprint(complianceFormId)
+    //         .subscribe((item: string) => {
+    //             if(item.indexOf("Failed") > -1){
+    //                 alert(item);
+    //             }
+    //             this.exportToiSprintResult = item;
+    //             this.LoadPrincipalInvestigators();
+    //         },
+    //         error => {
+    //             this.exportToiSprintResult = "failed to export data to iSprint";
+    //         });
+    // }
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 

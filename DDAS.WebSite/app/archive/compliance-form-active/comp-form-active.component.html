@@ -13,17 +13,42 @@
 
 	<div *ngIf="!formLoading">
 		<div class="col-lg-12">
+			
 			<div class="well">
 				<div class="row">
 					<div class="col-md-8">
 						<div class="row">
 							<div class="col-md-6 ">
-								<h4>Filters:</h4>
+								<h4>Archive:</h4>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4 ">
+								
+								<label for="SearchDaysOlderThan">Searched On is days older than</label>
+								<input type="text" class="form-control" name="SearchDaysOlderThan" [(ngModel)]="archiveSearchOlderThan">
+							</div>
+							 
+						</div>
+						
+						<div class="row">
+							<div class="col-md-4 ">
+								<span *ngIf="archiveResult">{{archiveResult}}<br></span>
+								<button type="button" class="btn btn-primary" (click)="ArchiveSearchOnIsOlderThan()">Archive</button>
+							</div>
+							 
+						</div>
 
+						
+						<div class="row">
+							<div class="col-md-6 ">
+								<h4>Filters:</h4>
+								<label for="PrincipalInvestigator">Principal Investigator:</label>
+								<input type="text" class="form-control" name="PrincipalInvestigator" [(ngModel)]="ComplianceFormFilter.InvestigatorName">
 							</div>
 							 <!-- {{diagnostic}}  -->
 						</div>
-						<!-- <div class="row">
+						<div class="row">
 							<div class="col-md-6 ">
 								<div class="form-group">
 									<label for="PrincipalInvestigator">Principal Investigator:</label>
@@ -55,11 +80,12 @@
 									</select>
 								</div>
 							</div>
-						</div> -->
+						</div>
 						<div class="row">
 							<div class="col-md-6 ">
 								<div class="form-group">
-									<label for="Date">Completed On (from):</label>
+
+									<label for="Date">Searched On (from):</label>
 
 									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
 
@@ -67,11 +93,29 @@
 							</div>
 							<div class="col-md-6 ">
 								<div class="form-group">
-									<label for="Date">Completed On (to):</label>
+									<label for="Date">Searched On (to):</label>
 									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate"></my-date-picker>
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Review Completed On (from):</label>
+
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnFromDate"></my-date-picker>
+
+								</div>
+							</div>
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Review Completed On (to):</label>
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnToDate"></my-date-picker>
+								</div>
+							</div>
+						</div>
+
+
 						<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
 						<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
 					</div>
@@ -86,6 +130,8 @@
 							<th class="text-left">Active</th>
 							<th class="text-center">Searched on</th>
 							<th class="text-center">Assigned to</th>
+							<th class="text-center">Review Completed On</th>
+							
 							 <th class="text-center">Exported to iSprint On</th> 
 							<th class="text-center">Actions</th>
 						</tr>
@@ -123,16 +169,19 @@
 							</td>
 
 							<td class="text-left">
-								{{item.SearchStartedOn | date: 'dd MMM yyyy:hh mm'}}
+								{{item.SearchStartedOn | date: 'dd MMM yyyy'}}
 							</td>
 							<td class="text-left">
 								{{item.AssignedToFullName}}
+							</td>
+							<td class="text-center">
+								{{item.ReviewCompletedOn | date: 'dd MMM yyyy'}}
 							</td>
 							<!-- <td class="text-center">
 								<div statusCircle [status]="item.StatusEnum" size=24 [title]="item.Status"></div>
 							</td> -->
 							<td class="text-center">
-								{{item.ExportedToiSprintOn | date: 'dd MMM yyyy:hh mm'}}
+								{{item.ExportedToiSprintOn | date: 'dd MMM'}}
 							</td>
 							<td class="text-center">
 								<button type="button" class="btn btn-sm btn-primary" 
@@ -143,14 +192,15 @@
 								 	[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
 									<span class="glyphicon glyphicon-download-alt"></span>
 								</button> -->
-								<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
+								
+								<!-- <button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
 									(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="Undo">
 									<span class="glyphicon glyphicon-repeat"></span>
-								</button>
-								<button type="button" class="btn btn-sm btn-primary" 
+								</button> -->
+								<!-- <button type="button" class="btn btn-sm btn-primary" 
 									(click)="exportToiSprint(item.RecId)" title="Export to iSprint">
 									<span class="glyphicon glyphicon-export"></span>
-								</button>
+								</button> -->
 							<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
 							<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
 							</td>
@@ -165,31 +215,5 @@
 	</div>
 </div>
 
-<div #DownloadComplianceFormModal download-compliance-form></div>
+<!-- <div #DownloadComplianceFormModal download-compliance-form></div> -->
 
-<modal #UndoConfirmModal>
-	<modal-header>
-		<h4 class="modal-title">Confirm Undo</h4>
-	</modal-header>
-	<modal-body>
-		<div class="row">
-			<div class="col-md-9">
-				<label for="Undo">Comment:</label>
-				<textarea name="Undo" class="form-control" id="Undo" rows="5" cols="20" placeholder="comment"
-				 [(ngModel)]="undoComment">
-				</textarea>
-			</div>
-			<div class="col-md-3">
-			</div>
-		</div>
-
-		Are you sure you want to Undo {{getUndoAction()}}?
-	</modal-body>
-	<modal-footer>
-		<button type="button" class="btn btn-primary" 
-			(click)="undoQC(); UndoConfirmModal.close()">
-			Confirm Undo
-		</button>
-		<button type="button" class="btn btn-primary" (click)="UndoConfirmModal.close()">Cancel</button>
-	</modal-footer>
-</modal>

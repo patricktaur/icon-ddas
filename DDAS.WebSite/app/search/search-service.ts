@@ -101,6 +101,17 @@ export class SearchService {
             })
             .catch(this.handleError);
     }
+    // GetComplianceFormWithReviewDateFilter
+    //ComplianceFormWithReviewDateFilters
+    getPrincipalInvestigatorsWithReviewDateFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]> {
+        let Filter1 = JSON.stringify(Filters);
+        return this.http.post(this._baseUrl + 'search/ComplianceFormWithReviewDateFilters', Filter1, this._options)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
 
     getAllUsers() {
         return this.http.get(this._baseUrl + 'Account//GetUsers', this._options)

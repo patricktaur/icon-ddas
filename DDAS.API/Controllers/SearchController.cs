@@ -443,6 +443,27 @@ namespace DDAS.API.Controllers
             }
         }
 
+        [Route("ComplianceFormWithReviewDateFilters")]
+        [HttpPost]
+        public IHttpActionResult GetComplianceFormWithReviewDateFilter(ComplianceFormFilter CompFormFilter)
+        {
+            try
+            {
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+                {
+                    var result = _SearchService.GetComplianceFormsFromFiltersWithReviewDates(CompFormFilter);
+                    return Ok(result);
+                }
+            }
+            catch (Exception Ex)
+            {
+
+                return Ok(Ex.ToString());
+            }
+        }
+
+
+
         [Route("ClosedComplianceFormFilters")]
         [HttpPost]
         public IHttpActionResult GetClosedComplianceFormFilters(

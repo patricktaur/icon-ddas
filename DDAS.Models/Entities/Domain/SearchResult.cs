@@ -535,7 +535,9 @@ namespace DDAS.Models.Entities.Domain
                     return false;
                 }     
             }
+             
         }
+        public DateTime? ReviewCompletedOn { get; set; }
         public List<SubInvestigator> SubInvestigators { get; set; } =
             new List<SubInvestigator>();
         public ReviewStatusEnum CurrentReviewStatus { get; set; }
@@ -1176,6 +1178,10 @@ namespace DDAS.Models.Entities.Domain
         public string Country { get; set; }
         public ComplianceFormStatusEnum Status { get; set; }
         public string InputSource { get; set; }
+        public DateTime? ReviewCompletedOnFrom { get; set; }
+        public DateTime? ReviewCompletedOnTo { get; set; }
+
+
     }
 
     #endregion
