@@ -88,6 +88,7 @@ namespace DDAS.API.App_Start
 
             //container.RegisterWebApiRequest<ISearchService, ComplianceFormService>();
             container.Register<ISearchService, ComplianceFormService>();
+            container.Register<IComplianceFormArchiveService, ComplianceFormArchiveService>();
 
             var RootPath = HttpRuntime.AppDomainAppPath;
 

@@ -32,6 +32,7 @@ import {DataExtractorModule} from "./data-extractor/data-extractor.module";
 import {LoginHistoryService} from "./Admin/all-loginhistory.service";
 
 import {LogsModule} from "./logs/logs.module";
+import {ArchiveModule} from './archive/archive.module';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import {LogsModule} from "./logs/logs.module";
     HelpModule,
     QCModule,
     DataExtractorModule,
-    LogsModule
+    LogsModule,
+    ArchiveModule
   ],
   declarations: [ 
     AppComponent,

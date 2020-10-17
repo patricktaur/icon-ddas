@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppAdminService\AppAdminService.cs" />
+    <Compile Include="Archive\ComplianceFormArchiveService.cs" />
     <Compile Include="Audit\AuditService.cs" />
     <Compile Include="LiveScan\ExtractionQueries.cs" />
     <Compile Include="LiveScan\LiveScanLauncher.cs" />

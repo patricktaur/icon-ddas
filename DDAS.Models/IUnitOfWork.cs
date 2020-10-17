@@ -26,6 +26,8 @@ namespace DDAS.Models
         ILogWSISPRINTRepository LogWSISPRINTRepository { get; }
 
 
+
+
         #region SiteData
         IFDADebarPageRepository FDADebarPageRepository { get; }
 
@@ -78,6 +80,7 @@ namespace DDAS.Models
         ISAMSiteDataRepository SAMSiteDataRepository { get; }
 
         IComplianceFormRepository ComplianceFormRepository { get; }
+        IComplianceFormArchiveRepository ComplianceFormArchiveRepository { get; }
         #endregion
 
         #endregion

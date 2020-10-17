@@ -64,6 +64,7 @@ namespace DDAS.Data.Mongo
         private ISAMSiteDataRepository _SAMSiteDataRepository;
 
         private IComplianceFormRepository _ComplianceFormRepository;
+        private IComplianceFormArchiveRepository _ComplianceFormArchiveRepository;
 
         private IRoleRepository _RoleRepository;
 
@@ -380,6 +381,15 @@ namespace DDAS.Data.Mongo
             {
                 return _ComplianceFormRepository ??
                     (_ComplianceFormRepository = new ComplianceFormRepository(_db));
+            }
+        }
+
+        public IComplianceFormArchiveRepository ComplianceFormArchiveRepository
+        {
+            get
+            {
+                return _ComplianceFormArchiveRepository ??
+                    (_ComplianceFormArchiveRepository = new ComplianceFormArchiveRepository(_db));
             }
         }
 
