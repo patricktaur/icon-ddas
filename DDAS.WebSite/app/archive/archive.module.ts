@@ -6,13 +6,13 @@ import { FormsModule }    from '@angular/forms';
 // import {AppAdminDashboardComponent} from './app-admin-dashboard.component';
 // import { ManageUploadsComponent } from './manage-uploads.component';
 //import {CBERComponent} from './cber-investigate.component';
-import {CompFormArchiveComponent} from './compliance-form/comp-form-archv.component'
 import { SharedModule } from '../shared/shared.module';
 import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 
 import {ArchvService} from './archv-service';
 import {ComplianceFormArchiveService} from './comp-form-archive-service';
-
+import {CompFormArchiveComponent} from './compliance-form/comp-form-archv.component'
+import {CompFormActiveComponent} from './compliance-form-active/comp-form-active.component';
 
 
 @NgModule({ 
@@ -27,7 +27,8 @@ import {ComplianceFormArchiveService} from './comp-form-archive-service';
     //   AppAdminDashboardComponent,
     //   ManageUploadsComponent,
       //CBERComponent
-      CompFormArchiveComponent
+      CompFormArchiveComponent,
+      CompFormActiveComponent
 
   ],
   providers: [      

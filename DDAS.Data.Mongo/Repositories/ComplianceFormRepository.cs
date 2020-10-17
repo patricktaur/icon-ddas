@@ -148,6 +148,25 @@ namespace DDAS.Data.Mongo.Repositories
                 //.ToList();
             }
 
+            if (CompFormFilter.ReviewCompletedOnFrom != null)
+            {
+                DateTime startDate;
+                startDate = CompFormFilter.ReviewCompletedOnFrom.Value.Date;
+
+                filter = filter & builder.Where(
+                    x => x.ReviewCompletedOn >= startDate);
+            }
+
+            if (CompFormFilter.ReviewCompletedOnTo != null)
+            {
+                DateTime endDate;
+                endDate = CompFormFilter.ReviewCompletedOnTo.Value.Date.AddDays(1);
+
+                filter = filter & builder.Where(x => x.ReviewCompletedOn < endDate);
+
+            }
+
+
 
             if (CompFormFilter.Country != null &&
                 CompFormFilter.Country != "")

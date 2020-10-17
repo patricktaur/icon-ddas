@@ -16,9 +16,9 @@ import {ComplianceFormArchiveService} from '../comp-form-archive-service';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'comp-form-archv.component.html',
+    templateUrl: 'comp-form-active.component.html',
 })
-export class CompFormArchiveComponent implements OnInit {
+export class CompFormActiveComponent implements OnInit {
 
     public PrincipalInvestigators: PrincipalInvestigatorDetails[];
     public Users: any[];
@@ -52,7 +52,7 @@ export class CompFormArchiveComponent implements OnInit {
         private authService: AuthService,
         private compFormLogic: CompFormLogicService,
         // private archvService: ArchvService,
-        private compFormArchService : ComplianceFormArchiveService
+        // private compFormArchService : ComplianceFormArchiveService
         ) {
     }
 
@@ -66,7 +66,7 @@ export class CompFormArchiveComponent implements OnInit {
     }
 
     LoadUsers() {
-        this.compFormArchService.getPrincipalInvestigators()
+        this.service.getPrincipalInvestigators()
             .subscribe((item: any[]) => {
                 this.Users = item;
             });
@@ -108,7 +108,7 @@ export class CompFormArchiveComponent implements OnInit {
     }
 
     LoadRecords(){
-        this.compFormArchService.getPrincipalInvestigators()
+        this.service.getPrincipalInvestigators()
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
                 
@@ -127,8 +127,8 @@ export class CompFormArchiveComponent implements OnInit {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
-         this.compFormArchService.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
-        // this.compFormArchService.getPrincipalInvestigators()
+         this.service.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
+        // this.service.getPrincipalInvestigators()
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
             });
