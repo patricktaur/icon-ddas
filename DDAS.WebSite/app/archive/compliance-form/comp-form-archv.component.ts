@@ -51,6 +51,7 @@ export class CompFormArchiveComponent implements OnInit {
     public exportToiSprintResult: string = "";
 
     public archivedForms : any[];
+    public undoArchiveResult: string;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -90,7 +91,7 @@ export class CompFormArchiveComponent implements OnInit {
         this.ComplianceFormFilter.SearchedOnTo = null;
 
         var fromDay = new Date();
-        fromDay.setDate(fromDay.getDate() - 10);
+        fromDay.setDate(fromDay.getDate() - (365 * 2));
 
         this.FromDate = {
             date: {
@@ -102,6 +103,7 @@ export class CompFormArchiveComponent implements OnInit {
         }
 
         var today = new Date();
+        today.setDate(today.getDate() - (365));
         this.ToDate = {
             date: {
                 year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
@@ -129,6 +131,7 @@ export class CompFormArchiveComponent implements OnInit {
             epoc: null
         }
 
+        var today = new Date();
         this.ArchivedOnFromDate = {
             date: {
                 year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
@@ -151,35 +154,9 @@ export class CompFormArchiveComponent implements OnInit {
         this.ComplianceFormFilter.Status = -1;
     }
 
-    LoadRecords(){
-        this.compFormArchService.getPrincipalInvestigators()
-            .subscribe((item: any) => {
-                this.PrincipalInvestigators = item;
-                
-
-            });
-    }
     
-    // LoadPrincipalInvestigators() {
-    //     if (this.FromDate != null) {
-    //         //minus one month, plus one day is made so that the value is correctly converted on the server side.  
-    //         //Otherwise incorrect values are produced when the property is read on API end point.
-    //         this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
-    //     }
-
-    //     if (this.ToDate != null) {
-    //         this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
-    //     }
-
-    //      this.compFormArchService.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
-    //     // this.compFormArchService.getPrincipalInvestigators()
-    //         .subscribe((item: any) => {
-    //             this.PrincipalInvestigators = item;
-    //         });
-            
-
-
-    // }
+    
+    
 
     LoadPrincipalInvestigators() {
         this.ComplianceFormFilter.SearchedOnFrom = null;
@@ -246,32 +223,15 @@ export class CompFormArchiveComponent implements OnInit {
         this.router.navigate(['comp-form-edit', compFormId, { rootPath: 'completed-icsf', page: this.pageNumber }], { relativeTo: this.route });
     }
 
-    canUndoQC(item: PrincipalInvestigatorDetails){
-        if(item.QCVerifier && item.QCVerifier.toLowerCase() == this.authService.userName.toLowerCase() &&
-            item.UndoQCSubmit)
-            return true;
-        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
-            item.UndoQCResponse)
-            return true;
-        else if(item.Reviewer.toLowerCase() == this.authService.userName.toLowerCase() &&
-            item.UndoCompleted)
-            return true;
-        else
-            return false;
-    }
-
-    getUndoAction(){
-        if(this.undoQCSubmit)
-            return "QC Submit";
-        else if(this.undoQCResponse)
-            return "QC Corrections";
-    }
-
-    setSelectedRecord(UndoQCSubmit: boolean, UndoQCResponse: boolean, UndoCompleted: boolean, RecId: string){
-        this.undoQCSubmit = UndoQCSubmit;
-        this.undoQCResponse = UndoQCResponse;
-        this.undoCompleted = UndoCompleted;
-        this.recId = RecId;
+    
+    undoArchive(item: PrincipalInvestigatorDetails){
+        this.undoArchiveResult = "Processing ....";
+        let recId = item.RecId;
+        this.compFormArchService.undoArchive(recId)
+            .subscribe((result: any) => {
+                this.undoArchiveResult = result;
+                this.LoadPrincipalInvestigators();
+            });
     }
 
     undoQC() {

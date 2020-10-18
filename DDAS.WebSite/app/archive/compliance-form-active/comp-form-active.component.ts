@@ -47,6 +47,7 @@ export class CompFormActiveComponent implements OnInit {
     // public archivedForms : any[];
 
     public archiveSearchOlderThan: number = 365;
+    public archiveLimit: number = 100;
     public archiveResult: string;
     constructor(
         private route: ActivatedRoute,
@@ -87,7 +88,7 @@ export class CompFormActiveComponent implements OnInit {
         this.ComplianceFormFilter.SearchedOnTo = null;
 
         var fromDay = new Date();
-        fromDay.setDate(fromDay.getDate() - 10);
+        fromDay.setDate(fromDay.getDate() - (365 * 2));
 
         this.FromDate = {
             date: {
@@ -99,6 +100,7 @@ export class CompFormActiveComponent implements OnInit {
         }
 
         var today = new Date();
+        today.setDate(today.getDate() - (365));
         this.ToDate = {
             date: {
                 year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
@@ -229,9 +231,10 @@ export class CompFormActiveComponent implements OnInit {
 
     ArchiveSearchOnIsOlderThan(){
         this.archiveResult = "Processing ....";
-        this.compFormArchService.archiveComplianceFormWithSearchedOnGreaterthan(this.archiveSearchOlderThan)
+        this.compFormArchService.archiveComplianceFormWithSearchedOnGreaterthan(this.archiveSearchOlderThan, this.archiveLimit)
             .subscribe((result: any) => {
                 this.archiveResult = result;
+                this.LoadPrincipalInvestigators();
             });
     }
 

@@ -14,7 +14,8 @@ namespace DDAS.Models.Interfaces
        
         
 
-        string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days);
+        string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days, int limit);
+        string UndoArchive(string RecId);
 
         //ComplianceForm GetComplianceForm(Guid ComplianceFormId);
         //List<PrincipalInvestigator> getAllPrincipalInvestigators();

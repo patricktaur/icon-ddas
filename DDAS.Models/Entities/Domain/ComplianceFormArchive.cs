@@ -8,6 +8,7 @@ namespace DDAS.Models.Entities.Domain
 {
     public class ComplianceFormArchive 
     {
+        public Guid? RecId { get; set; }
         public DateTime ArchivedOn { get; set; }
 
        

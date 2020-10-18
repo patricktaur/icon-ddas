@@ -81,7 +81,7 @@ namespace DDAS.API.Controllers
         #region Archive
         [Route("ArchiveCompFormsWithSearchDaysGreaterThan")]
         [HttpGet]
-        public IHttpActionResult ArchiveCompFormsWithSearchDaysGreaterThan(int days)
+        public IHttpActionResult ArchiveCompFormsWithSearchDaysGreaterThan(int days, int limit)
         {
             using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
@@ -90,7 +90,23 @@ namespace DDAS.API.Controllers
                     return Ok("Not Archived. Days cannot be less than 180");
                 }
 
-                var retMsg = _compFormArchiveService.ArchiveComplianceFormsWithSearchDaysGreaterThan(days);
+                var retMsg = _compFormArchiveService.ArchiveComplianceFormsWithSearchDaysGreaterThan(days, limit);
+                return Ok(retMsg);
+            }
+        }
+
+        [Route("UndoArchive")]
+        [HttpGet]
+        public IHttpActionResult UndoArchive(string RecId)
+        {
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                //if (days < 180)
+                //{
+                //    return Ok("Not Archived. Days cannot be less than 180");
+                //}
+                
+                var retMsg = _compFormArchiveService.UndoArchive(RecId);
                 return Ok(retMsg);
             }
         }

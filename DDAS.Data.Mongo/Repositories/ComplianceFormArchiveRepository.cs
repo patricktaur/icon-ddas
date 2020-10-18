@@ -139,16 +139,21 @@ namespace DDAS.Data.Mongo.Repositories
         public bool DropComplianceForm(object ComplianceFormId)
         {
             var filter = Builders<ComplianceFormArchive>.Filter.Eq("_id", ComplianceFormId);
-            var collection = _db.GetCollection<ComplianceFormArchive>(typeof(ComplianceForm).Name);
+            var collection = _db.GetCollection<ComplianceFormArchive>(typeof(ComplianceFormArchive).Name);
             var entity = collection.DeleteOne(filter);
             return true;
         }
 
-        
-        
+        public ComplianceFormArchive FindByComplianceFormId(string RecId)
+        {
+            var builder = Builders<ComplianceFormArchive>.Filter;
+            var filter = builder.Empty;
+            var Id = Guid.Parse(RecId);
+            filter = builder.Where(x => x.ComplianceForm.RecId == Id);
+            var collection = _db.GetCollection<ComplianceFormArchive>(typeof(ComplianceFormArchive).Name);
+            var entity = collection.Find(filter).ToList();
 
-        
-
-        
+            return entity.FirstOrDefault();
+        }
     }
 }

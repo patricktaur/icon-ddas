@@ -9,7 +9,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
     public interface IComplianceFormArchiveRepository : IRepository<ComplianceFormArchive>
     {
         List<ComplianceFormArchive> FindComplianceForms(ComplianceFormArchiveFilter CompFormFilter);
-
+        ComplianceFormArchive FindByComplianceFormId(string RecId);
         bool DropComplianceForm(object ComplianceFormId);
     }
 }

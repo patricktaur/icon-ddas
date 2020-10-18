@@ -92,7 +92,9 @@ export class ComplianceFormArchiveService {
             .catch(this.handleError);
     }
 
-    //Pradeep 5Jan2017
+    
+
+
     getPrincipalInvestigatorsByFilters(Filters: CompFormFilter): Observable<PrincipalInvestigatorDetails[]> {
         let Filter1 = JSON.stringify(Filters);
         return this.http.post(this._baseUrl + 'archive/ComplianceFormFilters', Filter1, this._options)
@@ -234,9 +236,9 @@ export class ComplianceFormArchiveService {
         .catch(this.handleError);
     }
 
-    archiveComplianceFormWithSearchedOnGreaterthan(days: number) {
+    archiveComplianceFormWithSearchedOnGreaterthan(days: number, limit : number) {
             
-            return this.http.get(this._baseUrl + 'archive/ArchiveCompFormsWithSearchDaysGreaterThan?days=' + days, this._options)
+            return this.http.get(this._baseUrl + 'archive/ArchiveCompFormsWithSearchDaysGreaterThan?days=' + days + '&limit=' + limit, this._options)
             .map((res: Response) => {
                 return res.json();
             })
@@ -244,6 +246,14 @@ export class ComplianceFormArchiveService {
     
 
         }   
+
+        undoArchive(recId: string): Observable<string> {
+            return this.http.get(this._baseUrl + 'archive/UndoArchive?RecId=' + recId, this._options)
+                .map((res: Response) => {
+                    return res.json();
+                })
+                .catch(this.handleError);
+        }    
     
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');

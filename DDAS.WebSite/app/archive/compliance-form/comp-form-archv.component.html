@@ -93,14 +93,14 @@
 								<div class="form-group">
 									<label for="Date">Archived On (from):</label>
 
-									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnFromDate"></my-date-picker>
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ArchivedOnFromDate"></my-date-picker>
 
 								</div>
 							</div>
 							<div class="col-md-6 ">
 								<div class="form-group">
 									<label for="Date">Archived On (to):</label>
-									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnToDate"></my-date-picker>
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ArchivedOnToDate"></my-date-picker>
 								</div>
 							</div>
 						</div>
@@ -175,22 +175,12 @@
 								{{item.ArchivedOn | date: 'dd MMM yyyy:hh mm'}}
 							</td>
 							<td class="text-center">
-								<button type="button" class="btn btn-sm btn-primary" 
-								(click)="openICSF(item.RecId)" title="Open ICSF">
-									<span class="glyphicon glyphicon-folder-open"></span>
-								</button>
-								<!-- <button type="button" class="btn btn-sm btn-primary" (click)="DownloadComplianceFormModal.generate(item.RecId,  'Principal Investigator' + item.Name)"
-								 	[attr.title]="DownloadComplianceFormModal.Info(item.StatusEnum)" [disabled]="!DownloadComplianceFormModal.canGenerate(item.StatusEnum)">
-									<span class="glyphicon glyphicon-download-alt"></span>
-								</button> -->
-								<button type="button" *ngIf="canUndoQC(item)" class="btn btn-sm btn-primary" 
-									(click)="setSelectedRecord(item.UndoQCSubmit, item.UndoQCResponse, item.UndoCompleted, item.RecId); UndoConfirmModal.open()" title="Undo">
+								
+								<button type="button"  class="btn btn-sm btn-primary" 
+									(click)="undoArchive(item)" title="Undo Archive">
 									<span class="glyphicon glyphicon-repeat"></span>
 								</button>
-								<button type="button" class="btn btn-sm btn-primary" 
-									(click)="exportToiSprint(item.RecId)" title="Export to iSprint">
-									<span class="glyphicon glyphicon-export"></span>
-								</button>
+								
 							<!--<button type="button" class="btn btn-primary" (click)="setComplianceFormToManage(item); ManageICFModal.open()" title="Manage - Reassign, Open/Close for edit"> <span class="glyphicon glyphicon-edit"></span> </button>
 							<button type="button" class="btn btn-primary" (click)="setSelectedRecordDetails(item); DeleteConfirmModal.open()" title="Delete Compliance Form"> <span class="glyphicon glyphicon-remove"></span> </button>-->
 							</td>
@@ -200,36 +190,14 @@
 				<pagination-controls (pageChange)="p = $event"></pagination-controls>
 				<!--</div>-->
 				<!--</div>-->
+				<div class="row">
+					<div class="col-md-4 ">
+						<span *ngIf="undoArchiveResult">{{undoArchiveResult}}<br></span>
+					</div>
+					 
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div #DownloadComplianceFormModal download-compliance-form></div>
-
-<modal #UndoConfirmModal>
-	<modal-header>
-		<h4 class="modal-title">Confirm Undo</h4>
-	</modal-header>
-	<modal-body>
-		<div class="row">
-			<div class="col-md-9">
-				<label for="Undo">Comment:</label>
-				<textarea name="Undo" class="form-control" id="Undo" rows="5" cols="20" placeholder="comment"
-				 [(ngModel)]="undoComment">
-				</textarea>
-			</div>
-			<div class="col-md-3">
-			</div>
-		</div>
-
-		Are you sure you want to Undo {{getUndoAction()}}?
-	</modal-body>
-	<modal-footer>
-		<button type="button" class="btn btn-primary" 
-			(click)="undoQC(); UndoConfirmModal.close()">
-			Confirm Undo
-		</button>
-		<button type="button" class="btn btn-primary" (click)="UndoConfirmModal.close()">Cancel</button>
-	</modal-footer>
-</modal>

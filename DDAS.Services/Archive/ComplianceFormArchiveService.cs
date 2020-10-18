@@ -180,15 +180,16 @@ namespace DDAS.Services.Search
 
 
 
-        public string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days)
+        public string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days, int limit)
         {
-            var compFormsToArchive = _UOW.ComplianceFormRepository.FindComplianceForms(days, 1);
-          
+            var compFormsToArchive = _UOW.ComplianceFormRepository.FindComplianceForms(days, limit);
 
 
+            var archivedCount = 0;
             foreach (var comp in compFormsToArchive.OrderBy(x => x.SearchStartedOn))
             {
                 var compFormArchv = new ComplianceFormArchive();
+                compFormArchv.RecId = comp.RecId;
                 compFormArchv.ArchivedOn = DateTime.Now;
                 compFormArchv.SponsorProtocolNumber = comp.SponsorProtocolNumber;
 
@@ -205,10 +206,22 @@ namespace DDAS.Services.Search
                 compFormArchv.ComplianceForm = comp;
 
                 _UOW.ComplianceFormArchiveRepository.Add(compFormArchv);
-                
+                _UOW.ComplianceFormRepository.DropComplianceForm(comp.RecId);
+                archivedCount += 1;
             }
+            var msg = String.Format("Archived: {0}", archivedCount);
+            return msg;
+        }
 
-            return "";
+        public string UndoArchive(string RecId)
+        {
+            var msg = "";
+            var compFormArchv = _UOW.ComplianceFormArchiveRepository.FindByComplianceFormId(RecId);
+            var compForm = compFormArchv.ComplianceForm;
+            _UOW.ComplianceFormRepository.Add(compForm);
+            _UOW.ComplianceFormArchiveRepository.DropComplianceForm(compForm.RecId);
+            msg = String.Format("Compliance Form Id: {0}, Study No: {1} restored from archive", compForm.RecId, compForm.ProjectNumber);
+            return msg;
         }
 
         public string GetUserFullName(string UserName)

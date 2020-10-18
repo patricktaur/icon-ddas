@@ -157,7 +157,8 @@ namespace DDAS.Data.Mongo.Maps
             {
                 map.AutoMap();
                 map.SetIgnoreExtraElements(true);
-                //map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                map.MapIdProperty(u => u.RecId);
+                //.SetIdGenerator(GuidGenerator.Instance);
                 
 
 
