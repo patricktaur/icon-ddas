@@ -152,6 +152,19 @@ namespace DDAS.Data.Mongo.Maps
                     child.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
                 });
             });
+
+            BsonClassMap.RegisterClassMap<ComplianceFormArchive>(map =>
+            {
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                //map.MapIdProperty(u => u.RecId).SetIdGenerator(GuidGenerator.Instance);
+                
+
+
+                
+
+                
+            });
             #endregion
 
             #region SiteDataClasses

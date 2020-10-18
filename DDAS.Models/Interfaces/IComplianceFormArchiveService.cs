@@ -12,9 +12,26 @@ namespace DDAS.Models.Interfaces
 
  
        
-        string GetUserFullName(string UserName);
+        
 
         string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days);
+
+        //ComplianceForm GetComplianceForm(Guid ComplianceFormId);
+        //List<PrincipalInvestigator> getAllPrincipalInvestigators();
+        //List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active);
+        //List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, bool Active = true, bool ReviewCompleted = true);
+        //List<PrincipalInvestigator> getPrincipalInvestigators(string AssignedTo, ReviewStatusEnum ReviewStatus);
+        List<PrincipalInvestigatorArchive> getPrincipalInvestigators(List<ComplianceFormArchive> Forms);
+
+
+
+        
+        List<PrincipalInvestigatorArchive> GetComplianceFormsFromFiltersWithReviewDates(
+            ComplianceFormArchiveFilter CompFormFilter);
+
+
+        //InvestigatorSearched getInvestigatorSiteSummary(string compFormId, int InvestigatorId);
+        string GetUserFullName(string UserName);
 
     }
 }

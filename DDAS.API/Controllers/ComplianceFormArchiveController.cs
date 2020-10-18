@@ -32,19 +32,11 @@ namespace DDAS.API.Controllers
     {
         //private ISearchEngine _SearchEngine;
         private ISearchService _SearchService;
-        private IComplianceFormArchiveService _compFormArchiveSerive;
+        private IComplianceFormArchiveService _compFormArchiveService;
         private IUnitOfWork _UOW;
         //private ILog _log;
         private IConfig _config;
         private FileDownloadResponse _fileDownloadResponse;
-
-        //private string DataExtractionLogFile;
-        //private string UploadsFolder;
-        //private string ComplianceFormFolder;
-        //private string ExcelTemplateFolder;
-        //private string ErrorScreenCaptureFolder;
-        //private string AttachmentsFolder;
-        //private string WordTemplateFolder;
 
         private string _RootPath;
 
@@ -63,10 +55,30 @@ namespace DDAS.API.Controllers
             _SearchService = SearchSummary;
             _fileDownloadResponse = new FileDownloadResponse();
             _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
-            _compFormArchiveSerive = compFormArchiveService;
+            _compFormArchiveService = compFormArchiveService;
         }
-       
-        //Archive:
+        #region Queries
+        
+        [Route("ComplianceFormWithReviewDateFilters")]
+        [HttpPost]
+        public IHttpActionResult GetComplianceFormWithReviewDateFilter(ComplianceFormArchiveFilter CompFormFilter)
+        {
+            try
+            {
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+                {
+                    var result = _compFormArchiveService.GetComplianceFormsFromFiltersWithReviewDates(CompFormFilter);
+                    return Ok(result);
+                }
+            }
+            catch (Exception Ex)
+            {
+
+                return Ok(Ex.ToString());
+            }
+        }
+        #endregion
+        #region Archive
         [Route("ArchiveCompFormsWithSearchDaysGreaterThan")]
         [HttpGet]
         public IHttpActionResult ArchiveCompFormsWithSearchDaysGreaterThan(int days)
@@ -78,74 +90,12 @@ namespace DDAS.API.Controllers
                     return Ok("Not Archived. Days cannot be less than 180");
                 }
 
-                var retMsg = _compFormArchiveSerive.ArchiveComplianceFormsWithSearchDaysGreaterThan(days);
+                var retMsg = _compFormArchiveService.ArchiveComplianceFormsWithSearchDaysGreaterThan(days);
                 return Ok(retMsg);
             }
         }
+        #endregion
 
-        string ListToString(ExcelInput excelInput)
-        {
-            string retValue = "";
-
-            var excelRows = excelInput.ExcelInputRows;
-            foreach (ExcelInputRow row in excelRows)
-            {
-                foreach (string Value in row.ErrorMessages)
-                {
-                    retValue += Value + "---";
-                }
-            }
-            return retValue;
-        }
-
-        string ListToString(List<List<string>> lst)
-        {
-            string retValue = "";
-            foreach (List<string> l in lst)
-            {
-                foreach (string s in l)
-                {
-                    retValue += s + "---";
-                }
-                //retValue += l + "---";
-            }
-            return retValue;
-        }
-
-        //private void LogStart(string callerName)
-        //{
-        //    _stopWatch.Start();
-        //    _logGUID = shortGUID();
-        //    Logger.Info(String.Format("{0} | {1} | {2} Start ", callerName, _logGUID, CurrentUser()));
-
-        //}
-
-        //private void LogEnd(string callerName)
-        //{
-        //    _stopWatch.Stop();
-        //    Logger.Info(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds));
-
-        //}
-
-        //private void LogDebug(string callerName, string exceptionMessage)
-        //{
-        //    _stopWatch.Stop();
-        //    Logger.Debug(String.Format("{0} | {1} | Stop | {2} | Elapsed ms: {3} | ERROR: {4}", callerName, _logGUID, CurrentUser(), _stopWatch.ElapsedMilliseconds, exceptionMessage));
-
-        //}
-
-
-        //private string shortGUID()
-        //{
-        //    var guid = Guid.NewGuid();
-        //    var base64Guid = Convert.ToBase64String(guid.ToByteArray());
-
-        //    // Replace URL unfriendly characters with better ones
-        //    base64Guid = base64Guid.Replace('+', '-').Replace('/', '_');
-
-        //    // Remove the trailing ==
-        //    return base64Guid.Substring(0, base64Guid.Length - 2);
-        //}
 
         private string CurrentUser()
         {
@@ -156,15 +106,6 @@ namespace DDAS.API.Controllers
         {
             return caller;
         }
-
-    }
-
-    public class UserDetails1
-    {
-        public string UserName { get; set; }
-        public string pwd { get; set; }
-
-        public List<IdentityRole> Role { get; set; }
 
     }
 }

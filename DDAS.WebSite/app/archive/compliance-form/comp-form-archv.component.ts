@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import {
-    PrincipalInvestigatorDetails, CompFormFilter,
+    PrincipalInvestigatorDetails, 
+    // CompFormFilter,
     CalenderDate, ReviewStatusEnum,
     UndoEnum, CurrentReviewStatusViewModel, ReviewerRoleEnum
 } from '../../search/search.classes'; 
+
+import {CompFormArchiveFilter} from '../archive.classes';
 import { SearchService } from '../../search/search-service';
 import { ConfigService } from '../../shared/utils/config.service';  '../shared/utils/config.service';
 import { ModalComponent } from '../../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
@@ -22,7 +25,7 @@ export class CompFormArchiveComponent implements OnInit {
 
     public PrincipalInvestigators: PrincipalInvestigatorDetails[];
     public Users: any[];
-    public ComplianceFormFilter: CompFormFilter;
+    public ComplianceFormFilter: CompFormArchiveFilter;
 
     public myDatePickerOptions = {
         dateFormat: 'dd mmm yyyy',
@@ -32,6 +35,10 @@ export class CompFormArchiveComponent implements OnInit {
     public ToSelDate: string;//default calendar start dates
     public FromDate: IMyDateModel;// Object = { date: { year: 2018, month: 10, day: 9 } };
     public ToDate: IMyDateModel;  // Object = { date: { year: 2018, month: 10, day: 9 } };
+    public ReviewCompletedOnFromDate :  IMyDateModel;
+    public ReviewCompletedOnToDate : IMyDateModel;
+    public ArchivedOnFromDate :  IMyDateModel;
+    public ArchivedOnToDate : IMyDateModel;
 
     public formLoading: boolean;
     public currentReviewStatus: CurrentReviewStatusViewModel;
@@ -58,7 +65,7 @@ export class CompFormArchiveComponent implements OnInit {
 
     ngOnInit() {
         this.exportToiSprintResult = "";
-        this.ComplianceFormFilter = new CompFormFilter;
+        this.ComplianceFormFilter = new CompFormArchiveFilter;
         this.SetDefaultFilterValues();
          this.LoadPrincipalInvestigators();
         // this.LoadRecords();
@@ -103,6 +110,43 @@ export class CompFormArchiveComponent implements OnInit {
             formatted: '',
             epoc: null
         }
+        this.ReviewCompletedOnFromDate = {
+            date: {
+                year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+
+        
+        this.ReviewCompletedOnToDate = {
+            date: {
+                year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+
+        this.ArchivedOnFromDate = {
+            date: {
+                year: fromDay.getFullYear(), month: fromDay.getMonth() + 1, day: fromDay.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
+
+        
+        this.ArchivedOnToDate = {
+            date: {
+                year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()
+            },
+            jsdate: '',
+            formatted: '',
+            epoc: null
+        }
         this.ComplianceFormFilter.Country = null;
         this.ComplianceFormFilter.Status = -1;
     }
@@ -116,24 +160,66 @@ export class CompFormArchiveComponent implements OnInit {
             });
     }
     
+    // LoadPrincipalInvestigators() {
+    //     if (this.FromDate != null) {
+    //         //minus one month, plus one day is made so that the value is correctly converted on the server side.  
+    //         //Otherwise incorrect values are produced when the property is read on API end point.
+    //         this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
+    //     }
+
+    //     if (this.ToDate != null) {
+    //         this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
+    //     }
+
+    //      this.compFormArchService.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
+    //     // this.compFormArchService.getPrincipalInvestigators()
+    //         .subscribe((item: any) => {
+    //             this.PrincipalInvestigators = item;
+    //         });
+            
+
+
+    // }
+
     LoadPrincipalInvestigators() {
-        if (this.FromDate != null) {
+        this.ComplianceFormFilter.SearchedOnFrom = null;
+        if (this.FromDate.date) {
             //minus one month, plus one day is made so that the value is correctly converted on the server side.  
             //Otherwise incorrect values are produced when the property is read on API end point.
             this.ComplianceFormFilter.SearchedOnFrom = new Date(this.FromDate.date.year, this.FromDate.date.month - 1, this.FromDate.date.day + 1);
         }
-
-        if (this.ToDate != null) {
+        this.ComplianceFormFilter.SearchedOnTo = null;
+        if (this.ToDate.date) {
             this.ComplianceFormFilter.SearchedOnTo = new Date(this.ToDate.date.year, this.ToDate.date.month - 1, this.ToDate.date.day + 1);
         }
 
-         this.compFormArchService.getPrincipalInvestigatorsByFilters(this.ComplianceFormFilter)
-        // this.compFormArchService.getPrincipalInvestigators()
+        this.ComplianceFormFilter.ReviewCompletedOnFrom = null;
+        if (this.ReviewCompletedOnFromDate.date) {
+            //minus one month, plus one day is made so that the value is correctly converted on the server side.  
+            //Otherwise incorrect values are produced when the property is read on API end point.
+            this.ComplianceFormFilter.ReviewCompletedOnFrom = new Date(this.ReviewCompletedOnFromDate.date.year, this.ReviewCompletedOnFromDate.date.month - 1, this.ReviewCompletedOnFromDate.date.day + 1);
+        }
+        this.ComplianceFormFilter.ReviewCompletedOnTo = null;
+        if (this.ReviewCompletedOnToDate.date) {
+            this.ComplianceFormFilter.ReviewCompletedOnTo = new Date(this.ReviewCompletedOnToDate.date.year, this.ReviewCompletedOnToDate.date.month - 1, this.ReviewCompletedOnToDate.date.day + 1);
+        }
+
+
+        this.ComplianceFormFilter.ArchivedOnFrom = null;
+        if (this.ArchivedOnFromDate.date) {
+            //minus one month, plus one day is made so that the value is correctly converted on the server side.  
+            //Otherwise incorrect values are produced when the property is read on API end point.
+            this.ComplianceFormFilter.ArchivedOnFrom = new Date(this.ArchivedOnFromDate.date.year, this.ArchivedOnFromDate.date.month - 1, this.ArchivedOnFromDate.date.day + 1);
+        }
+        this.ComplianceFormFilter.ArchivedOnTo = null;
+        if (this.ArchivedOnToDate.date) {
+            this.ComplianceFormFilter.ArchivedOnTo = new Date(this.ArchivedOnToDate.date.year, this.ArchivedOnToDate.date.month - 1, this.ArchivedOnToDate.date.day + 1);
+        }
+         
+        this.compFormArchService.getPrincipalInvestigatorsWithReviewDateFilters(this.ComplianceFormFilter)
             .subscribe((item: any) => {
                 this.PrincipalInvestigators = item;
             });
-            
-
 
     }
 

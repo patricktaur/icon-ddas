@@ -23,7 +23,7 @@
 							</div>
 							 <!-- {{diagnostic}}  -->
 						</div>
-						<!-- <div class="row">
+						<div class="row">
 							<div class="col-md-6 ">
 								<div class="form-group">
 									<label for="PrincipalInvestigator">Principal Investigator:</label>
@@ -55,11 +55,11 @@
 									</select>
 								</div>
 							</div>
-						</div> -->
+						</div>
 						<div class="row">
 							<div class="col-md-6 ">
 								<div class="form-group">
-									<label for="Date">Completed On (from):</label>
+									<label for="Date">Searched On (from):</label>
 
 									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="FromDate"></my-date-picker>
 
@@ -67,11 +67,45 @@
 							</div>
 							<div class="col-md-6 ">
 								<div class="form-group">
-									<label for="Date">Completed On (to):</label>
+									<label for="Date">Searched On (to):</label>
 									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ToDate"></my-date-picker>
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Review Completed On (from):</label>
+
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnFromDate"></my-date-picker>
+
+								</div>
+							</div>
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Review Completed On (to):</label>
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnToDate"></my-date-picker>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Archived On (from):</label>
+
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnFromDate"></my-date-picker>
+
+								</div>
+							</div>
+							<div class="col-md-6 ">
+								<div class="form-group">
+									<label for="Date">Archived On (to):</label>
+									<my-date-picker [options]="myDatePickerOptions" [(ngModel)]="ReviewCompletedOnToDate"></my-date-picker>
+								</div>
+							</div>
+						</div>
+
+
 						<button type="button" class="btn btn-primary" (click)="LoadPrincipalInvestigators()">Re-Load</button>
 						<button type="button" class="btn btn-primary" (click)="SetDefaultFilterValues()">Reset Filters</button>
 					</div>
@@ -89,6 +123,7 @@
 							<th class="text-center">Review Completed On</th>
 
 							 <th class="text-center">Exported to iSprint On</th> 
+							 <th class="text-center">Archived On</th> 
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -135,6 +170,9 @@
 							</td>
 							<td class="text-center">
 								{{item.ExportedToiSprintOn | date: 'dd MMM yyyy:hh mm'}}
+							</td>
+							<td class="text-center">
+								{{item.ArchivedOn | date: 'dd MMM yyyy:hh mm'}}
 							</td>
 							<td class="text-center">
 								<button type="button" class="btn btn-sm btn-primary" 

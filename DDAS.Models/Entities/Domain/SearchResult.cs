@@ -549,8 +549,13 @@ namespace DDAS.Models.Entities.Domain
         public string EstimatedExtractionCompletionWithin { get; set; }
     }
 
-    //Pradeep30Jan2017
-    public class SubInvestigator
+    public class PrincipalInvestigatorArchive : PrincipalInvestigator
+    {
+        public DateTime ArchivedOn { get; set; }
+    }
+
+        //Pradeep30Jan2017
+        public class SubInvestigator
     {
         public string Name { get; set; }
         public string Status { get; set; }
@@ -1184,11 +1189,16 @@ namespace DDAS.Models.Entities.Domain
 
     }
 
-    #endregion
+    public class ComplianceFormArchiveFilter : ComplianceFormFilter
+    {
+        public DateTime? ArchivedOnFrom { get; set; }
+        public DateTime? ArchivedOnTo { get; set; }
+    }
+        #endregion
 
 
 
-    public class SaveSearchResult
+        public class SaveSearchResult
     {
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
