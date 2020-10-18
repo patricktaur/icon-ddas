@@ -10,11 +10,8 @@ namespace DDAS.Models.Interfaces
     public interface IComplianceFormArchiveService
     {
 
- 
-       
-        
-
-        string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days, int limit);
+        int ArchiveComplianceFormsRecordCount(int days, string type);
+        string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days, int limit, string type);
         string UndoArchive(string RecId);
 
         //ComplianceForm GetComplianceForm(Guid ComplianceFormId);

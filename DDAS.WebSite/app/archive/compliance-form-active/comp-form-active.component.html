@@ -25,6 +25,15 @@
 						<div class="row">
 							<div class="col-md-4 ">
 								
+									<label for="ArchiveType">Type </label>
+									<select name = "ArchiveType" class="form-control" [(ngModel)]="archiveType">
+										<option value="search" >Searched On</option>
+										<option value="review">Review Completed On</option>
+									</select>
+							</div>
+							
+							<div class="col-md-4 ">
+								
 								<label for="SearchDaysOlderThan">Searched On greater than</label>
 								<input type="text" class="form-control" name="SearchDaysOlderThan" [(ngModel)]="archiveSearchOlderThan">
 							</div>
@@ -36,6 +45,11 @@
 						</div>
 						
 						<div class="row">
+							<div class="col-md-4 ">
+								<span *ngIf="archiveRecordCountResult">{{archiveRecordCountResult}}<br></span>
+								<button type="button" class="btn btn-primary" (click)="ArchiveCompFormsRecordCount()">Record Count</button>
+							</div>
+							
 							<div class="col-md-4 ">
 								<span *ngIf="archiveResult">{{archiveResult}}<br></span>
 								<button type="button" class="btn btn-primary" (click)="ArchiveSearchOnIsOlderThan()">Archive</button>

@@ -45,9 +45,11 @@ export class CompFormActiveComponent implements OnInit {
     public exportToiSprintResult: string = "";
 
     // public archivedForms : any[];
-
+    public archiveType: string = "review";
     public archiveSearchOlderThan: number = 365;
     public archiveLimit: number = 100;
+    public archiveRecordCountResult: string;
+
     public archiveResult: string;
     constructor(
         private route: ActivatedRoute,
@@ -229,52 +231,26 @@ export class CompFormActiveComponent implements OnInit {
         this.recId = RecId;
     }
 
+    
+    ArchiveCompFormsRecordCount(){
+        this.archiveRecordCountResult = "Processing ....";
+        this.compFormArchService.archiveCompFormsRecordCount(this.archiveSearchOlderThan,  this.archiveType)
+            .subscribe((result: any) => {
+                this.archiveRecordCountResult = "Records found to archive:" + result;
+                
+            });
+    }
+    
     ArchiveSearchOnIsOlderThan(){
         this.archiveResult = "Processing ....";
-        this.compFormArchService.archiveComplianceFormWithSearchedOnGreaterthan(this.archiveSearchOlderThan, this.archiveLimit)
+        this.compFormArchService.archiveComplianceFormWithSearchedOnGreaterthan(this.archiveSearchOlderThan, this.archiveLimit, this.archiveType)
             .subscribe((result: any) => {
                 this.archiveResult = result;
                 this.LoadPrincipalInvestigators();
             });
     }
 
-    // undoQC() {
-    //     let undoEnum = 0;
-
-    //     if(this.undoQCSubmit)
-    //         undoEnum = UndoEnum.UndoQCSubmit;
-    //     else if(this.undoQCResponse)
-    //         undoEnum = UndoEnum.UndoQCResponse;
-    //     else if(this.undoCompleted)
-    //         undoEnum = UndoEnum.UndoCompleted;
-
-    //     if(undoEnum == UndoEnum.UndoQCSubmit || undoEnum == UndoEnum.UndoQCResponse ||
-    //         undoEnum == UndoEnum.UndoCompleted) {
-    //         this.service.undo(this.recId, undoEnum, this.undoComment)
-    //         .subscribe((item: boolean) => {
-    //             this.LoadPrincipalInvestigators();
-    //         },
-    //         error => {
-
-    //         });
-    //     }
-    //     else
-    //         alert('undo request not sent');
-    // }
-
-    // exportToiSprint(complianceFormId: string){
-    //         this.service.exportToiSprint(complianceFormId)
-    //         .subscribe((item: string) => {
-    //             if(item.indexOf("Failed") > -1){
-    //                 alert(item);
-    //             }
-    //             this.exportToiSprintResult = item;
-    //             this.LoadPrincipalInvestigators();
-    //         },
-    //         error => {
-    //             this.exportToiSprintResult = "failed to export data to iSprint";
-    //         });
-    // }
+    
 
     get diagnostic() { return JSON.stringify(this.PrincipalInvestigators); }
 

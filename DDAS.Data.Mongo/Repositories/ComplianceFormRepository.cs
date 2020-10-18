@@ -206,7 +206,7 @@ namespace DDAS.Data.Mongo.Repositories
             return entity;
         }
 
-        public List<ComplianceForm> FindComplianceForms(int searchDaysGreaterThan, int limit)
+        public List<ComplianceForm> FindComplianceFormsBySearchedOn(int searchDaysGreaterThan, int limit)
         {
             var collection = _db.GetCollection<ComplianceForm>(typeof(ComplianceForm).Name);
             var dt = DateTime.Now.AddDays(-searchDaysGreaterThan);
@@ -216,6 +216,8 @@ namespace DDAS.Data.Mongo.Repositories
 
             return entity;
         }
+
+        
 
         public List<ComplianceForm> FindQCComplianceForms(DateTime? ReviewAssignedOn, DateTime? ReviewCompletedOn)
         {

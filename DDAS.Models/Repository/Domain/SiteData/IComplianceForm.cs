@@ -28,8 +28,7 @@ namespace DDAS.Models.Repository.Domain.SiteData
         List<ComplianceForm> FindComplianceForms(string AssignedTo);
         List<ComplianceForm> FindComplianceForms(ReviewStatusEnum ReviewStatus);
         List<ComplianceForm> FindComplianceForms(ComplianceFormFilter CompFormFilter);
-        List<ComplianceForm> FindComplianceForms(int searchDaysGreaterThan, int limit);
-
+        List<ComplianceForm> FindComplianceFormsBySearchedOn(int searchDaysGreaterThan, int limit);
         List<ComplianceForm> FindQCComplianceForms(DateTime? ReviewAssignedOn, DateTime? ReviewCompletedOn);
     }
 }

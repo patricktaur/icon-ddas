@@ -176,24 +176,66 @@ namespace DDAS.Services.Search
             return item;
         }
 
-        
 
-
-
-        public string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days, int limit)
+        public int ArchiveComplianceFormsRecordCount(int days,  string type)
         {
-            var compFormsToArchive = _UOW.ComplianceFormRepository.FindComplianceForms(days, limit);
+            List<ComplianceForm> compFormsToArchive = new List<ComplianceForm>();
+            var limit = 100000; //no limit
+            int recordCount = 0;
+            switch (type)
+            {
+                case "search":
+                    recordCount =  _UOW.ComplianceFormRepository.FindComplianceFormsBySearchedOn(days, limit).Count();
+                        
+                    break;
+                case "review":
+                    var dt = DateTime.Now.AddDays(-days);
+                    //ReviewCompletedOn is a computed value, cannot be accessed through mongodb
+                    //limit the records
+                    //by quering records searched before 'days'
+                    //further filter only review completed records before 'days'
+                    compFormsToArchive = _UOW.ComplianceFormRepository.FindComplianceFormsBySearchedOn(days, limit);
+                    recordCount = compFormsToArchive.Where(x => x.ReviewCompletedOn < dt).Count();
+                    break;
+                default:
+                    
+                    break;
+            }
+            return recordCount;
+        }
 
+
+        public string ArchiveComplianceFormsWithSearchDaysGreaterThan(int days, int limit, string type)
+        {
+            List<ComplianceForm> compFormsToArchive = new List<ComplianceForm>();
+
+            switch (type)
+            {
+                case "search":
+                    compFormsToArchive = _UOW.ComplianceFormRepository.FindComplianceFormsBySearchedOn(days, limit)
+                        .OrderBy(x => x.SearchStartedOn).ToList();
+                    break;
+                case  "review":
+                    var dt = DateTime.Now.AddDays(-days);
+                    //ReviewCompletedOn is a computed value, cannot be accessed through mongodb
+                    //limit the records
+                    //by quering records searched before 'days'
+                    //further filter only review completed records before 'days'
+                    compFormsToArchive = _UOW.ComplianceFormRepository.FindComplianceFormsBySearchedOn(days, limit);
+                    compFormsToArchive = compFormsToArchive.Where(x => x.ReviewCompletedOn < dt)
+                        .OrderBy(x => x.ReviewCompletedOn).ToList();
+                    break;
+                default:
+                    break;
+            }
 
             var archivedCount = 0;
-            foreach (var comp in compFormsToArchive.OrderBy(x => x.SearchStartedOn))
+            foreach (var comp in compFormsToArchive)
             {
                 var compFormArchv = new ComplianceFormArchive();
                 compFormArchv.RecId = comp.RecId;
                 compFormArchv.ArchivedOn = DateTime.Now;
                 compFormArchv.SponsorProtocolNumber = comp.SponsorProtocolNumber;
-
-
                 compFormArchv.SponsorProtocolNumber2 = comp.SponsorProtocolNumber2;
                 compFormArchv.ProjectNumber = comp.ProjectNumber;
                 compFormArchv.ProjectNumber2 = comp.ProjectNumber2;

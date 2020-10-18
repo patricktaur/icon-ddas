@@ -235,10 +235,30 @@ export class ComplianceFormArchiveService {
         })
         .catch(this.handleError);
     }
-
-    archiveComplianceFormWithSearchedOnGreaterthan(days: number, limit : number) {
+    
+    archiveCompFormsRecordCount(days: number,  archiveType: string) {
             
-            return this.http.get(this._baseUrl + 'archive/ArchiveCompFormsWithSearchDaysGreaterThan?days=' + days + '&limit=' + limit, this._options)
+        return this.http.get(this._baseUrl 
+            + 'archive/ArchiveCompFormsRecordCount?days=' + days 
+            + '&type=' + archiveType
+            , this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);
+
+
+    }   
+
+
+
+    archiveComplianceFormWithSearchedOnGreaterthan(days: number, limit : number, archiveType: string) {
+            
+            return this.http.get(this._baseUrl 
+                + 'archive/ArchiveCompFormsWithSearchDaysGreaterThan?days=' + days 
+                + '&limit=' + limit
+                + '&type=' + archiveType
+                , this._options)
             .map((res: Response) => {
                 return res.json();
             })
