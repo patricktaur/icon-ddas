@@ -14,6 +14,8 @@ using DDAS.Models.Entities.Identity;
 using Utilities.EMail;
 using System.Linq;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using DDAS.API.Helpers;
 
 namespace DDAS.API.Controllers
 {
@@ -24,11 +26,16 @@ namespace DDAS.API.Controllers
         private IUnitOfWork _UOW;
         private IUserService _userService;
         private IEMailService _EMailService;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
+
         public AccountController(IUnitOfWork uow, IUserService userService, IEMailService email)
         {
             _UOW = uow;
             _userService = userService;
             _EMailService = email;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         #region WorkingCode
@@ -39,8 +46,11 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUsers()
         {
-            var Users = _userService.GetUsers();
-            return Ok(Users);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Users = _userService.GetUsers();
+                return Ok(Users);
+            }
         }
 
         [Authorize(Roles = "app-admin, admin, user")]
@@ -52,10 +62,13 @@ namespace DDAS.API.Controllers
 
             //var AdminList = Users.Where(x =>
             //x.ActiveRoles.ToLower().Contains("admin")).ToList();
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
 
-            var AdminList = _userService.GetAdmins();
+                var AdminList = _userService.GetAdmins();
 
-            return Ok(AdminList);
+                return Ok(AdminList);
+            }
         }
 
         [Authorize(Roles = "app-admin, admin")]
@@ -63,21 +76,26 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetUser(string UserId)
         {
-            bool IncludeAppAdminRole = false;
-            var LoggedInUserId = User.Identity.GetUserId();
-            var gLoggedInUserId = Guid.Parse(LoggedInUserId);
-            if (_userService.IsUserAppAdmin(gLoggedInUserId) == true)
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                IncludeAppAdminRole = true;
-            }
-            
-            if (UserId == null)
-            {
-                return Ok(_userService.GetNewUser(IncludeAppAdminRole));
-            }
-            else { 
-                Guid gUserId = Guid.Parse(UserId);
-                return Ok(_userService.GetUser(gUserId, IncludeAppAdminRole));
+
+                bool IncludeAppAdminRole = false;
+                var LoggedInUserId = User.Identity.GetUserId();
+                var gLoggedInUserId = Guid.Parse(LoggedInUserId);
+                if (_userService.IsUserAppAdmin(gLoggedInUserId) == true)
+                {
+                    IncludeAppAdminRole = true;
+                }
+
+                if (UserId == null)
+                {
+                    return Ok(_userService.GetNewUser(IncludeAppAdminRole));
+                }
+                else
+                {
+                    Guid gUserId = Guid.Parse(UserId);
+                    return Ok(_userService.GetUser(gUserId, IncludeAppAdminRole));
+                }
             }
         }
 
@@ -86,7 +104,11 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SaveUser(UserViewModel user)
         {
-           return Ok( _userService.SaveUser(user));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+
+                return Ok(_userService.SaveUser(user));
+            }
         }
 
         [Authorize(Roles = "app-admin, admin")]
@@ -94,7 +116,11 @@ namespace DDAS.API.Controllers
         [HttpDelete]
         public IHttpActionResult DeleteUser(Guid userId)
         {
-            return Ok(_userService.DeleteUser(userId));
+
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_userService.DeleteUser(userId));
+            }
         }
 
         [Authorize(Roles = "app-admin,admin,user")]
@@ -103,33 +129,37 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult SetPassword(SetPasswordBindingModel model)
         {
-            if (!ModelState.IsValid)
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                return BadRequest(ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                UserStore userStore = new UserStore(_UOW);
+                var userManager = new UserManager<IdentityUser, Guid>(userStore);
+
+                String hashedNewPassword = userManager.PasswordHasher.HashPassword(model.NewPassword);
+                var userId = User.Identity.GetUserId();
+                var userName = User.Identity.GetUserName();
+                IdentityUser user = userManager.Find(userName, model.CurrrentPassword);
+                if (user == null)
+                {
+                    return Ok("The current password is incorrect");
+                }
+                //var user = userManager.FindById(Guid.Parse(userId));
+                userStore.SetPasswordHashAsync(user, hashedNewPassword);
+
+                //IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                //IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                //if (!result.Succeeded)
+                //{
+                //    return GetErrorResult(result);
+                //}
+
+                return Ok("Password change successful");
             }
-
-            UserStore userStore = new UserStore(_UOW);
-            var userManager = new UserManager<IdentityUser, Guid>(userStore);
-
-            String hashedNewPassword = userManager.PasswordHasher.HashPassword(model.NewPassword);
-            var userId = User.Identity.GetUserId();
-            var userName = User.Identity.GetUserName();
-            IdentityUser user = userManager.Find(userName, model.CurrrentPassword);
-            if (user == null)
-            {
-                return Ok("The current password is incorrect");
-            }
-            //var user = userManager.FindById(Guid.Parse(userId));
-            userStore.SetPasswordHashAsync(user, hashedNewPassword);
-
-            //IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
-            //IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
-            //if (!result.Succeeded)
-            //{
-            //    return GetErrorResult(result);
-            //}
-
-            return Ok("Password change successful");
         }
 
         [Authorize(Roles = "app-admin, admin, user")]
@@ -137,33 +167,37 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult ResetPassword(Guid userId)
         {
-            UserStore userStore = new UserStore(_UOW);
-            var userManager = new UserManager<IdentityUser, Guid>(userStore);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
 
-            var password = GeneratePassword();
-            string hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
-            
-            var user = userManager.FindById(userId);
+                UserStore userStore = new UserStore(_UOW);
+                var userManager = new UserManager<IdentityUser, Guid>(userStore);
 
-            if (user.EmailId == null)
-                throw new Exception("user " + user.UserFullName + " email id is empty");
+                var password = GeneratePassword();
+                string hashedNewPassword = userManager.PasswordHasher.HashPassword(password);
 
-            userStore.SetPasswordHashAsync(user, hashedNewPassword);
+                var user = userManager.FindById(userId);
 
-            var EMail = new EMailModel();
-            EMail.To.Add(user.EmailId);
-            EMail.Subject = "Password reset for Due Diligence Automation System Account";
+                if (user.EmailId == null)
+                    throw new Exception("user " + user.UserFullName + " email id is empty");
 
-            var htmlBody = "Dear " + user.UserName + ",<br/><br/> ";
-            htmlBody += "Your password for Due Diligence Automation System was reset. <br/> ";
-            htmlBody += "Your new password is : <b>" + password + "</b><br/><br/>";
-            htmlBody += "Yours Sincerely,<br/>";
-            htmlBody += "DDAS Team";
+                userStore.SetPasswordHashAsync(user, hashedNewPassword);
 
-            EMail.Body = htmlBody;
-            _EMailService.SendMail(EMail);
+                var EMail = new EMailModel();
+                EMail.To.Add(user.EmailId);
+                EMail.Subject = "Password reset for Due Diligence Automation System Account";
 
-            return Ok(true);
+                var htmlBody = "Dear " + user.UserName + ",<br/><br/> ";
+                htmlBody += "Your password for Due Diligence Automation System was reset. <br/> ";
+                htmlBody += "Your new password is : <b>" + password + "</b><br/><br/>";
+                htmlBody += "Yours Sincerely,<br/>";
+                htmlBody += "DDAS Team";
+
+                EMail.Body = htmlBody;
+                _EMailService.SendMail(EMail);
+
+                return Ok(true);
+            }
         }
         #endregion
 
@@ -172,23 +206,26 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetAllLoginHistory(string DateFrom, string DateTo)
         {
-            DateTime from;
-            DateTime to;
-            DateTime toPlusOne;
-            //DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
-            //    System.Globalization.DateTimeStyles.None, out from);
-            DateTime.TryParse(DateFrom, out from);
-            //DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
-            //  System.Globalization.DateTimeStyles.None, out to);
-            DateTime.TryParse(DateTo, out to);
-            toPlusOne = to.AddDays(1);
-            var AllLoginHistory = _userService.GetAllLoginHistory()
-                .Where(x =>  x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
-            )
-            .OrderByDescending(d => d.LoginAttemptTime);
-            
-            return Ok(AllLoginHistory);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
 
+                DateTime from;
+                DateTime to;
+                DateTime toPlusOne;
+                //DateTime.TryParseExact(DateFrom, "yyyy-mm-dd", null,
+                //    System.Globalization.DateTimeStyles.None, out from);
+                DateTime.TryParse(DateFrom, out from);
+                //DateTime.TryParseExact(DateTo, "yyyy-mm-dd", null,
+                //  System.Globalization.DateTimeStyles.None, out to);
+                DateTime.TryParse(DateTo, out to);
+                toPlusOne = to.AddDays(1);
+                var AllLoginHistory = _userService.GetAllLoginHistory()
+                    .Where(x => x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
+                )
+                .OrderByDescending(d => d.LoginAttemptTime);
+
+                return Ok(AllLoginHistory);
+            }
         }
 
         [Authorize(Roles = "app-admin, admin, user")]
@@ -196,33 +233,37 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetMyLoginHistory(string UserName, string DateFrom, string DateTo)
         {
-            DateTime from;
-            DateTime to;
-            DateTime toPlusOne;
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
 
-            //"M'/'d'/'yyyy"
-            //DateTime.TryParseExact(DateFrom, "yyyy-mm-dd",   System.Globalization.CultureInfo.InvariantCulture,
-            //    System.Globalization.DateTimeStyles.None, out from);
+                DateTime from;
+                DateTime to;
+                DateTime toPlusOne;
 
-            DateTime.TryParse(DateFrom, out from);
+                //"M'/'d'/'yyyy"
+                //DateTime.TryParseExact(DateFrom, "yyyy-mm-dd",   System.Globalization.CultureInfo.InvariantCulture,
+                //    System.Globalization.DateTimeStyles.None, out from);
 
-            //DateTime.TryParseExact(DateTo, "yyyy-mm-dd", System.Globalization.CultureInfo.InvariantCulture,
-            //   System.Globalization.DateTimeStyles.None, out to);
+                DateTime.TryParse(DateFrom, out from);
 
-            DateTime.TryParse(DateTo, out to);
+                //DateTime.TryParseExact(DateTo, "yyyy-mm-dd", System.Globalization.CultureInfo.InvariantCulture,
+                //   System.Globalization.DateTimeStyles.None, out to);
 
-            toPlusOne = to.AddDays(1);
+                DateTime.TryParse(DateTo, out to);
 
-            var AllLoginHistory = _userService.GetAllLoginHistory();
+                toPlusOne = to.AddDays(1);
+
+                var AllLoginHistory = _userService.GetAllLoginHistory();
 
 
-            var MyLoginHistory = AllLoginHistory.Where(x =>
-            x.UserName.ToLower() == UserName.ToLower()
-            & x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
-            )
-            .OrderByDescending(d => d.LoginAttemptTime);
+                var MyLoginHistory = AllLoginHistory.Where(x =>
+                x.UserName.ToLower() == UserName.ToLower()
+                & x.LoginAttemptTime >= from && x.LoginAttemptTime < toPlusOne
+                )
+                .OrderByDescending(d => d.LoginAttemptTime);
 
-            return Ok(MyLoginHistory);
+                return Ok(MyLoginHistory);
+            }
         }
 
         //[Route("AddLoginDetails")]
@@ -258,8 +299,12 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult Logout()
         {
-            Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-            return Ok();
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+
+                Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+                return Ok();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -338,6 +383,16 @@ namespace DDAS.API.Controllers
         {
             return System.Web.Security.Membership.GeneratePassword(5, 2);
         }
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
         #endregion
 
     }

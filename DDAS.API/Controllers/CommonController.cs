@@ -6,6 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+using DDAS.API.Helpers;
 
 namespace DDAS.API.Controllers
 {
@@ -15,18 +18,37 @@ namespace DDAS.API.Controllers
     {
         private IAppAdminService _AppAdminService;
         private string _RootPath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
+
         public CommonController(IAppAdminService AppAdmin)
         {
             _AppAdminService = AppAdmin;
 
             _RootPath = HttpRuntime.AppDomainAppPath;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         [Route("GetSiteSources")]
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            return Ok(_AppAdminService.GetAllSiteSources());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetAllSiteSources());
+            }
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

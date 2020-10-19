@@ -11,6 +11,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+
 
 namespace DDAS.API.Controllers
 {
@@ -23,6 +26,9 @@ namespace DDAS.API.Controllers
         private string _UploadsFolder;
         private string _RootPath;
         private string _OutputFilePath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
+
 
         public AppAdminController(IAppAdminService AppAdmin)
         {
@@ -38,6 +44,8 @@ namespace DDAS.API.Controllers
 
             _OutputFilePath = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["OutputFileFolder"];
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         //[Route("GetCBERRecords")]
@@ -52,156 +60,191 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public List<ErrorScreenCapture> GetAllErrorImages()
         {
-  
-            var ListOfErrorImages = new List<ErrorScreenCapture>();
-
-            DirectoryInfo info = new DirectoryInfo(_ErrorScreenCaptureFolder);
-            FileInfo[] files = info.GetFiles().OrderByDescending(o => o.CreationTime).ToArray();
-
-            foreach (FileInfo File in files)
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                var ErrorImage = new ErrorScreenCapture();
+                var ListOfErrorImages = new List<ErrorScreenCapture>();
 
-                ErrorImage.FileName = File.Name;
-                ErrorImage.FileSize = File.Length / 1024;
-                ErrorImage.Created = File.CreationTime;
-                ListOfErrorImages.Add(ErrorImage);
+                DirectoryInfo info = new DirectoryInfo(_ErrorScreenCaptureFolder);
+                FileInfo[] files = info.GetFiles().OrderByDescending(o => o.CreationTime).ToArray();
 
+                foreach (FileInfo File in files)
+                {
+                    var ErrorImage = new ErrorScreenCapture();
+
+                    ErrorImage.FileName = File.Name;
+                    ErrorImage.FileSize = File.Length / 1024;
+                    ErrorImage.Created = File.CreationTime;
+                    ListOfErrorImages.Add(ErrorImage);
+
+                }
+                return ListOfErrorImages;
             }
-            return ListOfErrorImages;
         }
-        
+
         [Route("DeleteAllErrorImages")]
         [HttpGet]
         public IHttpActionResult DeleteAllErrorImages()
         {
-            var ErrorImages = Directory.GetFiles(_ErrorScreenCaptureFolder);
-
-            foreach (string file in ErrorImages)
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                File.Delete(file);
+                var ErrorImages = Directory.GetFiles(_ErrorScreenCaptureFolder);
+
+                foreach (string file in ErrorImages)
+                {
+                    File.Delete(file);
+                }
+                return Ok(true);
             }
-            return Ok(true);
         }
 
         [Route("DeleteErrorImage")]
         [HttpGet]
         public IHttpActionResult DeleteErrorImage(string FileName)
         {
-            if(File.Exists(_ErrorScreenCaptureFolder + FileName))
-                File.Delete(_ErrorScreenCaptureFolder + FileName);
-            return Ok(true);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                if (File.Exists(_ErrorScreenCaptureFolder + FileName))
+                    File.Delete(_ErrorScreenCaptureFolder + FileName);
+                return Ok(true);
+            }
         }
 
         [Route("GetErrorScreenCaptureFolderPath")]
         [HttpGet]
         public IHttpActionResult DownloadErrorImage()
         {
-            string FilePath = _ErrorScreenCaptureFolder;
-            string path = FilePath.Replace(_RootPath, "");
-            return Ok(path);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                string FilePath = _ErrorScreenCaptureFolder;
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
+            }
         }
 
         #endregion
 
         #region DataExtractionHistory
-       
+
 
         [Route("GetDataExtractionPerSite")]
         [HttpGet]
         public IHttpActionResult GetDataExtractionPerSite(SiteEnum Enum)
         {
-            var ExtractionDataPerSite = _AppAdminService.GetDataExtractionPerSite(Enum);
-            return Ok(ExtractionDataPerSite);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var ExtractionDataPerSite = _AppAdminService.GetDataExtractionPerSite(Enum);
+                return Ok(ExtractionDataPerSite);
+            }
         }
 
         [Route("DeleteExtractionData")]
         [HttpGet]
         public IHttpActionResult DeleteExtractionEntryAAA(string RecId, SiteEnum Enum)
         {
-            var Id = Guid.Parse(RecId);
-            _AppAdminService.DeleteExtractionEntry(Enum, Id);
-            return Ok(true);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                _AppAdminService.DeleteExtractionEntry(Enum, Id);
+                return Ok(true);
+            }
         }
 
         #endregion
 
         #region get/delete Uploaded Files
-        
+
         [Route("GetUploadsFolderPath")]
         [HttpGet]
         public IHttpActionResult GetUploadsFolderPath()
         {
-            string FilePath = _UploadsFolder;
-            string path = FilePath.Replace(_RootPath, "");
-            return Ok(path);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                string FilePath = _UploadsFolder;
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
+            }
         }
 
         [Route("GetUploadedFiles")]
         [HttpGet]
         public IHttpActionResult GetUploadedFiles()
         {
-            var UploadedFiles = _AppAdminService.GetUploadedFiles();
-            return Ok(UploadedFiles);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var UploadedFiles = _AppAdminService.GetUploadedFiles();
+                return Ok(UploadedFiles);
+            }
         }
 
         [Route("GetUploadedFile")]
         [HttpGet]
         public HttpResponseMessage GetUploadedFile(string GeneratedFileName)
         {
-            HttpResponseMessage Response = null;
-
-            if (!File.Exists(_UploadsFolder + GeneratedFileName))
-                Response = Request.CreateResponse(HttpStatusCode.Gone);
-            else
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                Response = Request.CreateResponse(HttpStatusCode.OK);
+                HttpResponseMessage Response = null;
 
-                var UserAgent = Request.Headers.UserAgent.ToString();
-                var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
+                if (!File.Exists(_UploadsFolder + GeneratedFileName))
+                    Response = Request.CreateResponse(HttpStatusCode.Gone);
+                else
+                {
+                    Response = Request.CreateResponse(HttpStatusCode.OK);
 
-                byte[] ByteArray =
-                    File.ReadAllBytes(_UploadsFolder + GeneratedFileName);
+                    var UserAgent = Request.Headers.UserAgent.ToString();
+                    var Browser = IdentifyBrowser.GetBrowserType(UserAgent);
 
-                Response.Content = new ByteArrayContent(ByteArray);
+                    byte[] ByteArray =
+                        File.ReadAllBytes(_UploadsFolder + GeneratedFileName);
 
-                Response.Content.Headers.ContentDisposition =
-                    new ContentDispositionHeaderValue("attachment");
+                    Response.Content = new ByteArrayContent(ByteArray);
 
-                Response.Content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                    Response.Content.Headers.ContentDisposition =
+                        new ContentDispositionHeaderValue("attachment");
 
-                Response.Content.Headers.Add("Browser", Browser);
-                Response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+                    Response.Content.Headers.ContentType =
+                        new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+                    Response.Content.Headers.Add("Browser", Browser);
+                    Response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+                }
+                return Response;
             }
-            return Response;
         }
 
         [Route("DeleteUploadedFile")]
         [HttpGet]
         public IHttpActionResult DeleteUploadedFile(string GeneratedFileName)
         {
-            return Ok(_AppAdminService.DeleteUploadedFile(GeneratedFileName));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.DeleteUploadedFile(GeneratedFileName));
+            }
         }
 
         [Route("DeleteAllUploadedFiles")]
         [HttpGet]
         public IHttpActionResult DeleteAllUploadedFiles()
         {
-            return Ok(_AppAdminService.DeleteAllUploadedFiles());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.DeleteAllUploadedFiles());
+            }
         }
 
         #endregion
 
         #region get/delete Output Files
-        
+
         [Route("GetOutputFilePath")]
         [HttpGet]
         public IHttpActionResult GetOutputFilePath()
         {
-            string FilePath = _OutputFilePath;
-            string path = FilePath.Replace(_RootPath, "");
-            return Ok(path);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                string FilePath = _OutputFilePath;
+                string path = FilePath.Replace(_RootPath, "");
+                return Ok(path);
+            }
         }
         
         [Route("GetOutputFiles")]
@@ -226,26 +269,46 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult LaunchLiveScanner()
         {
-            var result = _AppAdminService.LaunchLiveScanner(_RootPath + "bin");
-            return Ok(result);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var result = _AppAdminService.LaunchLiveScanner(_RootPath + "bin");
+                return Ok(result);
+            }
         }
 
         [Route("LiveScannerInfo")]
         [HttpGet]
         public IHttpActionResult LiveScannerCount()
         {
-            var result = _AppAdminService.getLiveScannerProcessorsInfo();
-            return Ok(result);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var result = _AppAdminService.getLiveScannerProcessorsInfo();
+                return Ok(result);
+            }
         }
 
         [Route("KillLiveScanner")]
         [HttpGet]
         public IHttpActionResult KillLiveScanner()
         {
-            var result = _AppAdminService.KillLiveSiteScanner();
-            return Ok(result);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var result = _AppAdminService.KillLiveSiteScanner();
+                return Ok(result);
+            }
         }
 
-        #endregion     
+        #endregion
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

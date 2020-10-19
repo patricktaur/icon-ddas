@@ -8,7 +8,9 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-
+using System.Runtime.CompilerServices;
+using Microsoft.AspNet.Identity;
+using DDAS.API.Helpers;
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "admin")]
@@ -18,6 +20,9 @@ namespace DDAS.API.Controllers
         private IAppAdminService _AppAdminService;
         private string ErrorScreenCaptureFolder;
         private string _RootPath;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
+
         public AdminController(IAppAdminService AppAdmin)
         {
             _AppAdminService = AppAdmin;
@@ -27,6 +32,8 @@ namespace DDAS.API.Controllers
             ErrorScreenCaptureFolder = _RootPath +
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
 
@@ -49,7 +56,10 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetExtractionLog()
         {
-            return Ok(_AppAdminService.GetExtractionLog());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetExtractionLog());
+            }
         }
 
         #region Add/Delete sites
@@ -58,30 +68,42 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AddSite(SitesToSearch Site)
         {
-            _AppAdminService.AddSitesInDbCollection(Site);
-            return Ok();
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                _AppAdminService.AddSitesInDbCollection(Site);
+                return Ok();
+            }
         }
 
         [Route("GetSiteSources")]
         [HttpGet]
         public IHttpActionResult GetSiteSources()
         {
-            return Ok(_AppAdminService.GetAllSiteSources());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetAllSiteSources());
+            }
         }
 
         [Route("GetSiteSource")]
         [HttpGet]
         public IHttpActionResult GetSiteSource(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            return Ok(_AppAdminService.GetSingleSiteSource(Id));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                return Ok(_AppAdminService.GetSingleSiteSource(Id));
+            }
         }
 
         [Route("SaveSiteSource")]
         [HttpPost]
         public IHttpActionResult UpdateSiteSource(SitesToSearch SiteSource)
         {
-            return Ok(_AppAdminService.UpdateSiteSource(SiteSource));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.UpdateSiteSource(SiteSource));
+            }
         }
 
         [Route("DeleteSiteSource")]
@@ -90,9 +112,12 @@ namespace DDAS.API.Controllers
         {
             try
             {
-                var Id = Guid.Parse(RecId);
-                _AppAdminService.DeleteSiteSource(Id);
-                return Ok(true);
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+                {
+                    var Id = Guid.Parse(RecId);
+                    _AppAdminService.DeleteSiteSource(Id);
+                    return Ok(true);
+                }
             }
             catch (Exception ex)
             {
@@ -107,37 +132,49 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AddCountry(Country country)
         {
-            var result = _AppAdminService.AddCountry(country);
-            if (result)
-                return Ok("Country: " + country.CountryName +
-                    " is added successfully");
-            else
-                return Ok("could not add the Country");
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var result = _AppAdminService.AddCountry(country);
+                if (result)
+                    return Ok("Country: " + country.CountryName +
+                        " is added successfully");
+                else
+                    return Ok("could not add the Country");
+            }
         }
 
         [Route("GetCountries")]
         [HttpGet]
         public IHttpActionResult GetCountries()
         {
-            var Countries = _AppAdminService.GetCountries();
-            return Ok(Countries);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Countries = _AppAdminService.GetCountries();
+                return Ok(Countries);
+            }
         }
 
         [Route("GetCountry")]
         [HttpGet]
         public IHttpActionResult GetCountry(Guid? RecId)
         {
-            var Country = _AppAdminService.GetCountry(RecId);
-            return Ok(Country);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Country = _AppAdminService.GetCountry(RecId);
+                return Ok(Country);
+            }
         }
 
         [Route("DeleteCountry")]
         [HttpGet]
         public IHttpActionResult DeleteCountry(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            _AppAdminService.DeleteCountry(Id);
-            return Ok(true);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                _AppAdminService.DeleteCountry(Id);
+                return Ok(true);
+            }
         }
         #endregion
 
@@ -147,37 +184,49 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult AddSponsor(SponsorProtocol sponsor)
         {
-            var result = _AppAdminService.AddSponsor(sponsor);
-            return Ok(result);
-            //if (result)
-            //    return Ok("sponsor: " + sponsor.SponsorProtocolNumber +
-            //        " added successfully");
-            //else
-            //    return Ok("could not add sponsor protocol");
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var result = _AppAdminService.AddSponsor(sponsor);
+                return Ok(result);
+                //if (result)
+                //    return Ok("sponsor: " + sponsor.SponsorProtocolNumber +
+                //        " added successfully");
+                //else
+                //    return Ok("could not add sponsor protocol");
+            }
         }
 
         [Route("GetSponsorProtocols")]
         [HttpGet]
         public IHttpActionResult GetSponsorProtocols()
         {
-            return Ok(_AppAdminService.GetSponsorProtocols());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetSponsorProtocols());
+            }
         }
 
         [Route("GetSponsorProtocol")]
         [HttpGet]
         public IHttpActionResult GetSponsorProtocol(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            return Ok(_AppAdminService.GetSponsorProtocol(Id));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                return Ok(_AppAdminService.GetSponsorProtocol(Id));
+            }
         }
 
         [Route("DeleteSponsorProtocol")]
         [HttpGet]
         public IHttpActionResult DeleteSponsorProtocol(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            _AppAdminService.DeleteSponsor(Id);
-            return Ok(true);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                _AppAdminService.DeleteSponsor(Id);
+                return Ok(true);
+            }
         }
         #endregion
 
@@ -186,7 +235,7 @@ namespace DDAS.API.Controllers
         //[HttpPost]
         //public IHttpActionResult AddDefaultSite(DefaultSite DefaultSite)
         //{
-            
+
         //    return Ok(_AppAdminService.AddDefaultSite(DefaultSite));
         //}
 
@@ -194,33 +243,45 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDefaultSites()
         {
-            return Ok(_AppAdminService.GetDefaultSites());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetDefaultSites());
+            }
         }
 
         [Route("GetDefaultSite")]
         [HttpGet]
         public IHttpActionResult GetDefaultSite(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            var site = _AppAdminService.GetSingleDefaultSite(Id);
-            return Ok(site);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                var site = _AppAdminService.GetSingleDefaultSite(Id);
+                return Ok(site);
+            }
         }
 
         [Route("SaveDefaultSite")]
         [HttpPost]
         public IHttpActionResult SaveOrUpdateDefaultSource(DefaultSite DefaultSite)
         {
-            var Status = _AppAdminService.UpdateDefaultSite(DefaultSite);
-            return Ok(Status);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Status = _AppAdminService.UpdateDefaultSite(DefaultSite);
+                return Ok(Status);
+            }
         }
 
         [Route("DeleteDefaultSite")]
         [HttpGet]
         public IHttpActionResult DeleteDefaultSite(string RecId)
         {
-            var Id = Guid.Parse(RecId);
-            _AppAdminService.DeleteDefaultSite(Id);
-            return Ok(true);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(RecId);
+                _AppAdminService.DeleteDefaultSite(Id);
+                return Ok(true);
+            }
         }
         #endregion
 
@@ -230,18 +291,24 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetExceptionLogs()
         {
-            return Ok(_AppAdminService.GetExceptionLogs());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetExceptionLogs());
+            }
         }
 
         #endregion
 
         #region iSprint to DDAS Log
-        
+
         [Route("iSprintToDDASLog")]
         [HttpGet]
         public IHttpActionResult GetiSprintToDDASLog()
         {
-            return Ok(_AppAdminService.GetiSprintToDDASLog());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetiSprintToDDASLog());
+            }
         }
         #endregion
 
@@ -249,7 +316,21 @@ namespace DDAS.API.Controllers
         [HttpGet]
         public IHttpActionResult GetDDAStoiSprintLog()
         {
-            return Ok(_AppAdminService.GetDDtoiSprintLog());
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetDDtoiSprintLog());
+            }
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }

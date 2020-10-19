@@ -14,6 +14,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
+using System.Runtime.CompilerServices;
+
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "user, admin")]
@@ -21,16 +23,24 @@ namespace DDAS.API.Controllers
     public class AuditController : ApiController
     {
         private IAudit _Audit;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _logMode;
+
         public AuditController(IAudit Audit)
         {
             _Audit = Audit;
+            _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
+
         }
 
         [Route("RequestQC")]
         [HttpPost]
         public IHttpActionResult RequestQC(ComplianceForm Form)
         {
-            return Ok(_Audit.RequestQC(Form));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_Audit.RequestQC(Form));
+            }
         }
 
         [Route("RequestQC1")]
@@ -38,47 +48,50 @@ namespace DDAS.API.Controllers
         // public async Task<HttpResponseMessage> PostFormData()
         public async Task<HttpResponseMessage> RequestQC1()
         {
-            if (!Request.Content.IsMimeMultipartContent())
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
+                URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
+                //get Temp Folder:
+                var attachmentsFolder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/");
+                var tempFolder = attachmentsFolder + "TEMP-" + Guid.NewGuid();
+                Directory.CreateDirectory(tempFolder);
+
+                //Upload files:
+                CustomMultipartFormDataStreamProvider provider =
+                    new CustomMultipartFormDataStreamProvider(tempFolder);
+
+                var result = await Request.Content.ReadAsMultipartAsync(provider);
+                //TruncateFileNames(tempFolder, 50);
+
+                var compFormId = result.FormData["ComplianceFormId"];
+                var strReview = result.FormData["Review"];
+                Review review = JsonConvert.DeserializeObject<Review>(strReview);
+                if (review == null)
+                {
+                    throw new Exception("Review object expected");
+                }
+
+                //Rename folder:
+
+                string fileSaveLocation = attachmentsFolder + compFormId;
+                //Remove folder if it was created by previous QC Request Action:
+                if (Directory.Exists(fileSaveLocation))
+                {
+                    Directory.Delete(fileSaveLocation, true);
+                }
+                Directory.Move(tempFolder, fileSaveLocation);
+
+                var guidCompForm = Guid.Parse(compFormId);
+                _Audit.RequestQC(guidCompForm, review, URL);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "ok");
             }
-
-            string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
-            URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
-            //get Temp Folder:
-            var attachmentsFolder = HttpContext.Current.Server.MapPath("~/DataFiles/Attachments/");
-            var tempFolder = attachmentsFolder + "TEMP-" + Guid.NewGuid();
-            Directory.CreateDirectory(tempFolder);
-
-            //Upload files:
-            CustomMultipartFormDataStreamProvider provider =
-                new CustomMultipartFormDataStreamProvider(tempFolder);
-
-            var result = await Request.Content.ReadAsMultipartAsync(provider);
-            //TruncateFileNames(tempFolder, 50);
-
-            var compFormId = result.FormData["ComplianceFormId"];
-            var strReview = result.FormData["Review"];
-            Review review = JsonConvert.DeserializeObject <Review> (strReview);
-            if (review == null)
-            {
-                throw new Exception("Review object expected");
-            }
-
-            //Rename folder:
-
-            string fileSaveLocation = attachmentsFolder + compFormId;
-            //Remove folder if it was created by previous QC Request Action:
-            if (Directory.Exists(fileSaveLocation))
-            {
-                Directory.Delete(fileSaveLocation, true);
-            }
-            Directory.Move(tempFolder, fileSaveLocation);
-
-            var guidCompForm = Guid.Parse(compFormId);
-            _Audit.RequestQC(guidCompForm, review, URL);
-
-            return Request.CreateResponse(HttpStatusCode.OK, "ok");
         }
 
         [Route("GetQC")]
@@ -87,13 +100,16 @@ namespace DDAS.API.Controllers
         {
             try
             {
-                var RecId = Guid.Parse(Id);
-                var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
-                UpdateFormToCurrentVersion
-                    .UpdateComplianceFormToCurrentVersion(CompForm);
+                using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+                {
+                    var RecId = Guid.Parse(Id);
+                    var CompForm = _Audit.GetQC(RecId, AssignedTo, User.Identity.GetUserName().ToLower());
+                    UpdateFormToCurrentVersion
+                        .UpdateComplianceFormToCurrentVersion(CompForm);
 
-                return Ok(CompForm);
+                    return Ok(CompForm);
 
+                }
             }
             catch (Exception ex)
             {
@@ -105,24 +121,33 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult ListQCs(ComplianceFormFilter Filter)
         {
-            return Ok(_Audit.ListQCs(Filter));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_Audit.ListQCs(Filter));
+            }
         }
 
         [Route("SubmitQC")]
         [HttpPost]
         public IHttpActionResult SaveAudit(ComplianceForm Form)
         {
-            string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
-            URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
-            return Ok(_Audit.SubmitQC(Form, URL));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                string URL = HttpContext.Current.Request.UrlReferrer.AbsoluteUri;
+                URL = URL.Replace(HttpContext.Current.Request.UrlReferrer.AbsolutePath, "");
+                return Ok(_Audit.SubmitQC(Form, URL));
+            }
         }
 
         [Route("ListQCSummary")]
         [HttpGet]
         public IHttpActionResult ListQCSummary(string FormId)
         {
-            var Id = Guid.Parse(FormId);
-            return Ok(_Audit.ListQCSummary(Id));
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(FormId);
+                return Ok(_Audit.ListQCSummary(Id));
+            }
         }
 
         [Route("Undo")]
@@ -130,9 +155,12 @@ namespace DDAS.API.Controllers
         public IHttpActionResult Undo(
             string ComplianceFormId, UndoEnum undoEnum, string UndoComment)
         {
-            var Id = Guid.Parse(ComplianceFormId);
-            var Result = _Audit.Undo(Id, undoEnum, UndoComment);
-            return Ok(Result);
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                var Id = Guid.Parse(ComplianceFormId);
+                var Result = _Audit.Undo(Id, undoEnum, UndoComment);
+                return Ok(Result);
+            }
         }
 
 
@@ -182,5 +210,16 @@ namespace DDAS.API.Controllers
                 return headers.ContentDisposition.FileName.Replace("\"", string.Empty);
             }
         }
+
+        private string CurrentUser()
+        {
+            return User.Identity.GetUserName();
+        }
+
+        private string GetCallerName([CallerMemberName] string caller = null)
+        {
+            return caller;
+        }
+
     }
 }
