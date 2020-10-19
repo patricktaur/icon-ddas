@@ -14,7 +14,7 @@ import {ConfigService} from '../../shared/utils/config.service'
 export class LogsMainComponent implements OnInit {
     public loading: boolean = false;
     public error: any;
-    public logStatus: boolean;
+    public logStatus: string;
     _baseUrl: string = '';
     _downloadUrl : string = '';
     public pageNumber: number = 1;
@@ -40,7 +40,7 @@ export class LogsMainComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.refreshStatus();
+         this.refreshStatus();
     }
 
     refreshStatus(){

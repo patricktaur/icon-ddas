@@ -60,7 +60,8 @@
 						<a href="{{ApiHost}}{{log.Path}}" target="_blank">{{log.FileName}}</a>
 					</td>
 					<td class="text-left">
-						{{log.CreatedOn | date:'medium':'GMT'}}
+						<!-- {{log.CreatedOn | date:'medium':'GMT'}} -->
+						{{log.CreatedOn | date}}
 					</td>	
 					<td class="text-center">
 						{{log.FileSize}}
