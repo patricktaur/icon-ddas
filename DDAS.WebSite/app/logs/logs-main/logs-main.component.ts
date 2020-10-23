@@ -40,7 +40,7 @@ export class LogsMainComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.refreshStatus();
+         this.refreshStatus();
     }
 
     refreshStatus(){
