@@ -1,0 +1,367 @@
+[33mtag v1.2.0[m
+Tagger: Patrick Taur <patrick.taur@claritytechnologies.com>
+Date:   Wed Nov 18 15:37:04 2020 +0530
+
+App Logs + ICSF Archiving
+
+[33mcommit 6fb0fbd78f116dc679af3739252fa2129687e61b[m
+Author: Patrick Taur <patrick.taur@claritytechnologies.com>
+Date:   Wed Nov 18 15:24:13 2020 +0530
+
+    Documents updated
+
+[1mdiff --git a/Documents/ChangeAndBlackoutPlan/Change Control Template-2020.docx b/Documents/ChangeAndBlackoutPlan/Change Control Template-2020.docx[m
+[1mnew file mode 100644[m
+[1mindex 00000000..d143c557[m
+[1m--- /dev/null[m
+[1m+++ b/Documents/ChangeAndBlackoutPlan/Change Control Template-2020.docx[m	
+[36m@@ -0,0 +1,106 @@[m
+[32m+[m[32m                           Change Control Template[m[41m [m
+[32m+[m
+[32m+[m[32mPlease verify the below fields that needs to be enter to raise a CC in Service now[m
+[32m+[m
+[32m+[m[32mCategory[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Application Software[m[41m   [m
+[32m+[m[32m  oo Hardware[m[41m                               [m
+[32m+[m[32m  oo Database[m[41m                 [m
+[32m+[m[32m  oo Network[m[41m                        [m
+[32m+[m[32m  oo Service[m[41m                             [m
+[32m+[m[32m  oo Telephony[m[41m                        [m
+[32m+[m[32m  oo Server[m[41m                              [m
+[32m+[m[32m  oo Desktop Software[m[41m            [m
+[32m+[m
+[32m+[m[32mType[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Normal[m
+[32m+[m[32m  oo Standard[m
+[32m+[m[32m  oo Emergency[m
+[32m+[m[32m  oo Urgent[m
+[32m+[m
+[32m+[m[32mChange Cycle[m
+[32m+[m[41m [m
+[32m+[m[32m  oo Test[m
+[32m+[m[32m  oo Production[m
+[32m+[m[32m  oo Test & Production[m
+[32m+[m
+[32m+[m[32mPriority[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Low[m
+[32m+[m[32m  oo Medium[m
+[32m+[m[32m  oo High[m
+[32m+[m
+[32m+[m[32mRisk[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Very High[m
+[32m+[m[32m  oo High[m
+[32m+[m[32m  oo Moderate[m
+[32m+[m[32m  oo Low[m
+[32m+[m
+[32m+[m[32mImpact[m
+[32m+[m
+[32m+[m[32m  oo Low[m
+[32m+[m[32m  oo Medium[m
+[32m+[m[32m  oo High[m
+[32m+[m
+[32m+[m
+[32m+[m[32mReason For Emergency(Only for Emergency CC):[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mShort Description:[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mDescription and Justification For Change:[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mRequested by date:[m
+[32m+[m
+[32m+[m[32mPlanned start date:[m
+[32m+[m
+[32m+[m[32mPlanned end date:[m
+[32m+[m
+[32m+[m[32mChange Plan:[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mBlackout Plan:[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mTest Plan:[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mPost Implementation:[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[1mdiff --git a/Documents/ChangeAndBlackoutPlan/DDAS Change Control V1.2.0.docx b/Documents/ChangeAndBlackoutPlan/DDAS Change Control V1.2.0.docx[m
+[1mnew file mode 100644[m
+[1mindex 00000000..53c3a393[m
+[1m--- /dev/null[m
+[1m+++ b/Documents/ChangeAndBlackoutPlan/DDAS Change Control V1.2.0.docx[m	
+[36m@@ -0,0 +1,138 @@[m
+[32m+[m[32m                           Change Control Template[m[41m [m
+[32m+[m
+[32m+[m[32mPlease verify the below fields that needs to be enter to raise a CC in Service now[m
+[32m+[m
+[32m+[m[32mCategory[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Application Software[m[41m   [m
+[32m+[m[32m  oo Hardware[m[41m                               [m
+[32m+[m[32m  oo Database[m[41m                 [m
+[32m+[m[32m  oo Network[m[41m                        [m
+[32m+[m[32m  oo Service[m[41m                             [m
+[32m+[m[32m  oo Telephony[m[41m                        [m
+[32m+[m[32m  oo Server[m[41m                              [m
+[32m+[m[32m  oo Desktop Software[m[41m            [m
+[32m+[m
+[32m+[m[32mType[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Normal[m
+[32m+[m[32m  oo Standard[m
+[32m+[m[32m  oo Emergency[m
+[32m+[m[32m  oo Urgent[m
+[32m+[m
+[32m+[m[32mChange Cycle[m
+[32m+[m[41m [m
+[32m+[m[32m  oo Test[m
+[32m+[m[32m  oo Production[m
+[32m+[m[32m  oo Test & Production[m
+[32m+[m
+[32m+[m[32mPriority[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Low[m
+[32m+[m[32m  oo Medium[m
+[32m+[m[32m  oo High[m
+[32m+[m
+[32m+[m[32mRisk[m[41m [m
+[32m+[m
+[32m+[m[32m  oo Very High[m
+[32m+[m[32m  oo High[m
+[32m+[m[32m  oo Moderate[m
+[32m+[m[32m  oo Low[m
+[32m+[m
+[32m+[m[32mImpact[m
+[32m+[m
+[32m+[m[32m  oo Low[m
+[32m+[m[32m  oo Medium[m
+[32m+[m[32m  oo High[m
+[32m+[m
+[32m+[m
+[32m+[m[32mReason For Emergency(Only for Emergency CC):[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mShort Description:[m
+[32m+[m
+[32m+[m[32mThe users have reported that the application freezes occasionally.[m[41m  [m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mDescription and Justification For Change:[m
+[32m+[m
+[32m+[m
+[32m+[m[32m  1. The Development Team has not been able to identify the source for this issue and hence have incorporated Application Logs for all user actions.  The Application Logs can be enabled and disabled from Web.config[m
+[32m+[m[32m  2. Compliance Form Archiving is now incorporated.  Compliance Forms older than 180 days of Searched On or Review Completed On can be archived.  Archived Forms can be restored at any time.  Archival and Restoration can be done by Application Admin.[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mRequested by date:[m
+[32m+[m
+[32m+[m[32mPlanned start date:[m
+[32m+[m
+[32m+[m[32mPlanned end date:[m
+[32m+[m
+[32m+[m[32mChange Plan:[m
+[32m+[m
+[32m+[m[32mFollow below instructions to update the DDAS production site to ver 1.2.0 with the files provided by Clarity.[m
+[32m+[m[32m  1. Stop the IIS server[m
+[32m+[m[32m  2. Back up[m
+[32m+[m[32m     a. Copy the folders[m[41m [m
+[32m+[m[32m        i. App_Data[m
+[32m+[m[32m        ii. assets[m
+[32m+[m[32m        iii. bin[m
+[32m+[m[32m        iv. DataFiles[m
+[32m+[m[32m        v. dist[m
+[32m+[m[32m     b. Copy the files - web.config and index.html[m
+[32m+[m[32m  3. Paste the above folders and files into a new folder for backup[m
+[32m+[m[32m  4. Copy and replace the folders shared by Clarity[m
+[32m+[m[32m     a. NLog.config[m
+[32m+[m[32m     b.  Bin[m
+[32m+[m[32m        i. DDAS.Models.dll[m
+[32m+[m[32m        ii. DDAS.API.dll[m
+[32m+[m[32m        iii. DDAS.DataExtractor.exe[m
+[32m+[m[32m        iv. WebScraping.Selenium.dll[m
+[32m+[m[32m        v. DDAS.Services.dll[m
+[32m+[m[32m        vi. DDAS.Data.Mongo.dll[m
+[32m+[m[32m        vii. Utilities.dll[m
+[32m+[m[32m        viii. OpenXmlEmbedObjectNew.dll[m
+[32m+[m[32m        ix. NLog.dll[m
+[32m+[m[32m     c. dist[m
+[32m+[m[32m        i. build.js[m
+[32m+[m[32m        ii. build.js.map[m
+[32m+[m[32m        iii.[m[41m [m
+[32m+[m[32m  5. Modify the web.config[m
+[32m+[m[32m     a. Add <add key="LogMode" value="on" /> under AppSettings[m
+[32m+[m[32m  6. Start the IIS server[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mBlackout Plan:[m
+[32m+[m
+[32m+[m
+[32m+[m[32m  1. Stop the IIS server[m
+[32m+[m[32m  2. Paste the backed up files in the below folders[m
+[32m+[m[32m     a. App_Data[m
+[32m+[m[32m     b. assets[m
+[32m+[m[32m     c. bin[m
+[32m+[m[32m     d. DataFiles[m
+[32m+[m[32m     e. Dist[m
+[32m+[m[32m     f. web.config and index.html[m
+[32m+[m[32m  3. re-start the IIS server[m[41m	[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mTest Plan:[m
+[32m+[m
+[32m+[m[32mCheck if the application is generating actions logs in Logs folder.[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mPost Implementation:[m
+[32m+[m
+[32m+[m[32mMonitor Application Performance.[m[41m  [m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[1mdiff --git a/Documents/Technical/TestingNov2020/DDAS Web Application Test Cases.docx b/Documents/Technical/TestingNov2020/DDAS Web Application Test Cases.docx[m
+[1mnew file mode 100644[m
+[1mindex 00000000..e7091174[m
+[1m--- /dev/null[m
+[1m+++ b/Documents/Technical/TestingNov2020/DDAS Web Application Test Cases.docx[m	
+[36m@@ -0,0 +1,72 @@[m
+[32m+[m[32mDDAS Web Application Test Cases[m
+[32m+[m
+[32m+[m[32mTEST TITLE[m
+[32m+[m[32mPRIORITY[m
+[32m+[m[32mTEST CASE ID[m
+[32m+[m[32mTEST NUMBER[m
+[32m+[m[32mTEST DATE[m
+[32m+[m[32m Compliance Form Generation[m
+[32m+[m[41m [m
+[32m+[m[32m1[m
+[32m+[m[32m1[m
+[32m+[m[32m 24-Oct-2020[m
+[32m+[m[32mTEST DESCRIPTION[m
+[32m+[m[32mTEST EXECUTED BY[m
+[32m+[m[32mEXECUTION DATE[m
+[32m+[m[32m Tests required in Test Server to confirm that the app code can be moved to Prod. Server[m
+[32m+[m[41m [m
+[32m+[m[32m Patrick,  Dinesh[m
+[32m+[m[32m24-10-2020,      3-11-2020[m
+[32m+[m
+[32m+[m[32mTEST DESCRIPTION[m
+[32m+[m[32mTEST DEPENDENCIES[m
+[32m+[m[32mTEST CONDITIONS[m
+[32m+[m[32mTEST CONTROL[m
+[32m+[m[32m Upload Excel Input Form[m
+[32m+[m[32m -[m
+[32m+[m[32m User must be logged in[m
+[32m+[m[32m-[m
+[32m+[m
+[32m+[m[32mSTEP ID[m
+[32m+[m[32mSTEP DESCRIPTION[m
+[32m+[m[32m                                   TEST DATE[m
+[32m+[m[32mEXPECTED RESULTS[m
+[32m+[m[32mACTUAL RESULTS[m
+[32m+[m[32mPASS / FAIL[m
+[32m+[m[32mADDITIONAL NOTES[m
+[32m+[m[32m 1[m
+[32m+[m[32m Upload ICSF Input Excel File[m
+[32m+[m[32m                                  24-Oct-2020[m
+[32m+[m[32m As per attached excel Sheet[m
+[32m+[m[32mAs expected[m
+[32m+[m[32m PASS[m
+[32m+[m[41m [m
+[32m+[m[32m 2[m
+[32m+[m[32m Application Log[m
+[32m+[m[32m                                  24-Oct-2020[m
+[32m+[m[32m Able to download log file[m
+[32m+[m[32m Able to download log file[m
+[32m+[m[32mPASS[m
+[32m+[m[41m [m
+[32m+[m[32m 3[m
+[32m+[m[32m Archive  10 ICSF Forms with Seached On date older than 365 days[m
+[32m+[m[32m                                  24-Oct-2020[m
+[32m+[m[32m 10 Compliance forms listed in Archive Page[m
+[32m+[m[32m10 Compliance forms found in Archive Page[m
+[32m+[m[32mPASS[m
+[32m+[m[41m [m
+[32m+[m[32m 4[m
+[32m+[m[32m Restore  -  Select and Restore one ICSF Form[m
+[32m+[m[32m                                  24-Oct-2020[m
+[32m+[m[32m Archive page count must reduce by one, the restored[m
+[32m+[m[32m Count is reduced by one.[m
+[32m+[m[32m PASS[m
+[32m+[m[41m [m
+[32m+[m[41m [m
+[32m+[m[41m [m
+[32m+[m[41m                                       [m
+[32m+[m[41m [m
+[32m+[m[41m [m
+[32m+[m[41m [m
+[32m+[m[41m [m
+[32m+[m
+[1mdiff --git a/Documents/Technical/TestingNov2020/DDASWebApplicationTestCaseResults.xlsx b/Documents/Technical/TestingNov2020/DDASWebApplicationTestCaseResults.xlsx[m
+[1mnew file mode 100644[m
+[1mindex 00000000..c0db7066[m
+Binary files /dev/null and b/Documents/Technical/TestingNov2020/DDASWebApplicationTestCaseResults.xlsx differ
+[1mdiff --git a/Documents/Technical/TestingNov2020/IC-Manual-Testing-Test-Case-Template-10549_WORD.dotx b/Documents/Technical/TestingNov2020/IC-Manual-Testing-Test-Case-Template-10549_WORD.dotx[m
+[1mnew file mode 100644[m
+[1mindex 00000000..d1d32872[m
+Binary files /dev/null and b/Documents/Technical/TestingNov2020/IC-Manual-Testing-Test-Case-Template-10549_WORD.dotx differ
+[1mdiff --git a/Notes.txt b/Notes.txt[m
+[1mindex 2ca349b8..79d0d4ef 100644[m
+[1m--- a/Notes.txt[m
+[1m+++ b/Notes.txt[m
+[36m@@ -939,4 +939,5 @@[m [mrun AOTCompile.bat[m
+ [m
+ Passwords:[m
+ admin1 / Pass!234[m
+[31m-user1 / Pass!234[m
+\ No newline at end of file[m
+[32m+[m[32muser1 / Pass!234[m
+[32m+[m[32musertwo / Pass!234[m
+\ No newline at end of file[m
