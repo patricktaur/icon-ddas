@@ -79,45 +79,73 @@ namespace WebScraping.Selenium.Pages
         
         private void LoadDebarredPersonList()
         {
+
+
+
             int RowCount = 1;
             int NullRecords = 0;
 
+            var rows = PersonsTable.FindElements(By.XPath("tbody/tr"));
+
+            //_log.WriteLog("Total records found - " +
+            //    PersonsTable.FindElements(By.XPath("tbody/tr")).Count());
             _log.WriteLog("Total records found - " +
-                PersonsTable.FindElements(By.XPath("tbody/tr")).Count());
+                (rows.Count() - 1));
+            var blankRows = 0;
+            //foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
 
-            foreach (IWebElement TR in PersonsTable.FindElements(By.XPath("tbody/tr")))
+            try
             {
-                var debarredPerson = new DebarredPerson();
-
-                IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
-                debarredPerson.RowNumber = RowCount;
-                debarredPerson.NameOfPerson = TDs[0].Text;
-                debarredPerson.EffectiveDate = TDs[1].Text;
-                debarredPerson.EndOfTermOfDebarment = TDs[2].Text;
-                debarredPerson.FrDateText = TDs[3].Text;
-                debarredPerson.VolumePage = TDs[4].Text;
-
-                var AnchorTags = TDs[4].FindElements(By.XPath("a"));
-
-                //if (IsElementPresent(TDs[4], By.XPath("a")))
-                if(AnchorTags.Count > 0)
+                foreach (IWebElement TR in rows)
                 {
-                    IWebElement anchor = TDs[4].FindElement(By.XPath("a"));
-                    Link link = new Link();
-                    link.Title = "Company";
-                    link.url = anchor.GetAttribute("href");
-                    debarredPerson.Links.Add(link);
-                }
-                if (debarredPerson.NameOfPerson != "" ||
-                    debarredPerson.NameOfPerson != null)
-                    _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
-                else
-                    NullRecords += 1;
+                    var debarredPerson = new DebarredPerson();
 
-                RowCount = RowCount + 1;
+                    IList<IWebElement> TDs = TR.FindElements(By.XPath("td"));
+                    if (TDs.Count > 5)
+                    {
+                        //20Jan2020:
+                        var name = (TDs[0].Text + " " + TDs[1].Text).Trim();
+                        if (name.Length > 0)
+                        {
+                            debarredPerson.RowNumber = RowCount;
+                            debarredPerson.NameOfPerson = TDs[0].Text + " " + TDs[1].Text;
+                            debarredPerson.EffectiveDate = TDs[2].Text;
+                            debarredPerson.EndOfTermOfDebarment = TDs[3].Text;
+                            debarredPerson.FrDateText = TDs[4].Text;
+                            debarredPerson.VolumePage = TDs[5].Text;
+
+                            var AnchorTags = TDs[5].FindElements(By.XPath("a"));
+                            if (AnchorTags.Count > 0)
+                            {
+                                IWebElement anchor = TDs[5].FindElement(By.XPath("a"));
+                                Link link = new Link();
+                                link.Title = "Company";
+                                link.url = anchor.GetAttribute("href");
+                                debarredPerson.Links.Add(link);
+                            }
+                            _FDADebarPageSiteData.DebarredPersons.Add(debarredPerson);
+                            RowCount = RowCount + 1;
+                        }
+                        else
+                        {
+                            blankRows += 1;
+                        }
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                _log.WriteLog("Error: " + ex.Message);
+                throw;
+            }
+
+
+            
             _log.WriteLog("Total records inserted - " +
                 _FDADebarPageSiteData.DebarredPersons.Count());
+            _log.WriteLog("Total records not inserted (blank content) - " +
+                blankRows);
+
         }
 
         public override void LoadContent(
