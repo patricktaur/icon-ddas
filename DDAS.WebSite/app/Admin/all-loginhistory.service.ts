@@ -57,14 +57,7 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    // getAllDataFiles(siteEnum: number):Observable<DownloadDataFilesViewModel[]>{
-    //     return this.http.get(this._baseUrl + 'Search/DownloadDataFiles?SiteEnum=' + siteEnum,
-    //     this._options)
-    //     .map((res: Response) => {
-    //         return res.json();
-    //     })
-    //     .catch(this.handleError);        
-    // }
+   
 
     deleteErrorImage(FileName: string){
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteErrorImage?FileName=' + FileName,
@@ -93,23 +86,7 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
-    //  getExtractionHistory(){
-    //     return this.http.get(this._baseUrl + 'admin/GetDataExtractionHistory',
-    //     this._options)
-    //     .map((res: Response) => {
-    //         return res.json();
-    //     })
-    //     .catch(this.handleError);
-    // }
-
-    // getDataExtractionErrorSiteCount(){
-    //     return this.http.get(this._baseUrl + 'admin/GetDataExtractionErrorSiteCount',
-    //     this._options)
-    //     .map((res: Response) => {
-    //         return res.json();
-    //     })
-    //     .catch(this.handleError);
-    // }
+    
     
     deleteExtractionData(RecId: string, Enum: number){
         return this.http.get(this._baseUrl + 'AppAdmin/DeleteExtractionData?RecId=' + RecId
