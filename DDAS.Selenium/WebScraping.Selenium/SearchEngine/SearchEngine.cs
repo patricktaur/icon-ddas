@@ -469,8 +469,15 @@ namespace WebScraping.Selenium.SearchEngine
             ILog log)
         {
             KillPhantomJsInstace();
-            var DBSites = query.Where(x => x.ExtractionMode.ToLower() == "db").ToList();
+            
+            //Extraction of AddequateAssuranceList Page is not required.
+            //Email from Dinesh 27May2020
 
+            var DBSites = query.Where(x => x.ExtractionMode.ToLower() == "db"
+            && x.SiteEnum != SiteEnum.AdequateAssuranceListPage
+            ).ToList();
+
+            
             var NewLog = new Log();
             NewLog.Step = "";
             NewLog.Status = NewLog.Step;

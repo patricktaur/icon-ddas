@@ -147,14 +147,13 @@ namespace DDAS.Services.Search
 
         public List<ExtractionStatus> GetLatestExtractionStatus(DateTime fromDate, DateTime toDate)
         {
-            var FDADebarSiteData = _UOW.FDADebarPageRepository.FilterRecordsByDate(new FDADebarPageSiteData(), fromDate, toDate);
 
             //var FDADebarSiteData = _UOW.FDADebarPageRepository.GetAll();
 
             var ListOfExtractionHistory = new List<ExtractionStatus>();
 
             var ExtractionHistory1 = new ExtractionStatus();
-
+            var FDADebarSiteData = _UOW.FDADebarPageRepository.FilterRecordsByDate(new FDADebarPageSiteData(), fromDate, toDate);
             if (FDADebarSiteData.Count > 0)
             {
                 var SiteData = FDADebarSiteData.OrderByDescending(
@@ -165,9 +164,14 @@ namespace DDAS.Services.Search
                     ListOfExtractionHistory, ExtractionHistory1,
                     SiteData, 1, SiteEnum.FDADebarPage);
             }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory1,
+                    null, 1, SiteEnum.FDADebarPage);
+            }
 
             var ExtractionHistory2 = new ExtractionStatus();
-
             var ClinicalInvestigatorSiteData =
                 _UOW.ClinicalInvestigatorInspectionListRepository.FilterRecordsByDate(new ClinicalInvestigatorInspectionSiteData(), fromDate, toDate);
 
@@ -180,6 +184,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(
                     ListOfExtractionHistory, ExtractionHistory2,
                     SiteData, 2, SiteEnum.ClinicalInvestigatorInspectionPage);
+            }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory2,
+                    null, 2, SiteEnum.ClinicalInvestigatorInspectionPage);
             }
 
             var ExtractionHistory3 = new ExtractionStatus();
@@ -197,6 +207,12 @@ namespace DDAS.Services.Search
                     ListOfExtractionHistory, ExtractionHistory3,
                     SiteData, 3, SiteEnum.FDAWarningLettersPage);
             }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory3,
+                    null, 3, SiteEnum.FDAWarningLettersPage);
+            }
 
             var ExtractionHistory4 = new ExtractionStatus();
 
@@ -213,6 +229,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(
                     ListOfExtractionHistory, ExtractionHistory4,
                     SiteData, 4, SiteEnum.ERRProposalToDebarPage);
+            }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory4,
+                    null, 4, SiteEnum.ERRProposalToDebarPage);
             }
 
             var ExtractionHistory5 = new ExtractionStatus();
@@ -248,6 +270,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory6,
                     SiteData, 6, SiteEnum.ClinicalInvestigatorDisqualificationPage);
             }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory6,
+                    null, 6, SiteEnum.ClinicalInvestigatorDisqualificationPage);
+            }
 
             var ExtractionHistory7 = new ExtractionStatus();
 
@@ -262,6 +290,12 @@ namespace DDAS.Services.Search
 
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory7,
                     SiteData, 7, SiteEnum.PHSAdministrativeActionListingPage);
+            }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory7,
+                    null, 7, SiteEnum.PHSAdministrativeActionListingPage);
             }
 
             var ExtractionHistory8 = new ExtractionStatus();
@@ -278,6 +312,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory8,
                     SiteData, 8, SiteEnum.CBERClinicalInvestigatorInspectionPage);
             }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory8,
+                    null, 8, SiteEnum.CBERClinicalInvestigatorInspectionPage);
+            }
 
             var ExtractionHistory9 = new ExtractionStatus();
 
@@ -291,6 +331,12 @@ namespace DDAS.Services.Search
 
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory9,
                     SiteData, 9, SiteEnum.ExclusionDatabaseSearchPage);
+            }
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory9,
+                    null, 9, SiteEnum.ExclusionDatabaseSearchPage);
             }
 
             var ExtractionHistory10 = new ExtractionStatus();
@@ -307,7 +353,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory10,
                     SiteData, 10, SiteEnum.CorporateIntegrityAgreementsListPage);
             }
-
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory10,
+                    null, 10, SiteEnum.CorporateIntegrityAgreementsListPage);
+            }
             var ExtractionHistory11 = new ExtractionStatus();
 
             var SamSiteData = _UOW.SystemForAwardManagementRepository.FilterRecordsByDate(
@@ -322,7 +373,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory11,
                     SiteData, 11, SiteEnum.SystemForAwardManagementPage);
             }
-
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory11,
+                    null, 11, SiteEnum.SystemForAwardManagementPage);
+            }
             var ExtractionHistory12 = new ExtractionStatus();
 
             var SDNSiteData = _UOW.SpeciallyDesignatedNationalsRepository.FilterRecordsByDate(new SpeciallyDesignatedNationalsListSiteData(), fromDate, toDate);
@@ -336,7 +392,12 @@ namespace DDAS.Services.Search
                 AddToExtractionHistoryList(ListOfExtractionHistory, ExtractionHistory12,
                     SiteData, 12, SiteEnum.SpeciallyDesignedNationalsListPage);
             }
-
+            else
+            {
+                AddToExtractionHistoryList(
+                    ListOfExtractionHistory, ExtractionHistory12,
+                    null, 12, SiteEnum.SpeciallyDesignedNationalsListPage);
+            }
             return ListOfExtractionHistory;
         }
 
@@ -350,19 +411,32 @@ namespace DDAS.Services.Search
             ExtractionHistory.SiteNumber = SiteNumber;
             ExtractionHistory.SiteName = siteEnum.ToString();
             ExtractionHistory.Enum = siteEnum;
-            ExtractionHistory.ExtractionDate = SiteData.CreatedOn;
-            if (SiteData.DataExtractionErrorMessage != null)
+            if (SiteData != null)
             {
-                ExtractionHistory.ErrorDescription =
-                    SiteData.DataExtractionErrorMessage;
-            }
-            else if (!SiteData.DataExtractionRequired)
-                ExtractionHistory.ExtractionMessage = "Source Date is not updated";
-            else
-                ExtractionHistory.ExtractionMessage = "Data extracted successfully";
+                ExtractionHistory.ExtractionDate = SiteData.CreatedOn;
+                
 
-            ExtractionHistory.SiteLastUpdatedOn =
-                SiteData.SiteLastUpdatedOn;
+                if (SiteData.DataExtractionErrorMessage != null)
+                {
+                    ExtractionHistory.ErrorDescription =
+                        SiteData.DataExtractionErrorMessage;
+                }
+                else if (!SiteData.DataExtractionRequired)
+                    ExtractionHistory.ExtractionMessage = "Source Date is not updated";
+                else
+                {
+                    ExtractionHistory.ExtractionMessage = "Data extracted successfully";
+                }
+                    
+
+                ExtractionHistory.SiteLastUpdatedOn =
+                    SiteData.SiteLastUpdatedOn;
+            }
+            else
+            {
+                ExtractionHistory.ErrorDescription = "Data not extracted";
+            }
+            
 
             list.Add(ExtractionHistory);
         }
@@ -382,8 +456,7 @@ namespace DDAS.Services.Search
                 .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
 
             return sitesWithNoDataExtractedIn32Hours;
-            //return GetLatestExtractionStatus(fromDate, toDate)
-            //    .Select(x => x.SiteName + " (" + x.SiteNumber + ")");
+            
         }
 
 
@@ -444,7 +517,7 @@ namespace DDAS.Services.Search
                 });
                 Index += 1;
             }
-            return DownloadDataFilesVMList;
+            return DownloadDataFilesVMList.OrderByDescending(x => x.DownloadedOn).ToList();
         }
 
         private List<FileInfo> GetDataFiles(string Folder, string FileType)

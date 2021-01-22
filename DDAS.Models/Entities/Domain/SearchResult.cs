@@ -1161,7 +1161,7 @@ namespace DDAS.Models.Entities.Domain
         public int SiteNumber { get; set; }
         public string SiteName { get; set; }
         public SiteEnum Enum { get; set; }
-        public DateTime ExtractionDate { get; set; }
+        public DateTime? ExtractionDate { get; set; }
         public DateTime? SiteLastUpdatedOn { get; set; }
         public string ErrorDescription { get; set; }
         public string ExtractionMessage { get; set; }

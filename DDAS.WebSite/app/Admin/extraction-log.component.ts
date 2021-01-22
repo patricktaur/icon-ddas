@@ -25,6 +25,11 @@ export class ExtractionLogComponent implements OnInit {
     public deleteFilesOlderThan : number = 30;
     public deletedResponse : string = "";
 
+    public myDatePickerOptions = {
+        dateFormat: 'dd mmm yyyy',
+        selectionTxtFontSize: 14
+    };
+
     constructor(
         private service: LoginHistoryService,
         private configService: ConfigService,

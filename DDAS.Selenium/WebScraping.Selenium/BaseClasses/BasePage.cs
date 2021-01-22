@@ -37,7 +37,7 @@ namespace WebScraping.Selenium.BaseClasses
                 }
                 catch (Exception e)
                 {
-                    throw new Exception("Unable to load the page: " + e.Message);
+                    throw new Exception(String.Format("Unable to load the page @  {0}, Error: {1} ", Url, e.Message));
                 }
             }
             if(!IsPageLoaded)
