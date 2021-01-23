@@ -41,7 +41,8 @@ namespace WebScraping.Selenium.Pages
 
         public override string Url {
             get {
-                return @"http://oig.hhs.gov/compliance/corporate-integrity-agreements/cia-documents.asp";
+                //return @"http://oig.hhs.gov/compliance/corporate-integrity-agreements/cia-documents.asp";
+                return @"https://oig.hhs.gov/compliance/corporate-integrity-agreements/cia-documents.asp";
             }
         }
 
@@ -83,13 +84,14 @@ namespace WebScraping.Selenium.Pages
             int RowCount = 1;
             int NullRecords = 0;
 
-            for (int TableRow = 11; TableRow < TRs.Count; TableRow++)
+            for (int TableRow = 0; TableRow < TRs.Count; TableRow++)
             {
                 var CiaList = new CIAList();
 
                 IList<IWebElement> TDs = TRs[TableRow].FindElements(By.XPath("td"));
 
-                if(TDs.Count == 4)
+                //if(TDs.Count == 4)
+                if (TDs.Count >= 4)
                 {
                     CiaList.RowNumber = RowCount;
                     CiaList.Provider = TDs[0].Text;
@@ -115,6 +117,17 @@ namespace WebScraping.Selenium.Pages
                     RowCount = RowCount + 1;
                 }
             }
+
+            //The table has 54 header lines.
+            //first section '#' , two rows.
+            //There are 26 A-Z sections, two rows each, title + column header = 26 x 2 52
+            //Total of 54 rows are not inserted to DB
+            //Not sure if alphabets A to Z are always present.
+            if (TRs.Count > 0 && _CIASiteData.CIAListSiteData.Count() == 0)
+            {
+                throw new Exception(String.Format("Error in extraction. Rows found in table: {0}, Inserted: {1} ", TRs.Count, _CIASiteData.CIAListSiteData.Count));
+            }
+
             _log.WriteLog("Total records inserted - " +
                 _CIASiteData.CIAListSiteData.Count());
 

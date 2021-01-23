@@ -20,6 +20,20 @@ namespace DDAS.DataExtractor
         //public static string ConfigurationManager { get; private set; }
 
         //private static LogText _WriteLog;
+
+        //0 FDADebarPage,
+        //1 ClinicalInvestigatorInspectionPage,
+        //2 FDAWarningLettersPage,
+        //3 ERRProposalToDebarPage,
+        //4 AdequateAssuranceListPage,  disabled
+        //5 ClinicalInvestigatorDisqualificationPage,
+        //6 CBERClinicalInvestigatorInspectionPage,
+        //7 PHSAdministrativeActionListingPage,
+        //8 ExclusionDatabaseSearchPage,
+        //9 CorporateIntegrityAgreementsListPage,
+        //10 SystemForAwardManagementPage,
+        //11 SpeciallyDesignedNationalsListPage,
+
         private static DBLog _WriteLog;
 
         private IWebDriver _Driver;
@@ -194,7 +208,7 @@ namespace DDAS.DataExtractor
                     PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService();
                     service.IgnoreSslErrors = true;
                     service.SslProtocol = "any";
-
+                    
                     _Driver = new PhantomJSDriver(service);
                     _Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
                     _Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);

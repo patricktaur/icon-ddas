@@ -41,7 +41,7 @@ namespace WebScraping.Selenium.BaseClasses
                 }
             }
             if(!IsPageLoaded)
-                throw new Exception("Unable to load the page");
+                throw new Exception(String.Format("Unable to load the page, 20 attempts made, no error. Url: @ {0}", Url));
         }
 
         public bool IsElementPresent(IWebElement elem, By by)

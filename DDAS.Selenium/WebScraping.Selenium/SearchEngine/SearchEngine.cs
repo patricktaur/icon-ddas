@@ -387,12 +387,16 @@ namespace WebScraping.Selenium.SearchEngine
                     service.IgnoreSslErrors = true;
                     service.SslProtocol = "any";
 
-                    //PhantomJSOptions options = new PhantomJSOptions();
-                    //options.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
-                    ////IWebDriver driver = new PhantomJSDriver(options);
+                    PhantomJSOptions options = new PhantomJSOptions();
+                    var userAgent = "";
+                    //userAgent = "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25";
+                    //userAgent = "--user-agent=Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25";
+                    userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
+                    options.AddAdditionalCapability("phantomjs.page.settings.userAgent", userAgent);
+                    _Driver = new PhantomJSDriver(service, options);
 
                     //service.LocalStoragePath = _config.AppDataDownloadsFolder;
-                    _Driver = new PhantomJSDriver(service);
+                    //_Driver = new PhantomJSDriver(service);
 
                     //ChromeOptions options = new ChromeOptions();
                     //options.AddArgument("--user-agent=Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
