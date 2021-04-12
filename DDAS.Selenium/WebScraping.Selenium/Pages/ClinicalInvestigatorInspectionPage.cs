@@ -143,8 +143,8 @@ namespace WebScraping.Selenium.Pages
             for (int Counter = 0; Counter <= LinesFromTextFile.Length - 1; Counter++)
             {
                 
-                //string[] FieldData = LinesFromTextFile[Counter].Split('~');
-                string[] FieldData = LinesFromTextFile[Counter].Split('\t');
+                string[] FieldData = LinesFromTextFile[Counter].Split('~');
+                //string[] FieldData = LinesFromTextFile[Counter].Split('\t');
 
                 var InvestigatorList = new ClinicalInvestigator();
                 InvestigatorList.RecId = Guid.NewGuid();
