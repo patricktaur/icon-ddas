@@ -117,15 +117,16 @@ namespace WebScraping.Selenium.Pages
             {
                 throw new Exception("file download failed - " + Ex.ToString());
             }
+            var cliilFileName = "cliil" + DateTime.Now.ToString("MMMM").ToLower() + DateTime.Now.Year + ".txt";
 
-            if (File.Exists(UnZipPath + "cliil.txt")) //filename is cliil.txt by default
-                File.Delete(UnZipPath + "cliil.txt");
+            if (File.Exists(UnZipPath + cliilFileName)) //filename is cliil.txt by default
+                File.Delete(UnZipPath + cliilFileName);
 
             ZipFile.ExtractToDirectory(fileName, UnZipPath);
 
             _log.WriteLog("download complete");
 
-            return (UnZipPath + "cliil.txt");
+            return (UnZipPath + cliilFileName);
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
