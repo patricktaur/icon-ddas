@@ -117,16 +117,36 @@ namespace WebScraping.Selenium.Pages
             {
                 throw new Exception("file download failed - " + Ex.ToString());
             }
+
+            /*
             var cliilFileName = "cliil" + DateTime.Now.ToString("MMMM").ToLower() + DateTime.Now.Year + ".txt";
 
             if (File.Exists(UnZipPath + cliilFileName)) //filename is cliil.txt by default
                 File.Delete(UnZipPath + cliilFileName);
 
             ZipFile.ExtractToDirectory(fileName, UnZipPath);
+            */
+            //---
+            var ExtractFolder = UnZipPath + "Extracts";
+            if (!Directory.Exists(ExtractFolder))
+            {
+                Directory.CreateDirectory(ExtractFolder);
+            }
+
+            //Delete all files in folder:
+            Array.ForEach(Directory.GetFiles(ExtractFolder),
+              delegate (string path) { File.Delete(path); });
+
+            ZipFile.ExtractToDirectory(fileName, ExtractFolder);
+
+            var FileNameInExtractFolder = Directory.GetFiles(ExtractFolder).FirstOrDefault();
+
+            //---
+
 
             _log.WriteLog("download complete");
 
-            return (UnZipPath + cliilFileName);
+            return (FileNameInExtractFolder);
         }
 
         private ClinicalInvestigatorInspectionSiteData _clinicalSiteData;
