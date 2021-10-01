@@ -367,6 +367,18 @@ namespace DDAS.DataExtractor
                 value = "";
             }
         }
+        public string SAMApiKeyFile
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["SAMApiKeyFile"];
+            }
+
+            set
+            {
+                value = "";
+            }
+        }
 
         public string SDNFolder
         {

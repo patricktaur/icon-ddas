@@ -207,6 +207,18 @@ namespace WebScraping.Selenium.Pages
                 return true;
         }
 
+        private string GetSamApiKey()
+        {
+            var keyFileName = _config.SAMApiKeyFile;
+            var samKey = new SamApiKey();
+            using (StreamReader r = new StreamReader(keyFileName))
+            {
+                string json = r.ReadToEnd();
+                samKey = JsonConvert.DeserializeObject<SamApiKey>(json);
+            }
+            return samKey.ApiKey; 
+        }
+
         private string DownloadExclusionFileThroughApi()
         {
             string zipFileName =
@@ -609,6 +621,7 @@ namespace WebScraping.Selenium.Pages
             WebClient webClient = new WebClient();
             var apiKeyPat = "nNJ3ofKIuXYElBV0oAVtMV3PwjxSF12pKBpyzQUy";
             var apiKey = "keJ5DP9i1UsLIXPsi3pJ47EXJWjyg3DQKkkKVKeT";
+            apiKey = GetSamApiKey();
 
             //apiKey = apiKeyPat;
             

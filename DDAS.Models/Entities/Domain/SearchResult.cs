@@ -1475,8 +1475,11 @@ namespace DDAS.Models.Entities.Domain
         public string FDAWarningLettersFolder { get; set;}
 
         public string SAMFolder { get; set; }
+        public string SAMApiKeyFile { get; set; }
 
         public string SDNFolder{ get; set; }
+
+        
     }
 
     #region ReadExcelInput

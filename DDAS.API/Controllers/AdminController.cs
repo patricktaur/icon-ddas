@@ -2,6 +2,7 @@
 using DDAS.Models.Enums;
 using DDAS.Models.Interfaces;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,8 @@ using System.Web.Http;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNet.Identity;
 using DDAS.API.Helpers;
+using WebScraping.Selenium.JsonClasses;
+using Newtonsoft.Json;
 namespace DDAS.API.Controllers
 {
     [Authorize(Roles = "admin")]
@@ -22,8 +25,12 @@ namespace DDAS.API.Controllers
         private string _RootPath;
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private string _logMode;
+        private IConfig _config;
 
-        public AdminController(IAppAdminService AppAdmin)
+        public AdminController(
+            IAppAdminService AppAdmin,
+            IConfig Config
+            )
         {
             _AppAdminService = AppAdmin;
 
@@ -33,7 +40,7 @@ namespace DDAS.API.Controllers
                 System.Configuration.ConfigurationManager.AppSettings["ErrorScreenCaptureFolder"];
             //ErrorScreenCaptureFolder = @"DataFiles\ErrorScreenCapture";
             _logMode = System.Configuration.ConfigurationManager.AppSettings["LogMode"];
-
+            _config = Config;
         }
 
 
@@ -174,6 +181,37 @@ namespace DDAS.API.Controllers
                 var Id = Guid.Parse(RecId);
                 _AppAdminService.DeleteCountry(Id);
                 return Ok(true);
+            }
+        }
+        #endregion
+
+        #region SamApiKey
+        [Route("SaveSamApiKey")]
+        [HttpPost]
+        public IHttpActionResult SaveSamApiKey(SamApiKey apiKey)
+        {
+            try
+            {
+                
+                string json = JsonConvert.SerializeObject(apiKey);
+                File.WriteAllText(_config.SAMApiKeyFile, json);
+                return Ok("success");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Could not save");
+                
+            }
+            
+        }
+
+        [Route("GetSponsorProtocols")]
+        [HttpGet]
+        public IHttpActionResult GetSponsorProtocolsXXX()
+        {
+            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            {
+                return Ok(_AppAdminService.GetSponsorProtocols());
             }
         }
         #endregion

@@ -21,6 +21,7 @@ namespace DDAS.Models.Interfaces
         string ExclusionDatabaseFolder { get; set; }
         string FDAWarningLettersFolder { get; set; }
         string SAMFolder { get; set; }
+        string SAMApiKeyFile { get; set; }
         string SDNFolder { get; set; }
     }
 }

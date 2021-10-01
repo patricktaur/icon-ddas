@@ -120,7 +120,9 @@ namespace DDAS.API.App_Start
                System.Configuration.ConfigurationManager.AppSettings["FDAWarningLettersFolder"],
                SAMFolder = RootPath +
                System.Configuration.ConfigurationManager.AppSettings["SAMFolder"],
-               SDNFolder = RootPath +
+               SAMApiKeyFile = RootPath +
+               System.Configuration.ConfigurationManager.AppSettings["SAMApiKeyFile"],
+                SDNFolder = RootPath +
                System.Configuration.ConfigurationManager.AppSettings["SDNFolder"]
             });
             
