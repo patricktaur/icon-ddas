@@ -4,6 +4,7 @@ DDAS.API/bin/
 DDAS.API/Web.config
 DDAS.API/obj/
 DDAS.API/assets/
+DDAS.DataFiles/Downloads/
 DDAS.EF/bin/
 DDAS.EF/obj/
 DDAS.Models/bin/
