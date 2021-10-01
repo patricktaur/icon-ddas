@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="BaseClasses\BasePage.cs" />
     <Compile Include="BaseClasses\BaseSearchPage.cs" />
+    <Compile Include="JsonClasses\ExclusionDataFromSAM.cs" />
     <Compile Include="PageMaps\AdequateAssuranceListPage.cs" />
     <Compile Include="PageMaps\CBERClinicalInvestigatorInspectionPage.cs" />
     <Compile Include="PageMaps\ClinicalInvestigatorDisqualificationPage.cs" />
