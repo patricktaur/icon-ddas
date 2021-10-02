@@ -29,7 +29,7 @@ namespace WebScraping.Selenium.Pages
             _UOW = uow;
             _config = Config;
             _log = Log;
-            Open();
+            //Open();
             _exclusionSearchSiteData = new ExclusionDatabaseSearchPageSiteData();
             _exclusionSearchSiteData.RecId = Guid.NewGuid();
             _exclusionSearchSiteData.ReferenceId = _exclusionSearchSiteData.RecId;
@@ -86,11 +86,19 @@ namespace WebScraping.Selenium.Pages
                 ".csv";
 
             // Create a new WebClient instance.
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                | SecurityProtocolType.Tls11
+                | SecurityProtocolType.Tls12
+                | SecurityProtocolType.Ssl3;
             WebClient myWebClient = new WebClient();
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            
             // Concatenate the domain with the Web resource filename.
-            string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
-                GetAttribute("href");
+            //string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
+            //    GetAttribute("href");
+            //https://oig.hhs.gov/exclusions/downloadables/UPDATED.csv
+
+            string myStringWebResource = "https://oig.hhs.gov/exclusions/downloadables/UPDATED.csv";
 
             _log.WriteLog(
             string.Format("Downloading File \"{0}\" from \"{1}\" .......\n\n",
