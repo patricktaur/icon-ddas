@@ -79,11 +79,13 @@ namespace WebScraping.Selenium.Pages
 
         private string DownloadExclusionList()
         {
-            string DownloadFilePath = 
-                _config.ExclusionDatabaseFolder + 
+            string DownloadFilePath =
+                _config.ExclusionDatabaseFolder +
                 SiteName.ToString() + "_" +
                 DateTime.Now.ToString("dd_MMM_yyyy_hh_mm") +
                 ".csv";
+
+
 
             // Create a new WebClient instance.
             ServicePointManager.Expect100Continue = true;
@@ -92,7 +94,12 @@ namespace WebScraping.Selenium.Pages
                 | SecurityProtocolType.Tls12
                 | SecurityProtocolType.Ssl3;
             WebClient myWebClient = new WebClient();
-            
+            myWebClient.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+            myWebClient.Headers.Add("Content-Type", "application / zip, application / octet - stream");
+            myWebClient.Headers.Add("Accept-Encoding", "gzip,deflate,sdch");
+            myWebClient.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+
+
             // Concatenate the domain with the Web resource filename.
             //string myStringWebResource = ExclusionDatabaseAnchorToDownloadCSV.
             //    GetAttribute("href");
