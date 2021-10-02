@@ -195,6 +195,19 @@ namespace DDAS.LiveSiteExtractor
             }
         }
 
+        public string SAMApiKeyFile
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public string SAMFolder
         {
             get
