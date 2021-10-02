@@ -50,6 +50,12 @@ export class SponsorProtocol{
     //ExcludeSI : boolean;
 }
 
+
+export class ApiKey{
+    Value: string;
+    ValidTill: Date;
+}
+
 // export class DownloadDataFilesViewModel{
 //         FileName: string;
 //         FullPath: string;

@@ -28,7 +28,7 @@ import { Ng2Bs3ModalModule } from '../shared/utils/ng2-bs3-modal/ng2-bs3-modal';
 //import { SiteSourceToAddComponent } from '../shared/components/site-source-toadd.component';
 import { ISprintToDDASLogComponent } from './isprint-to-ddas-log.component';
 import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
-
+import {SamApiKeyEditComponent} from './sam-api-key-edit.component'
 @NgModule({ 
   imports: [
       LoginHistoryRouting,
@@ -54,7 +54,8 @@ import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
       ExtractionLogComponent,
       //DataFileComponent,
       ISprintToDDASLogComponent,
-      DDAStoiSprintLogComponent
+      DDAStoiSprintLogComponent,
+      SamApiKeyEditComponent
       //SiteSourceToAddComponent
   ],
  

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebScraping.Selenium.JsonClasses
 {
-    public class SamApiKey
+    public class ApiKey
     {
-        public string ApiKey { get; set; }
+        public string Value { get; set; }
         public DateTime ValidTill { get; set; }
     }
 }

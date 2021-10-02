@@ -188,11 +188,10 @@ namespace DDAS.API.Controllers
         #region SamApiKey
         [Route("SaveSamApiKey")]
         [HttpPost]
-        public IHttpActionResult SaveSamApiKey(SamApiKey apiKey)
+        public IHttpActionResult SaveSamApiKey(ApiKey apiKey)
         {
             try
             {
-                
                 string json = JsonConvert.SerializeObject(apiKey);
                 File.WriteAllText(_config.SAMApiKeyFile, json);
                 return Ok("success");
@@ -205,13 +204,15 @@ namespace DDAS.API.Controllers
             
         }
 
-        [Route("GetSponsorProtocols")]
+        [Route("GetSamApiKey")]
         [HttpGet]
-        public IHttpActionResult GetSponsorProtocolsXXX()
+        public IHttpActionResult GetSamApiKey()
         {
-            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            using (StreamReader r = new StreamReader(_config.SAMApiKeyFile))
             {
-                return Ok(_AppAdminService.GetSponsorProtocols());
+                string json = r.ReadToEnd();
+                var keyObj = JsonConvert.DeserializeObject<ApiKey>(json);
+                return Ok(keyObj);
             }
         }
         #endregion

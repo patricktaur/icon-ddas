@@ -292,6 +292,24 @@ export class LoginHistoryService {
         .catch(this.handleError);
     }
 
+    getSamApiKey(){
+        return this.http.get(this._baseUrl + 'admin/GetSamApiKey/',
+        this._options)
+        .map((res: Response) => {
+            return res.json();
+        })
+        .catch(this.handleError);        
+    }
+     
+    saveSamApiKey(SamApiKey: any): Observable<boolean>{
+        let body = JSON.stringify(SamApiKey);
+        return this.http.post(this._baseUrl + 'admin/SaveSamApiKey/', body, this._options)
+                   .map((res: Response) => {
+                return res.json();
+            })
+        .catch(this.handleError);
+    }
+
     private handleError(error: any) {
         var applicationError = error.headers.get('Application-Error');
         var serverError = error.json();

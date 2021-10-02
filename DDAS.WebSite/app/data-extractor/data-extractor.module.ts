@@ -4,6 +4,8 @@ import { SharedModule } from '../shared/shared.module'
 import {DataExtractorService} from './data-extractor-service';
 import {dataExtractorRouting} from './data-extractor.routing';
 import {DataExtractionIndicatorComponent} from './shared/components/data-extraction-indicator.component'
+import {ApiKeyStatusComponent} from './shared/components/api-key-status.component';
+
 import {DataExtractionStatusComponent } from './reports/data-extraction-status.component'
 import {ExecuteDataExtractorComponent} from './execute-data-extractor/execute-data-extractor.component'
 import {StatusActivatorService} from './shared/service/status.activator.service'
@@ -35,6 +37,7 @@ import {SystemForAwardManagementSiteDataComponent} from "./reports/extracted-dat
     DataExtractionIndicatorComponent,
     ExecuteDataExtractorComponent,
     DataExtractionStatusComponent,
+    ApiKeyStatusComponent,
     DataFileComponent,
     ExtractedDataMenuComponent,
 
@@ -58,7 +61,8 @@ import {SystemForAwardManagementSiteDataComponent} from "./reports/extracted-dat
     StatusActivatorService
   ],
   exports: [
-    DataExtractionIndicatorComponent
+    DataExtractionIndicatorComponent,
+    ApiKeyStatusComponent
    ]
 })
 export class DataExtractorModule { }

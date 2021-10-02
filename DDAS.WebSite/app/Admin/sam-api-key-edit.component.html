@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="well">
+			<form #f="ngForm" novalidate>
+				<div class="row">
+					<div class="col-lg-12">
+						<h3 class="align-left no-margin-top">
+							Manage SAM Api Key
+						</h3>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<label for="apkKey">Api Key:</label>
+							<input type="text" name="apkKey" class="form-control" value="samApiKey.Value"  [(ngModel)]="samApiKey.Value" (ngModelChange)="onChange($event)">
+						</div>
+						<div class="form-group">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-4">
+						<label for="Date">Valid Till:</label>
+						<my-date-picker name="validTill" [options]="myDatePickerOptions" [(ngModel)]="ValidTill"  (ngModelChange)="onChange($event)" ></my-date-picker>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8">
+						
+						<button type="button" class="btn btn-primary" (click)="Save()" title="Save"><span class="glyphicon glyphicon-ok" > Save</span></button>
+						 {{saveMessage}}
+						<!-- <button type="button" class="btn btn-primary" (click)="CancelSave()" title="Cancel">Cancel</button> -->
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

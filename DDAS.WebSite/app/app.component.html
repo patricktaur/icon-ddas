@@ -11,9 +11,13 @@
 				<div class="alert alert-info" *ngIf="showLocation">{{appLocation}} </div>
 				<div >
 					<data-extraction-indicator1 
-					[ShowLinkToExecuteExtractorPage]="authService.isAdmin || authService.isAppAdmin">
-
-					</data-extraction-indicator1>
+					[ShowLinkToExecuteExtractorPage]="authService.isAdmin || authService.isAppAdmin"
+					></data-extraction-indicator1>
+					<api-key-status
+					[ShowLinkToEditPage]="authService.isAdmin || authService.isAppAdmin"
+					></api-key-status>
+					
+						
 				</div>
 	
 				<ul class="nav navbar-nav">
@@ -74,6 +78,8 @@
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/default-sites" routerLinkActive="active">Default Site Sources</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/country-site" routerLinkActive="active">Country Specific Site Sources</a></li>
 										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/manage-sponsor-protocol" routerLinkActive="active">Sponsor Specific Site Sources</a></li>
+										<li class="active" *ngIf="authService.isAdmin"> <a routerLink="/sam-api-key-edit" routerLinkActive="active">Manage SAM Api Key</a></li>
+									
 									</ul>
 								</div>
 							</li>

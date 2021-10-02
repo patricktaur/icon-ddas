@@ -21,7 +21,7 @@ import { ExtractionLogComponent } from './extraction-log.component';
 import { AuthGuard } from '../auth/auth-guard.service';
 import { ISprintToDDASLogComponent } from './isprint-to-ddas-log.component';
 import { DDAStoiSprintLogComponent } from './ddas-to-isprint-log.component';
-
+import { SamApiKeyEditComponent} from './sam-api-key-edit.component';
 export const LoggedInUserRoutes: Routes = [
   { path: 'all-loginhistory', component: LoginHistoryComponent, canActivate: [AuthGuard] },
   { path: 'error-images', component: ErrorImagesComponent, canActivate: [AuthGuard] },
@@ -40,7 +40,8 @@ export const LoggedInUserRoutes: Routes = [
   { path: 'extraction-log', component: ExtractionLogComponent, canActivate: [AuthGuard] },
   // { path: 'data-file', component: DataFileComponent, canActivate: [AuthGuard] },
   { path: 'isprint-to-ddas-log', component: ISprintToDDASLogComponent, canActivate: [AuthGuard] },
-  { path: 'ddas-to-isprint-log', component: DDAStoiSprintLogComponent, canActivate: [AuthGuard] }
+  { path: 'ddas-to-isprint-log', component: DDAStoiSprintLogComponent, canActivate: [AuthGuard] },
+  { path: 'sam-api-key-edit', component: SamApiKeyEditComponent, canActivate: [AuthGuard] }
 
   //{ path: 'error-log', component: ErrorLogComponent},
 ]
