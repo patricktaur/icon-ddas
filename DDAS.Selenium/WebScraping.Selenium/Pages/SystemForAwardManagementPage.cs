@@ -210,13 +210,13 @@ namespace WebScraping.Selenium.Pages
         private string GetSamApiKey()
         {
             var keyFileName = _config.SAMApiKeyFile;
-            var samKey = new SamApiKey();
+            var samKey = new ApiKey();
             using (StreamReader r = new StreamReader(keyFileName))
             {
                 string json = r.ReadToEnd();
-                samKey = JsonConvert.DeserializeObject<SamApiKey>(json);
+                samKey = JsonConvert.DeserializeObject<ApiKey>(json);
             }
-            return samKey.ApiKey; 
+            return samKey.Value; 
         }
 
         private string DownloadExclusionFileThroughApi()
@@ -291,6 +291,11 @@ namespace WebScraping.Selenium.Pages
         {
             try
             {
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                    | SecurityProtocolType.Tls11
+                    | SecurityProtocolType.Tls12
+                    | SecurityProtocolType.Ssl3;
                 WebClient myWebClient = new WebClient();
                 myWebClient.DownloadFile(fileDownloadUrl, zipFileName);
             }
@@ -624,14 +629,17 @@ namespace WebScraping.Selenium.Pages
             apiKey = GetSamApiKey();
 
             //apiKey = apiKeyPat;
-            
-            
 
             try
             {
                 var baseUrl = "https://api.sam.gov/entity-information/v2/exclusions";
                 var extraParams = "&format=CSV";
                 var url = String.Format("{0}?api_key={1}{2}", baseUrl, apiKey, extraParams);
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                    | SecurityProtocolType.Tls11
+                    | SecurityProtocolType.Tls12
+                    | SecurityProtocolType.Ssl3;
                 var response = webClient.DownloadData(url);
                 string responseString = Encoding.ASCII.GetString(response);
                 string downloadUrl = ExtractDownloadUrl(responseString, apiKey);
