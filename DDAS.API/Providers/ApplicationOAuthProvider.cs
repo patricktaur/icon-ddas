@@ -23,7 +23,7 @@ namespace DDAS.API.Providers
         private readonly Func<UserManager<IdentityUser, Guid>> _userManagerFactory;
 
         private IUserService _UserService;
-        private string _ClientVer = "1.2.2"; //13Apr2021 - Clinical Investigator Inspection List (CDER) - extracted text file field seprator changed from /t to ~
+        private string _ClientVer = "1.2.3"; //13Apr2021 - Clinical Investigator Inspection List (CDER) - extracted text file field seprator changed from /t to ~
         //1.2.1 21Jan2021
             //"1.2.0"; //1.1.5
 
