@@ -8,7 +8,7 @@ import {StatusActivatorService} from '../service/status.activator.service'
     selector: 'api-key-status',
     template: `
         
-    <div ><span class="glyphicon glyphicon-star {{color}}" title="{{message}}"></span>
+    <div ><span class="glyphicon glyphicon-time {{color}}" title="{{message}}"></span>
         <span *ngIf="!ShowLinkToEditPage">Api Keys</span>
         <a *ngIf="ShowLinkToEditPage" routerLink="/sam-api-key-edit"  routerLinkActive="active"> - Manage Api Keys</a>
         </div>
@@ -20,6 +20,10 @@ import {StatusActivatorService} from '../service/status.activator.service'
         }
         .red {
             color: red;
+        }
+        .yellow {
+            color: white;
+            background-color: yellow;
         }
         .badge {
             color: #fff;
@@ -56,23 +60,42 @@ export class ApiKeyStatusComponent implements OnInit {
     LoadSiteExtractionErrorCount(){
         this.service.getSamApiKey()
             .subscribe((apiKey: ApiKey) => {
-                var currentDate = new Date();
+                
                 var validTill = new Date(apiKey.ValidTill.toString());
+                var willExpireIn = this.daysDiff(validTill);
+                switch (true) {
+                    case (willExpireIn < 0):
+                        this.color = "red";
+                        this.message = "Api key(s) expired " + willExpireIn + " days ago.";
+                        break;
+                    case (willExpireIn === 0):
+                        this.color = "yellow";
+                        this.message = "Api key(s) will expire today."; 
+                        break;
+                            
+                    case (willExpireIn < 10):
+                        this.color = "yellow";
+                        this.message = "Api key(s) will expire in " + willExpireIn + " days."; 
+                        break;
+                    
+                            
+                    default:
+                        this.color = "green";
+                        this.message = "Api key(s) are valid."
+                        break;
+                }
 
-                if (apiKey.Value.length > 0 && currentDate.getTime() < validTill.getTime()){
-                    this.apiKeyIsValid = true;
+                if (this.ShowLinkToEditPage === false && willExpireIn < 11){
+                            this.message += " Please alert the App Admin.";
                 }
-                if (this.apiKeyIsValid === true){
-                    this.color = "green";
-                    this.message = "Api key(s) are valid."
-                }else{
-                    this.message = "Invalid Api Keys."
-                    if (this.ShowLinkToEditPage === false){
-                        this.message += " Alert the App Admin.";
-                    }
-                    this.color = "red";
-                }
+                
+                
             });
+    }
+
+    daysDiff(validTill : any){
+        var currentDate : any = new Date();
+        return Math.round((validTill - currentDate)/(1000 * 60 * 60 * 24)) + 1;
     }
 
 }
