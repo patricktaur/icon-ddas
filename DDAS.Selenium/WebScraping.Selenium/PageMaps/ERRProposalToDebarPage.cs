@@ -29,7 +29,10 @@ namespace WebScraping.Selenium.Pages
                     //WebSite layout changes
                     //corrected on: 03June2020
                     //IWebElement Elem = driver.FindElement(By.XPath("//aside/ul/li/div/p"));
-                    IWebElement Elem = driver.FindElement(By.XPath("//aside/section/div/aside/ul/div/li/div/p"));
+
+                    //IWebElement Elem = driver.FindElement(By.XPath("//aside/section/div/aside/ul/div/li/div/p"));
+                    //10Oct2023:
+                    IWebElement Elem = driver.FindElement(By.ClassName("lcds-description-list__item-text"));
 
                     return Elem;
                 }

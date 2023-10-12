@@ -165,6 +165,7 @@ namespace WebScraping.Selenium.Pages
             {
                 
                 string[] FieldData = LinesFromTextFile[Counter].Split('~');
+                //string[] FieldData = LinesFromTextFile[Counter].Split('~');
                 //string[] FieldData = LinesFromTextFile[Counter].Split('\t');
 
                 var InvestigatorList = new ClinicalInvestigator();

@@ -43,11 +43,12 @@ namespace WebScraping.Selenium.Pages
             _SDNSiteData.Source = driver.Url;
             //SaveScreenShot("SpeciallyDesignatedNationalsList.png");
         }
-
+        //"http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx";
+        //
         public override string Url {
             get {
-                return 
-                @"http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx";
+                return
+                @"https://home.treasury.gov/policy-issues/financial-sanctions/specially-designated-nationals-and-blocked-persons-list-sdn-human-readable-lists";
             }
         }
 
