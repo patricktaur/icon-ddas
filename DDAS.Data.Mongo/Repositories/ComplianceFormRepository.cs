@@ -160,6 +160,20 @@ namespace DDAS.Data.Mongo.Repositories
                 //x.Country.ToLower() == CompFormFilter.Country.ToLower()).ToList();
             }
 
+            if (CompFormFilter.ReviewCompletedOnFrom.HasValue)
+            {
+
+                filter = filter & builder.Where(x => x.InvestigatorDetails.Any(y => y.ReviewCompletedOn >= CompFormFilter.ReviewCompletedOnFrom));
+            }
+
+            if (CompFormFilter.ReviewCompletedOnTo.HasValue)
+            {
+                //filter = filter & builder.Where(x => x.ReviewCompletedOn <= CompFormFilter.ReviewCompletedOnTo);
+                filter = filter & builder.Where(x => x.InvestigatorDetails.Any(y => y.ReviewCompletedOn <= CompFormFilter.ReviewCompletedOnTo));
+
+
+            }
+
 
             //if ((int)CompFormFilter.Status == -1)
             //{

@@ -42,10 +42,21 @@ namespace DDAS.Services.Reports
 
             InvestigationsReport.ReportByUsers = FillUpUserNames();
 
-            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+            //var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (ComplianceForms.Count == 0)
-                return null;
+            //if (ComplianceForms.Count == 0)
+            //    return null;
+
+            //Alt -
+            var compFormFilter = new ComplianceFormFilter();
+
+            compFormFilter.AssignedTo = Filters.AssignedTo;
+
+            compFormFilter.ReviewCompletedOnFrom = AdjustedStartDate;
+            compFormFilter.ReviewCompletedOnTo = AdjustedEndDate;
+            var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
+
 
             foreach (ReportByUser Report in InvestigationsReport.ReportByUsers)
             {
@@ -691,16 +702,51 @@ namespace DDAS.Services.Reports
         public List<StudySpecificInvestigatorVM>
             GetStudySpecificInvestigators(ReportFilterViewModel ReportFilter)
         {
-            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
 
-            if (ComplianceForms.Count == 0)
-                return null;
+            //var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+            //if (ComplianceForms.Count == 0)
+            //    return null;
+
+            //var StudySpecificInvestigators =
+            //    ComplianceForms.Where(form => form.ProjectNumber ==
+            //    ReportFilter.ProjectNumber ||
+            //    form.ProjectNumber2 == ReportFilter.ProjectNumber)
+            //    .SelectMany(form =>
+            //    form.InvestigatorDetails, (form, Investigator) =>
+            //    new { form, Investigator })
+            //    .Where(s => s.Investigator.ReviewCompletedOn != null &&
+            //    s.Investigator.ReviewCompletedOn >= ReportFilter.FromDate.Date &&
+            //    s.Investigator.ReviewCompletedOn <= ReportFilter.ToDate.Date)
+            //    .Select(s =>
+            //    new
+            //    {
+            //        ProjectNumber = s.form.ProjectNumber,
+            //        ProjectNumber2 = s.form.ProjectNumber2,
+            //        InvestigatorName = s.Investigator.Name,
+            //        ReviewCompletedOn = s.Investigator.ReviewCompletedOn.Value,
+            //        FindingStatus = s.Investigator.IssuesFoundSiteCount,
+            //        AssigendTo = s.form.AssignedTo,
+            //        Institute = s.form.Institute,
+            //        Country = s.form.Country,
+            //        SponsorProtocolNumber = s.form.SponsorProtocolNumber,
+            //        SponsorProtocolNumber2 = s.form.SponsorProtocolNumber2,
+            //        MedicalLicenseNumber = s.Investigator.MedicalLiceseNumber,
+            //        Role = s.Investigator.Role
+            //    })
+            //    .ToList();
+
+            //Alt -
+            var compFormFilter = new ComplianceFormFilter();
+            compFormFilter.ProjectNumber = ReportFilter.ProjectNumber;
+            compFormFilter.ReviewCompletedOnFrom = ReportFilter.FromDate;
+            compFormFilter.ReviewCompletedOnTo = ReportFilter.ToDate;
+            var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
 
             var StudySpecificInvestigators =
-                ComplianceForms.Where(form => form.ProjectNumber ==
-                ReportFilter.ProjectNumber ||
-                form.ProjectNumber2 == ReportFilter.ProjectNumber)
-                .SelectMany(form =>
+                compForms
+                    .SelectMany(form =>
                 form.InvestigatorDetails, (form, Investigator) =>
                 new { form, Investigator })
                 .Where(s => s.Investigator.ReviewCompletedOn != null &&
