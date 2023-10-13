@@ -50,12 +50,10 @@ namespace DDAS.Services.Reports
 
             //Alt -
             var compFormFilter = new ComplianceFormFilter();
-
             compFormFilter.AssignedTo = Filters.AssignedTo;
-
             compFormFilter.ReviewCompletedOnFrom = AdjustedStartDate;
             compFormFilter.ReviewCompletedOnTo = AdjustedEndDate;
-            var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
+            var ComplianceForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
 
 
             foreach (ReportByUser Report in InvestigationsReport.ReportByUsers)
@@ -332,7 +330,10 @@ namespace DDAS.Services.Reports
 
         public List<OpenInvestigationsViewModel> GetOpenInvestigations()
         {
-            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()//
+            //var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            var ComplianceForms = _UOW.ComplianceFormRepository.FindComplianceForms(ReviewStatusEnum.ReviewInProgress);
+
 
             if (ComplianceForms.Count == 0)
                 return null;
@@ -382,8 +383,14 @@ namespace DDAS.Services.Reports
 
             if (Users.Count == 0)
                 throw new Exception("No Users found in the database");
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+            //var Forms = _UOW.ComplianceFormRepository.GetAll();
+            //get comp forms of recent 3 months, To Date Add one day to ensure today's forms are included.
+            var compFormFilter = new ComplianceFormFilter();
+            compFormFilter.SearchedOnFrom = DateTime.Now.AddDays(-90);
+            compFormFilter.SearchedOnTo = DateTime.Now.AddDays(1);
+            var Forms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
 
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
 
             if (Forms.Count == 0)
                 throw new Exception("No compliance forms found");
@@ -411,7 +418,11 @@ namespace DDAS.Services.Reports
             GetAdminDashboardDrillDownDetails(
             string AssignedTo, AdminDashboardReportType ReportType)
         {
-            var Forms = _UOW.ComplianceFormRepository.GetAll();
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+            //var Forms = _UOW.ComplianceFormRepository.GetAll();
+            var compFormFilter = new ComplianceFormFilter();
+            compFormFilter.AssignedTo = AssignedTo;
+            var Forms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
 
             if (Forms.Count == 0)
                 throw new Exception("No compliance forms found");
@@ -629,7 +640,15 @@ namespace DDAS.Services.Reports
         public List<InvestigatorReviewCompletedTimeVM>
             GetInvestigatorsReviewCompletedTime(ReportFilterViewModel ReportFilter)
         {
-            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+            //var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            var compFormFilter = new ComplianceFormFilter();
+            compFormFilter.ProjectNumber = ReportFilter.ProjectNumber;
+            compFormFilter.ReviewCompletedOnFrom = ReportFilter.FromDate;
+            compFormFilter.ReviewCompletedOnTo = ReportFilter.ToDate;
+            var ComplianceForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
+
+
 
             if (ComplianceForms.Count == 0)
                 return null;
@@ -806,7 +825,16 @@ namespace DDAS.Services.Reports
         public List<InvestigatorFindingViewModel> GetInvestigatorByFinding(
             ReportFilterViewModel ReportFilter)
         {
-            var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+
+
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+            //var ComplianceForms = _UOW.ComplianceFormRepository.GetAll();
+            var compFormFilter = new ComplianceFormFilter();
+            
+            compFormFilter.SearchedOnFrom = ReportFilter.FromDate;
+            compFormFilter.SearchedOnTo = ReportFilter.ToDate;
+            var ComplianceForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
+
 
             if (ComplianceForms.Count == 0)
                 return null;
