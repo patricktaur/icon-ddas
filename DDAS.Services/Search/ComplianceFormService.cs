@@ -839,7 +839,17 @@ namespace DDAS.Services.Search
             //set frm.ExtractionEstimatedCompletion, will be overwritten when the form is added to the Queue
             if (frm.ExtractionPendingInvestigatorCount > 0 && frm.ExtractionEstimatedCompletion == null)
             {
-                var formWithMaxExtractionEstimatedDate = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(o => o.ExtractionEstimatedCompletion).FirstOrDefault();
+                //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+                //it is likely that the code is not used.
+                //However if it is used:
+                //var formWithMaxExtractionEstimatedDate = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(o => o.ExtractionEstimatedCompletion).FirstOrDefault();
+                //get comp forms of recent 3 months, To Date Add one day to ensure today's forms are included.
+                var compFormFilter = new ComplianceFormFilter();
+                compFormFilter.SearchedOnFrom = DateTime.Now.AddDays(-90);
+                compFormFilter.SearchedOnTo = DateTime.Now.AddDays(1);
+                var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter).OrderByDescending(x => x.SearchStartedOn).ToList();
+                var formWithMaxExtractionEstimatedDate = compForms.OrderByDescending(o => o.ExtractionEstimatedCompletion).FirstOrDefault();
+
 
                 if (formWithMaxExtractionEstimatedDate != null)
                 {
@@ -901,39 +911,41 @@ namespace DDAS.Services.Search
         //Patrick - 11May2018 - redundant code ?
         private DateTime getEstimatedExtractionCompletion()
         {
-            List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
+            throw new Exception("redundant code");
+
+            //List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
 
 
-            var formsToScanCount = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
-              s => s.ExtractionMode == "Live"
-              && s.ExtractedOn == null
-              && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-              ))).ToList().Count();
+            //var formsToScanCount = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+            //  s => s.ExtractionMode == "Live"
+            //  && s.ExtractedOn == null
+            //  && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            //  ))).ToList().Count();
 
-            int totCount = 0;
-            var formsForLiveScan = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
-               s => s.ExtractionMode == "Live"
-               && s.ExtractedOn == null
-               && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
-               ))).ToList();
-            foreach (ComplianceForm form in formsForLiveScan)
-            {
-                foreach (InvestigatorSearched inv in form.InvestigatorDetails.Where(i => i.ExtractionPendingSiteCount > 0))
-                {
-                    totCount += inv.SitesSearched.Count(
-                       s => s.ExtractionMode == "Live"
-                    && s.ExtractedOn == null
-                     && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified));
-                }
-            }
+            //int totCount = 0;
+            //var formsForLiveScan = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(
+            //   s => s.ExtractionMode == "Live"
+            //   && s.ExtractedOn == null
+            //   && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified)
+            //   ))).ToList();
+            //foreach (ComplianceForm form in formsForLiveScan)
+            //{
+            //    foreach (InvestigatorSearched inv in form.InvestigatorDetails.Where(i => i.ExtractionPendingSiteCount > 0))
+            //    {
+            //        totCount += inv.SitesSearched.Count(
+            //           s => s.ExtractionMode == "Live"
+            //        && s.ExtractedOn == null
+            //         && !(s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified || s.StatusEnum == ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified));
+            //    }
+            //}
 
-            var estimatedCompletionSecs = (totCount * 30) / _NumberOfRunningExtractionProcesses;
-            if (estimatedCompletionSecs < 120)
-            {
-                estimatedCompletionSecs = 120;
-            }
-            var completionAt = DateTime.Now.AddSeconds(estimatedCompletionSecs);
-            return completionAt;
+            //var estimatedCompletionSecs = (totCount * 30) / _NumberOfRunningExtractionProcesses;
+            //if (estimatedCompletionSecs < 120)
+            //{
+            //    estimatedCompletionSecs = 120;
+            //}
+            //var completionAt = DateTime.Now.AddSeconds(estimatedCompletionSecs);
+            //return completionAt;
 
         }
         /*
@@ -2427,7 +2439,16 @@ namespace DDAS.Services.Search
         {
             var retList = new List<PrincipalInvestigator>();
 
-            var compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
+            //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+            //var compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
+            //get comp forms of recent 3 months, To Date Add one day to ensure today's forms are included.
+            var compFormFilter = new ComplianceFormFilter();
+            compFormFilter.SearchedOnFrom = DateTime.Now.AddDays(-90);
+            compFormFilter.SearchedOnTo = DateTime.Now.AddDays(1);
+            var compForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter).OrderByDescending(x => x.SearchStartedOn).ToList();
+
+
+
             return getPrincipalInvestigators(compForms);
 
             //foreach (ComplianceForm compForm in compForms)
@@ -2449,7 +2470,15 @@ namespace DDAS.Services.Search
             }
             else
             {
-                compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
+                //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+                //compForms = _UOW.ComplianceFormRepository.GetAll().OrderByDescending(x => x.SearchStartedOn).ToList();
+                //get comp forms of recent 3 months, To Date Add one day to ensure today's forms are included.
+                var compFormFilter = new ComplianceFormFilter();
+                compFormFilter.SearchedOnFrom = DateTime.Now.AddDays(-90);
+                compFormFilter.SearchedOnTo = DateTime.Now.AddDays(1);
+                compForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter).OrderByDescending(x => x.SearchStartedOn).ToList();
+
+
             }
 
             //foreach (ComplianceForm compForm in compForms.Where(x => x.Active == Active))
@@ -4092,10 +4121,12 @@ namespace DDAS.Services.Search
         {
             //var SiteData = _UOW.FDADebarPageRepository.FindById(SiteDataId);
 
-            var SiteData = _UOW.FDADebarPageRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.FDADebarPageRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+
+            var SiteData = _UOW.FDADebarPageRepository.GetLatestDocument();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -4168,10 +4199,12 @@ namespace DDAS.Services.Search
             //var SiteData = _UOW.ERRProposalToDebarRepository
             //.FindById(SiteDataId);
 
-            var SiteData = _UOW.ERRProposalToDebarRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.ERRProposalToDebarRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+            var SiteData = _UOW.ERRProposalToDebarRepository.GetLatestDocument();
+
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -4193,10 +4226,11 @@ namespace DDAS.Services.Search
             //var SiteData = _UOW.AdequateAssuranceListRepository
             //    .FindById(SiteDataId);
 
-            var SiteData = _UOW.AdequateAssuranceListRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.AdequateAssuranceListRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+            var SiteData = _UOW.AdequateAssuranceListRepository.GetLatestDocument();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -4218,10 +4252,12 @@ namespace DDAS.Services.Search
             //var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository
             //    .FindById(SiteDataId);
 
-            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+
+            var SiteData = _UOW.ClinicalInvestigatorDisqualificationRepository.GetLatestDocument();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -4243,10 +4279,12 @@ namespace DDAS.Services.Search
             //var SiteData = _UOW.CBERClinicalInvestigatorRepository
             //    .FindById(SiteDataId);
 
-            var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+
+            var SiteData = _UOW.CBERClinicalInvestigatorRepository.GetLatestDocument();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -4268,10 +4306,12 @@ namespace DDAS.Services.Search
             //var SiteData = _UOW.PHSAdministrativeActionListingRepository
             //    .FindById(SiteDataId);
 
-            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+
+            var SiteData = _UOW.PHSAdministrativeActionListingRepository.GetLatestDocument();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");
@@ -4313,10 +4353,12 @@ namespace DDAS.Services.Search
             //var SiteData = _UOW.CorporateIntegrityAgreementRepository
             //    .FindById(SiteDataId);
 
-            var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll()
-                .Where(x => x.DataExtractionSucceeded == true)
-                .OrderByDescending(s => s.CreatedOn)
-                .First();
+            //var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetAll()
+            //    .Where(x => x.DataExtractionSucceeded == true)
+            //    .OrderByDescending(s => s.CreatedOn)
+            //    .First();
+
+            var SiteData = _UOW.CorporateIntegrityAgreementRepository.GetLatestDocument();
 
             if (FullName == null || FullName.Trim().Length == 0)
                 throw new Exception("FullName cannot be empty");

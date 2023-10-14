@@ -1633,46 +1633,51 @@ namespace DDAS.Services.AppAdminService
 
         public List<UploadsViewModel> GetUploadedFiles()
         {
-            var forms = _UOW.ComplianceFormRepository.GetAll();
+            //13Oct2023:
+            //Appears to be incomplete
+            //canbe called from AppAdmin menu
+            //hence commented to prevent call to _UOW.ComplianceFormRepository.GetAll()
+            throw new Exception("GetUploadedFiles - not ready");
+            //var forms = _UOW.ComplianceFormRepository.GetAll();
 
-            if (forms.Count == 0)
-                return null;
+            //if (forms.Count == 0)
+            //    return null;
 
-            forms.RemoveAll(x => x.GeneratedFileName == null || x.GeneratedFileName == "");
+            //forms.RemoveAll(x => x.GeneratedFileName == null || x.GeneratedFileName == "");
 
-            var UploadedFiles = new List<UploadsViewModel>();
+            //var UploadedFiles = new List<UploadsViewModel>();
 
-            int Counter = 0;
-            foreach (string file in Directory.GetFiles(_config.UploadsFolder))
-            {
-                var fileName = Path.GetFileNameWithoutExtension(file);
+            //int Counter = 0;
+            //foreach (string file in Directory.GetFiles(_config.UploadsFolder))
+            //{
+            //    var fileName = Path.GetFileNameWithoutExtension(file);
 
-                var form = forms.Find(x =>
-                x.GeneratedFileName == fileName);
+            //    var form = forms.Find(x =>
+            //    x.GeneratedFileName == fileName);
 
-                if(form != null)
-                {
-                    var UploadedFile = new UploadsViewModel();
-                    UploadedFile.UploadedFileName = form.UploadedFileName;
-                    UploadedFile.GeneratedFileName = form.GeneratedFileName;
-                    UploadedFile.AssignedTo = form.AssignedTo;
-                    UploadedFile.UploadedOn = form.SearchStartedOn;
-                    UploadedFiles.Add(UploadedFile);
-                }
-                Counter += 1;
+            //    if(form != null)
+            //    {
+            //        var UploadedFile = new UploadsViewModel();
+            //        UploadedFile.UploadedFileName = form.UploadedFileName;
+            //        UploadedFile.GeneratedFileName = form.GeneratedFileName;
+            //        UploadedFile.AssignedTo = form.AssignedTo;
+            //        UploadedFile.UploadedOn = form.SearchStartedOn;
+            //        UploadedFiles.Add(UploadedFile);
+            //    }
+            //    Counter += 1;
 
-                //if (Counter < forms.Count &&
-                //    fileName == forms[Counter].GeneratedFileName)
-                //{
-                //    var UploadedFile = new UploadsViewModel();
-                //    UploadedFile.UploadedFileName = forms[Counter].UploadedFileName;
-                //    UploadedFile.GeneratedFileName = forms[Counter].GeneratedFileName;
-                //    UploadedFile.AssignedTo = forms[Counter].AssignedTo;
-                //    UploadedFile.UploadedOn = forms[Counter].SearchStartedOn;
-                //    UploadedFiles.Add(UploadedFile);
-                //}
-            }
-            return UploadedFiles;
+            //    //if (Counter < forms.Count &&
+            //    //    fileName == forms[Counter].GeneratedFileName)
+            //    //{
+            //    //    var UploadedFile = new UploadsViewModel();
+            //    //    UploadedFile.UploadedFileName = forms[Counter].UploadedFileName;
+            //    //    UploadedFile.GeneratedFileName = forms[Counter].GeneratedFileName;
+            //    //    UploadedFile.AssignedTo = forms[Counter].AssignedTo;
+            //    //    UploadedFile.UploadedOn = forms[Counter].SearchStartedOn;
+            //    //    UploadedFiles.Add(UploadedFile);
+            //    //}
+            //}
+            //return UploadedFiles;
         }
 
         public bool DeleteUploadedFile(string GeneratedFileName)

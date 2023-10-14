@@ -23,7 +23,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         public ClinicalInvestigatorInspectionSiteData GetLatestDocument()
         {
             var collection = _db.GetCollection<ClinicalInvestigatorInspectionSiteData>(typeof(ClinicalInvestigatorInspectionSiteData).Name);
-            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            var entity = collection.Find(x => x.DataExtractionSucceeded == true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
             return entity;
         }
     }

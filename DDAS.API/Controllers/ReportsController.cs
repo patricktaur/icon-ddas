@@ -105,97 +105,103 @@ namespace DDAS.API.Controllers
         [HttpPost]
         public IHttpActionResult GenerateOutputFile(ComplianceFormFilter CompFormFilter)
         {
-            using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
-            {   //HttpResponseMessage response = null;
+            //13Oct2023 : Patrick
+            //GenerateOutputFileTest not called from client side
+            //hence commenting:
+            throw new Exception("Not used");
+            //using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
+            //{   //HttpResponseMessage response = null;
 
-                if (!File.Exists(
-                _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
-                {
-                    return Ok("Could not find Output file template");
-                    // response = Request.CreateResponse(HttpStatusCode.Gone);
-                }
-                else
-                {
-                    //var UserAgent = Request.Headers.UserAgent.ToString();
-                    //var Browser = GetBrowserType(UserAgent);
+            //    if (!File.Exists(
+            //    _config.ExcelTempateFolder + "Output_File_Template.xlsx"))
+            //    {
+            //        return Ok("Could not find Output file template");
+            //        // response = Request.CreateResponse(HttpStatusCode.Gone);
+            //    }
+            //    else
+            //    {
+            //        //var UserAgent = Request.Headers.UserAgent.ToString();
+            //        //var Browser = GetBrowserType(UserAgent);
 
-                    //response = Request.CreateResponse(HttpStatusCode.OK);
+            //        //response = Request.CreateResponse(HttpStatusCode.OK);
 
-                    var GenerateOutputFile =
-                        new GenerateOutputFile(
-                            _config.ExcelTempateFolder + "Output_File_Template.xlsx");
+            //        var GenerateOutputFile =
+            //            new GenerateOutputFile(
+            //                _config.ExcelTempateFolder + "Output_File_Template.xlsx");
 
-                    var fromDate = CompFormFilter.SearchedOnFrom.Value;
+            //        var fromDate = CompFormFilter.SearchedOnFrom.Value;
 
-                    var allForms = _UOW.ComplianceFormRepository.GetAll();
+            //        var allForms = _UOW.ComplianceFormRepository.GetAll();
 
-                    var forms = allForms
-                        .Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
-                        || x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
-                        .OrderBy(x => x.SearchStartedOn).ToList();
+            //        var forms = allForms
+            //            .Where(x => (x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesIdentified
+            //            || x.StatusEnum == Models.Enums.ComplianceFormStatusEnum.ReviewCompletedIssuesNotIdentified))
+            //            .OrderBy(x => x.SearchStartedOn).ToList();
 
-                    var forms1 = forms;
+            //        var forms1 = forms;
 
-                    if (CompFormFilter.SearchedOnFrom != null)
-                    {
-                        DateTime startDate;
-                        startDate = CompFormFilter.SearchedOnFrom.Value.Date;
-                        forms1 = forms.Where(x =>
-                       x.SearchStartedOn >= startDate)
-                       .ToList();
-                    }
+            //        if (CompFormFilter.SearchedOnFrom != null)
+            //        {
+            //            DateTime startDate;
+            //            startDate = CompFormFilter.SearchedOnFrom.Value.Date;
+            //            forms1 = forms.Where(x =>
+            //           x.SearchStartedOn >= startDate)
+            //           .ToList();
+            //        }
 
-                    var forms2 = forms1;
+            //        var forms2 = forms1;
 
-                    if (CompFormFilter.SearchedOnTo != null)
-                    {
-                        DateTime endDate;
-                        endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
-                        forms2 = forms1.Where(x =>
-                        x.SearchStartedOn <
-                        endDate)
-                        .ToList();
-                    }
+            //        if (CompFormFilter.SearchedOnTo != null)
+            //        {
+            //            DateTime endDate;
+            //            endDate = CompFormFilter.SearchedOnTo.Value.Date.AddDays(1);
+            //            forms2 = forms1.Where(x =>
+            //            x.SearchStartedOn <
+            //            endDate)
+            //            .ToList();
+            //        }
 
-                    var FilePath =
-                        _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
+            //        var FilePath =
+            //            _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
 
-                    //string path = FilePath.Replace(_RootPath, "");
-                    //return Ok(path);
-                    return Ok();
+            //        //string path = FilePath.Replace(_RootPath, "");
+            //        //return Ok(path);
+            //        return Ok();
 
-                    //var memoryStream =
-                    //    _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
+            //        //var memoryStream =
+            //        //    _SearchSummary.GenerateOutputFile(GenerateOutputFile, forms);
 
-                    //response.Content = new ByteArrayContent(memoryStream.ToArray());
+            //        //response.Content = new ByteArrayContent(memoryStream.ToArray());
 
-                    //response.Content.Headers.ContentDisposition =
-                    //    new ContentDispositionHeaderValue("attachment");
+            //        //response.Content.Headers.ContentDisposition =
+            //        //    new ContentDispositionHeaderValue("attachment");
 
-                    //response.Content.Headers.ContentType =
-                    //    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            //        //response.Content.Headers.ContentType =
+            //        //    new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-                    //var OutputFileName = "OutputFile_" +
-                    //    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
-                    //    ".xlsx";
+            //        //var OutputFileName = "OutputFile_" +
+            //        //    DateTime.Now.ToString("dd_MMM_yyyy HH_mm") +
+            //        //    ".xlsx";
 
-                    //response.Content.Headers.ContentDisposition.FileName = OutputFileName;
+            //        //response.Content.Headers.ContentDisposition.FileName = OutputFileName;
 
-                    ////add custom headers to the response
-                    ////easy for angular2 to read this header
-                    //response.Content.Headers.Add("Filename", OutputFileName);
-                    //response.Content.Headers.Add("Browser", Browser);
-                    //response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
-                    //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
-                }
-                //return response;
-            }
+            //        ////add custom headers to the response
+            //        ////easy for angular2 to read this header
+            //        //response.Content.Headers.Add("Filename", OutputFileName);
+            //        //response.Content.Headers.Add("Browser", Browser);
+            //        //response.Content.Headers.Add("Access-Control-Expose-Headers", "Filename");
+            //        //response.Content.Headers.Add("Access-Control-Expose-Headers", "Browser");
+            //    }
+            //    //return response;
+            //}
         }
 
         [Route("GenerateOutputFile")]
         [HttpPost]
         public HttpResponseMessage GenerateOutputFileXXX(ComplianceFormFilter CompFormFilter)
         {
+
+
             using (new TimeMeasurementBlock(Logger, _logMode, CurrentUser(), GetCallerName()))
             {
                 HttpResponseMessage response = null;
@@ -221,11 +227,23 @@ namespace DDAS.API.Controllers
 
                     var fromDate = CompFormFilter.SearchedOnFrom.Value;
 
-                    var allForms = _UOW.ComplianceFormRepository.GetAll();
+
+
+                    //To avoid calling _UOW.ComplianceFormRepository.GetAll()
+                    //var allForms = _UOW.ComplianceFormRepository.GetAll();
+                    //get comp forms of recent 3 months, To Date Add one day to ensure today's forms are included.
+                    var compFormFilter = new ComplianceFormFilter();
+                    compFormFilter.SearchedOnFrom = fromDate;
+                    
+                    var allForms = _UOW.ComplianceFormRepository.FindComplianceForms(compFormFilter);
+
 
                     if (!IsAdmin)
                     {
-                        allForms = _UOW.ComplianceFormRepository.GetAll().Where(x =>
+                        //allForms = _UOW.ComplianceFormRepository.GetAll().Where(x =>
+                        //x.AssignedTo == UserName).ToList();
+
+                        allForms = allForms.Where(x =>
                         x.AssignedTo == UserName).ToList();
                     }
 

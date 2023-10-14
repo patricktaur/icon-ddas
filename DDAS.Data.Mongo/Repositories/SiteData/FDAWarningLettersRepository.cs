@@ -21,7 +21,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         public FDAWarningLettersSiteData GetLatestDocument()
         {
             var collection = _db.GetCollection<FDAWarningLettersSiteData>(typeof(FDAWarningLettersSiteData).Name);
-            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            var entity = collection.Find(x => x.DataExtractionSucceeded == true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
             return entity;
         }
     }

@@ -21,10 +21,12 @@ namespace DDAS.Services.LiveScan
         }
         public DateTime getNextExtractionCompletion()
         {
-            List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
-            var sitesToScan = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(s => s.ExtractionMode == "Live" && s.ExtractedOn == null))).ToList().Count;
-            var TotSecsRqd = (sitesToScan * _AvgSiteScanTimeSecs) / _ExtractionProcesses;
-            return DateTime.Now.AddSeconds(TotSecsRqd * 1.35);
+            //unused ?
+            throw new Exception("getNextExtractionCompletion - unused");
+            //List<ComplianceForm> forms = _UOW.ComplianceFormRepository.GetAll();
+            //var sitesToScan = forms.Where(f => f.InvestigatorDetails.Any(i => i.SitesSearched.Any(s => s.ExtractionMode == "Live" && s.ExtractedOn == null))).ToList().Count;
+            //var TotSecsRqd = (sitesToScan * _AvgSiteScanTimeSecs) / _ExtractionProcesses;
+            //return DateTime.Now.AddSeconds(TotSecsRqd * 1.35);
         }
         public int AverageExtractionTimeInSecs { get {
                 return _AvgSiteScanTimeSecs;

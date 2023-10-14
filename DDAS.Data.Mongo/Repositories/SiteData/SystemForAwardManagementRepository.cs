@@ -22,7 +22,7 @@ namespace DDAS.Data.Mongo.Repositories.SiteData
         public SystemForAwardManagementPageSiteData GetLatestDocument()
         {
             var collection = _db.GetCollection<SystemForAwardManagementPageSiteData>(typeof(SystemForAwardManagementPageSiteData).Name);
-            var entity = collection.Find(x => true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
+            var entity = collection.Find(x => x.DataExtractionSucceeded == true).SortByDescending(y => y.CreatedOn).FirstOrDefault();
             return entity;
         }
     }
